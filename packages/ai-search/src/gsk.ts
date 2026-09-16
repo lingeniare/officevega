@@ -25,7 +25,6 @@ import {
   type ImageSearchResult,
   type WebSearchResult,
 } from './shared'
-import { genofficeApiKey } from './genoffice-auth'
 
 const SEARCH_TIMEOUT_MS = 60_000
 const GENERATE_TIMEOUT_MS = 600_000
@@ -80,13 +79,12 @@ function electronCompatArgs(): string[] {
 
 /**
  * API key for Genspark LLM proxy / tool_cli auth; '' when not logged in.
- * Priority: GSK_API_KEY env → GenOffice's own key (bills to us via its
- * key_name) → shared gsk CLI login (bills to the Claw bucket).
+ * Priority: GSK_API_KEY env → shared gsk CLI login (bills to the Claw bucket).
+ * GenOffice's own sign-in lives on VEGA now (genoffice-auth.ts) and mints a
+ * sk-apivega-… key — it must not be sent to Genspark endpoints.
  */
 export function gskApiKey(): string {
   if (process.env.GSK_API_KEY) return process.env.GSK_API_KEY
-  const own = genofficeApiKey()
-  if (own) return own
   try {
     const configPath = join(homedir(), '.genspark-tool-cli', 'config.json')
     if (!existsSync(configPath)) return ''

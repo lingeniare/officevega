@@ -26,7 +26,7 @@ import { fetchWithSsrfGuard } from '@genoffice/electron-utils/safe-remote-url'
 import { gskAnalyzeMedia, gskGenerateImage, hasGskAuth, type GskGenerateImageOptions } from './gsk'
 
 export const GSK_NOT_LOGGED_IN_ERROR =
-  'No media provider is reachable: sign in to Genspark or set a VEGA API key in Settings (AI Model / AI Media & Search)'
+  'No media provider is reachable: sign in to VEGA or set an API key in Settings (AI Model / AI Media & Search)'
 
 /** 200 MB: enough for a long clip through the Gemini Files API, small enough to hold in memory */
 const MAX_MEDIA_BYTES = 200 * 1024 * 1024

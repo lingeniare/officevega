@@ -40,11 +40,13 @@ import {
   webSearchTool,
   imageSearchTool,
   ensureGenofficeLogin,
+  genofficeApiKey,
   gskApiKey,
   generateImageTool,
   analyzeMediaTool,
   gskLoginInfo,
   hasGskAuth,
+  vegaAccountInfo,
 } from '@genoffice/ai-search'
 import { addPicture, editPictureSrcRect, replacePictureBytes } from '@genoffice/pptx-engine'
 import { matchesElementRef } from '@genoffice/pptx-engine/identity'
@@ -117,14 +119,16 @@ export function registerAiIpc(): void {
     return storedProvider === settings.provider ? settings : { ...settings, storedProvider }
   })
 
-  // Genspark account (gsk login state): the auth source for AI features; when logged out the frontend uses this to guide login
+  // Cloud account status: the VEGA sign-in (issued key) is primary, the shared
+  // gsk CLI login a fallback; the frontend uses it to guide login
   ipcMain.handle(
     'ai:gsk-status',
     async (_event, withEmail?: boolean): Promise<GenSparkAccountStatus> => {
-      if (!hasGskAuth()) return { loggedIn: false }
+      const vegaKey = genofficeApiKey()
+      if (!vegaKey && !hasGskAuth()) return { loggedIn: false }
       if (!withEmail) return { loggedIn: true }
-      const info = await gskLoginInfo()
-      return info?.email ? { loggedIn: true, email: info.email } : { loggedIn: true }
+      const email = (await (vegaKey ? vegaAccountInfo() : gskLoginInfo()))?.email
+      return email ? { loggedIn: true, email } : { loggedIn: true }
     },
   )
 
@@ -150,9 +154,12 @@ export function registerAiIpc(): void {
     // here would break "test connection" on a stored-but-keyless BYOK pick
     const provider = settings.provider
     let config = settings.providers?.[provider]
-    // The genspark key never enters the settings file; it is fetched from the gsk login state per request
+    // The genspark key never enters the settings file; it is fetched from the gsk login state per request.
+    // A VEGA slot likewise inherits the sign-in-issued key when its own is empty.
     if (provider === 'genspark' && config && !config.apiKey) {
       config = { ...config, apiKey: gskApiKey() }
+    } else if (provider === 'vega' && config && !config.apiKey?.trim()) {
+      config = { ...config, apiKey: genofficeApiKey() }
     }
     const send = (chunk: AiStreamChunk) => {
       if (!event.sender.isDestroyed()) event.sender.send('ai:stream-chunk', chunk)
@@ -161,7 +168,10 @@ export function registerAiIpc(): void {
       send({
         requestId,
         type: 'error',
-        error: provider === 'genspark' ? tm('errGskNotLoggedIn') : tm('errNoApiKey', { provider }),
+        error:
+          provider === 'genspark' || (provider === 'vega' && !genofficeApiKey())
+            ? tm('errGskNotLoggedIn')
+            : tm('errNoApiKey', { provider }),
       })
       return
     }

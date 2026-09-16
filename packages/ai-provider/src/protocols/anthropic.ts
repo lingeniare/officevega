@@ -10,6 +10,8 @@ import {
   sseErrorText,
   sseLines,
   throwIfCreditsNotice,
+  throwIfPaymentRequired,
+  httpErrorDetail,
   type StreamCallbacks,
 } from './shared'
 
@@ -168,7 +170,9 @@ async function anthropicTurn(
   // headers arrived: ping the renderer watchdog too, or a slow first chunk could trip it
   onBytes()
   if (!response.ok || !response.body) {
-    throw new Error(`Claude HTTP ${response.status}: ${httpBodyDetail(await response.text())}`)
+    const body = await response.text()
+    throwIfPaymentRequired(response.status, body)
+    throw new Error(`Claude HTTP ${response.status}: ${httpBodyDetail(body)}`)
   }
   const jsonBody = await jsonBodyInsteadOfSse(response)
   if (jsonBody !== null) {
@@ -281,7 +285,7 @@ export async function chatAnthropic(
   if (!response.ok) {
     return {
       ok: false,
-      error: `Claude HTTP ${response.status}: ${httpBodyDetail(await response.text())}`,
+      error: `Claude HTTP ${response.status}: ${httpErrorDetail(response.status, await response.text())}`,
     }
   }
   // A 200 with an HTML shell / empty / truncated body (gateway soft-failure)

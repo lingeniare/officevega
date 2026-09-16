@@ -1,3 +1,4 @@
+import { issuedVegaKey } from './vega-key'
 import type {
   AiMediaProviderConfig,
   AiMediaProviderId,
@@ -278,11 +279,11 @@ export function resolveAiMediaSettings(
   }
 }
 
-/** The chat provider's own VEGA key — shared by the media/search slots when theirs is empty */
+/** The chat provider's own VEGA key — shared by the media/search slots when theirs is empty; falls back to the sign-in-issued key */
 function vegaSharedKey(
   settings: Partial<Pick<AiSettings, 'providers'>> | null | undefined,
 ): string {
-  return settings?.providers?.vega?.apiKey?.trim() ?? ''
+  return settings?.providers?.vega?.apiKey?.trim() || issuedVegaKey()
 }
 
 /** Key (or base URL for custom) present — the minimum for a BYOK media provider to be honored */

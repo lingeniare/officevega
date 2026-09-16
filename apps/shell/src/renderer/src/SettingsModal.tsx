@@ -1134,7 +1134,7 @@ export interface SettingsModalProps {
   onOpenLoginUrl: () => void
   onCopyLoginUrl: () => void
   onClose: () => void
-  /** closes the modal and launches the Genspark login flow (progress shows on the account entry) */
+  /** closes the modal and launches the VEGA login flow (progress shows on the account entry) */
   onLogin: () => void
   onLogout: () => void
   /** an installed skill is older than the bundled one: dot on the Integrations entry */
@@ -1275,9 +1275,12 @@ export function SettingsModal({
                   <Field
                     label={t('credits')}
                     value={
-                      status?.creditBalance === undefined
+                      status?.balance === undefined
                         ? '—'
-                        : Math.floor(status.creditBalance).toLocaleString('en-US')
+                        : `${status.balance.toFixed(2)} ${status.currency ?? 'USD'}` +
+                          (status.balanceRub === undefined
+                            ? ''
+                            : ` · ₽${status.balanceRub.toLocaleString('en-US', { maximumFractionDigits: 2 })}`)
                     }
                     action={
                       <button

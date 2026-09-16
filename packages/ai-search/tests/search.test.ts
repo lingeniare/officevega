@@ -1,11 +1,16 @@
 import { describe, it, expect, vi, afterEach, beforeAll } from 'vitest'
+import { mkdtempSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { webSearch, imageSearch } from '../src/index'
 import { searchOptionsFromSettings, testSearchProvider } from '../src/search-tools'
 import { defaultAiSettings } from '@genoffice/ai-provider'
 
-// These cases only test the Serper/DuckDuckGo paths; a local gsk login would take priority, so disable it explicitly
+// These cases only test the Serper/DuckDuckGo paths; a local gsk login would take priority, so disable it explicitly.
+// GENOFFICE_AUTH_DIR keeps a developer's real VEGA sign-in out of the tests (index registers genofficeApiKey as the issued-key getter).
 beforeAll(() => {
   process.env.AI_SEARCH_DISABLE_GSK = '1'
+  process.env.GENOFFICE_AUTH_DIR = mkdtempSync(join(tmpdir(), 'genoffice-auth-test-'))
 })
 
 const realFetch = globalThis.fetch

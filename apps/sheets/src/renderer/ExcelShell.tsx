@@ -2565,7 +2565,7 @@ function Ribbon({
             <GensparkMark size={26} />
           </span>
           <span>
-            <strong>Genspark AI</strong>
+            <strong>VEGA AI</strong>
           </span>
         </button>
         <button

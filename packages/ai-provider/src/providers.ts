@@ -1,5 +1,6 @@
 import { defaultAiMediaSettings, resolveAiMediaSettings } from './media'
 import { defaultAiSearchSettings, resolveAiSearchSettings } from './search-settings'
+import { issuedVegaKey, legacyGskKey } from './vega-key'
 import type { AiProviderId, AiProviderMeta, AiSettings, LegacyAiSettings } from './types'
 
 /**
@@ -320,7 +321,14 @@ export { cloudToolsEnabled } from './media'
  */
 export function activeProvider(settings: AiSettings): AiProviderId {
   const provider = settings.provider
-  if (provider === 'genspark') return 'genspark'
+  if (provider === 'genspark') {
+    // Legacy sign-in pick: stays while a gsk credential exists; a VEGA sign-in
+    // (the app's login flow now issues VEGA keys) silently upgrades it, and
+    // with neither it remains the signed-out state that prompts the login.
+    if (legacyGskKey() || settings.providers?.genspark?.apiKey?.trim()) return 'genspark'
+    const vega = settings.providers?.vega
+    return vega?.model?.trim() && (vega.apiKey?.trim() || issuedVegaKey()) ? 'vega' : 'genspark'
+  }
   const meta = AI_PROVIDERS.find((m) => m.id === provider)
   const config = settings.providers?.[provider]
   if (!meta || !config) return 'genspark'
@@ -334,7 +342,8 @@ export function activeProvider(settings: AiSettings): AiProviderId {
     if (!config.baseUrl?.trim()) return 'genspark'
     return provider
   }
-  if (!config.apiKey?.trim()) return 'genspark'
+  // VEGA also accepts the sign-in-issued key — it never enters the settings file
+  if (!config.apiKey?.trim() && !(provider === 'vega' && issuedVegaKey())) return 'genspark'
   return provider
 }
 

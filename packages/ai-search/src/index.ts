@@ -6,7 +6,11 @@
  * For gsk auth see ./gsk.ts (`gsk login` or GSK_API_KEY).
  */
 
-import { VEGA_BASE_URL } from '@genoffice/ai-provider'
+import {
+  VEGA_BASE_URL,
+  setIssuedVegaKeyGetter,
+  setLegacyGskKeyGetter,
+} from '@genoffice/ai-provider'
 import {
   asRecord,
   isCopyrightHost,
@@ -14,7 +18,14 @@ import {
   type ImageSearchResult,
   type WebSearchResult,
 } from './shared'
-import { gskImageSearch, gskWebSearch, hasGskAuth } from './gsk'
+import { gskImageSearch, gskWebSearch, gskApiKey, hasGskAuth } from './gsk'
+import { genofficeApiKey } from './genoffice-auth'
+
+// The sign-in credentials feed provider/media/search resolution in
+// @genoffice/ai-provider (it can't import this package — the registry is its
+// side of the boundary). Importing ai-search in a main process is enough.
+setIssuedVegaKeyGetter(genofficeApiKey)
+setLegacyGskKeyGetter(gskApiKey)
 
 export type { ImageSearchResult, WebSearchResult } from './shared'
 export * from './gsk'

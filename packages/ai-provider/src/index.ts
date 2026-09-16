@@ -57,6 +57,12 @@ export {
   resolveAiSearchSettings,
   vegaSearchKey,
 } from './search-settings'
+export {
+  issuedVegaKey,
+  legacyGskKey,
+  setIssuedVegaKeyGetter,
+  setLegacyGskKeyGetter,
+} from './vega-key'
 export { listGatewayModels, listProviderModels } from './model-catalog'
 export type { ModelFilter, ProviderModelCatalog } from './model-catalog'
 export {

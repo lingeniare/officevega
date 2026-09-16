@@ -21,7 +21,7 @@ export type AiProviderId =
   | 'opencode-go'
   | 'custom'
 
-/** Genspark account status (gsk login state; the sole auth source for AI features) */
+/** Cloud account status: the VEGA sign-in (issued sk-apivega key) is primary, the shared gsk CLI login a fallback */
 export interface GenSparkAccountStatus {
   loggedIn: boolean
   email?: string

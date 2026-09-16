@@ -98,10 +98,10 @@ import {
 import { handleDroppedFiles } from './dropped-files'
 import {
   genofficeLogout,
-  gskLoginInfo,
   loadGenofficeAuth,
   setGskProxyUrl,
   startGenofficeLogin,
+  vegaAccountInfo,
 } from '@genoffice/ai-search'
 
 import {
@@ -550,9 +550,9 @@ function initAnalytics(): void {
 // invite link, which stays out of this repo and rotates server-side.
 const GENTEAM_URL = 'https://genoffice.ai/join'
 
-// Genspark credit-usage page opened from the account menu's credits row.
+// VEGA keys/deposit dashboard opened from the account menu's deposit row.
 // Kept main-side so the renderer never supplies the URL.
-const CREDIT_USAGE_URL = 'https://www.genspark.ai/credit-usage'
+const CREDIT_USAGE_URL = 'https://api.vega.chat/keys'
 
 // ---- "star us on GitHub" prompt (see star-prompt.ts for the rules) ----
 
@@ -3107,14 +3107,21 @@ function statEntries(paths: string[]): RecentEntry[] {
 }
 
 function registerHomeIpc(): void {
-  // signed-in means GenOffice's own device-code login; the shared gsk CLI key
-  // is only a silent fallback, deliberately not shown here to nudge users onto our key
+  // signed-in means GenOffice's own VEGA device login (the issued
+  // sk-apivega-… key); GET /api/v1/account supplies the deposit
   ipcMain.handle(HOME_CHANNELS.accountStatus, async () => {
     if (!loadGenofficeAuth()) return { loggedIn: false }
     await proxyBootstrap
-    const info = await gskLoginInfo()
+    const info = await vegaAccountInfo()
     return info
-      ? { loggedIn: true, email: info.email, creditBalance: info.creditBalance }
+      ? {
+          loggedIn: true,
+          email: info.email,
+          balance: info.balance,
+          balanceRub: info.balanceRub,
+          currency: info.currency,
+          totalUsage: info.totalUsage,
+        }
       : { loggedIn: true }
   })
 

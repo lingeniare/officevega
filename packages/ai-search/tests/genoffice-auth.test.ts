@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { existsSync, mkdtempSync, readFileSync, rmSync, statSync } from 'node:fs'
+import { existsSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import {
@@ -11,12 +11,14 @@ import {
   loadGenofficeAuth,
   resetGenofficeAuthCache,
   startGenofficeLogin,
+  vegaAccountInfo,
   type GskLoginProgress,
 } from '../src/genoffice-auth'
 import { gskApiKey, setGskProxyUrl } from '../src/gsk'
 
-const CODE = 'a'.repeat(64)
-const AUTH_URL = `https://www.genspark.ai/api/office_addin_auth/verify?code=${CODE}`
+const DEVICE_CODE = 'd'.repeat(64)
+const API_KEY = `sk-apivega-${'a'.repeat(48)}`
+const AUTH_URL = `https://api.vega.chat/device?user_code=ABCD-1234`
 
 let dir: string
 
@@ -24,6 +26,7 @@ beforeEach(() => {
   dir = mkdtempSync(join(tmpdir(), 'genoffice-auth-'))
   process.env.GENOFFICE_AUTH_DIR = dir
   delete process.env.GSK_API_KEY
+  delete process.env.VEGA_API_ROOT
   resetGenofficeAuthCache()
 })
 
@@ -32,106 +35,146 @@ afterEach(() => {
   rmSync(dir, { recursive: true, force: true })
   delete process.env.GENOFFICE_AUTH_DIR
   delete process.env.GSK_API_KEY
+  delete process.env.VEGA_API_ROOT
   setGskProxyUrl('')
   resetGenofficeAuthCache()
 })
 
-function jsonResponse(json: unknown, opts: { status?: number; setCookie?: string } = {}): Response {
-  const headers = new Headers()
-  if (opts.setCookie) headers.append('set-cookie', opts.setCookie)
+function jsonResponse(json: unknown, opts: { status?: number } = {}): Response {
   return {
     ok: (opts.status ?? 200) < 400,
     status: opts.status ?? 200,
     json: async () => json,
-    headers,
+    headers: new Headers(),
   } as unknown as Response
 }
 
-/** fetch stub for the full flow; token polls: pending × (pendingPolls) then approved */
-function stubFlow(opts: { pendingPolls?: number; createResponse?: unknown } = {}) {
+interface FlowOpts {
+  /** poll answers before the approved one */
+  polls?: Record<string, unknown>[]
+  /** override for the key-issuance response */
+  keyResponse?: { body: unknown; status?: number }
+}
+
+/** fetch stub for the VEGA device flow: device/code → device/token polls → keys/genoffice */
+function stubFlow(opts: FlowOpts = {}) {
   let tokenPolls = 0
   const fetchMock = vi.fn(async (input: string | URL, _init?: RequestInit) => {
     const url = String(input)
-    if (url.includes('/office_addin_auth/device_code')) {
+    if (url.includes('/api/auth/device/code')) {
       return jsonResponse({
-        device_code: CODE,
-        auth_url: AUTH_URL,
+        device_code: DEVICE_CODE,
+        user_code: 'ABCD-1234',
+        verification_uri: 'https://api.vega.chat/device',
+        verification_uri_complete: AUTH_URL,
         expires_in: 600,
-        poll_interval: 0.001,
+        interval: 0.001,
       })
     }
-    if (url.includes('/office_addin_auth/token')) {
+    if (url.includes('/api/auth/device/token')) {
+      const scripted = (opts.polls ?? [])[tokenPolls]
       tokenPolls++
-      if (tokenPolls <= (opts.pendingPolls ?? 1)) return jsonResponse({ status: 'pending' })
-      return jsonResponse({ status: 'approved', access_token: 'bearer-token' })
+      if (scripted) return jsonResponse(scripted, { status: 400 })
+      return jsonResponse({ access_token: 'vega-session-token' })
     }
-    if (url.includes('/office_addin_auth/session')) {
-      return jsonResponse(
-        { status: 'ok', cogen_id: 'user-1' },
-        { setCookie: 'session_id=sess-abc; Path=/; HttpOnly' },
-      )
+    if (url.includes('/api/v1/keys/genoffice/revoke')) return jsonResponse({ ok: true })
+    if (url.includes('/api/v1/keys/genoffice')) {
+      const r = opts.keyResponse ?? { body: { id: 'kid-1', key: API_KEY } }
+      return jsonResponse(r.body, { status: r.status })
     }
-    if (url.includes('/api_tokens/create')) {
-      return jsonResponse(
-        opts.createResponse ?? {
-          status: 0,
-          data: { key_id: 'kid-1', key_name: 'genoffice', token: 'gsk-genoffice-key' },
-        },
-      )
+    if (url.includes('/api/v1/account')) {
+      return jsonResponse({
+        email: 'user@example.com',
+        name: 'User',
+        balance: 12.34,
+        balanceRub: 1020.55,
+        currency: 'USD',
+        totalUsage: 45.67,
+        limit: null,
+        keyName: 'genoffice',
+      })
     }
-    if (url.includes('/api_tokens/revoke')) return jsonResponse({ status: 0 })
     throw new Error(`unexpected fetch: ${url}`)
   })
   vi.stubGlobal('fetch', fetchMock)
   return fetchMock
 }
 
-async function loginAndCollect(): Promise<GskLoginProgress[]> {
+const PENDING = { error: 'authorization_pending' }
+
+async function loginAndCollect(timeout = 4000): Promise<GskLoginProgress[]> {
   const events: GskLoginProgress[] = []
   startGenofficeLogin((progress) => events.push(progress))
-  await vi.waitFor(() => {
-    expect(['success', 'error']).toContain(events.at(-1)?.phase)
-  })
+  await vi.waitFor(
+    () => {
+      expect(['success', 'error']).toContain(events.at(-1)?.phase)
+    },
+    { timeout },
+  )
   return events
 }
 
-describe('startGenofficeLogin', () => {
-  it('runs device_code → poll → session → key create and stores the key', async () => {
-    const fetchMock = stubFlow({ pendingPolls: 2 })
+describe('startGenofficeLogin (VEGA device flow)', () => {
+  it('runs device/code → poll → token → key issuance and stores the key', async () => {
+    const fetchMock = stubFlow({ polls: [PENDING, PENDING] })
     const events = await loginAndCollect()
 
     expect(events[0]).toEqual({ phase: 'url', url: AUTH_URL, expiresInSec: 600 })
     expect(events.at(-1)).toEqual({ phase: 'success' })
 
     const saved = JSON.parse(readFileSync(genofficeAuthPath(), 'utf-8'))
-    expect(saved).toEqual({
-      api_key: 'gsk-genoffice-key',
-      key_id: 'kid-1',
-      access_token: 'bearer-token',
-    })
+    expect(saved).toEqual({ api_key: API_KEY, key_id: 'kid-1' })
     // POSIX-only: Windows reports 0o666 regardless of the requested mode
     if (process.platform !== 'win32') {
       expect(statSync(genofficeAuthPath()).mode & 0o777).toBe(0o600)
     }
-    expect(genofficeApiKey()).toBe('gsk-genoffice-key')
+    expect(genofficeApiKey()).toBe(API_KEY)
     expect(genofficeLoginInFlight()).toBe(false)
 
-    // the key create call must ride on the session cookie
-    const createCall = fetchMock.mock.calls.find(([u]) => String(u).includes('/api_tokens/create'))!
-    const init = createCall[1]!
-    expect((init.headers as Record<string, string>).Cookie).toBe('session_id=sess-abc')
-    expect(JSON.parse(String(init.body))).toEqual({ key_name: 'genoffice' })
+    // the device request identifies the genoffice client
+    const codeCall = fetchMock.mock.calls.find(([u]) =>
+      String(u).includes('/api/auth/device/code'),
+    )!
+    expect(JSON.parse(String(codeCall[1]!.body))).toMatchObject({ client_id: 'genoffice' })
+
+    // polls carry the RFC 8628 grant fields
+    const pollCall = fetchMock.mock.calls.find(([u]) =>
+      String(u).includes('/api/auth/device/token'),
+    )!
+    expect(JSON.parse(String(pollCall[1]!.body))).toEqual({
+      grant_type: 'urn:ietf:params:oauth:grant-type:device_code',
+      device_code: DEVICE_CODE,
+      client_id: 'genoffice',
+    })
+
+    // key issuance rides on the session Bearer, never on a cookie
+    const keyCall = fetchMock.mock.calls.find(([u]) =>
+      String(u).includes('/api/v1/keys/genoffice'),
+    )!
+    const init = keyCall[1]!
+    expect((init.headers as Record<string, string>).Authorization).toBe('Bearer vega-session-token')
+    expect(JSON.parse(String(init.body))).toEqual({ name: 'genoffice' })
   })
 
-  it('feeds gskApiKey(), losing only to an explicit GSK_API_KEY env override', async () => {
+  it('keeps the issued VEGA key out of gskApiKey() — it must never reach Genspark endpoints', async () => {
     stubFlow()
     await loginAndCollect()
-    expect(gskApiKey()).toBe('gsk-genoffice-key')
+    expect(genofficeApiKey()).toBe(API_KEY)
+    expect(gskApiKey()).toBe('')
     process.env.GSK_API_KEY = 'gsk-env-override'
     expect(gskApiKey()).toBe('gsk-env-override')
   })
 
-  it('reports a network failure at device_code as error "network"', async () => {
+  it('reads a pre-VEGA (gsk-…) auth file as signed out', () => {
+    writeFileSync(
+      genofficeAuthPath(),
+      JSON.stringify({ api_key: 'gsk-legacy-key', key_id: 'kid-0' }),
+    )
+    expect(loadGenofficeAuth()).toBeNull()
+    expect(genofficeApiKey()).toBe('')
+  })
+
+  it('reports a network failure at device/code as error "network"', async () => {
     const fetchMock = vi.fn().mockRejectedValue(new Error('ECONNREFUSED'))
     vi.stubGlobal('fetch', fetchMock)
     const events = await loginAndCollect()
@@ -148,7 +191,7 @@ describe('startGenofficeLogin', () => {
     vi.stubGlobal(
       'fetch',
       vi.fn(async (input: string | URL, init?: RequestInit) => {
-        if (String(input).includes('/device_code') && ++deviceCodeCalls === 1) {
+        if (String(input).includes('/device/code') && ++deviceCodeCalls === 1) {
           throw new Error('ECONNRESET')
         }
         return flow(input, init)
@@ -157,7 +200,7 @@ describe('startGenofficeLogin', () => {
     const events = await loginAndCollect()
     expect(deviceCodeCalls).toBe(2)
     expect(events.at(-1)).toEqual({ phase: 'success' })
-    expect(genofficeApiKey()).toBe('gsk-genoffice-key')
+    expect(genofficeApiKey()).toBe(API_KEY)
     expect(genofficeProxyFallbackPreferred()).toBe(true)
   })
 
@@ -174,18 +217,18 @@ describe('startGenofficeLogin', () => {
 
   it('counts an endpoint 4xx (authorization_pending) as channel success', async () => {
     setGskProxyUrl('http://127.0.0.1:7890')
-    const flow = stubFlow({ pendingPolls: 0 })
+    const flow = stubFlow()
     let deviceCodeCalls = 0
     let tokenCalls = 0
     vi.stubGlobal(
       'fetch',
       vi.fn(async (input: string | URL, init?: RequestInit) => {
         const url = String(input)
-        if (url.includes('/device_code') && ++deviceCodeCalls === 1) {
+        if (url.includes('/device/code') && ++deviceCodeCalls === 1) {
           throw new Error('ECONNRESET')
         }
-        if (url.includes('/office_addin_auth/token') && ++tokenCalls === 1) {
-          return jsonResponse({ status: 'pending' }, { status: 400 })
+        if (url.includes('/device/token') && ++tokenCalls === 1) {
+          return jsonResponse(PENDING, { status: 400 })
         }
         return flow(input, init)
       }),
@@ -197,46 +240,55 @@ describe('startGenofficeLogin', () => {
     expect(genofficeProxyFallbackPreferred()).toBe(true)
   })
 
-  it('reports an expired device code as error "expired"', async () => {
-    vi.stubGlobal(
-      'fetch',
-      vi.fn(async (input: string | URL) => {
-        const url = String(input)
-        if (url.includes('/device_code')) {
-          return jsonResponse({
-            device_code: CODE,
-            auth_url: AUTH_URL,
-            expires_in: 600,
-            poll_interval: 0.001,
-          })
-        }
-        return jsonResponse({ status: 'expired' })
-      }),
-    )
+  it(
+    'honors slow_down by continuing to poll until the code is approved',
+    { timeout: 25_000 },
+    async () => {
+      const fetchMock = stubFlow({ polls: [{ error: 'slow_down' }, PENDING] })
+      // RFC 8628 slow_down adds 5 s and the bump persists — two waits ≈ 10 s
+      const events = await loginAndCollect(20_000)
+      expect(events.at(-1)).toEqual({ phase: 'success' })
+      const polls = fetchMock.mock.calls.filter(([u]) => String(u).includes('/device/token')).length
+      expect(polls).toBe(3)
+    },
+  )
+
+  it('reports expired_token as error "expired"', async () => {
+    stubFlow({ polls: [{ error: 'expired_token' }] })
     const events = await loginAndCollect()
     expect(events.at(-1)).toEqual({ phase: 'error', error: 'expired' })
   })
 
-  it('surfaces the server message when key creation fails', async () => {
-    stubFlow({ createResponse: { status: -1, message: 'Invalid API key name.' } })
+  it('reports access_denied as error "denied"', async () => {
+    stubFlow({ polls: [{ error: 'access_denied' }] })
     const events = await loginAndCollect()
-    expect(events.at(-1)).toEqual({ phase: 'error', error: 'Invalid API key name.' })
+    expect(events.at(-1)).toEqual({ phase: 'error', error: 'denied' })
+  })
+
+  it('surfaces the server message when key issuance fails', async () => {
+    stubFlow({
+      keyResponse: { body: { message: 'Key quota exceeded.' }, status: 403 },
+    })
+    const events = await loginAndCollect()
+    expect(events.at(-1)).toEqual({ phase: 'error', error: 'Key quota exceeded.' })
     expect(loadGenofficeAuth()).toBeNull()
   })
 
-  it('re-login revokes the superseded key (best-effort)', async () => {
+  it('rejects an issued key that does not match the sk-apivega format', async () => {
+    stubFlow({ keyResponse: { body: { id: 'kid-1', key: 'not-a-vega-key' } } })
+    const events = await loginAndCollect()
+    expect(events.at(-1)).toEqual({ phase: 'error', error: 'issued key has an unexpected format' })
+    expect(loadGenofficeAuth()).toBeNull()
+  })
+
+  it('re-login replaces the stored key (the server revokes the old same-named one)', async () => {
     stubFlow()
     await loginAndCollect()
-
-    const fetchMock = stubFlow({
-      createResponse: { status: 0, data: { key_id: 'kid-2', token: 'gsk-genoffice-key-2' } },
-    })
+    stubFlow({ keyResponse: { body: { id: 'kid-2', key: `sk-apivega-${'b'.repeat(48)}` } } })
     await loginAndCollect()
-    expect(loadGenofficeAuth()).toMatchObject({ apiKey: 'gsk-genoffice-key-2', keyId: 'kid-2' })
-    await vi.waitFor(() => {
-      const revoke = fetchMock.mock.calls.find(([u]) => String(u).includes('/api_tokens/revoke'))
-      expect(revoke).toBeDefined()
-      expect(JSON.parse(String(revoke![1]!.body))).toEqual({ key_id: 'kid-1' })
+    expect(loadGenofficeAuth()).toMatchObject({
+      apiKey: `sk-apivega-${'b'.repeat(48)}`,
+      keyId: 'kid-2',
     })
   })
 
@@ -246,15 +298,15 @@ describe('startGenofficeLogin', () => {
       'fetch',
       vi.fn(async (input: string | URL) => {
         const url = String(input)
-        if (url.includes('/device_code')) {
+        if (url.includes('/device/code')) {
           return jsonResponse({
-            device_code: CODE,
-            auth_url: AUTH_URL,
+            device_code: DEVICE_CODE,
+            verification_uri_complete: AUTH_URL,
             expires_in: 600,
-            poll_interval: 0.001,
+            interval: 0.001,
           })
         }
-        return jsonResponse({ status: 'pending' })
+        return jsonResponse(PENDING, { status: 400 })
       }),
     )
     const first: GskLoginProgress[] = []
@@ -270,17 +322,20 @@ describe('startGenofficeLogin', () => {
 })
 
 describe('genofficeLogout', () => {
-  it('revokes the key server-side and removes the local file', async () => {
+  it('self-revokes the API key server-side and removes the local file', async () => {
     const fetchMock = stubFlow()
     await loginAndCollect()
 
     await genofficeLogout()
     expect(existsSync(genofficeAuthPath())).toBe(false)
     expect(genofficeApiKey()).toBe('')
-    const revokeCall = fetchMock.mock.calls.find(([u]) => String(u).includes('/api_tokens/revoke'))!
-    const init = revokeCall[1]!
-    expect((init.headers as Record<string, string>).Cookie).toBe('session_id=sess-abc')
-    expect(JSON.parse(String(init.body))).toEqual({ key_id: 'kid-1' })
+    const revokeCall = fetchMock.mock.calls.find(([u]) =>
+      String(u).includes('/keys/genoffice/revoke'),
+    )!
+    // self-revocation: the API key itself is the Bearer
+    expect((revokeCall[1]!.headers as Record<string, string>).Authorization).toBe(
+      `Bearer ${API_KEY}`,
+    )
   })
 
   it('still clears locally when the server revoke fails', async () => {
@@ -297,5 +352,43 @@ describe('genofficeLogout', () => {
     vi.stubGlobal('fetch', fetchMock)
     await genofficeLogout()
     expect(fetchMock).not.toHaveBeenCalled()
+  })
+})
+
+describe('vegaAccountInfo', () => {
+  it('returns the account deposit fields for the signed-in key', async () => {
+    const fetchMock = stubFlow()
+    await loginAndCollect()
+    const info = await vegaAccountInfo()
+    expect(info).toEqual({
+      email: 'user@example.com',
+      name: 'User',
+      balance: 12.34,
+      balanceRub: 1020.55,
+      currency: 'USD',
+      totalUsage: 45.67,
+      limit: null,
+      keyName: 'genoffice',
+    })
+    const call = fetchMock.mock.calls.find(([u]) => String(u).includes('/api/v1/account'))!
+    expect((call[1]!.headers as Record<string, string>).Authorization).toBe(`Bearer ${API_KEY}`)
+  })
+
+  it('is null when signed out, on HTTP errors (401/402) and on network failure', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => jsonResponse({}, { status: 401 })),
+    )
+    expect(await vegaAccountInfo()).toBeNull()
+
+    stubFlow()
+    await loginAndCollect()
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => jsonResponse({}, { status: 402 })),
+    )
+    expect(await vegaAccountInfo()).toBeNull()
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('offline')))
+    expect(await vegaAccountInfo()).toBeNull()
   })
 })

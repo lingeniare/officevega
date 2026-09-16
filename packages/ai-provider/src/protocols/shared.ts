@@ -1,4 +1,5 @@
 import type { AgentToolCall } from '@genoffice/agent-core'
+import { httpBodyDetail } from '../http-error'
 
 // ---- streaming (SSE line splitting shared by all providers) ----
 
@@ -135,7 +136,9 @@ function creditsNoticeText(value: unknown): string | null {
     const t = value.toLowerCase()
     const credits =
       t.includes('genspark.ai/pricing') ||
-      (t.includes('credit') && (t.includes('exhausted') || t.includes('insufficient')))
+      (t.includes('credit') && (t.includes('exhausted') || t.includes('insufficient'))) ||
+      // VEGA answers paid endpoints with {error:{code:402,message:"Insufficient balance…"}}
+      (t.includes('insufficient') && (t.includes('balance') || t.includes('deposit')))
     return credits ? value : null
   }
   if (Array.isArray(value) || (value && typeof value === 'object')) {
@@ -156,6 +159,39 @@ export function throwIfCreditsNotice(bodyText: string): void {
   }
   const notice = creditsNoticeText(parsed)
   if (notice) throw new AiCreditsError(notice)
+}
+
+/** The `message` inside a `{error:{message}}` / `{message}` JSON error body; null otherwise */
+export function apiErrorMessage(bodyText: string): string | null {
+  try {
+    const parsed = JSON.parse(bodyText) as Record<string, unknown> | null
+    const err = parsed?.error
+    const msg =
+      (err && typeof err === 'object'
+        ? (err as { message?: unknown }).message
+        : typeof err === 'string'
+          ? err
+          : undefined) ?? parsed?.message
+    return typeof msg === 'string' && msg ? msg : null
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Non-OK responses carrying a deposit/credits failure surface as a typed
+ * error (errorCode 'credits' → localized "top up" message): HTTP 402 outright
+ * (VEGA's paid endpoints), or an embedded notice text on any status.
+ */
+export function throwIfPaymentRequired(status: number, bodyText: string): void {
+  if (status === 402) throw new AiCreditsError(apiErrorMessage(bodyText) ?? 'HTTP 402')
+  throwIfCreditsNotice(bodyText)
+}
+
+/** Display text for a non-OK body; a 402 unwraps the JSON message since the raw object is noise to the user */
+export function httpErrorDetail(status: number, bodyText: string): string {
+  if (status === 402) return apiErrorMessage(bodyText) ?? 'Insufficient balance'
+  return httpBodyDetail(bodyText)
 }
 
 /** Don't throw on parse failure (it would kill the whole stream); return error so the loop feeds it back for retry */

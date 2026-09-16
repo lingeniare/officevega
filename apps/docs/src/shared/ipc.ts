@@ -404,9 +404,9 @@ export interface DesktopApi {
   /** start a streaming AI call; deltas arrive via onAiStream with the same requestId */
   aiStream(request: AiStreamRequest): Promise<void>
   aiStreamCancel(requestId: string): Promise<void>
-  /** Genspark account status (gsk login state); withEmail also returns the email (needs a network request, slower) */
+  /** AI account status (VEGA sign-in key, gsk CLI fallback); withEmail also returns the email (needs a network request, slower) */
   aiGskStatus(withEmail?: boolean): Promise<GenSparkAccountStatus>
-  /** Open the browser to log in to Genspark (fire-and-forget; aiGskStatus flips to logged-in when done) */
+  /** Open the browser to log in to VEGA (fire-and-forget; aiGskStatus flips to logged-in when done) */
   aiGskLogin(): Promise<void>
   webSearch(
     query: string,
@@ -435,7 +435,7 @@ export interface DesktopApi {
     error?: string
   }>
   fetchImage(url: string): Promise<{ base64: string; mime: string } | null>
-  /** AI image generation via the Genspark cloud channel (requires login + cloud tools) */
+  /** AI image generation via the configured media provider (VEGA sign-in key or a BYOK key) */
   aiGenerateImage(op: {
     prompt: string
     aspectRatio?: string

@@ -1,13 +1,15 @@
 /**
- * GenOffice's own Genspark identity: device-code login (office_addin_auth,
- * app_type=genoffice) minting a gsk API key named "genoffice" — the key_name
- * lands in billing as billing_tag, attributing all traffic (incl. gsk CLI
- * subprocesses) to GenOffice. Stored in ~/.genoffice/auth.json, deliberately
- * NOT the shared config.json that Claw Desktop overwrites on every launch.
+ * GenOffice's VEGA identity (api.vega.chat, better-auth): OAuth device
+ * authorization (RFC 8628) minting one sk-apivega-… API key named "genoffice"
+ * — usage_logs.api_key_id attributes all traffic to GenOffice. Stored in
+ * ~/.genoffice/auth.json.
  *
- * Flow: POST /device_code → browser approve → poll /token for a 30-day Bearer
- * → POST /session for a cookie → POST /api/api_tokens/create. The Bearer is
- * kept to rebuild a session later (key revoke on logout).
+ * Flow: POST /api/auth/device/code → browser approve at verification_uri →
+ * poll POST /api/auth/device/token for a session Bearer →
+ * POST /api/v1/keys/genoffice. The session token is dropped after key
+ * issuance; the API key self-revokes on logout
+ * (POST /api/v1/keys/genoffice/revoke) and GET /api/v1/account reads the
+ * deposit for the account UI.
  */
 
 import { existsSync, mkdirSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs'
@@ -21,26 +23,33 @@ export interface GskLoginProgress {
   phase: 'url' | 'success' | 'error'
   url?: string
   expiresInSec?: number
-  /** 'network' | 'expired' | raw error text */
+  /** 'network' | 'expired' | 'denied' | raw error text */
   error?: string
 }
 
-const APP_TYPE = 'genoffice'
+const CLIENT_ID = 'genoffice'
 const KEY_NAME = 'genoffice'
 const HTTP_TIMEOUT_MS = 30_000
+/** RFC 8628: a slow_down answer adds 5 s to the poll interval */
+const SLOW_DOWN_EXTRA_MS = 5_000
+/** sign-in-issued keys carry this prefix; anything else in auth.json is a stale Genspark-era key */
+const VEGA_KEY_PREFIX = 'sk-apivega-'
+/** the issued key's contract shape (sk-apivega-<48 lowercase hex>) */
+const VEGA_KEY_RE = /^sk-apivega-[0-9a-f]{48}$/
 
-function baseUrl(): string {
-  return (process.env.GSK_BASE_URL || 'https://www.genspark.ai').replace(/\/$/, '')
+function rootUrl(): string {
+  return (process.env.VEGA_API_ROOT || 'https://api.vega.chat').replace(/\/$/, '')
 }
+
+const authBase = () => `${rootUrl()}/api/auth`
+const apiBase = () => `${rootUrl()}/api/v1`
 
 let cachedFetch: typeof fetch | undefined
 
 /**
- * Cloudflare bot-challenges /api/office_addin_auth for non-browser clients;
- * Chromium's net.fetch passes (and exposes getSetCookie). Falls back to
- * global fetch outside the Electron main process (tests). Note net.fetch is
- * not spec fetch: an explicit Cookie header is forwarded, not stripped
- * (verified against a header-echo server).
+ * Chromium's net.fetch is preferred in the Electron main process (system TLS
+ * stack, per-session proxy support, spec-exposing getSetCookie). Falls back
+ * to global fetch outside Electron (tests).
  */
 function resolveFetch(): typeof fetch {
   if (cachedFetch) return cachedFetch
@@ -73,8 +82,7 @@ const GATEWAY_ERROR_STATUSES = new Set([407, 502, 504])
  * Retry channel when the primary fetch cannot connect: net.fetch follows only
  * Chromium's own proxy config, so a proxy the bootstraps resolved from env
  * vars — or a system proxy Chromium failed to apply — never reaches it. Pin a
- * dedicated session to the registered proxy, keeping Chromium TLS (Node fetch
- * is bot-challenged, see resolveFetch). null when no proxy is registered.
+ * dedicated session to the registered proxy. null when no proxy is registered.
  */
 async function proxyFallbackFetch(): Promise<typeof fetch | null> {
   const proxyUrl = gskProxyUrl()
@@ -116,7 +124,6 @@ export function genofficeAuthPath(): string {
 export interface GenofficeAuth {
   apiKey: string
   keyId?: string
-  accessToken?: string
 }
 
 let cachedAuth: GenofficeAuth | null | undefined
@@ -124,13 +131,13 @@ let cachedAuth: GenofficeAuth | null | undefined
 function readAuthFile(): GenofficeAuth | null {
   try {
     const raw = asRecord(JSON.parse(readFileSync(genofficeAuthPath(), 'utf-8')))
-    if (typeof raw.api_key !== 'string' || !raw.api_key) return null
+    const apiKey = typeof raw.api_key === 'string' ? raw.api_key : ''
+    // a pre-VEGA auth.json holds a Genspark gsk key — useless against
+    // api.vega.chat, so it reads as signed-out and the next login overwrites it
+    if (!apiKey.startsWith(VEGA_KEY_PREFIX)) return null
     return {
-      apiKey: raw.api_key,
+      apiKey,
       ...(typeof raw.key_id === 'string' && raw.key_id ? { keyId: raw.key_id } : {}),
-      ...(typeof raw.access_token === 'string' && raw.access_token
-        ? { accessToken: raw.access_token }
-        : {}),
     }
   } catch {
     return null
@@ -142,7 +149,7 @@ export function loadGenofficeAuth(): GenofficeAuth | null {
   return cachedAuth
 }
 
-/** The GenOffice-named api key; '' when not signed in. Cached (invalidated by login/logout). */
+/** The GenOffice-named VEGA key; '' when not signed in. Cached (invalidated by login/logout). */
 export function genofficeApiKey(): string {
   return loadGenofficeAuth()?.apiKey ?? ''
 }
@@ -152,11 +159,7 @@ function saveAuth(auth: GenofficeAuth): void {
   mkdirSync(dirname(path), { recursive: true })
   writeFileSync(
     path,
-    JSON.stringify(
-      { api_key: auth.apiKey, key_id: auth.keyId, access_token: auth.accessToken },
-      null,
-      2,
-    ) + '\n',
+    JSON.stringify({ api_key: auth.apiKey, key_id: auth.keyId }, null, 2) + '\n',
     { mode: 0o600 },
   )
   cachedAuth = auth
@@ -176,7 +179,7 @@ function clearAuth(): void {
 class LoginFlowError extends Error {
   constructor(
     /** matches GskLoginProgress.error conventions */
-    public reason: 'network' | 'expired' | string,
+    public reason: 'network' | 'expired' | 'denied' | string,
   ) {
     super(reason)
   }
@@ -202,8 +205,12 @@ async function httpJson(
       continue
     }
     // gateway statuses fail over like connect errors (endpoint 4xx such as the
-    // poll's authorization_pending still counts as a healthy channel)
-    if (GATEWAY_ERROR_STATUSES.has(resp.status)) continue
+    // poll's authorization_pending still counts as a healthy channel); clearing
+    // resp keeps a trailing-channel 502 from surfacing as an endpoint answer
+    if (GATEWAY_ERROR_STATUSES.has(resp.status)) {
+      resp = undefined
+      continue
+    }
     // the losing channel keeps losing on proxy-only networks — lead with the winner
     if (i > 0) proxyFallbackPreferred = !proxyFallbackPreferred
     break
@@ -216,16 +223,6 @@ async function httpJson(
     /* non-JSON body; status checks below carry the error */
   }
   return { resp, json }
-}
-
-function sessionCookie(resp: Response): string {
-  const headers = resp.headers as Headers & { getSetCookie?: () => string[] }
-  const cookies = headers.getSetCookie?.() ?? []
-  if (cookies.length === 0) {
-    const single = resp.headers.get('set-cookie')
-    if (single) cookies.push(single)
-  }
-  return cookies.map((c) => c.split(';')[0]!).join('; ')
 }
 
 function sleep(ms: number, signal: AbortSignal): Promise<void> {
@@ -245,40 +242,29 @@ function sleep(ms: number, signal: AbortSignal): Promise<void> {
 
 // ── Device-code login ────────────────────────────────────────────────
 
-async function revokeKey(cookie: string, keyId: string, signal: AbortSignal): Promise<void> {
-  await resolveFetch()(`${baseUrl()}/api/api_tokens/revoke`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', Cookie: cookie },
-    body: JSON.stringify({ key_id: keyId }),
-    signal,
-  })
-}
-
-/** Bearer token → session cookie. Shared by login (key create) and logout (key revoke). */
-async function establishSession(accessToken: string, signal: AbortSignal): Promise<string> {
-  const { resp } = await httpJson(`${baseUrl()}/api/office_addin_auth/session`, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${accessToken}` },
-    signal,
-  })
-  const cookie = sessionCookie(resp)
-  if (!resp.ok || !cookie) throw new LoginFlowError(`session failed (HTTP ${resp.status})`)
-  return cookie
-}
-
+/**
+ * VEGA device authorization (better-auth deviceAuthorization plugin, RFC 8628):
+ * request a code, let the user approve it in the browser, poll for the session
+ * token, then mint the single "genoffice" API key (the server deletes any
+ * previous key of the same name before inserting — re-login rotates it).
+ */
 async function runDeviceLogin(
   signal: AbortSignal,
   emit: (progress: GskLoginProgress) => void,
 ): Promise<void> {
-  const { resp, json } = await httpJson(
-    `${baseUrl()}/api/office_addin_auth/device_code?app_type=${APP_TYPE}`,
-    { method: 'POST', signal },
-  )
-  const code = String(json.device_code ?? '')
-  const authUrl = String(json.auth_url ?? '')
-  if (!resp.ok || !code || !authUrl) throw new LoginFlowError('network')
+  const { resp, json } = await httpJson(`${authBase()}/device/code`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ client_id: CLIENT_ID }),
+    signal,
+  })
+  const deviceCode = String(json.device_code ?? '')
+  const authUrl = String(json.verification_uri_complete ?? json.verification_uri ?? '')
+  if (!resp.ok || !deviceCode || !authUrl) {
+    throw new LoginFlowError(resp.ok ? 'network' : `device code failed (HTTP ${resp.status})`)
+  }
   const expiresInSec = Number(json.expires_in) > 0 ? Number(json.expires_in) : 600
-  const pollMs = Number(json.poll_interval) > 0 ? Number(json.poll_interval) * 1000 : 2000
+  let pollMs = Number(json.interval) > 0 ? Number(json.interval) * 1000 : 5000
   emit({ phase: 'url', url: authUrl, expiresInSec })
 
   const deadline = Date.now() + expiresInSec * 1000
@@ -286,48 +272,55 @@ async function runDeviceLogin(
   for (;;) {
     if (Date.now() >= deadline) throw new LoginFlowError('expired')
     await sleep(pollMs, signal)
-    const { json: poll } = await httpJson(`${baseUrl()}/api/office_addin_auth/token?code=${code}`, {
-      method: 'GET',
+    const { resp: pollResp, json: poll } = await httpJson(`${authBase()}/device/token`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        grant_type: 'urn:ietf:params:oauth:grant-type:device_code',
+        device_code: deviceCode,
+        client_id: CLIENT_ID,
+      }),
       signal,
     })
-    const status = String(poll.status ?? '')
-    if (status === 'pending') continue
-    if (status === 'approved') {
+    if (pollResp.ok) {
       accessToken = String(poll.access_token ?? '')
       if (!accessToken) throw new LoginFlowError('expired')
       break
     }
-    throw new LoginFlowError('expired')
+    // RFC 8628 error polling: pending keeps waiting, slow_down backs off 5 s,
+    // everything else (expired_token, access_denied, unknown) ends the flow
+    const error = String(poll.error ?? '')
+    if (error === 'authorization_pending') continue
+    if (error === 'slow_down') {
+      pollMs += SLOW_DOWN_EXTRA_MS
+      continue
+    }
+    throw new LoginFlowError(error === 'access_denied' ? 'denied' : 'expired')
   }
 
-  const cookie = await establishSession(accessToken, signal)
-  const { json: created } = await httpJson(`${baseUrl()}/api/api_tokens/create`, {
+  // the session token is only needed to mint the key — dropped right after
+  const { resp: keyResp, json: created } = await httpJson(`${apiBase()}/keys/genoffice`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', Cookie: cookie },
-    body: JSON.stringify({ key_name: KEY_NAME }),
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+    body: JSON.stringify({ name: KEY_NAME }),
     signal,
   })
-  const data = asRecord(created.data)
-  const apiKey = typeof data.token === 'string' ? data.token : ''
-  if (!apiKey) {
-    throw new LoginFlowError(String(created.message ?? 'API key creation failed'))
+  const apiKey = typeof created.key === 'string' ? created.key : ''
+  if (!keyResp.ok || !apiKey) {
+    const detail = asRecord(created.error)
+    throw new LoginFlowError(
+      String(
+        created.message ?? detail.message ?? `API key creation failed (HTTP ${keyResp.status})`,
+      ),
+    )
   }
-  const previousKeyId = loadGenofficeAuth()?.keyId
+  // a malformed key would store as signed-in yet fail every call — surface it instead
+  if (!VEGA_KEY_RE.test(apiKey)) throw new LoginFlowError('issued key has an unexpected format')
   saveAuth({
     apiKey,
-    ...(typeof data.key_id === 'string' ? { keyId: data.key_id } : {}),
-    accessToken,
+    ...(typeof created.id === 'string' && created.id ? { keyId: created.id } : {}),
   })
   emit({ phase: 'success' })
-  // re-login replaces the key: revoke the superseded one so it can't pile up
-  // server-side (best-effort — the new login must not fail on this)
-  if (previousKeyId && previousKeyId !== data.key_id) {
-    try {
-      await revokeKey(cookie, previousKeyId, signal)
-    } catch {
-      /* ignore */
-    }
-  }
 }
 
 let activeLogin: { cancel: () => void } | null = null
@@ -387,18 +380,20 @@ export function ensureGenofficeLogin(openUrl: (url: string) => void): void {
 }
 
 /**
- * Signs out of GenOffice only: best-effort server-side revoke of the
- * genoffice key, then local removal. The shared gsk CLI login
- * (~/.genspark-tool-cli) is untouched — terminal gsk and Claw keep working.
+ * Signs out: best-effort server-side self-revocation of the genoffice key
+ * (the API key itself is the Bearer — no session needed), then local removal.
  */
 export async function genofficeLogout(): Promise<void> {
   const auth = loadGenofficeAuth()
-  if (auth?.accessToken && auth.keyId) {
+  if (auth?.apiKey) {
     const controller = new AbortController()
     const timer = setTimeout(() => controller.abort(), HTTP_TIMEOUT_MS)
     try {
-      const cookie = await establishSession(auth.accessToken, controller.signal)
-      await revokeKey(cookie, auth.keyId, controller.signal)
+      await resolveFetch()(`${apiBase()}/keys/genoffice/revoke`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${auth.apiKey}` },
+        signal: controller.signal,
+      })
     } catch {
       /* revoke is best-effort; the local key removal below is the contract */
     } finally {
@@ -406,6 +401,56 @@ export async function genofficeLogout(): Promise<void> {
     }
   }
   clearAuth()
+}
+
+// ── Account / deposit ────────────────────────────────────────────────
+
+export interface VegaAccountInfo {
+  email: string
+  name?: string
+  /** deposit balance in `currency` (USD) */
+  balance: number
+  /** the same deposit converted to RUB at VEGA's current rate */
+  balanceRub?: number
+  currency: string
+  /** lifetime spend, same currency */
+  totalUsage?: number
+  /** per-key spend limit; null = none */
+  limit?: number | null
+  keyName?: string
+}
+
+/**
+ * Account + deposit for the signed-in key (GET /api/v1/account, Bearer = the
+ * API key). null when signed out or the call fails — a revoked key answers
+ * 401 and also reads as null.
+ */
+export async function vegaAccountInfo(): Promise<VegaAccountInfo | null> {
+  const key = genofficeApiKey()
+  if (!key) return null
+  try {
+    const resp = await resolveFetch()(`${apiBase()}/account`, {
+      headers: { Authorization: `Bearer ${key}` },
+      signal: AbortSignal.timeout(HTTP_TIMEOUT_MS),
+    })
+    if (!resp.ok) return null
+    const d = asRecord(await resp.json())
+    const email = String(d.email ?? '')
+    if (!email) return null
+    const info: VegaAccountInfo = {
+      email,
+      balance: Number.isFinite(Number(d.balance)) ? Number(d.balance) : 0,
+      currency: String(d.currency ?? 'USD'),
+    }
+    if (typeof d.name === 'string' && d.name) info.name = d.name
+    if (Number.isFinite(Number(d.balanceRub))) info.balanceRub = Number(d.balanceRub)
+    if (Number.isFinite(Number(d.totalUsage))) info.totalUsage = Number(d.totalUsage)
+    if (d.limit === null || Number.isFinite(Number(d.limit))) info.limit = d.limit as number | null
+    if (typeof d.keyName === 'string' && d.keyName) info.keyName = d.keyName
+    return info
+  } catch {
+    return null
+  }
 }
 
 /** Test hook: drop the auth cache and fetch-channel state. */

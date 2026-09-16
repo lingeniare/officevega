@@ -22,9 +22,7 @@ export const mediaCommand: CommandDef = {
       throw new CliError(EXIT.usage, 'missing <file|url>', undefined, {
         reason: 'missing_argument',
       })
-    const target = /^https?:\/\//i.test(ref)
-      ? ref
-      : resolveInput(ref.startsWith('file:') ? fileURLToPath(ref) : ref, ctx)
+    const target = /^https?:\/\//i.test(ref) ? ref : resolveInput(localRefPath(ref), ctx)
     await prepareCloud(ctx.env)
     const r = await analyzeMediaTool(aiSettingsPath(ctx.env), {
       mediaUrls: [target],
@@ -39,6 +37,26 @@ export const mediaCommand: CommandDef = {
       detail: { source: target, text, ...(text !== r.text ? { raw: r.text } : {}) },
     }
   },
+}
+
+/**
+ * file: ref → local path. `file:///path` without a drive letter is not absolute
+ * on Windows and makes fileURLToPath throw — the URL path names a file that
+ * cannot exist locally, so report it as not found instead of crashing.
+ */
+function localRefPath(ref: string): string {
+  if (!ref.startsWith('file:')) return ref
+  try {
+    return fileURLToPath(ref)
+  } catch {
+    let pathname = ref
+    try {
+      pathname = decodeURIComponent(new URL(ref).pathname)
+    } catch {
+      /* keep the raw ref */
+    }
+    throw new CliError(EXIT.file, `file not found: ${pathname}`)
+  }
 }
 
 /** Genspark reports a fetch/analysis failure as { status: "error", error|message } per file. */

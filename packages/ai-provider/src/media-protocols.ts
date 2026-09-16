@@ -11,6 +11,7 @@
 
 import { aiFetch } from './fetch'
 import { httpBodyDetail } from './http-error'
+import { throwIfPaymentRequired } from './protocols/shared'
 import {
   DASHSCOPE_BASE_URL,
   GEMINI_MEDIA_BASE_URL,
@@ -134,6 +135,7 @@ function toArrayBuffer(bytes: Uint8Array): ArrayBuffer {
 
 async function failFrom(label: string, resp: Response): Promise<never> {
   const body = await resp.text().catch(() => '')
+  throwIfPaymentRequired(resp.status, body)
   throw new Error(`${label} ${resp.status}: ${httpBodyDetail(body)}`)
 }
 

@@ -1,4 +1,5 @@
 import { cloudToolsEnabled } from './media'
+import { issuedVegaKey } from './vega-key'
 import type {
   AiSearchProviderId,
   AiSearchProviderMeta,
@@ -44,11 +45,12 @@ export function resolveAiSearchSettings(
   return { provider: stored.provider ?? defaults.provider, providers }
 }
 
-/** the VEGA key a search slot may use: its own, else the AI Model provider's */
+/** the VEGA key a search slot may use: its own, else the AI Model provider's, else the sign-in-issued one */
 export function vegaSearchKey(settings: Partial<Pick<AiSettings, 'search' | 'providers'>>): string {
   return (
     settings.search?.providers?.vega?.apiKey?.trim() ||
     settings.providers?.vega?.apiKey?.trim() ||
+    issuedVegaKey() ||
     ''
   )
 }

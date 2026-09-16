@@ -5990,7 +5990,7 @@ export default function App() {
         <div className="ribbon-body" data-ribbon-body="">
           {ribbonTab === 'home' && (
             <>
-              {/* ---- Genspark AI (first slot: entry + one-click AI actions, docs parity) ---- */}
+              {/* ---- VEGA AI (first slot: entry + one-click AI actions, docs parity) ---- */}
               <div className="ribbon-group">
                 <div className="ribbon-group-items">
                   <button
@@ -6001,7 +6001,7 @@ export default function App() {
                     <span className="rb-big-icon">
                       <GensparkMark size={26} />
                     </span>
-                    <span>Genspark AI</span>
+                    <span>VEGA AI</span>
                   </button>
                   <button
                     className="rb-big ai-entry"

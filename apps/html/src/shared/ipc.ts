@@ -268,7 +268,7 @@ export interface HtmlApi {
    *  clicks produce no DOM event here) — dismiss open popovers */
   onChromePressed(handler: () => void): () => void
   getAiSettings(): Promise<AiSettings>
-  /** Genspark login state (shell-registered ai:gsk-status) — gates generate_image with the cloud-tools toggle */
+  /** AI account status (shell-registered ai:gsk-status: VEGA sign-in key, gsk CLI fallback) — gates generate_image with the cloud-tools toggle */
   aiGskStatus(): Promise<GenSparkAccountStatus>
   aiStream(request: AiStreamRequest): Promise<void>
   aiStreamCancel(requestId: string): Promise<void>
@@ -279,7 +279,7 @@ export interface HtmlApi {
   imageSearch(query: string, maxResults?: number): Promise<ImageSearchResult>
   /** Download an image URL in the main process (CORS-free, scheme/target validated) */
   fetchImage(url: string): Promise<ImageData | null>
-  /** Genspark cloud image generation (html-owned channel, gsk login required) */
+  /** Cloud image generation via the configured media provider (html-owned channel, sign-in required) */
   aiGenerateImage(op: { prompt: string; aspectRatio?: string }): Promise<{
     url?: string
     error?: string

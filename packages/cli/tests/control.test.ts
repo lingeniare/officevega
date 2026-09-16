@@ -15,6 +15,8 @@ const PPTX = join(REPO, 'packages/pptx-engine/tests/fixtures/01_standard_busines
 const DOCX = join(REPO, 'apps/docs/tests/pagination-corpus/docx/01-simple-english.docx')
 
 const servers: Server[] = []
+// Windows named-pipe names linger briefly after close — never reuse one
+let pipeSeq = 0
 afterEach(() => {
   while (servers.length) servers.pop()!.close()
 })
@@ -27,7 +29,7 @@ async function fakeShell(
   const requests: unknown[] = []
   const endpoint =
     process.platform === 'win32'
-      ? `\\\\.\\pipe\\genoffice-test-${process.pid}-${servers.length}`
+      ? `\\\\.\\pipe\\genoffice-test-${process.pid}-${pipeSeq++}`
       : join(dir, 'control.sock')
   const server = createServer((socket) => {
     let buffer = ''

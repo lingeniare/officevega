@@ -109,10 +109,16 @@ describe('isInsideRoot', () => {
     expect(isInsideRoot(root, `${root}-sibling`)).toBe(false)
   })
 
-  it('rejects a symlink inside the root that points outside it', () => {
+  it('rejects a symlink inside the root that points outside it', (ctx) => {
     const outside = mkdtempSync(join(tmpdir(), 'genoffice-outside-'))
     try {
-      symlinkSync(outside, join(root, 'escape'))
+      try {
+        symlinkSync(outside, join(root, 'escape'))
+      } catch (err) {
+        // Windows: symlink creation needs admin/Developer Mode
+        if ((err as NodeJS.ErrnoException).code === 'EPERM') return ctx.skip()
+        throw err
+      }
       expect(isInsideRoot(root, join(root, 'escape'))).toBe(false)
       expect(isInsideRoot(root, join(root, 'escape', 'child.docx'))).toBe(false)
     } finally {

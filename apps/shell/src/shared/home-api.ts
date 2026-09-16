@@ -158,9 +158,9 @@ export interface HomeApi {
   getUpdateChannel(): Promise<UpdateChannel>
   /** switch + persist the update channel; triggers an immediate update check */
   setUpdateChannel(channel: UpdateChannel): Promise<void>
-  /** Genspark account status (gsk login state; to be upgraded to a signup/account system later) */
+  /** VEGA account status (the issued sk-apivega key; deposit included when reachable) */
   accountStatus(): Promise<AccountStatus>
-  /** start Genspark login (opens the browser; accountStatus flips to logged-in on completion); returns whether the launch succeeded */
+  /** start VEGA login (opens the browser; accountStatus flips to logged-in on completion); returns whether the launch succeeded */
   accountLogin(): Promise<boolean>
   /** progress events for the login started via accountLogin; returns an unsubscribe */
   onAccountLogin(handler: (ev: AccountLoginEvent) => void): () => void
@@ -213,7 +213,7 @@ export interface HomeApi {
   onThemeChanged(handler: (theme: UiTheme) => void): () => void
   /** open the GenTeam community page in the default browser */
   openGenTeam(): Promise<void>
-  /** open the Genspark credit-usage page in the default browser */
+  /** open the VEGA keys/deposit dashboard in the default browser */
   openCreditUsage(): Promise<void>
   /** open the public GitHub repository in the default browser */
   openGitHubRepo(): Promise<void>
@@ -309,11 +309,16 @@ export interface CloudProjectsSnapshot {
 }
 
 export interface AccountStatus {
-  /** gsk is installed and logged in */
+  /** a GenOffice-named VEGA key exists in the local auth file */
   loggedIn: boolean
   email?: string
-  /** remaining Genspark credits (absent when the balance query failed) */
-  creditBalance?: number
+  /** deposit balance in `currency` (USD); absent when the account query failed */
+  balance?: number
+  /** the same deposit converted to RUB at VEGA's current rate */
+  balanceRub?: number
+  currency?: string
+  /** lifetime spend, same currency */
+  totalUsage?: number
 }
 
 /** login flow progress pushed from main (gsk login CLI output) */

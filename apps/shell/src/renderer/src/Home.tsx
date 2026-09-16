@@ -642,7 +642,7 @@ function ConflictPrompt({ names, onChoose }: ConflictPromptProps) {
 }
 
 // ── Account entry (bottom-left) ──────────────────────────
-// Currently the Genspark (gsk) login entry; to be upgraded to a signup/account system later.
+// The VEGA sign-in entry (device flow on api.vega.chat).
 // Clicking it opens the settings modal directly (SettingsModal.tsx), which hosts
 // login/logout plus preferences (language, theme, save location, update channel).
 
@@ -748,7 +748,7 @@ function AccountEntry({
 
   const loggedIn = status?.loggedIn ?? false
   const email = status?.email ?? ''
-  const initial = email ? email[0].toUpperCase() : loggedIn ? 'G' : '?'
+  const initial = email ? email[0].toUpperCase() : loggedIn ? 'V' : '?'
   const errorText = loginError
     ? {
         timeout: t('loginTimeout'),
