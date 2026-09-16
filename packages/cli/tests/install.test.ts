@@ -1,11 +1,14 @@
 import { chmodSync, lstatSync, mkdirSync, readlinkSync, symlinkSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
+
+// symlinkSync needs elevated privileges on Windows — the POSIX link tests skip there
+const posix = process.platform !== 'win32'
 import { defaultCandidateDirs, inspectCliLink, installCliLink } from '../src/install'
 import { tempDir } from './helpers'
 
 describe('installCliLink', () => {
-  it('links into the first writable directory and is idempotent', () => {
+  it.skipIf(!posix)('links into the first writable directory and is idempotent', () => {
     const dir = tempDir()
     const bin = join(dir, 'bin')
     mkdirSync(bin)
@@ -26,69 +29,72 @@ describe('installCliLink', () => {
     })
   })
 
-  it('replaces our stale symlink but never a real file or a foreign symlink, and reports unwritable dirs with a manual command', () => {
-    const dir = tempDir()
-    const bin = join(dir, 'bin')
-    mkdirSync(bin)
-    const launcher = join(dir, 'new-app', 'cli', 'genoffice')
-    mkdirSync(join(dir, 'new-app', 'cli'), { recursive: true })
-    writeFileSync(launcher, '')
-    symlinkSync(join(dir, 'old-app', 'cli', 'genoffice'), join(bin, 'genoffice'))
-    expect(inspectCliLink({ launcher, platform: 'linux', candidateDirs: [bin] }).status).toBe(
-      'missing',
-    )
-    expect(installCliLink({ launcher, platform: 'linux', candidateDirs: [bin] }).status).toBe(
-      'linked',
-    )
-    expect(readlinkSync(join(bin, 'genoffice'))).toBe(launcher)
+  it.skipIf(!posix)(
+    'replaces our stale symlink but never a real file or a foreign symlink, and reports unwritable dirs with a manual command',
+    () => {
+      const dir = tempDir()
+      const bin = join(dir, 'bin')
+      mkdirSync(bin)
+      const launcher = join(dir, 'new-app', 'cli', 'genoffice')
+      mkdirSync(join(dir, 'new-app', 'cli'), { recursive: true })
+      writeFileSync(launcher, '')
+      symlinkSync(join(dir, 'old-app', 'cli', 'genoffice'), join(bin, 'genoffice'))
+      expect(inspectCliLink({ launcher, platform: 'linux', candidateDirs: [bin] }).status).toBe(
+        'missing',
+      )
+      expect(installCliLink({ launcher, platform: 'linux', candidateDirs: [bin] }).status).toBe(
+        'linked',
+      )
+      expect(readlinkSync(join(bin, 'genoffice'))).toBe(launcher)
 
-    const npm = join(dir, 'npm-bin')
-    mkdirSync(npm)
-    const npmTarget = join(dir, 'lib', 'node_modules', 'genoffice', 'bin', 'genoffice.js')
-    symlinkSync(npmTarget, join(npm, 'genoffice'))
-    expect(installCliLink({ launcher, platform: 'linux', candidateDirs: [npm] }).status).toBe(
-      'occupied',
-    )
-    expect(readlinkSync(join(npm, 'genoffice'))).toBe(npmTarget)
-    expect(inspectCliLink({ launcher, platform: 'linux', candidateDirs: [npm] }).status).toBe(
-      'occupied',
-    )
-    const spare = join(dir, 'spare-bin')
-    mkdirSync(spare)
-    expect(inspectCliLink({ launcher, platform: 'linux', candidateDirs: [npm, spare] })).toEqual({
-      status: 'missing',
-      location: join(spare, 'genoffice'),
-      manual: expect.any(String),
-    })
-    expect(installCliLink({ launcher, platform: 'linux', candidateDirs: [npm, spare] })).toEqual({
-      status: 'linked',
-      location: join(spare, 'genoffice'),
-    })
+      const npm = join(dir, 'npm-bin')
+      mkdirSync(npm)
+      const npmTarget = join(dir, 'lib', 'node_modules', 'genoffice', 'bin', 'genoffice.js')
+      symlinkSync(npmTarget, join(npm, 'genoffice'))
+      expect(installCliLink({ launcher, platform: 'linux', candidateDirs: [npm] }).status).toBe(
+        'occupied',
+      )
+      expect(readlinkSync(join(npm, 'genoffice'))).toBe(npmTarget)
+      expect(inspectCliLink({ launcher, platform: 'linux', candidateDirs: [npm] }).status).toBe(
+        'occupied',
+      )
+      const spare = join(dir, 'spare-bin')
+      mkdirSync(spare)
+      expect(inspectCliLink({ launcher, platform: 'linux', candidateDirs: [npm, spare] })).toEqual({
+        status: 'missing',
+        location: join(spare, 'genoffice'),
+        manual: expect.any(String),
+      })
+      expect(installCliLink({ launcher, platform: 'linux', candidateDirs: [npm, spare] })).toEqual({
+        status: 'linked',
+        location: join(spare, 'genoffice'),
+      })
 
-    const taken = join(dir, 'taken')
-    mkdirSync(taken)
-    writeFileSync(join(taken, 'genoffice'), 'someone else')
-    const occupied = installCliLink({ launcher, platform: 'linux', candidateDirs: [taken] })
-    expect(occupied.status).toBe('occupied')
-    expect(occupied.manual).toContain('sudo')
-    expect(occupied.manual).toContain('ln -sf')
-    expect(lstatSync(join(taken, 'genoffice')).isSymbolicLink()).toBe(false)
-    expect(inspectCliLink({ launcher, platform: 'linux', candidateDirs: [taken] }).status).toBe(
-      'occupied',
-    )
+      const taken = join(dir, 'taken')
+      mkdirSync(taken)
+      writeFileSync(join(taken, 'genoffice'), 'someone else')
+      const occupied = installCliLink({ launcher, platform: 'linux', candidateDirs: [taken] })
+      expect(occupied.status).toBe('occupied')
+      expect(occupied.manual).toContain('sudo')
+      expect(occupied.manual).toContain('ln -sf')
+      expect(lstatSync(join(taken, 'genoffice')).isSymbolicLink()).toBe(false)
+      expect(inspectCliLink({ launcher, platform: 'linux', candidateDirs: [taken] }).status).toBe(
+        'occupied',
+      )
 
-    const locked = join(dir, 'locked')
-    mkdirSync(locked)
-    chmodSync(locked, 0o555)
-    const r = installCliLink({ launcher, platform: 'linux', candidateDirs: [locked] })
-    const seen = inspectCliLink({ launcher, platform: 'linux', candidateDirs: [locked] })
-    chmodSync(locked, 0o755)
-    if (process.getuid?.() !== 0) {
-      expect(r.status).toBe('unwritable')
-      expect(r.manual).toContain(launcher)
-      expect(seen.status).toBe('unwritable')
-    }
-  })
+      const locked = join(dir, 'locked')
+      mkdirSync(locked)
+      chmodSync(locked, 0o555)
+      const r = installCliLink({ launcher, platform: 'linux', candidateDirs: [locked] })
+      const seen = inspectCliLink({ launcher, platform: 'linux', candidateDirs: [locked] })
+      chmodSync(locked, 0o755)
+      if (process.getuid?.() !== 0) {
+        expect(r.status).toBe('unwritable')
+        expect(r.manual).toContain(launcher)
+        expect(seen.status).toBe('unwritable')
+      }
+    },
+  )
 
   it('reports a missing /usr/local/bin as unwritable instead of skipping it', () => {
     const dir = tempDir()

@@ -80,9 +80,11 @@ import {
   chatForProvider,
   defaultAiSettings,
   activeProvider,
+  listProviderModels,
   testMediaProvider,
   type AiMediaProviderConfig,
   type AiMediaProviderId,
+  type AiProviderId,
   type AiSearchProviderId,
   resolveAiSettings,
   maxOutputTokensOf,
@@ -2836,6 +2838,12 @@ const TWIPS_PER_INCH = 1440
 
 const SETTINGS_PATH = () => userDataPath('ai-settings.json')
 
+/** the AI Model provider's VEGA key — media/search VEGA slots may share it */
+function storedVegaKey(): string {
+  const stored = readJson<Partial<AiSettings> & LegacyAiSettings>(SETTINGS_PATH(), {})
+  return resolveAiSettings(stored, defaultAiSettings()).providers.vega?.apiKey?.trim() ?? ''
+}
+
 const activeAiStreams = new Map<string, AbortController>()
 
 /**
@@ -2847,19 +2855,13 @@ export function registerAiIpc(): void {
   app.once('before-quit', shutdownCodexAppServers)
   ipcMain.handle('ai:get-settings', (): AiSettings => {
     const stored = readJson<Partial<AiSettings> & LegacyAiSettings>(SETTINGS_PATH(), {})
-    // pre-lock legacy file: genspark selected with cloud tools opted out. The
-    // settings UI locks the tools switch on with genspark and apps read this
-    // file live, so heal the stored flag once. Judged on the *stored* provider
-    // — never the activeProvider fallback below, which must not leak into the
-    // file and clobber a saved (half-configured) BYOK selection.
-    if ((stored.provider ?? 'genspark') === 'genspark' && stored.gskToolsEnabled === false) {
-      stored.gskToolsEnabled = true
-      writeJson(SETTINGS_PATH(), stored)
-    }
     const settings = resolveAiSettings(stored, defaultAiSettings())
-    // a stored BYOK provider is honored when usable; half-filled configs fall back to genspark
+    // `provider` reports the effective route (a stored BYOK provider is honored
+    // when usable; half-filled configs fall back to genspark); storedProvider
+    // keeps the user's pick visible so the settings UI can't clobber it
+    const storedProvider = settings.provider
     settings.provider = activeProvider(settings)
-    return settings
+    return storedProvider === settings.provider ? settings : { ...settings, storedProvider }
   })
 
   // Genspark account (gsk login state): auth source for AI features; the frontend uses it to prompt login when logged out
@@ -2878,17 +2880,46 @@ export function registerAiIpc(): void {
   })
 
   ipcMain.handle('ai:set-settings', (_event, settings: AiSettings) => {
-    writeJson(SETTINGS_PATH(), settings)
+    // storedProvider is a get-settings transport hint — never persisted
+    const { storedProvider: _ignored, ...persist } = settings
+    writeJson(SETTINGS_PATH(), persist)
   })
 
   ipcMain.handle('ai:codex-models', async (_event, cliPath: unknown) => {
     return listCodexModels(typeof cliPath === 'string' ? cliPath : undefined)
   })
 
+  // live model catalog for liveCatalog providers (VEGA, OpenRouter):
+  // GET {base}/models filtered by modality — powers the settings pickers
+  ipcMain.handle('ai:provider-models', async (_event, input: unknown) => {
+    const req = (input ?? {}) as {
+      provider?: AiProviderId
+      apiKey?: string
+      baseUrl?: string
+      input?: string
+      output?: string
+    }
+    if (!req.provider) return { models: [], defaultModel: '' }
+    return listProviderModels(
+      req.provider,
+      {
+        apiKey: String(req.apiKey ?? ''),
+        model: '',
+        ...(typeof req.baseUrl === 'string' && req.baseUrl ? { baseUrl: req.baseUrl } : {}),
+      },
+      {
+        ...(typeof req.input === 'string' && req.input ? { input: req.input } : {}),
+        ...(typeof req.output === 'string' && req.output ? { output: req.output } : {}),
+      },
+    )
+  })
+
   ipcMain.handle('ai:stream', async (event, request: AiStreamRequest) => {
     const { requestId, settings, system, messages } = request
     const tools = request.tools ?? []
     const maxTokens = request.maxTokens ?? maxOutputTokensOf(settings)
+    // callers pass the effective provider from ai:get-settings — resolving again
+    // here would break "test connection" on a stored-but-keyless BYOK pick
     const provider = settings.provider
     let config = settings.providers?.[provider]
     // the genspark key never enters the settings file; requests take it from the gsk login state
@@ -3027,7 +3058,9 @@ export function registerAiIpc(): void {
     if (!provider || provider === 'genspark') {
       return hasGskAuth() ? { ok: true } : { ok: false, error: tm('errGskNotLoggedIn') }
     }
-    return testSearchProvider(provider, String(apiKey ?? ''))
+    // a VEGA slot may share the AI Model key — test the effective credential
+    const key = String(apiKey ?? '') || (provider === 'vega' ? storedVegaKey() : '')
+    return testSearchProvider(provider, key)
   })
 
   // settings-UI connection test for the media provider (genspark = the gsk login state)
@@ -3040,11 +3073,18 @@ export function registerAiIpc(): void {
       return hasGskAuth() ? { ok: true } : { ok: false, error: tm('errGskNotLoggedIn') }
     }
     if (!config) return { ok: false, error: 'No media provider configuration' }
-    return testMediaProvider(provider, config)
+    // a VEGA slot may share the AI Model key — test the effective credential
+    const effective =
+      provider === 'vega' && !config.apiKey?.trim()
+        ? { ...config, apiKey: storedVegaKey() }
+        : config
+    return testMediaProvider(provider, effective)
   })
 
   ipcMain.handle('ai:chat', async (_event, request: AiChatRequest) => {
     const { settings, system, user } = request
+    // callers pass the effective provider from ai:get-settings — resolving again
+    // here would break "test connection" on a stored-but-keyless BYOK pick
     const provider = settings.provider
     let config = settings.providers?.[provider]
     if (provider === 'genspark' && config && !config.apiKey) {

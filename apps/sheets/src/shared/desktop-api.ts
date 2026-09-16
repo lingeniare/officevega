@@ -2225,7 +2225,11 @@ const aiMediaProviderConfigSchema = z
 export const aiSettingsInputSchema = z
   .object({
     provider: z.string().min(1),
+    // transport hint from ai:get-settings (the stored pick vs the effective
+    // provider); accepted so it survives a round-trip, stripped before persist
+    storedProvider: z.string().optional(),
     providers: z.record(z.string(), aiProviderConfigSchema),
+    vegaToolsEnabled: z.boolean().optional(),
     gskToolsEnabled: z.boolean().optional(),
     media: z
       .object({

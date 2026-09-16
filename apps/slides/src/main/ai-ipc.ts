@@ -110,9 +110,11 @@ export function registerAiIpc(): void {
   ipcMain.handle('ai:get-settings', (): AiSettings => {
     const stored = readJson<Partial<AiSettings> & LegacyAiSettings>(AI_SETTINGS_PATH(), {})
     const settings = resolveAiSettings(stored, defaultAiSettings())
-    // a stored BYOK provider is honored when usable; half-filled configs fall back to genspark
+    // `provider` reports the effective route; storedProvider keeps the user's
+    // pick visible so a settings save can't clobber a half-configured selection
+    const storedProvider = settings.provider
     settings.provider = activeProvider(settings)
-    return settings
+    return storedProvider === settings.provider ? settings : { ...settings, storedProvider }
   })
 
   // Genspark account (gsk login state): the auth source for AI features; when logged out the frontend uses this to guide login
@@ -131,7 +133,9 @@ export function registerAiIpc(): void {
   })
 
   ipcMain.handle('ai:set-settings', (_event, settings: AiSettings) => {
-    writeJson(AI_SETTINGS_PATH(), settings)
+    // storedProvider is a get-settings transport hint — never persisted
+    const { storedProvider: _ignored, ...persist } = settings
+    writeJson(AI_SETTINGS_PATH(), persist)
   })
 
   ipcMain.handle('ai:log-run-failure', (_event, entry: AiRunFailure) => {
@@ -142,6 +146,8 @@ export function registerAiIpc(): void {
     const { requestId, settings, system, messages } = request
     const tools = request.tools ?? []
     const maxTokens = request.maxTokens ?? maxOutputTokensOf(settings)
+    // callers pass the effective provider from ai:get-settings — resolving again
+    // here would break "test connection" on a stored-but-keyless BYOK pick
     const provider = settings.provider
     let config = settings.providers?.[provider]
     // The genspark key never enters the settings file; it is fetched from the gsk login state per request

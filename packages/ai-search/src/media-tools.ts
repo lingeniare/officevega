@@ -1,10 +1,10 @@
 /**
  * generate_image / analyze_media for the five editors' main processes: one
  * place that reads ai-settings.json live, routes to the BYOK media provider
- * when one is configured, and otherwise to the Genspark CLI behind the usual
- * login + cloud-tools gate. BYOK providers answer with bytes; those land in
- * the local generated-image store and come back as a file:// URL that the
- * insert pipelines' fetchRemoteImage accepts.
+ * when one is configured, and otherwise to the Genspark CLI behind the login
+ * check. BYOK providers answer with bytes; those land in the local
+ * generated-image store and come back as a file:// URL that the insert
+ * pipelines' fetchRemoteImage accepts.
  */
 
 import { existsSync, readFileSync, statSync } from 'node:fs'
@@ -12,7 +12,6 @@ import { basename, extname } from 'node:path'
 import {
   activeMediaConfig,
   analyzeMediaWithProvider,
-  cloudToolsEnabled,
   defaultAiSettings,
   generateImageWithProvider,
   resolveAiSettings,
@@ -27,9 +26,7 @@ import { fetchWithSsrfGuard } from '@genoffice/electron-utils/safe-remote-url'
 import { gskAnalyzeMedia, gskGenerateImage, hasGskAuth, type GskGenerateImageOptions } from './gsk'
 
 export const GSK_NOT_LOGGED_IN_ERROR =
-  'Genspark account is not logged in on this machine; ask the user to log in first'
-export const GSK_TOOLS_OFF_ERROR =
-  'Genspark cloud tools are turned off in Settings (AI Model); enable them or configure an image provider under Settings (AI Media) to use this tool'
+  'No media provider is reachable: sign in to Genspark or set a VEGA API key in Settings (AI Model / AI Media & Search)'
 
 /** 200 MB: enough for a long clip through the Gemini Files API, small enough to hold in memory */
 const MAX_MEDIA_BYTES = 200 * 1024 * 1024
@@ -70,10 +67,9 @@ export function readAiSettingsFile(path: string): AiSettings {
 
 type Gate = { error: string } | null
 
-/** the Genspark route's preconditions; null when it may proceed */
-function gskGate(settings: AiSettings, notLoggedInError: string): Gate {
+/** the Genspark route's precondition; null when it may proceed */
+function gskGate(_settings: AiSettings, notLoggedInError: string): Gate {
   if (!hasGskAuth()) return { error: notLoggedInError }
-  if (!cloudToolsEnabled(settings)) return { error: GSK_TOOLS_OFF_ERROR }
   return null
 }
 

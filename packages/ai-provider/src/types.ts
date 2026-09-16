@@ -2,6 +2,7 @@ import type { AgentMessage, AgentToolCall, AgentToolDef } from '@genoffice/agent
 
 export type AiProviderId =
   | 'genspark'
+  | 'vega'
   | 'codex'
   | 'anthropic'
   | 'gemini'
@@ -49,11 +50,22 @@ export interface AiProviderMeta {
   keyPlaceholder: string
   needsBaseUrl?: boolean
   needsCliPath?: boolean
+  /** model list is fetched live from {base}/models (OpenRouter-style catalog); `models` holds fallback ids only */
+  liveCatalog?: boolean
 }
 
 /** Image generation / media analysis backends (separate from the chat provider) */
 export type AiMediaProviderId =
-  'genspark' | 'openai' | 'gemini' | 'doubao' | 'glm' | 'xai' | 'qwen' | 'minimax' | 'custom'
+  | 'genspark'
+  | 'vega'
+  | 'openai'
+  | 'gemini'
+  | 'doubao'
+  | 'glm'
+  | 'xai'
+  | 'qwen'
+  | 'minimax'
+  | 'custom'
 
 /** wire shape of the image endpoint */
 export type AiImageProtocol = 'openai-images' | 'gemini' | 'dashscope' | 'minimax'
@@ -89,6 +101,8 @@ export interface AiMediaProviderMeta {
   defaultAnalysisModel: string
   /** the analysis model accepts video input (Gemini natively; OpenAI-compatible vendors via a video_url part) */
   videoAnalysis: boolean
+  /** model pickers are refreshed live from {base}/models; the static lists are the offline fallback */
+  liveCatalog?: boolean
 }
 
 export interface AiMediaSettings {
@@ -104,7 +118,7 @@ export interface AiMediaSettings {
 }
 
 /** web/image search backends: Genspark (gsk) or a user key for Serper / Tavily */
-export type AiSearchProviderId = 'genspark' | 'serper' | 'tavily'
+export type AiSearchProviderId = 'genspark' | 'vega' | 'serper' | 'tavily'
 
 export interface AiSearchProviderMeta {
   id: AiSearchProviderId
@@ -121,6 +135,14 @@ export interface AiSearchSettings {
 
 export interface AiSettings {
   provider: AiProviderId
+  /**
+   * Transport-only hint from ai:get-settings: the stored provider pick when it
+   * differs from `provider` (which get-settings reports as the *effective* one —
+   * a half-configured BYOK selection falls back to genspark at request time).
+   * The settings UI shows the stored pick so a save can't clobber it; main
+   * strips it before persisting.
+   */
+  storedProvider?: AiProviderId
   providers: Record<AiProviderId, AiProviderConfig>
   /**
    * Provider for generate_image / analyze_media. Absent (pre-media settings
@@ -130,11 +152,15 @@ export interface AiSettings {
   /** web/image search backend; absent means Genspark (gsk when signed in, then the free chain) */
   search?: AiSearchSettings | undefined
   /**
-   * Genspark cloud tools (web/image search via gsk, image generation, media
-   * analysis). Default true; false makes tools skip the gsk backend entirely
-   * (search falls back to free sources, gsk-only tools are unavailable).
-   * Only meaningful while signed in — signed out, the gsk backend is
-   * unavailable regardless.
+   * VEGA cloud tools (web search, image generation and media analysis routed
+   * through api.vega.chat). Default true; false makes the vega provider
+   * unavailable for those tools — they fall back to the Genspark sign-in or
+   * free sources. The chat provider is unaffected.
+   */
+  vegaToolsEnabled?: boolean
+  /**
+   * Legacy name of vegaToolsEnabled (the switch used to gate the Genspark
+   * backend). Read as a fallback during settings resolution; never written.
    */
   gskToolsEnabled?: boolean
   /**

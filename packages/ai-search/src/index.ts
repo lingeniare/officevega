@@ -6,6 +6,7 @@
  * For gsk auth see ./gsk.ts (`gsk login` or GSK_API_KEY).
  */
 
+import { VEGA_BASE_URL } from '@genoffice/ai-provider'
 import {
   asRecord,
   isCopyrightHost,
@@ -30,18 +31,21 @@ const TAVILY_KEY = () => process.env.TAVILY_API_KEY ?? ''
  * user's key and turn gsk off so the chosen backend runs first.
  */
 export interface SearchOptions {
-  /** false = skip the Genspark backend (cloud tools off, or a BYOK search provider is active) */
+  /** false = skip the Genspark backend (a BYOK search provider that opts out is active) */
   useGsk?: boolean
+  /** VEGA key — web search rides api.vega.chat chat/completions + the `web` plugin */
+  vegaKey?: string
   serperKey?: string
   tavilyKey?: string
   /** which keyed backend to try first (default serper) */
-  prefer?: 'serper' | 'tavily'
+  prefer?: 'vega' | 'serper' | 'tavily'
 }
 
 function normalizeOptions(opts: boolean | SearchOptions | undefined): Required<SearchOptions> {
   const o = typeof opts === 'boolean' ? { useGsk: opts } : (opts ?? {})
   return {
     useGsk: o.useGsk ?? true,
+    vegaKey: o.vegaKey ?? '',
     serperKey: o.serperKey ?? SERPER_KEY(),
     tavilyKey: o.tavilyKey ?? TAVILY_KEY(),
     prefer: o.prefer ?? 'serper',
@@ -131,6 +135,65 @@ async function tavilyWebSearch(
   }
 }
 
+/**
+ * VEGA web search — the OpenRouter `web` plugin answers a chat completion
+ * with url_citation annotations. A cheap synthesis model suffices: the
+ * plugin (not the model) does the retrieval.
+ */
+const VEGA_SEARCH_MODEL = 'google/gemini-3.5-flash-lite'
+
+async function vegaWebSearch(
+  key: string,
+  query: string,
+  maxResults: number,
+): Promise<WebSearchResponse | null> {
+  if (!key) return null
+  try {
+    const resp = await fetchWithTimeout(`${VEGA_BASE_URL}/chat/completions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` },
+      body: JSON.stringify({
+        model: VEGA_SEARCH_MODEL,
+        plugins: [{ id: 'web' }],
+        messages: [{ role: 'user', content: query }],
+      }),
+    })
+    if (!resp.ok) return null
+    const data = asRecord(await resp.json())
+    const choice = asRecord((data.choices as unknown[] | undefined)?.[0])
+    const message = asRecord(choice.message)
+    const results: WebSearchResult[] = []
+    for (const raw of Array.isArray(message.annotations) ? message.annotations : []) {
+      const ann = asRecord(raw)
+      if (ann.type !== 'url_citation') continue
+      const cite = asRecord(ann.url_citation)
+      const url = String(cite.url ?? '')
+      if (!url) continue
+      results.push({
+        title: String(cite.title ?? url),
+        url,
+        snippet: String(cite.content ?? '').slice(0, 500),
+      })
+      if (results.length >= maxResults) break
+    }
+    const content = message.content
+    const answer =
+      typeof content === 'string'
+        ? content.trim()
+        : Array.isArray(content)
+          ? content
+              .map((c) => asRecord(c).text)
+              .filter((t): t is string => typeof t === 'string')
+              .join('')
+              .trim()
+          : ''
+    if (!results.length && !answer) return null
+    return answer ? { results, answer, method: 'vega' } : { results, method: 'vega' }
+  } catch {
+    return null
+  }
+}
+
 // ── Web search ──────────────────────────────────────────────────────
 
 export async function webSearch(
@@ -139,8 +202,14 @@ export async function webSearch(
   options: boolean | SearchOptions = true,
 ): Promise<WebSearchResponse> {
   const o = normalizeOptions(options)
-  // useGsk=false: the user turned Genspark cloud tools off or picked their own
-  // search key — skip straight to the keyed/free backends
+  // an explicit provider pick runs first: VEGA before the gsk fallback so the
+  // chosen key — not the ambient sign-in — answers when configured
+  if (o.prefer === 'vega' && o.vegaKey) {
+    const r = await vegaWebSearch(o.vegaKey, query, maxResults)
+    if (r) return r
+  }
+  // useGsk=false: the user picked their own search key — skip straight to the
+  // keyed/free backends
   if (o.useGsk && hasGskAuth()) {
     try {
       const r = await gskWebSearch(query, maxResults)
@@ -159,6 +228,10 @@ export async function webSearch(
           () => serperWebSearch(o.serperKey, query, maxResults),
           () => tavilyWebSearch(o.tavilyKey, query, maxResults),
         ]
+  // VEGA already ran (or had no key) when preferred — try it here only when a
+  // key exists but another backend was preferred
+  if (o.prefer !== 'vega' && o.vegaKey)
+    keyed.push(() => vegaWebSearch(o.vegaKey, query, maxResults))
   for (const attempt of keyed) {
     const r = await attempt()
     if (r) return r

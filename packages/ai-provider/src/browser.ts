@@ -14,5 +14,11 @@ export {
   clampMaxOutputTokens,
 } from './providers'
 export { getProviderAdapter, modelLacksVision } from './registry'
-export { AI_MEDIA_PROVIDERS, imageGenerationAvailable, mediaAnalysisAvailable } from './media'
-export { AI_SEARCH_PROVIDERS } from './search-settings'
+export {
+  AI_MEDIA_PROVIDERS,
+  imageGenerationAvailable,
+  mediaAnalysisAvailable,
+  VEGA_BASE_URL,
+} from './media'
+export { AI_SEARCH_PROVIDERS, vegaSearchKey } from './search-settings'
+export type { ModelFilter, ProviderModelCatalog } from './model-catalog'

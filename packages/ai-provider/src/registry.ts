@@ -1,5 +1,6 @@
 import { ANTHROPIC_BASE_URL } from './protocols/anthropic'
 import { GEMINI_BASE_URL } from './protocols/gemini'
+import { VEGA_BASE_URL } from './media'
 import { AI_PROVIDERS, GENSPARK_LLM_BASE_URLS } from './providers'
 import type { AiProviderConfig, AiProviderId, AiProviderMeta } from './types'
 
@@ -231,6 +232,12 @@ export const AI_PROVIDER_ADAPTERS: Record<AiProviderId, ProviderAdapter> = {
     meta: metaOf('openrouter'),
     capabilities: { auth: 'api-key', vision: true },
     resolveEndpoint: fixedEndpoint('openai-compatible', 'https://openrouter.ai/api/v1'),
+  },
+  vega: {
+    meta: metaOf('vega'),
+    capabilities: { auth: 'api-key', vision: true },
+    // VEGA proxies OpenRouter — same OpenAI-compatible wire, different host
+    resolveEndpoint: fixedEndpoint('openai-compatible', VEGA_BASE_URL),
   },
   requesty: {
     meta: metaOf('requesty'),

@@ -310,9 +310,13 @@ export const strings = {
     setAiCapVideo: '视频解析',
     setAiCapSearch: '网络搜索',
     setAiSharedKeyHint: '同一服务商的 key 与 Base URL 在各项能力间共用，只需填一次。',
-    setAiGskTools: 'Genspark 云工具',
-    setAiGskToolsDesc:
-      '服务商选择 Genspark 时，网页搜索、生图与媒体解析经 Genspark 云端并消耗积分；关闭后搜索改用免费来源，Genspark 生图工具不可用。',
+    setAiVegaTools: 'VEGA 云工具',
+    setAiVegaToolsDesc:
+      '当服务商选择 VEGA 时，网页搜索、生图与媒体解析经 api.vega.chat 并使用 VEGA key；关闭后这些工具回退到 Genspark 登录或免费来源。聊天服务商不受影响。',
+    setAiVegaNote: '兼容 OpenRouter 的网关——一个 key 同时支持聊天、网页搜索与媒体工具。',
+    setAiMediaVegaHint: '生图与图片/视频解析经 api.vega.chat。key 留空则共用 AI Model 的 key。',
+    setAiSearchVegaHint: '网页搜索经 api.vega.chat 并使用 AI Model 的 key；图片搜索改用免费来源。',
+    setAiVegaSharedKey: '可选覆盖——留空则共用 AI Model 的 key。',
     setGithub: '开源项目',
     starOnGitHub: '去 GitHub 点 Star',
     starPromptTitle: '喜欢 GenOffice 吗？',
@@ -670,9 +674,16 @@ export const strings = {
     setAiCapSearch: 'Web search',
     setAiSharedKeyHint:
       "A vendor's key and base URL are shared across capabilities; enter them once.",
-    setAiGskTools: 'Genspark cloud tools',
-    setAiGskToolsDesc:
-      'Web search, image generation and media analysis run through Genspark and use credits while their provider is set to Genspark; when off, search uses free sources and the Genspark image tools are unavailable.',
+    setAiVegaTools: 'VEGA cloud tools',
+    setAiVegaToolsDesc:
+      'Web search, image generation and media analysis run through api.vega.chat with your VEGA key while their provider is set to VEGA; when off, those tools fall back to the Genspark sign-in or free sources. The chat provider is unaffected.',
+    setAiVegaNote:
+      'OpenRouter-compatible gateway — one key powers chat, web search and media tools.',
+    setAiMediaVegaHint:
+      'Runs through api.vega.chat. Leave the key empty to reuse the AI Model key.',
+    setAiSearchVegaHint:
+      'Web search runs through api.vega.chat with the AI Model key; image search uses free sources.',
+    setAiVegaSharedKey: 'Optional override — empty reuses the AI Model key.',
     setGithub: 'Open Source',
     starOnGitHub: 'Star on GitHub',
     starPromptTitle: 'Enjoying GenOffice?',
@@ -1043,9 +1054,16 @@ export const strings = {
     setAiCapSearch: 'Web 検索',
     setAiSharedKeyHint:
       '同じプロバイダーのキーと Base URL は各機能で共有されます。一度入力すれば済みます。',
-    setAiGskTools: 'Genspark クラウドツール',
-    setAiGskToolsDesc:
-      'プロバイダーが Genspark のとき、Web 検索・画像生成・メディア解析は Genspark 経由でクレジットを消費します。オフにすると検索は無料ソースを使い、Genspark の画像ツールは利用できません。',
+    setAiVegaTools: 'VEGA クラウドツール',
+    setAiVegaToolsDesc:
+      'プロバイダーに VEGA を選ぶと、Web 検索・画像生成・メディア解析は api.vega.chat 経由で VEGA キーを使用します。オフにすると Genspark サインインまたは無料ソースへ切り替わります。チャットプロバイダーには影響しません。',
+    setAiVegaNote:
+      'OpenRouter 互換ゲートウェイ — 1 つのキーでチャット、Web 検索、メディアツールをまかないます。',
+    setAiMediaVegaHint:
+      'api.vega.chat 経由で動作します。キーを空にすると AI Model のキーを共用します。',
+    setAiSearchVegaHint:
+      'Web 検索は AI Model のキーで api.vega.chat 経由。画像検索は無料ソースを使います。',
+    setAiVegaSharedKey: '任意の上書き — 空欄なら AI Model のキーを共用します。',
     setGithub: 'オープンソース',
     starOnGitHub: 'GitHub でスターを付ける',
     starPromptTitle: 'GenOffice はいかがですか？',
@@ -1409,9 +1427,15 @@ export const strings = {
     setAiCapSearch: '웹 검색',
     setAiSharedKeyHint:
       '같은 제공자의 키와 Base URL은 모든 기능에서 공유되므로 한 번만 입력하면 됩니다.',
-    setAiGskTools: 'Genspark 클라우드 도구',
-    setAiGskToolsDesc:
-      '제공자가 Genspark일 때 웹 검색, 이미지 생성, 미디어 분석은 Genspark를 거쳐 크레딧을 사용합니다. 끄면 검색은 무료 소스를 사용하고 Genspark 이미지 도구는 사용할 수 없습니다.',
+    setAiVegaTools: 'VEGA 클라우드 도구',
+    setAiVegaToolsDesc:
+      '프로바이더가 VEGA이면 웹 검색·이미지 생성·미디어 분석이 api.vega.chat을 통해 VEGA 키를 사용합니다. 끄면 Genspark 로그인 또는 무료 소스로 대체됩니다. 채팅 프로바이더에는 영향이 없습니다.',
+    setAiVegaNote:
+      'OpenRouter 호환 게이트웨이 — 하나의 키로 채팅·웹 검색·미디어 도구를 사용합니다.',
+    setAiMediaVegaHint: 'api.vega.chat을 통해 동작합니다. 키를 비우면 AI Model 키를 공유합니다.',
+    setAiSearchVegaHint:
+      '웹 검색은 AI Model 키로 api.vega.chat을 사용하고, 이미지 검색은 무료 소스를 사용합니다.',
+    setAiVegaSharedKey: '선택적 재정의 — 비우면 AI Model 키를 공유합니다.',
     setGithub: '오픈 소스',
     starOnGitHub: 'GitHub에서 스타 누르기',
     starPromptTitle: 'GenOffice가 마음에 드시나요?',
@@ -1790,9 +1814,16 @@ export const strings = {
     setAiCapSearch: 'Recherche web',
     setAiSharedKeyHint:
       "La clé et l'URL de base d'un fournisseur sont partagées entre les capacités ; saisissez-les une seule fois.",
-    setAiGskTools: 'Outils cloud Genspark',
-    setAiGskToolsDesc:
-      "Lorsque leur fournisseur est Genspark, la recherche web, la génération d'images et l'analyse de médias passent par Genspark et consomment des crédits ; désactivé, la recherche utilise des sources gratuites et les outils d'image Genspark sont indisponibles.",
+    setAiVegaTools: 'Outils cloud VEGA',
+    setAiVegaToolsDesc:
+      "Quand VEGA est le fournisseur, la recherche web, la génération d'images et l'analyse de médias passent par api.vega.chat avec votre clé VEGA ; désactivés, ils basculent sur la connexion Genspark ou des sources gratuites. Le fournisseur de chat n'est pas affecté.",
+    setAiVegaNote:
+      'Passerelle compatible OpenRouter — une clé pour le chat, la recherche web et les outils médias.',
+    setAiMediaVegaHint:
+      'Fonctionne via api.vega.chat. Laissez la clé vide pour réutiliser celle du AI Model.',
+    setAiSearchVegaHint:
+      "La recherche web passe par api.vega.chat avec la clé du AI Model ; la recherche d'images utilise des sources gratuites.",
+    setAiVegaSharedKey: 'Remplacement facultatif — vide réutilise la clé du AI Model.',
     setGithub: 'Open source',
     starOnGitHub: 'Mettre une étoile sur GitHub',
     starPromptTitle: 'GenOffice vous plaît ?',
@@ -2174,9 +2205,15 @@ export const strings = {
     setAiCapSearch: 'Websuche',
     setAiSharedKeyHint:
       'Schlüssel und Base URL eines Anbieters gelten für alle Fähigkeiten; einmal eintragen genügt.',
-    setAiGskTools: 'Genspark-Cloud-Tools',
-    setAiGskToolsDesc:
-      'Steht ihr Anbieter auf Genspark, laufen Websuche, Bildgenerierung und Medienanalyse über Genspark und verbrauchen Credits; ausgeschaltet nutzt die Suche kostenlose Quellen und die Genspark-Bildwerkzeuge sind nicht verfügbar.',
+    setAiVegaTools: 'VEGA-Cloud-Tools',
+    setAiVegaToolsDesc:
+      'Websuche, Bildgenerierung und Medienanalyse laufen über api.vega.chat mit Ihrem VEGA-Key, solange VEGA als Anbieter gewählt ist; deaktiviert greifen sie auf die Genspark-Anmeldung oder kostenlose Quellen zurück. Der Chat-Anbieter bleibt unberührt.',
+    setAiVegaNote: 'OpenRouter-kompatibles Gateway — ein Key für Chat, Websuche und Medientools.',
+    setAiMediaVegaHint:
+      'Läuft über api.vega.chat. Key leer lassen, um den AI-Model-Key mitzunutzen.',
+    setAiSearchVegaHint:
+      'Websuche läuft über api.vega.chat mit dem AI-Model-Key; die Bildersuche nutzt kostenlose Quellen.',
+    setAiVegaSharedKey: 'Optionale Überschreibung — leer nutzt den AI-Model-Key.',
     setGithub: 'Open Source',
     starOnGitHub: 'Auf GitHub Stern geben',
     starPromptTitle: 'Gefällt Ihnen GenOffice?',
@@ -2554,9 +2591,16 @@ export const strings = {
     setAiCapSearch: 'Búsqueda web',
     setAiSharedKeyHint:
       'La clave y la URL base de un proveedor se comparten entre capacidades; introdúcelas una sola vez.',
-    setAiGskTools: 'Herramientas en la nube de Genspark',
-    setAiGskToolsDesc:
-      'Cuando su proveedor es Genspark, la búsqueda web, la generación de imágenes y el análisis de medios pasan por Genspark y consumen créditos; desactivado, la búsqueda usa fuentes gratuitas y las herramientas de imagen de Genspark no están disponibles.',
+    setAiVegaTools: 'Herramientas en la nube de VEGA',
+    setAiVegaToolsDesc:
+      'Con VEGA como proveedor, la búsqueda web, la generación de imágenes y el análisis de medios pasan por api.vega.chat con tu clave VEGA; al desactivarlo, usan el inicio de sesión de Genspark o fuentes gratuitas. El proveedor de chat no cambia.',
+    setAiVegaNote:
+      'Pasarela compatible con OpenRouter: una clave para chat, búsqueda web y herramientas de medios.',
+    setAiMediaVegaHint:
+      'Funciona a través de api.vega.chat. Deja la clave vacía para reutilizar la de AI Model.',
+    setAiSearchVegaHint:
+      'La búsqueda web usa api.vega.chat con la clave de AI Model; la búsqueda de imágenes usa fuentes gratuitas.',
+    setAiVegaSharedKey: 'Sustitución opcional: vacío reutiliza la clave de AI Model.',
     setGithub: 'Código abierto',
     starOnGitHub: 'Dar una estrella en GitHub',
     starPromptTitle: '¿Te gusta GenOffice?',
@@ -2918,9 +2962,15 @@ export const strings = {
     setAiCapSearch: 'ค้นหาเว็บ',
     setAiSharedKeyHint:
       'คีย์และ Base URL ของผู้ให้บริการเดียวกันใช้ร่วมกันทุกความสามารถ กรอกครั้งเดียวพอ',
-    setAiGskTools: 'เครื่องมือคลาวด์ Genspark',
-    setAiGskToolsDesc:
-      'เมื่อผู้ให้บริการตั้งเป็น Genspark การค้นหาเว็บ การสร้างภาพ และการวิเคราะห์สื่อจะผ่าน Genspark และใช้เครดิต เมื่อปิด การค้นหาจะใช้แหล่งข้อมูลฟรีและเครื่องมือภาพของ Genspark จะใช้ไม่ได้',
+    setAiVegaTools: 'เครื่องมือคลาวด์ VEGA',
+    setAiVegaToolsDesc:
+      'เมื่อเลือก VEGA เป็นผู้ให้บริการ การค้นหาเว็บ การสร้างภาพ และการวิเคราะห์สื่อจะผ่าน api.vega.chat ด้วยคีย์ VEGA เมื่อปิด เครื่องมือเหล่านั้นจะใช้การลงชื่อเข้าใช้ Genspark หรือแหล่งฟรีแทน ไม่กระทบผู้ให้บริการแชท',
+    setAiVegaNote:
+      'เกตเวย์ที่เข้ากันได้กับ OpenRouter — คีย์เดียวใช้ได้ทั้งแชท ค้นหาเว็บ และเครื่องมือสื่อ',
+    setAiMediaVegaHint: 'ทำงานผ่าน api.vega.chat เว้นคีย์ว่างไว้เพื่อใช้คีย์ของ AI Model ร่วมกัน',
+    setAiSearchVegaHint:
+      'การค้นหาเว็บใช้ api.vega.chat กับคีย์ AI Model ส่วนการค้นหารูปภาพใช้แหล่งฟรี',
+    setAiVegaSharedKey: 'ตัวเลือกเขียนทับ — เว้นว่างเพื่อใช้คีย์ AI Model ร่วมกัน',
     setGithub: 'โอเพนซอร์ส',
     starOnGitHub: 'กดดาวบน GitHub',
     starPromptTitle: 'ชอบ GenOffice ไหม?',
@@ -3291,9 +3341,16 @@ export const strings = {
     setAiCapSearch: 'Pencarian web',
     setAiSharedKeyHint:
       'Kunci dan Base URL satu penyedia dipakai bersama oleh semua kemampuan; cukup isi sekali.',
-    setAiGskTools: 'Alat cloud Genspark',
-    setAiGskToolsDesc:
-      'Saat penyedianya disetel ke Genspark, pencarian web, pembuatan gambar, dan analisis media berjalan lewat Genspark dan memakai kredit; jika dimatikan, pencarian memakai sumber gratis dan alat gambar Genspark tidak tersedia.',
+    setAiVegaTools: 'Alat cloud VEGA',
+    setAiVegaToolsDesc:
+      'Saat VEGA menjadi penyedia, pencarian web, pembuatan gambar, dan analisis media berjalan melalui api.vega.chat dengan kunci VEGA Anda; bila dimatikan, alat tersebut kembali ke login Genspark atau sumber gratis. Penyedia chat tidak terpengaruh.',
+    setAiVegaNote:
+      'Gateway kompatibel OpenRouter — satu kunci untuk chat, pencarian web, dan alat media.',
+    setAiMediaVegaHint:
+      'Berjalan melalui api.vega.chat. Kosongkan kunci untuk memakai kunci AI Model.',
+    setAiSearchVegaHint:
+      'Pencarian web memakai api.vega.chat dengan kunci AI Model; pencarian gambar memakai sumber gratis.',
+    setAiVegaSharedKey: 'Penggantian opsional — kosong berarti memakai kunci AI Model.',
     setGithub: 'Sumber Terbuka',
     starOnGitHub: 'Beri Bintang di GitHub',
     starPromptTitle: 'Suka GenOffice?',
@@ -3663,9 +3720,16 @@ export const strings = {
     setAiCapSearch: 'Веб-поиск',
     setAiSharedKeyHint:
       'Ключ и базовый URL провайдера общие для всех функций; введите их один раз.',
-    setAiGskTools: 'Облачные инструменты Genspark',
-    setAiGskToolsDesc:
-      'Когда провайдером выбран Genspark, веб-поиск, генерация изображений и анализ медиа идут через Genspark и расходуют кредиты; при выключении поиск использует бесплатные источники, а инструменты изображений Genspark недоступны.',
+    setAiVegaTools: 'Облачные инструменты VEGA',
+    setAiVegaToolsDesc:
+      'Когда провайдером выбран VEGA, веб-поиск, генерация изображений и анализ медиа идут через api.vega.chat с вашим ключом VEGA; при выключении они переключаются на вход в Genspark или бесплатные источники. Провайдер чата не затрагивается.',
+    setAiVegaNote:
+      'Совместимый с OpenRouter шлюз — один ключ для чата, веб-поиска и медиа-инструментов.',
+    setAiMediaVegaHint:
+      'Работает через api.vega.chat. Оставьте ключ пустым, чтобы использовать ключ из раздела AI Model.',
+    setAiSearchVegaHint:
+      'Веб-поиск идёт через api.vega.chat с ключом из AI Model; поиск изображений использует бесплатные источники.',
+    setAiVegaSharedKey: 'Необязательное переопределение — пустое поле использует ключ из AI Model.',
     setGithub: 'Открытый код',
     starOnGitHub: 'Поставить звезду на GitHub',
     starPromptTitle: 'Нравится GenOffice?',
@@ -4028,9 +4092,14 @@ export const strings = {
     setAiCapSearch: 'البحث في الويب',
     setAiSharedKeyHint:
       'مفتاح المزوّد وعنوان Base URL مشتركان بين جميع القدرات؛ أدخلهما مرة واحدة فقط.',
-    setAiGskTools: 'أدوات Genspark السحابية',
-    setAiGskToolsDesc:
-      'عندما يكون المزوّد Genspark، يمر البحث في الويب وتوليد الصور وتحليل الوسائط عبر Genspark ويستهلك الرصيد؛ عند الإيقاف يستخدم البحث مصادر مجانية وتصبح أدوات صور Genspark غير متاحة.',
+    setAiVegaTools: 'أدوات VEGA السحابية',
+    setAiVegaToolsDesc:
+      'عند اختيار VEGA كموفّر، يعمل البحث على الويب وتوليد الصور وتحليل الوسائط عبر api.vega.chat بمفتاح VEGA؛ وعند إيقافها تعود إلى تسجيل دخول Genspark أو المصادر المجانية. لا يتأثر موفّر الدردشة.',
+    setAiVegaNote: 'بوابة متوافقة مع OpenRouter — مفتاح واحد للدردشة والبحث وأدوات الوسائط.',
+    setAiMediaVegaHint: 'تعمل عبر api.vega.chat. اترك المفتاح فارغًا لاستخدام مفتاح AI Model.',
+    setAiSearchVegaHint:
+      'البحث على الويب عبر api.vega.chat بمفتاح AI Model؛ والبحث عن الصور يستخدم مصادر مجانية.',
+    setAiVegaSharedKey: 'تجاوز اختياري — فارغ يعني استخدام مفتاح AI Model.',
     setGithub: 'مفتوح المصدر',
     starOnGitHub: 'ضع نجمة على GitHub',
     starPromptTitle: 'هل أعجبك GenOffice؟',
@@ -4398,9 +4467,16 @@ export const strings = {
     setAiCapSearch: 'Busca na web',
     setAiSharedKeyHint:
       'A chave e a URL base de um provedor são compartilhadas entre as capacidades; insira-as uma só vez.',
-    setAiGskTools: 'Ferramentas na nuvem Genspark',
-    setAiGskToolsDesc:
-      'Quando o provedor é o Genspark, a busca na web, a geração de imagens e a análise de mídia passam pelo Genspark e consomem créditos; desativado, a busca usa fontes gratuitas e as ferramentas de imagem do Genspark ficam indisponíveis.',
+    setAiVegaTools: 'Ferramentas na nuvem VEGA',
+    setAiVegaToolsDesc:
+      'Com VEGA como provedor, a pesquisa web, a geração de imagens e a análise de mídia passam por api.vega.chat com a sua chave VEGA; desligadas, usam o login Genspark ou fontes gratuitas. O provedor de chat não é afetado.',
+    setAiVegaNote:
+      'Gateway compatível com OpenRouter — uma chave para chat, pesquisa web e ferramentas de mídia.',
+    setAiMediaVegaHint:
+      'Funciona via api.vega.chat. Deixe a chave vazia para reutilizar a do AI Model.',
+    setAiSearchVegaHint:
+      'A pesquisa web usa api.vega.chat com a chave do AI Model; a pesquisa de imagens usa fontes gratuitas.',
+    setAiVegaSharedKey: 'Substituição opcional — vazio reutiliza a chave do AI Model.',
     setGithub: 'Código aberto',
     starOnGitHub: 'Dar uma estrela no GitHub',
     starPromptTitle: 'Gostando do GenOffice?',
@@ -4766,9 +4842,16 @@ export const strings = {
     setAiCapSearch: 'Ricerca web',
     setAiSharedKeyHint:
       "La chiave e l'URL base di un provider sono condivisi tra le capacità; inseriscili una volta sola.",
-    setAiGskTools: 'Strumenti cloud Genspark',
-    setAiGskToolsDesc:
-      "Quando il provider è Genspark, la ricerca web, la generazione di immagini e l'analisi dei media passano da Genspark e consumano crediti; se disattivato, la ricerca usa fonti gratuite e gli strumenti immagine di Genspark non sono disponibili.",
+    setAiVegaTools: 'Strumenti cloud VEGA',
+    setAiVegaToolsDesc:
+      "Con VEGA come provider, ricerca web, generazione di immagini e analisi dei media passano per api.vega.chat con la tua chiave VEGA; disattivati, ripiegano sull'accesso Genspark o su fonti gratuite. Il provider della chat non cambia.",
+    setAiVegaNote:
+      'Gateway compatibile con OpenRouter — una chiave per chat, ricerca web e strumenti multimediali.',
+    setAiMediaVegaHint:
+      'Funziona tramite api.vega.chat. Lascia la chiave vuota per riusare quella di AI Model.',
+    setAiSearchVegaHint:
+      'La ricerca web usa api.vega.chat con la chiave di AI Model; la ricerca immagini usa fonti gratuite.',
+    setAiVegaSharedKey: 'Override facoltativo — vuoto riusa la chiave di AI Model.',
     setGithub: 'Open source',
     starOnGitHub: 'Metti una stella su GitHub',
     starPromptTitle: 'Ti piace GenOffice?',
@@ -5129,9 +5212,16 @@ export const strings = {
     setAiCapSearch: 'Wyszukiwanie w sieci',
     setAiSharedKeyHint:
       'Klucz i bazowy URL dostawcy są wspólne dla wszystkich funkcji; wpisz je raz.',
-    setAiGskTools: 'Narzędzia chmurowe Genspark',
-    setAiGskToolsDesc:
-      'Gdy dostawcą jest Genspark, wyszukiwanie w sieci, generowanie obrazów i analiza mediów przechodzą przez Genspark i zużywają kredyty; po wyłączeniu wyszukiwanie używa darmowych źródeł, a narzędzia obrazów Genspark są niedostępne.',
+    setAiVegaTools: 'Narzędzia chmurowe VEGA',
+    setAiVegaToolsDesc:
+      'Gdy dostawcą jest VEGA, wyszukiwanie w sieci, generowanie obrazów i analiza mediów działają przez api.vega.chat z kluczem VEGA; po wyłączeniu wracają do logowania Genspark lub darmowych źródeł. Dostawca czatu pozostaje bez zmian.',
+    setAiVegaNote:
+      'Brama zgodna z OpenRouter — jeden klucz do czatu, wyszukiwania i narzędzi multimedialnych.',
+    setAiMediaVegaHint:
+      'Działa przez api.vega.chat. Pozostaw klucz pusty, aby użyć klucza z sekcji AI Model.',
+    setAiSearchVegaHint:
+      'Wyszukiwanie w sieci używa api.vega.chat z kluczem AI Model; wyszukiwanie obrazów korzysta z darmowych źródeł.',
+    setAiVegaSharedKey: 'Opcjonalne nadpisanie — puste pole używa klucza z AI Model.',
     setGithub: 'Open source',
     starOnGitHub: 'Gwiazdka na GitHubie',
     starPromptTitle: 'Podoba Ci się GenOffice?',
@@ -5482,9 +5572,16 @@ export const strings = {
     setAiCapSearch: 'Webové vyhledávání',
     setAiSharedKeyHint:
       'Klíč a základní URL jednoho poskytovatele se sdílejí mezi funkcemi; zadejte je jen jednou.',
-    setAiGskTools: 'Cloudové nástroje Genspark',
-    setAiGskToolsDesc:
-      'Webové vyhledávání, generování obrázků a analýza médií běží přes Genspark a čerpají kredity, pokud je jejich poskytovatel nastaven na Genspark; při vypnutí vyhledávání používá bezplatné zdroje a obrázkové nástroje Genspark nejsou dostupné.',
+    setAiVegaTools: 'Cloudové nástroje VEGA',
+    setAiVegaToolsDesc:
+      'Když je poskytovatelem VEGA, webové vyhledávání, generování obrázků a analýza médií běží přes api.vega.chat s vaším klíčem VEGA; po vypnutí se přepnou na přihlášení Genspark nebo bezplatné zdroje. Poskytovatel chatu zůstává beze změny.',
+    setAiVegaNote:
+      'Brána kompatibilní s OpenRouter — jeden klíč pro chat, webové vyhledávání a mediální nástroje.',
+    setAiMediaVegaHint:
+      'Běží přes api.vega.chat. Klíč nechte prázdný pro sdílení klíče z AI Model.',
+    setAiSearchVegaHint:
+      'Webové vyhledávání používá api.vega.chat s klíčem AI Model; vyhledávání obrázků používá bezplatné zdroje.',
+    setAiVegaSharedKey: 'Volitelné přepsání — prázdné pole sdílí klíč z AI Model.',
     setGithub: 'Open source',
     starOnGitHub: 'Dát hvězdičku na GitHubu',
     starPromptTitle: 'Líbí se vám GenOffice?',
@@ -5858,9 +5955,16 @@ export const strings = {
     setAiCapSearch: 'Zoeken op het web',
     setAiSharedKeyHint:
       'De sleutel en basis-URL van een provider gelden voor alle functies; één keer invoeren volstaat.',
-    setAiGskTools: 'Genspark-cloudtools',
-    setAiGskToolsDesc:
-      'Staat de provider op Genspark, dan lopen zoeken op het web, afbeeldingen genereren en media-analyse via Genspark en kosten ze credits; uitgeschakeld gebruikt zoeken gratis bronnen en zijn de Genspark-afbeeldingstools niet beschikbaar.',
+    setAiVegaTools: 'VEGA-cloudtools',
+    setAiVegaToolsDesc:
+      'Wanneer VEGA de provider is, lopen webzoeken, beeldgeneratie en media-analyse via api.vega.chat met je VEGA-sleutel; uitgeschakeld vallen ze terug op de Genspark-login of gratis bronnen. De chatprovider blijft ongewijzigd.',
+    setAiVegaNote:
+      'OpenRouter-compatibele gateway — één sleutel voor chat, webzoeken en mediatools.',
+    setAiMediaVegaHint:
+      'Werkt via api.vega.chat. Laat de sleutel leeg om de AI Model-sleutel te delen.',
+    setAiSearchVegaHint:
+      'Webzoeken gebruikt api.vega.chat met de AI Model-sleutel; beeldzoeken gebruikt gratis bronnen.',
+    setAiVegaSharedKey: 'Optionele overschrijving — leeg deelt de AI Model-sleutel.',
     setGithub: 'Open source',
     starOnGitHub: 'Geef een ster op GitHub',
     starPromptTitle: 'Bevalt GenOffice?',
@@ -6227,9 +6331,16 @@ export const strings = {
     setAiCapSearch: 'Carian web',
     setAiSharedKeyHint:
       'Kunci dan Base URL pembekal dikongsi oleh semua keupayaan; isi sekali sahaja.',
-    setAiGskTools: 'Alat awan Genspark',
-    setAiGskToolsDesc:
-      'Apabila pembekalnya ditetapkan kepada Genspark, carian web, penjanaan imej dan analisis media melalui Genspark dan menggunakan kredit; apabila dimatikan, carian menggunakan sumber percuma dan alat imej Genspark tidak tersedia.',
+    setAiVegaTools: 'Alat awan VEGA',
+    setAiVegaToolsDesc:
+      'Apabila VEGA menjadi penyedia, carian web, penjanaan imej dan analisis media berjalan melalui api.vega.chat dengan kunci VEGA anda; apabila dimatikan, ia kembali kepada log masuk Genspark atau sumber percuma. Penyedia sembang tidak terjejas.',
+    setAiVegaNote:
+      'Gerbang serasi OpenRouter — satu kunci untuk sembang, carian web dan alat media.',
+    setAiMediaVegaHint:
+      'Berjalan melalui api.vega.chat. Biarkan kunci kosong untuk berkongsi kunci AI Model.',
+    setAiSearchVegaHint:
+      'Carian web menggunakan api.vega.chat dengan kunci AI Model; carian imej menggunakan sumber percuma.',
+    setAiVegaSharedKey: 'Penggantian pilihan — kosong berkongsi kunci AI Model.',
     setGithub: 'Sumber Terbuka',
     starOnGitHub: 'Beri Bintang di GitHub',
     starPromptTitle: 'Suka GenOffice?',
@@ -6580,9 +6691,14 @@ export const strings = {
     setAiCapSearch: 'חיפוש באינטרנט',
     setAiSharedKeyHint:
       'המפתח וכתובת ה-Base URL של ספק משותפים לכל היכולות; יש להזין אותם פעם אחת בלבד.',
-    setAiGskTools: 'כלי הענן של Genspark',
-    setAiGskToolsDesc:
-      'כשהספק מוגדר ל-Genspark, חיפוש באינטרנט, יצירת תמונות וניתוח מדיה עוברים דרך Genspark וצורכים קרדיטים; כשהוא כבוי החיפוש משתמש במקורות חינמיים וכלי התמונות של Genspark אינם זמינים.',
+    setAiVegaTools: 'כלי הענן של VEGA',
+    setAiVegaToolsDesc:
+      "כש-VEGA הוא הספק, חיפוש באינטרנט, יצירת תמונות וניתוח מדיה עוברים דרך api.vega.chat עם מפתח VEGA; כשהם כבויים הם חוזרים לחשבון Genspark או למקורות חינמיים. ספק הצ'אט לא מושפע.",
+    setAiVegaNote: "שער תואם OpenRouter — מפתח אחד לצ'אט, לחיפוש ולכלי המדיה.",
+    setAiMediaVegaHint: 'פועל דרך api.vega.chat. השאר את המפתח ריק כדי לחלוק את מפתח AI Model.',
+    setAiSearchVegaHint:
+      'חיפוש באינטרנט עובר דרך api.vega.chat עם מפתח AI Model; חיפוש תמונות משתמש במקורות חינמיים.',
+    setAiVegaSharedKey: 'עקיפה אופציונלית — ריק חולק את מפתח AI Model.',
     setGithub: 'קוד פתוח',
     starOnGitHub: 'תנו כוכב ב-GitHub',
     starPromptTitle: 'נהנים מ-GenOffice?',
@@ -6941,9 +7057,15 @@ export const strings = {
     setAiCapSearch: 'वेब खोज',
     setAiSharedKeyHint:
       'एक प्रदाता की कुंजी और Base URL सभी क्षमताओं में साझा होते हैं; एक बार ही दर्ज करें।',
-    setAiGskTools: 'Genspark क्लाउड टूल',
-    setAiGskToolsDesc:
-      'जब प्रदाता Genspark हो, वेब खोज, इमेज जनरेशन और मीडिया विश्लेषण Genspark से होकर चलते हैं और क्रेडिट खर्च करते हैं; बंद होने पर खोज मुफ़्त स्रोत उपयोग करती है और Genspark इमेज टूल उपलब्ध नहीं रहते।',
+    setAiVegaTools: 'VEGA क्लाउड टूल',
+    setAiVegaToolsDesc:
+      'जब VEGA प्रोवाइडर हो, वेब सर्च, इमेज जनरेशन और मीडिया विश्लेषण api.vega.chat के माध्यम से आपकी VEGA कुंजी से चलते हैं; बंद करने पर वे Genspark साइन-इन या मुफ़्त स्रोतों पर वापस जाते हैं। चैट प्रोवाइडर अप्रभावित रहता है।',
+    setAiVegaNote: 'OpenRouter-संगत गेटवे — एक कुंजी से चैट, वेब सर्च और मीडिया टूल।',
+    setAiMediaVegaHint:
+      'api.vega.chat के माध्यम से चलता है। AI Model की कुंजी साझा करने के लिए कुंजी खाली छोड़ें।',
+    setAiSearchVegaHint:
+      'वेब सर्च AI Model कुंजी से api.vega.chat उपयोग करती है; इमेज सर्च मुफ़्त स्रोतों का उपयोग करती है।',
+    setAiVegaSharedKey: 'वैकल्पिक ओवरराइड — खाली रहने पर AI Model कुंजी साझा होती है।',
     setGithub: 'ओपन सोर्स',
     starOnGitHub: 'GitHub पर स्टार दें',
     starPromptTitle: 'GenOffice पसंद आ रहा है?',
@@ -7289,9 +7411,13 @@ export const strings = {
     setAiCapVideo: '影片解析',
     setAiCapSearch: '網路搜尋',
     setAiSharedKeyHint: '同一服務商的 key 與 Base URL 在各項能力間共用，只需填一次。',
-    setAiGskTools: 'Genspark 雲端工具',
-    setAiGskToolsDesc:
-      '服務商選擇 Genspark 時，網頁搜尋、生圖與媒體解析經 Genspark 雲端並消耗點數；關閉後搜尋改用免費來源，Genspark 生圖工具不可用。',
+    setAiVegaTools: 'VEGA 雲端工具',
+    setAiVegaToolsDesc:
+      '當服務商選擇 VEGA 時，網頁搜尋、生圖與媒體解析經 api.vega.chat 並使用 VEGA key；關閉後這些工具回退到 Genspark 登入或免費來源。聊天服務商不受影響。',
+    setAiVegaNote: '相容 OpenRouter 的閘道——一個 key 同時支援聊天、網頁搜尋與媒體工具。',
+    setAiMediaVegaHint: '經 api.vega.chat 運作。key 留空則共用 AI Model 的 key。',
+    setAiSearchVegaHint: '網頁搜尋經 api.vega.chat 並使用 AI Model 的 key；圖片搜尋改用免費來源。',
+    setAiVegaSharedKey: '可選覆寫——留空則共用 AI Model 的 key。',
     setGithub: '開源專案',
     starOnGitHub: '到 GitHub 給我們一顆星',
     starPromptTitle: '喜歡 GenOffice 嗎？',

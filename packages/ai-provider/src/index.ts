@@ -37,6 +37,7 @@ export {
   AI_MEDIA_PROVIDERS,
   GEMINI_MEDIA_BASE_URL,
   OPENAI_IMAGES_BASE_URL,
+  VEGA_BASE_URL,
   activeMediaConfig,
   activeMediaProvider,
   defaultAiMediaSettings,
@@ -54,7 +55,10 @@ export {
   activeSearchProvider,
   defaultAiSearchSettings,
   resolveAiSearchSettings,
+  vegaSearchKey,
 } from './search-settings'
+export { listGatewayModels, listProviderModels } from './model-catalog'
+export type { ModelFilter, ProviderModelCatalog } from './model-catalog'
 export {
   analyzeMediaWithProvider,
   generateImageWithProvider,

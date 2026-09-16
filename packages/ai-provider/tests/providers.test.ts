@@ -16,7 +16,7 @@ import type { AiProviderId } from '../src/types'
 describe('defaultAiSettings', () => {
   it('gives every provider its default model and an empty key by default', () => {
     const settings = defaultAiSettings()
-    expect(settings.provider).toBe('genspark')
+    expect(settings.provider).toBe('vega')
     for (const meta of AI_PROVIDERS) {
       expect(settings.providers[meta.id].apiKey).toBe('')
       expect(settings.providers[meta.id].model).toBe(meta.defaultModel)
@@ -326,19 +326,44 @@ describe('activeProvider', () => {
     settings.provider = 'genspark'
     expect(activeProvider(settings)).toBe('genspark')
   })
+
+  it('stored vega without a key routes to genspark but keeps the stored pick', () => {
+    const settings = defaultAiSettings()
+    expect(settings.provider).toBe('vega')
+    expect(activeProvider(settings)).toBe('genspark') // no VEGA key yet
+    settings.providers.vega.apiKey = 'sk-apivega-test'
+    expect(activeProvider(settings)).toBe('vega')
+    expect(settings.provider).toBe('vega') // stored pick untouched
+  })
 })
 
-describe('gskToolsEnabled', () => {
+describe('vegaToolsEnabled', () => {
   it('defaults on, survives resolveAiSettings, and only an explicit false turns it off', () => {
     expect(cloudToolsEnabled(defaultAiSettings())).toBe(true)
     // pre-toggle settings file (field absent) stays on
     const legacy = resolveAiSettings({ providers: {} as never }, defaultAiSettings())
     expect(cloudToolsEnabled(legacy)).toBe(true)
     const off = resolveAiSettings(
+      { providers: {} as never, vegaToolsEnabled: false },
+      defaultAiSettings(),
+    )
+    expect(off.vegaToolsEnabled).toBe(false)
+    expect(cloudToolsEnabled(off)).toBe(false)
+    // the legacy gskToolsEnabled field carries the opt-out into the new name
+    const migrated = resolveAiSettings(
       { providers: {} as never, gskToolsEnabled: false },
       defaultAiSettings(),
     )
-    expect(off.gskToolsEnabled).toBe(false)
-    expect(cloudToolsEnabled(off)).toBe(false)
+    expect(migrated.vegaToolsEnabled).toBe(false)
+    expect(cloudToolsEnabled(migrated)).toBe(false)
+    // an explicit new value wins over a contradictory legacy field
+    const on = resolveAiSettings(
+      { providers: {} as never, vegaToolsEnabled: true, gskToolsEnabled: false },
+      defaultAiSettings(),
+    )
+    expect(cloudToolsEnabled(on)).toBe(true)
+    // legacy single-endpoint files migrate the flag too
+    const slim = resolveAiSettings({ apiKey: 'k', gskToolsEnabled: false }, defaultAiSettings())
+    expect(slim.vegaToolsEnabled).toBe(false)
   })
 })

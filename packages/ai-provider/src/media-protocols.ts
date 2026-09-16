@@ -188,14 +188,28 @@ const ARK_RATIOS = new Set(['1:1', '3:4', '4:3', '9:16', '16:9', '2:3', '3:2', '
 
 interface OpenAiImagesStyle {
   size(aspectRatio: string | undefined): string | undefined
+  /** the body's size field name ('size' for OpenAI-style vendors, 'aspect_ratio' for OpenRouter-style gateways) */
+  sizeField?: 'size' | 'aspect_ratio'
   /** vendor-specific fields merged into the generations body */
   bodyExtras: Record<string, unknown>
-  /** 'multipart' = POST /images/edits with files; 'inline' = `image` data URLs in the generations body; 'none' = unsupported */
+  /** 'multipart' = POST /images/edits with files; 'inline' = reference images embedded in the generations body; 'none' = unsupported */
   edits: 'multipart' | 'inline' | 'none'
+  /** inline reference payload: 'image' = `image: [dataUrls]`; 'input_references' = OpenRouter-style [{type:'image_url',image_url:{url}}] */
+  refsField?: 'image' | 'input_references'
 }
 
 function openAiImagesStyle(provider: ByokMediaProviderId): OpenAiImagesStyle {
   switch (provider) {
+    case 'vega':
+      // OpenRouter images shape: aspect_ratio as-is, reference images as
+      // input_references parts, bytes back via b64_json (verified live)
+      return {
+        size: (r) => (r && r !== 'auto' ? r : undefined),
+        sizeField: 'aspect_ratio',
+        bodyExtras: { response_format: 'b64_json' },
+        edits: 'inline',
+        refsField: 'input_references',
+      }
     case 'doubao':
       return {
         size: (r) => (r && ARK_RATIOS.has(r) ? r : '2K'),
@@ -235,6 +249,7 @@ async function generateImageOpenAi(
   const base = openAiBase(provider, config)
   const style = openAiImagesStyle(provider)
   const size = style.size(input.aspectRatio)
+  const sizeField = style.sizeField ?? 'size'
   const refs = input.references ?? []
   // `background` exists only on the gpt-image family; dall-e-3 and lookalike vendors 400 on it
   const transparent = input.transparent && /gpt-image/i.test(model)
@@ -243,6 +258,17 @@ async function generateImageOpenAi(
       `${metaOf(provider).label} cannot edit or reference images here; generate from the prompt alone or pick another image provider.`,
     )
   }
+  const inlineRefs =
+    refs.length === 0
+      ? {}
+      : style.refsField === 'input_references'
+        ? {
+            input_references: refs.map((r) => ({
+              type: 'image_url',
+              image_url: { url: dataUrl(r) },
+            })),
+          }
+        : { image: refs.map(dataUrl) }
   if (refs.length === 0 || style.edits === 'inline') {
     const resp = await aiFetch(`${base}/images/generations`, {
       method: 'POST',
@@ -251,10 +277,10 @@ async function generateImageOpenAi(
         model,
         prompt: input.prompt,
         n: 1,
-        ...(size ? { size } : {}),
+        ...(size ? { [sizeField]: size } : {}),
         ...(transparent ? { background: 'transparent' } : {}),
         ...style.bodyExtras,
-        ...(refs.length ? { image: refs.map(dataUrl) } : {}),
+        ...inlineRefs,
       }),
       signal,
     })
@@ -696,6 +722,10 @@ export async function testMediaProvider(
   try {
     const meta = metaOf(provider)
     requireBaseUrl(meta, config)
+    // VEGA's /models is public — without a key a 200 would read as "key accepted"
+    if (provider === 'vega' && !config.apiKey?.trim()) {
+      return { ok: false, error: 'API key is empty' }
+    }
     const guard = withTimeout(signal, TEST_TIMEOUT_MS)
     const resp =
       provider === 'gemini'

@@ -41,6 +41,17 @@ export function opencodeSessionHeaders(
 
 export const AI_PROVIDERS: AiProviderMeta[] = [
   {
+    id: 'vega',
+    label: 'VEGA',
+    // Live catalog: GET {base}/models lists every OpenRouter-routed model
+    // (~440 ids); the picker filters to text-capable ones. `openrouter/auto`
+    // is the catalog's own router id — keep it as the safe default.
+    models: [],
+    defaultModel: 'openrouter/auto',
+    keyPlaceholder: 'sk-apivega-...',
+    liveCatalog: true,
+  },
+  {
     id: 'genspark',
     label: 'Genspark',
     // must stay within the proxy's served set (GET /api/llm_proxy/v1/models);
@@ -189,6 +200,7 @@ export const AI_PROVIDERS: AiProviderMeta[] = [
     ],
     defaultModel: 'openrouter/auto',
     keyPlaceholder: 'sk-or-...',
+    liveCatalog: true,
   },
   {
     id: 'requesty',
@@ -287,18 +299,16 @@ export function defaultAiSettings(
     }
   }
   return {
-    provider: 'genspark',
+    provider: 'vega',
     providers,
-    gskToolsEnabled: true,
+    vegaToolsEnabled: true,
     media: defaultAiMediaSettings(),
     search: defaultAiSearchSettings(),
   }
 }
 
-/** false only on an explicit opt-out; absent (pre-toggle settings files) means on */
-export function cloudToolsEnabled(settings: Pick<AiSettings, 'gskToolsEnabled'>): boolean {
-  return settings.gskToolsEnabled !== false
-}
+// lives in media.ts (media/search both consult it; providers.ts already imports media)
+export { cloudToolsEnabled } from './media'
 
 /**
  * The stored provider selection is honored only when its config is usable
@@ -422,14 +432,17 @@ export function resolveAiSettings(
         baseUrl: (stored.baseUrl ?? 'https://api.openai.com/v1').trim(),
       }
     }
-    return defaults
+    const tools = stored.vegaToolsEnabled ?? stored.gskToolsEnabled
+    return tools === undefined ? defaults : { ...defaults, vegaToolsEnabled: tools }
   }
   return {
     provider: stored.provider ?? defaults.provider,
     // Trim before migrating: a pasted " deepseek-reasoner " must still hit
     // the retired-id remap instead of being sent to the API verbatim.
     providers: migrateRetiredModels(trimConfigs({ ...defaults.providers, ...stored.providers })),
-    gskToolsEnabled: stored.gskToolsEnabled ?? defaults.gskToolsEnabled ?? true,
+    // legacy files carry gskToolsEnabled — the same opt-out now applies to VEGA
+    vegaToolsEnabled:
+      stored.vegaToolsEnabled ?? stored.gskToolsEnabled ?? defaults.vegaToolsEnabled ?? true,
     media: resolveAiMediaSettings(stored.media ?? defaults.media),
     search: resolveAiSearchSettings(stored.search ?? defaults.search),
     // clamped on read: a hand-edited settings file with an absurd cap must not be

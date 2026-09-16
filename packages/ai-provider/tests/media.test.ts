@@ -38,11 +38,11 @@ function openaiSettings(apiKey = 'sk-test', imageModel = 'gpt-image-2'): AiSetti
 }
 
 describe('media settings', () => {
-  it('defaults every provider to its default models and genspark as the active one', () => {
+  it('defaults every provider to its default models and vega as the active one', () => {
     const media = defaultAiMediaSettings()
-    expect(media.imageProvider).toBe('genspark')
-    expect(media.analysisProvider).toBe('genspark')
-    expect(media.videoAnalysisProvider).toBe('genspark')
+    expect(media.imageProvider).toBe('vega')
+    expect(media.analysisProvider).toBe('vega')
+    expect(media.videoAnalysisProvider).toBe('vega')
     for (const meta of AI_MEDIA_PROVIDERS) {
       expect(media.providers[meta.id].imageModel).toBe(meta.defaultImageModel)
       expect(media.providers[meta.id].apiKey).toBe('')
@@ -53,7 +53,7 @@ describe('media settings', () => {
 
   it('is carried by defaultAiSettings and healed in from a pre-media settings file', () => {
     const defaults = defaultAiSettings()
-    expect(defaults.media?.imageProvider).toBe('genspark')
+    expect(defaults.media?.imageProvider).toBe('vega')
     const resolved = resolveAiSettings(
       { provider: 'genspark', providers: defaults.providers },
       defaultAiSettings(),
@@ -122,12 +122,51 @@ describe('media settings', () => {
     ).toBe('genspark')
   })
 
-  it('gates the tools on gsk login + toggle without BYOK, and on the BYOK model with it', () => {
+  it('activates vega with its own or the shared AI Model key, gated by the tools switch', () => {
+    // keyless everywhere → the genspark route
+    const keyless = defaultAiSettings()
+    expect(activeMediaProvider(keyless, 'image')).toBe('genspark')
+    // the AI Model provider's key activates every keyless vega slot
+    const vega = defaultAiSettings()
+    vega.providers.vega.apiKey = 'sk-apivega-x'
+    expect(activeMediaProvider(vega, 'image')).toBe('vega')
+    expect(activeMediaProvider(vega, 'analysis')).toBe('vega')
+    expect(activeMediaProvider(vega, 'video')).toBe('vega')
+    // the merged config carries the effective shared credential
+    expect(activeMediaConfig(vega, 'image')?.config.apiKey).toBe('sk-apivega-x')
+    // the media slot's own key works without a chat key
+    const own = defaultAiSettings()
+    own.media!.providers.vega.apiKey = 'k'
+    expect(activeMediaProvider(own, 'analysis')).toBe('vega')
+    // the VEGA cloud-tools switch gates the vega route → genspark fallback
+    expect(activeMediaProvider({ ...vega, vegaToolsEnabled: false }, 'image')).toBe('genspark')
+    // the legacy flag name counts only when the new one is absent
+    expect(
+      activeMediaProvider(
+        { ...vega, vegaToolsEnabled: undefined, gskToolsEnabled: false },
+        'image',
+      ),
+    ).toBe('genspark')
+    expect(activeMediaProvider({ ...vega, gskToolsEnabled: false }, 'image')).toBe('vega')
+    // a non-vega BYOK provider is unaffected by the switch
+    expect(activeMediaProvider({ ...openaiSettings(), vegaToolsEnabled: false }, 'image')).toBe(
+      'openai',
+    )
+  })
+
+  it('gates the tools on gsk login or the BYOK model; the VEGA switch only gates vega', () => {
     const genspark = defaultAiSettings()
     expect(imageGenerationAvailable(genspark, true)).toBe(true)
     expect(imageGenerationAvailable(genspark, false)).toBe(false)
-    expect(imageGenerationAvailable({ ...genspark, gskToolsEnabled: false }, true)).toBe(false)
-    expect(mediaAnalysisAvailable({ ...genspark, gskToolsEnabled: false }, true)).toBe(false)
+    // a keyless vega falls back to the gsk login — the legacy opt-out does not gate it
+    expect(imageGenerationAvailable({ ...genspark, gskToolsEnabled: false }, true)).toBe(true)
+    expect(mediaAnalysisAvailable({ ...genspark, gskToolsEnabled: false }, true)).toBe(true)
+    // ...but a keyed vega honors the opt-out and falls back to genspark again
+    const vega = defaultAiSettings()
+    vega.providers.vega.apiKey = 'k'
+    expect(imageGenerationAvailable(vega, false)).toBe(true)
+    expect(imageGenerationAvailable({ ...vega, vegaToolsEnabled: false }, false)).toBe(false)
+    expect(imageGenerationAvailable({ ...vega, vegaToolsEnabled: false }, true)).toBe(true)
 
     const byok = openaiSettings()
     expect(imageGenerationAvailable(byok, false)).toBe(true)

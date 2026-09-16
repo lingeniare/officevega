@@ -19,6 +19,7 @@ import type {
   AiMediaProviderId,
   AiMediaProviderMeta,
   AiMediaSettings,
+  AiProviderId,
   AiSearchProviderMeta,
   AiSearchSettings,
   AiSettings,
@@ -258,6 +259,12 @@ function Field({
 }
 
 /** AI model pane: provider / model / key / base URL, saved to userData/ai-settings.json */
+// ai:get-settings reports the *effective* provider (a half-configured BYOK pick
+// falls back to genspark); the picker must show the stored choice so a save
+// can't clobber it
+const storedPick = (s: AiSettings): AiSettings =>
+  s.storedProvider ? { ...s, provider: s.storedProvider, storedProvider: undefined } : s
+
 function AiModelPane({ t }: { t: TFunc }) {
   const [catalog, setCatalog] = useState<AiCatalogEntry[]>(
     () => window.aiOffice.getAiProviders?.() ?? [],
@@ -285,28 +292,57 @@ function AiModelPane({ t }: { t: TFunc }) {
     )
   }, [])
 
+  /** live-catalog providers (VEGA, OpenRouter): pull {base}/models filtered to text output */
+  const refreshLiveModels = useCallback(
+    async (id: AiProviderId, apiKey = '', baseUrl = '', selectedModel = '') => {
+      if (!window.aiOffice.getProviderModels) return
+      const live = await window.aiOffice.getProviderModels({
+        provider: id,
+        apiKey,
+        baseUrl,
+        output: 'text',
+      })
+      setCatalog((current) =>
+        current.map((entry) => {
+          if (entry.id !== id || live.models.length === 0) return entry
+          const models =
+            selectedModel && !live.models.includes(selectedModel)
+              ? [selectedModel, ...live.models]
+              : live.models
+          return { ...entry, models }
+        }),
+      )
+    },
+    [],
+  )
+
   useEffect(() => {
     let alive = true
     void window.aiOffice.getAiSettings?.().then((s) => {
       if (!alive || !s) return
-      // The switch is disabled with genspark, so never present it stranded
-      // off. Display-only: s.provider may be the activeProvider fallback for
-      // a half-configured BYOK selection, so writing anything back here would
-      // clobber the stored choice — the main process heals a genuine legacy
-      // genspark+off file itself, judged on the raw stored provider.
-      if (s.provider === 'genspark' && s.gskToolsEnabled === false) {
-        s = { ...s, gskToolsEnabled: true }
-      }
-      setSettings(s)
+      const shown = storedPick(s)
+      setSettings(shown)
       const codex = s.providers.codex
       if (codex) {
         void refreshCodexModels(codex.cliPath ?? '', codex.model).catch(() => undefined)
+      }
+      const active = s.providers[shown.provider]
+      const meta = catalog.find((c) => c.id === shown.provider)
+      if (meta?.liveCatalog && active) {
+        void refreshLiveModels(
+          shown.provider,
+          active.apiKey,
+          active.baseUrl ?? '',
+          active.model,
+        ).catch(() => undefined)
       }
     })
     return () => {
       alive = false
     }
-  }, [refreshCodexModels])
+    // catalog is only read once on mount for the liveCatalog flag
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refreshCodexModels, refreshLiveModels])
 
   if (!settings) return null
   const provider = settings.provider
@@ -342,13 +378,13 @@ function AiModelPane({ t }: { t: TFunc }) {
     touch()
   }
   const selectProvider = (id: AiSettings['provider']) => {
-    // cloud tools cannot be off with genspark (chat runs through gsk anyway)
-    setSettings({
-      ...settings,
-      provider: id,
-      ...(id === 'genspark' ? { gskToolsEnabled: true } : {}),
-    })
+    setSettings({ ...settings, provider: id })
     touch()
+    const picked = catalog.find((c) => c.id === id)
+    const cfg = settings.providers[id]
+    if (picked?.liveCatalog && cfg) {
+      void refreshLiveModels(id, cfg.apiKey, cfg.baseUrl ?? '', cfg.model).catch(() => undefined)
+    }
   }
   const save = () => {
     window.aiOffice
@@ -370,6 +406,11 @@ function AiModelPane({ t }: { t: TFunc }) {
         setTestResult(r ?? { ok: false })
         if (r?.ok && isCodex) {
           void refreshCodexModels(config.cliPath ?? '', config.model).catch(() => undefined)
+        }
+        if (r?.ok && meta?.liveCatalog) {
+          void refreshLiveModels(provider, config.apiKey, config.baseUrl ?? '', config.model).catch(
+            () => undefined,
+          )
         }
       })
       .catch((error) =>
@@ -403,13 +444,38 @@ function AiModelPane({ t }: { t: TFunc }) {
         />
       </div>
       <div className="set-field-desc set-ai-note">
-        {isGenspark ? t('setAiGensparkHint') : isCodex ? t('setAiCodexHint') : t('setAiByokNote')}
+        {isGenspark
+          ? t('setAiGensparkHint')
+          : isCodex
+            ? t('setAiCodexHint')
+            : provider === 'vega'
+              ? t('setAiVegaNote')
+              : t('setAiByokNote')}
       </div>
       <div className="set-field">
         <div className="set-field-text">
           <label className="set-field-label">{t('setAiModelId')}</label>
         </div>
-        {meta && meta.models.length > 0 ? (
+        {meta?.liveCatalog ? (
+          // a live catalog can hold hundreds of ids — free-type with suggestions
+          <>
+            <input
+              id="set-ai-model"
+              className="set-input"
+              type="text"
+              list="set-ai-models-live"
+              value={config.model}
+              placeholder={meta.defaultModel || 'model-id'}
+              spellCheck={false}
+              onChange={(e) => updateConfig({ model: e.target.value })}
+            />
+            <datalist id="set-ai-models-live">
+              {meta.models.map((m) => (
+                <option key={m} value={m} />
+              ))}
+            </datalist>
+          </>
+        ) : meta && meta.models.length > 0 ? (
           <Dropdown
             className="set-dd"
             value={config.model || meta.defaultModel}
@@ -523,19 +589,17 @@ function AiModelPane({ t }: { t: TFunc }) {
       <div className="set-field">
         <div className="set-field-text">
           <div className="set-field-stack">
-            <div className="set-field-label">{t('setAiGskTools')}</div>
-            <div className="set-field-desc">{t('setAiGskToolsDesc')}</div>
+            <div className="set-field-label">{t('setAiVegaTools')}</div>
+            <div className="set-field-desc">{t('setAiVegaToolsDesc')}</div>
           </div>
         </div>
-        {/* locked on with the genspark provider — chat runs through gsk anyway */}
         <button
           className="set-switch"
           role="switch"
-          aria-checked={settings.gskToolsEnabled !== false}
-          aria-label={t('setAiGskTools')}
-          disabled={isGenspark}
+          aria-checked={settings.vegaToolsEnabled !== false}
+          aria-label={t('setAiVegaTools')}
           onClick={() => {
-            setSettings({ ...settings, gskToolsEnabled: settings.gskToolsEnabled === false })
+            setSettings({ ...settings, vegaToolsEnabled: settings.vegaToolsEnabled === false })
             touch()
           }}
         />
@@ -586,11 +650,34 @@ function AiMediaPane({ t }: { t: TFunc }) {
   const [saved, setSaved] = useState(false)
   const [testing, setTesting] = useState(false)
   const [testResult, setTestResult] = useState<{ ok: boolean; error?: string } | null>(null)
+  /** live VEGA model lists per media capability (null = catalog fetch failed / not loaded) */
+  const [liveVega, setLiveVega] = useState<{
+    image: string[] | null
+    analysis: string[] | null
+    video: string[] | null
+  }>({ image: null, analysis: null, video: null })
 
   useEffect(() => {
     let alive = true
     void window.aiOffice.getAiSettings?.().then((s) => {
-      if (alive && s) setSettings(s)
+      if (!alive || !s) return
+      setSettings(storedPick(s))
+      // refresh the VEGA pickers from {base}/models — public catalog, key only
+      // narrows it; failure keeps the static fallback lists
+      if (!window.aiOffice.getProviderModels) return
+      const key = s.providers.vega?.apiKey ?? ''
+      const load = (filter: { input?: string; output?: string }) =>
+        window.aiOffice
+          .getProviderModels({ provider: 'vega', apiKey: key, ...filter })
+          .then((c) => (c.models.length ? c.models : null))
+          .catch(() => null)
+      void Promise.all([
+        load({ output: 'image' }),
+        load({ input: 'image', output: 'text' }),
+        load({ input: 'video', output: 'text' }),
+      ]).then(([image, analysis, video]) => {
+        if (alive) setLiveVega({ image, analysis, video })
+      })
     })
     return () => {
       alive = false
@@ -644,6 +731,17 @@ function AiMediaPane({ t }: { t: TFunc }) {
         window.alert(error instanceof Error ? error.message : String(error))
       })
   }
+  // a VEGA slot with an empty key shares the AI Model key — test the effective credential
+  const vegaSharedKey = settings.providers.vega?.apiKey ?? ''
+  const effectiveMediaConfig = (id: AiMediaProviderId) => {
+    const c = mediaConfigOf(id)
+    return id === 'vega' && !c.apiKey ? { ...c, apiKey: vegaSharedKey } : c
+  }
+  const effectiveSearchKey = (id: string) =>
+    (id === 'vega'
+      ? search.providers.vega?.apiKey || vegaSharedKey
+      : search.providers[id as keyof typeof search.providers]?.apiKey) ?? ''
+
   // every distinct BYOK vendor the four blocks point at is checked once; first failure wins
   const test = async () => {
     setTesting(true)
@@ -656,14 +754,16 @@ function AiMediaPane({ t }: { t: TFunc }) {
       )
       const checks: Promise<{ ok: boolean; error?: string } | undefined>[] = [...vendors].map(
         (id) =>
-          window.aiOffice.testAiMediaSettings?.({ provider: id, config: mediaConfigOf(id) }) ??
-          Promise.resolve(undefined),
+          window.aiOffice.testAiMediaSettings?.({
+            provider: id,
+            config: effectiveMediaConfig(id),
+          }) ?? Promise.resolve(undefined),
       )
       if (search.provider !== 'genspark') {
         checks.push(
           window.aiOffice.testAiSearchSettings?.({
             provider: search.provider,
-            apiKey: search.providers[search.provider]?.apiKey ?? '',
+            apiKey: effectiveSearchKey(search.provider),
           }) ?? Promise.resolve(undefined),
         )
       }
@@ -719,6 +819,8 @@ function AiMediaPane({ t }: { t: TFunc }) {
     fallback: string,
     value: string,
     onChange: (v: string) => void,
+    /** live-catalog pickers free-type with <datalist> suggestions instead of a fixed dropdown */
+    liveListId?: string,
   ) => (
     <div className="set-field">
       <div className="set-field-text">
@@ -726,7 +828,25 @@ function AiMediaPane({ t }: { t: TFunc }) {
           {t('setAiModelId')}
         </label>
       </div>
-      {models.length > 0 ? (
+      {liveListId ? (
+        <>
+          <input
+            id={id}
+            className="set-input"
+            type="text"
+            list={liveListId}
+            value={value}
+            placeholder={fallback || 'model-id'}
+            spellCheck={false}
+            onChange={(e) => onChange(e.target.value)}
+          />
+          <datalist id={liveListId}>
+            {models.map((m) => (
+              <option key={m} value={m} />
+            ))}
+          </datalist>
+        </>
+      ) : models.length > 0 ? (
         <Dropdown
           className="set-dd"
           value={value || fallback}
@@ -753,6 +873,8 @@ function AiMediaPane({ t }: { t: TFunc }) {
     value: string,
     placeholder: string,
     onChange: (v: string) => void,
+    /** overrides the generic "stored locally" hint (VEGA shares the AI Model key) */
+    hint?: string,
   ) => (
     <div className="set-field">
       <div className="set-field-text">
@@ -760,7 +882,7 @@ function AiMediaPane({ t }: { t: TFunc }) {
           <label className="set-field-label" htmlFor={id}>
             {t('setAiApiKey')}
           </label>
-          <div className="set-field-desc">{t('setAiKeyHint')}</div>
+          <div className="set-field-desc">{hint ?? t('setAiKeyHint')}</div>
         </div>
       </div>
       <input
@@ -838,24 +960,43 @@ function AiMediaPane({ t }: { t: TFunc }) {
       )
     }
     const modelField = cap === 'image' ? 'imageModel' : 'analysisModel'
+    // live VEGA catalog lists win over the static fallback when the fetch landed
+    const liveModels =
+      id === 'vega'
+        ? cap === 'image'
+          ? liveVega.image
+          : cap === 'video'
+            ? liveVega.video
+            : liveVega.analysis
+        : null
+    const models = liveModels ?? (cap === 'image' ? meta.imageModels : meta.analysisModels)
     return (
       <section key={cap}>
         <h4 className="set-pane-subtitle">{title}</h4>
         {providerRow(title, id, options, pick)}
         <div className="set-field-desc set-ai-note">
-          {id === 'genspark' ? t('setAiMediaGensparkHint') : meta.description}
+          {id === 'genspark'
+            ? t('setAiMediaGensparkHint')
+            : id === 'vega'
+              ? t('setAiMediaVegaHint')
+              : meta.description}
         </div>
         {id !== 'genspark' && (
           <>
             {modelRow(
               `set-ai-${cap}-model`,
-              cap === 'image' ? meta.imageModels : meta.analysisModels,
+              models,
               cap === 'image' ? meta.defaultImageModel : meta.defaultAnalysisModel,
               config[modelField],
               (m) => updateMediaConfig(id, { [modelField]: m }),
+              meta.liveCatalog ? `set-ai-${cap}-models` : undefined,
             )}
-            {keyRow(`set-ai-${cap}-key`, config.apiKey, meta.keyPlaceholder, (v) =>
-              updateMediaConfig(id, { apiKey: v }),
+            {keyRow(
+              `set-ai-${cap}-key`,
+              config.apiKey,
+              meta.keyPlaceholder,
+              (v) => updateMediaConfig(id, { apiKey: v }),
+              id === 'vega' ? t('setAiVegaSharedKey') : undefined,
             )}
             {baseUrlRow(`set-ai-${cap}-base-url`, meta, config.baseUrl ?? '', (v) =>
               updateMediaConfig(id, { baseUrl: v }),
@@ -882,16 +1023,23 @@ function AiMediaPane({ t }: { t: TFunc }) {
         <div className="set-field-desc set-ai-note">
           {search.provider === 'genspark'
             ? t('setAiSearchGensparkHint')
-            : searchMeta?.imageSearch
-              ? t('setAiSearchSerperHint')
-              : t('setAiSearchTavilyHint')}
+            : search.provider === 'vega'
+              ? t('setAiSearchVegaHint')
+              : searchMeta?.imageSearch
+                ? t('setAiSearchSerperHint')
+                : t('setAiSearchTavilyHint')}
         </div>
         {search.provider !== 'genspark' &&
-          keyRow('set-ai-search-key', searchKey, searchMeta?.keyPlaceholder ?? 'API Key', (v) =>
-            setSearch({
-              ...search,
-              providers: { ...search.providers, [search.provider]: { apiKey: v } },
-            }),
+          keyRow(
+            'set-ai-search-key',
+            searchKey,
+            searchMeta?.keyPlaceholder ?? 'API Key',
+            (v) =>
+              setSearch({
+                ...search,
+                providers: { ...search.providers, [search.provider]: { apiKey: v } },
+              }),
+            search.provider === 'vega' ? t('setAiVegaSharedKey') : undefined,
           )}
       </section>
       {mediaBlock('image')}

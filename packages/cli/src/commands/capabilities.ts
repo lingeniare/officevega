@@ -1,7 +1,6 @@
 import {
   activeMediaProvider,
   activeSearchProvider,
-  cloudToolsEnabled,
   imageGenerationAvailable,
   mediaAnalysisAvailable,
 } from '@genoffice/ai-provider'
@@ -12,8 +11,8 @@ import { appLaunch } from '../resources'
 
 /**
  * What the cloud commands can do on this machine, decided from GenOffice's
- * own settings without a network call: a Genspark login with cloud tools on,
- * or a BYOK key the user entered in Settings. Unkeyed fallbacks (DuckDuckGo)
+ * own settings without a network call: a Genspark login, a VEGA key, or a
+ * BYOK key the user entered in Settings. Unkeyed fallbacks (DuckDuckGo)
  * do not count as configured. Agents check this once before planning work
  * that needs photos or web facts.
  */
@@ -25,7 +24,7 @@ export const capabilitiesCommand: CommandDef = {
   async run(_args, ctx) {
     await prepareCloud(ctx.env)
     const settings = readAiSettingsFile(aiSettingsPath(ctx.env))
-    const gsk = hasGskAuth() && cloudToolsEnabled(settings)
+    const gsk = hasGskAuth()
     const searchProvider = activeSearchProvider(settings)
     const keyedSearch = searchProvider !== 'genspark'
     const search = gsk || keyedSearch

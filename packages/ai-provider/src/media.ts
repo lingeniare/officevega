@@ -6,7 +6,25 @@ import type {
   AiSettings,
 } from './types'
 
+/**
+ * The "VEGA cloud tools" switch: false only on an explicit opt-out; absent
+ * (pre-toggle settings files) means on. The legacy `gskToolsEnabled` field
+ * doubles as the opt-out carried over from when the switch gated Genspark.
+ * Lives here (not providers.ts) so media/search can use it without a cycle.
+ */
+export function cloudToolsEnabled(
+  settings: Partial<Pick<AiSettings, 'vegaToolsEnabled' | 'gskToolsEnabled'>>,
+): boolean {
+  return (settings.vegaToolsEnabled ?? settings.gskToolsEnabled) !== false
+}
+
 export const OPENAI_IMAGES_BASE_URL = 'https://api.openai.com/v1'
+/**
+ * VEGA (api.vega.chat) — an OpenRouter-compatible BYOK gateway: the same
+ * /models catalog, chat/completions (web-search plugin, multimodal parts)
+ * and /images endpoints, keyed by a sk-apivega-… token.
+ */
+export const VEGA_BASE_URL = 'https://api.vega.chat/api/v1'
 export const GEMINI_MEDIA_BASE_URL = 'https://generativelanguage.googleapis.com/v1beta'
 export const ARK_BASE_URL = 'https://ark.cn-beijing.volces.com/api/v3'
 export const ZHIPU_BASE_URL = 'https://open.bigmodel.cn/api/paas/v4'
@@ -30,6 +48,40 @@ export const AI_MEDIA_PROVIDERS: AiMediaProviderMeta[] = [
     analysisProtocol: 'openai-chat',
     analysisModels: [],
     defaultAnalysisModel: '',
+    videoAnalysis: true,
+  },
+  {
+    id: 'vega',
+    label: 'VEGA',
+    description:
+      'OpenRouter-routed image generation and image/video analysis on one VEGA key (api.vega.chat)',
+    keyPlaceholder: 'sk-apivega-...',
+    defaultBaseUrl: VEGA_BASE_URL,
+    liveCatalog: true,
+    imageProtocol: 'openai-images',
+    // ids verified against GET /models?output_modalities=image (2026-09); the
+    // picker also refreshes live — this list is the offline fallback
+    imageModels: [
+      'google/gemini-3.1-flash-image',
+      'openai/gpt-image-2',
+      'openai/gpt-image-1-mini',
+      'bytedance-seed/seedream-5-0-lite',
+      'black-forest-labs/flux.2-pro',
+      'x-ai/grok-imagine-image-2.0',
+      'qwen/qwen-image-3',
+      'recraft/recraft-v4',
+    ],
+    defaultImageModel: 'google/gemini-3.1-flash-image',
+    analysisProtocol: 'openai-chat',
+    // image+video input models per GET /models?input_modalities=video
+    analysisModels: [
+      'google/gemini-3.5-flash-lite',
+      'google/gemini-3.8-flash',
+      'qwen/qwen3.8-flash',
+      'moonshotai/kimi-k3',
+      'google/gemini-2.5-flash',
+    ],
+    defaultAnalysisModel: 'google/gemini-3.5-flash-lite',
     videoAnalysis: true,
   },
   {
@@ -183,9 +235,9 @@ export function defaultAiMediaSettings(): AiMediaSettings {
     }
   }
   return {
-    imageProvider: 'genspark',
-    analysisProvider: 'genspark',
-    videoAnalysisProvider: 'genspark',
+    imageProvider: 'vega',
+    analysisProvider: 'vega',
+    videoAnalysisProvider: 'vega',
     providers,
   }
 }
@@ -226,25 +278,40 @@ export function resolveAiMediaSettings(
   }
 }
 
+/** The chat provider's own VEGA key — shared by the media/search slots when theirs is empty */
+function vegaSharedKey(
+  settings: Partial<Pick<AiSettings, 'providers'>> | null | undefined,
+): string {
+  return settings?.providers?.vega?.apiKey?.trim() ?? ''
+}
+
 /** Key (or base URL for custom) present — the minimum for a BYOK media provider to be honored */
 export function mediaConfigUsable(
   meta: AiMediaProviderMeta,
   config: AiMediaProviderConfig | undefined,
+  settings?: Partial<Pick<AiSettings, 'providers'>> | null,
 ): boolean {
   if (!config) return false
   // Trim-aware like activeProvider: whitespace-only survivors of in-memory
   // settings are not usable configs.
   if (meta.needsBaseUrl) return !!config.baseUrl?.trim()
-  return !!config.apiKey?.trim()
+  if (config.apiKey?.trim()) return true
+  // an empty VEGA slot inherits the AI Model provider's key
+  return meta.id === 'vega' && !!vegaSharedKey(settings)
 }
+
+type MediaSettingsSlice = Partial<
+  Pick<AiSettings, 'media' | 'providers' | 'vegaToolsEnabled' | 'gskToolsEnabled'>
+>
 
 /**
  * The stored provider for one capability, honored only when it exists, has
  * that capability and is usable; anything else falls back to genspark so a
- * half-filled setup degrades to the signed-in default.
+ * half-filled setup degrades to the signed-in default. VEGA additionally
+ * requires the "VEGA cloud tools" switch to be on.
  */
 export function activeMediaProvider(
-  settings: Pick<AiSettings, 'media'>,
+  settings: MediaSettingsSlice,
   capability: MediaCapability,
 ): AiMediaProviderId {
   const media = settings.media
@@ -258,24 +325,28 @@ export function activeMediaProvider(
   if (!id || id === 'genspark') return 'genspark'
   const meta = getMediaProviderMeta(id)
   if (!meta || !providerHasCapability(meta, capability)) return 'genspark'
-  if (!mediaConfigUsable(meta, media.providers?.[id])) return 'genspark'
+  if (id === 'vega' && !cloudToolsEnabled(settings)) return 'genspark'
+  if (!mediaConfigUsable(meta, media.providers?.[id], settings)) return 'genspark'
   return id
 }
 
 /** the active BYOK config for one capability, or null when it runs through Genspark */
 export function activeMediaConfig(
-  settings: Pick<AiSettings, 'media'>,
+  settings: MediaSettingsSlice,
   capability: MediaCapability,
 ): { provider: Exclude<AiMediaProviderId, 'genspark'>; config: AiMediaProviderConfig } | null {
   const provider = activeMediaProvider(settings, capability)
   if (provider === 'genspark') return null
-  return { provider, config: settings.media!.providers[provider] }
+  const config = settings.media!.providers[provider]
+  // VEGA slots may share the AI Model key — the merged config carries the effective credential
+  if (provider === 'vega' && !config.apiKey?.trim()) {
+    const shared = vegaSharedKey(settings)
+    if (shared) return { provider, config: { ...config, apiKey: shared } }
+  }
+  return { provider, config }
 }
 
-function byokModel(
-  settings: Pick<AiSettings, 'media'>,
-  capability: MediaCapability,
-): string | null {
+function byokModel(settings: MediaSettingsSlice, capability: MediaCapability): string | null {
   const active = activeMediaConfig(settings, capability)
   if (!active) return null
   const meta = getMediaProviderMeta(active.provider)!
@@ -285,19 +356,21 @@ function byokModel(
 }
 
 function capabilityAvailable(
-  settings: Pick<AiSettings, 'media' | 'gskToolsEnabled'> | null | undefined,
+  settings: MediaSettingsSlice | null | undefined,
   gskLoggedIn: boolean,
   capability: MediaCapability,
 ): boolean {
   if (!settings) return gskLoggedIn
   const model = byokModel(settings, capability)
   if (model !== null) return model !== ''
-  return gskLoggedIn && settings.gskToolsEnabled !== false
+  // the Genspark route is opted into by the provider choice itself — the
+  // cloud-tools switch gates VEGA only
+  return gskLoggedIn
 }
 
-/** live predicate for the generate_image tool: BYOK image model configured, or gsk login + cloud tools on */
+/** live predicate for the generate_image tool: BYOK image model configured, or gsk login */
 export function imageGenerationAvailable(
-  settings: Pick<AiSettings, 'media' | 'gskToolsEnabled'> | null | undefined,
+  settings: MediaSettingsSlice | null | undefined,
   gskLoggedIn: boolean,
 ): boolean {
   return capabilityAvailable(settings, gskLoggedIn, 'image')
@@ -305,7 +378,7 @@ export function imageGenerationAvailable(
 
 /** live predicate for the analyze_media tool: image analysis or video analysis reachable */
 export function mediaAnalysisAvailable(
-  settings: Pick<AiSettings, 'media' | 'gskToolsEnabled'> | null | undefined,
+  settings: MediaSettingsSlice | null | undefined,
   gskLoggedIn: boolean,
 ): boolean {
   return (
@@ -315,7 +388,7 @@ export function mediaAnalysisAvailable(
 }
 
 export function videoAnalysisAvailable(
-  settings: Pick<AiSettings, 'media' | 'gskToolsEnabled'> | null | undefined,
+  settings: MediaSettingsSlice | null | undefined,
   gskLoggedIn: boolean,
 ): boolean {
   return capabilityAvailable(settings, gskLoggedIn, 'video')

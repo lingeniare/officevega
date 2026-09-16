@@ -225,18 +225,79 @@ describe('webSearch (SearchOptions)', () => {
   })
 })
 
+describe('webSearch (VEGA)', () => {
+  it('sends the web plugin and maps url_citation annotations', async () => {
+    let body: any
+    mockFetch((url, init) => {
+      expect(url).toBe('https://api.vega.chat/api/v1/chat/completions')
+      expect((init?.headers as Record<string, string>).Authorization).toBe('Bearer vk')
+      body = JSON.parse(String(init?.body))
+      return {
+        ok: true,
+        json: {
+          choices: [
+            {
+              message: {
+                content: 'The answer.',
+                annotations: [
+                  {
+                    type: 'url_citation',
+                    url_citation: { url: 'https://x.com', title: 'X', content: 'cite text' },
+                  },
+                  { type: 'file_annotation', file_annotation: {} },
+                ],
+              },
+            },
+          ],
+        },
+      }
+    })
+    const r = await webSearch('q', 5, { useGsk: false, vegaKey: 'vk', prefer: 'vega' })
+    expect(r.method).toBe('vega')
+    expect(r.answer).toBe('The answer.')
+    expect(body.plugins).toEqual([{ id: 'web' }])
+    expect(r.results).toEqual([{ title: 'X', url: 'https://x.com', snippet: 'cite text' }])
+  })
+
+  it('a VEGA failure falls through to the remaining chain', async () => {
+    process.env.SERPER_API_KEY = 'sk'
+    mockFetch((url) => {
+      if (url.includes('vega')) return { ok: false }
+      return { ok: true, json: { organic: [{ title: 'A', link: 'https://a.com' }] } }
+    })
+    const r = await webSearch('q', 3, { useGsk: false, vegaKey: 'vk', prefer: 'vega' })
+    expect(r.method).toBe('serper')
+  })
+})
+
 describe('search-tools', () => {
   it('maps the settings block onto SearchOptions', () => {
     const base = defaultAiSettings()
+    // default: vega selected but keyless → the gsk/free chain
     expect(searchOptionsFromSettings(base)).toEqual({ useGsk: true })
-    expect(searchOptionsFromSettings({ ...base, gskToolsEnabled: false })).toEqual({
-      useGsk: false,
+    // vega keyed → runs first, gsk stays the fallback
+    const vega = {
+      ...base,
+      providers: { ...base.providers, vega: { apiKey: 'vk', model: 'm' } },
+    }
+    expect(searchOptionsFromSettings(vega)).toEqual({
+      useGsk: true,
+      vegaKey: 'vk',
+      prefer: 'vega',
+    })
+    // the VEGA tools switch off → back to the gsk chain even with a key
+    expect(searchOptionsFromSettings({ ...vega, vegaToolsEnabled: false })).toEqual({
+      useGsk: true,
     })
     const serper = {
       ...base,
       search: {
         provider: 'serper' as const,
-        providers: { serper: { apiKey: 'k' }, tavily: { apiKey: '' } },
+        providers: {
+          vega: { apiKey: '' },
+          serper: { apiKey: 'k' },
+          tavily: { apiKey: '' },
+        },
       },
     }
     expect(searchOptionsFromSettings(serper)).toEqual({ useGsk: false, serperKey: 'k' })
@@ -244,7 +305,11 @@ describe('search-tools', () => {
       ...base,
       search: {
         provider: 'tavily' as const,
-        providers: { serper: { apiKey: '' }, tavily: { apiKey: 't' } },
+        providers: {
+          vega: { apiKey: '' },
+          serper: { apiKey: '' },
+          tavily: { apiKey: 't' },
+        },
       },
     }
     expect(searchOptionsFromSettings(tavily)).toEqual({
@@ -257,7 +322,11 @@ describe('search-tools', () => {
       ...base,
       search: {
         provider: 'serper' as const,
-        providers: { serper: { apiKey: '' }, tavily: { apiKey: '' } },
+        providers: {
+          vega: { apiKey: '' },
+          serper: { apiKey: '' },
+          tavily: { apiKey: '' },
+        },
       },
     }
     expect(searchOptionsFromSettings(empty)).toEqual({ useGsk: true })
@@ -277,5 +346,22 @@ describe('search-tools', () => {
     }))
     expect(await testSearchProvider('serper', 'right')).toEqual({ ok: true })
     expect(await testSearchProvider('tavily', '')).toEqual({ ok: false, error: 'API key is empty' })
+  })
+
+  it('testSearchProvider(vega) probes the key against the public models list', async () => {
+    mockFetch((url, init) => {
+      expect(url).toBe('https://api.vega.chat/api/v1/models?limit=1')
+      expect((init?.headers as Record<string, string>).Authorization).toBe('Bearer vk')
+      return { ok: true, json: { data: [] } }
+    })
+    expect(await testSearchProvider('vega', 'vk')).toEqual({ ok: true })
+    mockFetch(() => ({ ok: false }))
+    const bad = await testSearchProvider('vega', 'wrong')
+    expect(bad.ok).toBe(false)
+    expect(bad.error).toMatch(/HTTP/)
+    expect(await testSearchProvider('vega', '')).toEqual({
+      ok: false,
+      error: 'API key is empty',
+    })
   })
 })

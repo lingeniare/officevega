@@ -3231,9 +3231,11 @@ export function registerSheetsAiIpc(): void {
     sessionFor(event)
     const stored = readJson<Partial<AiSettings> & LegacyAiSettings>(SETTINGS_PATH(), {})
     const settings = resolveAiSettings(stored, defaultAiSettings())
-    // a stored BYOK provider is honored when usable; half-filled configs fall back to genspark
+    // `provider` reports the effective route; storedProvider keeps the user's
+    // pick visible so a settings save can't clobber a half-configured selection
+    const storedProvider = settings.provider
     settings.provider = activeProvider(settings)
-    return settings
+    return storedProvider === settings.provider ? settings : { ...settings, storedProvider }
   })
 
   // Genspark account (gsk login state): the auth source for AI features; the
@@ -3255,12 +3257,16 @@ export function registerSheetsAiIpc(): void {
   ipcMain.handle(IPC_CHANNELS.aiSetSettings, (event, input: unknown) => {
     sessionFor(event)
     const settings = aiSettingsInputSchema.parse(input)
-    writeJson(SETTINGS_PATH(), settings)
+    // storedProvider is a get-settings transport hint — never persisted
+    const { storedProvider: _ignored, ...persist } = settings
+    writeJson(SETTINGS_PATH(), persist)
   })
 
   ipcMain.handle(IPC_CHANNELS.aiChat, async (event, input: unknown) => {
     sessionFor(event)
     const request = aiChatRequestSchema.parse(input)
+    // callers pass the effective provider from ai:get-settings — resolving again
+    // here would break "test connection" on a stored-but-keyless BYOK pick
     const provider = request.settings.provider as AiProviderId
     let config = request.settings.providers[provider]
     if (provider === 'genspark' && config && !config.apiKey) {
@@ -3292,6 +3298,8 @@ export function registerSheetsAiIpc(): void {
     const { requestId, system, messages } = request
     const tools = request.tools ?? []
     const maxTokens = request.maxTokens ?? maxOutputTokensOf(request.settings)
+    // callers pass the effective provider from ai:get-settings — resolving again
+    // here would break "test connection" on a stored-but-keyless BYOK pick
     const provider = request.settings.provider as AiProviderId
     let config = request.settings.providers[provider]
     // Genspark's key never enters the settings file; it is read from the gsk

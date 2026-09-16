@@ -3,11 +3,13 @@ import type {
   AiMediaProviderConfig,
   AiMediaProviderId,
   AiMediaProviderMeta,
+  AiProviderId,
   AiProviderMeta,
   AiSearchProviderId,
   AiSearchProviderMeta,
   AiSettings,
   CodexModelCatalog,
+  ProviderModelCatalog,
 } from '@genoffice/ai-provider'
 import type { UpdateChannel } from './update-api'
 import type { FolderListing, FolderRoot, MoveConflictPolicy, MoveResult } from '@genoffice/ui'
@@ -236,6 +238,18 @@ export interface HomeApi {
   getAiProviders(): AiCatalogEntry[]
   /** live Codex model catalog discovered through the current or overridden app-server */
   getCodexModels(cliPath?: string): Promise<CodexModelCatalog>
+  /**
+   * live model catalog for liveCatalog providers (VEGA, OpenRouter): GET {base}/models
+   * filtered by modality ('text' output for chat pickers, 'image' output / 'video' input
+   * for the media pickers); falls back to the provider's static list on failure
+   */
+  getProviderModels(input: {
+    provider: AiProviderId
+    apiKey?: string
+    baseUrl?: string
+    input?: string
+    output?: string
+  }): Promise<ProviderModelCatalog>
   /** one-shot round trip against the given (possibly unsaved) settings — the settings-UI connection test */
   testAiSettings(settings: AiSettings): Promise<AiChatResponse>
   /** image generation / media analysis provider catalog */
