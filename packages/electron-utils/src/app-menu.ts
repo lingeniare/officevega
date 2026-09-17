@@ -44,7 +44,7 @@ const EN: Labels = {
   zoomOut: 'Zoom Out',
   fullscreen: 'Full Screen',
   help: 'Help',
-  about: 'About GenOffice',
+  about: 'About GetOffice',
   version: 'Version',
 }
 
@@ -68,7 +68,7 @@ const LABELS: Record<string, Labels> = {
     zoomOut: '缩小',
     fullscreen: '全屏',
     help: '帮助',
-    about: '关于 GenOffice',
+    about: '关于 GetOffice',
     version: '版本',
   },
   en: EN,
@@ -89,7 +89,7 @@ const LABELS: Record<string, Labels> = {
     zoomOut: '縮小',
     fullscreen: 'フルスクリーン',
     help: 'ヘルプ',
-    about: 'GenOffice について',
+    about: 'GetOffice について',
     version: 'バージョン',
   },
   ko: {
@@ -109,7 +109,7 @@ const LABELS: Record<string, Labels> = {
     zoomOut: '축소',
     fullscreen: '전체 화면',
     help: '도움말',
-    about: 'GenOffice 정보',
+    about: 'GetOffice 정보',
     version: '버전',
   },
   fr: {
@@ -129,7 +129,7 @@ const LABELS: Record<string, Labels> = {
     zoomOut: 'Zoom arrière',
     fullscreen: 'Plein écran',
     help: 'Aide',
-    about: 'À propos de GenOffice',
+    about: 'À propos de GetOffice',
     version: 'Version',
   },
   de: {
@@ -149,7 +149,7 @@ const LABELS: Record<string, Labels> = {
     zoomOut: 'Verkleinern',
     fullscreen: 'Vollbild',
     help: 'Hilfe',
-    about: 'Über GenOffice',
+    about: 'Über GetOffice',
     version: 'Version',
   },
   es: {
@@ -169,7 +169,7 @@ const LABELS: Record<string, Labels> = {
     zoomOut: 'Alejar',
     fullscreen: 'Pantalla completa',
     help: 'Ayuda',
-    about: 'Acerca de GenOffice',
+    about: 'Acerca de GetOffice',
     version: 'Versión',
   },
   th: {
@@ -189,7 +189,7 @@ const LABELS: Record<string, Labels> = {
     zoomOut: 'ย่อ',
     fullscreen: 'เต็มหน้าจอ',
     help: 'วิธีใช้',
-    about: 'เกี่ยวกับ GenOffice',
+    about: 'เกี่ยวกับ GetOffice',
     version: 'เวอร์ชัน',
   },
   id: {
@@ -209,7 +209,7 @@ const LABELS: Record<string, Labels> = {
     zoomOut: 'Perkecil',
     fullscreen: 'Layar Penuh',
     help: 'Bantuan',
-    about: 'Tentang GenOffice',
+    about: 'Tentang GetOffice',
     version: 'Versi',
   },
   ru: {
@@ -229,7 +229,7 @@ const LABELS: Record<string, Labels> = {
     zoomOut: 'Уменьшить',
     fullscreen: 'Полноэкранный режим',
     help: 'Справка',
-    about: 'О GenOffice',
+    about: 'О GetOffice',
     version: 'Версия',
   },
   ar: {
@@ -249,7 +249,7 @@ const LABELS: Record<string, Labels> = {
     zoomOut: 'تصغير العرض',
     fullscreen: 'ملء الشاشة',
     help: 'تعليمات',
-    about: 'حول GenOffice',
+    about: 'حول GetOffice',
     version: 'الإصدار',
   },
   pt: {
@@ -269,7 +269,7 @@ const LABELS: Record<string, Labels> = {
     zoomOut: 'Reduzir',
     fullscreen: 'Tela Cheia',
     help: 'Ajuda',
-    about: 'Sobre o GenOffice',
+    about: 'Sobre o GetOffice',
     version: 'Versão',
   },
   it: {
@@ -289,7 +289,7 @@ const LABELS: Record<string, Labels> = {
     zoomOut: 'Riduci',
     fullscreen: 'Schermo intero',
     help: 'Aiuto',
-    about: 'Informazioni su GenOffice',
+    about: 'Informazioni su GetOffice',
     version: 'Versione',
   },
   pl: {
@@ -309,7 +309,7 @@ const LABELS: Record<string, Labels> = {
     zoomOut: 'Pomniejsz',
     fullscreen: 'Pełny ekran',
     help: 'Pomoc',
-    about: 'O programie GenOffice',
+    about: 'O programie GetOffice',
     version: 'Wersja',
   },
   cs: {
@@ -329,7 +329,7 @@ const LABELS: Record<string, Labels> = {
     zoomOut: 'Oddálit',
     fullscreen: 'Celá obrazovka',
     help: 'Nápověda',
-    about: 'O aplikaci GenOffice',
+    about: 'O aplikaci GetOffice',
     version: 'Verze',
   },
   nl: {
@@ -349,7 +349,7 @@ const LABELS: Record<string, Labels> = {
     zoomOut: 'Uitzoomen',
     fullscreen: 'Volledig scherm',
     help: 'Help',
-    about: 'Over GenOffice',
+    about: 'Over GetOffice',
     version: 'Versie',
   },
   ms: {
@@ -369,7 +369,7 @@ const LABELS: Record<string, Labels> = {
     zoomOut: 'Zum Keluar',
     fullscreen: 'Skrin Penuh',
     help: 'Bantuan',
-    about: 'Perihal GenOffice',
+    about: 'Perihal GetOffice',
     version: 'Versi',
   },
   he: {
@@ -389,7 +389,7 @@ const LABELS: Record<string, Labels> = {
     zoomOut: 'הקטן',
     fullscreen: 'מסך מלא',
     help: 'עזרה',
-    about: 'אודות GenOffice',
+    about: 'אודות GetOffice',
     version: 'גרסה',
   },
   hi: {
@@ -409,7 +409,7 @@ const LABELS: Record<string, Labels> = {
     zoomOut: 'ज़ूम आउट',
     fullscreen: 'पूर्ण स्क्रीन',
     help: 'सहायता',
-    about: 'GenOffice के बारे में',
+    about: 'GetOffice के बारे में',
     version: 'संस्करण',
   },
   'zh-TW': {
@@ -429,7 +429,7 @@ const LABELS: Record<string, Labels> = {
     zoomOut: '縮小',
     fullscreen: '全螢幕',
     help: '說明',
-    about: '關於 GenOffice',
+    about: '關於 GetOffice',
     version: '版本',
   },
 }
@@ -536,14 +536,14 @@ export function aboutMenuItem(labels: AppMenuLabels): MenuItemConstructorOptions
       const version = app.getVersion()
       const { response } = await dialog.showMessageBox({
         type: 'info',
-        title: 'GenOffice',
-        message: 'GenOffice',
+        title: 'GetOffice',
+        message: 'GetOffice',
         detail: `${labels.version} ${version}`,
         buttons: ['OK', labels.copy],
         defaultId: 0,
         cancelId: 0,
       })
-      if (response === 1) clipboard.writeText(`GenOffice ${version}`)
+      if (response === 1) clipboard.writeText(`GetOffice ${version}`)
     },
   }
 }

@@ -15,16 +15,16 @@ import { join } from 'node:path'
 import JSZip from 'jszip'
 
 /**
- * Installing the bundled `genoffice` skill into the coding agents found on this
- * machine, shared by Settings → Integrations and `genoffice skill`. Every write
+ * Installing the bundled `getoffice` skill into the coding agents found on this
+ * machine, shared by Settings → Integrations and `getoffice skill`. Every write
  * is a click in that pane or an explicit command; nothing installs on its own.
  * Pure functions over an injected home / env so the state table is
  * unit-testable without touching the real dotfolders.
  */
 
-export const SKILL_NAME = 'genoffice'
+export const SKILL_NAME = 'getoffice'
 
-/** app-settings.json key under which every install this machine's GenOffice wrote is remembered */
+/** app-settings.json key under which every install this machine's GetOffice wrote is remembered */
 export const LEDGER_KEY = 'agentSkillInstalls'
 
 export type AgentId =
@@ -39,7 +39,7 @@ export interface AgentTarget {
 }
 
 export type SkillInstallStatus =
-  /** no genoffice/ folder in the skills directory */
+  /** no getoffice/ folder in the skills directory */
   | 'missing'
   /** written by this app, same version and bytes as the bundled skill */
   | 'installed'
@@ -51,12 +51,12 @@ export type SkillInstallStatus =
   | 'foreign'
   /** a newer skill version than the one bundled, whoever wrote it */
   | 'newer'
-  /** genoffice/ exists but does not hold our skill */
+  /** getoffice/ exists but does not hold our skill */
   | 'occupied'
 
 export interface SkillInstallState {
   status: SkillInstallStatus
-  /** `<skillsDir>/genoffice/SKILL.md` */
+  /** `<skillsDir>/getoffice/SKILL.md` */
   path: string
   installedVersion?: string
   /** installed version is older than the bundled one (foreign rows offer an update then) */
@@ -276,7 +276,7 @@ export function uninstallSkill(skillsDir: string, ledger: SkillLedger): boolean 
   return true
 }
 
-/** `genoffice/SKILL.md` inside a zip: the layout claude.ai and the desktop apps accept for an uploaded skill. */
+/** `getoffice/SKILL.md` inside a zip: the layout claude.ai and the desktop apps accept for an uploaded skill. */
 export async function buildSkillZip(bundled: BundledSkill): Promise<Buffer> {
   const zip = new JSZip()
   zip.file(`${SKILL_NAME}/SKILL.md`, bundled.bytes, { date: new Date(0) })

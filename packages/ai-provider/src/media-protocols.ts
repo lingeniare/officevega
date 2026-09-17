@@ -17,6 +17,7 @@ import {
   GEMINI_MEDIA_BASE_URL,
   MINIMAX_BASE_URL,
   OPENAI_IMAGES_BASE_URL,
+  VEGA_BASE_URL,
   getMediaProviderMeta,
 } from './media'
 import type { AiMediaProviderConfig, AiMediaProviderId, AiMediaProviderMeta } from './types'
@@ -68,6 +69,9 @@ function metaOf(provider: ByokMediaProviderId): AiMediaProviderMeta {
 function openAiBase(provider: ByokMediaProviderId, config: AiMediaProviderConfig): string {
   if (provider === 'qwen') return `${dashscopeRoot(config)}/compatible-mode/v1`
   const meta = metaOf(provider)
+  // VEGA's endpoint is fixed — no Base URL field in settings, so a stale
+  // stored value must not redirect traffic off api.vega.chat
+  if (provider === 'vega') return trimSlash(meta.defaultBaseUrl || VEGA_BASE_URL)
   return trimSlash(config.baseUrl || meta.defaultBaseUrl || OPENAI_IMAGES_BASE_URL)
 }
 
@@ -656,8 +660,15 @@ function modelOf(
   config: AiMediaProviderConfig,
   field: 'imageModel' | 'analysisModel',
 ): string {
+  // VEGA models are fixed catalog defaults — the settings UI offers no picker
+  // for them, so a stale stored id must not reach the wire
   const model =
-    config[field] || (field === 'imageModel' ? meta.defaultImageModel : meta.defaultAnalysisModel)
+    meta.id === 'vega'
+      ? field === 'imageModel'
+        ? meta.defaultImageModel
+        : meta.defaultAnalysisModel
+      : config[field] ||
+        (field === 'imageModel' ? meta.defaultImageModel : meta.defaultAnalysisModel)
   if (!model) {
     throw new Error(
       `No ${field === 'imageModel' ? 'image' : 'analysis'} model configured for the ${meta.label} media provider`,

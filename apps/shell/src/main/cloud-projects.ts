@@ -33,7 +33,7 @@ function ctimeToMs(ctime: string): number {
 export function cloudStoreOwner(): string {
   const key = gskApiKey()
   if (!key) return ''
-  return createHash('sha256').update(`genoffice-cloud-store:${key}`).digest('hex').slice(0, 16)
+  return createHash('sha256').update(`getoffice-cloud-store:${key}`).digest('hex').slice(0, 16)
 }
 
 /** disk shape: the snapshot plus the owner tag (stripped before it reaches the renderer) */

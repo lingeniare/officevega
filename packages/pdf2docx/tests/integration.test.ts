@@ -288,7 +288,7 @@ describe.skipIf(!hasCjkFont)('integration: ar/he RTL (P2 — no more bitmap fall
       { text: visual('مرحبا بالعالم'), x: 350, y: 700 },
     ])
     const result = await convertPdfToDocx(pdf, { pdfium })
-    // P1 degraded these pages to bitmaps; P2 must not
+    //genspark-ai/genofficedegraded these pages to bitmaps;genoffice.aimust not
     expect(result.warnings).toEqual([])
     const parsed = await parseDocx(result.docx)
     const para = parsed.blocks.find((b) => (b.runs ?? []).length > 0)!

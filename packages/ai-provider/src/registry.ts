@@ -236,8 +236,14 @@ export const AI_PROVIDER_ADAPTERS: Record<AiProviderId, ProviderAdapter> = {
   vega: {
     meta: metaOf('vega'),
     capabilities: { auth: 'api-key', vision: true },
-    // VEGA proxies OpenRouter — same OpenAI-compatible wire, different host
-    resolveEndpoint: fixedEndpoint('openai-compatible', VEGA_BASE_URL),
+    // VEGA proxies OpenRouter — same OpenAI-compatible wire, different host.
+    // The endpoint is fixed: the settings UI exposes no Base URL field for
+    // VEGA, so a stale stored value must not redirect traffic off it
+    resolveEndpoint: (config) => ({
+      protocol: 'openai-compatible',
+      baseUrl: VEGA_BASE_URL,
+      ...(modelHasFixedSampling(config.model) ? { omitTemperature: true } : {}),
+    }),
   },
   requesty: {
     meta: metaOf('requesty'),

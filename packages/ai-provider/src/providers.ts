@@ -1,6 +1,6 @@
 import { defaultAiMediaSettings, resolveAiMediaSettings } from './media'
 import { defaultAiSearchSettings, resolveAiSearchSettings } from './search-settings'
-import { issuedVegaKey, legacyGskKey } from './vega-key'
+import { issuedVegaKey } from './vega-key'
 import type { AiProviderId, AiProviderMeta, AiSettings, LegacyAiSettings } from './types'
 
 /**
@@ -14,11 +14,11 @@ export const GENSPARK_LLM_BASE_URLS = {
 } as const
 
 /**
- * Splits GenOffice usage out of the proxy's default "Claw" billing bucket
+ * Splits GetOffice usage out of the proxy's default "Claw" billing bucket
  * (the backend attributes gsk-key traffic by X-Agent-Type). Only sent to the
  * Genspark proxy — never to direct vendor APIs.
  */
-export const GENSPARK_AGENT_TYPE = 'genoffice'
+export const GENSPARK_AGENT_TYPE = 'getoffice'
 
 export function gensparkAttributionHeaders(baseUrl?: string): Record<string, string> {
   return baseUrl?.startsWith('https://www.genspark.ai')
@@ -28,7 +28,7 @@ export function gensparkAttributionHeaders(baseUrl?: string): Record<string, str
 
 /**
  * OpenCode Zen / Go route and cache per conversation and answer 400
- * MissingSessionID without this header (genoffice#331). The renderer's
+ * MissingSessionID without this header (getoffice#331). The renderer's
  * transport id is stable for a chat; a one-shot call is its own conversation.
  */
 export function opencodeSessionHeaders(
@@ -322,12 +322,12 @@ export { cloudToolsEnabled } from './media'
 export function activeProvider(settings: AiSettings): AiProviderId {
   const provider = settings.provider
   if (provider === 'genspark') {
-    // Legacy sign-in pick: stays while a gsk credential exists; a VEGA sign-in
-    // (the app's login flow now issues VEGA keys) silently upgrades it, and
-    // with neither it remains the signed-out state that prompts the login.
-    if (legacyGskKey() || settings.providers?.genspark?.apiKey?.trim()) return 'genspark'
+    // Legacy sign-in pick: a VEGA credential (the app's login flow now issues
+    // VEGA keys) silently upgrades it — VEGA is the default; without one the
+    // pick stays genspark, the signed-in gsk state or the login prompt.
     const vega = settings.providers?.vega
-    return vega?.model?.trim() && (vega.apiKey?.trim() || issuedVegaKey()) ? 'vega' : 'genspark'
+    if (vega?.model?.trim() && (vega.apiKey?.trim() || issuedVegaKey())) return 'vega'
+    return 'genspark'
   }
   const meta = AI_PROVIDERS.find((m) => m.id === provider)
   const config = settings.providers?.[provider]

@@ -1,7 +1,7 @@
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { genofficeUserDataDir, guiOpenDocuments } from '../src/gui'
+import { getofficeUserDataDir, guiOpenDocuments } from '../src/gui'
 import { run, tempDir } from './helpers'
 
 function registry(dir: string, pid: number, paths: string[]): Record<string, string> {
@@ -10,7 +10,7 @@ function registry(dir: string, pid: number, paths: string[]): Record<string, str
     join(dir, 'open-documents.json'),
     JSON.stringify({ pid, updatedAt: new Date().toISOString(), paths }),
   )
-  return { ...process.env, GENOFFICE_AUDIT_LOG: 'off', GENOFFICE_USER_DATA: dir }
+  return { ...process.env, GETOFFICE_AUDIT_LOG: 'off', GETOFFICE_USER_DATA: dir }
 }
 
 async function workbook(dir: string): Promise<string> {
@@ -18,7 +18,7 @@ async function workbook(dir: string): Promise<string> {
   writeFileSync(table, JSON.stringify([['a'], [1]]))
   const xlsx = join(dir, 't.xlsx')
   const r = await run(['create', '--type', 'xlsx', '--from', table, '--out', xlsx], {
-    env: { ...process.env, GENOFFICE_AUDIT_LOG: 'off' },
+    env: { ...process.env, GETOFFICE_AUDIT_LOG: 'off' },
   })
   expect(r.code).toBe(0)
   return xlsx
@@ -26,19 +26,19 @@ async function workbook(dir: string): Promise<string> {
 
 describe('GUI-open documents', () => {
   it('locates the shell userData directory and honours the override', () => {
-    expect(genofficeUserDataDir({ GENOFFICE_USER_DATA: '/u' })).toBe('/u')
-    expect(genofficeUserDataDir({}).endsWith('GenOffice')).toBe(true)
+    expect(getofficeUserDataDir({ GETOFFICE_USER_DATA: '/u' })).toBe('/u')
+    expect(getofficeUserDataDir({}).endsWith('GetOffice')).toBe(true)
   })
 
   it('ignores a missing, malformed or crash-leftover registry', () => {
     const dir = tempDir()
-    expect(guiOpenDocuments({ GENOFFICE_USER_DATA: dir })).toBeNull()
+    expect(guiOpenDocuments({ GETOFFICE_USER_DATA: dir })).toBeNull()
     writeFileSync(join(dir, 'open-documents.json'), '{not json')
-    expect(guiOpenDocuments({ GENOFFICE_USER_DATA: dir })).toBeNull()
+    expect(guiOpenDocuments({ GETOFFICE_USER_DATA: dir })).toBeNull()
     registry(dir, 2 ** 22 + 12345, ['/x.docx'])
-    expect(guiOpenDocuments({ GENOFFICE_USER_DATA: dir })).toBeNull()
+    expect(guiOpenDocuments({ GETOFFICE_USER_DATA: dir })).toBeNull()
     registry(dir, process.pid, ['/x.docx'])
-    expect(guiOpenDocuments({ GENOFFICE_USER_DATA: dir })).toEqual({
+    expect(guiOpenDocuments({ GETOFFICE_USER_DATA: dir })).toEqual({
       pid: process.pid,
       paths: ['/x.docx'],
     })

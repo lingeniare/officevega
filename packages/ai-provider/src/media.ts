@@ -351,6 +351,11 @@ function byokModel(settings: MediaSettingsSlice, capability: MediaCapability): s
   const active = activeMediaConfig(settings, capability)
   if (!active) return null
   const meta = getMediaProviderMeta(active.provider)!
+  // VEGA picks models server-side — the settings UI has no picker for them,
+  // so the catalog-verified defaults apply regardless of a stored value
+  if (active.provider === 'vega') {
+    return capability === 'image' ? meta.defaultImageModel : meta.defaultAnalysisModel
+  }
   return capability === 'image'
     ? active.config.imageModel || meta.defaultImageModel
     : active.config.analysisModel || meta.defaultAnalysisModel

@@ -33,11 +33,11 @@ import {
 } from './result'
 import { didYouMean } from './suggest'
 
-declare const __GENOFFICE_VERSION__: string | undefined
+declare const __GETOFFICE_VERSION__: string | undefined
 
 /** The @genoffice/cli package version: inlined by build.mjs, read from disk when running from source. */
 export const VERSION: string =
-  typeof __GENOFFICE_VERSION__ === 'string' ? __GENOFFICE_VERSION__ : devVersion()
+  typeof __GETOFFICE_VERSION__ === 'string' ? __GETOFFICE_VERSION__ : devVersion()
 
 function devVersion(): string {
   try {
@@ -99,7 +99,7 @@ export async function runCli(argv: readonly string[], opts: RunOptions = {}): Pr
   }
 
   if (flagBool(args, 'version')) {
-    io.stdout(json ? JSON.stringify({ status: 'ok', version: VERSION }) : `genoffice ${VERSION}`)
+    io.stdout(json ? JSON.stringify({ status: 'ok', version: VERSION }) : `getoffice ${VERSION}`)
     return EXIT.ok
   }
   if (name === null || (name === 'help' && args.positionals.length === 0)) {
@@ -120,7 +120,7 @@ export async function runCli(argv: readonly string[], opts: RunOptions = {}): Pr
               name,
               registry.list().map((d) => d.name),
             ),
-            'run `genoffice help` for the command list',
+            'run `getoffice help` for the command list',
           ),
         },
       ),
@@ -141,7 +141,7 @@ export async function runCli(argv: readonly string[], opts: RunOptions = {}): Pr
           reason: 'unknown_option',
           suggestion: withGuess(
             didYouMean(unknown[0]!, known),
-            `run \`genoffice help ${def.name}\` for its options`,
+            `run \`getoffice help ${def.name}\` for its options`,
             '--',
           ),
         },
@@ -224,9 +224,9 @@ function globalHelp(registry: CommandRegistry): string {
   const defs = registry.list()
   const width = Math.max(...defs.map((d) => d.name.length))
   return [
-    `genoffice ${VERSION} — GenOffice command line`,
+    `getoffice ${VERSION} — GetOffice command line`,
     '',
-    'Usage: genoffice <command> [options]',
+    'Usage: getoffice <command> [options]',
     '',
     'Commands:',
     ...defs.map((d) => `  ${d.name.padEnd(width)}  ${d.summary}`),
@@ -250,7 +250,7 @@ if (isMain) {
   const exit = (code: number) => process.stdout.write('', () => process.exit(code))
   runCli(process.argv.slice(2)).then(exit, (err) => {
     process.stderr.write(
-      `genoffice: ${err instanceof Error ? (err.stack ?? err.message) : String(err)}\n`,
+      `getoffice: ${err instanceof Error ? (err.stack ?? err.message) : String(err)}\n`,
     )
     exit(EXIT.conversion)
   })

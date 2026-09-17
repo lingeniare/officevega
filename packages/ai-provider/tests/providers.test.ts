@@ -335,6 +335,17 @@ describe('activeProvider', () => {
     expect(activeProvider(settings)).toBe('vega')
     expect(settings.provider).toBe('vega') // stored pick untouched
   })
+
+  it('a stored genspark pick upgrades to vega once a VEGA credential exists', () => {
+    // legacy installs carry provider:'genspark' from when it was the default;
+    // a VEGA sign-in (issued key, simulated here by the stored slot) is the
+    // new default and wins over it
+    const settings = defaultAiSettings()
+    settings.provider = 'genspark'
+    expect(activeProvider(settings)).toBe('genspark')
+    settings.providers.vega.apiKey = 'sk-apivega-test'
+    expect(activeProvider(settings)).toBe('vega')
+  })
 })
 
 describe('vegaToolsEnabled', () => {

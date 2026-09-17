@@ -161,7 +161,7 @@ beforeEach(() => {
 describe('initial state', () => {
   it('starts with only the non-closable, active Home tab', () => {
     expect(manager.list()).toEqual([
-      { id: 'home', kind: 'home', title: 'GenOffice', closable: false, active: true },
+      { id: 'home', kind: 'home', title: 'GetOffice', closable: false, active: true },
     ])
   })
 })
@@ -174,7 +174,7 @@ describe('opening tabs', () => {
     expect(tabs[1]).toMatchObject({
       id,
       kind: 'docs',
-      title: 'GenOffice Docs',
+      title: 'GetOffice Docs',
       closable: true,
       active: true,
     })
@@ -190,7 +190,7 @@ describe('opening tabs', () => {
     manager.openSlidesTab('/tmp/deck.pptx')
     manager.openPdfTab('/tmp/scan.pdf')
     expect(manager.list().map((t) => t.title)).toEqual([
-      'GenOffice',
+      'GetOffice',
       'report.docx',
       'budget.xlsx',
       'deck.pptx',
@@ -201,7 +201,7 @@ describe('opening tabs', () => {
   it('uses module default titles for pathless tabs', () => {
     manager.openSheetsTab()
     manager.openSlidesTab()
-    expect(manager.list().map((t) => t.title)).toEqual(['GenOffice', 'AI Sheets', 'AI Slides'])
+    expect(manager.list().map((t) => t.title)).toEqual(['GetOffice', 'AI Sheets', 'AI Slides'])
   })
 
   it('assigns unique, monotonic tab ids', () => {
@@ -286,8 +286,8 @@ describe('spare sheets view', () => {
     }
   })
 
-  it('stays off under GENOFFICE_NO_SPARE_VIEW', () => {
-    vi.stubEnv('GENOFFICE_NO_SPARE_VIEW', '1')
+  it('stays off under GETOFFICE_NO_SPARE_VIEW', () => {
+    vi.stubEnv('GETOFFICE_NO_SPARE_VIEW', '1')
     vi.useFakeTimers()
     try {
       homeLoaded()

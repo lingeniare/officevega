@@ -4,9 +4,9 @@ import { rendererUrl, resolveRendererFile } from '../src/renderer-scheme'
 describe('rendererUrl', () => {
   it('builds the scheme URL with the query when no dev server is configured', () => {
     expect(rendererUrl(undefined, 'sheets', { mode: 'tab' })).toBe(
-      'genoffice-app://sheets/index.html?mode=tab',
+      'getoffice-app://sheets/index.html?mode=tab',
     )
-    expect(rendererUrl(undefined, 'docs')).toBe('genoffice-app://docs/index.html')
+    expect(rendererUrl(undefined, 'docs')).toBe('getoffice-app://docs/index.html')
   })
 
   it('appends the query to a dev URL that already carries params', () => {
@@ -20,19 +20,19 @@ describe('resolveRendererFile', () => {
   const roots = new Map([['sheets', '/out/sheets/renderer']])
 
   it('maps the path under the host root', () => {
-    expect(resolveRendererFile(roots, 'genoffice-app://sheets/index.html?mode=tab')).toBe(
+    expect(resolveRendererFile(roots, 'getoffice-app://sheets/index.html?mode=tab')).toBe(
       '/out/sheets/renderer/index.html',
     )
-    expect(resolveRendererFile(roots, 'genoffice-app://sheets/assets/a%20b.js')).toBe(
+    expect(resolveRendererFile(roots, 'getoffice-app://sheets/assets/a%20b.js')).toBe(
       '/out/sheets/renderer/assets/a b.js',
     )
   })
 
   it('keeps dot segments inside the root and rejects unknown hosts and unparsable URLs', () => {
-    expect(resolveRendererFile(roots, 'genoffice-app://sheets/../../etc/passwd')).toBe(
+    expect(resolveRendererFile(roots, 'getoffice-app://sheets/../../etc/passwd')).toBe(
       '/out/sheets/renderer/etc/passwd',
     )
-    expect(resolveRendererFile(roots, 'genoffice-app://docs/index.html')).toBeNull()
+    expect(resolveRendererFile(roots, 'getoffice-app://docs/index.html')).toBeNull()
     expect(resolveRendererFile(roots, 'not a url')).toBeNull()
   })
 })

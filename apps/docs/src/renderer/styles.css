@@ -429,7 +429,7 @@ button {
 
 /* While a popover is open the row must deliver presses (drag regions swallow
    them), so outside-press dismissal can see presses on the blank band */
-html.genoffice-popover-open .ribbon-tabs {
+html.getoffice-popover-open .ribbon-tabs {
   -webkit-app-region: no-drag;
 }
 
@@ -6474,7 +6474,7 @@ body.docs-crop-active
   display: flex;
   flex-direction: column;
   background: var(--color-bg-page);
-  /* Same visible divider as the GenOffice Sheets panel: the editor canvas is gray, so the default border would drown */
+  /* Same visible divider as the GetOffice Sheets panel: the editor canvas is gray, so the default border would drown */
   border-right: 1px solid var(--color-border-strong);
   font-family: var(--gs-font-sans);
   color: var(--color-text-primary);

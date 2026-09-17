@@ -265,7 +265,23 @@ function Field({
 const storedPick = (s: AiSettings): AiSettings =>
   s.storedProvider ? { ...s, provider: s.storedProvider, storedProvider: undefined } : s
 
-function AiModelPane({ t }: { t: TFunc }) {
+function AiModelPane({
+  t,
+  account,
+}: {
+  t: TFunc
+  /** VEGA sign-in state + the device-flow login actions, shared with the account pane */
+  account: {
+    loggedIn: boolean
+    email: string
+    loginWaiting: boolean
+    loginUrl: string | null
+    urlCopied: boolean
+    onOpenLoginUrl: () => void
+    onCopyLoginUrl: () => void
+    onLogin: () => void
+  }
+}) {
   const [catalog, setCatalog] = useState<AiCatalogEntry[]>(
     () => window.aiOffice.getAiProviders?.() ?? [],
   )
@@ -355,6 +371,7 @@ function AiModelPane({ t }: { t: TFunc }) {
   }
   const isGenspark = provider === 'genspark'
   const isCodex = provider === 'codex'
+  const isVega = provider === 'vega'
 
   const touch = () => {
     setDirty(true)
@@ -520,6 +537,37 @@ function AiModelPane({ t }: { t: TFunc }) {
             }}
           />
         </div>
+      ) : isVega ? (
+        // VEGA credentials never enter the UI: the sign-in issues the API key
+        // into the main-process auth store and requests pick it up from there —
+        // no key/Base URL fields, nothing to delete or leak
+        account.loggedIn ? (
+          <Field label={t('setEmail')} value={account.email || t('setAiVegaSignedIn')} />
+        ) : (
+          <div className="set-field">
+            <div className="set-field-text">
+              <div className="set-field-stack">
+                <div className="set-field-label">{t('setSecAccount')}</div>
+                <div className="set-field-desc">{t('setAiVegaSigninDesc')}</div>
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: 8, flexShrink: 0, alignItems: 'center' }}>
+              {account.loginWaiting && account.loginUrl && (
+                <>
+                  <button className="set-btn" onClick={account.onOpenLoginUrl}>
+                    {t('loginOpenManually')}
+                  </button>
+                  <button className="set-btn" onClick={account.onCopyLoginUrl}>
+                    {account.urlCopied ? t('loginCopied') : t('loginCopyUrl')}
+                  </button>
+                </>
+              )}
+              <button className="set-btn primary" onClick={account.onLogin}>
+                {account.loginWaiting ? t('waitingShort') : t('loginGenspark')}
+              </button>
+            </div>
+          </div>
+        )
       ) : !isGenspark ? (
         <>
           <div className="set-field">
@@ -650,34 +698,12 @@ function AiMediaPane({ t }: { t: TFunc }) {
   const [saved, setSaved] = useState(false)
   const [testing, setTesting] = useState(false)
   const [testResult, setTestResult] = useState<{ ok: boolean; error?: string } | null>(null)
-  /** live VEGA model lists per media capability (null = catalog fetch failed / not loaded) */
-  const [liveVega, setLiveVega] = useState<{
-    image: string[] | null
-    analysis: string[] | null
-    video: string[] | null
-  }>({ image: null, analysis: null, video: null })
 
   useEffect(() => {
     let alive = true
     void window.aiOffice.getAiSettings?.().then((s) => {
       if (!alive || !s) return
       setSettings(storedPick(s))
-      // refresh the VEGA pickers from {base}/models — public catalog, key only
-      // narrows it; failure keeps the static fallback lists
-      if (!window.aiOffice.getProviderModels) return
-      const key = s.providers.vega?.apiKey ?? ''
-      const load = (filter: { input?: string; output?: string }) =>
-        window.aiOffice
-          .getProviderModels({ provider: 'vega', apiKey: key, ...filter })
-          .then((c) => (c.models.length ? c.models : null))
-          .catch(() => null)
-      void Promise.all([
-        load({ output: 'image' }),
-        load({ input: 'image', output: 'text' }),
-        load({ input: 'video', output: 'text' }),
-      ]).then(([image, analysis, video]) => {
-        if (alive) setLiveVega({ image, analysis, video })
-      })
     })
     return () => {
       alive = false
@@ -873,8 +899,6 @@ function AiMediaPane({ t }: { t: TFunc }) {
     value: string,
     placeholder: string,
     onChange: (v: string) => void,
-    /** overrides the generic "stored locally" hint (VEGA shares the AI Model key) */
-    hint?: string,
   ) => (
     <div className="set-field">
       <div className="set-field-text">
@@ -882,7 +906,7 @@ function AiMediaPane({ t }: { t: TFunc }) {
           <label className="set-field-label" htmlFor={id}>
             {t('setAiApiKey')}
           </label>
-          <div className="set-field-desc">{hint ?? t('setAiKeyHint')}</div>
+          <div className="set-field-desc">{t('setAiKeyHint')}</div>
         </div>
       </div>
       <input
@@ -960,16 +984,7 @@ function AiMediaPane({ t }: { t: TFunc }) {
       )
     }
     const modelField = cap === 'image' ? 'imageModel' : 'analysisModel'
-    // live VEGA catalog lists win over the static fallback when the fetch landed
-    const liveModels =
-      id === 'vega'
-        ? cap === 'image'
-          ? liveVega.image
-          : cap === 'video'
-            ? liveVega.video
-            : liveVega.analysis
-        : null
-    const models = liveModels ?? (cap === 'image' ? meta.imageModels : meta.analysisModels)
+    const models = cap === 'image' ? meta.imageModels : meta.analysisModels
     return (
       <section key={cap}>
         <h4 className="set-pane-subtitle">{title}</h4>
@@ -981,7 +996,7 @@ function AiMediaPane({ t }: { t: TFunc }) {
               ? t('setAiMediaVegaHint')
               : meta.description}
         </div>
-        {id !== 'genspark' && (
+        {id !== 'genspark' && id !== 'vega' && (
           <>
             {modelRow(
               `set-ai-${cap}-model`,
@@ -991,12 +1006,8 @@ function AiMediaPane({ t }: { t: TFunc }) {
               (m) => updateMediaConfig(id, { [modelField]: m }),
               meta.liveCatalog ? `set-ai-${cap}-models` : undefined,
             )}
-            {keyRow(
-              `set-ai-${cap}-key`,
-              config.apiKey,
-              meta.keyPlaceholder,
-              (v) => updateMediaConfig(id, { apiKey: v }),
-              id === 'vega' ? t('setAiVegaSharedKey') : undefined,
+            {keyRow(`set-ai-${cap}-key`, config.apiKey, meta.keyPlaceholder, (v) =>
+              updateMediaConfig(id, { apiKey: v }),
             )}
             {baseUrlRow(`set-ai-${cap}-base-url`, meta, config.baseUrl ?? '', (v) =>
               updateMediaConfig(id, { baseUrl: v }),
@@ -1030,16 +1041,12 @@ function AiMediaPane({ t }: { t: TFunc }) {
                 : t('setAiSearchTavilyHint')}
         </div>
         {search.provider !== 'genspark' &&
-          keyRow(
-            'set-ai-search-key',
-            searchKey,
-            searchMeta?.keyPlaceholder ?? 'API Key',
-            (v) =>
-              setSearch({
-                ...search,
-                providers: { ...search.providers, [search.provider]: { apiKey: v } },
-              }),
-            search.provider === 'vega' ? t('setAiVegaSharedKey') : undefined,
+          search.provider !== 'vega' &&
+          keyRow('set-ai-search-key', searchKey, searchMeta?.keyPlaceholder ?? 'API Key', (v) =>
+            setSearch({
+              ...search,
+              providers: { ...search.providers, [search.provider]: { apiKey: v } },
+            }),
           )}
       </section>
       {mediaBlock('image')}
@@ -1318,7 +1325,21 @@ export function SettingsModal({
                 </div>
               </>
             )}
-            {section === 'aiModel' && <AiModelPane t={t} />}
+            {section === 'aiModel' && (
+              <AiModelPane
+                t={t}
+                account={{
+                  loggedIn,
+                  email,
+                  loginWaiting,
+                  loginUrl,
+                  urlCopied,
+                  onOpenLoginUrl,
+                  onCopyLoginUrl,
+                  onLogin,
+                }}
+              />
+            )}
             {section === 'aiMedia' && <AiMediaPane t={t} />}
             {section === 'general' && (
               <>

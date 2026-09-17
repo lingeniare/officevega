@@ -19,17 +19,17 @@ import {
   type WebSearchResult,
 } from './shared'
 import { gskImageSearch, gskWebSearch, gskApiKey, hasGskAuth } from './gsk'
-import { genofficeApiKey } from './genoffice-auth'
+import { getofficeApiKey } from './getoffice-auth'
 
 // The sign-in credentials feed provider/media/search resolution in
 // @genoffice/ai-provider (it can't import this package — the registry is its
 // side of the boundary). Importing ai-search in a main process is enough.
-setIssuedVegaKeyGetter(genofficeApiKey)
+setIssuedVegaKeyGetter(getofficeApiKey)
 setLegacyGskKeyGetter(gskApiKey)
 
 export type { ImageSearchResult, WebSearchResult } from './shared'
 export * from './gsk'
-export * from './genoffice-auth'
+export * from './getoffice-auth'
 export * from './media-tools'
 export * from './search-tools'
 
@@ -149,23 +149,26 @@ async function tavilyWebSearch(
 /**
  * VEGA web search — the OpenRouter `web` plugin answers a chat completion
  * with url_citation annotations. A cheap synthesis model suffices: the
- * plugin (not the model) does the retrieval.
+ * plugin (not the model) does the retrieval. Retrieval runs on the Parallel
+ * engine; a failed/empty answer is retried on Exa before the caller's own
+ * fallback chain takes over.
  */
 const VEGA_SEARCH_MODEL = 'google/gemini-3.5-flash-lite'
+const VEGA_SEARCH_ENGINES = ['parallel', 'exa'] as const
 
-async function vegaWebSearch(
+async function vegaWebSearchOnce(
   key: string,
   query: string,
   maxResults: number,
+  engine: (typeof VEGA_SEARCH_ENGINES)[number],
 ): Promise<WebSearchResponse | null> {
-  if (!key) return null
   try {
     const resp = await fetchWithTimeout(`${VEGA_BASE_URL}/chat/completions`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` },
       body: JSON.stringify({
         model: VEGA_SEARCH_MODEL,
-        plugins: [{ id: 'web' }],
+        plugins: [{ id: 'web', engine, max_results: maxResults }],
         messages: [{ role: 'user', content: query }],
       }),
     })
@@ -203,6 +206,19 @@ async function vegaWebSearch(
   } catch {
     return null
   }
+}
+
+async function vegaWebSearch(
+  key: string,
+  query: string,
+  maxResults: number,
+): Promise<WebSearchResponse | null> {
+  if (!key) return null
+  for (const engine of VEGA_SEARCH_ENGINES) {
+    const r = await vegaWebSearchOnce(key, query, maxResults, engine)
+    if (r) return r
+  }
+  return null
 }
 
 // ── Web search ──────────────────────────────────────────────────────

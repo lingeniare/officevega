@@ -39,7 +39,7 @@ const DEFAULT_NAMES = [
   'create_session',
   'get_app_info',
   'insert_content',
-  'open_in_genoffice',
+  'open_in_getoffice',
   'read_deck',
   'read_document',
   'read_docx',
@@ -169,7 +169,7 @@ async function waitForHealth(p: number, timeoutMs = 10_000): Promise<void> {
 
 async function connect(): Promise<Client> {
   await waitForHealth(port)
-  const client = new Client({ name: 'genoffice-acceptance', version: '1.0.0' })
+  const client = new Client({ name: 'getoffice-acceptance', version: '1.0.0' })
   // exactly the shape in the mcpServers entry under test
   await client.connect(new StreamableHTTPClientTransport(new URL(`http://127.0.0.1:${port}/mcp`)))
   return client
@@ -196,7 +196,7 @@ async function call(
 
 beforeAll(async () => {
   port = await freePort()
-  workDir = await mkdtemp(join(tmpdir(), 'genoffice-acceptance-'))
+  workDir = await mkdtemp(join(tmpdir(), 'getoffice-acceptance-'))
   logPath = join(workDir, 'mcp-log.txt')
   configureMcpRuntime({
     version: '0.9.0-acceptance',
@@ -239,7 +239,7 @@ describe('MCP surface over Streamable HTTP (/mcp)', () => {
         formats: string[]
         families: Array<{ family: string; editor: { open: string[] }; mcp?: unknown }>
       }
-      expect(infoJson.name).toBe('GenOffice')
+      expect(infoJson.name).toBe('GetOffice')
       expect(infoJson.version).toBe('0.9.0-acceptance')
       expect(infoJson.defaultSaveDir).toBe(workDir)
       // background generation is off here, so create_docx/create_pptx/create_xlsx
@@ -367,16 +367,16 @@ describe('MCP surface over Streamable HTTP (/mcp)', () => {
       expect(savedSheet.isError).toBe(false)
       expect(sheets.saved).toEqual([join(workDir, 'book.xlsx')])
 
-      // ── 8. open_in_genoffice routes .docx, refuses others ────────────────
+      // ── 8. open_in_getoffice routes .docx, refuses others ────────────────
       const openableDocx = join(workDir, 'open-me.docx')
       await writeFile(openableDocx, 'placeholder')
-      const opened = await call(client, 'open_in_genoffice', { path: openableDocx })
+      const opened = await call(client, 'open_in_getoffice', { path: openableDocx })
       expect(opened.isError).toBe(false)
       expect(openedPaths).toContain(openableDocx)
 
       const notOpenable = join(workDir, 'note.txt')
       await writeFile(notOpenable, 'x')
-      const refusedOpen = await call(client, 'open_in_genoffice', { path: notOpenable })
+      const refusedOpen = await call(client, 'open_in_getoffice', { path: notOpenable })
       expect(refusedOpen.isError).toBe(true)
       expect(refusedOpen.text).toMatch(/could not open/)
     } finally {
@@ -512,7 +512,7 @@ describe('MCP surface over Streamable HTTP (/mcp)', () => {
       result?: { content?: Array<{ text?: string }> }
     }
     const infoText = (callBody.result?.content ?? []).map((c) => c.text ?? '').join('')
-    expect(infoText).toContain('GenOffice')
+    expect(infoText).toContain('GetOffice')
     console.log('[tools/call get_app_info] ok,', infoText.length, 'chars')
 
     // a bad session id is refused, not silently accepted

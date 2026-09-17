@@ -39,8 +39,8 @@ import { fetchRemoteImage } from '@genoffice/electron-utils'
 import {
   webSearchTool,
   imageSearchTool,
-  ensureGenofficeLogin,
-  genofficeApiKey,
+  ensureGetofficeLogin,
+  getofficeApiKey,
   gskApiKey,
   generateImageTool,
   analyzeMediaTool,
@@ -116,6 +116,9 @@ export function registerAiIpc(): void {
     // pick visible so a settings save can't clobber a half-configured selection
     const storedProvider = settings.provider
     settings.provider = activeProvider(settings)
+    // a legacy genspark pick upgraded by a live VEGA credential reads as a
+    // plain vega choice — no storedProvider hint, so a save migrates the file
+    if (storedProvider === 'genspark' && settings.provider === 'vega') return settings
     return storedProvider === settings.provider ? settings : { ...settings, storedProvider }
   })
 
@@ -124,7 +127,7 @@ export function registerAiIpc(): void {
   ipcMain.handle(
     'ai:gsk-status',
     async (_event, withEmail?: boolean): Promise<GenSparkAccountStatus> => {
-      const vegaKey = genofficeApiKey()
+      const vegaKey = getofficeApiKey()
       if (!vegaKey && !hasGskAuth()) return { loggedIn: false }
       if (!withEmail) return { loggedIn: true }
       const email = (await (vegaKey ? vegaAccountInfo() : gskLoginInfo()))?.email
@@ -133,7 +136,7 @@ export function registerAiIpc(): void {
   )
 
   ipcMain.handle('ai:gsk-login', () => {
-    ensureGenofficeLogin((url) => void shell.openExternal(url))
+    ensureGetofficeLogin((url) => void shell.openExternal(url))
   })
 
   ipcMain.handle('ai:set-settings', (_event, settings: AiSettings) => {
@@ -159,7 +162,7 @@ export function registerAiIpc(): void {
     if (provider === 'genspark' && config && !config.apiKey) {
       config = { ...config, apiKey: gskApiKey() }
     } else if (provider === 'vega' && config && !config.apiKey?.trim()) {
-      config = { ...config, apiKey: genofficeApiKey() }
+      config = { ...config, apiKey: getofficeApiKey() }
     }
     const send = (chunk: AiStreamChunk) => {
       if (!event.sender.isDestroyed()) event.sender.send('ai:stream-chunk', chunk)
@@ -169,7 +172,7 @@ export function registerAiIpc(): void {
         requestId,
         type: 'error',
         error:
-          provider === 'genspark' || (provider === 'vega' && !genofficeApiKey())
+          provider === 'genspark' || (provider === 'vega' && !getofficeApiKey())
             ? tm('errGskNotLoggedIn')
             : tm('errNoApiKey', { provider }),
       })

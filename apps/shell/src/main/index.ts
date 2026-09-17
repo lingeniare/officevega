@@ -97,10 +97,10 @@ import {
 } from './cloud-projects'
 import { handleDroppedFiles } from './dropped-files'
 import {
-  genofficeLogout,
-  loadGenofficeAuth,
+  getofficeLogout,
+  loadGetofficeAuth,
   setGskProxyUrl,
-  startGenofficeLogin,
+  startGetofficeLogin,
   vegaAccountInfo,
 } from '@genoffice/ai-search'
 
@@ -276,7 +276,7 @@ import { applyUpdateChannel, initAutoUpdater } from './updater'
 import { isUpdateChannel, type UpdateChannel } from '../shared/update-api'
 
 /**
- * GenOffice unified shell: ONE Electron app, ONE BrowserWindow, hosting the
+ * GetOffice unified shell: ONE Electron app, ONE BrowserWindow, hosting the
  * docs and sheets modules as WebContentsView tabs behind a WPS-style tab
  * strip. The shell owns the lifecycle — single-instance lock, file-
  * association routing by extension, and per-active-tab menu switching.
@@ -286,13 +286,13 @@ import { isUpdateChannel, type UpdateChannel } from '../shared/update-api'
 
 // ANY unpacked run (`npm run shell`, `npm run dev`, `npx electron .`) must not
 // share the installed app's userData or single-instance lock — otherwise a dev
-// run silently quits and forwards its argv to the running installed GenOffice.
-// GENOFFICE_USER_DATA: test drivers point this at a scratch dir so an
+// run silently quits and forwards its argv to the running installed GetOffice.
+// GETOFFICE_USER_DATA: test drivers point this at a scratch dir so an
 // automated instance can run alongside the dev instance (separate lock).
 if (!app.isPackaged)
   app.setPath(
     'userData',
-    process.env.GENOFFICE_USER_DATA ?? join(app.getPath('appData'), 'GenOffice Dev'),
+    process.env.GETOFFICE_USER_DATA ?? join(app.getPath('appData'), 'GetOffice Dev'),
   )
 
 /**
@@ -307,12 +307,19 @@ if (headlessArgv.kind !== 'none') {
   app.dock?.hide()
 }
 
-// The product rename from "AI Office" to GenOffice changed the userData path; migrate old user data once
+// The product renames ("AI Office" → GenOffice → GetOffice) changed the userData path; migrate old user data once
 if (app.isPackaged) {
-  const oldDir = join(app.getPath('appData'), 'AI Office')
   const newDir = app.getPath('userData')
   const newEmpty = !existsSync(newDir) || readdirSync(newDir).length === 0
-  if (newEmpty && existsSync(oldDir)) cpSync(oldDir, newDir, { recursive: true })
+  if (newEmpty) {
+    for (const legacy of ['GenOffice', 'AI Office']) {
+      const oldDir = join(app.getPath('appData'), legacy)
+      if (existsSync(oldDir)) {
+        cpSync(oldDir, newDir, { recursive: true })
+        break
+      }
+    }
+  }
 }
 
 // module build outputs: packaged builds carry them as extraResources
@@ -387,7 +394,7 @@ registerPrivilegedSchemes()
 
 // ---- UI language ----
 // Persisted in userData/app-settings.json so the editor modules can read the
-// same file when they pick up i18n later. GENOFFICE_LANG overrides for tests.
+// same file when they pick up i18n later. GETOFFICE_LANG overrides for tests.
 
 const APP_SETTINGS_PATH = () => join(app.getPath('userData'), 'app-settings.json')
 const OPEN_DOCUMENTS_PATH = () => join(app.getPath('userData'), OPEN_DOCUMENTS_FILE)
@@ -401,8 +408,8 @@ let uiLang: Lang | null = null
 
 function currentLang(): Lang {
   if (uiLang) return uiLang
-  if (process.env.GENOFFICE_LANG) {
-    uiLang = normalizeLang(process.env.GENOFFICE_LANG)
+  if (process.env.GETOFFICE_LANG) {
+    uiLang = normalizeLang(process.env.GETOFFICE_LANG)
     setUiLang(uiLang)
     return uiLang
   }
@@ -2537,7 +2544,7 @@ function createShellWindow(): void {
     height: 900,
     minWidth: 720,
     minHeight: 550,
-    title: 'GenOffice',
+    title: 'GetOffice',
     // vibrancy: editor modules punch translucent regions (e.g. the slides
     // thumbnail pane) through to the desktop
     ...(process.platform === 'darwin'
@@ -2982,7 +2989,7 @@ function newDocTab(): void {
 
 /** MCP: open a blank docs tab and return its webContents id, for the visible-editor bridge */
 function openBlankDocsTabForMcp(): number {
-  if (!tabManager) throw new Error('GenOffice is not ready')
+  if (!tabManager) throw new Error('GetOffice is not ready')
   const tabId = tabManager.openDocsTab(undefined, { newBlank: true })
   const view = tabManager.docsTabs().find((t) => t.id === tabId)
   if (!view) throw new Error('the new document tab could not be opened')
@@ -2999,7 +3006,7 @@ function openBlankDocsTabForMcp(): number {
  * marking is skipped, the file name is the agent's business.
  */
 async function openBlankSheetsTabForMcp(): Promise<number> {
-  if (!tabManager) throw new Error('GenOffice is not ready')
+  if (!tabManager) throw new Error('GetOffice is not ready')
   const filePath = uniquePathIn(defaultSaveDir(), `${tm('untitledSheet')}.xlsx`)
   writeFileSync(filePath, await blankXlsxBuffer())
   const tabId = tabManager.openSheetsTab(filePath)
@@ -3012,7 +3019,7 @@ async function openBlankSheetsTabForMcp(): Promise<number> {
 
 /** MCP: open a blank slides tab and return its webContents id, for the visible-deck bridge */
 function openBlankSlidesTabForMcp(): number {
-  if (!tabManager) throw new Error('GenOffice is not ready')
+  if (!tabManager) throw new Error('GetOffice is not ready')
   const tabId = tabManager.openSlidesTab()
   const view = tabManager.slidesTabs().find((t) => t.id === tabId)
   if (!view) throw new Error('the new presentation tab could not be opened')
@@ -3107,10 +3114,10 @@ function statEntries(paths: string[]): RecentEntry[] {
 }
 
 function registerHomeIpc(): void {
-  // signed-in means GenOffice's own VEGA device login (the issued
+  // signed-in means GetOffice's own VEGA device login (the issued
   // sk-apivega-… key); GET /api/v1/account supplies the deposit
   ipcMain.handle(HOME_CHANNELS.accountStatus, async () => {
-    if (!loadGenofficeAuth()) return { loggedIn: false }
+    if (!loadGetofficeAuth()) return { loggedIn: false }
     await proxyBootstrap
     const info = await vegaAccountInfo()
     return info
@@ -3138,7 +3145,7 @@ function registerHomeIpc(): void {
     }
     // open the browser on the first url event only; later events refresh the rescue URL
     let opened = false
-    const launched = startGenofficeLogin((progress) => {
+    const launched = startGetofficeLogin((progress) => {
       if (progress.url) {
         pendingLoginUrl = progress.url
         if (!opened) {
@@ -3158,7 +3165,7 @@ function registerHomeIpc(): void {
   })
 
   ipcMain.handle(HOME_CHANNELS.accountLogout, async () => {
-    await genofficeLogout()
+    await getofficeLogout()
     // the cloud projects cache belongs to the account that just signed out
     clearCloudProjectsStore(cloudProjectsStorePath())
   })
@@ -3540,7 +3547,7 @@ function registerHomeIpc(): void {
       const displaced: string[] = []
       const result = movePathsInto(sources, targetDir, conflictPolicy, folderErrors(), {
         replaceExisting: (path) => {
-          const parked = join(dirname(path), `.genoffice-replaced-${Date.now()}-${basename(path)}`)
+          const parked = join(dirname(path), `.getoffice-replaced-${Date.now()}-${basename(path)}`)
           const files = isDir(path) ? collectTreeFiles(path) : [path]
           renameSync(path, parked)
           return {
@@ -3629,8 +3636,8 @@ function registerHomeIpc(): void {
     const state = readStarPrompt()
     const docOpens = state.docOpens ?? 0
     // dev preview of the card without waiting out the value thresholds
-    // (same pattern as GENOFFICE_FAKE_UPDATE); nothing is recorded
-    if (!app.isPackaged && process.env.GENOFFICE_FORCE_STAR_PROMPT) return { show: true, docOpens }
+    // (same pattern as GETOFFICE_FAKE_UPDATE); nothing is recorded
+    if (!app.isPackaged && process.env.GETOFFICE_FORCE_STAR_PROMPT) return { show: true, docOpens }
     const grant = (): StarPromptShow => {
       writeStarPrompt(withShown(state, now))
       starPromptSessionGrant = { show: true, docOpens }
@@ -4678,8 +4685,8 @@ registerIntegrationsIpc({
     ? join(process.resourcesPath, 'cli')
     : join(APPS_ROOT, '..', 'packages', 'cli', 'bin'),
   skillPath: app.isPackaged
-    ? join(process.resourcesPath, 'cli', 'skills', 'genoffice', 'SKILL.md')
-    : join(APPS_ROOT, '..', 'skills', 'genoffice', 'SKILL.md'),
+    ? join(process.resourcesPath, 'cli', 'skills', 'getoffice', 'SKILL.md')
+    : join(APPS_ROOT, '..', 'skills', 'getoffice', 'SKILL.md'),
   cliPackageJson: app.isPackaged
     ? join(process.resourcesPath, 'cli', 'package.json')
     : join(APPS_ROOT, '..', 'packages', 'cli', 'package.json'),
@@ -4705,7 +4712,7 @@ const headlessExporters: HeadlessExporters = {
 /**
  * The whole `--headless-export` run: no shell window, no menus, no updater,
  * no single-instance lock (a GUI instance may well be running). Prints
- * exactly one line and exits with the genoffice convention (0/1/2/3).
+ * exactly one line and exits with the getoffice convention (0/1/2/3).
  */
 async function runHeadlessExportEntry(
   parsed: Exclude<HeadlessArgvParse, { kind: 'none' }>,
@@ -4727,7 +4734,7 @@ async function runHeadlessExportEntry(
       resolve()
     })
   })
-  // app.quit() always exits 0; the genoffice envelope needs the real code, and
+  // app.quit() always exits 0; the getoffice envelope needs the real code, and
   // every teardown this run owns has already happened.
   app.exit(headlessExitCode(outcome))
 }
@@ -4774,7 +4781,7 @@ app.whenReady().then(async () => {
     app.quit()
     return
   }
-  // a registry left by a crashed instance must not block genoffice writes
+  // a registry left by a crashed instance must not block getoffice writes
   ownsOpenDocumentsRegistry = true
   publishOpenDocuments(OPEN_DOCUMENTS_PATH(), [])
   if (!app.isPackaged) {
@@ -4838,14 +4845,14 @@ app.whenReady().then(async () => {
     }),
     slidesControl: createSlidesControl({ openBlankTab: () => openBlankSlidesTabForMcp() }),
     sheetsControl: createSheetsControl({ openBlankTab: () => openBlankSheetsTabForMcp() }),
-    // the headless create_*/read_* tools delegate to the bundled genoffice CLI
+    // the headless create_*/read_* tools delegate to the bundled getoffice CLI
     // (the same engines, no second implementation); it runs on the app's own
     // Node runtime via ELECTRON_RUN_AS_NODE
     cliRunner: createCliRunner({
       executable: process.execPath,
       entry: app.isPackaged
-        ? join(process.resourcesPath, 'cli', 'genoffice.cjs')
-        : join(APPS_ROOT, '..', 'packages', 'cli', 'dist', 'genoffice.cjs'),
+        ? join(process.resourcesPath, 'cli', 'getoffice.cjs')
+        : join(APPS_ROOT, '..', 'packages', 'cli', 'dist', 'getoffice.cjs'),
     }),
     logFilePath: join(app.getPath('userData'), 'mcp-log.txt'),
   })

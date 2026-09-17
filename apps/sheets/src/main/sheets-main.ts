@@ -83,8 +83,8 @@ import {
   sheetCsvToXlsxBuffer,
 } from '@genoffice/xlsx-gateway/gateway/csv-import'
 import {
-  ensureGenofficeLogin,
-  genofficeApiKey,
+  ensureGetofficeLogin,
+  getofficeApiKey,
   gskApiKey,
   gskLoginInfo,
   hasGskAuth,
@@ -1452,7 +1452,7 @@ interface SheetsRuntimeConfig {
   rendererFile: string
   /** absolute path to the Rust xlsx-sidecar binary */
   sidecarPath?: string | undefined
-  /** Shell router used to open exported/AI-generated files in a new GenOffice tab. */
+  /** Shell router used to open exported/AI-generated files in a new GetOffice tab. */
   openGeneratedPath?: (path: string) => boolean
   /** Host-owned cross-app document creator (the shell routes docx/pdf/md into Docs). */
   createDocument?: (request: SheetsAiHostDocumentRequest) => Promise<WorkbookCreateDocumentResult>
@@ -1509,7 +1509,7 @@ async function createStandaloneSheetsDocument(
   request: SheetsAiHostDocumentRequest,
 ): Promise<WorkbookCreateDocumentResult> {
   if (request.type === 'docx') {
-    return { ok: false, error: 'Creating DOCX files requires the GenOffice shell or Docs app.' }
+    return { ok: false, error: 'Creating DOCX files requires the GetOffice shell or Docs app.' }
   }
   const title = sanitizeGeneratedFileBase(request.title)
   try {
@@ -1922,7 +1922,7 @@ export async function createSheetsWindow(
     minWidth: 720,
     minHeight: 550,
     show: false,
-    title: 'GenOffice Sheets',
+    title: 'GetOffice Sheets',
     // Traffic lights sit inside the toolbar row.
     ...(process.platform === 'darwin' ? { titleBarStyle: 'hiddenInset' as const } : {}),
     webPreferences: {
@@ -2173,7 +2173,7 @@ function savePastedImage(data: unknown, ext: unknown): string | null {
         ? Buffer.from(data.buffer, data.byteOffset, data.byteLength)
         : null
   if (!bytes || bytes.byteLength === 0) return null
-  const dir = join(app.getPath('temp'), 'genoffice-pasted')
+  const dir = join(app.getPath('temp'), 'getoffice-pasted')
   mkdirSync(dir, { recursive: true })
   const stamp = new Date().toISOString().slice(0, 19).replace(/[-:]/g, '').replace('T', '-')
   const filePath = join(dir, `pasted-${stamp}-${++pastedImageSeq}.${cleanExt}`)
@@ -3236,6 +3236,9 @@ export function registerSheetsAiIpc(): void {
     // pick visible so a settings save can't clobber a half-configured selection
     const storedProvider = settings.provider
     settings.provider = activeProvider(settings)
+    // a legacy genspark pick upgraded by a live VEGA credential reads as a
+    // plain vega choice — no storedProvider hint, so a save migrates the file
+    if (storedProvider === 'genspark' && settings.provider === 'vega') return settings
     return storedProvider === settings.provider ? settings : { ...settings, storedProvider }
   })
 
@@ -3244,7 +3247,7 @@ export function registerSheetsAiIpc(): void {
   ipcMain.handle(
     IPC_CHANNELS.aiGskStatus,
     async (_event, withEmail?: unknown): Promise<GenSparkAccountStatus> => {
-      const vegaKey = genofficeApiKey()
+      const vegaKey = getofficeApiKey()
       if (!vegaKey && !hasGskAuth()) return { loggedIn: false }
       if (!withEmail) return { loggedIn: true }
       const email = (await (vegaKey ? vegaAccountInfo() : gskLoginInfo()))?.email
@@ -3253,7 +3256,7 @@ export function registerSheetsAiIpc(): void {
   )
 
   ipcMain.handle(IPC_CHANNELS.aiGskLogin, () => {
-    ensureGenofficeLogin((url) => void shell.openExternal(url))
+    ensureGetofficeLogin((url) => void shell.openExternal(url))
   })
 
   ipcMain.handle(IPC_CHANNELS.aiSetSettings, (event, input: unknown) => {
@@ -3274,13 +3277,13 @@ export function registerSheetsAiIpc(): void {
     if (provider === 'genspark' && config && !config.apiKey) {
       config = { ...config, apiKey: gskApiKey() }
     } else if (provider === 'vega' && config && !config.apiKey?.trim()) {
-      config = { ...config, apiKey: genofficeApiKey() }
+      config = { ...config, apiKey: getofficeApiKey() }
     }
     if (!config || (provider !== 'codex' && !config.apiKey)) {
       return {
         ok: false,
         error:
-          provider === 'genspark' || (provider === 'vega' && !genofficeApiKey())
+          provider === 'genspark' || (provider === 'vega' && !getofficeApiKey())
             ? tm('errGskNotLoggedIn')
             : tm('errNoApiKey', { provider }),
       }
@@ -3314,7 +3317,7 @@ export function registerSheetsAiIpc(): void {
     if (provider === 'genspark' && config && !config.apiKey) {
       config = { ...config, apiKey: gskApiKey() }
     } else if (provider === 'vega' && config && !config.apiKey?.trim()) {
-      config = { ...config, apiKey: genofficeApiKey() }
+      config = { ...config, apiKey: getofficeApiKey() }
     }
     const send = (chunk: AiStreamChunk) => {
       if (!event.sender.isDestroyed()) event.sender.send(IPC_CHANNELS.aiStreamChunk, chunk)
@@ -3324,7 +3327,7 @@ export function registerSheetsAiIpc(): void {
         requestId,
         type: 'error',
         error:
-          provider === 'genspark' || (provider === 'vega' && !genofficeApiKey())
+          provider === 'genspark' || (provider === 'vega' && !getofficeApiKey())
             ? tm('errGskNotLoggedIn')
             : tm('errNoApiKey', { provider }),
       })
@@ -3842,7 +3845,7 @@ async function writeWorkbookTo(
 /** Copies the workbook into the temp snapshot dir; the copy is the session's
  * save base (see SessionInfo.snapshotPath). */
 async function snapshotWorkbook(path: string): Promise<string> {
-  const dir = join(app.getPath('temp'), 'genoffice-sheets-sessions')
+  const dir = join(app.getPath('temp'), 'getoffice-sheets-sessions')
   await mkdir(dir, { recursive: true })
   const snapshotPath = join(dir, `${randomUUID()}.xlsx`)
   await copyFile(path, snapshotPath)
@@ -3977,7 +3980,7 @@ async function prepareWorkbookForOpen(
     return { openPath: path }
   }
   const stem = basename(path).replace(/\.[^.]+$/, '')
-  const directory = join(app.getPath('temp'), 'genoffice-imports', randomUUID())
+  const directory = join(app.getPath('temp'), 'getoffice-imports', randomUUID())
   await mkdir(directory, { recursive: true })
   const openPath = join(directory, `${stem}.xlsx`)
   try {
@@ -4165,17 +4168,17 @@ export function startSheetsStandalone(): void {
   registerRendererScheme()
   installNavigationGuard(app)
   installContextMenu(app, () => contextMenuLabels(getUiLang()))
-  // GENOFFICE_USER_DATA: test drivers point this at a scratch dir so automated
+  // GETOFFICE_USER_DATA: test drivers point this at a scratch dir so automated
   // instances get their own userData AND single-instance lock (the lock is scoped
   // to userData), allowing parallel instances alongside a normal dev run.
   // Same dev-only hook as apps/slides/src/main/slides-main.ts.
-  if (!app.isPackaged && process.env.GENOFFICE_USER_DATA) {
-    app.setPath('userData', process.env.GENOFFICE_USER_DATA)
+  if (!app.isPackaged && process.env.GETOFFICE_USER_DATA) {
+    app.setPath('userData', process.env.GETOFFICE_USER_DATA)
   }
   void applyMainProcessProxy()
   app.whenReady().then(() => {
     installRendererProtocol({ sheets: join(__dirname, '../renderer') })
-    setUiLang(normalizeLang(process.env.GENOFFICE_LANG ?? app.getLocale()))
+    setUiLang(normalizeLang(process.env.GETOFFICE_LANG ?? app.getLocale()))
     app.setAccessibilitySupportEnabled(true)
     installApplicationMenu()
     startCaptureServer()

@@ -1,5 +1,5 @@
-; Keeps the genoffice command line (resources\cli, holding genoffice.cmd and the
-; extension-less genoffice for Git Bash) on the installing user's PATH for the
+; Keeps the getoffice command line (resources\cli, holding getoffice.cmd and the
+; extension-less getoffice for Git Bash) on the installing user's PATH for the
 ; lifetime of the install. The value is read and written unexpanded
 ; (REG_EXPAND_SZ) so entries such as %USERPROFILE%\bin survive, and Explorer
 ; is told about the change so terminals opened afterwards see it.
@@ -9,22 +9,22 @@
 !include "WinMessages.nsh"
 !include "StrFunc.nsh"
 
-!define GENOFFICE_PATH_MAX 7900
+!define GETOFFICE_PATH_MAX 7900
 
 !macro customInstall
   Push "$INSTDIR\resources\cli"
-  Call GenOfficeAddToUserPath
+  Call GetOfficeAddToUserPath
 !macroend
 
 !macro customUnInstall
   Push "$INSTDIR\resources\cli"
-  Call un.GenOfficeRemoveFromUserPath
+  Call un.GetOfficeRemoveFromUserPath
 !macroend
 
 !ifndef BUILD_UNINSTALLER
 ${StrStr}
 
-Function GenOfficeAddToUserPath
+Function GetOfficeAddToUserPath
   Exch $0 ; directory
   Push $1
   Push $2
@@ -32,7 +32,7 @@ Function GenOfficeAddToUserPath
   ReadRegStr $1 HKCU "Environment" "Path"
   StrLen $2 $1
   ; leave an already oversized PATH alone rather than truncate it
-  IntCmp $2 ${GENOFFICE_PATH_MAX} done 0 done
+  IntCmp $2 ${GETOFFICE_PATH_MAX} done 0 done
   ${StrStr} $3 ";$1;" ";$0;"
   StrCmp $3 "" 0 done
   StrCmp $1 "" 0 +3
@@ -54,7 +54,7 @@ FunctionEnd
 ${UnStrStr}
 ${UnStrRep}
 
-Function un.GenOfficeRemoveFromUserPath
+Function un.GetOfficeRemoveFromUserPath
   Exch $0 ; directory
   Push $1
   Push $2

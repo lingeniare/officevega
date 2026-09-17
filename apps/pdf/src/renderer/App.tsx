@@ -287,7 +287,7 @@ type RibbonTab = (typeof RIBBON_TABS)[number]['id'] | 'fillForm'
 
 export default function App() {
   const { lang, t } = useI18n()
-  const collapse = useRibbonCollapse('genoffice-pdf-ribbon-collapsed')
+  const collapse = useRibbonCollapse('getoffice-pdf-ribbon-collapsed')
   const [doc, setDoc] = useState<PDFDocumentProxy | null>(null)
   const [filePath, setFilePath] = useState('')
   const [status, setStatus] = useState<'loading' | 'error' | 'empty' | 'password' | 'ready'>(
@@ -300,10 +300,10 @@ export default function App() {
   const [pageInput, setPageInput] = useState('1')
   const [sidebar, setSidebar] = useState<'thumbs' | 'outline' | null>('thumbs')
   const [filesOpen, setFilesOpen] = useState(
-    () => localStorage.getItem('genoffice-pdf-show-files') === '1',
+    () => localStorage.getItem('getoffice-pdf-show-files') === '1',
   )
   useEffect(() => {
-    localStorage.setItem('genoffice-pdf-show-files', filesOpen ? '1' : '0')
+    localStorage.setItem('getoffice-pdf-show-files', filesOpen ? '1' : '0')
   }, [filesOpen])
   const [sidebarW, setSidebarW] = useState(loadSidebarW)
   /** raster width for thumbnails — only updated when a drag ends (re-rastering every frame would jank) */
@@ -346,10 +346,10 @@ export default function App() {
   }
   // Persisted so a closed AI panel stays closed on next launch (docs/slides parity)
   const [aiCollapsed, setAiCollapsed] = useState(
-    () => localStorage.getItem('genoffice-pdf-show-ai') === '0',
+    () => localStorage.getItem('getoffice-pdf-show-ai') === '0',
   )
   useEffect(() => {
-    localStorage.setItem('genoffice-pdf-show-ai', aiCollapsed ? '0' : '1')
+    localStorage.setItem('getoffice-pdf-show-ai', aiCollapsed ? '0' : '1')
   }, [aiCollapsed])
   /** One-shot prompt pushed by the ribbon AI buttons; the panel auto-runs it (docs preset pattern) */
   const [aiPreset, setAiPreset] = useState<{ text: string; nonce: number } | null>(null)
@@ -1483,9 +1483,9 @@ export default function App() {
     el.scrollTop = rowTop(rowOfVis(target - 1)) - PAGE_GAP / 2
   }
 
-  // genoffice CLI (`open --page`, `selection`): the shell evaluates this hook
+  // getoffice CLI (`open --page`, `selection`): the shell evaluates this hook
   useEffect(() => {
-    ;(window as unknown as Record<string, unknown>).__genofficeControl = (req: ControlRequest) =>
+    ;(window as unknown as Record<string, unknown>).__getofficeControl = (req: ControlRequest) =>
       handlePdfControl(req, {
         loaded: doc !== null,
         pageCount,

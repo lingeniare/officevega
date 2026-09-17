@@ -7,10 +7,10 @@ import { searchOptionsFromSettings, testSearchProvider } from '../src/search-too
 import { defaultAiSettings } from '@genoffice/ai-provider'
 
 // These cases only test the Serper/DuckDuckGo paths; a local gsk login would take priority, so disable it explicitly.
-// GENOFFICE_AUTH_DIR keeps a developer's real VEGA sign-in out of the tests (index registers genofficeApiKey as the issued-key getter).
+// GETOFFICE_AUTH_DIR keeps a developer's real VEGA sign-in out of the tests (index registers getofficeApiKey as the issued-key getter).
 beforeAll(() => {
   process.env.AI_SEARCH_DISABLE_GSK = '1'
-  process.env.GENOFFICE_AUTH_DIR = mkdtempSync(join(tmpdir(), 'genoffice-auth-test-'))
+  process.env.GETOFFICE_AUTH_DIR = mkdtempSync(join(tmpdir(), 'getoffice-auth-test-'))
 })
 
 const realFetch = globalThis.fetch
@@ -260,8 +260,25 @@ describe('webSearch (VEGA)', () => {
     const r = await webSearch('q', 5, { useGsk: false, vegaKey: 'vk', prefer: 'vega' })
     expect(r.method).toBe('vega')
     expect(r.answer).toBe('The answer.')
-    expect(body.plugins).toEqual([{ id: 'web' }])
+    expect(body.plugins).toEqual([{ id: 'web', engine: 'parallel', max_results: 5 }])
     expect(r.results).toEqual([{ title: 'X', url: 'https://x.com', snippet: 'cite text' }])
+  })
+
+  it('retries a failed or empty Parallel answer on the Exa engine', async () => {
+    const engines: string[] = []
+    mockFetch((url, init) => {
+      const engine = (JSON.parse(String(init?.body)).plugins as { engine: string }[])[0].engine
+      engines.push(engine)
+      if (engine === 'parallel') return { ok: false }
+      return {
+        ok: true,
+        json: { choices: [{ message: { content: 'Exa answer.', annotations: [] } }] },
+      }
+    })
+    const r = await webSearch('q', 3, { useGsk: false, vegaKey: 'vk', prefer: 'vega' })
+    expect(r.method).toBe('vega')
+    expect(r.answer).toBe('Exa answer.')
+    expect(engines).toEqual(['parallel', 'exa'])
   })
 
   it('a VEGA failure falls through to the remaining chain', async () => {

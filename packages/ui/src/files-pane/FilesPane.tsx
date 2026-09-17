@@ -20,9 +20,9 @@ export interface FilesPaneProps {
 }
 
 /** drag payload shared with the shell home screen (JSON array of absolute paths) */
-const DRAG_PATHS_MIME = 'application/x-genoffice-paths'
+const DRAG_PATHS_MIME = 'application/x-getoffice-paths'
 const DRAG_EXPAND_DELAY_MS = 600
-const EXPANDED_KEY = 'genoffice.filesPane.expanded'
+const EXPANDED_KEY = 'getoffice.filesPane.expanded'
 
 const BADGE: Record<string, { label: string; color: string }> = {
   docx: { label: 'W', color: '#2b63d9' },

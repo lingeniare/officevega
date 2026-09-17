@@ -14,7 +14,7 @@ test.describe('editor files pane', () => {
   let root: string
 
   test.beforeEach(() => {
-    root = realpathSync(mkdtempSync(join(tmpdir(), 'genoffice-e2e-files-')))
+    root = realpathSync(mkdtempSync(join(tmpdir(), 'getoffice-e2e-files-')))
     mkdirSync(join(root, 'Notes'))
     writeFileSync(join(root, 'Notes', 'first.md'), '# first')
     writeFileSync(join(root, 'Notes', 'second.md'), '# second')
