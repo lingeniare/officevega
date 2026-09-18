@@ -1,7 +1,13 @@
 import { defaultAiMediaSettings, resolveAiMediaSettings } from './media'
 import { defaultAiSearchSettings, resolveAiSearchSettings } from './search-settings'
 import { issuedVegaKey } from './vega-key'
-import type { AiProviderId, AiProviderMeta, AiSettings, LegacyAiSettings } from './types'
+import type {
+  AiProviderConfig,
+  AiProviderId,
+  AiProviderMeta,
+  AiSettings,
+  LegacyAiSettings,
+} from './types'
 
 /**
  * Genspark server-side LLM proxy endpoints. All three protocols share the
@@ -346,6 +352,34 @@ export function activeProvider(settings: AiSettings): AiProviderId {
   // VEGA also accepts the sign-in-issued key — it never enters the settings file
   if (!config.apiKey?.trim() && !(provider === 'vega' && issuedVegaKey())) return 'genspark'
   return provider
+}
+
+/**
+ * Request-time companion to activeProvider() for stream/chat handlers. A
+ * renderer caches the resolved provider per tab, so a snapshot taken before
+ * VEGA sign-in keeps asking for 'genspark' even though the issued key now
+ * exists — re-apply the same legacy-genspark upgrade or that tab stays
+ * signed-out until reload. Every other pick passes through untouched:
+ * re-resolving the stored choice would break the settings dialog's
+ * test-connection on a stored-but-keyless BYOK pick. The returned vega config
+ * carries the effective credential (its own key, else the issued one).
+ */
+export function requestProvider(settings: {
+  provider: string
+  providers?: Record<string, AiProviderConfig | undefined>
+}): {
+  provider: AiProviderId
+  config: AiProviderConfig | undefined
+} {
+  const provider = settings.provider as AiProviderId
+  const config = settings.providers?.[provider]
+  if (provider !== 'genspark') return { provider, config }
+  const vega = settings.providers?.vega
+  const vegaKey = vega?.apiKey?.trim() || issuedVegaKey()
+  if (vega?.model?.trim() && vegaKey) {
+    return { provider: 'vega', config: { ...vega, apiKey: vegaKey } }
+  }
+  return { provider, config }
 }
 
 /**

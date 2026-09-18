@@ -531,6 +531,7 @@ button {
 
 .ribbon-tab-file:hover,
 .ribbon-tab-file.open {
+  color: var(--slides-on-accent);
   background: var(--accent-dark);
 }
 
@@ -6033,6 +6034,7 @@ body.vib .slide-list {
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
 }
 

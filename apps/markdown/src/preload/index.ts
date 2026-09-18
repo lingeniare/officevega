@@ -85,6 +85,12 @@ const api: MarkdownApi = {
   },
   getAiSettings: () => ipcRenderer.invoke(AI_CHANNELS.getSettings),
   aiGskStatus: () => ipcRenderer.invoke(AI_CHANNELS.gskStatus),
+  onAiAuthChanged: (handler: (status: { loggedIn: boolean }) => void) => {
+    const listener = (_e: Electron.IpcRendererEvent, status: { loggedIn: boolean }) =>
+      handler(status)
+    ipcRenderer.on(AI_CHANNELS.authChanged, listener)
+    return () => ipcRenderer.removeListener(AI_CHANNELS.authChanged, listener)
+  },
   aiStream: (request) => ipcRenderer.invoke(AI_CHANNELS.stream, request),
   aiStreamCancel: (requestId) => ipcRenderer.invoke(AI_CHANNELS.streamCancel, requestId),
   onAiStream: (handler) => {

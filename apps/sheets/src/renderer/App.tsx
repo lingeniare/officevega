@@ -848,23 +848,35 @@ export function App(): React.JSX.Element {
   const aiSettingsRef = useRef<AiSettings | null>(null)
   aiSettingsRef.current = aiSettings
 
-  /** gsk login state for the cloud-tools gate (refreshed on mount and window focus) */
+  /** gsk login state for the cloud-tools gate (refreshed on mount, window focus and auth pushes) */
   const gskLoggedInRef = useRef(false)
   useEffect(() => {
     let alive = true
+    const applyLoggedIn = (loggedIn: boolean) => {
+      gskLoggedInRef.current = loggedIn
+      if (!loggedIn) return
+      // the sign-in prompt on a failed run is dead weight once the key exists
+      setChat((previous) =>
+        previous.some((e) => e.loginRequired)
+          ? previous.map((e) => (e.loginRequired ? { ...e, loginRequired: false } : e))
+          : previous,
+      )
+    }
     const refresh = () => {
       void window.desktopApi
         ?.aiGskStatus()
         .then((s) => {
-          if (alive) gskLoggedInRef.current = !!s?.loggedIn
+          if (alive) applyLoggedIn(!!s?.loggedIn)
         })
         .catch(() => {})
     }
     refresh()
     window.addEventListener('focus', refresh)
+    const offAuth = window.desktopApi?.onAiAuthChanged?.((s) => applyLoggedIn(s.loggedIn))
     return () => {
       alive = false
       window.removeEventListener('focus', refresh)
+      offAuth?.()
     }
   }, [])
   const [aiBusy, setAiBusy] = useState(false)
@@ -1302,9 +1314,10 @@ export function App(): React.JSX.Element {
     const config = settings.providers[settings.provider]
     if (!config?.model) return false
     // Genspark's key never lands in the settings file; the main process injects
-    // it from the gsk login state. When logged out, requests return an error
-    // guiding sign-in — not intercepted here.
-    return settings.provider === 'genspark' || !!config.apiKey
+    // it from the gsk login state. The VEGA sign-in key is injected the same
+    // way. When logged out, requests return an error guiding sign-in — not
+    // intercepted here.
+    return settings.provider === 'genspark' || settings.provider === 'vega' || !!config.apiKey
   }
 
   /** Image attachments read as base64 and sent multimodal with this user message
@@ -1468,6 +1481,11 @@ export function App(): React.JSX.Element {
 
   useEffect(() => {
     void window.desktopApi.getAiSettings().then(setAiSettingsState)
+    // sign-in/out anywhere re-resolves the effective provider (a pre-login
+    // snapshot's 'genspark' route would never reach the issued VEGA key)
+    return window.desktopApi?.onAiAuthChanged(() => {
+      void window.desktopApi.getAiSettings().then(setAiSettingsState)
+    })
   }, [])
 
   useEffect(() => {

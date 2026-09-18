@@ -158,6 +158,11 @@ const api: DesktopApi = {
   aiStreamCancel: (requestId: string) => ipcRenderer.invoke('ai:stream-cancel', requestId),
   aiGskStatus: (withEmail?: boolean) => ipcRenderer.invoke('ai:gsk-status', withEmail),
   aiGskLogin: () => ipcRenderer.invoke('ai:gsk-login'),
+  onAiAuthChanged: (handler: (status: { loggedIn: boolean }) => void) => {
+    const listener = (_event: IpcRendererEvent, status: { loggedIn: boolean }) => handler(status)
+    ipcRenderer.on('ai:auth-changed', listener)
+    return () => ipcRenderer.removeListener('ai:auth-changed', listener)
+  },
   webSearch: (query: string, maxResults?: number) =>
     ipcRenderer.invoke('ai:web-search', query, maxResults),
   imageSearch: (query: string, maxResults?: number) =>

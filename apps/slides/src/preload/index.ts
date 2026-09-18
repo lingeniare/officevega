@@ -371,6 +371,11 @@ const api: SlidesApi = {
   aiStreamCancel: (requestId: string) => ipcRenderer.invoke('ai:stream-cancel', requestId),
   aiGskStatus: (withEmail?: boolean) => ipcRenderer.invoke('ai:gsk-status', withEmail),
   aiGskLogin: () => ipcRenderer.invoke('ai:gsk-login'),
+  onAiAuthChanged: (handler: (status: { loggedIn: boolean }) => void) => {
+    const listener = (_e: IpcRendererEvent, status: { loggedIn: boolean }) => handler(status)
+    ipcRenderer.on('ai:auth-changed', listener)
+    return () => ipcRenderer.removeListener('ai:auth-changed', listener)
+  },
   aiLogRunFailure: (entry: AiRunFailure) => ipcRenderer.invoke('ai:log-run-failure', entry),
   webSearch: (query: string, maxResults?: number) =>
     ipcRenderer.invoke('ai:web-search', query, maxResults),

@@ -537,6 +537,15 @@
   color: var(--text-tertiary, var(--text-secondary));
 }
 
+/* device-flow sign-in code beside the waiting button — compact read-only field */
+.set-device-code {
+  width: 120px;
+  min-width: 0;
+  text-align: center;
+  letter-spacing: 0.08em;
+  cursor: text;
+}
+
 .set-ai-note {
   padding: 8px 0 2px;
   line-height: 1.5;

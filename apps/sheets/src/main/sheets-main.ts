@@ -25,6 +25,7 @@ import {
   session as electronSession,
   shell,
   systemPreferences,
+  webContents,
   WebContentsView,
 } from 'electron'
 import type {
@@ -66,11 +67,11 @@ import {
   defaultAiSettings,
   activeProvider,
   maxOutputTokensOf,
+  requestProvider,
   resolveAiSettings,
   setAiUserAgent,
   setRescueFetch,
   streamForProvider,
-  type AiProviderId,
   type AiSettings,
   type AiStreamChunk,
   type GenSparkAccountStatus,
@@ -85,6 +86,7 @@ import {
 import {
   ensureGetofficeLogin,
   getofficeApiKey,
+  setGetofficeAuthListener,
   gskApiKey,
   gskLoginInfo,
   hasGskAuth,
@@ -3224,6 +3226,15 @@ export function registerSheetsAiIpc(): void {
   aiIpcRegistered = true
   app.once('before-quit', shutdownCodexAppServers)
 
+  // sign-in/out lands here whichever UI started it (chat button, Home,
+  // settings): every open view re-reads settings/status off this push
+  setGetofficeAuthListener((auth) => {
+    const payload = { loggedIn: auth !== null }
+    for (const wc of webContents.getAllWebContents()) {
+      if (!wc.isDestroyed()) wc.send(IPC_CHANNELS.aiAuthChanged, payload)
+    }
+  })
+
   // Node fetch (undici) direct connections get reset under VPN/tun setups; retry over Chromium's stack
   setRescueFetch((url, init) => net.fetch(url, init))
   setAiUserAgent(`GenOffice/${app.getVersion()}`)
@@ -3271,9 +3282,11 @@ export function registerSheetsAiIpc(): void {
     sessionFor(event)
     const request = aiChatRequestSchema.parse(input)
     // callers pass the effective provider from ai:get-settings — resolving again
-    // here would break "test connection" on a stored-but-keyless BYOK pick
-    const provider = request.settings.provider as AiProviderId
-    let config = request.settings.providers[provider]
+    // here would break "test connection" on a stored-but-keyless BYOK pick; only
+    // the legacy-genspark→vega upgrade is re-applied (a pre-sign-in snapshot
+    // would otherwise stay on the signed-out route until the tab reloads)
+    const { provider, config: resolvedConfig } = requestProvider(request.settings)
+    let config = resolvedConfig
     if (provider === 'genspark' && config && !config.apiKey) {
       config = { ...config, apiKey: gskApiKey() }
     } else if (provider === 'vega' && config && !config.apiKey?.trim()) {
@@ -3309,9 +3322,11 @@ export function registerSheetsAiIpc(): void {
     const tools = request.tools ?? []
     const maxTokens = request.maxTokens ?? maxOutputTokensOf(request.settings)
     // callers pass the effective provider from ai:get-settings — resolving again
-    // here would break "test connection" on a stored-but-keyless BYOK pick
-    const provider = request.settings.provider as AiProviderId
-    let config = request.settings.providers[provider]
+    // here would break "test connection" on a stored-but-keyless BYOK pick; only
+    // the legacy-genspark→vega upgrade is re-applied (a pre-sign-in snapshot
+    // would otherwise stay on the signed-out route until the tab reloads)
+    const { provider, config: resolvedConfig } = requestProvider(request.settings)
+    let config = resolvedConfig
     // Genspark's key never enters the settings file; it is read from the gsk
     // login state per request. A VEGA slot likewise inherits the sign-in-issued key.
     if (provider === 'genspark' && config && !config.apiKey) {

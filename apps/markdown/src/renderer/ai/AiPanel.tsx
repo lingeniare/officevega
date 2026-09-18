@@ -186,7 +186,7 @@ export function AiPanel({
   }, [panelWidth])
 
   const settingsRef = useRef<AiSettings | null>(null)
-  /** gsk login state for the generate_image gate (refreshed on mount and window focus) */
+  /** gsk login state for the generate_image gate (refreshed on mount, window focus and auth pushes) */
   const gskLoggedInRef = useRef(false)
   useEffect(() => {
     let alive = true
@@ -200,9 +200,13 @@ export function AiPanel({
     }
     refresh()
     window.addEventListener('focus', refresh)
+    const offAuth = window.markdownApi?.onAiAuthChanged?.(
+      (s) => (gskLoggedInRef.current = s.loggedIn),
+    )
     return () => {
       alive = false
       window.removeEventListener('focus', refresh)
+      offAuth?.()
     }
   }, [])
   const langRef = useRef(lang)

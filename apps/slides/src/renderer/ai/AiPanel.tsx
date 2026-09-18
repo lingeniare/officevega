@@ -526,23 +526,35 @@ export function AiPanel({
   const settingsRef = useRef(settings)
   settingsRef.current = settings
 
-  /** gsk login state for the cloud-tools gate (refreshed on mount and window focus) */
+  /** gsk login state for the cloud-tools gate (refreshed on mount, window focus and auth pushes) */
   const gskLoggedInRef = useRef(false)
   useEffect(() => {
     let alive = true
+    const applyLoggedIn = (loggedIn: boolean) => {
+      gskLoggedInRef.current = loggedIn
+      if (!loggedIn) return
+      // the sign-in prompt on a failed run is dead weight once the key exists
+      setChat((prev) =>
+        prev.some((e) => e.loginRequired)
+          ? prev.map((e) => (e.loginRequired ? { ...e, loginRequired: false } : e))
+          : prev,
+      )
+    }
     const refresh = () => {
       void window.slidesApi
         ?.aiGskStatus()
         .then((s) => {
-          if (alive) gskLoggedInRef.current = !!s?.loggedIn
+          if (alive) applyLoggedIn(!!s?.loggedIn)
         })
         .catch(() => {})
     }
     refresh()
     window.addEventListener('focus', refresh)
+    const offAuth = window.slidesApi?.onAiAuthChanged?.((s) => applyLoggedIn(s.loggedIn))
     return () => {
       alive = false
       window.removeEventListener('focus', refresh)
+      offAuth?.()
     }
   }, [])
   const imagesRef = useRef(images)

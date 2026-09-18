@@ -34,6 +34,7 @@ import {
   nativeImage,
   net,
   shell,
+  webContents,
 } from 'electron'
 import {
   appMenuLabels,
@@ -86,6 +87,7 @@ import {
   type AiMediaProviderId,
   type AiProviderId,
   type AiSearchProviderId,
+  requestProvider,
   resolveAiSettings,
   maxOutputTokensOf,
   setAiUserAgent,
@@ -102,6 +104,7 @@ import { listCodexModels, shutdownCodexAppServers } from '@genoffice/ai-provider
 import {
   ensureGetofficeLogin,
   getofficeApiKey,
+  setGetofficeAuthListener,
   gskApiKey,
   generateImageTool,
   testSearchProvider,
@@ -2857,6 +2860,14 @@ const activeAiStreams = new Map<string, AbortController>()
  */
 export function registerAiIpc(): void {
   app.once('before-quit', shutdownCodexAppServers)
+  // sign-in/out lands here whichever UI started it (chat button, Home,
+  // settings): every open view re-reads settings/status off this push
+  setGetofficeAuthListener((auth) => {
+    const payload = { loggedIn: auth !== null }
+    for (const wc of webContents.getAllWebContents()) {
+      if (!wc.isDestroyed()) wc.send('ai:auth-changed', payload)
+    }
+  })
   ipcMain.handle('ai:get-settings', (): AiSettings => {
     const stored = readJson<Partial<AiSettings> & LegacyAiSettings>(SETTINGS_PATH(), {})
     const settings = resolveAiSettings(stored, defaultAiSettings())
@@ -2940,9 +2951,11 @@ export function registerAiIpc(): void {
     const tools = request.tools ?? []
     const maxTokens = request.maxTokens ?? maxOutputTokensOf(settings)
     // callers pass the effective provider from ai:get-settings — resolving again
-    // here would break "test connection" on a stored-but-keyless BYOK pick
-    const provider = settings.provider
-    let config = settings.providers?.[provider]
+    // here would break "test connection" on a stored-but-keyless BYOK pick; only
+    // the legacy-genspark→vega upgrade is re-applied (a pre-sign-in snapshot
+    // would otherwise stay on the signed-out route until the tab reloads)
+    const { provider, config: resolvedConfig } = requestProvider(settings)
+    let config = resolvedConfig
     // the genspark key never enters the settings file; requests take it from the gsk login state.
     // A VEGA slot likewise inherits the sign-in-issued key when its own is empty.
     if (provider === 'genspark' && config && !config.apiKey) {
@@ -3111,9 +3124,11 @@ export function registerAiIpc(): void {
   ipcMain.handle('ai:chat', async (_event, request: AiChatRequest) => {
     const { settings, system, user } = request
     // callers pass the effective provider from ai:get-settings — resolving again
-    // here would break "test connection" on a stored-but-keyless BYOK pick
-    const provider = settings.provider
-    let config = settings.providers?.[provider]
+    // here would break "test connection" on a stored-but-keyless BYOK pick; only
+    // the legacy-genspark→vega upgrade is re-applied (a pre-sign-in snapshot
+    // would otherwise stay on the signed-out route until the tab reloads)
+    const { provider, config: resolvedConfig } = requestProvider(settings)
+    let config = resolvedConfig
     if (provider === 'genspark' && config && !config.apiKey) {
       config = { ...config, apiKey: gskApiKey() }
     } else if (provider === 'vega' && config && !config.apiKey?.trim()) {

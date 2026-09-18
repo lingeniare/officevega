@@ -54,8 +54,10 @@ function displayName(id: string, name: unknown): string {
   const n = typeof name === 'string' ? name.trim() : ''
   if (!n) return id
   const split = /^([^:]+):\s*(.+)$/.exec(n)
-  return split && split[1].trim().toLowerCase() === id.split('/')[0]?.toLowerCase()
-    ? split[2].trim()
+  const vendor = split?.[1]
+  const rest = split?.[2]
+  return vendor && rest && vendor.trim().toLowerCase() === id.split('/')[0]?.toLowerCase()
+    ? rest.trim()
     : n
 }
 

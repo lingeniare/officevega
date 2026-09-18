@@ -14,24 +14,15 @@ import type {
   FolderEntry,
   FolderListing,
   FolderRoot,
-  HomeApi,
   MoveConflictPolicy,
   RecentEntry,
 } from '../../shared/home-api'
-import type { IntegrationsApi } from '../../shared/integrations-api'
 import { useDismissablePopover } from '@genoffice/ui'
 import { fileCountKey, visiblePageCount } from './counts'
 import { useI18n } from './locale'
 import type { I18n, StringKey } from './locale'
 import { SettingsModal } from './SettingsModal'
 import { skillUpdateDue } from './IntegrationsPane'
-
-declare global {
-  interface Window {
-    aiOffice: HomeApi
-    aiOfficeIntegrations?: IntegrationsApi
-  }
-}
 
 /** page size of the home list; scrolling to the bottom auto-loads the next page */
 const PAGE_SIZE = 50
@@ -669,6 +660,8 @@ function AccountEntry({
   >(null)
   // auth URL reported by the login CLI — rescue entry when the browser did not open
   const [authUrl, setAuthUrl] = useState<string | null>(null)
+  // device-flow user code shown in the settings sign-in field while waiting
+  const [deviceCode, setDeviceCode] = useState<string | null>(null)
   const [urlCopied, setUrlCopied] = useState(false)
   const loginDeadline = useRef(0)
   const [settingsOpen, setSettingsOpen] = useState(false)
@@ -707,6 +700,7 @@ function AccountEntry({
     const off = window.aiOffice.onAccountLogin?.((ev) => {
       if (ev.phase === 'url') {
         if (ev.url) setAuthUrl(ev.url)
+        if (ev.userCode) setDeviceCode(ev.userCode)
         if (ev.expiresInSec) loginDeadline.current = Date.now() + ev.expiresInSec * 1000
       } else if (ev.phase === 'success') {
         void window.aiOffice.accountStatus().then((s) => {
@@ -714,11 +708,13 @@ function AccountEntry({
             setStatus(s)
             setWaiting(false)
             setAuthUrl(null)
+            setDeviceCode(null)
           }
         })
       } else if (ev.phase === 'error') {
         setWaiting(false)
         setAuthUrl(null)
+        setDeviceCode(null)
         setLoginError(
           ev.error === 'network' ? 'network' : ev.error === 'expired' ? 'expired' : 'failed',
         )
@@ -736,15 +732,42 @@ function AccountEntry({
           setStatus(s)
           setWaiting(false)
           setAuthUrl(null)
+          setDeviceCode(null)
         } else if (Date.now() > loginDeadline.current) {
           setWaiting(false)
           setAuthUrl(null)
+          setDeviceCode(null)
           setLoginError('timeout')
         }
       })
     }, LOGIN_POLL_MS)
     return () => clearInterval(timer)
   }, [waiting, loginNonce])
+
+  // sign-in/out done elsewhere (a chat panel's login button, another view):
+  // pushed by the AI IPC layer so this chip never waits for a click/poll
+  useEffect(() => {
+    return window.aiOffice?.onAuthChanged?.((s) => {
+      if (!s.loggedIn) {
+        statusSeq.current++
+        setStatus({ loggedIn: false })
+        setWaiting(false)
+        setAuthUrl(null)
+        setDeviceCode(null)
+        return
+      }
+      const seq = statusSeq.current
+      void window.aiOffice.accountStatus?.().then((fresh) => {
+        if (seq !== statusSeq.current) return
+        setStatus(fresh)
+        if (fresh.loggedIn) {
+          setWaiting(false)
+          setAuthUrl(null)
+          setDeviceCode(null)
+        }
+      })
+    })
+  }, [])
 
   const loggedIn = status?.loggedIn ?? false
   const email = status?.email ?? ''
@@ -773,6 +796,7 @@ function AccountEntry({
     setLoginError(null)
     setWaiting(true)
     setAuthUrl(null)
+    setDeviceCode(null)
     setUrlCopied(false)
     loginDeadline.current = Date.now() + LOGIN_MAX_WAIT_MS
     setLoginNonce((n) => n + 1)
@@ -811,10 +835,7 @@ function AccountEntry({
           status={status}
           loggingOut={loggingOut}
           loginWaiting={waiting}
-          loginUrl={authUrl}
-          urlCopied={urlCopied}
-          onOpenLoginUrl={openLoginUrl}
-          onCopyLoginUrl={copyLoginUrl}
+          deviceCode={deviceCode}
           onClose={() => setSettingsOpen(false)}
           onLogin={() => {
             setSettingsOpen(false)

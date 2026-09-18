@@ -10,8 +10,10 @@ import {
   getofficeProxyFallbackPreferred,
   loadGetofficeAuth,
   resetGetofficeAuthCache,
+  setGetofficeAuthListener,
   startGetofficeLogin,
   vegaAccountInfo,
+  type GetofficeAuth,
   type GskLoginProgress,
 } from '../src/getoffice-auth'
 import { gskApiKey, setGskProxyUrl } from '../src/gsk'
@@ -119,7 +121,12 @@ describe('startGetofficeLogin (VEGA device flow)', () => {
     const fetchMock = stubFlow({ polls: [PENDING, PENDING] })
     const events = await loginAndCollect()
 
-    expect(events[0]).toEqual({ phase: 'url', url: AUTH_URL, expiresInSec: 600 })
+    expect(events[0]).toEqual({
+      phase: 'url',
+      url: AUTH_URL,
+      expiresInSec: 600,
+      userCode: 'ABCD-1234',
+    })
     expect(events.at(-1)).toEqual({ phase: 'success' })
 
     const saved = JSON.parse(readFileSync(getofficeAuthPath(), 'utf-8'))
@@ -393,6 +400,46 @@ describe('getofficeLogout', () => {
       delete process.env.GENOFFICE_AUTH_DIR
       rmSync(legacyDir, { recursive: true, force: true })
     }
+  })
+})
+
+describe('setGetofficeAuthListener', () => {
+  it('fires with the stored auth on login and with null on logout', async () => {
+    const seen: (GetofficeAuth | null)[] = []
+    setGetofficeAuthListener((auth) => seen.push(auth))
+
+    stubFlow()
+    await loginAndCollect()
+    expect(seen).toEqual([{ apiKey: API_KEY, keyId: 'kid-1' }])
+
+    await getofficeLogout()
+    expect(seen).toEqual([{ apiKey: API_KEY, keyId: 'kid-1' }, null])
+  })
+
+  it('a throwing listener does not fail the login or logout that just ran', async () => {
+    setGetofficeAuthListener(() => {
+      throw new Error('broken broadcast')
+    })
+    stubFlow()
+    const events = await loginAndCollect()
+    expect(events.at(-1)).toEqual({ phase: 'success' })
+    expect(getofficeApiKey()).toBe(API_KEY)
+    await expect(getofficeLogout()).resolves.toBeUndefined()
+    expect(getofficeApiKey()).toBe('')
+  })
+
+  it('is cleared by resetGetofficeAuthCache and can be unregistered', async () => {
+    const seen: (GetofficeAuth | null)[] = []
+    setGetofficeAuthListener((auth) => seen.push(auth))
+    resetGetofficeAuthCache()
+    stubFlow()
+    await loginAndCollect()
+    expect(seen).toEqual([])
+
+    setGetofficeAuthListener((auth) => seen.push(auth))
+    setGetofficeAuthListener(null)
+    await getofficeLogout()
+    expect(seen).toEqual([])
   })
 })
 

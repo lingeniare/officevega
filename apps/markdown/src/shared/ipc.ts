@@ -77,6 +77,7 @@ export type SaveMarkdownResult =
 export const AI_CHANNELS = {
   getSettings: 'ai:get-settings',
   gskStatus: 'ai:gsk-status',
+  authChanged: 'ai:auth-changed',
   stream: 'ai:stream',
   streamChunk: 'ai:stream-chunk',
   streamCancel: 'ai:stream-cancel',
@@ -195,6 +196,8 @@ export interface MarkdownApi {
   getAiSettings(): Promise<AiSettings>
   /** AI account status (shell-registered ai:gsk-status: VEGA sign-in key, gsk CLI fallback) — gates generate_image with the cloud-tools toggle */
   aiGskStatus(): Promise<GenSparkAccountStatus>
+  /** pushed by main on every VEGA sign-in/out — drop the cached login gate without a reload */
+  onAiAuthChanged(handler: (status: { loggedIn: boolean }) => void): () => void
   aiStream(request: AiStreamRequest): Promise<void>
   aiStreamCancel(requestId: string): Promise<void>
   onAiStream(handler: (chunk: AiStreamChunk) => void): () => void

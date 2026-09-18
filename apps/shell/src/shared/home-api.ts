@@ -164,6 +164,8 @@ export interface HomeApi {
   accountLogin(): Promise<boolean>
   /** progress events for the login started via accountLogin; returns an unsubscribe */
   onAccountLogin(handler: (ev: AccountLoginEvent) => void): () => void
+  /** sign-in/out anywhere in the app (including a chat panel's login button); refresh accountStatus */
+  onAuthChanged(handler: (status: { loggedIn: boolean }) => void): () => void
   /** re-open the pending login auth URL in the default browser (rescue when auto-open failed) */
   openLoginUrl(): Promise<void>
   /** log out (clears the saved API key; the login state is shared globally with the gsk CLI) */
@@ -270,6 +272,14 @@ export interface HomeApi {
   }): Promise<{ ok: boolean; error?: string }>
 }
 
+/** the preload exposes the API as window.aiOffice — declared here so every
+ *  importer (renderers, tests) sees it without pulling in Home.tsx */
+declare global {
+  interface Window {
+    aiOffice: HomeApi
+  }
+}
+
 export interface AiCatalogEntry extends AiProviderMeta {
   /** default endpoint for fixed-endpoint providers ('' = model-dependent or user-supplied) */
   defaultBaseUrl: string
@@ -329,6 +339,8 @@ export interface AccountStatus {
 export interface AccountLoginEvent {
   phase: 'launched' | 'url' | 'success' | 'error'
   url?: string
+  /** device-flow user code (e.g. "ABCD-1234") for the settings sign-in field */
+  userCode?: string
   expiresInSec?: number
   /** 'network' | 'expired' | raw CLI error text */
   error?: string
@@ -389,6 +401,9 @@ export const HOME_CHANNELS = {
   accountStatus: 'home:account-status',
   accountLogin: 'home:account-login',
   accountLoginEvent: 'home:account-login-event',
+  // app-wide push: emitted by the AI IPC layer on every VEGA sign-in/out,
+  // whichever UI started it (a chat panel's login button included)
+  authChanged: 'ai:auth-changed',
   accountLoginOpenUrl: 'home:account-login-open-url',
   accountLogout: 'home:account-logout',
   getAppVersion: 'home:get-app-version',

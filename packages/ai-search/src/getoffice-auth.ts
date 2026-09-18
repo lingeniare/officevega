@@ -22,6 +22,8 @@ import { asRecord, gskProxyUrl } from './shared'
 export interface GskLoginProgress {
   phase: 'url' | 'success' | 'error'
   url?: string
+  /** RFC 8628 user code (e.g. "ABCD-1234") shown next to the waiting button */
+  userCode?: string
   expiresInSec?: number
   /** 'network' | 'expired' | 'denied' | raw error text */
   error?: string
@@ -183,6 +185,30 @@ export function loadGetofficeAuth(): GetofficeAuth | null {
   return cachedAuth
 }
 
+// ── Auth-change notification ─────────────────────────────────────────
+
+/**
+ * Single-slot observer registered by the app's AI IPC setup to push
+ * sign-in/out to renderers (tabs hold a cached settings snapshot and would
+ * otherwise keep sending the pre-login provider route). Save fires with the
+ * stored auth, clear with null. One slot is enough: exactly one AI IPC
+ * registrar runs per process (shell mode registers docs'; a standalone app
+ * build registers its own — a re-register just swaps the same broadcast).
+ */
+let authChangedListener: ((auth: GetofficeAuth | null) => void) | null = null
+
+export function setGetofficeAuthListener(fn: ((auth: GetofficeAuth | null) => void) | null): void {
+  authChangedListener = fn
+}
+
+function emitAuthChanged(auth: GetofficeAuth | null): void {
+  try {
+    authChangedListener?.(auth)
+  } catch {
+    /* a broken listener must not fail the login/logout that just ran */
+  }
+}
+
 /** The app-issued VEGA key (server key name "genoffice"); '' when not signed in. Cached (invalidated by login/logout). */
 export function getofficeApiKey(): string {
   return loadGetofficeAuth()?.apiKey ?? ''
@@ -197,6 +223,7 @@ function saveAuth(auth: GetofficeAuth): void {
     { mode: 0o600 },
   )
   cachedAuth = auth
+  emitAuthChanged(auth)
 }
 
 function clearAuth(): void {
@@ -210,6 +237,7 @@ function clearAuth(): void {
     }
   }
   cachedAuth = null
+  emitAuthChanged(null)
 }
 
 // ── HTTP helpers ─────────────────────────────────────────────────────
@@ -303,7 +331,17 @@ async function runDeviceLogin(
   }
   const expiresInSec = Number(json.expires_in) > 0 ? Number(json.expires_in) : 600
   let pollMs = Number(json.interval) > 0 ? Number(json.interval) * 1000 : 5000
-  emit({ phase: 'url', url: authUrl, expiresInSec })
+  // RFC 8628 user_code; when the response omits the top-level field the
+  // complete verification URI still carries it as ?user_code=
+  let userCode = String(json.user_code ?? '')
+  if (!userCode) {
+    try {
+      userCode = new URL(authUrl).searchParams.get('user_code') ?? ''
+    } catch {
+      /* unparseable verification URI — nothing to display */
+    }
+  }
+  emit({ phase: 'url', url: authUrl, expiresInSec, ...(userCode ? { userCode } : {}) })
 
   const deadline = Date.now() + expiresInSec * 1000
   let accessToken: string
@@ -491,9 +529,10 @@ export async function vegaAccountInfo(): Promise<VegaAccountInfo | null> {
   }
 }
 
-/** Test hook: drop the auth cache and fetch-channel state. */
+/** Test hook: drop the auth cache, the listener and fetch-channel state. */
 export function resetGetofficeAuthCache(): void {
   cachedAuth = undefined
+  authChangedListener = null
   proxyFetchCache = undefined
   proxyFallbackPreferred = false
 }

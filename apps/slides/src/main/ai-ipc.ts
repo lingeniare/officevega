@@ -4,7 +4,7 @@
  * to avoid renderer CORS), search tools, and the slides-only ai:* channels
  * (image generation, media analysis, style templates).
  */
-import { app, ipcMain, nativeImage, net, shell } from 'electron'
+import { app, ipcMain, nativeImage, net, shell, webContents } from 'electron'
 import {
   appendFileSync,
   existsSync,
@@ -24,6 +24,7 @@ import {
   defaultAiSettings,
   activeProvider,
   maxOutputTokensOf,
+  requestProvider,
   resolveAiSettings,
   setAiUserAgent,
   setRescueFetch,
@@ -41,6 +42,7 @@ import {
   imageSearchTool,
   ensureGetofficeLogin,
   getofficeApiKey,
+  setGetofficeAuthListener,
   gskApiKey,
   generateImageTool,
   analyzeMediaTool,
@@ -105,6 +107,14 @@ function appendRunFailure(entry: AiRunFailure): void {
 
 export function registerAiIpc(): void {
   app.once('before-quit', shutdownCodexAppServers)
+  // sign-in/out lands here whichever UI started it (chat button, Home,
+  // settings): every open view re-reads settings/status off this push
+  setGetofficeAuthListener((auth) => {
+    const payload = { loggedIn: auth !== null }
+    for (const wc of webContents.getAllWebContents()) {
+      if (!wc.isDestroyed()) wc.send('ai:auth-changed', payload)
+    }
+  })
   // Node fetch (undici) direct connections get reset under VPN/tun setups; retry over Chromium's stack
   setRescueFetch((url, init) => net.fetch(url, init))
   setAiUserAgent(`GenOffice/${app.getVersion()}`)
@@ -154,9 +164,11 @@ export function registerAiIpc(): void {
     const tools = request.tools ?? []
     const maxTokens = request.maxTokens ?? maxOutputTokensOf(settings)
     // callers pass the effective provider from ai:get-settings — resolving again
-    // here would break "test connection" on a stored-but-keyless BYOK pick
-    const provider = settings.provider
-    let config = settings.providers?.[provider]
+    // here would break "test connection" on a stored-but-keyless BYOK pick; only
+    // the legacy-genspark→vega upgrade is re-applied (a pre-sign-in snapshot
+    // would otherwise stay on the signed-out route until the tab reloads)
+    const { provider, config: resolvedConfig } = requestProvider(settings)
+    let config = resolvedConfig
     // The genspark key never enters the settings file; it is fetched from the gsk login state per request.
     // A VEGA slot likewise inherits the sign-in-issued key when its own is empty.
     if (provider === 'genspark' && config && !config.apiKey) {

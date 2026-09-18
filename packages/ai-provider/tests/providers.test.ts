@@ -9,8 +9,10 @@ import {
   cloudToolsEnabled,
   defaultAiSettings,
   maxOutputTokensOf,
+  requestProvider,
   resolveAiSettings,
 } from '../src/providers'
+import { setIssuedVegaKeyGetter } from '../src/vega-key'
 import type { AiProviderId } from '../src/types'
 
 describe('defaultAiSettings', () => {
@@ -345,6 +347,61 @@ describe('activeProvider', () => {
     expect(activeProvider(settings)).toBe('genspark')
     settings.providers.vega.apiKey = 'sk-apivega-test'
     expect(activeProvider(settings)).toBe('vega')
+  })
+})
+
+describe('requestProvider', () => {
+  it('passes a non-genspark pick through untouched, keyless BYOK included', () => {
+    // the settings dialog's test-connection sends a stored-but-keyless pick;
+    // re-resolving it here would silently test the fallback provider instead
+    const settings = defaultAiSettings()
+    settings.provider = 'kimi'
+    const { provider, config } = requestProvider(settings)
+    expect(provider).toBe('kimi')
+    expect(config).toBe(settings.providers.kimi)
+  })
+
+  it('keeps a stored vega pick as-is (the handler injects the issued key)', () => {
+    const settings = defaultAiSettings()
+    expect(settings.provider).toBe('vega')
+    const { provider, config } = requestProvider(settings)
+    expect(provider).toBe('vega')
+    expect(config).toBe(settings.providers.vega)
+  })
+
+  it('keeps genspark while no VEGA credential exists', () => {
+    const settings = defaultAiSettings()
+    settings.provider = 'genspark'
+    const { provider, config } = requestProvider(settings)
+    expect(provider).toBe('genspark')
+    expect(config).toBe(settings.providers.genspark)
+  })
+
+  it('upgrades a stale genspark snapshot to vega on a stored VEGA key', () => {
+    const settings = defaultAiSettings()
+    settings.provider = 'genspark'
+    settings.providers.vega.apiKey = 'sk-apivega-stored'
+    const { provider, config } = requestProvider(settings)
+    expect(provider).toBe('vega')
+    expect(config?.apiKey).toBe('sk-apivega-stored')
+  })
+
+  it('upgrades a stale genspark snapshot on the sign-in-issued key', () => {
+    // a renderer's pre-login settings snapshot keeps provider:'genspark'
+    // (ai:get-settings resolved it before the key existed); the issued key
+    // lives in auth.json, not in the snapshot — the getter supplies it here
+    setIssuedVegaKeyGetter(() => 'sk-apivega-issued')
+    try {
+      const settings = defaultAiSettings()
+      settings.provider = 'genspark'
+      const { provider, config } = requestProvider(settings)
+      expect(provider).toBe('vega')
+      expect(config?.apiKey).toBe('sk-apivega-issued')
+      // the stored slot is not mutated — the issued key rides on the copy
+      expect(settings.providers.vega.apiKey).toBe('')
+    } finally {
+      setIssuedVegaKeyGetter(() => '')
+    }
   })
 })
 

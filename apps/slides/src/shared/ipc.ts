@@ -1547,6 +1547,8 @@ export interface SlidesApi {
   aiGskStatus: (withEmail?: boolean) => Promise<GenSparkAccountStatus>
   /** Open the browser to log into VEGA (fire-and-forget; aiGskStatus turns logged-in once done) */
   aiGskLogin: () => Promise<void>
+  /** pushed by main on every VEGA sign-in/out — refresh settings/status so a stale provider snapshot is dropped */
+  onAiAuthChanged: (handler: (status: { loggedIn: boolean }) => void) => () => void
   /** Record a run that ended without a usable reply, for post-mortem (fire-and-forget, never throws) */
   aiLogRunFailure: (entry: AiRunFailure) => Promise<void>
   webSearch: (

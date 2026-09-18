@@ -32,6 +32,7 @@ export {
   cloudToolsEnabled,
   defaultAiSettings,
   maxOutputTokensOf,
+  requestProvider,
   resolveAiSettings,
 } from './providers'
 export {

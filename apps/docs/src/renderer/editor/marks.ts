@@ -449,10 +449,12 @@ export function fontAttrsFromFamilyChain(chain: string | undefined): Record<stri
         // var(--doc-latin-chain, ...) fragments from eastAsia-only chains
         !/^var\(|\)$/.test(x) &&
         !/^(serif|sans-serif|monospace|cursive|fantasy|system-ui)$/i.test(x) &&
-        // internal fonts.css aliases are not user picks: 'GenOffice *', the
-        // '* GO' renamed/range-limited faces (Carlito GO, KR Theme Latin GO,
+        // internal fonts.css aliases are not user picks: 'GenOffice *' /
+        // 'GetOffice *' faces (bundled fonts still carry the GenOffice names
+        // while chrome strings moved to GetOffice), the '* GO'
+        // renamed/range-limited faces (Carlito GO, KR Theme Latin GO,
         // Noto Sans/Serif CJK GO...) and the size-adjusted Noto Arabic aliases
-        !/^getoffice /i.test(x) &&
+        !/^ge[nt]office /i.test(x) &&
         !/ go$/i.test(x) &&
         !/^noto (naskh|sans) arabic (w|ta|tnr)$/i.test(x),
     )

@@ -2667,6 +2667,9 @@ export interface DesktopApi {
   /// Opens the browser to sign in to VEGA (fire-and-forget; aiGskStatus
   /// becomes signed-in on completion)
   aiGskLogin(): Promise<void>
+  /// pushed by main on every VEGA sign-in/out — refresh settings/status so a
+  /// stale provider snapshot is dropped
+  onAiAuthChanged(callback: (status: { loggedIn: boolean }) => void): () => void
   /// Web search (main-process Serper/DuckDuckGo, shared with docs/slides)
   webSearch(query: string, maxResults?: number): Promise<WebSearchResult>
   /// Image search (same shared main-process channel as docs/slides)

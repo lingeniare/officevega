@@ -95,58 +95,69 @@ describe('promoteFileAtomically', () => {
     expect(await readFile(target, 'utf8')).toBe('old-bytes')
   }, 15_000)
 
-  it('restores the target when the in-place copy dies after truncating it', async () => {
-    const dir = await scratchDir()
-    const locked = join(dir, 'locked')
-    await mkdir(locked)
-    const temporary = join(locked, '.new.tmp.xlsx')
-    const target = join(locked, 'book.xlsx')
-    await writeFile(temporary, 'new-bytes')
-    await writeFile(target, 'old-bytes')
-    await chmod(locked, 0o555)
-    // the backup copy runs for real; the copy over the target truncates it
-    // and then fails the way a lock acquired mid-write does
-    copyFileMock.mockImplementation(async (src, dest, mode) => {
-      if (String(src) !== temporary) return actualCopyFile(src, dest, mode)
-      await truncate(String(dest))
-      throw Object.assign(new Error('EBUSY: resource busy'), { code: 'EBUSY' })
-    })
-    await expect(promoteFileAtomically(temporary, target)).rejects.toThrow(
-      'The save target is locked by another program',
-    )
-    await chmod(locked, 0o755)
-    expect(await readFile(target, 'utf8')).toBe('old-bytes')
-    expect(await readFile(temporary, 'utf8')).toBe('new-bytes')
-  }, 15_000)
-
-  it('names the surviving backup when the target cannot be restored either', async () => {
-    const dir = await scratchDir()
-    const locked = join(dir, 'locked')
-    await mkdir(locked)
-    const temporary = join(locked, '.new.tmp.xlsx')
-    const target = join(locked, 'book.xlsx')
-    await writeFile(temporary, 'new-bytes')
-    await writeFile(target, 'old-bytes')
-    await chmod(locked, 0o555)
-    const busy = () => Object.assign(new Error('EBUSY: resource busy'), { code: 'EBUSY' })
-    copyFileMock.mockImplementation(async (src, dest, mode) => {
-      if (String(src) === temporary) {
+  // POSIX-only: Node chmod on Windows maps to the file read-only attribute —
+  // a 0o555 directory still accepts new files, so the real backup copy below
+  // can't be refused and the promotion resolves instead of rejecting
+  it.skipIf(process.platform === 'win32')(
+    'restores the target when the in-place copy dies after truncating it',
+    async () => {
+      const dir = await scratchDir()
+      const locked = join(dir, 'locked')
+      await mkdir(locked)
+      const temporary = join(locked, '.new.tmp.xlsx')
+      const target = join(locked, 'book.xlsx')
+      await writeFile(temporary, 'new-bytes')
+      await writeFile(target, 'old-bytes')
+      await chmod(locked, 0o555)
+      // the backup copy runs for real; the copy over the target truncates it
+      // and then fails the way a lock acquired mid-write does
+      copyFileMock.mockImplementation(async (src, dest, mode) => {
+        if (String(src) !== temporary) return actualCopyFile(src, dest, mode)
         await truncate(String(dest))
-        throw busy()
-      }
-      if (String(dest) === target) throw busy()
-      return actualCopyFile(src, dest, mode)
-    })
-    const failure = await promoteFileAtomically(temporary, target).catch((error: Error) => error)
-    await chmod(locked, 0o755)
-    expect(failure?.message).toContain('preserved at: ')
-    const survivor = failure!.message.split('preserved at: ')[1] ?? ''
-    // the read-only directory refuses the recovered copy, so the tmp backup stays
-    expect(survivor.startsWith(tmpdir())).toBe(true)
-    expect(basename(survivor)).toMatch(/^book\.recovered-[0-9a-f-]+\.xlsx$/)
-    expect(await readFile(survivor, 'utf8')).toBe('old-bytes')
-    await rm(survivor, { force: true })
-  }, 15_000)
+        throw Object.assign(new Error('EBUSY: resource busy'), { code: 'EBUSY' })
+      })
+      await expect(promoteFileAtomically(temporary, target)).rejects.toThrow(
+        'The save target is locked by another program',
+      )
+      await chmod(locked, 0o755)
+      expect(await readFile(target, 'utf8')).toBe('old-bytes')
+      expect(await readFile(temporary, 'utf8')).toBe('new-bytes')
+    },
+    15_000,
+  )
+
+  it.skipIf(process.platform === 'win32')(
+    'names the surviving backup when the target cannot be restored either',
+    async () => {
+      const dir = await scratchDir()
+      const locked = join(dir, 'locked')
+      await mkdir(locked)
+      const temporary = join(locked, '.new.tmp.xlsx')
+      const target = join(locked, 'book.xlsx')
+      await writeFile(temporary, 'new-bytes')
+      await writeFile(target, 'old-bytes')
+      await chmod(locked, 0o555)
+      const busy = () => Object.assign(new Error('EBUSY: resource busy'), { code: 'EBUSY' })
+      copyFileMock.mockImplementation(async (src, dest, mode) => {
+        if (String(src) === temporary) {
+          await truncate(String(dest))
+          throw busy()
+        }
+        if (String(dest) === target) throw busy()
+        return actualCopyFile(src, dest, mode)
+      })
+      const failure = await promoteFileAtomically(temporary, target).catch((error: Error) => error)
+      await chmod(locked, 0o755)
+      expect(failure?.message).toContain('preserved at: ')
+      const survivor = failure!.message.split('preserved at: ')[1] ?? ''
+      // the read-only directory refuses the recovered copy, so the tmp backup stays
+      expect(survivor.startsWith(tmpdir())).toBe(true)
+      expect(basename(survivor)).toMatch(/^book\.recovered-[0-9a-f-]+\.xlsx$/)
+      expect(await readFile(survivor, 'utf8')).toBe('old-bytes')
+      await rm(survivor, { force: true })
+    },
+    15_000,
+  )
 
   it('propagates non-retryable errors untouched', async () => {
     const dir = await scratchDir()

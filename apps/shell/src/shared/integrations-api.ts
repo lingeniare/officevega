@@ -41,6 +41,14 @@ export interface IntegrationsApi {
   copyText(text: string): Promise<void>
 }
 
+/** the preload exposes the API as window.aiOfficeIntegrations — declared here
+ *  so every importer (renderers, tests) sees it without pulling in Home.tsx */
+declare global {
+  interface Window {
+    aiOfficeIntegrations?: IntegrationsApi
+  }
+}
+
 export const INTEGRATIONS_CHANNELS = {
   status: 'integrations:status',
   installSkill: 'integrations:install-skill',

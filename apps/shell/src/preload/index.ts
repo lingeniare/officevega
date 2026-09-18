@@ -197,6 +197,11 @@ const homeApi: HomeApi = {
     ipcRenderer.on(HOME_CHANNELS.accountLoginEvent, listener)
     return () => ipcRenderer.removeListener(HOME_CHANNELS.accountLoginEvent, listener)
   },
+  onAuthChanged(handler) {
+    const listener = (_event: IpcRendererEvent, status: { loggedIn: boolean }) => handler(status)
+    ipcRenderer.on(HOME_CHANNELS.authChanged, listener)
+    return () => ipcRenderer.removeListener(HOME_CHANNELS.authChanged, listener)
+  },
   async openLoginUrl() {
     await ipcRenderer.invoke(HOME_CHANNELS.accountLoginOpenUrl)
   },

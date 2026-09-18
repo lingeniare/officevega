@@ -471,6 +471,15 @@ const desktopApi: DesktopApi = {
   async aiGskLogin() {
     await ipcRenderer.invoke(IPC_CHANNELS.aiGskLogin)
   },
+  onAiAuthChanged(callback) {
+    const listener = (_event: unknown, payload: unknown): void => {
+      if (isRecord(payload) && typeof payload.loggedIn === 'boolean') {
+        callback({ loggedIn: payload.loggedIn })
+      }
+    }
+    ipcRenderer.on(IPC_CHANNELS.aiAuthChanged, listener)
+    return () => ipcRenderer.removeListener(IPC_CHANNELS.aiAuthChanged, listener)
+  },
   async webSearch(query, maxResults) {
     if (typeof query !== 'string' || !query.trim() || query.length > 512) {
       throw new Error('Invalid search query.')

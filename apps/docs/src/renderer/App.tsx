@@ -1227,6 +1227,11 @@ export function App() {
   useEffect(() => {
     void window.desktop.getRecentFiles().then(setRecent)
     void window.desktop.getAiSettings().then(setSettings)
+    // sign-in/out anywhere re-resolves the effective provider (a pre-login
+    // snapshot's 'genspark' route would never reach the issued VEGA key)
+    return window.desktop?.onAiAuthChanged(() => {
+      void window.desktop.getAiSettings().then(setSettings)
+    })
   }, [])
 
   useEffect(() => {

@@ -1196,6 +1196,11 @@ export function App() {
 
   useEffect(() => {
     void window.slidesApi.getAiSettings().then(setAiSettings)
+    // sign-in/out anywhere re-resolves the effective provider (a pre-login
+    // snapshot's 'genspark' route would never reach the issued VEGA key)
+    return window.slidesApi?.onAiAuthChanged(() => {
+      void window.slidesApi.getAiSettings().then(setAiSettings)
+    })
   }, [])
 
   // Recent files for the start screen

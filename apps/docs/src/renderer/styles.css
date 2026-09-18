@@ -500,6 +500,7 @@ html.getoffice-popover-open .ribbon-tabs {
 
 .ribbon-tab-file:hover,
 .ribbon-tab-file.open {
+  color: var(--docs-on-accent);
   background: var(--word-blue-dark);
 }
 

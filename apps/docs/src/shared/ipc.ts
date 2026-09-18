@@ -408,6 +408,8 @@ export interface DesktopApi {
   aiGskStatus(withEmail?: boolean): Promise<GenSparkAccountStatus>
   /** Open the browser to log in to VEGA (fire-and-forget; aiGskStatus flips to logged-in when done) */
   aiGskLogin(): Promise<void>
+  /** pushed by main on every VEGA sign-in/out — refresh settings/status so a stale provider snapshot is dropped */
+  onAiAuthChanged(handler: (status: { loggedIn: boolean }) => void): () => void
   webSearch(
     query: string,
     maxResults?: number,

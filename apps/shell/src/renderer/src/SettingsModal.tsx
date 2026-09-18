@@ -297,16 +297,10 @@ function AiModelPane({
   account,
 }: {
   t: TFunc
-  /** VEGA sign-in state + the device-flow login actions, shared with the account pane */
+  /** VEGA sign-in state (the flow itself lives on the Account pane) */
   account: {
     loggedIn: boolean
     email: string
-    loginWaiting: boolean
-    loginUrl: string | null
-    urlCopied: boolean
-    onOpenLoginUrl: () => void
-    onCopyLoginUrl: () => void
-    onLogin: () => void
   }
 }) {
   const [catalog, setCatalog] = useState<AiCatalogEntry[]>(
@@ -570,31 +564,7 @@ function AiModelPane({
         // no key/Base URL fields, nothing to delete or leak
         account.loggedIn ? (
           <Field label={t('setEmail')} value={account.email || t('setAiVegaSignedIn')} />
-        ) : (
-          <div className="set-field">
-            <div className="set-field-text">
-              <div className="set-field-stack">
-                <div className="set-field-label">{t('setSecAccount')}</div>
-                <div className="set-field-desc">{t('setAiVegaSigninDesc')}</div>
-              </div>
-            </div>
-            <div style={{ display: 'flex', gap: 8, flexShrink: 0, alignItems: 'center' }}>
-              {account.loginWaiting && account.loginUrl && (
-                <>
-                  <button className="set-btn" onClick={account.onOpenLoginUrl}>
-                    {t('loginOpenManually')}
-                  </button>
-                  <button className="set-btn" onClick={account.onCopyLoginUrl}>
-                    {account.urlCopied ? t('loginCopied') : t('loginCopyUrl')}
-                  </button>
-                </>
-              )}
-              <button className="set-btn primary" onClick={account.onLogin}>
-                {account.loginWaiting ? t('waitingShort') : t('loginGenspark')}
-              </button>
-            </div>
-          </div>
-        )
+        ) : null
       ) : !isGenspark ? (
         <>
           <div className="set-field">
@@ -1213,11 +1183,8 @@ export interface SettingsModalProps {
   loggingOut: boolean
   /** browser sign-in in progress (spinner shows on the account entry) */
   loginWaiting: boolean
-  /** device auth URL while waiting — rescue actions when the browser did not auto-open */
-  loginUrl: string | null
-  urlCopied: boolean
-  onOpenLoginUrl: () => void
-  onCopyLoginUrl: () => void
+  /** device-flow user code (e.g. "ABCD-1234") shown in the sign-in field while waiting */
+  deviceCode: string | null
   onClose: () => void
   /** closes the modal and launches the VEGA login flow (progress shows on the account entry) */
   onLogin: () => void
@@ -1231,10 +1198,7 @@ export function SettingsModal({
   status,
   loggingOut,
   loginWaiting,
-  loginUrl,
-  urlCopied,
-  onOpenLoginUrl,
-  onCopyLoginUrl,
+  deviceCode,
   onClose,
   onLogin,
   onLogout,
@@ -1391,15 +1355,16 @@ export function SettingsModal({
                     </button>
                   ) : (
                     <>
-                      {loginWaiting && loginUrl && (
-                        <>
-                          <button className="set-btn" onClick={onOpenLoginUrl}>
-                            {t('loginOpenManually')}
-                          </button>
-                          <button className="set-btn" onClick={onCopyLoginUrl}>
-                            {urlCopied ? t('loginCopied') : t('loginCopyUrl')}
-                          </button>
-                        </>
+                      {loginWaiting && deviceCode && (
+                        <input
+                          className="set-input set-device-code"
+                          readOnly
+                          value={deviceCode}
+                          aria-label={t('loginDeviceCode')}
+                          data-tip={t('loginDeviceCode')}
+                          spellCheck={false}
+                          onFocus={(e) => e.currentTarget.select()}
+                        />
                       )}
                       <button className="set-btn primary" onClick={onLogin}>
                         {loginWaiting ? t('waitingShort') : t('loginGenspark')}
@@ -1410,19 +1375,7 @@ export function SettingsModal({
               </>
             )}
             {section === 'aiModel' && (
-              <AiModelPane
-                t={t}
-                account={{
-                  loggedIn,
-                  email,
-                  loginWaiting,
-                  loginUrl,
-                  urlCopied,
-                  onOpenLoginUrl,
-                  onCopyLoginUrl,
-                  onLogin,
-                }}
-              />
+              <AiModelPane t={t} account={{ loggedIn, email }} />
             )}
             {section === 'aiMedia' && <AiMediaPane t={t} />}
             {section === 'general' && (
