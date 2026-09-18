@@ -578,12 +578,7 @@ GitHub Copilot, OpenCode i Windsurf, jak z niego korzystać; zainstaluj go w
 <details>
 <summary><b>Czy GetOffice zbiera jakieś dane?</b></summary>
 
-Oficjalne pakowane wersje domyślnie wysyłają ograniczoną telemetrię
-użytkowania, a raportowanie można wyłączyć w każdej chwili w Ustawienia →
-Ogólne. Telemetria nigdy nie wysyła treści dokumentów, nazw plików, ścieżek
-plików, tożsamości konta ani adresów e-mail. Zobacz
-[GetOffice Privacy](../../PRIVACY.md), aby poznać pełny wykaz zdarzeń i
-ujawnianych danych.
+GetOffice nie zbiera ani nie wysyła żadnych analiz użytkowania ani telemetrii. Szczegóły w [GetOffice Privacy](../../PRIVACY.md).
 
 </details>
 

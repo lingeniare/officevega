@@ -2907,8 +2907,13 @@ export function registerAiIpc(): void {
       baseUrl?: string
       input?: string
       output?: string
+      excludePrefixes?: unknown
+      excludeSuffixes?: unknown
+      createdAfter?: unknown
     }
     if (!req.provider) return { models: [], defaultModel: '' }
+    const strings = (v: unknown) =>
+      Array.isArray(v) ? v.filter((s): s is string => typeof s === 'string') : undefined
     return listProviderModels(
       req.provider,
       {
@@ -2921,6 +2926,11 @@ export function registerAiIpc(): void {
       {
         ...(typeof req.input === 'string' && req.input ? { input: req.input } : {}),
         ...(typeof req.output === 'string' && req.output ? { output: req.output } : {}),
+        ...(strings(req.excludePrefixes) ? { excludePrefixes: strings(req.excludePrefixes) } : {}),
+        ...(strings(req.excludeSuffixes) ? { excludeSuffixes: strings(req.excludeSuffixes) } : {}),
+        ...(typeof req.createdAfter === 'number' && Number.isFinite(req.createdAfter)
+          ? { createdAfter: req.createdAfter }
+          : {}),
       },
     )
   })

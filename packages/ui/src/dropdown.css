@@ -112,3 +112,78 @@
 .gs-dd-item.selected {
   background: var(--accent-soft);
 }
+
+/* ComboBox (combobox.tsx): text input + caret inside one framed field; the
+ * popover reuses .gs-dd-pop/.gs-dd-item and adds a search row that must not
+ * scroll away with the list */
+.gs-combo {
+  align-items: stretch;
+}
+
+.gs-combo-input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  /* room for the caret overlay on the right */
+  padding-right: 24px;
+  font-family: inherit;
+}
+
+.gs-combo-toggle {
+  position: absolute;
+  top: 0;
+  right: 6px;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  border: none;
+  padding: 0;
+  background: none;
+  color: var(--text-dim);
+  cursor: pointer;
+}
+
+.gs-combo-pop {
+  /* the search row stays pinned while .gs-combo-list scrolls under it */
+  overflow: hidden;
+}
+
+.gs-combo-search {
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: 100%;
+  margin-bottom: 2px;
+  padding: 5px 6px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 3px;
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 12px;
+}
+
+.gs-combo-search:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.gs-combo-search::placeholder {
+  color: var(--text-dim);
+}
+
+.gs-combo-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.gs-combo-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

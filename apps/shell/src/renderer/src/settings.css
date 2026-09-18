@@ -180,7 +180,7 @@
   word-break: break-all;
 }
 
-/* stacked label + secondary description (analytics toggle row) */
+/* stacked label + secondary description (toggle rows) */
 .set-field-stack {
   display: flex;
   flex-direction: column;
@@ -279,7 +279,7 @@
   color: var(--text-tertiary);
 }
 
-/* on/off switch (analytics toggle) */
+/* on/off switch */
 .set-switch {
   position: relative;
   flex-shrink: 0;
@@ -480,6 +480,37 @@
   font-size: 13px;
   color: var(--text-primary);
   background: var(--surface);
+}
+
+/* ComboBox (gs-combo) with the .set-input field look — the model picker for
+ * live-catalog providers (VEGA, OpenRouter) */
+.set-combo {
+  flex-shrink: 0;
+  width: 46%;
+  min-width: 200px;
+}
+
+.set-combo .gs-combo-input {
+  /* right padding keeps typed text clear of the caret overlay */
+  padding: 6px 24px 6px 10px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text-primary);
+  background: var(--surface);
+}
+
+.set-combo .gs-combo-input:focus {
+  outline: none;
+  border-color: var(--accent, var(--text-primary));
+}
+
+.set-combo .gs-combo-input::placeholder {
+  color: var(--text-tertiary, var(--text-secondary));
+}
+
+.set-combo .gs-dd-item {
+  font-size: 13px;
 }
 
 .set-num {

@@ -1423,7 +1423,7 @@ export function executeOps(editor: Editor, ops: unknown, ctx: OpContext = {}): E
   }
 
   if (tr.steps.length > 0) {
-    // intent record for consumers downstream of the Step stream (journal, analytics)
+    // intent record for consumers downstream of the Step stream (journal)
     tr.setMeta('docsOps', { source: ctx.source ?? 'ai', ops: planned.map(([op]) => op.op) })
     // route through the TrackChanges recorder so AI format/text edits become
     // reviewable revisions under the AI author (same pipeline as manual edits)

@@ -172,7 +172,7 @@ export interface HomeApi {
   getAppVersion(): Promise<string>
   /** whether the first-run onboarding has been completed or skipped (persisted in userData/app-settings.json) */
   onboardingSeen(): Promise<boolean>
-  /** mark onboarding done; analytics remains enabled unless separately opted out */
+  /** mark onboarding done */
   setOnboardingSeen(): Promise<boolean>
   /** current UI theme preference (persisted in userData/app-settings.json) */
   getTheme(): Promise<UiTheme>
@@ -197,10 +197,6 @@ export interface HomeApi {
   clearMcpLogs(): Promise<void>
   /** reveal the MCP log file in the file manager (created empty when missing) */
   openMcpLogFile(): Promise<void>
-  /** whether anonymous usage statistics are enabled (default true in official builds) */
-  getAnalyticsEnabled(): Promise<boolean>
-  /** persist an explicit analytics opt-in or opt-out */
-  setAnalyticsEnabled(enabled: boolean): Promise<boolean>
   /** AI panel text size + chat-input spellcheck (persisted in userData/app-settings.json) */
   getAiPanelPrefs(): Promise<AiPanelPrefs>
   /** merge + persist; broadcasts 'app:ai-panel-prefs-changed' to all web contents */
@@ -249,6 +245,12 @@ export interface HomeApi {
     baseUrl?: string
     input?: string
     output?: string
+    /** drop catalog ids starting with any of these prefixes */
+    excludePrefixes?: readonly string[]
+    /** drop catalog ids ending with any of these suffixes (':free', '-latest', 'meta') */
+    excludeSuffixes?: readonly string[]
+    /** keep only catalog entries created on/after this unix-seconds timestamp */
+    createdAfter?: number
   }): Promise<ProviderModelCatalog>
   /** one-shot round trip against the given (possibly unsaved) settings — the settings-UI connection test */
   testAiSettings(settings: AiSettings): Promise<AiChatResponse>
@@ -271,6 +273,8 @@ export interface HomeApi {
 export interface AiCatalogEntry extends AiProviderMeta {
   /** default endpoint for fixed-endpoint providers ('' = model-dependent or user-supplied) */
   defaultBaseUrl: string
+  /** live-catalog picker options ({id → display name}) filled by the settings refresh; absent = show meta.models ids */
+  modelOptions?: ReadonlyArray<{ value: string; label: string }>
 }
 
 /** 'starred' = went to GitHub or said "already starred" (never prompt again);
@@ -399,8 +403,6 @@ export const HOME_CHANNELS = {
   getMcpLogs: 'home:get-mcp-logs',
   clearMcpLogs: 'home:clear-mcp-logs',
   openMcpLogFile: 'home:open-mcp-log-file',
-  getAnalyticsEnabled: 'home:get-analytics-enabled',
-  setAnalyticsEnabled: 'home:set-analytics-enabled',
   getAiPanelPrefs: 'home:get-ai-panel-prefs',
   setAiPanelPrefs: 'home:set-ai-panel-prefs',
   getDefaultSaveDir: 'home:get-default-save-dir',

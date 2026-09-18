@@ -573,12 +573,7 @@ via **Instellingen → Integraties**. Zie
 <details>
 <summary><b>Verzamelt GetOffice gegevens?</b></summary>
 
-De officiële, kant-en-klare builds versturen standaard beperkte
-gebruiksanalyse, en je kunt rapportage op elk moment uitschakelen onder
-Settings → General. Analytics verstuurt nooit documentinhoud, bestandsnamen,
-bestandspaden, accountidentiteit of e-mailadressen. Zie
-[GetOffice Privacy](../../PRIVACY.md) voor de volledige lijst van events en
-gegevens die worden gedeeld.
+GetOffice verzamelt of verstuurt geen gebruiksanalyses of telemetrie. Zie [GetOffice Privacy](../../PRIVACY.md) voor details.
 
 </details>
 

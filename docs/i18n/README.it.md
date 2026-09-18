@@ -578,12 +578,7 @@ Gemini CLI, GitHub Copilot, OpenCode e Windsurf a usarla; installalo da
 <details>
 <summary><b>GetOffice raccoglie dati?</b></summary>
 
-Le build ufficiali inviano per impostazione predefinita analytics d'uso
-limitate, e puoi disattivare l'invio in qualsiasi momento in Settings →
-General. Le analytics non inviano mai il contenuto dei documenti, i nomi dei
-file, i percorsi dei file, l'identità dell'account o gli indirizzi email.
-Consulta [GetOffice Privacy](../../PRIVACY.md) per l'elenco completo di
-eventi e dati raccolti.
+GetOffice non raccoglie né invia alcuna analytics d'uso o telemetria. Consulta [GetOffice Privacy](../../PRIVACY.md) per i dettagli.
 
 </details>
 

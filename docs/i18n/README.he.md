@@ -544,11 +544,7 @@ Cursor,‏ Gemini CLI,‏ GitHub Copilot,‏ OpenCode ו-Windsurf להשתמש �
 <details>
 <summary><b>האם GetOffice אוספת מידע?</b></summary>
 
-בגרסאות הרשמיות הארוזות נשלח כברירת מחדל מידע אנליטי מוגבל על השימוש,
-ואפשר לבטל את הדיווח בכל עת תחת Settings → General. הנתונים האנליטיים
-לעולם לא כוללים תוכן מסמכים, שמות קבצים, נתיבי קבצים, זהות חשבון או כתובות
-אימייל. לפירוט המלא של האירועים והנתונים המדווחים ראו
-[GetOffice Privacy](../../PRIVACY.md).
+GetOffice אינו אוסף או שולח ניתוחי שימוש או טלמטריה כלשהם. ראה [GetOffice Privacy](../../PRIVACY.md) לפרטים.
 
 </details>
 

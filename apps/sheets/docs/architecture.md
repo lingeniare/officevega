@@ -85,4 +85,4 @@ The current gateway does not claim full OOXML compatibility. Its contract is tha
 - Tables, names, validation, merged cells, filters, and frozen panes.
 - Formula calculation and differential Excel validation.
 - Local privacy classifier and cloud model gateway.
-- Signed updates, crash recovery, telemetry, and enterprise controls.
+- Signed updates, crash recovery, and enterprise controls.

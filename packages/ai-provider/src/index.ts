@@ -1,6 +1,7 @@
 export type {
   AiChatRequest,
   AiChatResponse,
+  AiMediaModelEntry,
   AiMediaProviderConfig,
   AiMediaProviderId,
   AiMediaProviderMeta,
@@ -64,7 +65,7 @@ export {
   setLegacyGskKeyGetter,
 } from './vega-key'
 export { listGatewayModels, listProviderModels } from './model-catalog'
-export type { ModelFilter, ProviderModelCatalog } from './model-catalog'
+export type { ModelFilter, ProviderModel, ProviderModelCatalog } from './model-catalog'
 export {
   analyzeMediaWithProvider,
   generateImageWithProvider,

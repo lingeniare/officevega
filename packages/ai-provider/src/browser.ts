@@ -21,4 +21,4 @@ export {
   VEGA_BASE_URL,
 } from './media'
 export { AI_SEARCH_PROVIDERS, vegaSearchKey } from './search-settings'
-export type { ModelFilter, ProviderModelCatalog } from './model-catalog'
+export type { ModelFilter, ProviderModel, ProviderModelCatalog } from './model-catalog'

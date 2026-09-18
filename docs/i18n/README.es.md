@@ -579,12 +579,7 @@ Gemini CLI, GitHub Copilot, OpenCode y Windsurf a usarla; instálalo desde
 <details>
 <summary><b>¿GetOffice recopila algún dato?</b></summary>
 
-Las compilaciones oficiales empaquetadas envían por defecto un análisis de
-uso limitado, y puedes desactivar este reporte en cualquier momento en
-Settings → General. El análisis nunca envía el contenido de los documentos,
-nombres de archivo, rutas de archivo, identidad de la cuenta ni direcciones
-de correo electrónico. Consulta [GetOffice Privacy](../../PRIVACY.md) para
-ver la lista completa de eventos y datos.
+GetOffice no recopila ni envía ninguna analítica de uso ni telemetría. Consulta [GetOffice Privacy](../../PRIVACY.md) para más detalles.
 
 </details>
 

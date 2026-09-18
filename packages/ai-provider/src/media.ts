@@ -60,19 +60,20 @@ export const AI_MEDIA_PROVIDERS: AiMediaProviderMeta[] = [
     defaultBaseUrl: VEGA_BASE_URL,
     liveCatalog: true,
     imageProtocol: 'openai-images',
-    // ids verified against GET /models?output_modalities=image (2026-09); the
-    // picker also refreshes live — this list is the offline fallback
+    // ids verified against GET /models?input_modalities=image&output_modalities=image
+    // (image-to-image capable, 2026-09); the settings picker refreshes live with
+    // the same filter — this list with its display names is the offline fallback
     imageModels: [
-      'google/gemini-3.1-flash-image',
-      'openai/gpt-image-2',
-      'openai/gpt-image-1-mini',
-      'bytedance-seed/seedream-5-0-lite',
-      'black-forest-labs/flux.2-pro',
-      'x-ai/grok-imagine-image-2.0',
-      'qwen/qwen-image-3',
-      'recraft/recraft-v4',
+      { id: 'x-ai/grok-imagine-image-2.0', name: 'xAI: Grok Imagine Image 2.0' },
+      { id: 'google/gemini-3.1-flash-image', name: 'Nano Banana 2 (Gemini 3.1 Flash Image)' },
+      { id: 'openai/gpt-image-2', name: 'GPT Image 2' },
+      { id: 'openai/gpt-image-1-mini', name: 'GPT Image 1 Mini' },
+      { id: 'bytedance-seed/seedream-5-0-lite', name: 'ByteDance Seed: Seedream 5.0 Lite' },
+      { id: 'black-forest-labs/flux.2-pro', name: 'Black Forest Labs: FLUX.2 Pro' },
+      { id: 'qwen/qwen-image-3', name: 'Qwen Image 3' },
+      { id: 'recraft/recraft-v4', name: 'Recraft V4' },
     ],
-    defaultImageModel: 'google/gemini-3.1-flash-image',
+    defaultImageModel: 'x-ai/grok-imagine-image-2.0',
     analysisProtocol: 'openai-chat',
     // image+video input models per GET /models?input_modalities=video
     analysisModels: [
@@ -351,10 +352,10 @@ function byokModel(settings: MediaSettingsSlice, capability: MediaCapability): s
   const active = activeMediaConfig(settings, capability)
   if (!active) return null
   const meta = getMediaProviderMeta(active.provider)!
-  // VEGA picks models server-side — the settings UI has no picker for them,
-  // so the catalog-verified defaults apply regardless of a stored value
-  if (active.provider === 'vega') {
-    return capability === 'image' ? meta.defaultImageModel : meta.defaultAnalysisModel
+  // VEGA analysis models are still picked server-side (the settings UI has no
+  // picker for them) — only its image model is user-pickable
+  if (active.provider === 'vega' && capability !== 'image') {
+    return meta.defaultAnalysisModel
   }
   return capability === 'image'
     ? active.config.imageModel || meta.defaultImageModel

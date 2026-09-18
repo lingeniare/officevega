@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import {
   AI_CUSTOM_FONT_MAX_PX,
   AI_CUSTOM_FONT_MIN_PX,
+  ComboBox,
   DEFAULT_AI_PANEL_PREFS,
   Dropdown,
   aiPanelFontPx,
@@ -23,6 +24,7 @@ import type {
   AiSearchProviderMeta,
   AiSearchSettings,
   AiSettings,
+  ProviderModel,
 } from '@genoffice/ai-provider'
 import { useI18n } from './locale'
 import type { StringKey, TFunc } from './locale'
@@ -265,6 +267,31 @@ function Field({
 const storedPick = (s: AiSettings): AiSettings =>
   s.storedProvider ? { ...s, provider: s.storedProvider, storedProvider: undefined } : s
 
+/**
+ * Chat-model picker filter for the live catalog (VEGA, OpenRouter): text-out
+ * models released since August 2026, minus free and batch duplicates
+ * (`:free`/`:batch`), `-latest` aliases (`~`-prefixed on VEGA) and `*-meta`
+ * ids. The default/stored ids are pinned back on top when the filter hides them.
+ */
+const CHAT_MODEL_FILTER = {
+  output: 'text',
+  excludePrefixes: ['~'],
+  excludeSuffixes: [':free', 'latest', 'meta', ':batch'],
+  createdAfter: Date.UTC(2026, 7, 1) / 1000,
+} as const
+
+/**
+ * Image-generation picker filter for the VEGA live catalog: models that accept
+ * image input and emit image output (image-to-image / editing), minus '~'
+ * alias rows and ':free' duplicates — same exclusions as the chat picker.
+ */
+const VEGA_IMAGE_MODEL_FILTER = {
+  input: 'image',
+  output: 'image',
+  excludePrefixes: ['~'],
+  excludeSuffixes: [':free'],
+} as const
+
 function AiModelPane({
   t,
   account,
@@ -316,16 +343,22 @@ function AiModelPane({
         provider: id,
         apiKey,
         baseUrl,
-        output: 'text',
+        ...CHAT_MODEL_FILTER,
       })
       setCatalog((current) =>
         current.map((entry) => {
           if (entry.id !== id || live.models.length === 0) return entry
-          const models =
-            selectedModel && !live.models.includes(selectedModel)
-              ? [selectedModel, ...live.models]
-              : live.models
-          return { ...entry, models }
+          // the default and stored ids stay pickable even when the catalog
+          // filter hides them (openrouter/auto predates the created cutoff)
+          const pinned = [...new Set([entry.defaultModel, selectedModel])]
+            .filter((m): m is string => !!m)
+            .filter((m) => !live.models.some((lm) => lm.id === m))
+            .map((m) => ({ value: m, label: m }))
+          const modelOptions = [
+            ...pinned,
+            ...live.models.map((m) => ({ value: m.id, label: m.name })),
+          ]
+          return { ...entry, modelOptions }
         }),
       )
     },
@@ -474,24 +507,18 @@ function AiModelPane({
           <label className="set-field-label">{t('setAiModelId')}</label>
         </div>
         {meta?.liveCatalog ? (
-          // a live catalog can hold hundreds of ids — free-type with suggestions
-          <>
-            <input
-              id="set-ai-model"
-              className="set-input"
-              type="text"
-              list="set-ai-models-live"
-              value={config.model}
-              placeholder={meta.defaultModel || 'model-id'}
-              spellCheck={false}
-              onChange={(e) => updateConfig({ model: e.target.value })}
-            />
-            <datalist id="set-ai-models-live">
-              {meta.models.map((m) => (
-                <option key={m} value={m} />
-              ))}
-            </datalist>
-          </>
+          // a live catalog holds hundreds of ids — editable combobox: the caret
+          // opens the whole list, typing narrows it, off-list ids still type in
+          <ComboBox
+            id="set-ai-model"
+            className="set-combo"
+            ariaLabel={t('setAiModelId')}
+            value={config.model}
+            options={meta.modelOptions ?? meta.models}
+            placeholder={meta.defaultModel || 'model-id'}
+            searchPlaceholder={t('setAiModelSearch')}
+            onChange={(m) => updateConfig({ model: m })}
+          />
         ) : meta && meta.models.length > 0 ? (
           <Dropdown
             className="set-dd"
@@ -698,17 +725,40 @@ function AiMediaPane({ t }: { t: TFunc }) {
   const [saved, setSaved] = useState(false)
   const [testing, setTesting] = useState(false)
   const [testResult, setTestResult] = useState<{ ok: boolean; error?: string } | null>(null)
+  /** live VEGA image→image catalog for the image-generation picker; empty = static meta fallback */
+  const [vegaImageModels, setVegaImageModels] = useState<ProviderModel[]>([])
+
+  /** pull {base}/models filtered to image→image ids; main supplies the issued key when the slot is keyless */
+  const refreshVegaImageModels = useCallback(async (apiKey = '', baseUrl = '') => {
+    if (!window.aiOffice.getProviderModels) return
+    try {
+      const live = await window.aiOffice.getProviderModels({
+        provider: 'vega',
+        apiKey,
+        baseUrl,
+        ...VEGA_IMAGE_MODEL_FILTER,
+      })
+      if (live.models.length) setVegaImageModels(live.models)
+    } catch {
+      // offline / unsigned — the static meta list still fills the picker
+    }
+  }, [])
 
   useEffect(() => {
     let alive = true
     void window.aiOffice.getAiSettings?.().then((s) => {
       if (!alive || !s) return
-      setSettings(storedPick(s))
+      const shown = storedPick(s)
+      setSettings(shown)
+      void refreshVegaImageModels(
+        shown.media?.providers?.vega?.apiKey || shown.providers.vega?.apiKey || '',
+        shown.media?.providers?.vega?.baseUrl ?? '',
+      )
     })
     return () => {
       alive = false
     }
-  }, [])
+  }, [refreshVegaImageModels])
 
   if (!settings?.media || !settings.search) return null
   const media: AiMediaSettings = settings.media
@@ -745,6 +795,25 @@ function AiMediaPane({ t }: { t: TFunc }) {
       ...media,
       providers: { ...media.providers, [id]: { ...mediaConfigOf(id), ...patch } },
     })
+
+  /**
+   * Image picker options for VEGA: live catalog names when the fetch landed,
+   * the meta's named static list otherwise; the stored/default ids stay pinned
+   * on top when the catalog filter hides them.
+   */
+  const vegaImageOptions = (meta: AiMediaProviderMeta, selected: string) => {
+    const staticOptions = meta.imageModels.map((m) =>
+      typeof m === 'string' ? { value: m, label: m } : { value: m.id, label: m.name },
+    )
+    const options = vegaImageModels.length
+      ? vegaImageModels.map((m) => ({ value: m.id, label: m.name }))
+      : staticOptions
+    const pinned = [meta.defaultImageModel, selected]
+      .filter((m): m is string => !!m)
+      .filter((m) => !options.some((o) => o.value === m))
+      .map((m) => ({ value: m, label: staticOptions.find((o) => o.value === m)?.label ?? m }))
+    return [...pinned, ...options]
+  }
 
   const save = () => {
     window.aiOffice
@@ -841,12 +910,12 @@ function AiMediaPane({ t }: { t: TFunc }) {
 
   const modelRow = (
     id: string,
-    models: string[],
+    models: ReadonlyArray<string | { value: string; label: string }>,
     fallback: string,
     value: string,
     onChange: (v: string) => void,
-    /** live-catalog pickers free-type with <datalist> suggestions instead of a fixed dropdown */
-    liveListId?: string,
+    /** live-catalog pickers use an editable combobox instead of a fixed dropdown */
+    live?: boolean,
   ) => (
     <div className="set-field">
       <div className="set-field-text">
@@ -854,30 +923,23 @@ function AiMediaPane({ t }: { t: TFunc }) {
           {t('setAiModelId')}
         </label>
       </div>
-      {liveListId ? (
-        <>
-          <input
-            id={id}
-            className="set-input"
-            type="text"
-            list={liveListId}
-            value={value}
-            placeholder={fallback || 'model-id'}
-            spellCheck={false}
-            onChange={(e) => onChange(e.target.value)}
-          />
-          <datalist id={liveListId}>
-            {models.map((m) => (
-              <option key={m} value={m} />
-            ))}
-          </datalist>
-        </>
+      {live ? (
+        <ComboBox
+          id={id}
+          className="set-combo"
+          ariaLabel={t('setAiModelId')}
+          value={value}
+          options={models}
+          placeholder={fallback || 'model-id'}
+          searchPlaceholder={t('setAiModelSearch')}
+          onChange={onChange}
+        />
       ) : models.length > 0 ? (
         <Dropdown
           className="set-dd"
           value={value || fallback}
           ariaLabel={t('setAiModelId')}
-          options={models.map((m) => ({ value: m, label: m }))}
+          options={models.map((m) => (typeof m === 'string' ? { value: m, label: m } : m))}
           onPick={onChange}
         />
       ) : (
@@ -984,7 +1046,9 @@ function AiMediaPane({ t }: { t: TFunc }) {
       )
     }
     const modelField = cap === 'image' ? 'imageModel' : 'analysisModel'
-    const models = cap === 'image' ? meta.imageModels : meta.analysisModels
+    const models = (cap === 'image' ? meta.imageModels : meta.analysisModels).map((m) =>
+      typeof m === 'string' ? m : { value: m.id, label: m.name },
+    )
     return (
       <section key={cap}>
         <h4 className="set-pane-subtitle">{title}</h4>
@@ -993,9 +1057,23 @@ function AiMediaPane({ t }: { t: TFunc }) {
           {id === 'genspark'
             ? t('setAiMediaGensparkHint')
             : id === 'vega'
-              ? t('setAiMediaVegaHint')
+              ? cap === 'image'
+                ? // image has its own picker now — the "model is set by VEGA" hint
+                  // only stays accurate for the analysis capabilities
+                  meta.description
+                : t('setAiMediaVegaHint')
               : meta.description}
         </div>
+        {id === 'vega' &&
+          cap === 'image' &&
+          modelRow(
+            `set-ai-${cap}-model`,
+            vegaImageOptions(meta, config.imageModel),
+            meta.defaultImageModel,
+            config.imageModel,
+            (m) => updateMediaConfig(id, { imageModel: m }),
+            true,
+          )}
         {id !== 'genspark' && id !== 'vega' && (
           <>
             {modelRow(
@@ -1004,7 +1082,7 @@ function AiMediaPane({ t }: { t: TFunc }) {
               cap === 'image' ? meta.defaultImageModel : meta.defaultAnalysisModel,
               config[modelField],
               (m) => updateMediaConfig(id, { [modelField]: m }),
-              meta.liveCatalog ? `set-ai-${cap}-models` : undefined,
+              meta.liveCatalog,
             )}
             {keyRow(`set-ai-${cap}-key`, config.apiKey, meta.keyPlaceholder, (v) =>
               updateMediaConfig(id, { apiKey: v }),
@@ -1167,8 +1245,6 @@ export function SettingsModal({
   const [section, setSection] = useState<SectionId>('account')
   const [theme, setTheme] = useState<UiTheme>('system')
   const [saveDir, setSaveDir] = useState('')
-  const [analyticsOn, setAnalyticsOn] = useState(true)
-  const [analyticsSaving, setAnalyticsSaving] = useState(false)
   const [autoSaveOn, setAutoSaveOn] = useState(false)
   const [aiPrefs, setAiPrefs] = useState<AiPanelPrefs>(DEFAULT_AI_PANEL_PREFS)
   const [channel, setChannel] = useState<'stable' | 'beta'>('stable')
@@ -1182,9 +1258,6 @@ export function SettingsModal({
     })
     void window.aiOffice.getDefaultSaveDir?.().then((dir) => {
       if (alive && dir) setSaveDir(dir)
-    })
-    void window.aiOffice.getAnalyticsEnabled?.().then((on) => {
-      if (alive) setAnalyticsOn(on !== false)
     })
     void window.aiOffice.getAutoSaveDefault?.().then((v) => {
       if (alive) setAutoSaveOn(v.on)
@@ -1284,10 +1357,21 @@ export function SettingsModal({
                     value={
                       status?.balance === undefined
                         ? '—'
-                        : `${status.balance.toFixed(2)} ${status.currency ?? 'USD'}` +
-                          (status.balanceRub === undefined
-                            ? ''
-                            : ` · ₽${status.balanceRub.toLocaleString('en-US', { maximumFractionDigits: 2 })}`)
+                        : (() => {
+                            const fmt = (n: number) =>
+                              n.toLocaleString('ru-RU', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                              })
+                            const usd = `${fmt(status.balance!)} ${
+                              status.currency === undefined || status.currency === 'USD'
+                                ? '$'
+                                : status.currency
+                            }`
+                            return status.balanceRub === undefined
+                              ? usd
+                              : `${fmt(status.balanceRub)} руб. (${usd})`
+                          })()
                     }
                     action={
                       <button
@@ -1442,32 +1526,6 @@ export function SettingsModal({
                       const next = !autoSaveOn
                       setAutoSaveOn(next)
                       void window.aiOffice.setAutoSaveDefault?.(next).catch(() => {})
-                    }}
-                  />
-                </div>
-                <div className="set-field">
-                  <div className="set-field-text">
-                    <div className="set-field-stack">
-                      <div className="set-field-label">{t('setAnalytics')}</div>
-                      <div className="set-field-desc">{t('setAnalyticsDesc')}</div>
-                    </div>
-                  </div>
-                  <button
-                    className="set-switch"
-                    role="switch"
-                    aria-checked={analyticsOn}
-                    aria-label={t('setAnalytics')}
-                    disabled={analyticsSaving}
-                    onClick={() => {
-                      const next = !analyticsOn
-                      setAnalyticsSaving(true)
-                      void window.aiOffice
-                        .setAnalyticsEnabled(next)
-                        .then((persisted) => {
-                          if (persisted) setAnalyticsOn(next)
-                        })
-                        .catch(() => {})
-                        .finally(() => setAnalyticsSaving(false))
                     }}
                   />
                 </div>

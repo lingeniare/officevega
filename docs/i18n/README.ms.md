@@ -573,12 +573,7 @@ Copilot, OpenCode dan Windsurf menggunakannya; pasang daripada
 <details>
 <summary><b>Adakah GetOffice mengumpul sebarang data?</b></summary>
 
-Binaan pakej rasmi menghantar analitik penggunaan yang terhad secara lalai,
-dan anda boleh melumpuhkan pelaporan itu pada bila-bila masa di bawah
-Settings → General. Analitik tidak pernah menghantar kandungan dokumen, nama
-fail, laluan fail, identiti akaun atau alamat e-mel. Lihat
-[GetOffice Privacy](../../PRIVACY.md) untuk pendedahan penuh peristiwa dan
-data.
+GetOffice tidak mengumpul atau menghantar sebarang analitik penggunaan atau telemetri. Lihat [GetOffice Privacy](../../PRIVACY.md) untuk butiran.
 
 </details>
 

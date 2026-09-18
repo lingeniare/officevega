@@ -16,9 +16,10 @@ export const GENSPARK_LLM_BASE_URLS = {
 /**
  * Splits GetOffice usage out of the proxy's default "Claw" billing bucket
  * (the backend attributes gsk-key traffic by X-Agent-Type). Only sent to the
- * Genspark proxy — never to direct vendor APIs.
+ * Genspark proxy — never to direct vendor APIs. The value is registered
+ * server-side as "genoffice" — a billing wire name, not the product name.
  */
-export const GENSPARK_AGENT_TYPE = 'getoffice'
+export const GENSPARK_AGENT_TYPE = 'genoffice'
 
 export function gensparkAttributionHeaders(baseUrl?: string): Record<string, string> {
   return baseUrl?.startsWith('https://www.genspark.ai')

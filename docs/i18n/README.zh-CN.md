@@ -517,9 +517,7 @@ Copilot、OpenCode 和 Windsurf 使用它；请在 **设置 → 集成** 中安�
 <details>
 <summary><b>GetOffice 会收集数据吗？</b></summary>
 
-官方打包版本默认会发送有限的使用统计，你可以随时在 设置 → 通用 中关闭上报。
-统计数据绝不包含文档内容、文件名、文件路径、账号身份或电子邮件地址。完整的事件
-和数据披露见 [GetOffice 隐私政策](../../PRIVACY.md)。
+GetOffice 不会收集或发送任何使用分析或遥测数据。详见 [GetOffice 隐私政策](../../PRIVACY.md)。
 
 </details>
 

@@ -560,11 +560,7 @@ v **Nastavení → Integrace**. Viz
 <details>
 <summary><b>Sbírá GetOffice nějaká data?</b></summary>
 
-Oficiální balíčkované verze standardně odesílají omezenou analytiku
-používání a hlášení lze kdykoli vypnout v Nastavení → Obecné. Analytika
-nikdy neodesílá obsah dokumentu, názvy souborů, cesty k souborům, identitu
-účtu ani e-mailové adresy. Úplný výčet událostí a zveřejnění dat najdete
-v dokumentu [GetOffice Privacy](../../PRIVACY.md).
+GetOffice neshromažďuje ani neodesílá žádnou analytiku používání ani telemetrii. Podrobnosti viz [GetOffice Privacy](../../PRIVACY.md).
 
 </details>
 

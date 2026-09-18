@@ -660,13 +660,11 @@ function modelOf(
   config: AiMediaProviderConfig,
   field: 'imageModel' | 'analysisModel',
 ): string {
-  // VEGA models are fixed catalog defaults — the settings UI offers no picker
-  // for them, so a stale stored id must not reach the wire
+  // VEGA's analysis model is a fixed catalog default — the settings UI offers
+  // no picker for it; the image model IS user-pickable, so its stored id applies
   const model =
-    meta.id === 'vega'
-      ? field === 'imageModel'
-        ? meta.defaultImageModel
-        : meta.defaultAnalysisModel
+    meta.id === 'vega' && field === 'analysisModel'
+      ? meta.defaultAnalysisModel
       : config[field] ||
         (field === 'imageModel' ? meta.defaultImageModel : meta.defaultAnalysisModel)
   if (!model) {

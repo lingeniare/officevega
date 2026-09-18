@@ -574,12 +574,7 @@ em **Configurações → Integrações**. Veja
 <details>
 <summary><b>O GetOffice coleta algum dado?</b></summary>
 
-As builds empacotadas oficiais enviam análises de uso limitadas por padrão,
-e você pode desativar esse envio a qualquer momento em Configurações →
-Geral. As análises nunca enviam conteúdo de documentos, nomes de arquivos,
-caminhos de arquivos, identidade da conta ou endereços de e-mail. Veja
-[GetOffice Privacy](../../PRIVACY.md) para a lista completa de eventos e
-divulgações de dados.
+O GetOffice não coleta nem envia nenhuma analítica de uso ou telemetria. Consulte [GetOffice Privacy](../../PRIVACY.md) para detalhes.
 
 </details>
 

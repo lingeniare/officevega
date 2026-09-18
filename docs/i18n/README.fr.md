@@ -588,13 +588,7 @@ Claude Code, Codex, Cursor, Gemini CLI, GitHub Copilot, OpenCode et Windsurf
 <details>
 <summary><b>GetOffice collecte-t-il des données ?</b></summary>
 
-Les versions officielles empaquetées envoient par défaut des analyses
-d'usage limitées, et vous pouvez désactiver ce signalement à tout moment sous
-Paramètres → Général. Les analyses n'envoient jamais le contenu des
-documents, les noms de fichiers, les chemins de fichiers, l'identité du
-compte ou les adresses e-mail. Consultez
-[GetOffice Privacy](../../PRIVACY.md) pour la liste complète des événements
-et des données divulguées.
+GetOffice ne collecte ni n'envoie aucune analyse d'utilisation ni télémétrie. Consultez [GetOffice Privacy](../../PRIVACY.md) pour plus de détails.
 
 </details>
 

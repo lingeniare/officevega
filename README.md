@@ -542,11 +542,8 @@ to use it; install it from **Settings → Integrations**. See
 <details>
 <summary><b>Does GetOffice collect any data?</b></summary>
 
-Official packaged builds send limited usage analytics by default, and you can
-disable reporting at any time under Settings → General. Analytics never sends
-document content, file names, file paths, account identity or email
-addresses. See [GetOffice Privacy](PRIVACY.md) for the complete event and
-data disclosures.
+GetOffice does not collect or send any usage analytics or telemetry. See
+[GetOffice Privacy](PRIVACY.md) for details.
 
 </details>
 

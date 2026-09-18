@@ -72,6 +72,9 @@ export type AiImageProtocol = 'openai-images' | 'gemini' | 'dashscope' | 'minima
 /** wire shape of the understanding endpoint */
 export type AiAnalysisProtocol = 'openai-chat' | 'gemini'
 
+/** media picker list entry: a bare model id, or an id paired with its catalog display name */
+export type AiMediaModelEntry = string | { id: string; name: string }
+
 export interface AiMediaProviderConfig {
   apiKey: string
   /** required for custom; for the others it overrides the official endpoint (regional mirrors) */
@@ -93,11 +96,11 @@ export interface AiMediaProviderMeta {
   defaultBaseUrl: string
   /** absent = the provider does not generate images */
   imageProtocol?: AiImageProtocol
-  imageModels: string[]
+  imageModels: AiMediaModelEntry[]
   defaultImageModel: string
   /** absent = the provider does not analyze media */
   analysisProtocol?: AiAnalysisProtocol
-  analysisModels: string[]
+  analysisModels: AiMediaModelEntry[]
   defaultAnalysisModel: string
   /** the analysis model accepts video input (Gemini natively; OpenAI-compatible vendors via a video_url part) */
   videoAnalysis: boolean

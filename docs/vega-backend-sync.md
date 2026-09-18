@@ -9,7 +9,8 @@ what the client sends today and what the backend must guarantee.
 
 - Everything goes to `https://api.vega.chat/api/v1` with
   `Authorization: Bearer sk-apivega-...` — one issued key for all features,
-  billed to the account deposit, attributed to `getoffice`.
+  billed to the account deposit, attributed to the server-registered key
+  name `genoffice`.
 - The key is main-process only: never rendered, never editable, never in
   `ai-settings.json`. The client has **no user-facing override** for VEGA —
   no key field, no Base URL field, no media model pickers.
@@ -141,10 +142,16 @@ Drives the account block and low-balance warnings; keep it <1 s and key-auth
 
 ### Backend changes confirmed
 
-- `client_id` whitelist and key name are **`getoffice`** — matches the client.
-- Key endpoints renamed: `POST /api/v1/keys/getoffice` (mint),
-  `POST /api/v1/keys/getoffice/revoke` (sign-out). **Client updated** —
-  `getoffice-auth.ts` now targets the `getoffice` paths.
+- `client_id` whitelist and key name remain **`genoffice`** — the product
+  rename did NOT reach the server-registered wire names. Verified live
+  2026-09-17: `client_id:"getoffice"` → `400 invalid_client`;
+  `POST /api/v1/keys/getoffice` → 404, while `/api/v1/keys/genoffice`
+  answers 401 (exists, needs the session Bearer). The client keeps sending
+  `genoffice` (`CLIENT_ID`/`KEY_NAME` in `getoffice-auth.ts`) until the
+  backend registers the new value — these constants must not follow app
+  rebrands.
+- Key endpoints: `POST /api/v1/keys/genoffice` (mint),
+  `POST /api/v1/keys/genoffice/revoke` (sign-out).
 - Keys are never deleted: revocation flips `enabled=false`; the row, prefix
   and `usage_logs.api_key_id` billing attribution persist. No delete affordance
   for app-managed keys, dashboard or server-side.
@@ -169,8 +176,8 @@ limit, keyName}` — all fields the client reads are present.
 
 ### Our answers to the VEGA questions
 
-1. `client_id: "getoffice"` — confirmed, that's what the client sends;
-   mint/revoke paths updated to `/api/v1/keys/getoffice*`.
+1. `client_id: "genoffice"` — what the client sends and what the whitelist
+   accepts; mint/revoke paths are `/api/v1/keys/genoffice*`.
 2. Complete pinned-id list: `openrouter/auto` (chat default),
    `google/gemini-3.1-flash-image` (image generation),
    `google/gemini-3.5-flash-lite` (web-search synthesis + image/video

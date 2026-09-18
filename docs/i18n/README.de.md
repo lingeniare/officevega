@@ -580,12 +580,7 @@ sie zu nutzen; installiere ihn unter **Einstellungen → Integrationen**. Siehe
 <details>
 <summary><b>Erfasst GetOffice irgendwelche Daten?</b></summary>
 
-Offizielle gepackte Builds senden standardmäßig begrenzte Nutzungsanalysen,
-und du kannst die Übermittlung jederzeit unter Einstellungen → Allgemein
-deaktivieren. Die Analysen senden niemals Dokumentinhalte, Dateinamen,
-Dateipfade, Kontoidentität oder E-Mail-Adressen. Die vollständigen Angaben
-zu Ereignissen und Daten stehen in
-[GetOffice-Datenschutz](../../PRIVACY.md).
+GetOffice sammelt oder sendet keine Nutzungsanalysen oder Telemetrie. Details siehe [GetOffice-Datenschutz](../../PRIVACY.md).
 
 </details>
 

@@ -13,7 +13,7 @@ to VEGA on that key.
 
 - All calls are `Authorization: Bearer sk-apivega-...` against
   `https://api.vega.chat/api/v1` — the same key for every feature, billed to
-  the account deposit and attributed to `getoffice`.
+  the account deposit and attributed to the registered key name `genoffice`.
 - The issued key **never enters the renderer**. Settings UI has no API-key,
   Base-URL or model picker for VEGA; the client sends fixed model ids (below)
   and the server is free to remap them.

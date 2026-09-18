@@ -30,6 +30,7 @@ export {
   type PopoverDismissOptions,
 } from './popover-dismiss'
 export { Dropdown, type DropdownOption } from './dropdown'
+export { ComboBox } from './combobox'
 export {
   FindPanel,
   type FindFocusRequest,

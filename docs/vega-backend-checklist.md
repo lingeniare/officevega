@@ -6,7 +6,7 @@ and current status after sync Round 1 (2026-09-17). Details live in
 
 ## 1. Auth & key lifecycle — [x] implemented
 
-- [x] `POST /api/auth/device/code` accepts `{client_id:"getoffice"}` —
+- [x] `POST /api/auth/device/code` accepts `{client_id:"genoffice"}` —
       whitelisted value — and returns `device_code`, `user_code`,
       `verification_uri`, `verification_uri_complete`, `expires_in` (600),
       `interval` (5).
@@ -14,10 +14,10 @@ and current status after sync Round 1 (2026-09-17). Details live in
       `authorization_pending` until approved, then a session `access_token`.
 - [x] Verification page `https://api.vega.chat/device` — sign-in → approve →
       return, no extra requirements.
-- [x] `POST /api/v1/keys/getoffice` (Bearer = session token) mints the single
+- [x] `POST /api/v1/keys/genoffice` (Bearer = session token) mints the single
       app key `sk-apivega-[0-9a-f]{48}`; plaintext returned once. Re-login
-      supersedes the previous key — at most one active `getoffice` key.
-- [x] `POST /api/v1/keys/getoffice/revoke` (Bearer = the API key) — sign-out.
+      supersedes the previous key — at most one active `genoffice` key.
+- [x] `POST /api/v1/keys/genoffice/revoke` (Bearer = the API key) — sign-out.
       Revocation flips `enabled=false`; the row + billing attribution stay.
 - [x] `GET /api/v1/account` (key-auth, <1 s) →
       `{email, balance, balanceRub, currency:"USD", totalUsage, limit, keyName}`.
@@ -43,12 +43,12 @@ for every endpoint — no cookies, no CORS, no WAF challenges (confirmed).
 
 - [x] **Chat** — `model:"openrouter/auto"` alias resolves upstream.
 - [x] **Web search** — `plugins:[{id:"web", engine:"parallel"|"exa",
-    max_results:N}]` passes through; citations arrive as
+  max_results:N}]` passes through; citations arrive as
       `type:"url_citation"` annotations. Client retries parallel→exa itself
       (one engine per request).
 - [x] **Image generation** — `/images/generations` with
       `{model:"google/gemini-3.1-flash-image", prompt, n:1, aspect_ratio,
-    response_format:"b64_json"}`; edits = inline `input_references` on the
+  response_format:"b64_json"}`; edits = inline `input_references` on the
       same endpoint (no multipart `/images/edits` — not needed).
 - [x] **Image analysis** — `chat/completions` + `image_url` data-URL parts,
       model `google/gemini-3.5-flash-lite`.

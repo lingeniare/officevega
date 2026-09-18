@@ -13,13 +13,6 @@
  * the publish config is omitted: electron-builder then bakes no
  * app-update.yml into the app and in-app auto-update stays disabled.
  *
- * GETOFFICE_GA4_MEASUREMENT_ID / GETOFFICE_GA4_API_SECRET — GA4 Measurement
- * Protocol credentials for anonymous usage analytics, injected the same way
- * (CI secrets, or apps/shell/electron-builder.env locally). They are written
- * into the packaged app's package.json via extraMetadata and read back by
- * src/main/analytics.ts. When either is unset — every source/fork build —
- * nothing is injected and the app runs with analytics fully disabled.
- *
  * GETOFFICE_FONT_CDN_URL — base URL for the curated downloadable-font catalog.
  * Official release jobs inject it through extraMetadata so the endpoint stays
  * out of source. Without it, font download prompts/catalog entries are hidden;
@@ -44,8 +37,6 @@ function normalizeHttpsBaseUrl(name, value) {
 }
 
 const updateUrl = process.env.GETOFFICE_UPDATE_URL
-const ga4MeasurementId = process.env.GETOFFICE_GA4_MEASUREMENT_ID
-const ga4ApiSecret = process.env.GETOFFICE_GA4_API_SECRET
 const fontCdnUrl = normalizeHttpsBaseUrl(
   'GETOFFICE_FONT_CDN_URL',
   process.env.GETOFFICE_FONT_CDN_URL,
@@ -624,12 +615,6 @@ if (updateUrl) {
 // CI's "-c.extraMetadata.version=..." CLI override deep-merges with this block,
 // so the version and all injected feature settings survive together.
 const extraMetadata = {}
-if (ga4MeasurementId && ga4ApiSecret) {
-  extraMetadata.getofficeAnalytics = {
-    measurementId: ga4MeasurementId,
-    apiSecret: ga4ApiSecret,
-  }
-}
 if (fontCdnUrl) extraMetadata.getofficeFontCdn = { baseUrl: fontCdnUrl }
 if (Object.keys(extraMetadata).length) config.extraMetadata = extraMetadata
 

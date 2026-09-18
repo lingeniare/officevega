@@ -10,7 +10,7 @@ authenticates against `www.genspark.ai` and we want to move that identity to
 
 The current client flow lives in `packages/ai-search/src/getoffice-auth.ts`:
 
-1. `POST {base}/api/office_addin_auth/device_code?app_type=getoffice`
+1. `POST {base}/api/office_addin_auth/device_code?app_type=genoffice`
    → `{ device_code, auth_url, expires_in, poll_interval }`
 2. The app opens `auth_url` in the system browser; the user approves.
 3. Poll `GET {base}/api/office_addin_auth/token?code={device_code}` every
@@ -19,7 +19,7 @@ The current client flow lives in `packages/ai-search/src/getoffice-auth.ts`:
 4. `POST {base}/api/office_addin_auth/session` with `Authorization: Bearer`
    → session cookie via `Set-Cookie`.
 5. `POST {base}/api/api_tokens/create` (Cookie auth) with
-   `{ key_name: 'getoffice' }` → `{ data: { token, key_id } }`.
+   `{ key_name: 'genoffice' }` → `{ data: { token, key_id } }`.
 6. Stored locally in `~/.getoffice/auth.json`:
    `{ api_key, key_id, access_token }` (mode 0600).
 7. Logout: rebuild the session from `access_token`, then
@@ -47,7 +47,7 @@ the key automatically.
   or the poll-based equivalent above).
 - The app may sit behind HTTP proxies; we handle proxy failover ourselves.
 - All traffic by the issued key is billed to the account's deposit. The key
-  name/metadata `getoffice` must land in billing attribution the same way
+  name/metadata `genoffice` must land in billing attribution the same way
   Genspark's `key_name` → `billing_tag` does.
 
 ## Requirements
@@ -58,7 +58,7 @@ Expose the better-auth `deviceAuthorization` plugin endpoints (RFC 8628), or
 an equivalent custom flow, under the auth base path (e.g.
 `https://api.vega.chat/api/auth`):
 
-- `POST /api/auth/device/code` — accepts `{ client_id: 'getoffice', scope? }`;
+- `POST /api/auth/device/code` — accepts `{ client_id: 'genoffice', scope? }`;
   returns `device_code`, `user_code`, `verification_uri`,
   `verification_uri_complete`, `expires_in`, `interval`.
 - `POST /api/auth/device/token` — accepts
@@ -66,11 +66,11 @@ an equivalent custom flow, under the auth base path (e.g.
   returns `authorization_pending` until the user approves, then a session
   token (better-auth session or JWT).
 - A public verification page (`verification_uri`) where a signed-in VEGA user
-  enters/confirms `user_code` and approves the `getoffice` client. If the
+  enters/confirms `user_code` and approves the `genoffice` client. If the
   user is not signed in, the page must lead them through sign-in and return
   to the approval step.
 
-Register `getoffice` as an allowed client (client_id whitelist /
+Register `genoffice` as an allowed client (client_id whitelist /
 `validateClient`) so the flow can't be initiated by arbitrary clients.
 
 ### R2. Automatic issuance of exactly one API key
@@ -80,9 +80,9 @@ any manual dashboard step. Either shape is acceptable — pick what fits
 better-auth's `apiKey` plugin best:
 
 - **Option A (preferred):** an endpoint such as
-  `POST /api/auth/api-keys/create` (or `POST /api/v1/keys/getoffice`)
+  `POST /api/auth/api-keys/create` (or `POST /api/v1/keys/genoffice`)
   authenticated by the device-flow session token, body
-  `{ name: 'getoffice' }`, returning `{ id, key }` **once** — the plaintext
+  `{ name: 'genoffice' }`, returning `{ id, key }` **once** — the plaintext
   key is never retrievable again.
 - **Option B:** the device-token response itself returns a freshly minted key
   alongside the session token.
@@ -90,8 +90,8 @@ better-auth's `apiKey` plugin best:
 Hard requirements either way:
 
 - **Idempotent / single-key invariant.** Re-running login revokes the
-  previous `getoffice` key server-side and issues a new one. At most one
-  active key tagged `getoffice` exists per account. Alternatively expose
+  previous `genoffice` key server-side and issues a new one. At most one
+  active key tagged `genoffice` exists per account. Alternatively expose
   `POST .../revoke` so the client can revoke the superseded `key_id` itself
   (we already do this best-effort after re-login).
 - The key must work as `Authorization: Bearer sk-apivega-...` on
@@ -140,9 +140,9 @@ Document the exact response for each failure mode we branch on:
    verification page; after approval the app holds a working
    `sk-apivega-...` key with zero manual steps.
 2. `GET /api/v1/chat/completions` with that key succeeds; the call is billed
-   against the account deposit and attributed to `getoffice`.
+   against the account deposit and attributed to `genoffice`.
 3. Signing in a second time invalidates the first key (verified by a 401 on
-   the old key) and leaves exactly one active `getoffice` key.
+   the old key) and leaves exactly one active `genoffice` key.
 4. Sign-out revokes the key server-side.
 5. `GET {account endpoint}` returns the deposit; the Settings UI shows it.
 6. All of the above works through `net.fetch` (Chromium) and plain Node
@@ -160,7 +160,7 @@ Document the exact response for each failure mode we branch on:
 2. What is the mounted base path — `/api/auth`? Full URLs for the three
    endpoints, please.
 3. Is `client_id` registration required? What value should we send for
-   `getoffice`, and do you need a fixed client list (`validateClient`)?
+   `genoffice`, and do you need a fixed client list (`validateClient`)?
 4. What does the device-token response return on approval — a better-auth
    session token (cookie/`set-auth-token`), a JWT, or an OAuth access token?
    What TTL, and is there a refresh path or must the user re-authorize?
@@ -175,13 +175,13 @@ Document the exact response for each failure mode we branch on:
    (`/api/auth/api-keys/create`?) and can it be called with a session
    token header instead of a cookie? If no, you'll need a custom
    create/revoke endpoint — confirm which you prefer.
-8. Can key creation be constrained to a single active `getoffice` key
+8. Can key creation be constrained to a single active `genoffice` key
    server-side (auto-revoke on re-issue), or should the client list keys,
    revoke prior ones, then create? If listing is supported, what's the
    endpoint and filter field (`name`? `metadata.app`?)?
 9. Key format confirmation: `sk-apivega-...`? Fixed prefix we can validate
    client-side?
-10. Can the key carry a `name`/`metadata` tag (`getoffice`) that shows up in
+10. Can the key carry a `name`/`metadata` tag (`genoffice`) that shows up in
     your billing/usage attribution? Where does it appear (dashboard, usage
     exports)?
 
@@ -238,7 +238,7 @@ database (`scripts/test-device-flow.ts` — 12/12 checks green).
    90 days). No refresh token — if it ever expires, re-run the device flow
    (the issued API key is unaffected and keeps working).
 2. Base path: `https://api.vega.chat/api/auth`.
-   - `POST /api/auth/device/code` — `{ client_id: "getoffice", scope? }` →
+   - `POST /api/auth/device/code` — `{ client_id: "genoffice", scope? }` →
      `{ device_code, user_code, verification_uri, verification_uri_complete, expires_in, interval }`
    - `POST /api/auth/device/token` —
      `{ grant_type: "urn:ietf:params:oauth:grant-type:device_code", device_code, client_id }`
@@ -246,7 +246,10 @@ database (`scripts/test-device-flow.ts` — 12/12 checks green).
      `verification_uri_complete` carries `?user_code=` pre-filled. If the
      user is signed out the page redirects through `/login` and returns.
 3. `client_id` is whitelist-validated server-side — send literally
-   `"getoffice"`. Other values get `400 { error: "invalid_client" }`.
+   `"genoffice"`. Other values get `400 { error: "invalid_client" }`.
+   (Verified live 2026-09-17: `"getoffice"` is rejected — the whitelist was
+   NOT renamed with the product rebrand; the client must keep sending
+   `"genoffice"` until the backend registers the new value.)
 4. See (1): session token, 90-day TTL. The app should **drop it after key
    issuance** — only the `sk-apivega-...` key is needed afterwards.
 5. The page is built at `/device` (code entry + approve/deny, sign-in
@@ -257,21 +260,21 @@ database (`scripts/test-device-flow.ts` — 12/12 checks green).
 
 7. The better-auth `apiKey` plugin is not used — VEGA has its own key
    store. Dedicated endpoint:
-   `POST /api/v1/keys/getoffice` — auth: `Authorization: Bearer <access_token>`
+   `POST /api/v1/keys/genoffice` — auth: `Authorization: Bearer <access_token>`
    (the device-flow session token; the `bearer` plugin accepts it without
-   cookies). Body `{ "name": "getoffice" }` (optional, defaults to
-   `getoffice`). Returns `{ "id": "<key_id>", "key": "sk-apivega-..." }` —
-   plaintext shown exactly once.
+   cookies). Body `{ "name": "genoffice" }` (optional, defaults to
+   `genoffice`). Returns `{ "id": "<key_id>", "key": "sk-apivega-..." }` —
+   plaintext shown exactly once. (`/api/v1/keys/getoffice` 404s on prod.)
 8. Single-key invariant is enforced server-side: every `POST` deletes all
    previous keys with the same `name` for that account before inserting the
    new one. Re-login ⇒ old key returns 401 immediately.
-   Revocation for sign-out: `POST /api/v1/keys/getoffice/revoke` —
+   Revocation for sign-out: `POST /api/v1/keys/genoffice/revoke` —
    send the **API key itself** as Bearer (self-revocation; needs no stored
    session) or the session token (revokes all keys with that name).
 9. Key format: `sk-apivega-<48 lowercase hex>` — safe to validate
    client-side with `^sk-apivega-[0-9a-f]{48}$`.
 10. `usage_logs.api_key_id` is written on every billed request, so the
-    `getoffice` name lands in billing attribution per-key. Dashboard
+    `genoffice` name lands in billing attribution per-key. Dashboard
     (api.vega.chat/keys) shows the key with its name and usage.
 
 **Deposit**
@@ -287,7 +290,7 @@ database (`scripts/test-device-flow.ts` — 12/12 checks green).
       "currency": "USD",
       "totalUsage": 45.67, // lifetime spend, USD
       "limit": null, // key spend limit (USD) or null
-      "keyName": "getoffice"
+      "keyName": "genoffice"
     }
     ```
 12. API key auth — exactly as preferred; drop the session token.
@@ -318,8 +321,8 @@ database (`scripts/test-device-flow.ts` — 12/12 checks green).
 | `POST /api/office_addin_auth/device_code`     | `POST /api/auth/device/code`                            |
 | `GET /api/office_addin_auth/token?code=` poll | `POST /api/auth/device/token`                           |
 | `POST /api/office_addin_auth/session`         | not needed — `access_token` is already the session      |
-| `POST /api/api_tokens/create`                 | `POST /api/v1/keys/getoffice` (Bearer = access_token)   |
-| `POST /api/api_tokens/revoke`                 | `POST /api/v1/keys/getoffice/revoke` (Bearer = API key) |
+| `POST /api/api_tokens/create`                 | `POST /api/v1/keys/genoffice` (Bearer = access_token)   |
+| `POST /api/api_tokens/revoke`                 | `POST /api/v1/keys/genoffice/revoke` (Bearer = API key) |
 | `gsk login-info`                              | `GET /api/v1/account` (Bearer = API key)                |
 
 Note the polling contract change: the token endpoint answers

@@ -1,14 +1,14 @@
 /**
  * GetOffice's VEGA identity (api.vega.chat, better-auth): OAuth device
- * authorization (RFC 8628) minting one sk-apivega-… API key named "getoffice"
+ * authorization (RFC 8628) minting one sk-apivega-… API key named "genoffice"
  * — usage_logs.api_key_id attributes all traffic to GetOffice. Stored in
  * ~/.getoffice/auth.json.
  *
  * Flow: POST /api/auth/device/code → browser approve at verification_uri →
  * poll POST /api/auth/device/token for a session Bearer →
- * POST /api/v1/keys/getoffice. The session token is dropped after key
+ * POST /api/v1/keys/genoffice. The session token is dropped after key
  * issuance; the API key self-revokes on logout
- * (POST /api/v1/keys/getoffice/revoke) and GET /api/v1/account reads the
+ * (POST /api/v1/keys/genoffice/revoke) and GET /api/v1/account reads the
  * deposit for the account UI.
  */
 
@@ -27,8 +27,11 @@ export interface GskLoginProgress {
   error?: string
 }
 
-const CLIENT_ID = 'getoffice'
-const KEY_NAME = 'getoffice'
+// Server-registered wire identity — NOT the product name. api.vega.chat
+// whitelists client_id "genoffice" and serves /api/v1/keys/genoffice only;
+// anything else gets 400 invalid_client / 404. Do not rename with the app.
+const CLIENT_ID = 'genoffice'
+const KEY_NAME = 'genoffice'
 const HTTP_TIMEOUT_MS = 30_000
 /** RFC 8628: a slow_down answer adds 5 s to the poll interval */
 const SLOW_DOWN_EXTRA_MS = 5_000
@@ -43,6 +46,8 @@ function rootUrl(): string {
 
 const authBase = () => `${rootUrl()}/api/auth`
 const apiBase = () => `${rootUrl()}/api/v1`
+// mint/self-revoke paths are keyed by the server-registered name (KEY_NAME)
+const keysUrl = () => `${apiBase()}/keys/${KEY_NAME}`
 
 let cachedFetch: typeof fetch | undefined
 
@@ -121,6 +126,17 @@ export function getofficeAuthPath(): string {
   return join(process.env.GETOFFICE_AUTH_DIR || join(homedir(), '.getoffice'), 'auth.json')
 }
 
+/**
+ * Pre-rename installs kept the key at ~/.genoffice/auth.json (overridable via
+ * the legacy GENOFFICE_AUTH_DIR env). Returns null when GETOFFICE_AUTH_DIR is
+ * set without GENOFFICE_AUTH_DIR — tests must never touch the real home dir.
+ */
+function legacyAuthPath(): string | null {
+  if (process.env.GENOFFICE_AUTH_DIR) return join(process.env.GENOFFICE_AUTH_DIR, 'auth.json')
+  if (process.env.GETOFFICE_AUTH_DIR) return null
+  return join(homedir(), '.genoffice', 'auth.json')
+}
+
 export interface GetofficeAuth {
   apiKey: string
   keyId?: string
@@ -128,9 +144,9 @@ export interface GetofficeAuth {
 
 let cachedAuth: GetofficeAuth | null | undefined
 
-function readAuthFile(): GetofficeAuth | null {
+function parseAuthFile(path: string): GetofficeAuth | null {
   try {
-    const raw = asRecord(JSON.parse(readFileSync(getofficeAuthPath(), 'utf-8')))
+    const raw = asRecord(JSON.parse(readFileSync(path, 'utf-8')))
     const apiKey = typeof raw.api_key === 'string' ? raw.api_key : ''
     // a pre-VEGA auth.json holds a Genspark gsk key — useless against
     // api.vega.chat, so it reads as signed-out and the next login overwrites it
@@ -144,12 +160,30 @@ function readAuthFile(): GetofficeAuth | null {
   }
 }
 
+function readAuthFile(): GetofficeAuth | null {
+  const current = parseAuthFile(getofficeAuthPath())
+  if (current) return current
+  // upgrade path: adopt a key the pre-rename build stored in ~/.genoffice so
+  // the product rename doesn't sign the user out
+  const legacy = legacyAuthPath()
+  if (!legacy || legacy === getofficeAuthPath()) return null
+  const auth = parseAuthFile(legacy)
+  if (auth) {
+    try {
+      saveAuth(auth) // migrate into ~/.getoffice; a failed write just retries next read
+    } catch {
+      /* best-effort migration — the key is still usable from the old file */
+    }
+  }
+  return auth
+}
+
 export function loadGetofficeAuth(): GetofficeAuth | null {
   if (cachedAuth === undefined) cachedAuth = readAuthFile()
   return cachedAuth
 }
 
-/** The GetOffice-named VEGA key; '' when not signed in. Cached (invalidated by login/logout). */
+/** The app-issued VEGA key (server key name "genoffice"); '' when not signed in. Cached (invalidated by login/logout). */
 export function getofficeApiKey(): string {
   return loadGetofficeAuth()?.apiKey ?? ''
 }
@@ -166,10 +200,14 @@ function saveAuth(auth: GetofficeAuth): void {
 }
 
 function clearAuth(): void {
-  try {
-    if (existsSync(getofficeAuthPath())) unlinkSync(getofficeAuthPath())
-  } catch {
-    /* local sign-out must not throw */
+  // the legacy file too — otherwise the next read re-adopts it and sign-out
+  // never sticks
+  for (const path of [getofficeAuthPath(), legacyAuthPath()]) {
+    try {
+      if (path && existsSync(path)) unlinkSync(path)
+    } catch {
+      /* local sign-out must not throw */
+    }
   }
   cachedAuth = null
 }
@@ -245,7 +283,7 @@ function sleep(ms: number, signal: AbortSignal): Promise<void> {
 /**
  * VEGA device authorization (better-auth deviceAuthorization plugin, RFC 8628):
  * request a code, let the user approve it in the browser, poll for the session
- * token, then mint the single "getoffice" API key (the server deletes any
+ * token, then mint the single "genoffice" API key (the server deletes any
  * previous key of the same name before inserting — re-login rotates it).
  */
 async function runDeviceLogin(
@@ -299,7 +337,7 @@ async function runDeviceLogin(
   }
 
   // the session token is only needed to mint the key — dropped right after
-  const { resp: keyResp, json: created } = await httpJson(`${apiBase()}/keys/getoffice`, {
+  const { resp: keyResp, json: created } = await httpJson(keysUrl(), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
     body: JSON.stringify({ name: KEY_NAME }),
@@ -380,7 +418,7 @@ export function ensureGetofficeLogin(openUrl: (url: string) => void): void {
 }
 
 /**
- * Signs out: best-effort server-side self-revocation of the getoffice key
+ * Signs out: best-effort server-side self-revocation of the genoffice key
  * (the API key itself is the Bearer — no session needed), then local removal.
  */
 export async function getofficeLogout(): Promise<void> {
@@ -389,7 +427,7 @@ export async function getofficeLogout(): Promise<void> {
     const controller = new AbortController()
     const timer = setTimeout(() => controller.abort(), HTTP_TIMEOUT_MS)
     try {
-      await resolveFetch()(`${apiBase()}/keys/getoffice/revoke`, {
+      await resolveFetch()(`${keysUrl()}/revoke`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${auth.apiKey}` },
         signal: controller.signal,

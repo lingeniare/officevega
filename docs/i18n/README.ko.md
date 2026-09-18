@@ -555,10 +555,7 @@ Copilot, OpenCode, Windsurf에 사용법을 알려주며, **설정 → 연동**�
 <details>
 <summary><b>GetOffice가 데이터를 수집하나요?</b></summary>
 
-공식 패키지 빌드는 기본적으로 제한된 사용 통계를 전송하며, 설정 →
-일반에서 언제든지 이 보고를 끌 수 있습니다. 통계에는 문서 내용, 파일
-이름, 파일 경로, 계정 신원, 이메일 주소가 절대 포함되지 않습니다.
-전체 이벤트와 데이터 공개 내용은 [GetOffice Privacy](../../PRIVACY.md)에서 확인할 수 있습니다.
+GetOffice는 사용 분석이나 원격 측정 데이터를 수집하거나 전송하지 않습니다. 자세한 내용은 [GetOffice Privacy](../../PRIVACY.md)를 참조하세요.
 
 </details>
 

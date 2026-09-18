@@ -572,12 +572,7 @@ Copilot, OpenCode, dan Windsurf untuk menggunakannya; pasang dari
 <details>
 <summary><b>Apakah GetOffice mengumpulkan data?</b></summary>
 
-Build resmi yang dipaketkan mengirim data analitik penggunaan terbatas
-secara default, dan Anda bisa menonaktifkan pelaporan ini kapan saja lewat
-Settings → General. Analitik ini tidak pernah mengirim isi dokumen, nama
-file, path file, identitas akun, atau alamat email. Lihat
-[GetOffice Privacy](../../PRIVACY.md) untuk daftar lengkap event dan
-pengungkapan data.
+GetOffice tidak mengumpulkan atau mengirim analitik penggunaan atau telemetri apa pun. Lihat [GetOffice Privacy](../../PRIVACY.md) untuk detailnya.
 
 </details>
 

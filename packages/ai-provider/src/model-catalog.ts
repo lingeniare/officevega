@@ -10,9 +10,15 @@ import { AI_PROVIDERS } from './providers'
 import { getProviderAdapter } from './registry'
 import type { AiProviderConfig, AiProviderId } from './types'
 
+export interface ProviderModel {
+  id: string
+  /** catalog display name minus the vendor prefix ('DeepSeek V4.1 Flash'); falls back to id */
+  name: string
+}
+
 /** {models, defaultModel} — the same shape Codex app-server's model/list returns */
 export interface ProviderModelCatalog {
-  models: string[]
+  models: ProviderModel[]
   defaultModel: string
 }
 
@@ -21,6 +27,12 @@ export interface ModelFilter {
   input?: string
   /** each model's output_modalities must include this ('text', 'image') */
   output?: string
+  /** drop ids starting with any of these ('~' marks alias rows on the VEGA catalog) */
+  excludePrefixes?: readonly string[]
+  /** drop ids ending with any of these (':free' duplicates, '-latest' aliases, 'meta') */
+  excludeSuffixes?: readonly string[]
+  /** keep only entries created on/after this unix-seconds timestamp (missing `created` is kept) */
+  createdAfter?: number
 }
 
 const PAGE_LIMIT = 200
@@ -37,13 +49,25 @@ function modalities(entry: unknown, field: 'input_modalities' | 'output_modaliti
   return Array.isArray(list) ? list.filter((m): m is string => typeof m === 'string') : []
 }
 
+/** 'DeepSeek: DeepSeek V4.1 Flash' → 'DeepSeek V4.1 Flash' when the prefix repeats the id's vendor */
+function displayName(id: string, name: unknown): string {
+  const n = typeof name === 'string' ? name.trim() : ''
+  if (!n) return id
+  const split = /^([^:]+):\s*(.+)$/.exec(n)
+  return split && split[1].trim().toLowerCase() === id.split('/')[0]?.toLowerCase()
+    ? split[2].trim()
+    : n
+}
+
 export async function listGatewayModels(
   baseUrl: string,
   apiKey: string | undefined,
   filter: ModelFilter = {},
-): Promise<string[]> {
+): Promise<ProviderModel[]> {
   const base = baseUrl.replace(/\/+$/, '')
-  const models: string[] = []
+  const excludePrefixes = filter.excludePrefixes ?? []
+  const excludeSuffixes = filter.excludeSuffixes ?? []
+  const models: ProviderModel[] = []
   const seen = new Set<string>()
   let offset = 0
   for (let page = 0; page < MAX_PAGES; page++) {
@@ -61,12 +85,21 @@ export async function listGatewayModels(
     const data = Array.isArray(json.data) ? json.data : []
     const total = typeof json.total_count === 'number' ? json.total_count : 0
     for (const raw of data) {
-      const id = typeof asRecord(raw).id === 'string' ? (asRecord(raw).id as string) : ''
+      const entry = asRecord(raw)
+      const id = typeof entry.id === 'string' ? entry.id : ''
       if (!id || seen.has(id)) continue
+      if (excludePrefixes.some((p) => id.startsWith(p))) continue
+      if (excludeSuffixes.some((s) => id.endsWith(s))) continue
+      if (
+        filter.createdAfter !== undefined &&
+        typeof entry.created === 'number' &&
+        entry.created < filter.createdAfter
+      )
+        continue
       if (filter.input && !modalities(raw, 'input_modalities').includes(filter.input)) continue
       if (filter.output && !modalities(raw, 'output_modalities').includes(filter.output)) continue
       seen.add(id)
-      models.push(id)
+      models.push({ id, name: displayName(id, entry.name) })
     }
     offset += data.length
     if (data.length === 0 || (total > 0 && offset >= total)) break
@@ -85,7 +118,10 @@ export async function listProviderModels(
   filter: ModelFilter = {},
 ): Promise<ProviderModelCatalog> {
   const meta = AI_PROVIDERS.find((m) => m.id === provider)
-  const fallback = { models: meta?.models ?? [], defaultModel: meta?.defaultModel ?? '' }
+  const fallback = {
+    models: (meta?.models ?? []).map((id) => ({ id, name: id })),
+    defaultModel: meta?.defaultModel ?? '',
+  }
   if (!meta?.liveCatalog) return fallback
   try {
     const endpoint = getProviderAdapter(provider).resolveEndpoint(

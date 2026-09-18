@@ -229,23 +229,34 @@ describe('generateImageWithProvider', () => {
     })
   })
 
-  it('vega always hits api.vega.chat with the fixed default model — stored overrides are ignored', async () => {
+  it('vega hits api.vega.chat with the picked image model — a stale base URL is still ignored', async () => {
     const fetchMock = vi.fn(async () => jsonResponse({ data: [{ b64_json: PNG_B64 }] }))
     vi.stubGlobal('fetch', fetchMock)
     await generateImageWithProvider(
       'vega',
-      // a stale settings file could carry BYOK-era values — the wire must ignore them
+      // the endpoint is fixed even when a stale settings file carries another one
       {
         apiKey: 'sk-apivega-x',
         baseUrl: 'https://elsewhere.example.com/v1',
-        imageModel: 'stale-model',
+        imageModel: 'openai/gpt-image-2',
         analysisModel: '',
       },
       { prompt: 'a cat' },
     )
     const [url, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit]
     expect(url).toBe('https://api.vega.chat/api/v1/images/generations')
-    expect(JSON.parse(init.body as string).model).toBe('google/gemini-3.1-flash-image')
+    expect(JSON.parse(init.body as string).model).toBe('openai/gpt-image-2')
+    // an empty pick falls back to the catalog default
+    fetchMock.mockClear()
+    await generateImageWithProvider(
+      'vega',
+      { apiKey: 'sk-apivega-x', imageModel: '', analysisModel: '' },
+      { prompt: 'a cat' },
+    )
+    expect(
+      JSON.parse((fetchMock.mock.calls[0] as unknown as [string, RequestInit])[1].body as string)
+        .model,
+    ).toBe('x-ai/grok-imagine-image-2.0')
   })
 
   it('uses the edits endpoint (multipart) when reference images are given', async () => {

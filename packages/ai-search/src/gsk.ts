@@ -392,11 +392,12 @@ async function toolCliPost(
   try {
     const resp = await fetch(`${GSK_TOOL_CLI_BASE}${path}`, {
       method: 'POST',
-      // X-Agent-Type splits GetOffice usage out of the proxy's "Claw" billing bucket
+      // X-Agent-Type splits GetOffice usage out of the proxy's "Claw" billing
+      // bucket — the value is registered server-side as "genoffice"
       headers: {
         'X-Api-Key': key,
         'Content-Type': 'application/json',
-        'X-Agent-Type': 'getoffice',
+        'X-Agent-Type': 'genoffice',
       },
       body: JSON.stringify(body),
       signal: controller.signal,

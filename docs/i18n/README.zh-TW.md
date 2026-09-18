@@ -569,10 +569,7 @@ Gemini CLI、GitHub Copilot、OpenCode 與 Windsurf 使用它；請在 **設定 
 <details>
 <summary><b>GetOffice 會收集任何資料嗎？</b></summary>
 
-官方打包版本預設會傳送有限的使用分析資料，你隨時可以在「設定 → 一般」
-中關閉這項回報。分析資料絕不會包含文件內容、檔案名稱、檔案路徑、
-帳號身分或電子郵件地址。完整的事件與資料揭露內容請見
-[GetOffice 隱私權政策](../../PRIVACY.md)。
+GetOffice 不會收集或傳送任何使用分析或遙測資料。詳見 [GetOffice 隱私權政策](../../PRIVACY.md)。
 
 </details>
 
