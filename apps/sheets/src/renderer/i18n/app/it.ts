@@ -1375,4 +1375,12 @@ export const it = {
   appFindTitle: 'Trova e seleziona ⌘F',
   appReplace: 'Sostituisci',
   appGoTo: 'Vai a',
+  // Ribbon File menu
+  appFileTab: 'File',
+  appFileOpen: 'Apri cartella di lavoro…',
+  appFileSave: 'Salva',
+  appFileSaveAs: 'Salva con nome…',
+  appFileExportPdf: 'Esporta PDF…',
+  appFileExportCsv: 'Esporta CSV…',
+  appFilePrint: 'Stampa…',
 } satisfies Record<keyof typeof zh, string>

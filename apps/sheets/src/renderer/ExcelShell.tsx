@@ -1,5 +1,5 @@
 import type { IFunctionInfo } from '@univerjs/engine-formula'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { platformShortcuts } from '@genoffice/i18n'
 import {
   Dropdown,
@@ -42,7 +42,7 @@ import { isGridKeyTarget, shouldInterceptClearSelection } from './clear-selectio
 
 import type { ChartSeriesVisualState } from '@genoffice/xlsx-gateway/domain/chart-visual'
 import type { ChangePlan } from '@genoffice/xlsx-gateway/domain/workbook.types'
-import type { AttachmentMeta } from '../shared/desktop-api'
+import type { AttachmentMeta, MenuAction } from '../shared/desktop-api'
 import { AiChatPanel, type AiChatMessage } from './ai/AiChatPanel'
 import { AiSelectionAsk } from './ai/AiSelectionAsk'
 import type { SelectionAskAnchor } from './ai/selection-ask'
@@ -61,8 +61,8 @@ import type { ConsolidateConfig } from './consolidate'
 import { HeaderFooterDialog, type HeaderFooterResult } from './HeaderFooterDialog'
 import type { HeaderFooterParts } from './edit-journal'
 
-// No File tab: file commands live in the macOS
-// application menu (File → Open/Save/Save As) and the toolbar icons.
+// The File dropdown sits in front of the tabs on Windows/Linux (docs/slides
+// parity); on macOS the application menu owns File → Open/Save/Save As.
 const ribbonTabs = ['Home', 'Insert', 'Page Layout', 'Formulas', 'Data', 'Review', 'View'] as const
 
 /// 'Chart Design' is contextual: it exists only while a chart is selected,
@@ -220,6 +220,9 @@ interface ExcelShellProps {
   /// file-backed session (the in-memory demo workbook has nowhere to copy).
   readonly canSaveAs: boolean
   readonly onSaveAs: () => void
+  /// File-menu items that mirror the native File menu: routed through the
+  /// same menuAction handler (open / print / export-pdf / export-csv).
+  readonly onFileAction: (action: MenuAction) => void
   /// QAT redo (workbook history, same path as the app menu's ⇧⌘Z); undo
   /// shares the AI panel's onUndo above.
   readonly onRedo: () => void
@@ -372,6 +375,7 @@ export function ExcelShell({
   onSave,
   canSaveAs,
   onSaveAs,
+  onFileAction,
   onRedo,
   canUndo,
   canRedo,
@@ -384,6 +388,12 @@ export function ExcelShell({
 }: ExcelShellProps): React.JSX.Element {
   const { t } = useI18n()
   const [activeTab, setActiveTab] = useState<RibbonTab>('Home')
+  const [fileOpen, setFileOpen] = useState(false)
+  const fileWrapRef = useRef<HTMLDivElement>(null)
+  useDismissablePopover(fileOpen, useCallback(() => setFileOpen(false), []), {
+    // the wrap holds trigger + menu: inside presses toggle/choose instead of dismissing
+    inside: () => [fileWrapRef.current],
+  })
   const collapse = useRibbonCollapse('ai-sheets-ribbon-collapsed')
   // Persisted so a closed AI panel stays closed on next launch (docs/slides parity)
   const [isCopilotOpen, setIsCopilotOpen] = useState(
@@ -563,6 +573,77 @@ export function ExcelShell({
           aria-label="Workbook commands"
           onDoubleClick={collapse.onTabsDoubleClick}
         >
+          {!IS_MAC && (
+            <div className="file-tab-wrap" ref={fileWrapRef}>
+              <button
+                type="button"
+                className={`ribbon-tab-file ${fileOpen ? 'open' : ''}`}
+                onClick={() => setFileOpen((v) => !v)}
+              >
+                {t('appFileTab')}
+              </button>
+              {fileOpen && (
+                <div className="file-menu">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFileOpen(false)
+                      onFileAction('open')
+                    }}
+                  >
+                    {t('appFileOpen')} <span className="file-menu-key">Ctrl+O</span>
+                  </button>
+                  <button
+                    type="button"
+                    disabled={!canSave}
+                    onClick={() => {
+                      setFileOpen(false)
+                      onSave()
+                    }}
+                  >
+                    {t('appFileSave')} <span className="file-menu-key">Ctrl+S</span>
+                  </button>
+                  <button
+                    type="button"
+                    disabled={!canSaveAs}
+                    onClick={() => {
+                      setFileOpen(false)
+                      onSaveAs()
+                    }}
+                  >
+                    {t('appFileSaveAs')} <span className="file-menu-key">Ctrl+Shift+S</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFileOpen(false)
+                      onFileAction('export-pdf')
+                    }}
+                  >
+                    {t('appFileExportPdf')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFileOpen(false)
+                      onFileAction('export-csv')
+                    }}
+                  >
+                    {t('appFileExportCsv')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFileOpen(false)
+                      onFileAction('print')
+                    }}
+                  >
+                    {t('appFilePrint')} <span className="file-menu-key">Ctrl+P</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
           <button
             type="button"
             className="qa-btn"

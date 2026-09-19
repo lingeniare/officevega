@@ -148,6 +148,8 @@ export interface MarkdownApi {
    * save dialog first. The resolved path is granted to the view and returned.
    */
   save(request: SaveMarkdownRequest): Promise<SaveMarkdownResult>
+  /** Ribbon File > Open: asks the shell for the same file picker as the native File > Open menu item. No-op outside the shell */
+  requestOpenDialog(): void
   /** Mirror unsaved-changes state to the main process; drives the save prompt before closing a tab/window */
   setDirty(dirty: boolean): void
   /** Shell menu Save / Save As → renderer serializes and calls save() with the given mode */

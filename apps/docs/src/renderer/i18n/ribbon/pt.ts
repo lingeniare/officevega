@@ -712,4 +712,9 @@ export const pt = {
   ribbonClearAll: 'Limpar Tudo',
   ribbonClearAllTip: 'Excluir toda a tinta do documento',
   ribbonGroupClear: 'Limpar',
+  // File menu
+  ribbonExportPdf: 'Exportar como PDF…',
+  ribbonExportHtml: 'Exportar como HTML…',
+  ribbonExportImages: 'Exportar como imagens…',
+  ribbonPrint: 'Imprimir…',
 } satisfies Record<keyof typeof zh, string>

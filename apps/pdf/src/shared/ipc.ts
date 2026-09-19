@@ -41,6 +41,8 @@ export const PDF_CHANNELS = {
   saveAsRequest: 'pdf:save-as-request',
   saveAsResult: 'pdf:save-as-result',
   saveAsFlow: 'pdf:save-as-flow',
+  /** renderer → shell: run the whole Save As flow (dialog + guarded write) */
+  saveAsDialog: 'pdf:save-as-dialog',
   printRequest: 'pdf:print-request',
   fileRenamed: 'pdf:file-renamed',
   getLanguage: 'app:get-language',
@@ -775,6 +777,10 @@ export interface PdfApi {
   sendSaveAsResult(ok: boolean): void
   /** True while the shell's Save As flow (dialog included) is open — the renderer pauses autosave, since the dialog's window blur would otherwise trigger a save into the original */
   onSaveAsFlow(handler: (inFlight: boolean) => void): () => void
+  /** Ribbon File > Save As: asks the shell to run its Save As flow (save dialog + open the copy). No-op outside the shell */
+  requestSaveAsDialog(): void
+  /** Ribbon File > Open: asks the shell for the same file picker as the native File > Open menu item. No-op outside the shell */
+  requestOpenDialog(): void
   /** Shell menu Print → renderer runs its print flow (save, rasterize, system dialog) */
   onPrintRequest(handler: () => void): () => void
   /** The file was renamed or moved from the shell (home Folders / Files pane); the viewer follows the new path */

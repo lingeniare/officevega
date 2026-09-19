@@ -141,4 +141,12 @@ export const ru = {
   presentInTab: 'В этой вкладке',
   presentFullscreen: 'Во весь экран',
   presentNewTab: 'Новая вкладка',
+  // Ribbon File menu
+  fileTab: 'Файл',
+  fileOpen: 'Открыть…',
+  fileSave: 'Сохранить',
+  fileExportDocx: 'Экспортировать в Word…',
+  fileExportPdf: 'Экспортировать в PDF…',
+  fileExportHtml: 'Экспортировать в один файл HTML…',
+  filePrint: 'Печать…',
 } satisfies Record<keyof typeof zh, string>

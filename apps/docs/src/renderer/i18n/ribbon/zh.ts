@@ -711,4 +711,9 @@ export const zh = {
   ribbonClearAll: '全部清除',
   ribbonClearAllTip: '删除文档中的所有笔迹',
   ribbonGroupClear: '清除',
+  // File menu
+  ribbonExportPdf: '导出为 PDF…',
+  ribbonExportHtml: '导出为 HTML…',
+  ribbonExportImages: '导出为图片…',
+  ribbonPrint: '打印…',
 }

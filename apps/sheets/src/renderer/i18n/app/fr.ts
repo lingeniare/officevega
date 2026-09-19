@@ -1399,4 +1399,12 @@ export const fr = {
   appFindTitle: 'Rechercher et sélectionner ⌘F',
   appReplace: 'Remplacer',
   appGoTo: 'Atteindre',
+  // Ribbon File menu
+  appFileTab: 'Fichier',
+  appFileOpen: 'Ouvrir un classeur…',
+  appFileSave: 'Enregistrer',
+  appFileSaveAs: 'Enregistrer sous…',
+  appFileExportPdf: 'Exporter en PDF…',
+  appFileExportCsv: 'Exporter en CSV…',
+  appFilePrint: 'Imprimer…',
 } satisfies Record<keyof typeof zh, string>

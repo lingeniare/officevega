@@ -141,4 +141,12 @@ export const cs = {
   replace: 'Nahradit',
   replaceAll: 'Nahradit vše',
   findTip: 'Najít a nahradit (⌘F)',
+  // Ribbon File menu
+  fileTab: 'Soubor',
+  fileOpen: 'Otevřít…',
+  fileSave: 'Uložit',
+  fileExportDocx: 'Exportovat jako Word…',
+  fileExportPdf: 'Exportovat jako PDF…',
+  fileExportHtml: 'Exportovat jako samostatné HTML…',
+  filePrint: 'Tisk…',
 } satisfies Record<keyof typeof zh, string>

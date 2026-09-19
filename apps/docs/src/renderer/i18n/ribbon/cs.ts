@@ -706,4 +706,9 @@ export const cs = {
   ribbonClearAll: 'Vymazat vše',
   ribbonClearAllTip: 'Odstranit veškerý rukopis z dokumentu',
   ribbonGroupClear: 'Vymazat',
+  // File menu
+  ribbonExportPdf: 'Exportovat jako PDF…',
+  ribbonExportHtml: 'Exportovat jako HTML…',
+  ribbonExportImages: 'Exportovat jako obrázky…',
+  ribbonPrint: 'Tisk…',
 } satisfies Record<keyof typeof zh, string>

@@ -37,6 +37,7 @@ import {
   type HeadlessExportTarget,
   installRendererProtocol,
   rendererUrl,
+  OPEN_FILE_DIALOG_CHANNEL,
 } from '@genoffice/electron-utils'
 import { createI18n, getUiLang } from '@genoffice/i18n'
 import { generateImageTool } from '@genoffice/ai-search'
@@ -1219,6 +1220,9 @@ async function readHead(target: string): Promise<Uint8Array> {
 }
 
 let ipcRegistered = false
+/** Standalone (dev) mode: the shell owns cross-file Open for html tabs, so the
+ *  ribbon channel only gets a local handler when there is no shell to serve it */
+let standaloneMode = false
 
 function registerHtmlIpc(): void {
   if (ipcRegistered) return
@@ -1693,6 +1697,39 @@ function registerHtmlIpc(): void {
     },
   )
 
+  ipcMain.handle(
+    HTML_CHANNELS.print,
+    async (e, request: { html?: unknown }): Promise<{ ok: boolean; error?: string }> => {
+      if (typeof request?.html !== 'string') return { ok: false, error: 'html: bad print request' }
+      const workDir = await mkdtemp(join(tmpdir(), 'vegaoffice-html-print-'))
+      try {
+        const docPath = savePathByWc.get(e.sender.id)
+        const base = docPath ? assetBaseHref(dirname(docPath)) : null
+        const htmlPath = join(workDir, 'print.html')
+        await writeFile(htmlPath, buildPreviewDocument(request.html, base), 'utf8')
+        const printWin = new BrowserWindow({
+          show: false,
+          webPreferences: { sandbox: true, javascript: false },
+        })
+        try {
+          await printWin.loadFile(htmlPath)
+          // print() returns once the job is handed to the system (or the dialog
+          // is canceled) — the hidden window can go away right after.
+          const ok = await new Promise<boolean>((resolve) =>
+            printWin.webContents.print({ printBackground: true }, (success) => resolve(success)),
+          )
+          return ok ? { ok: true } : { ok: false, error: 'print canceled' }
+        } finally {
+          printWin.destroy()
+        }
+      } catch (err) {
+        return { ok: false, error: err instanceof Error ? err.message : String(err) }
+      } finally {
+        await rm(workDir, { recursive: true, force: true }).catch(() => {})
+      }
+    },
+  )
+
   ipcMain.on(HTML_CHANNELS.provisionalTitle, (e, title: unknown) => {
     if (typeof title !== 'string' || savePathByWc.has(e.sender.id)) return
     const clean = title.replace(/\s+/g, ' ').trim().slice(0, 80)
@@ -1728,6 +1765,25 @@ function registerHtmlIpc(): void {
     saveWaiters.delete(e.sender.id)
     waiter?.(ok === true)
   })
+
+  if (standaloneMode) {
+    // Ribbon File > Open: the shell routes this channel through its tab pipeline;
+    // standalone has no tabs, so a picked file gets its own window
+    ipcMain.on(OPEN_FILE_DIALOG_CHANNEL, async (e) => {
+      const win =
+        BrowserWindow.fromWebContents(e.sender) ?? BrowserWindow.getFocusedWindow() ?? undefined
+      const picked = await showOpenDialogWithMemory(dialog, win, {
+        filters: [
+          { name: tm('filterHtml'), extensions: ['html', 'htm'] },
+          { name: tm('filterAll'), extensions: ['*'] },
+        ],
+        properties: ['openFile'],
+      })
+      const path = picked.filePaths[0]
+      if (picked.canceled || !path) return
+      createStandaloneWindow(path)
+    })
+  }
 
   // Language channel shared with other modules; removeHandler tolerates duplicate registration
   ipcMain.removeHandler(HTML_CHANNELS.getLanguage)
@@ -1862,8 +1918,25 @@ export function createHtmlView(openPath?: string | null): WebContentsView {
   return view
 }
 
+function createStandaloneWindow(openPath?: string | null): BrowserWindow {
+  const win = new BrowserWindow({
+    width: 1200,
+    height: 850,
+    webPreferences: {
+      preload: runtime.preloadPath,
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: true,
+    },
+  })
+  grantAndTrack(win.webContents, openPath)
+  void win.loadURL(rendererUrl(runtime.rendererUrl, 'html'))
+  return win
+}
+
 /** Standalone window mode: `npm run dev -w @genoffice/html`, md path passed via argv */
 export function startHtmlStandalone(): void {
+  standaloneMode = true
   registerPrivilegedSchemes()
   installNavigationGuard(app)
   installContextMenu(app, () => contextMenuLabels(getUiLang()))
@@ -1875,19 +1948,8 @@ export function startHtmlStandalone(): void {
   void app.whenReady().then(() => {
     installRendererProtocol({ html: join(__dirname, '../renderer') })
     registerHtmlIpc()
-    const win = new BrowserWindow({
-      width: 1200,
-      height: 850,
-      webPreferences: {
-        preload: runtime.preloadPath,
-        contextIsolation: true,
-        nodeIntegration: false,
-        sandbox: true,
-      },
-    })
     const argPath = process.argv.slice(1).find((a) => /\.html?$/i.test(a) && existsSync(a))
-    grantAndTrack(win.webContents, argPath)
-    void win.loadURL(rendererUrl(runtime.rendererUrl, 'html'))
+    createStandaloneWindow(argPath)
   })
   app.on('window-all-closed', () => app.quit())
 }

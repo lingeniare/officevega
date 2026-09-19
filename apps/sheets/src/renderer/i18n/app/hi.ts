@@ -1333,4 +1333,12 @@ export const hi = {
   appFindTitle: 'ढूँढें और चुनें ⌘F',
   appReplace: 'बदलें',
   appGoTo: 'इस पर जाएँ',
+  // Ribbon File menu
+  appFileTab: 'फ़ाइल',
+  appFileOpen: 'कार्यपुस्तिका खोलें…',
+  appFileSave: 'सहेजें',
+  appFileSaveAs: 'इस रूप में सहेजें…',
+  appFileExportPdf: 'PDF निर्यात करें…',
+  appFileExportCsv: 'CSV निर्यात करें…',
+  appFilePrint: 'प्रिंट करें…',
 } satisfies Record<keyof typeof zh, string>

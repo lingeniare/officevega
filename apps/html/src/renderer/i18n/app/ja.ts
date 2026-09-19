@@ -142,4 +142,12 @@ export const ja = {
   presentInTab: 'このタブで',
   presentFullscreen: '全画面',
   presentNewTab: '新しいタブ',
+  // Ribbon File menu
+  fileTab: 'ファイル',
+  fileOpen: '開く…',
+  fileSave: '保存',
+  fileExportDocx: 'Word として書き出す…',
+  fileExportPdf: 'PDF として書き出す…',
+  fileExportHtml: '単一ファイル HTML として書き出す…',
+  filePrint: '印刷…',
 } satisfies Record<keyof typeof zh, string>

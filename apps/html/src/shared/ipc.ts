@@ -36,6 +36,8 @@ export const HTML_CHANNELS = {
   consumeHeadlessExport: 'html:consume-headless-export',
   headlessExportDone: 'html:headless-export-done',
   printRequest: 'html:print-request',
+  /** renderer → main: print the given document HTML via the system dialog */
+  print: 'html:print',
   aiGenerateImage: 'html:ai-generate-image',
   filesPick: 'html:files-pick',
   filesAdd: 'html:files-add',
@@ -209,6 +211,8 @@ export interface HtmlApi {
    * save dialog first. The resolved path is granted to the view and returned.
    */
   save(request: SaveHtmlRequest): Promise<SaveHtmlResult>
+  /** Ribbon File > Open: asks the shell for the same file picker as the native File > Open menu item. No-op outside the shell */
+  requestOpenDialog(): void
   /** Mirror unsaved-changes state to the main process; drives the save prompt before closing a tab/window */
   setDirty(dirty: boolean): void
   /** Shell menu Save / Save As → renderer serializes and calls save() with the given mode */
@@ -260,6 +264,8 @@ export interface HtmlApi {
   onExportRequest(handler: (format: ExportFormat) => void): () => void
   /** Shell menu Print → renderer builds the print HTML and opens the system print dialog */
   onPrintRequest(handler: () => void): () => void
+  /** Print the document source through a hidden script-free window and the system print dialog */
+  print(request: { html: string }): Promise<{ ok: boolean; error?: string }>
   exportDocx(request: ExportDocxRequest): Promise<ExportResult>
   exportPdf(request: ExportPdfRequest): Promise<ExportResult>
   exportHtml(request: ExportHtmlRequest): Promise<ExportResult>

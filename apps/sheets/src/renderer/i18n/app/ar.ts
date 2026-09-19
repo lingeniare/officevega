@@ -1301,4 +1301,12 @@ export const ar = {
   appFindTitle: 'بحث وتحديد ⌘F',
   appReplace: 'استبدال',
   appGoTo: 'الانتقال إلى',
+  // Ribbon File menu
+  appFileTab: 'ملف',
+  appFileOpen: 'فتح مصنف…',
+  appFileSave: 'حفظ',
+  appFileSaveAs: 'حفظ باسم…',
+  appFileExportPdf: 'تصدير PDF…',
+  appFileExportCsv: 'تصدير CSV…',
+  appFilePrint: 'طباعة…',
 } satisfies Record<keyof typeof zh, string>

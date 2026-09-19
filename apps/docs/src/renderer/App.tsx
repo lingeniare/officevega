@@ -5457,6 +5457,10 @@ export function App() {
     onOpen: () => void openFile(),
     onSave: () => void save(false),
     onSaveAs: () => void save(true),
+    onExportPdf: () => void exportPdf(),
+    onExportHtml: () => void exportHtml(),
+    onExportImages: () => void exportImages(),
+    onPrint: () => void printDoc(),
     onToggleAi: () => setShowAi((v) => !v),
     onSection: (next: SectionSettings) => {
       // layout applies to the cursor's section; the final section's sectPr goes through SaveOptions.section (also drives canvas geometry)

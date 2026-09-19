@@ -1339,4 +1339,12 @@ export const cs = {
   appFindTitle: 'Najít a vybrat ⌘F',
   appReplace: 'Nahradit',
   appGoTo: 'Přejít na',
+  // Ribbon File menu
+  appFileTab: 'Soubor',
+  appFileOpen: 'Otevřít sešit…',
+  appFileSave: 'Uložit',
+  appFileSaveAs: 'Uložit jako…',
+  appFileExportPdf: 'Exportovat PDF…',
+  appFileExportCsv: 'Exportovat CSV…',
+  appFilePrint: 'Tisk…',
 } satisfies Record<keyof typeof zh, string>

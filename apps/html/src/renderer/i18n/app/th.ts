@@ -140,4 +140,12 @@ export const th = {
   presentInTab: 'ในแท็บนี้',
   presentFullscreen: 'เต็มจอ',
   presentNewTab: 'แท็บใหม่',
+  // Ribbon File menu
+  fileTab: 'ไฟล์',
+  fileOpen: 'เปิด…',
+  fileSave: 'บันทึก',
+  fileExportDocx: 'ส่งออกเป็น Word…',
+  fileExportPdf: 'ส่งออกเป็น PDF…',
+  fileExportHtml: 'ส่งออกเป็น HTML ไฟล์เดียว…',
+  filePrint: 'พิมพ์…',
 } satisfies Record<keyof typeof zh, string>

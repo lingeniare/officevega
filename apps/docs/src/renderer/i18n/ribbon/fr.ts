@@ -719,4 +719,9 @@ export const fr = {
   ribbonClearAll: 'Tout effacer',
   ribbonClearAllTip: "Supprimer toute l'encre du document",
   ribbonGroupClear: 'Effacer',
+  // File menu
+  ribbonExportPdf: 'Exporter au format PDF…',
+  ribbonExportHtml: 'Exporter au format HTML…',
+  ribbonExportImages: 'Exporter en images…',
+  ribbonPrint: 'Imprimer…',
 } satisfies Record<keyof typeof zh, string>

@@ -724,4 +724,9 @@ export const ko = {
   ribbonClearAll: '모두 지우기',
   ribbonClearAllTip: '문서의 모든 잉크 삭제',
   ribbonGroupClear: '지우기',
+  // File menu
+  ribbonExportPdf: 'PDF로 내보내기…',
+  ribbonExportHtml: 'HTML로 내보내기…',
+  ribbonExportImages: '이미지로 내보내기…',
+  ribbonPrint: '인쇄…',
 } satisfies Record<keyof typeof zh, string>

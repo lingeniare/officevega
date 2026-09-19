@@ -711,4 +711,9 @@ export const hi = {
   ribbonClearAll: 'सभी साफ़ करें',
   ribbonClearAllTip: 'दस्तावेज़ की सारी स्याही हटाएँ',
   ribbonGroupClear: 'साफ़ करें',
+  // File menu
+  ribbonExportPdf: 'PDF के रूप में निर्यात करें…',
+  ribbonExportHtml: 'HTML के रूप में निर्यात करें…',
+  ribbonExportImages: 'छवियों के रूप में निर्यात…',
+  ribbonPrint: 'प्रिंट करें…',
 } satisfies Record<keyof typeof zh, string>

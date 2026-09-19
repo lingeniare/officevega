@@ -143,4 +143,12 @@ export const hi = {
   presentInTab: 'इसी टैब में',
   presentFullscreen: 'पूर्ण स्क्रीन',
   presentNewTab: 'नया टैब',
+  // Ribbon File menu
+  fileTab: 'फ़ाइल',
+  fileOpen: 'खोलें…',
+  fileSave: 'सहेजें',
+  fileExportDocx: 'Word के रूप में निर्यात करें…',
+  fileExportPdf: 'PDF के रूप में निर्यात…',
+  fileExportHtml: 'एकल-फ़ाइल HTML के रूप में निर्यात…',
+  filePrint: 'प्रिंट करें…',
 } satisfies Record<keyof typeof zh, string>

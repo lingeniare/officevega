@@ -717,4 +717,9 @@ export const it = {
   ribbonClearAll: 'Cancella tutto',
   ribbonClearAllTip: "Elimina tutto l'input penna nel documento",
   ribbonGroupClear: 'Cancella',
+  // File menu
+  ribbonExportPdf: 'Esporta come PDF…',
+  ribbonExportHtml: 'Esporta come HTML…',
+  ribbonExportImages: 'Esporta come immagini…',
+  ribbonPrint: 'Stampa…',
 } satisfies Record<keyof typeof zh, string>

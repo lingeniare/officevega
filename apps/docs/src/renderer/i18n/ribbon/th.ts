@@ -699,4 +699,9 @@ export const th = {
   ribbonClearAll: 'ล้างทั้งหมด',
   ribbonClearAllTip: 'ลบหมึกทั้งหมดในเอกสาร',
   ribbonGroupClear: 'ล้าง',
+  // File menu
+  ribbonExportPdf: 'ส่งออกเป็น PDF…',
+  ribbonExportHtml: 'ส่งออกเป็น HTML…',
+  ribbonExportImages: 'ส่งออกเป็นรูปภาพ…',
+  ribbonPrint: 'พิมพ์…',
 } satisfies Record<keyof typeof zh, string>

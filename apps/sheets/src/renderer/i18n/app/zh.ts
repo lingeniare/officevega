@@ -1277,4 +1277,12 @@ export const zh = {
   appFindTitle: '查找和选择 ⌘F',
   appReplace: '替换',
   appGoTo: '定位',
+  // Ribbon File menu
+  appFileTab: '文件',
+  appFileOpen: '打开工作簿…',
+  appFileSave: '保存',
+  appFileSaveAs: '另存为…',
+  appFileExportPdf: '导出 PDF…',
+  appFileExportCsv: '导出 CSV…',
+  appFilePrint: '打印…',
 }

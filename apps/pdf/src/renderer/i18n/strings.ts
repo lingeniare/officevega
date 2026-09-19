@@ -486,6 +486,11 @@ export const strings = {
     propProducer: '生成程序',
     propCreated: '创建时间',
     propModified: '修改时间',
+    // Ribbon File menu
+    fileTab: '文件',
+    fileOpen: '打开…',
+    fileSaveAs: '另存为…',
+
   },
   en: {
     ...fillFormStringsFor('en'),
@@ -821,6 +826,11 @@ export const strings = {
     propProducer: 'Producer',
     propCreated: 'Created',
     propModified: 'Modified',
+    // Ribbon File menu
+    fileTab: 'File',
+    fileOpen: 'Open…',
+    fileSaveAs: 'Save As…',
+
   },
   ja: {
     ...fillFormStringsFor('ja'),
@@ -1145,6 +1155,11 @@ export const strings = {
     propProducer: '作成プログラム',
     propCreated: '作成日時',
     propModified: '更新日時',
+    // Ribbon File menu
+    fileTab: 'ファイル',
+    fileOpen: '開く…',
+    fileSaveAs: '名前を付けて保存…',
+
   },
   ko: {
     ...fillFormStringsFor('ko'),
@@ -1469,6 +1484,11 @@ export const strings = {
     propProducer: '생성 프로그램',
     propCreated: '만든 날짜',
     propModified: '수정한 날짜',
+    // Ribbon File menu
+    fileTab: '파일',
+    fileOpen: '열기…',
+    fileSaveAs: '다른 이름으로 저장…',
+
   },
   fr: {
     ...fillFormStringsFor('fr'),
@@ -1800,6 +1820,11 @@ export const strings = {
     propProducer: 'Producteur',
     propCreated: 'Créé le',
     propModified: 'Modifié le',
+    // Ribbon File menu
+    fileTab: 'Fichier',
+    fileOpen: 'Ouvrir…',
+    fileSaveAs: 'Enregistrer sous…',
+
   },
   de: {
     ...fillFormStringsFor('de'),
@@ -2129,6 +2154,11 @@ export const strings = {
     propProducer: 'Ersteller',
     propCreated: 'Erstellt',
     propModified: 'Geändert',
+    // Ribbon File menu
+    fileTab: 'Datei',
+    fileOpen: 'Öffnen…',
+    fileSaveAs: 'Speichern unter…',
+
   },
   es: {
     ...fillFormStringsFor('es'),
@@ -2459,6 +2489,11 @@ export const strings = {
     propProducer: 'Productor',
     propCreated: 'Creado',
     propModified: 'Modificado',
+    // Ribbon File menu
+    fileTab: 'Archivo',
+    fileOpen: 'Abrir…',
+    fileSaveAs: 'Guardar como…',
+
   },
   th: {
     ...fillFormStringsFor('th'),
@@ -2783,6 +2818,11 @@ export const strings = {
     propProducer: 'โปรแกรมที่สร้าง',
     propCreated: 'สร้างเมื่อ',
     propModified: 'แก้ไขเมื่อ',
+    // Ribbon File menu
+    fileTab: 'ไฟล์',
+    fileOpen: 'เปิด…',
+    fileSaveAs: 'บันทึกเป็น…',
+
   },
   id: {
     ...fillFormStringsFor('id'),
@@ -3110,6 +3150,11 @@ export const strings = {
     propProducer: 'Produser',
     propCreated: 'Dibuat',
     propModified: 'Diubah',
+    // Ribbon File menu
+    fileTab: 'File',
+    fileOpen: 'Buka…',
+    fileSaveAs: 'Simpan Sebagai…',
+
   },
   ru: {
     ...fillFormStringsFor('ru'),
@@ -3438,6 +3483,11 @@ export const strings = {
     propProducer: 'Производитель',
     propCreated: 'Создан',
     propModified: 'Изменён',
+    // Ribbon File menu
+    fileTab: 'Файл',
+    fileOpen: 'Открыть…',
+    fileSaveAs: 'Сохранить как…',
+
   },
   ar: {
     ...fillFormStringsFor('ar'),
@@ -3761,6 +3811,11 @@ export const strings = {
     propProducer: 'المنتج',
     propCreated: 'تاريخ الإنشاء',
     propModified: 'تاريخ التعديل',
+    // Ribbon File menu
+    fileTab: 'ملف',
+    fileOpen: 'فتح…',
+    fileSaveAs: 'حفظ باسم…',
+
   },
   pt: {
     ...fillFormStringsFor('pt'),
@@ -4089,6 +4144,11 @@ export const strings = {
     propProducer: 'Produtor',
     propCreated: 'Criado',
     propModified: 'Modificado',
+    // Ribbon File menu
+    fileTab: 'Arquivo',
+    fileOpen: 'Abrir…',
+    fileSaveAs: 'Salvar Como…',
+
   },
   it: {
     ...fillFormStringsFor('it'),
@@ -4420,6 +4480,11 @@ export const strings = {
     propProducer: 'Produttore',
     propCreated: 'Creato',
     propModified: 'Modificato',
+    // Ribbon File menu
+    fileTab: 'File',
+    fileOpen: 'Apri…',
+    fileSaveAs: 'Salva con nome…',
+
   },
   pl: {
     ...fillFormStringsFor('pl'),
@@ -4748,6 +4813,11 @@ export const strings = {
     propProducer: 'Program',
     propCreated: 'Utworzono',
     propModified: 'Zmodyfikowano',
+    // Ribbon File menu
+    fileTab: 'Plik',
+    fileOpen: 'Otwórz…',
+    fileSaveAs: 'Zapisz jako…',
+
   },
   cs: {
     ...fillFormStringsFor('cs'),
@@ -5074,6 +5144,11 @@ export const strings = {
     propProducer: 'Vytvořeno programem',
     propCreated: 'Vytvořeno',
     propModified: 'Změněno',
+    // Ribbon File menu
+    fileTab: 'Soubor',
+    fileOpen: 'Otevřít…',
+    fileSaveAs: 'Uložit jako…',
+
   },
   nl: {
     ...fillFormStringsFor('nl'),
@@ -5402,6 +5477,11 @@ export const strings = {
     propProducer: 'Producent',
     propCreated: 'Gemaakt',
     propModified: 'Gewijzigd',
+    // Ribbon File menu
+    fileTab: 'Bestand',
+    fileOpen: 'Openen…',
+    fileSaveAs: 'Opslaan als…',
+
   },
   ms: {
     ...fillFormStringsFor('ms'),
@@ -5729,6 +5809,11 @@ export const strings = {
     propProducer: 'Penghasil',
     propCreated: 'Dicipta',
     propModified: 'Diubah suai',
+    // Ribbon File menu
+    fileTab: 'Fail',
+    fileOpen: 'Buka…',
+    fileSaveAs: 'Simpan Sebagai…',
+
   },
   he: {
     ...fillFormStringsFor('he'),
@@ -6048,6 +6133,11 @@ export const strings = {
     propProducer: 'תוכנת הפקה',
     propCreated: 'נוצר',
     propModified: 'עודכן',
+    // Ribbon File menu
+    fileTab: 'קובץ',
+    fileOpen: 'פתיחה…',
+    fileSaveAs: 'שמירה בשם…',
+
   },
   hi: {
     ...fillFormStringsFor('hi'),
@@ -6373,6 +6463,11 @@ export const strings = {
     propProducer: 'निर्माता प्रोग्राम',
     propCreated: 'निर्माण समय',
     propModified: 'संशोधन समय',
+    // Ribbon File menu
+    fileTab: 'फ़ाइल',
+    fileOpen: 'खोलें…',
+    fileSaveAs: 'इस रूप में सहेजें…',
+
   },
   'zh-TW': {
     ...fillFormStringsFor('zh-TW'),
@@ -6690,5 +6785,10 @@ export const strings = {
     propProducer: '產生程式',
     propCreated: '建立時間',
     propModified: '修改時間',
+    // Ribbon File menu
+    fileTab: '檔案',
+    fileOpen: '開啟…',
+    fileSaveAs: '另存新檔…',
+
   },
 }

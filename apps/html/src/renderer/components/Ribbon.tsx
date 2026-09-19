@@ -7,6 +7,7 @@ import {
 } from '@genoffice/ui'
 import { useI18n } from '../i18n/locale'
 import type { StringKey } from '../i18n/locale'
+import type { ExportFormat } from '../../shared/ipc'
 import { VegaMark } from '../ai/AiPanel'
 import type { InsertKind, InsertOptions } from '../document/insert-presets'
 import {
@@ -64,6 +65,10 @@ interface Props {
   dirty: boolean
   onSave: () => void
   onSaveAs: () => void
+  /** File menu entries — same handlers as the native File menu */
+  onOpen: () => void
+  onExport: (format: ExportFormat) => void
+  onPrint: () => void
   onFind: () => void
   canUndo: boolean
   canRedo: boolean
@@ -127,9 +132,19 @@ const TABLE_PICKER_COLS = 10
 
 const ICON = 20
 
+// File lives in the macOS application menu; the ribbon shows it on win/linux
+// (docs/slides parity).
+const IS_MAC = navigator.platform.toLowerCase().includes('mac')
+
 export function Ribbon(p: Props) {
   const { t, lang } = useI18n()
   const collapse = useRibbonCollapse('htmlapp.ribbonCollapsed')
+  const [fileOpen, setFileOpen] = useState(false)
+  const fileWrapRef = useRef<HTMLDivElement>(null)
+  useDismissablePopover(fileOpen, () => setFileOpen(false), {
+    // the wrap holds trigger + menu: inside presses toggle/choose instead of dismissing
+    inside: () => [fileWrapRef.current],
+  })
   const [themeOpen, setThemeOpen] = useState(false)
   const themeRef = useRef<HTMLDivElement>(null)
   useDismissablePopover(themeOpen, () => setThemeOpen(false), {
@@ -199,6 +214,91 @@ export function Ribbon(p: Props) {
   return (
     <div className={`ribbon ${collapse.rootClass}`} ref={collapse.rootRef}>
       <div className="ribbon-tabs">
+        {!IS_MAC && (
+          <div className="file-tab-wrap" ref={fileWrapRef}>
+            <button
+              type="button"
+              className={`ribbon-tab-file ${fileOpen ? 'open' : ''}`}
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => setFileOpen((v) => !v)}
+            >
+              {t('fileTab')}
+            </button>
+            {fileOpen && (
+              <div className="file-menu">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setFileOpen(false)
+                    p.onOpen()
+                  }}
+                >
+                  {t('fileOpen')} <span className="file-menu-key">Ctrl+O</span>
+                </button>
+                <button
+                  type="button"
+                  disabled={off || !p.dirty}
+                  onClick={() => {
+                    setFileOpen(false)
+                    p.onSave()
+                  }}
+                >
+                  {t('fileSave')} <span className="file-menu-key">Ctrl+S</span>
+                </button>
+                <button
+                  type="button"
+                  disabled={off}
+                  onClick={() => {
+                    setFileOpen(false)
+                    p.onSaveAs()
+                  }}
+                >
+                  {t('saveAs')} <span className="file-menu-key">Ctrl+Shift+S</span>
+                </button>
+                <button
+                  type="button"
+                  disabled={off}
+                  onClick={() => {
+                    setFileOpen(false)
+                    p.onExport('docx')
+                  }}
+                >
+                  {t('fileExportDocx')}
+                </button>
+                <button
+                  type="button"
+                  disabled={off}
+                  onClick={() => {
+                    setFileOpen(false)
+                    p.onExport('pdf')
+                  }}
+                >
+                  {t('fileExportPdf')}
+                </button>
+                <button
+                  type="button"
+                  disabled={off}
+                  onClick={() => {
+                    setFileOpen(false)
+                    p.onExport('html')
+                  }}
+                >
+                  {t('fileExportHtml')}
+                </button>
+                <button
+                  type="button"
+                  disabled={off}
+                  onClick={() => {
+                    setFileOpen(false)
+                    p.onPrint()
+                  }}
+                >
+                  {t('filePrint')} <span className="file-menu-key">Ctrl+P</span>
+                </button>
+              </div>
+            )}
+          </div>
+        )}
         <button
           type="button"
           className="qa-btn"

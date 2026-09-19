@@ -43,6 +43,7 @@ import { createI18n, isLang, normalizeLang, setUiLang, type Lang } from '@genoff
 import {
   DEFAULT_SAVE_DIR_KEY,
   DROP_OPEN_CHANNEL,
+  OPEN_FILE_DIALOG_CHANNEL,
   GITHUB_REPO_URL,
   appMenuLabels,
   contextMenuLabels,
@@ -2798,6 +2799,9 @@ function registerDroppedFilesIpc(): void {
       unsupportedMessage: (exts) => tm('errUnsupportedExt', { ext: exts.join(', ') }),
     }),
   )
+  // Ribbon File > Open inside any app view: same dialog + routing as the
+  // native File > Open menu item.
+  ipcMain.on(OPEN_FILE_DIALOG_CHANNEL, () => void openFileViaDialog())
 }
 
 /** the single router: extension decides which module owns the file; false = nothing opened */
@@ -4547,6 +4551,13 @@ ipcMain.handle(PDF_CHANNELS.convertOffice, async (e, format: unknown) => {
   if (format === 'docx') await exportPdfAsDocxLocal()
   else if (format === 'xlsx') await exportPdfAsXlsxLocal()
   else if (format === 'pptx') await exportPdfAsPptxLocal()
+})
+
+// Ribbon File > Save As inside a pdf view: same flow as the native menu item
+// (save dialog, non-destructive copy, open the result in a new tab)
+ipcMain.on(PDF_CHANNELS.saveAsDialog, (e) => {
+  if (tabManager?.activePdfTab()?.webContents.id !== e.sender.id) return
+  void savePdfAs()
 })
 
 function openThirdPartyNotices(): Promise<string> {

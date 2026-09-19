@@ -702,4 +702,9 @@ export const ar = {
   ribbonClearAll: 'مسح الكل',
   ribbonClearAllTip: 'حذف كل الحبر في المستند',
   ribbonGroupClear: 'مسح',
+  // File menu
+  ribbonExportPdf: 'تصدير بتنسيق PDF…',
+  ribbonExportHtml: 'تصدير بتنسيق HTML…',
+  ribbonExportImages: 'تصدير كصور…',
+  ribbonPrint: 'طباعة…',
 } satisfies Record<keyof typeof zh, string>

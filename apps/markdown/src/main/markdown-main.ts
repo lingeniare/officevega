@@ -27,6 +27,7 @@ import {
   installRendererProtocol,
   registerRendererScheme,
   rendererUrl,
+  OPEN_FILE_DIALOG_CHANNEL,
 } from '@genoffice/electron-utils'
 import { createI18n, getUiLang } from '@genoffice/i18n'
 import { generateImageTool } from '@genoffice/ai-search'
@@ -691,6 +692,9 @@ function registerImageProtocol(): void {
 }
 
 let ipcRegistered = false
+/** Standalone (dev) mode: the shell owns cross-file Open for markdown tabs, so the
+ *  ribbon channel only gets a local handler when there is no shell to serve it */
+let standaloneMode = false
 
 function registerMarkdownIpc(): void {
   if (ipcRegistered) return
@@ -1021,6 +1025,22 @@ function registerMarkdownIpc(): void {
     waiter?.(ok === true)
   })
 
+  if (standaloneMode) {
+    // Ribbon File > Open: the shell routes this channel through its tab pipeline;
+    // standalone has no tabs, so a picked file gets its own window
+    ipcMain.on(OPEN_FILE_DIALOG_CHANNEL, async (e) => {
+      const win =
+        BrowserWindow.fromWebContents(e.sender) ?? BrowserWindow.getFocusedWindow() ?? undefined
+      const picked = await showOpenDialogWithMemory(dialog, win, {
+        filters: [{ name: tm('filterMarkdown'), extensions: ['md', 'markdown'] }],
+        properties: ['openFile'],
+      })
+      const path = picked.filePaths[0]
+      if (picked.canceled || !path) return
+      createStandaloneWindow(path)
+    })
+  }
+
   // Language channel shared with other modules; removeHandler tolerates duplicate registration
   ipcMain.removeHandler(MARKDOWN_CHANNELS.getLanguage)
   ipcMain.handle(MARKDOWN_CHANNELS.getLanguage, () => getUiLang())
@@ -1123,8 +1143,25 @@ export function createMarkdownView(openPath?: string | null): WebContentsView {
   return view
 }
 
+function createStandaloneWindow(openPath?: string | null): BrowserWindow {
+  const win = new BrowserWindow({
+    width: 1200,
+    height: 850,
+    webPreferences: {
+      preload: runtime.preloadPath,
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: true,
+    },
+  })
+  grantAndTrack(win.webContents, openPath)
+  void win.loadURL(rendererUrl(runtime.rendererUrl, 'markdown'))
+  return win
+}
+
 /** Standalone window mode: `npm run dev -w @genoffice/markdown`, md path passed via argv */
 export function startMarkdownStandalone(): void {
+  standaloneMode = true
   registerRendererScheme()
   installNavigationGuard(app)
   installContextMenu(app, () => contextMenuLabels(getUiLang()))
@@ -1136,19 +1173,8 @@ export function startMarkdownStandalone(): void {
   void app.whenReady().then(() => {
     installRendererProtocol({ markdown: join(__dirname, '../renderer') })
     registerMarkdownIpc()
-    const win = new BrowserWindow({
-      width: 1200,
-      height: 850,
-      webPreferences: {
-        preload: runtime.preloadPath,
-        contextIsolation: true,
-        nodeIntegration: false,
-        sandbox: true,
-      },
-    })
     const argPath = process.argv.slice(1).find((a) => /\.(md|markdown)$/i.test(a) && existsSync(a))
-    grantAndTrack(win.webContents, argPath)
-    void win.loadURL(rendererUrl(runtime.rendererUrl, 'markdown'))
+    createStandaloneWindow(argPath)
   })
   app.on('window-all-closed', () => app.quit())
 }

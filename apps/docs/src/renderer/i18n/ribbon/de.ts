@@ -719,4 +719,9 @@ export const de = {
   ribbonClearAll: 'Alles löschen',
   ribbonClearAllTip: 'Alle Freihandeingaben im Dokument löschen',
   ribbonGroupClear: 'Löschen',
+  // File menu
+  ribbonExportPdf: 'Als PDF exportieren…',
+  ribbonExportHtml: 'Als HTML exportieren…',
+  ribbonExportImages: 'Als Bilder exportieren…',
+  ribbonPrint: 'Drucken…',
 } satisfies Record<keyof typeof zh, string>

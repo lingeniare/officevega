@@ -141,4 +141,12 @@ export const ko = {
   presentInTab: '현재 탭에서',
   presentFullscreen: '전체 화면',
   presentNewTab: '새 탭',
+  // Ribbon File menu
+  fileTab: '파일',
+  fileOpen: '열기…',
+  fileSave: '저장',
+  fileExportDocx: 'Word로 내보내기…',
+  fileExportPdf: 'PDF로 내보내기…',
+  fileExportHtml: '단일 파일 HTML로 내보내기…',
+  filePrint: '인쇄…',
 } satisfies Record<keyof typeof zh, string>

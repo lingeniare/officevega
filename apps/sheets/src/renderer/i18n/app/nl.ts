@@ -1371,4 +1371,12 @@ export const nl = {
   appFindTitle: 'Zoeken en selecteren ⌘F',
   appReplace: 'Vervangen',
   appGoTo: 'Ga naar',
+  // Ribbon File menu
+  appFileTab: 'Bestand',
+  appFileOpen: 'Werkmap openen…',
+  appFileSave: 'Opslaan',
+  appFileSaveAs: 'Opslaan als…',
+  appFileExportPdf: 'PDF exporteren…',
+  appFileExportCsv: 'CSV exporteren…',
+  appFilePrint: 'Afdrukken…',
 } satisfies Record<keyof typeof zh, string>

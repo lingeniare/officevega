@@ -1358,4 +1358,12 @@ export const ko = {
   appFindTitle: '찾기 및 선택 ⌘F',
   appReplace: '바꾸기',
   appGoTo: '이동',
+  // Ribbon File menu
+  appFileTab: '파일',
+  appFileOpen: '통합 문서 열기…',
+  appFileSave: '저장',
+  appFileSaveAs: '다른 이름으로 저장…',
+  appFileExportPdf: 'PDF 내보내기…',
+  appFileExportCsv: 'CSV 내보내기…',
+  appFilePrint: '인쇄…',
 } satisfies Record<keyof typeof zh, string>

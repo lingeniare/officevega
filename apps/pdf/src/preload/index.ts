@@ -2,7 +2,10 @@ import type { AiPanelPrefs } from '@genoffice/ui'
 import { contextBridge, ipcRenderer } from 'electron'
 import type { Lang } from '@genoffice/i18n'
 import type { AiStreamChunk } from '@genoffice/ai-provider'
-import { installDropOpenBridge } from '@genoffice/electron-utils/drop-open'
+import {
+  installDropOpenBridge,
+  OPEN_FILE_DIALOG_CHANNEL,
+} from '@genoffice/electron-utils/drop-open'
 import { AI_CHANNELS, PDF_CHANNELS } from '../shared/ipc'
 import type { PdfApi, UiTheme } from '../shared/ipc'
 
@@ -61,6 +64,8 @@ const api: PdfApi = {
     ipcRenderer.on(PDF_CHANNELS.saveAsFlow, listener)
     return () => ipcRenderer.removeListener(PDF_CHANNELS.saveAsFlow, listener)
   },
+  requestSaveAsDialog: () => ipcRenderer.send(PDF_CHANNELS.saveAsDialog),
+  requestOpenDialog: () => ipcRenderer.send(OPEN_FILE_DIALOG_CHANNEL),
   onPrintRequest: (handler) => {
     const listener = () => handler()
     ipcRenderer.on(PDF_CHANNELS.printRequest, listener)

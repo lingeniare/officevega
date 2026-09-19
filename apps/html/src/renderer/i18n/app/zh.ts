@@ -138,4 +138,12 @@ export const zh = {
   presentInTab: '在当前标签页',
   presentFullscreen: '全屏',
   presentNewTab: '新标签页',
+  // Ribbon File menu
+  fileTab: '文件',
+  fileOpen: '打开…',
+  fileSave: '保存',
+  fileExportDocx: '导出为 Word…',
+  fileExportPdf: '导出为 PDF…',
+  fileExportHtml: '导出为单文件 HTML…',
+  filePrint: '打印…',
 }

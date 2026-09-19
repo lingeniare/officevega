@@ -726,4 +726,9 @@ export const ja = {
   ribbonClearAll: 'すべてクリア',
   ribbonClearAllTip: 'ドキュメント内のすべてのインクを削除',
   ribbonGroupClear: 'クリア',
+  // File menu
+  ribbonExportPdf: 'PDF としてエクスポート…',
+  ribbonExportHtml: 'HTML としてエクスポート…',
+  ribbonExportImages: '画像としてエクスポート…',
+  ribbonPrint: '印刷…',
 } satisfies Record<keyof typeof zh, string>

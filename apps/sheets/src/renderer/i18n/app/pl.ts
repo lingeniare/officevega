@@ -1364,4 +1364,12 @@ export const pl = {
   appFindTitle: 'Znajdź i zaznacz ⌘F',
   appReplace: 'Zamień',
   appGoTo: 'Przejdź do',
+  // Ribbon File menu
+  appFileTab: 'Plik',
+  appFileOpen: 'Otwórz skoroszyt…',
+  appFileSave: 'Zapisz',
+  appFileSaveAs: 'Zapisz jako…',
+  appFileExportPdf: 'Eksportuj PDF…',
+  appFileExportCsv: 'Eksportuj CSV…',
+  appFilePrint: 'Drukuj…',
 } satisfies Record<keyof typeof zh, string>

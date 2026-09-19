@@ -1385,4 +1385,12 @@ export const ja = {
   appFindTitle: '検索と選択 ⌘F',
   appReplace: '置換',
   appGoTo: 'ジャンプ',
+  // Ribbon File menu
+  appFileTab: 'ファイル',
+  appFileOpen: 'ブックを開く…',
+  appFileSave: '保存',
+  appFileSaveAs: '名前を付けて保存…',
+  appFileExportPdf: 'PDF をエクスポート…',
+  appFileExportCsv: 'CSV をエクスポート…',
+  appFilePrint: '印刷…',
 } satisfies Record<keyof typeof zh, string>

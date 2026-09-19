@@ -196,6 +196,15 @@ export const strings = {
     zoom: '缩放',
     zoomIn: '放大',
     zoomOut: '缩小',
+    // Ribbon File menu
+    fileTab: '文件',
+    fileOpen: '打开…',
+    fileSave: '保存',
+    fileExportDocx: '导出为 Word…',
+    fileExportPdf: '导出为 PDF…',
+    fileOpenInDocs: '转换为 Docs 文档并打开',
+    filePrint: '打印…',
+
   },
   en: {
     aiToolReadFm: 'Read document properties',
@@ -400,6 +409,15 @@ export const strings = {
     zoom: 'Zoom',
     zoomIn: 'Zoom in',
     zoomOut: 'Zoom out',
+    // Ribbon File menu
+    fileTab: 'File',
+    fileOpen: 'Open…',
+    fileSave: 'Save',
+    fileExportDocx: 'Export as Word…',
+    fileExportPdf: 'Export as PDF…',
+    fileOpenInDocs: 'Convert and Open in Docs',
+    filePrint: 'Print…',
+
   },
   ja: {
     aiToolReadFm: 'ドキュメントのプロパティを読み取り',
@@ -602,6 +620,15 @@ export const strings = {
     zoom: 'ズーム',
     zoomIn: '拡大',
     zoomOut: '縮小',
+    // Ribbon File menu
+    fileTab: 'ファイル',
+    fileOpen: '開く…',
+    fileSave: '保存',
+    fileExportDocx: 'Word として書き出す…',
+    fileExportPdf: 'PDF として書き出す…',
+    fileOpenInDocs: 'Docs 文書に変換して開く',
+    filePrint: '印刷…',
+
   },
   ko: {
     aiToolReadFm: '문서 속성 읽기',
@@ -805,6 +832,15 @@ export const strings = {
     zoom: '줌',
     zoomIn: '확대',
     zoomOut: '축소',
+    // Ribbon File menu
+    fileTab: '파일',
+    fileOpen: '열기…',
+    fileSave: '저장',
+    fileExportDocx: 'Word로 내보내기…',
+    fileExportPdf: 'PDF로 내보내기…',
+    fileOpenInDocs: 'Docs 문서로 변환하여 열기',
+    filePrint: '인쇄…',
+
   },
   fr: {
     aiToolReadFm: 'Lecture des propriétés du document',
@@ -1013,6 +1049,15 @@ export const strings = {
     zoom: 'Zoom',
     zoomIn: 'Zoom avant',
     zoomOut: 'Zoom arrière',
+    // Ribbon File menu
+    fileTab: 'Fichier',
+    fileOpen: 'Ouvrir…',
+    fileSave: 'Enregistrer',
+    fileExportDocx: 'Exporter en Word…',
+    fileExportPdf: 'Exporter en PDF…',
+    fileOpenInDocs: 'Convertir et ouvrir dans Docs',
+    filePrint: 'Imprimer…',
+
   },
   de: {
     aiToolReadFm: 'Dokumenteigenschaften lesen',
@@ -1220,6 +1265,15 @@ export const strings = {
     zoom: 'Zoom',
     zoomIn: 'Vergrößern',
     zoomOut: 'Verkleinern',
+    // Ribbon File menu
+    fileTab: 'Datei',
+    fileOpen: 'Öffnen…',
+    fileSave: 'Speichern',
+    fileExportDocx: 'Als Word exportieren…',
+    fileExportPdf: 'Als PDF exportieren…',
+    fileOpenInDocs: 'In Docs umwandeln und öffnen',
+    filePrint: 'Drucken…',
+
   },
   es: {
     aiToolReadFm: 'Leer propiedades del documento',
@@ -1428,6 +1482,15 @@ export const strings = {
     zoom: 'Zoom',
     zoomIn: 'Acercar',
     zoomOut: 'Alejar',
+    // Ribbon File menu
+    fileTab: 'Archivo',
+    fileOpen: 'Abrir…',
+    fileSave: 'Guardar',
+    fileExportDocx: 'Exportar como Word…',
+    fileExportPdf: 'Exportar como PDF…',
+    fileOpenInDocs: 'Convertir y abrir en Docs',
+    filePrint: 'Imprimir…',
+
   },
   th: {
     aiToolReadFm: 'อ่านคุณสมบัติเอกสาร',
@@ -1628,6 +1691,15 @@ export const strings = {
     zoom: 'ซูม',
     zoomIn: 'ขยาย',
     zoomOut: 'ย่อ',
+    // Ribbon File menu
+    fileTab: 'ไฟล์',
+    fileOpen: 'เปิด…',
+    fileSave: 'บันทึก',
+    fileExportDocx: 'ส่งออกเป็น Word…',
+    fileExportPdf: 'ส่งออกเป็น PDF…',
+    fileOpenInDocs: 'แปลงและเปิดใน Docs',
+    filePrint: 'พิมพ์…',
+
   },
   id: {
     aiToolReadFm: 'Baca properti dokumen',
@@ -1831,6 +1903,15 @@ export const strings = {
     zoom: 'Zum',
     zoomIn: 'Perbesar',
     zoomOut: 'Perkecil',
+    // Ribbon File menu
+    fileTab: 'File',
+    fileOpen: 'Buka…',
+    fileSave: 'Simpan',
+    fileExportDocx: 'Ekspor sebagai Word…',
+    fileExportPdf: 'Ekspor sebagai PDF…',
+    fileOpenInDocs: 'Konversi dan buka di Docs',
+    filePrint: 'Cetak…',
+
   },
   ru: {
     aiToolReadFm: 'Чтение свойств документа',
@@ -2035,6 +2116,15 @@ export const strings = {
     zoom: 'Масштаб',
     zoomIn: 'Увеличить',
     zoomOut: 'Уменьшить',
+    // Ribbon File menu
+    fileTab: 'Файл',
+    fileOpen: 'Открыть…',
+    fileSave: 'Сохранить',
+    fileExportDocx: 'Экспортировать в Word…',
+    fileExportPdf: 'Экспортировать в PDF…',
+    fileOpenInDocs: 'Преобразовать и открыть в Docs',
+    filePrint: 'Печать…',
+
   },
   ar: {
     aiToolReadFm: 'قراءة خصائص المستند',
@@ -2235,6 +2325,15 @@ export const strings = {
     zoom: 'التكبير',
     zoomIn: 'تكبير',
     zoomOut: 'تصغير',
+    // Ribbon File menu
+    fileTab: 'ملف',
+    fileOpen: 'فتح…',
+    fileSave: 'حفظ',
+    fileExportDocx: 'تصدير كملف Word…',
+    fileExportPdf: 'تصدير بتنسيق PDF…',
+    fileOpenInDocs: 'التحويل والفتح في Docs',
+    filePrint: 'طباعة…',
+
   },
   pt: {
     aiToolReadFm: 'Ler propriedades do documento',
@@ -2441,6 +2540,15 @@ export const strings = {
     zoom: 'Zoom',
     zoomIn: 'Ampliar',
     zoomOut: 'Reduzir',
+    // Ribbon File menu
+    fileTab: 'Arquivo',
+    fileOpen: 'Abrir…',
+    fileSave: 'Salvar',
+    fileExportDocx: 'Exportar como Word…',
+    fileExportPdf: 'Exportar como PDF…',
+    fileOpenInDocs: 'Converter e abrir no Docs',
+    filePrint: 'Imprimir…',
+
   },
   it: {
     aiToolReadFm: 'Lettura delle proprietà del documento',
@@ -2647,6 +2755,15 @@ export const strings = {
     zoom: 'Zoom',
     zoomIn: 'Ingrandisci',
     zoomOut: 'Riduci',
+    // Ribbon File menu
+    fileTab: 'File',
+    fileOpen: 'Apri…',
+    fileSave: 'Salva',
+    fileExportDocx: 'Esporta come Word…',
+    fileExportPdf: 'Esporta come PDF…',
+    fileOpenInDocs: 'Converti e apri in Docs',
+    filePrint: 'Stampa…',
+
   },
   pl: {
     aiToolReadFm: 'Odczyt właściwości dokumentu',
@@ -2851,6 +2968,15 @@ export const strings = {
     zoom: 'Zoom',
     zoomIn: 'Powiększ',
     zoomOut: 'Pomniejsz',
+    // Ribbon File menu
+    fileTab: 'Plik',
+    fileOpen: 'Otwórz…',
+    fileSave: 'Zapisz',
+    fileExportDocx: 'Eksportuj jako Word…',
+    fileExportPdf: 'Eksportuj jako PDF…',
+    fileOpenInDocs: 'Konwertuj i otwórz w Docs',
+    filePrint: 'Drukuj…',
+
   },
   cs: {
     aiToolReadFm: 'Číst vlastnosti dokumentu',
@@ -3054,6 +3180,15 @@ export const strings = {
     insertDiagram: 'Diagram',
     insertWaveform: 'Časový diagram',
     mermaidError: 'Chyba syntaxe diagramu',
+    // Ribbon File menu
+    fileTab: 'Soubor',
+    fileOpen: 'Otevřít…',
+    fileSave: 'Uložit',
+    fileExportDocx: 'Exportovat jako Word…',
+    fileExportPdf: 'Exportovat jako PDF…',
+    fileOpenInDocs: 'Převést a otevřít v Docs',
+    filePrint: 'Tisk…',
+
   },
   nl: {
     aiToolReadFm: 'Documenteigenschappen lezen',
@@ -3259,6 +3394,15 @@ export const strings = {
     zoom: 'Zoom',
     zoomIn: 'Inzoomen',
     zoomOut: 'Uitzoomen',
+    // Ribbon File menu
+    fileTab: 'Bestand',
+    fileOpen: 'Openen…',
+    fileSave: 'Opslaan',
+    fileExportDocx: 'Exporteren als Word…',
+    fileExportPdf: 'Exporteren als PDF…',
+    fileOpenInDocs: 'Converteren en openen in Docs',
+    filePrint: 'Afdrukken…',
+
   },
   ms: {
     aiToolReadFm: 'Baca sifat dokumen',
@@ -3462,6 +3606,15 @@ export const strings = {
     zoom: 'Zum',
     zoomIn: 'Zum masuk',
     zoomOut: 'Zum keluar',
+    // Ribbon File menu
+    fileTab: 'Fail',
+    fileOpen: 'Buka…',
+    fileSave: 'Simpan',
+    fileExportDocx: 'Eksport sebagai Word…',
+    fileExportPdf: 'Eksport sebagai PDF…',
+    fileOpenInDocs: 'Tukar dan buka dalam Docs',
+    filePrint: 'Cetak…',
+
   },
   he: {
     aiToolReadFm: 'קריאת מאפייני המסמך',
@@ -3661,6 +3814,15 @@ export const strings = {
     zoom: 'זום',
     zoomIn: 'הגדלה',
     zoomOut: 'הקטנה',
+    // Ribbon File menu
+    fileTab: 'קובץ',
+    fileOpen: 'פתיחה…',
+    fileSave: 'שמירה',
+    fileExportDocx: 'ייצוא כ-Word…',
+    fileExportPdf: 'ייצוא כ-PDF…',
+    fileOpenInDocs: 'המרה ופתיחה ב-Docs',
+    filePrint: 'הדפסה…',
+
   },
   hi: {
     aiToolReadFm: 'दस्तावेज़ गुण पढ़ें',
@@ -3864,6 +4026,15 @@ export const strings = {
     zoom: 'ज़ूम',
     zoomIn: 'ज़ूम इन',
     zoomOut: 'ज़ूम आउट',
+    // Ribbon File menu
+    fileTab: 'फ़ाइल',
+    fileOpen: 'खोलें…',
+    fileSave: 'सहेजें',
+    fileExportDocx: 'Word के रूप में निर्यात करें…',
+    fileExportPdf: 'PDF के रूप में निर्यात…',
+    fileOpenInDocs: 'Docs में बदलें और खोलें',
+    filePrint: 'प्रिंट करें…',
+
   },
   'zh-TW': {
     aiToolReadFm: '讀取文件屬性',
@@ -4062,5 +4233,14 @@ export const strings = {
     zoom: '縮放',
     zoomIn: '放大',
     zoomOut: '縮小',
+    // Ribbon File menu
+    fileTab: '檔案',
+    fileOpen: '開啟…',
+    fileSave: '儲存',
+    fileExportDocx: '匯出為 Word…',
+    fileExportPdf: '匯出為 PDF…',
+    fileOpenInDocs: '轉換為 Docs 文件並開啟',
+    filePrint: '列印…',
+
   },
 } as const

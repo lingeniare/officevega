@@ -141,4 +141,12 @@ export const ms = {
   presentInTab: 'Dalam tab ini',
   presentFullscreen: 'Skrin penuh',
   presentNewTab: 'Tab baharu',
+  // Ribbon File menu
+  fileTab: 'Fail',
+  fileOpen: 'Buka…',
+  fileSave: 'Simpan',
+  fileExportDocx: 'Eksport sebagai Word…',
+  fileExportPdf: 'Eksport sebagai PDF…',
+  fileExportHtml: 'Eksport sebagai HTML fail tunggal…',
+  filePrint: 'Cetak…',
 } satisfies Record<keyof typeof zh, string>

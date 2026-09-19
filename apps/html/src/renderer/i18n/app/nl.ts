@@ -144,4 +144,12 @@ export const nl = {
   presentInTab: 'In dit tabblad',
   presentFullscreen: 'Volledig scherm',
   presentNewTab: 'Nieuw tabblad',
+  // Ribbon File menu
+  fileTab: 'Bestand',
+  fileOpen: 'Openen…',
+  fileSave: 'Opslaan',
+  fileExportDocx: 'Exporteren als Word…',
+  fileExportPdf: 'Exporteren als PDF…',
+  fileExportHtml: 'Exporteren als één HTML-bestand…',
+  filePrint: 'Afdrukken…',
 } satisfies Record<keyof typeof zh, string>

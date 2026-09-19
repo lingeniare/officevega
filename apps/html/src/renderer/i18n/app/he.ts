@@ -140,4 +140,12 @@ export const he = {
   presentInTab: 'בכרטיסייה זו',
   presentFullscreen: 'מסך מלא',
   presentNewTab: 'כרטיסייה חדשה',
+  // Ribbon File menu
+  fileTab: 'קובץ',
+  fileOpen: 'פתיחה…',
+  fileSave: 'שמירה',
+  fileExportDocx: 'ייצוא כ-Word…',
+  fileExportPdf: 'ייצוא כ-PDF…',
+  fileExportHtml: 'ייצוא כ-HTML בקובץ יחיד…',
+  filePrint: 'הדפסה…',
 } satisfies Record<keyof typeof zh, string>

@@ -1336,4 +1336,12 @@ export const id = {
   appFindTitle: 'Temukan & Pilih ⌘F',
   appReplace: 'Ganti',
   appGoTo: 'Buka',
+  // Ribbon File menu
+  appFileTab: 'File',
+  appFileOpen: 'Buka Buku Kerja…',
+  appFileSave: 'Simpan',
+  appFileSaveAs: 'Simpan Sebagai…',
+  appFileExportPdf: 'Ekspor PDF…',
+  appFileExportCsv: 'Ekspor CSV…',
+  appFilePrint: 'Cetak…',
 } satisfies Record<keyof typeof zh, string>

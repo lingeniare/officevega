@@ -172,6 +172,11 @@ interface RibbonProps {
   onOpen: () => void
   onSave: () => void
   onSaveAs: () => void
+  /** File menu export/print entries — same handlers as the native File menu */
+  onExportPdf: () => void
+  onExportHtml: () => void
+  onExportImages: () => void
+  onPrint: () => void
   showAi: boolean
   onToggleAi: () => void
   section: SectionSettings | null
@@ -633,6 +638,10 @@ function RibbonInner({
   onOpen,
   onSave,
   onSaveAs,
+  onExportPdf,
+  onExportHtml,
+  onExportImages,
+  onPrint,
   showAi,
   onToggleAi,
   section,
@@ -1967,6 +1976,42 @@ function RibbonInner({
                   }}
                 >
                   {t('ribbonSaveAs')} <span className="file-menu-key">Ctrl+Shift+S</span>
+                </button>
+                <button
+                  disabled={!hasDoc}
+                  onClick={() => {
+                    setDropdown(null)
+                    onExportPdf()
+                  }}
+                >
+                  {t('ribbonExportPdf')}
+                </button>
+                <button
+                  disabled={!hasDoc}
+                  onClick={() => {
+                    setDropdown(null)
+                    onExportHtml()
+                  }}
+                >
+                  {t('ribbonExportHtml')}
+                </button>
+                <button
+                  disabled={!hasDoc}
+                  onClick={() => {
+                    setDropdown(null)
+                    onExportImages()
+                  }}
+                >
+                  {t('ribbonExportImages')}
+                </button>
+                <button
+                  disabled={!hasDoc}
+                  onClick={() => {
+                    setDropdown(null)
+                    onPrint()
+                  }}
+                >
+                  {t('ribbonPrint')} <span className="file-menu-key">Ctrl+P</span>
                 </button>
               </div>
             )}

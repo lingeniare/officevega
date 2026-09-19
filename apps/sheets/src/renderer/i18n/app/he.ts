@@ -1279,4 +1279,12 @@ export const he = {
   appFindTitle: 'חפש ובחר ⌘F',
   appReplace: 'החלף',
   appGoTo: 'עבור אל',
+  // Ribbon File menu
+  appFileTab: 'קובץ',
+  appFileOpen: 'פתיחת חוברת עבודה…',
+  appFileSave: 'שמירה',
+  appFileSaveAs: 'שמירה בשם…',
+  appFileExportPdf: 'ייצוא PDF…',
+  appFileExportCsv: 'ייצוא CSV…',
+  appFilePrint: 'הדפסה…',
 } satisfies Record<keyof typeof zh, string>

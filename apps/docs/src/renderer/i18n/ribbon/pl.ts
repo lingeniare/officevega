@@ -713,4 +713,9 @@ export const pl = {
   ribbonClearAll: 'Wyczyść wszystko',
   ribbonClearAllTip: 'Usuń całe pismo odręczne z dokumentu',
   ribbonGroupClear: 'Czyszczenie',
+  // File menu
+  ribbonExportPdf: 'Eksportuj jako PDF…',
+  ribbonExportHtml: 'Eksportuj jako HTML…',
+  ribbonExportImages: 'Eksportuj jako obrazy…',
+  ribbonPrint: 'Drukuj…',
 } satisfies Record<keyof typeof zh, string>

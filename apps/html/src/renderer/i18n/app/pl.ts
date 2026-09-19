@@ -141,4 +141,12 @@ export const pl = {
   presentInTab: 'W tej karcie',
   presentFullscreen: 'Pełny ekran',
   presentNewTab: 'Nowa karta',
+  // Ribbon File menu
+  fileTab: 'Plik',
+  fileOpen: 'Otwórz…',
+  fileSave: 'Zapisz',
+  fileExportDocx: 'Eksportuj jako Word…',
+  fileExportPdf: 'Eksportuj jako PDF…',
+  fileExportHtml: 'Eksportuj jako pojedynczy plik HTML…',
+  filePrint: 'Drukuj…',
 } satisfies Record<keyof typeof zh, string>

@@ -14,6 +14,12 @@ import { ipcRenderer, webUtils } from 'electron'
 
 export const DROP_OPEN_CHANNEL = 'app:open-dropped-files'
 
+/// In-ribbon File > Open: any app view can ask the shell to run the same file
+/// picker the native File > Open menu item uses (routes each pick through
+/// openDocumentPath, i.e. a new tab per file). Fire-and-forget: no payload,
+/// no reply — the main process owns the dialog.
+export const OPEN_FILE_DIALOG_CHANNEL = 'app:open-file-dialog'
+
 /** Extensions routed by apps/shell routeDocumentPath — keep in sync there and
  *  with OPEN_DIALOG_EXTENSIONS / OPEN_LOCAL_EXTENSIONS on the home screen. */
 export const OPENABLE_DOC_RE = /\.(docx|xlsx|xlsm|xls|csv|pptx|pdf|md|markdown|html|htm)$/i

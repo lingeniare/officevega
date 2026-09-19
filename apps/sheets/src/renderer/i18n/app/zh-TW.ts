@@ -1249,4 +1249,12 @@ export const zhTW = {
   appFindTitle: '尋找與選取 ⌘F',
   appReplace: '取代',
   appGoTo: '到',
+  // Ribbon File menu
+  appFileTab: '檔案',
+  appFileOpen: '開啟活頁簿…',
+  appFileSave: '儲存',
+  appFileSaveAs: '另存新檔…',
+  appFileExportPdf: '匯出 PDF…',
+  appFileExportCsv: '匯出 CSV…',
+  appFilePrint: '列印…',
 } satisfies Record<keyof typeof zh, string>

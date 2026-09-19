@@ -717,4 +717,9 @@ export const nl = {
   ribbonClearAll: 'Alles wissen',
   ribbonClearAllTip: 'Alle inkt in het document verwijderen',
   ribbonGroupClear: 'Wissen',
+  // File menu
+  ribbonExportPdf: 'Exporteren als PDF…',
+  ribbonExportHtml: 'Exporteren als HTML…',
+  ribbonExportImages: 'Exporteren als afbeeldingen…',
+  ribbonPrint: 'Afdrukken…',
 } satisfies Record<keyof typeof zh, string>

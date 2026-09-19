@@ -142,4 +142,12 @@ export const id = {
   presentInTab: 'Di tab ini',
   presentFullscreen: 'Layar penuh',
   presentNewTab: 'Tab baru',
+  // Ribbon File menu
+  fileTab: 'File',
+  fileOpen: 'Buka…',
+  fileSave: 'Simpan',
+  fileExportDocx: 'Ekspor sebagai Word…',
+  fileExportPdf: 'Ekspor sebagai PDF…',
+  fileExportHtml: 'Ekspor sebagai HTML satu file…',
+  filePrint: 'Cetak…',
 } satisfies Record<keyof typeof zh, string>

@@ -1316,4 +1316,12 @@ export const en = {
   appFindTitle: 'Find & Select ⌘F',
   appReplace: 'Replace',
   appGoTo: 'Go To',
+  // Ribbon File menu
+  appFileTab: 'File',
+  appFileOpen: 'Open Workbook…',
+  appFileSave: 'Save',
+  appFileSaveAs: 'Save As…',
+  appFileExportPdf: 'Export PDF…',
+  appFileExportCsv: 'Export CSV…',
+  appFilePrint: 'Print…',
 } satisfies Record<keyof typeof zh, string>

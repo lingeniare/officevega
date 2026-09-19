@@ -4057,8 +4057,8 @@ export function setSheetsCloseTabHook(fn: (() => void) | null): void {
   closeActiveTabHook = fn
 }
 
-/// The ribbon has no File tab; file commands live in
-/// the application menu and are forwarded to the renderer.
+/// The ribbon File tab and the application menu share one dispatch path:
+/// both forward file commands to the renderer as menu actions.
 function installApplicationMenu(): void {
   const sendMenuAction = sendSheetsMenuAction
   const labels = appMenuLabels(getUiLang())

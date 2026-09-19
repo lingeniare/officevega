@@ -696,4 +696,9 @@ export const he = {
   ribbonClearAll: 'נקה הכל',
   ribbonClearAllTip: 'מחק את כל הדיו במסמך',
   ribbonGroupClear: 'ניקוי',
+  // File menu
+  ribbonExportPdf: 'ייצוא כ-PDF…',
+  ribbonExportHtml: 'ייצוא כ-HTML…',
+  ribbonExportImages: 'ייצוא כתמונות…',
+  ribbonPrint: 'הדפסה…',
 } satisfies Record<keyof typeof zh, string>

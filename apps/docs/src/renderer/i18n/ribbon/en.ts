@@ -704,4 +704,9 @@ export const en = {
   ribbonClearAll: 'Clear All',
   ribbonClearAllTip: 'Delete all ink in the document',
   ribbonGroupClear: 'Clear',
+  // File menu
+  ribbonExportPdf: 'Export as PDF…',
+  ribbonExportHtml: 'Export as HTML…',
+  ribbonExportImages: 'Export as Images…',
+  ribbonPrint: 'Print…',
 } satisfies Record<keyof typeof zh, string>

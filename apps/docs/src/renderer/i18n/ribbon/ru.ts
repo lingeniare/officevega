@@ -713,4 +713,9 @@ export const ru = {
   ribbonClearAll: 'Очистить всё',
   ribbonClearAllTip: 'Удалить весь рукописный ввод в документе',
   ribbonGroupClear: 'Очистка',
+  // File menu
+  ribbonExportPdf: 'Экспорт в PDF…',
+  ribbonExportHtml: 'Экспорт в HTML…',
+  ribbonExportImages: 'Экспорт в изображения…',
+  ribbonPrint: 'Печать…',
 } satisfies Record<keyof typeof zh, string>

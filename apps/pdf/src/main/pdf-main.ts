@@ -23,9 +23,11 @@ import {
   printHtmlToPdf,
   safeExternalUrl,
   showOpenDialogWithMemory,
+  showSaveDialogWithMemory,
   installRendererProtocol,
   registerRendererScheme,
   rendererUrl,
+  OPEN_FILE_DIALOG_CHANNEL,
 } from '@genoffice/electron-utils'
 import { createI18n, getUiLang } from '@genoffice/i18n'
 import { generateImageTool } from '@genoffice/ai-search'
@@ -583,6 +585,9 @@ const closeSaveWaiters = new Map<number, (ok: boolean) => void>()
 const saveAsWaiters = new Map<number, (ok: boolean) => void>()
 /** Save As destination granted per view (main-process dialog pick); the save handler refuses any other non-source target */
 const saveAsTargetByWc = new Map<number, string>()
+/** Standalone (dev) mode: the shell owns cross-file Open/Save As flows for pdf tabs,
+ *  so these ribbon channels only get local handlers when there is no shell to serve them */
+let standaloneMode = false
 
 export function pdfIsDirty(webContentsId: number): boolean {
   return dirtyByWc.has(webContentsId)
@@ -1497,6 +1502,49 @@ function registerPdfIpc(): void {
     waiter?.(ok === true)
   })
 
+  if (standaloneMode) {
+    // Ribbon File > Open: no tab manager here, so a picked file gets its own window
+    ipcMain.on(OPEN_FILE_DIALOG_CHANNEL, async (e) => {
+      const win =
+        BrowserWindow.fromWebContents(e.sender) ?? BrowserWindow.getFocusedWindow() ?? undefined
+      const picked = await showOpenDialogWithMemory(dialog, win, {
+        filters: [{ name: tm('filterPdf'), extensions: ['pdf'] }],
+        properties: ['openFile'],
+      })
+      const path = picked.filePaths[0]
+      if (picked.canceled || !path) return
+      createStandaloneWindow(path)
+    })
+
+    // Ribbon File > Save As: same dialog+copy flow the shell runs, minus the tab handoff
+    ipcMain.on(PDF_CHANNELS.saveAsDialog, async (e) => {
+      const current = openPathByWc.get(e.sender.id)
+      if (!current) return
+      setPdfSaveAsInFlight(e.sender, true)
+      try {
+        const win =
+          BrowserWindow.fromWebContents(e.sender) ?? BrowserWindow.getFocusedWindow() ?? undefined
+        const picked = await showSaveDialogWithMemory(dialog, win, {
+          defaultPath: current,
+          filters: [{ name: tm('filterPdf'), extensions: ['pdf'] }],
+        })
+        const target = picked.filePath
+        if (picked.canceled || !target || target === current) return
+        if (dirtyByWc.has(e.sender.id)) {
+          // Renderer applies its pending edits onto the source bytes; openPathByWc
+          // follows the copy so later saves land there (standard Save As)
+          await requestPdfSaveAs(e.sender, target)
+        } else {
+          copyFileSync(current, target)
+          allowedByWc.get(e.sender.id)?.add(target)
+          openPathByWc.set(e.sender.id, target)
+        }
+      } finally {
+        setPdfSaveAsInFlight(e.sender, false)
+      }
+    })
+  }
+
   // Language channel shared with other modules; removeHandler tolerates duplicate registration
   ipcMain.removeHandler(PDF_CHANNELS.getLanguage)
   ipcMain.handle(PDF_CHANNELS.getLanguage, () => getUiLang())
@@ -1549,8 +1597,25 @@ export function createPdfView(openPath?: string | null): WebContentsView {
   return view
 }
 
+function createStandaloneWindow(openPath?: string | null): BrowserWindow {
+  const win = new BrowserWindow({
+    width: 1200,
+    height: 850,
+    webPreferences: {
+      preload: runtime.preloadPath,
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: true,
+    },
+  })
+  grantAndTrack(win.webContents, openPath)
+  void win.loadURL(rendererUrl(runtime.rendererUrl, 'pdf'))
+  return win
+}
+
 /** Standalone window mode: `npm run dev -w @genoffice/pdf`, pdf path passed via argv */
 export function startPdfStandalone(): void {
+  standaloneMode = true
   registerRendererScheme()
   installNavigationGuard(app)
   installContextMenu(app, () => contextMenuLabels(getUiLang()))
@@ -1563,19 +1628,8 @@ export function startPdfStandalone(): void {
   void app.whenReady().then(() => {
     installRendererProtocol({ pdf: join(__dirname, '../renderer') })
     registerPdfIpc()
-    const win = new BrowserWindow({
-      width: 1200,
-      height: 850,
-      webPreferences: {
-        preload: runtime.preloadPath,
-        contextIsolation: true,
-        nodeIntegration: false,
-        sandbox: true,
-      },
-    })
     const argPath = process.argv.slice(1).find((a) => /\.pdf$/i.test(a) && existsSync(a))
-    grantAndTrack(win.webContents, argPath)
-    void win.loadURL(rendererUrl(runtime.rendererUrl, 'pdf'))
+    createStandaloneWindow(argPath)
   })
   app.on('window-all-closed', () => app.quit())
 }

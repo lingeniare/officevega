@@ -139,4 +139,12 @@ export const zhTW = {
   presentInTab: '在目前分頁',
   presentFullscreen: '全螢幕',
   presentNewTab: '新分頁',
+  // Ribbon File menu
+  fileTab: '檔案',
+  fileOpen: '開啟…',
+  fileSave: '儲存',
+  fileExportDocx: '匯出為 Word…',
+  fileExportPdf: '匯出為 PDF…',
+  fileExportHtml: '匯出為單檔 HTML…',
+  filePrint: '列印…',
 } satisfies Record<keyof typeof zh, string>

@@ -1301,4 +1301,12 @@ export const th = {
   appFindTitle: 'ค้นหาและเลือก ⌘F',
   appReplace: 'แทนที่',
   appGoTo: 'ไปที่',
+  // Ribbon File menu
+  appFileTab: 'ไฟล์',
+  appFileOpen: 'เปิดเวิร์กบุ๊ก…',
+  appFileSave: 'บันทึก',
+  appFileSaveAs: 'บันทึกเป็น…',
+  appFileExportPdf: 'ส่งออก PDF…',
+  appFileExportCsv: 'ส่งออก CSV…',
+  appFilePrint: 'พิมพ์…',
 } satisfies Record<keyof typeof zh, string>

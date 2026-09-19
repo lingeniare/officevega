@@ -711,4 +711,9 @@ export const id = {
   ribbonClearAll: 'Hapus Semua',
   ribbonClearAllTip: 'Hapus semua tinta di dokumen',
   ribbonGroupClear: 'Hapus',
+  // File menu
+  ribbonExportPdf: 'Ekspor sebagai PDF…',
+  ribbonExportHtml: 'Ekspor sebagai HTML…',
+  ribbonExportImages: 'Ekspor sebagai gambar…',
+  ribbonPrint: 'Cetak…',
 } satisfies Record<keyof typeof zh, string>

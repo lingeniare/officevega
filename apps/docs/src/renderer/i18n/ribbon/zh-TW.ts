@@ -689,4 +689,9 @@ export const zhTW = {
   ribbonClearAll: '全部清除',
   ribbonClearAllTip: '刪除文件中的所有筆跡',
   ribbonGroupClear: '清除',
+  // File menu
+  ribbonExportPdf: '匯出為 PDF…',
+  ribbonExportHtml: '匯出為 HTML…',
+  ribbonExportImages: '匯出為圖片…',
+  ribbonPrint: '列印…',
 } satisfies Record<keyof typeof zh, string>

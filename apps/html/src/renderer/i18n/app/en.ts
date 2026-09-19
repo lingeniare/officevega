@@ -142,4 +142,12 @@ export const en = {
   presentInTab: 'In this tab',
   presentFullscreen: 'Fullscreen',
   presentNewTab: 'New tab',
+  // Ribbon File menu
+  fileTab: 'File',
+  fileOpen: 'Open…',
+  fileSave: 'Save',
+  fileExportDocx: 'Export as Word…',
+  fileExportPdf: 'Export as PDF…',
+  fileExportHtml: 'Export as Single-File HTML…',
+  filePrint: 'Print…',
 } satisfies Record<keyof typeof zh, string>

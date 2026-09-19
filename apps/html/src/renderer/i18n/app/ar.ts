@@ -141,4 +141,12 @@ export const ar = {
   presentInTab: 'في هذه العلامة',
   presentFullscreen: 'ملء الشاشة',
   presentNewTab: 'علامة تبويب جديدة',
+  // Ribbon File menu
+  fileTab: 'ملف',
+  fileOpen: 'فتح…',
+  fileSave: 'حفظ',
+  fileExportDocx: 'تصدير كملف Word…',
+  fileExportPdf: 'تصدير بتنسيق PDF…',
+  fileExportHtml: 'تصدير كملف HTML واحد…',
+  filePrint: 'طباعة…',
 } satisfies Record<keyof typeof zh, string>

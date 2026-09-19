@@ -3,7 +3,10 @@ import { contextBridge, ipcRenderer, webUtils } from 'electron'
 import type { Lang } from '@genoffice/i18n'
 import type { AiStreamChunk } from '@genoffice/ai-provider'
 import type { ProjectApi } from '@genoffice/project-store'
-import { installDropOpenBridge } from '@genoffice/electron-utils/drop-open'
+import {
+  installDropOpenBridge,
+  OPEN_FILE_DIALOG_CHANNEL,
+} from '@genoffice/electron-utils/drop-open'
 import { AI_CHANNELS, HTML_CHANNELS } from '../shared/ipc'
 import type { AutoSaveDefault, ExportFormat, HtmlApi, SaveMode, UiTheme } from '../shared/ipc'
 
@@ -18,6 +21,7 @@ const api: HtmlApi = {
   setPresentFullScreen: (on) => ipcRenderer.invoke(HTML_CHANNELS.presentFullScreen, on),
   presentInNewTab: (title) => ipcRenderer.invoke(HTML_CHANNELS.presentNewTab, title),
   save: (request) => ipcRenderer.invoke(HTML_CHANNELS.save, request),
+  requestOpenDialog: () => ipcRenderer.send(OPEN_FILE_DIALOG_CHANNEL),
   setDirty: (dirty) => ipcRenderer.send(HTML_CHANNELS.dirtyChanged, dirty),
   onSaveRequest: (handler) => {
     const listener = (_e: Electron.IpcRendererEvent, mode: SaveMode) => handler(mode)
@@ -63,6 +67,7 @@ const api: HtmlApi = {
     ipcRenderer.on(HTML_CHANNELS.printRequest, listener)
     return () => ipcRenderer.removeListener(HTML_CHANNELS.printRequest, listener)
   },
+  print: (request) => ipcRenderer.invoke(HTML_CHANNELS.print, request),
   exportDocx: (request) => ipcRenderer.invoke(HTML_CHANNELS.exportDocx, request),
   exportPdf: (request) => ipcRenderer.invoke(HTML_CHANNELS.exportPdf, request),
   exportHtml: (request) => ipcRenderer.invoke(HTML_CHANNELS.exportHtml, request),

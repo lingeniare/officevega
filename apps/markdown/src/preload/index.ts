@@ -3,7 +3,10 @@ import { contextBridge, ipcRenderer } from 'electron'
 import type { Lang } from '@genoffice/i18n'
 import type { AiStreamChunk } from '@genoffice/ai-provider'
 import type { ProjectApi } from '@genoffice/project-store'
-import { installDropOpenBridge } from '@genoffice/electron-utils/drop-open'
+import {
+  installDropOpenBridge,
+  OPEN_FILE_DIALOG_CHANNEL,
+} from '@genoffice/electron-utils/drop-open'
 import { AI_CHANNELS, MARKDOWN_CHANNELS } from '../shared/ipc'
 import type { AutoSaveDefault, ExportFormat, MarkdownApi, SaveMode, UiTheme } from '../shared/ipc'
 
@@ -14,6 +17,7 @@ const api: MarkdownApi = {
     ipcRenderer.send(MARKDOWN_CHANNELS.headlessExportDone, result),
   readFile: (path) => ipcRenderer.invoke(MARKDOWN_CHANNELS.readFile, path),
   save: (request) => ipcRenderer.invoke(MARKDOWN_CHANNELS.save, request),
+  requestOpenDialog: () => ipcRenderer.send(OPEN_FILE_DIALOG_CHANNEL),
   setDirty: (dirty) => ipcRenderer.send(MARKDOWN_CHANNELS.dirtyChanged, dirty),
   onSaveRequest: (handler) => {
     const listener = (_e: Electron.IpcRendererEvent, mode: SaveMode) => handler(mode)

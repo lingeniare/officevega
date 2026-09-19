@@ -1164,6 +1164,26 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- t is not referentially stable
   }, [])
 
+  /**
+   * Print through the same script-free render the PDF export uses, in a hidden
+   * main-process window — the preview frame is sandboxed cross-origin, so it
+   * cannot drive window.print() itself.
+   */
+  const printingRef = useRef(false)
+  const printDoc = useCallback(async () => {
+    if (statusRef.current !== 'ready' || printingRef.current) return
+    printingRef.current = true
+    try {
+      flushPending()
+      const result = await window.htmlApi.print({ html: textRef.current })
+      if (!result.ok) console.error('[html] print failed:', result.error)
+    } catch (err) {
+      console.error('[html] print failed:', err)
+    } finally {
+      printingRef.current = false
+    }
+  }, [flushPending])
+
   // Headless export mode (--headless-export): this renderer lives in a hidden
   // window whose only job is to run the File menu's PDF or Word export against
   // a path the CLI chose, then report back so the main process can quit.
@@ -1227,6 +1247,7 @@ export default function App() {
     })
     const offRenamed = window.htmlApi.onFileRenamed((next) => setPath(next))
     const offExport = window.htmlApi.onExportRequest((format) => void runExport(format))
+    const offPrint = window.htmlApi.onPrintRequest(() => void printDoc())
     const offTheme = window.htmlApi.onThemeChanged(() => {
       // let main.tsx flip data-theme first
       window.setTimeout(
@@ -1278,10 +1299,11 @@ export default function App() {
       offClose()
       offRenamed()
       offExport()
+      offPrint()
       offTheme()
       window.removeEventListener('keydown', onKeyDown, true)
     }
-  }, [doSave, runExport, cycleView, zoomIn, zoomOut, flushPending, openFind])
+  }, [doSave, runExport, printDoc, cycleView, zoomIn, zoomOut, flushPending, openFind])
 
   // pinch / ctrl+wheel over the stage chrome around the frame; wheel inside the frame arrives as gx:zoom
   useEffect(() => {
@@ -1411,6 +1433,9 @@ export default function App() {
         dirty={dirty}
         onSave={() => void doSave('save')}
         onSaveAs={() => void doSave('saveAs')}
+        onOpen={() => window.htmlApi.requestOpenDialog()}
+        onExport={(format) => void runExport(format)}
+        onPrint={() => void printDoc()}
         onFind={() => openFind(false)}
         canUndo={historyState.undo}
         canRedo={historyState.redo}

@@ -45,6 +45,7 @@ export {
   droppableFilePaths,
   installDropOpenBridge,
   KNOWN_UNSUPPORTED_DOC_RE,
+  OPEN_FILE_DIALOG_CHANNEL,
   OPENABLE_DOC_RE,
   partitionDropPayload,
 } from './drop-open'

@@ -720,4 +720,9 @@ export const es = {
   ribbonClearAll: 'Borrar todo',
   ribbonClearAllTip: 'Eliminar toda la entrada de lápiz del documento',
   ribbonGroupClear: 'Borrar',
+  // File menu
+  ribbonExportPdf: 'Exportar como PDF…',
+  ribbonExportHtml: 'Exportar como HTML…',
+  ribbonExportImages: 'Exportar como imágenes…',
+  ribbonPrint: 'Imprimir…',
 } satisfies Record<keyof typeof zh, string>

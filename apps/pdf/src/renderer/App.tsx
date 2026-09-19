@@ -283,6 +283,10 @@ const RIBBON_TABS = [
 ] as const
 type RibbonTab = (typeof RIBBON_TABS)[number]['id'] | 'fillForm'
 
+// File lives in the macOS application menu; the ribbon shows it on win/linux
+// (docs/slides parity).
+const IS_MAC = navigator.platform.toLowerCase().includes('mac')
+
 export default function App() {
   const { lang, t } = useI18n()
   const collapse = useRibbonCollapse('vegaoffice-pdf-ribbon-collapsed')
@@ -381,6 +385,8 @@ export default function App() {
   )
   const [highlightColorOpen, setHighlightColorOpen] = useState(false)
   const [convertOpen, setConvertOpen] = useState(false)
+  const [fileOpen, setFileOpen] = useState(false)
+  const fileWrapRef = useRef<HTMLDivElement>(null)
   const [convertBusy, setConvertBusy] = useState(false)
   const [drawings, setDrawings] = useState<LocalDrawing[]>([])
   const drawingsRef = useRef(drawings)
@@ -5509,6 +5515,10 @@ export default function App() {
   })
 
   // Converter dropdown (Home tab)
+  useDismissablePopover(fileOpen, () => setFileOpen(false), {
+    // the wrap holds trigger + menu: inside presses toggle/choose instead of dismissing
+    inside: () => [fileWrapRef.current],
+  })
   useDismissablePopover(convertOpen, () => setConvertOpen(false), {
     inside: () => [convertWrapRef.current],
   })
@@ -6009,6 +6019,91 @@ export default function App() {
     <div className="app">
       <div className={`ribbon ${collapse.rootClass}`} ref={collapse.rootRef}>
         <div className="ribbon-tabs" onDoubleClick={collapse.onTabsDoubleClick}>
+          {!IS_MAC && (
+            <div className="file-tab-wrap" ref={fileWrapRef}>
+              <button
+                className={`ribbon-tab ribbon-tab-file ${fileOpen ? 'open' : ''}`}
+                onClick={() => setFileOpen((v) => !v)}
+              >
+                {t('fileTab')}
+              </button>
+              {fileOpen && (
+                <div className="file-menu">
+                  <button
+                    onClick={() => {
+                      setFileOpen(false)
+                      window.pdfApi.requestOpenDialog()
+                    }}
+                  >
+                    {t('fileOpen')} <span className="file-menu-key">Ctrl+O</span>
+                  </button>
+                  <button
+                    disabled={!dirty || saveState === 'saving'}
+                    onClick={() => {
+                      setFileOpen(false)
+                      void save()
+                    }}
+                  >
+                    {t('save')} <span className="file-menu-key">Ctrl+S</span>
+                  </button>
+                  <button
+                    disabled={!doc || !filePath}
+                    onClick={() => {
+                      setFileOpen(false)
+                      window.pdfApi.requestSaveAsDialog()
+                    }}
+                  >
+                    {t('fileSaveAs')} <span className="file-menu-key">Ctrl+Shift+S</span>
+                  </button>
+                  <button
+                    disabled={!doc || convertBusy}
+                    onClick={() => {
+                      setFileOpen(false)
+                      void convertTo('docx')
+                    }}
+                  >
+                    {t('convertToWord')}
+                  </button>
+                  <button
+                    disabled={!doc || convertBusy}
+                    onClick={() => {
+                      setFileOpen(false)
+                      void convertTo('xlsx')
+                    }}
+                  >
+                    {t('convertToExcel')}
+                  </button>
+                  <button
+                    disabled={!doc || convertBusy}
+                    onClick={() => {
+                      setFileOpen(false)
+                      void convertTo('pptx')
+                    }}
+                  >
+                    {t('convertToPpt')}
+                  </button>
+                  <button
+                    disabled={!doc || exporting}
+                    onClick={() => {
+                      setFileOpen(false)
+                      void exportImages(true)
+                    }}
+                  >
+                    {t('exportImages')}
+                  </button>
+                  <button
+                    disabled={!doc || printing}
+                    onClick={() => {
+                      setFileOpen(false)
+                      openPrintDlg()
+                    }}
+                  >
+                    {t('print')} <span className="file-menu-key">Ctrl+P</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
           <button
             className="qa-btn"
             data-tip={`${t('save')} (${platformShortcuts('⌘S')})`}

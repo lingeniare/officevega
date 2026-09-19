@@ -1376,4 +1376,12 @@ export const pt = {
   appFindTitle: 'Localizar e Selecionar ⌘F',
   appReplace: 'Substituir',
   appGoTo: 'Ir para',
+  // Ribbon File menu
+  appFileTab: 'Arquivo',
+  appFileOpen: 'Abrir Pasta de Trabalho…',
+  appFileSave: 'Salvar',
+  appFileSaveAs: 'Salvar Como…',
+  appFileExportPdf: 'Exportar PDF…',
+  appFileExportCsv: 'Exportar CSV…',
+  appFilePrint: 'Imprimir…',
 } satisfies Record<keyof typeof zh, string>

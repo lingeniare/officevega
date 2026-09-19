@@ -713,4 +713,9 @@ export const ms = {
   ribbonClearAll: 'Kosongkan Semua',
   ribbonClearAllTip: 'Padamkan semua dakwat dalam dokumen',
   ribbonGroupClear: 'Kosongkan',
+  // File menu
+  ribbonExportPdf: 'Eksport sebagai PDF…',
+  ribbonExportHtml: 'Eksport sebagai HTML…',
+  ribbonExportImages: 'Eksport sebagai imej…',
+  ribbonPrint: 'Cetak…',
 } satisfies Record<keyof typeof zh, string>

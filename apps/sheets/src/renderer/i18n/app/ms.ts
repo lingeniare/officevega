@@ -1337,4 +1337,12 @@ export const ms = {
   appFindTitle: 'Cari & Pilih ⌘F',
   appReplace: 'Ganti',
   appGoTo: 'Pergi Ke',
+  // Ribbon File menu
+  appFileTab: 'Fail',
+  appFileOpen: 'Buka Buku Kerja…',
+  appFileSave: 'Simpan',
+  appFileSaveAs: 'Simpan Sebagai…',
+  appFileExportPdf: 'Eksport PDF…',
+  appFileExportCsv: 'Eksport CSV…',
+  appFilePrint: 'Cetak…',
 } satisfies Record<keyof typeof zh, string>

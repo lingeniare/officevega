@@ -144,4 +144,12 @@ export const it = {
   presentInTab: 'In questa scheda',
   presentFullscreen: 'Schermo intero',
   presentNewTab: 'Nuova scheda',
+  // Ribbon File menu
+  fileTab: 'File',
+  fileOpen: 'Apri…',
+  fileSave: 'Salva',
+  fileExportDocx: 'Esporta come Word…',
+  fileExportPdf: 'Esporta come PDF…',
+  fileExportHtml: 'Esporta come HTML a file singolo…',
+  filePrint: 'Stampa…',
 } satisfies Record<keyof typeof zh, string>

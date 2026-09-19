@@ -1354,4 +1354,12 @@ export const ru = {
   appFindTitle: 'Найти и выделить ⌘F',
   appReplace: 'Заменить',
   appGoTo: 'Перейти',
+  // Ribbon File menu
+  appFileTab: 'Файл',
+  appFileOpen: 'Открыть книгу…',
+  appFileSave: 'Сохранить',
+  appFileSaveAs: 'Сохранить как…',
+  appFileExportPdf: 'Экспорт в PDF…',
+  appFileExportCsv: 'Экспорт в CSV…',
+  appFilePrint: 'Печать…',
 } satisfies Record<keyof typeof zh, string>
