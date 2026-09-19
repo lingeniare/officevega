@@ -12,9 +12,6 @@ import {
 } from '@genoffice/ui'
 import type { Editor } from '@tiptap/core'
 import { aiLangDirective, t as tGlobal, useI18n } from '../i18n/locale'
-import sendEnterOn from '../assets/send-enter-on.png'
-import sendEnterOff from '../assets/send-enter-off.png'
-import sendStop from '../assets/send-stop.png'
 import { clearAiHighlights } from '../editor/aiHighlight'
 import { setInactiveSelectionShown } from '../editor/inactiveSelection'
 import { createMarkdownSkill, MARKDOWN_RULES } from './markdown-skill'
@@ -1040,9 +1037,6 @@ export function AiPanel({
           sendLabel={t('aiSend')}
           stopLabel={t('aiStop')}
           iconOnly
-          sendIconEnabled={<img src={sendEnterOn} alt="" aria-hidden />}
-          sendIconDisabled={<img src={sendEnterOff} alt="" aria-hidden />}
-          stopIcon={<img src={sendStop} alt="" aria-hidden />}
           textareaRef={inputRef}
           onChange={setPrompt}
           onSend={() => send(prompt)}

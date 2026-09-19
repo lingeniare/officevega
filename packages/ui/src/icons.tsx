@@ -38,6 +38,45 @@ export function IconStop(props: IconProps) {
   )
 }
 
+/** plus (+) for the attach-files button — replaces the paperclip PNG art */
+export function IconPlus(props: IconProps) {
+  return (
+    <svg
+      width={props.size ?? 16}
+      height={props.size ?? 16}
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      aria-hidden
+    >
+      <path d="M8 2.5v11" />
+      <path d="M2.5 8h11" />
+    </svg>
+  )
+}
+
+/** upward arrow (↑) for the icon-only send button — VEGA AIChatDrawer style */
+export function IconArrowUp(props: IconProps) {
+  return (
+    <svg
+      width={props.size ?? 16}
+      height={props.size ?? 16}
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M8 13V3" />
+      <path d="M3.5 7.5 8 3l4.5 4.5" />
+    </svg>
+  )
+}
+
 /** return/enter arrow (↵) for the icon-only send button */
 export function IconEnter(props: IconProps) {
   return (

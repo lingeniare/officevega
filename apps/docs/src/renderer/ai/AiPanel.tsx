@@ -44,12 +44,8 @@ import { createFilesSkill } from './files-skill'
 import { createElectronTransport } from './transport'
 import { useI18n, t as tModule, aiLangDirective, type StringKey } from '../i18n/locale'
 import { Markdown } from '@genoffice/ui'
-import { AiComposer, AiScopeQuote, AiTypingIndicator, type AiScopeQuoteData } from '@genoffice/ui'
+import { AiComposer, AiScopeQuote, AiTypingIndicator, IconPlus, type AiScopeQuoteData } from '@genoffice/ui'
 import { VegaMark } from '../components/icons'
-import sendEnterOn from '../assets/send-enter-on.png'
-import sendEnterOff from '../assets/send-enter-off.png'
-import sendStop from '../assets/send-stop.png'
-import attachIcon from '../assets/attach-icon.png'
 import filePdfIcon from '../assets/file-pdf.png'
 import fileWordIcon from '../assets/file-word.png'
 import fileExcelIcon from '../assets/file-excel.png'
@@ -1651,9 +1647,6 @@ export function AiPanel({
           sendLabel={t('aiSend')}
           stopLabel={t('aiStop')}
           iconOnly
-          sendIconEnabled={<img src={sendEnterOn} alt="" aria-hidden />}
-          sendIconDisabled={<img src={sendEnterOff} alt="" aria-hidden />}
-          stopIcon={<img src={sendStop} alt="" aria-hidden />}
           textareaRef={inputRef}
           onChange={setInput}
           onSend={run}
@@ -1667,7 +1660,7 @@ export function AiPanel({
                 data-tip={t('aiAttachTitle')}
                 aria-label={t('aiAttachTitle')}
               >
-                <img src={attachIcon} alt="" aria-hidden />
+                <IconPlus size={15} />
               </button>
               <button
                 className={`ai-track-btn${trackChanges ? ' on' : ''}`}

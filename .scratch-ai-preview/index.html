@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<title>AI chat — VEGA skin preview</title>
+<link rel="stylesheet" href="/packages/ui/src/tokens.css" />
+<link rel="stylesheet" href="/packages/ui/src/ai-scope-quote.css" />
+<link rel="stylesheet" href="/packages/ui/src/ai-chat.css" />
+<style>
+  body {
+    margin: 0;
+    font-family: var(--gs-font-sans);
+    background: var(--canvas);
+    display: flex;
+    gap: 24px;
+    padding: 24px;
+    justify-content: center;
+  }
+  .panel {
+    width: 360px;
+    height: 640px;
+    background: var(--color-bg-page);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .ai-input-box textarea { display:block; width:100%; resize:none; border:none; background:none; padding:0 14px; margin:12px 0 4px; font-size:16px; line-height:24px; outline:none; color:var(--color-text-primary); min-height:48px; box-sizing:border-box; font-family:inherit; }
+  .ai-input-footer { display:flex; align-items:center; gap:8px; padding:4px 8px 8px 10px; }
+  .ai-attach-btn { display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border:none; background:transparent; cursor:pointer; padding:0; color:var(--color-text-secondary); font-size:14px; }
+  .ai-input-hint { font-size:12px; color:var(--color-text-tertiary); }
+  .ai-send-btn { display:inline-flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .ai-msg { position:relative; margin:0; font-size:16px; line-height:1.6; white-space:pre-wrap; word-break:break-word; }
+  .ai-msg-user { align-self:flex-end; color:var(--color-text-primary); line-height:1.5; }
+  .ai-msg-assistant { align-self:stretch; color:var(--color-text-primary); white-space:normal; }
+  .ai-md p { margin:0 0 12px; } .ai-md :last-child{margin-bottom:0}
+  .ai-msg-toolbar { display:flex; gap:4px; margin-top:8px; }
+  .ai-msg-tool-btn { display:inline-flex; align-items:center; justify-content:center; height:30px; min-width:30px; padding:5px; border:none; border-radius:8px; background:transparent; color:var(--color-text-secondary); font-size:13px; cursor:pointer; }
+  .ai-typing { display:flex; flex-direction:column; align-items:flex-start; gap:6px; padding:4px 0; }
+  .ai-typing-dots { height:12px; display:flex; gap:2px; }
+  .ai-typing-dot-slot { display:flex; justify-content:center; align-items:center; width:12px; }
+  .ai-typing-dot-grow, .ai-typing-dot-shrink { border-radius:50%; }
+  .ai-typing-dot-grow { animation: g 2s infinite; } .ai-typing-dot-shrink { animation: s 2s infinite; }
+  @keyframes g { 0%,100%{width:4px;height:4px;opacity:.45} 50%{width:12px;height:12px;opacity:1} }
+  @keyframes s { 0%,100%{width:12px;height:12px;opacity:1} 50%{width:4px;height:4px;opacity:.45} }
+  .theme-switch { position:fixed; top:12px; left:12px; display:flex; gap:6px; flex-wrap:wrap; }
+  .theme-switch button { padding:4px 10px; border:1px solid var(--border); border-radius:8px; background:var(--surface); color:var(--text); cursor:pointer; }
+  .theme-switch button.on { border-color:var(--accent); color:var(--accent); }
+  .ai-starter-list { display:flex; flex-direction:column; }
+  /* demo accents — in the apps these live in each app's styles.css :root/dark blocks */
+  :root { --accent:#185abd; --accent-dark:#124a9e; --accent-soft:#e8f1fb; }
+  [data-theme='dark'] { --accent:#4a9eff; --accent-dark:#3a8eef; --accent-soft:#1e3a5f; }
+</style>
+<script>
+  const ACCENTS = {
+    word:   { l:['#185abd','#124a9e','#e8f1fb'],            d:['#4a9eff','#3a8eef','#1e3a5f'] },
+    excel:  { l:['#217346','#185c37','#e9f3ed'],            d:['#34a853','#58b380','#1d3328'] },
+    pdf:    { l:['#c43e1c','#a33517','#fbeae5'],            d:['#e8663f','#d4552f','#43261d'] },
+    markdown:{ l:['#8b5cf6','#7c4ddb','#f1eafe'],            d:['#a78bfa','#c4b5fd','#2d2645'] },
+    html:   { l:['#0fa3a3','#0c8383','rgba(15,163,163,.1)'], d:['#2dd4bf','#5eead4','rgba(45,212,191,.14)'] },
+  }
+  let tool = 'word'
+  function applyTool() {
+    const dark = document.documentElement.getAttribute('data-theme') === 'dark'
+    const [a, d, s] = ACCENTS[tool][dark ? 'd' : 'l']
+    const st = document.documentElement.style
+    st.setProperty('--accent', a); st.setProperty('--accent-dark', d); st.setProperty('--accent-soft', s)
+    document.querySelectorAll('.theme-switch button[data-tool]').forEach(b => b.classList.toggle('on', b.dataset.tool === tool))
+  }
+  function setTheme(t) {
+    if (t === 'dark') document.documentElement.setAttribute('data-theme','dark')
+    else document.documentElement.removeAttribute('data-theme')
+    applyTool()
+  }
+  function setTool(k) { tool = k; applyTool() }
+  window.addEventListener('DOMContentLoaded', applyTool)
+</script>
+</head>
+<body>
+<div class="theme-switch">
+  <button onclick="setTheme('light')">light</button>
+  <button onclick="setTheme('dark')">dark</button>
+  <span style="width:8px"></span>
+  <button data-tool="word" onclick="setTool('word')">word</button>
+  <button data-tool="excel" onclick="setTool('excel')">excel</button>
+  <button data-tool="pdf" onclick="setTool('pdf')">pdf/slides</button>
+  <button data-tool="markdown" onclick="setTool('markdown')">markdown</button>
+  <button data-tool="html" onclick="setTool('html')">html</button>
+</div>
+
+<div class="panel">
+  <div class="ai-panel-header">
+    <span class="ai-panel-title">
+      <svg width="18" height="18" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="var(--accent)"/></svg>
+      VEGA AI
+    </span>
+    <div class="ai-panel-header-actions">
+      <button class="ai-header-btn" aria-label="Новый чат">✎</button>
+      <button class="ai-header-btn" aria-label="Свернуть">⇤</button>
+    </div>
+  </div>
+
+  <div class="ai-chat">
+    <div class="ai-msg ai-msg-user">Замени второй абзац на более формальный вариант</div>
+
+    <div class="ai-msg ai-msg-assistant">
+      <div class="ai-md">
+        <p>Готово — переписал абзац в деловом тоне. Заодно поправил <code>numId</code> списка ниже, чтобы нумерация не сбилась.</p>
+      </div>
+      <div class="ai-msg-toolbar">
+        <button class="ai-msg-tool-btn">⧉</button>
+        <button class="ai-msg-tool-btn">↻</button>
+      </div>
+    </div>
+
+    <div class="ai-msg ai-msg-user">А теперь добавь таблицу на 3 колонки</div>
+
+    <div class="ai-msg ai-msg-assistant">
+      <span class="ai-typing">
+        <span class="ai-typing-dots" aria-hidden>
+          <span class="ai-typing-dot-slot"><span class="ai-typing-dot-grow"></span></span>
+          <span class="ai-typing-dot-slot"><span class="ai-typing-dot-shrink"></span></span>
+        </span>
+      </span>
+    </div>
+
+    <div class="ai-msg ai-msg-assistant">
+      <div class="ai-msg-error">Не удалось получить ответ: превышен лимит запросов. Повторите через минуту.</div>
+    </div>
+
+    <div class="ai-chat-empty" style="margin-top:8px">
+      <div class="ai-chat-empty-title">Чем помочь?</div>
+      <div class="ai-chat-empty-body">Спросите что-нибудь или выберите подсказку</div>
+      <div class="ai-starter-list">
+        <button class="ai-starter">Сделай текст короче</button>
+        <button class="ai-starter">Найди ошибки в документе</button>
+        <button class="ai-starter">Предложи заголовок раздела</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ai-composer">
+    <div class="ai-input-box">
+      <textarea rows="1" placeholder="Спросите что-нибудь"></textarea>
+      <div class="ai-input-footer">
+        <button class="ai-attach-btn" aria-label="Прикрепить"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 2.5v11"/><path d="M2.5 8h11"/></svg></button>
+        <span class="ai-input-hint">Enter — отправить</span>
+        <button class="ai-send-btn" aria-label="Отправить">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 13V3"/><path d="M3.5 7.5 8 3l4.5 4.5"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

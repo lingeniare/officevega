@@ -6,9 +6,6 @@ import { imageGenerationAvailable, type AiSettings } from '@genoffice/ai-provide
 import { AiComposer, AiScopeQuote, AiTypingIndicator, type AiScopeQuoteData } from '@genoffice/ui'
 import { aiLangDirective, t as tGlobal, useI18n } from '../i18n/locale'
 import { Markdown } from '@genoffice/ui'
-import sendEnterOn from '../assets/send-enter-on.png'
-import sendEnterOff from '../assets/send-enter-off.png'
-import sendStop from '../assets/send-stop.png'
 import { createPdfSkill } from './pdf-skill'
 import { createElectronTransport } from './transport'
 import { PDF_NAV_SCHEME, parsePdfNavHref } from './pdf-nav'
@@ -808,9 +805,6 @@ export function AiPanel({
           sendLabel={t('aiSend')}
           stopLabel={t('aiStop')}
           iconOnly
-          sendIconEnabled={<img src={sendEnterOn} alt="" aria-hidden />}
-          sendIconDisabled={<img src={sendEnterOff} alt="" aria-hidden />}
-          stopIcon={<img src={sendStop} alt="" aria-hidden />}
           onChange={setPrompt}
           onSend={() => send(prompt)}
           onStop={stop}

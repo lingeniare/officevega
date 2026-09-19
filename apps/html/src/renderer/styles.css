@@ -630,6 +630,28 @@ html.vegaoffice-popover-open .ribbon-tabs {
   color: var(--color-text-primary);
 }
 
+/* AI chat accent: html teal — the file-type color from the shell icons
+   (overrides the neutral app accent only inside the chat panel) */
+.copilot {
+  --accent: #0fa3a3;
+  --accent-dark: #0c8383;
+  --accent-soft: rgb(15 163 163 / 10%);
+}
+
+[data-theme='dark'] .copilot {
+  --accent: #2dd4bf;
+  --accent-dark: #5eead4;
+  --accent-soft: rgb(45 212 191 / 14%);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .copilot {
+    --accent: #2dd4bf;
+    --accent-dark: #5eead4;
+    --accent-soft: rgb(45 212 191 / 14%);
+  }
+}
+
 /* drag handle on the panel's right edge — resize the panel horizontally */
 .ai-panel-resizer {
   position: absolute;

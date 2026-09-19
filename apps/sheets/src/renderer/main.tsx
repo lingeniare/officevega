@@ -17,6 +17,7 @@ import { installCanvasFontFallback, registerCellFontAliases } from './cell-font-
 import { LocaleProvider, setModuleLang } from './i18n/locale'
 import type { UiTheme } from '../shared/desktop-api'
 import './styles.css'
+import '@genoffice/ui/ai-chat.css'
 
 if (import.meta.hot) {
   import.meta.hot.on('vite:beforeUpdate', ({ updates }) => {

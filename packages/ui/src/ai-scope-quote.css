@@ -5,7 +5,7 @@
   gap: 3px;
   margin-bottom: 6px;
   padding-left: 9px;
-  border-left: 2px solid var(--color-brand-secondary);
+  border-left: 2px solid var(--accent);
   white-space: normal;
 }
 
@@ -15,7 +15,7 @@
   gap: 5px;
   font-size: var(--text-caption);
   font-weight: 500;
-  color: var(--color-brand-secondary);
+  color: var(--accent);
 }
 
 .ai-msg-scope-label::before {

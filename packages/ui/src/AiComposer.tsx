@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import { IconEnter, IconSend, IconStop } from './icons'
+import { IconArrowUp, IconSend, IconStop } from './icons'
 import { useAiPanelPrefs } from './ai-panel-prefs-store'
 
 // Keep in sync with the CSS `max-height` on `.ai-input-box textarea` (7 lines à 24px)
@@ -49,7 +49,7 @@ export function AiComposer({
   readonly footerStart?: React.ReactNode
   /** compact variant: no hint text, icon-only enter/stop button (Genspark composer style) */
   readonly iconOnly?: boolean | undefined
-  /** custom art for the icon-only send button (e.g. brand-supplied PNGs); falls back to IconEnter */
+  /** custom art for the icon-only send button; falls back to IconArrowUp */
   readonly sendIconEnabled?: React.ReactNode
   readonly sendIconDisabled?: React.ReactNode
   /** custom art for the icon-only stop button while busy; falls back to IconStop */
@@ -142,7 +142,7 @@ export function AiComposer({
           >
             {iconOnly ? (
               ((canSend ? sendIconEnabled : (sendIconDisabled ?? sendIconEnabled)) ?? (
-                <IconEnter size={16} />
+                <IconArrowUp size={16} />
               ))
             ) : (
               <IconSend size={16} />

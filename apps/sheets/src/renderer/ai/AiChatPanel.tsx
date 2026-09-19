@@ -1,16 +1,12 @@
 import { aiPanelWidthAtPointer, AiPanelSideButton } from '@genoffice/ui'
 import React, { useEffect, useRef, useState } from 'react'
-import { AiComposer, AiScopeQuote, AiTypingIndicator, type AiScopeQuoteData } from '@genoffice/ui'
+import { AiComposer, AiScopeQuote, AiTypingIndicator, IconPlus, type AiScopeQuoteData } from '@genoffice/ui'
 import { VegaMark } from '../ribbon-icons'
 import type { ChangePlan } from '@genoffice/xlsx-gateway/domain/workbook.types'
 import { ATTACHMENT_IMAGE_EXTS, type AttachmentMeta } from '../../shared/desktop-api'
 import { useI18n, type TFunc } from '../i18n/locale'
 import { Markdown } from '@genoffice/ui'
 import { SHEET_NAV_SCHEME } from './sheet-nav'
-import sendEnterOn from '../assets/send-enter-on.png'
-import sendEnterOff from '../assets/send-enter-off.png'
-import sendStop from '../assets/send-stop.png'
-import attachIcon from '../assets/attach-icon.png'
 import filePdfIcon from '../assets/file-pdf.png'
 import fileWordIcon from '../assets/file-word.png'
 import fileExcelIcon from '../assets/file-excel.png'
@@ -813,9 +809,6 @@ export function AiChatPanel({
           stopLabel={t('aiStop')}
           ariaLabel={t('aiInstructionAria')}
           iconOnly
-          sendIconEnabled={<img src={sendEnterOn} alt="" aria-hidden />}
-          sendIconDisabled={<img src={sendEnterOff} alt="" aria-hidden />}
-          stopIcon={<img src={sendStop} alt="" aria-hidden />}
           footerStart={
             <button
               className="ai-attach-btn"
@@ -823,7 +816,7 @@ export function AiChatPanel({
               data-tip={t('aiAttachTitle')}
               aria-label={t('aiAttachTitle')}
             >
-              <img src={attachIcon} alt="" aria-hidden />
+              <IconPlus size={15} />
             </button>
           }
           textareaRef={inputRef}

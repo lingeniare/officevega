@@ -15,6 +15,7 @@ import '@genoffice/ui/ai-panel-prefs.css'
 import '@genoffice/ui/ai-scope-quote.css'
 import '@genoffice/ui/image-dialogs.css'
 import './styles.css'
+import '@genoffice/ui/ai-chat.css'
 
 installScreenTips()
 

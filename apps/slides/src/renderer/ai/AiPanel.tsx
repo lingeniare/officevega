@@ -39,12 +39,16 @@ import {
   settingsSupportVision,
 } from './slide-qc'
 import { useI18n, t as tGlobal, aiLangDirective, type TFunc } from '../i18n/locale'
-import { AiScopeQuote, Markdown, useAiPanelPrefs, type AiScopeQuoteData } from '@genoffice/ui'
+import {
+  AiScopeQuote,
+  IconArrowUp,
+  IconPlus,
+  IconStop,
+  Markdown,
+  useAiPanelPrefs,
+  type AiScopeQuoteData,
+} from '@genoffice/ui'
 import { VegaMark } from '../components/icons'
-import sendEnterOn from '../assets/send-enter-on.png'
-import sendEnterOff from '../assets/send-enter-off.png'
-import sendStop from '../assets/send-stop.png'
-import attachIcon from '../assets/attach-icon.png'
 import filePdfIcon from '../assets/file-pdf.png'
 import fileWordIcon from '../assets/file-word.png'
 import fileExcelIcon from '../assets/file-excel.png'
@@ -2445,7 +2449,7 @@ export function AiPanel({
                 data-tip={t('aiAttachTitle')}
                 aria-label={t('aiAttachTitle')}
               >
-                <img src={attachIcon} alt="" aria-hidden />
+                <IconPlus size={15} />
               </button>
               {busy ? (
                 <button
@@ -2454,7 +2458,7 @@ export function AiPanel({
                   data-tip={t('aiStopGeneration')}
                   aria-label={t('aiStop')}
                 >
-                  <img src={sendStop} alt="" aria-hidden />
+                  <IconStop size={15} />
                 </button>
               ) : (
                 <button
@@ -2464,7 +2468,7 @@ export function AiPanel({
                   data-tip={t('aiSend')}
                   aria-label={t('aiSend')}
                 >
-                  <img src={input.trim() ? sendEnterOn : sendEnterOff} alt="" aria-hidden />
+                  <IconArrowUp size={16} />
                 </button>
               )}
             </div>

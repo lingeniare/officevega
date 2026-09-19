@@ -1,0 +1,374 @@
+/* VEGA AI-chat skin — the shared look of the .ai-* class family, after the
+   api.vega.chat AIChatDrawer design (see ai-chat-modal-design.md): tailed
+   bubbles, borderless suggestion links, thin scrollbar, dark input band.
+   The accent follows the host tool: every rule references the per-app
+   --accent / --accent-dark / --accent-soft tokens (word-blue in docs,
+   excel-green in sheets, ppt-orange in slides/pdf, neutral in html).
+   Button glyph color uses --color-bg-page (white on dark accents in the
+   light theme, near-black on light accents in the dark theme).
+   Each app's main.tsx imports this AFTER ./styles.css, so it wins the
+   cascade at equal specificity; per-app rules it doesn't redeclare still
+   apply (markdown typography, tool groups, resizers, …). */
+
+/* ---------- panel header: soft hairline, round icon buttons, accent hover ---------- */
+.ai-panel-header {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.ai-panel-title {
+  font-weight: 600;
+}
+
+/* pulsing accent dot — the DocsChatPanel signature next to the title */
+.ai-panel-title::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  margin-left: 2px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: ai-pulse-dot 2.4s ease-in-out infinite;
+}
+
+@keyframes ai-pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.ai-header-btn {
+  border-radius: 50%;
+}
+
+.ai-header-btn:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* ---------- message list: 20px rhythm, thin scrollbar ---------- */
+.ai-chat {
+  padding: 16px;
+  gap: 20px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.ai-chat::-webkit-scrollbar {
+  width: 4px;
+}
+
+.ai-chat::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+.ai-chat::-webkit-scrollbar-thumb:hover {
+  background: var(--text-tertiary);
+}
+
+/* ---------- empty state: suggestion links flush right, no borders ----------
+   (.ai-quick-actions/.ai-quick-btn is the pdf app's name for the same block) */
+.ai-starter-list,
+.ai-quick-actions {
+  align-items: flex-end;
+  gap: 4px;
+  margin-top: 20px;
+}
+
+.ai-starter,
+.ai-quick-btn {
+  padding: 5px 10px;
+  border: none;
+  border-radius: var(--radius-8);
+  background: none;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.4;
+  text-align: right;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.ai-starter::after,
+.ai-quick-btn::after {
+  content: '→';
+  margin-left: 6px;
+  color: var(--accent);
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.ai-starter:hover,
+.ai-quick-btn:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.ai-starter:hover::after,
+.ai-quick-btn:hover::after {
+  opacity: 1;
+}
+
+.ai-starter:active,
+.ai-quick-btn:active {
+  transform: none;
+  filter: none;
+  color: var(--accent-dark);
+}
+
+/* ---------- message bubbles: 12px radius with a 6px tail corner ---------- */
+.ai-msg {
+  animation: ai-msg-appear 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes ai-msg-appear {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* user: muted bubble, hairline border, tail on the trailing bottom corner
+   (logical radius → mirrors correctly in RTL panels) */
+.ai-msg-user {
+  max-width: 92%;
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-12);
+  border-end-end-radius: 6px;
+  background: var(--color-bg-subtle);
+}
+
+/* assistant: content-tone card on the page surface, tail leading bottom */
+.ai-msg-assistant {
+  max-width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-12);
+  border-end-start-radius: 6px;
+  background: var(--bg-content);
+}
+
+/* inline code chip inside markdown: bordered card-tone pill (VEGA code style) */
+.ai-md code {
+  padding: 1px 7px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-8);
+  background: var(--color-bg-page);
+  color: var(--color-text-primary);
+}
+
+/* ---------- activity indicators: emerald instead of per-app blue ---------- */
+.ai-typing-dot-grow,
+.ai-typing-dot-shrink {
+  background: var(--accent);
+}
+
+.ai-tool-chip-spinner::before,
+.ai-tool-chip-spinner::after {
+  background: var(--accent);
+}
+
+/* ---------- error: soft destructive card ---------- */
+.ai-msg-error {
+  padding: 10px 14px;
+  border: 1px solid var(--danger-border);
+  border-radius: var(--radius-12);
+  background: var(--danger-bg);
+  color: var(--danger);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* retry on an undelivered message follows the same destructive tone */
+.ai-retry-btn {
+  border-color: var(--danger-border);
+  border-radius: var(--radius-8);
+  color: var(--danger);
+}
+
+.ai-retry-btn:hover {
+  background: var(--danger-bg);
+}
+
+/* ---------- composer: dark footer band edge-to-edge, bare textarea ----------
+   (AIChatDrawer footer: border-t + bg-background/80; no box, no focus ring) */
+.ai-composer {
+  border-top: 1px solid var(--border-subtle);
+  background: var(--bg-content);
+  padding: 10px 14px 6px;
+}
+
+.ai-input-box {
+  border: none;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+/* send: 36×36 emerald rounded-xl with the ArrowUp glyph; stop: muted square */
+.ai-send-btn {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-12);
+  background: var(--accent);
+  color: var(--color-bg-page);
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    transform var(--transition-fast),
+    opacity var(--transition-fast);
+}
+
+.ai-send-btn svg {
+  display: block;
+}
+
+.ai-send-btn:hover:not(:disabled) {
+  background: var(--accent-dark);
+  transform: translateY(-1px);
+  filter: none;
+}
+
+.ai-send-btn:active:not(:disabled) {
+  transform: scale(0.95);
+  filter: none;
+}
+
+.ai-send-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.ai-send-btn.ai-stop-btn {
+  background: var(--color-bg-subtle);
+  color: var(--color-text-primary);
+}
+
+.ai-send-btn.ai-stop-btn:hover {
+  background: var(--bg-hover-strong);
+  filter: none;
+}
+
+/* footer row: attach docks immediately left of send (order beats DOM order);
+   the auto margin sits on attach so the pair stays glued on the right —
+   with no attach rendered, send's own auto margin keeps it right */
+.ai-input-footer {
+  padding: 4px 8px 4px 10px;
+}
+
+.ai-input-footer .ai-attach-btn {
+  order: 2;
+  margin-left: auto;
+}
+
+.ai-input-footer .ai-send-btn {
+  order: 3;
+  margin-left: auto;
+}
+
+.ai-input-footer .ai-attach-btn ~ .ai-send-btn {
+  margin-left: 0;
+}
+
+/* attach / track pills: quiet at rest, accent-tinted on hover/on */
+.ai-attach-btn {
+  border-radius: var(--radius-8);
+  color: var(--color-text-secondary);
+}
+
+.ai-attach-btn svg {
+  display: block;
+}
+
+.ai-attach-btn:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+  filter: none;
+}
+
+/* slides overrides the attach button inside .ai-composer (higher specificity) */
+.ai-composer .ai-attach-btn {
+  border-radius: var(--radius-8);
+  color: var(--color-text-secondary);
+}
+
+.ai-composer .ai-attach-btn:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+  filter: none;
+}
+
+.ai-track-btn.on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.ai-track-btn.on .ai-track-dot {
+  background: var(--accent);
+}
+
+/* message toolbar + primary chat actions follow the accent */
+.ai-msg-tool-btn:hover:not(:disabled) {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.ai-continue-btn {
+  border-color: var(--accent);
+  border-radius: var(--radius-8);
+  background: var(--accent);
+  color: var(--color-bg-page);
+}
+
+.ai-continue-btn:hover {
+  background: var(--accent-dark);
+  filter: none;
+}
+
+.ai-login-btn {
+  border-color: var(--accent);
+  border-radius: var(--radius-8);
+  background: var(--accent);
+  color: var(--color-bg-page);
+}
+
+.ai-login-btn:hover {
+  background: var(--accent-dark);
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-msg,
+  .ai-panel-title::after {
+    animation: none;
+  }
+
+  .ai-starter,
+  .ai-starter::after,
+  .ai-quick-btn,
+  .ai-quick-btn::after,
+  .ai-send-btn {
+    transition: none;
+  }
+
+  .ai-send-btn:hover:not(:disabled),
+  .ai-send-btn:active:not(:disabled) {
+    transform: none;
+  }
+}
