@@ -140,6 +140,12 @@ export const strings = {
     saveLocation: '默认保存位置',
     setAutoSave: '所有文档自动保存',
     setAutoSaveDesc: '在每个编辑器中默认开启自动保存，仍可在单个窗口中关闭。',
+    setAnalytics: '发送匿名使用统计',
+    setAnalyticsDesc:
+      '该功能默认开启，可随时在“设置 → 常规”中关闭。使用 Google Analytics 4；Google 会接收您的公网 IP 地址和传输元数据，但绝不收集文档内容或文件名。',
+    setAiPanelSide: 'AI 侧边栏位置',
+    aiPanelSideLeft: '左侧',
+    aiPanelSideRight: '右侧',
     setAiFontSize: 'AI 面板文字大小',
     aiFontSizeDefault: '默认',
     aiFontSizeLarge: '大',
@@ -479,6 +485,12 @@ export const strings = {
     setAutoSave: 'Auto-save all documents',
     setAutoSaveDesc:
       'Turn on AutoSave by default in every editor. You can still switch it off for a single window.',
+    setAnalytics: 'Send anonymous usage statistics',
+    setAnalyticsDesc:
+      'Enabled by default and can be turned off anytime in Settings → General. Uses Google Analytics 4; Google receives your public IP address and transport metadata, but document contents and file names are never collected.',
+    setAiPanelSide: 'AI sidebar position',
+    aiPanelSideLeft: 'Left',
+    aiPanelSideRight: 'Right',
     setAiFontSize: 'AI panel text size',
     aiFontSizeDefault: 'Default',
     aiFontSizeLarge: 'Large',
@@ -838,6 +850,12 @@ export const strings = {
     setAutoSave: 'すべてのドキュメントを自動保存',
     setAutoSaveDesc:
       'すべてのエディターで自動保存をデフォルトでオンにします。個々のウィンドウでオフにすることもできます。',
+    setAnalytics: '匿名の使用状況統計を送信',
+    setAnalyticsDesc:
+      '既定で有効です。設定 → 一般でいつでも無効にできます。Google Analytics 4 を使用し、Google は公開 IP アドレスと通信メタデータを受け取りますが、文書の内容やファイル名は収集されません。',
+    setAiPanelSide: 'AI サイドバーの位置',
+    aiPanelSideLeft: '左側',
+    aiPanelSideRight: '右側',
     setAiFontSize: 'AI パネルの文字サイズ',
     aiFontSizeDefault: '標準',
     aiFontSizeLarge: '大',
@@ -1199,6 +1217,12 @@ export const strings = {
     saveLocation: '저장 위치',
     setAutoSave: '모든 문서 자동 저장',
     setAutoSaveDesc: '모든 편집기에서 자동 저장을 기본으로 켭니다. 개별 창에서는 끌 수 있습니다.',
+    setAnalytics: '익명 사용 통계 보내기',
+    setAnalyticsDesc:
+      '기본적으로 켜져 있으며 설정 → 일반에서 언제든 끌 수 있습니다. Google Analytics 4를 사용하며 Google은 공인 IP 주소와 전송 메타데이터를 수신하지만 문서 내용이나 파일 이름은 수집하지 않습니다.',
+    setAiPanelSide: 'AI 사이드바 위치',
+    aiPanelSideLeft: '왼쪽',
+    aiPanelSideRight: '오른쪽',
     setAiFontSize: 'AI 패널 글자 크기',
     aiFontSizeDefault: '기본',
     aiFontSizeLarge: '크게',
@@ -1561,6 +1585,12 @@ export const strings = {
     setAutoSave: 'Enregistrer automatiquement tous les documents',
     setAutoSaveDesc:
       "Active l'enregistrement automatique par défaut dans chaque éditeur. Vous pouvez toujours le désactiver pour une fenêtre.",
+    setAnalytics: "Envoyer des statistiques d'utilisation anonymes",
+    setAnalyticsDesc:
+      'Activé par défaut et désactivable dans Paramètres → Général. Utilise Google Analytics 4 ; Google reçoit votre adresse IP publique et les métadonnées de transport, mais jamais le contenu des documents ni les noms de fichiers.',
+    setAiPanelSide: 'Position de la barre latérale IA',
+    aiPanelSideLeft: 'Gauche',
+    aiPanelSideRight: 'Droite',
     setAiFontSize: 'Taille du texte du panneau IA',
     aiFontSizeDefault: 'Par défaut',
     aiFontSizeLarge: 'Grande',
@@ -1934,6 +1964,12 @@ export const strings = {
     setAutoSave: 'Alle Dokumente automatisch speichern',
     setAutoSaveDesc:
       'Aktiviert AutoSave standardmäßig in jedem Editor. Für ein einzelnes Fenster kann es weiterhin ausgeschaltet werden.',
+    setAnalytics: 'Anonyme Nutzungsstatistiken senden',
+    setAnalyticsDesc:
+      'Standardmäßig aktiviert und unter Einstellungen → Allgemein deaktivierbar. Verwendet Google Analytics 4; Google erhält Ihre öffentliche IP-Adresse und Transportmetadaten, aber keine Dokumentinhalte oder Dateinamen.',
+    setAiPanelSide: 'Position der KI-Seitenleiste',
+    aiPanelSideLeft: 'Links',
+    aiPanelSideRight: 'Rechts',
     setAiFontSize: 'Textgröße im KI-Bereich',
     aiFontSizeDefault: 'Standard',
     aiFontSizeLarge: 'Groß',
@@ -2306,6 +2342,12 @@ export const strings = {
     setAutoSave: 'Guardar automáticamente todos los documentos',
     setAutoSaveDesc:
       'Activa el autoguardado de forma predeterminada en todos los editores. Aún puedes desactivarlo en una ventana concreta.',
+    setAnalytics: 'Enviar estadísticas de uso anónimas',
+    setAnalyticsDesc:
+      'Activado de forma predeterminada y desactivable en Configuración → General. Usa Google Analytics 4; Google recibe tu IP pública y metadatos de transporte, pero nunca el contenido de documentos ni los nombres de archivo.',
+    setAiPanelSide: 'Posición de la barra lateral de IA',
+    aiPanelSideLeft: 'Izquierda',
+    aiPanelSideRight: 'Derecha',
     setAiFontSize: 'Tamaño del texto del panel de IA',
     aiFontSizeDefault: 'Predeterminado',
     aiFontSizeLarge: 'Grande',
@@ -2669,6 +2711,12 @@ export const strings = {
     saveLocation: 'ตำแหน่งบันทึก',
     setAutoSave: 'บันทึกอัตโนมัติทุกเอกสาร',
     setAutoSaveDesc: 'เปิดบันทึกอัตโนมัติเป็นค่าเริ่มต้นในทุกตัวแก้ไข คุณยังปิดได้ในแต่ละหน้าต่าง',
+    setAnalytics: 'ส่งสถิติการใช้งานแบบไม่ระบุตัวตน',
+    setAnalyticsDesc:
+      'เปิดใช้งานเป็นค่าเริ่มต้นและปิดได้ทุกเมื่อใน การตั้งค่า → ทั่วไป ใช้ Google Analytics 4 โดย Google จะได้รับ IP สาธารณะและข้อมูลเมตาการรับส่งข้อมูล แต่จะไม่เก็บเนื้อหาเอกสารหรือชื่อไฟล์',
+    setAiPanelSide: 'ตำแหน่งแถบด้านข้าง AI',
+    aiPanelSideLeft: 'ซ้าย',
+    aiPanelSideRight: 'ขวา',
     setAiFontSize: 'ขนาดตัวอักษรในแผง AI',
     aiFontSizeDefault: 'ค่าเริ่มต้น',
     aiFontSizeLarge: 'ใหญ่',
@@ -3027,6 +3075,12 @@ export const strings = {
     setAutoSave: 'Simpan otomatis semua dokumen',
     setAutoSaveDesc:
       'Aktifkan Simpan Otomatis secara default di setiap editor. Anda masih dapat menonaktifkannya untuk satu jendela.',
+    setAnalytics: 'Kirim statistik penggunaan anonim',
+    setAnalyticsDesc:
+      'Aktif secara default dan dapat dimatikan di Pengaturan → Umum. Menggunakan Google Analytics 4; Google menerima IP publik dan metadata transport Anda, tetapi tidak pernah mengumpulkan isi dokumen atau nama file.',
+    setAiPanelSide: 'Posisi bilah samping AI',
+    aiPanelSideLeft: 'Kiri',
+    aiPanelSideRight: 'Kanan',
     setAiFontSize: 'Ukuran teks panel AI',
     aiFontSizeDefault: 'Bawaan',
     aiFontSizeLarge: 'Besar',
@@ -3389,6 +3443,12 @@ export const strings = {
     setAutoSave: 'Автосохранение всех документов',
     setAutoSaveDesc:
       'Включает автосохранение по умолчанию во всех редакторах. Его по-прежнему можно выключить для отдельного окна.',
+    setAnalytics: 'Отправлять анонимную статистику использования',
+    setAnalyticsDesc:
+      'Включено по умолчанию и отключается в Настройки → Общие. Используется Google Analytics 4; Google получает публичный IP и транспортные метаданные, но не содержимое документов и не имена файлов.',
+    setAiPanelSide: 'Положение боковой панели ИИ',
+    aiPanelSideLeft: 'Слева',
+    aiPanelSideRight: 'Справа',
     setAiFontSize: 'Размер текста панели ИИ',
     aiFontSizeDefault: 'По умолчанию',
     aiFontSizeLarge: 'Крупный',
@@ -3751,6 +3811,12 @@ export const strings = {
     setAutoSave: 'حفظ جميع المستندات تلقائيًا',
     setAutoSaveDesc:
       'تشغيل الحفظ التلقائي افتراضيًا في كل محرر. لا يزال بإمكانك إيقافه لنافذة واحدة.',
+    setAnalytics: 'إرسال إحصاءات استخدام مجهولة الهوية',
+    setAnalyticsDesc:
+      'مفعّل افتراضيًا ويمكن إيقافه في الإعدادات ← عام. يستخدم Google Analytics 4؛ تتلقى Google عنوان IP العام وبيانات النقل، ولكن لا يتم جمع محتوى المستندات أو أسماء الملفات.',
+    setAiPanelSide: 'موضع الشريط الجانبي للذكاء الاصطناعي',
+    aiPanelSideLeft: 'اليسار',
+    aiPanelSideRight: 'اليمين',
     setAiFontSize: 'حجم نص لوحة الذكاء الاصطناعي',
     aiFontSizeDefault: 'افتراضي',
     aiFontSizeLarge: 'كبير',
@@ -4102,6 +4168,12 @@ export const strings = {
     setAutoSave: 'Salvar automaticamente todos os documentos',
     setAutoSaveDesc:
       'Ativa o salvamento automático por padrão em todos os editores. Você ainda pode desativá-lo em uma janela específica.',
+    setAnalytics: 'Enviar estatísticas de uso anônimas',
+    setAnalyticsDesc:
+      'Ativado por padrão e pode ser desativado em Configurações → Geral. Usa o Google Analytics 4; o Google recebe seu IP público e metadados de transporte, mas nunca o conteúdo dos documentos ou nomes de arquivos.',
+    setAiPanelSide: 'Posição da barra lateral de IA',
+    aiPanelSideLeft: 'Esquerda',
+    aiPanelSideRight: 'Direita',
     setAiFontSize: 'Tamanho do texto do painel de IA',
     aiFontSizeDefault: 'Padrão',
     aiFontSizeLarge: 'Grande',
@@ -4462,6 +4534,12 @@ export const strings = {
     setAutoSave: 'Salva automaticamente tutti i documenti',
     setAutoSaveDesc:
       'Attiva il salvataggio automatico per impostazione predefinita in ogni editor. Puoi comunque disattivarlo per una singola finestra.',
+    setAnalytics: 'Invia statistiche di utilizzo anonime',
+    setAnalyticsDesc:
+      "Attivo per impostazione predefinita e disattivabile in Impostazioni → Generali. Utilizza Google Analytics 4; Google riceve l'IP pubblico e i metadati di trasporto, ma mai contenuti o nomi dei file.",
+    setAiPanelSide: 'Posizione della barra laterale IA',
+    aiPanelSideLeft: 'Sinistra',
+    aiPanelSideRight: 'Destra',
     setAiFontSize: 'Dimensione del testo del pannello IA',
     aiFontSizeDefault: 'Predefinita',
     aiFontSizeLarge: 'Grande',
@@ -4820,6 +4898,12 @@ export const strings = {
     setAutoSave: 'Automatycznie zapisuj wszystkie dokumenty',
     setAutoSaveDesc:
       'Włącza autozapis domyślnie w każdym edytorze. Nadal możesz go wyłączyć dla pojedynczego okna.',
+    setAnalytics: 'Wysyłaj anonimowe statystyki użytkowania',
+    setAnalyticsDesc:
+      'Domyślnie włączone; można wyłączyć w Ustawienia → Ogólne. Korzysta z Google Analytics 4; Google otrzymuje publiczny adres IP i metadane transportowe, ale nigdy treść dokumentów ani nazwy plików.',
+    setAiPanelSide: 'Położenie panelu bocznego AI',
+    aiPanelSideLeft: 'Lewa',
+    aiPanelSideRight: 'Prawa',
     setAiFontSize: 'Rozmiar tekstu panelu AI',
     aiFontSizeDefault: 'Domyślny',
     aiFontSizeLarge: 'Duży',
@@ -5378,6 +5462,9 @@ export const strings = {
     setAutoSave: 'Automaticky ukládat všechny dokumenty',
     setAutoSaveDesc:
       'Zapne automatické ukládání ve všech editorech jako výchozí. Pro jednotlivé okno ho lze stále vypnout.',
+    setAiPanelSide: 'Pozice postranního panelu AI',
+    aiPanelSideLeft: 'Vlevo',
+    aiPanelSideRight: 'Vpravo',
     setAiFontSize: 'Velikost textu panelu AI',
     aiFontSizeDefault: 'Výchozí',
     aiFontSizeLarge: 'Velké',
@@ -5523,6 +5610,12 @@ export const strings = {
     setAutoSave: 'Alle documenten automatisch opslaan',
     setAutoSaveDesc:
       'Zet automatisch opslaan standaard aan in elke editor. Je kunt het nog steeds uitschakelen voor één venster.',
+    setAnalytics: 'Anonieme gebruiksstatistieken verzenden',
+    setAnalyticsDesc:
+      'Standaard ingeschakeld en uit te schakelen via Instellingen → Algemeen. Gebruikt Google Analytics 4; Google ontvangt uw openbare IP en transportmetadata, maar nooit documentinhoud of bestandsnamen.',
+    setAiPanelSide: 'Positie AI-zijbalk',
+    aiPanelSideLeft: 'Links',
+    aiPanelSideRight: 'Rechts',
     setAiFontSize: 'Tekstgrootte AI-paneel',
     aiFontSizeDefault: 'Standaard',
     aiFontSizeLarge: 'Groot',
@@ -5879,6 +5972,12 @@ export const strings = {
     setAutoSave: 'Simpan automatik semua dokumen',
     setAutoSaveDesc:
       'Hidupkan Simpan Automatik secara lalai dalam setiap editor. Anda masih boleh mematikannya untuk satu tetingkap.',
+    setAnalytics: 'Hantar statistik penggunaan tanpa nama',
+    setAnalyticsDesc:
+      'Diaktifkan secara lalai dan boleh dimatikan di Tetapan → Umum. Menggunakan Google Analytics 4; Google menerima IP awam dan metadata pengangkutan, tetapi tidak pernah kandungan dokumen atau nama fail.',
+    setAiPanelSide: 'Kedudukan bar sisi AI',
+    aiPanelSideLeft: 'Kiri',
+    aiPanelSideRight: 'Kanan',
     setAiFontSize: 'Saiz teks panel AI',
     aiFontSizeDefault: 'Lalai',
     aiFontSizeLarge: 'Besar',
@@ -6235,6 +6334,12 @@ export const strings = {
     saveLocation: 'מיקום שמירה',
     setAutoSave: 'שמירה אוטומטית של כל המסמכים',
     setAutoSaveDesc: 'מפעיל שמירה אוטומטית כברירת מחדל בכל עורך. עדיין אפשר לכבות אותה בחלון בודד.',
+    setAnalytics: 'שליחת נתוני שימוש אנונימיים',
+    setAnalyticsDesc:
+      'מופעל כברירת מחדל וניתן לכיבוי בהגדרות ← כללי. משתמש ב-Google Analytics 4; Google מקבלת IP ציבורי ומטא-נתוני תעבורה, אך לא תוכן מסמכים או שמות קבצים.',
+    setAiPanelSide: 'מיקום סרגל הצד של הבינה המלאכותית',
+    aiPanelSideLeft: 'שמאל',
+    aiPanelSideRight: 'ימין',
     setAiFontSize: 'גודל הטקסט בחלונית ה-AI',
     aiFontSizeDefault: 'ברירת מחדל',
     aiFontSizeLarge: 'גדול',
@@ -6579,6 +6684,12 @@ export const strings = {
     setAutoSave: 'सभी दस्तावेज़ स्वतः सहेजें',
     setAutoSaveDesc:
       'हर संपादक में स्वतः सहेजना डिफ़ॉल्ट रूप से चालू करता है। आप इसे किसी एक विंडो के लिए अब भी बंद कर सकते हैं।',
+    setAnalytics: 'गुमनाम उपयोग आँकड़े भेजें',
+    setAnalyticsDesc:
+      'डिफ़ॉल्ट रूप से चालू; सेटिंग्स → सामान्य में बंद किया जा सकता है। Google Analytics 4 का उपयोग होता है; Google को सार्वजनिक IP और ट्रांसपोर्ट मेटाडेटा मिलता है, लेकिन दस्तावेज़ सामग्री या फ़ाइल नाम नहीं।',
+    setAiPanelSide: 'AI साइडबार की स्थिति',
+    aiPanelSideLeft: 'बाईं ओर',
+    aiPanelSideRight: 'दाईं ओर',
     setAiFontSize: 'AI पैनल का टेक्स्ट आकार',
     aiFontSizeDefault: 'डिफ़ॉल्ट',
     aiFontSizeLarge: 'बड़ा',
@@ -6929,6 +7040,12 @@ export const strings = {
     saveLocation: '預設儲存位置',
     setAutoSave: '所有文件自動儲存',
     setAutoSaveDesc: '在每個編輯器中預設開啟自動儲存，仍可在單一視窗中關閉。',
+    setAnalytics: '傳送匿名使用統計',
+    setAnalyticsDesc:
+      '此功能預設開啟，可隨時在「設定 → 一般」中關閉。使用 Google Analytics 4；Google 會接收您的公開 IP 位址和傳輸中繼資料，但絕不收集文件內容或檔案名稱。',
+    setAiPanelSide: 'AI 側邊欄位置',
+    aiPanelSideLeft: '左側',
+    aiPanelSideRight: '右側',
     setAiFontSize: 'AI 面板文字大小',
     aiFontSizeDefault: '預設',
     aiFontSizeLarge: '大',

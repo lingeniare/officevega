@@ -2,7 +2,8 @@ import { z } from 'zod'
 import { createFileViaCli } from '../headless-cli'
 import { resolveOutputPath } from './document-tools'
 import { generateExtension } from './formats'
-import type { FamilyDriver, SessionHost } from './session-tools'
+import type { FamilyDriver, SessionHost, TargetResolver } from './session-tools'
+import { contentTarget } from './session-tools'
 import type { McpToolDefinition } from '../mcp-server'
 import type { CliRunner } from '../cli-runner'
 
@@ -32,6 +33,13 @@ export interface SheetsToolDeps {
   sheets?: SheetsControl
   /** the bundled vegaoffice CLI, used by the headless tool */
   cli?: CliRunner
+  /**
+   * Resolve a caller-supplied document reference (tab id or path) to the
+   * webContents of that open tab, so the grid tools can edit a workbook the
+   * *user* has open rather than only the session's own blank one. Absent in
+   * headless/unit runs, where a `document` argument is refused.
+   */
+  resolveTarget?: TargetResolver
 }
 
 /**
@@ -51,6 +59,8 @@ export interface SheetsControl {
 }
 
 const XLSX_EXT = `.${generateExtension('xlsx')}`
+// same ceiling as the built-in AI's read_cells
+const MAX_READ_ADDRESSES = 100
 
 /** the headless tool: a row matrix -> xlsx through the bundled CLI */
 function createHeadlessXlsxTool(deps: SheetsToolDeps): McpToolDefinition {
@@ -151,32 +161,50 @@ function createGridContentTools(deps: SheetsToolDeps, host: SessionHost): McpToo
   const sheets = deps.sheets
   if (!sheets) return []
 
-  const requireActive = (): number => host.require('xlsx')
+  const target = contentTarget(host, deps.resolveTarget, 'xlsx')
+  const documentField = z
+    .string()
+    .optional()
+    .describe(
+      "tab id or path of an open spreadsheet to edit instead of the session's own tab " +
+        '(from open_documents {action:"list"}); the edit lands in that live document, and a ' +
+        'mutating tool switches the UI to that tab first so the user sees it happen',
+    )
 
   return [
     {
       name: 'read_sheet',
       description:
-        'Read the visible workbook: sheet names/ids with data extents, and optionally the current ' +
-        'values/formulas of specific cells. Sheet ids and A1 addresses are what apply_sheet_ops targets.',
+        'Read the visible workbook: sheet names with data extents, and optionally the current ' +
+        'values/formulas of specific cells. Address a worksheet by NAME (the CLI convention, and ' +
+        'stable across sessions) or by the sheetId the overview reports.',
       inputSchema: {
         addresses: z
           .array(z.string())
           .optional()
           .describe(
-            'A1 addresses to read (values + formulas); omit to get the workbook overview only',
+            'A1 addresses to read (values + formulas, at most 100 per call); omit to get the workbook overview only',
           ),
+        sheet: z
+          .string()
+          .optional()
+          .describe('worksheet name to read from; default is the active sheet'),
         sheetId: z
           .string()
           .optional()
           .describe(
-            'sheet to read from (id from a previous overview); default is the active sheet',
+            'worksheet id (from a previous overview) as an alternative to `sheet`; a name is preferred',
           ),
+        document: documentField,
       },
       handler: async (args) => {
-        const wc = requireActive()
+        const wc = await target(args.document)
+        if (Array.isArray(args.addresses) && args.addresses.length > MAX_READ_ADDRESSES) {
+          throw new Error(`read at most ${MAX_READ_ADDRESSES} addresses per call`)
+        }
         const payload = {
           ...(Array.isArray(args.addresses) ? { addresses: args.addresses.map(String) } : {}),
+          ...(typeof args.sheet === 'string' ? { sheet: args.sheet } : {}),
           ...(typeof args.sheetId === 'string' ? { sheetId: args.sheetId } : {}),
         }
         return sheets.runCommand(wc, 'read_sheet', payload)
@@ -185,21 +213,29 @@ function createGridContentTools(deps: SheetsToolDeps, host: SessionHost): McpToo
     {
       name: 'apply_sheet_ops',
       description:
-        'Apply workbook DSL operations to the visible spreadsheet (the same vocabulary the built-in ' +
-        'AI uses). Common ops: set_cell, set_formula, clear_cell, set_range, clear_range, fill_range, ' +
-        'copy_range, convert_to_values, insert_rows, delete_rows, insert_cols, delete_cols, add_sheet, ' +
-        'delete_sheet, add_chart, add_table, set_filter, set_hyperlink, add_conditional_format, ' +
-        'set_data_validation, set_note. Addresses are A1 on the target sheet. One batch applies as one ' +
-        'undo step; a failed batch changes nothing. Use read_sheet for sheet ids and current values first.',
+        'Apply workbook DSL operations to the visible spreadsheet (the same vocabulary the CLI ' +
+        'and the built-in AI use). Common ops: set_cell, set_formula, clear_cell, set_range, ' +
+        'clear_range, fill_range, copy_range, convert_to_values, insert_rows, delete_rows, ' +
+        'insert_cols, delete_cols, add_sheet, delete_sheet, add_chart, add_table, set_filter, ' +
+        'set_hyperlink, add_conditional_format, set_data_validation, set_note. Address a worksheet ' +
+        "by NAME with `sheet` (also `sourceSheet`/`targetSheet`) — the CLI's stable vocabulary — " +
+        'or with `sheetId` from read_sheet; a name that is not in the workbook is rejected before ' +
+        'anything applies. The target sheet is brought into view so the user sees the edit. ' +
+        'Addresses are A1. One batch applies as one undo step; a failed batch changes nothing.',
       inputSchema: {
-        ops: z.array(z.any()).describe('array of workbook DSL op objects'),
+        ops: z
+          .array(z.any())
+          .describe(
+            'array of workbook DSL op objects; each op addresses its worksheet with sheet (a name) or sheetId',
+          ),
         dryRun: z
           .boolean()
           .optional()
           .describe('plan the batch and report what would change, without modifying the grid'),
+        document: documentField,
       },
       handler: async (args) => {
-        const wc = requireActive()
+        const wc = await target(args.document, { focus: true })
         if (!Array.isArray(args.ops)) throw new Error('ops must be an array')
         const result = (await sheets.runCommand(wc, 'apply_ops', {
           ops: args.ops,

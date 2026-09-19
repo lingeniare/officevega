@@ -4,6 +4,7 @@ import {
   workbookOperationSchema,
   type WorkbookOperation,
 } from '@genoffice/xlsx-gateway/domain/workbook-dsl'
+import { normalizeSheetRefs, primaryCellOf, primarySheetId, type SheetRef } from './mcp-sheet-refs'
 
 /**
  * Renderer half of the MCP → sheets-grid bridge.
@@ -21,7 +22,10 @@ import {
  * without MCP wiring).
  */
 
-const READY_TIMEOUT_MS = 20_000
+const READY_POLL_MS = 50
+/** after the fast window the poll backs off instead of stopping (see below) */
+const READY_SLOW_POLL_MS = 1_000
+const READY_FAST_WINDOW_MS = 20_000
 
 export interface McpSheetHandlers {
   /** workbook mounted and editable? (drives the ready announce) */
@@ -30,10 +34,17 @@ export interface McpSheetHandlers {
   context: () => unknown
   /** values + formulas for the requested A1 addresses */
   readCells: (addresses: string[], sheetId?: string) => unknown
+  /** the workbook's worksheets, for resolving name-addressed ops */
+  sheets: () => readonly SheetRef[]
   /** apply a workbook DSL batch (planFromOps + applyChangePlan) */
   applyOps: (ops: WorkbookOperation[], dryRun: boolean) => Promise<unknown>
+  /** bring a sheet (and optionally a cell) into view before/after an edit */
+  focusSheet: (sheetId: string, address?: string) => void
   /** save to an explicit absolute path (dialog-free) */
-  saveTo: (path: string, overwrite: boolean) => Promise<{ ok: boolean; path?: string }>
+  saveTo: (
+    path: string,
+    overwrite: boolean,
+  ) => Promise<{ ok: boolean; path?: string; error?: string }>
 }
 
 export function installSheetsMcpBridge(handlers: McpSheetHandlers): () => void {
@@ -44,17 +55,26 @@ export function installSheetsMcpBridge(handlers: McpSheetHandlers): () => void {
   let queue: Promise<void> = Promise.resolve()
   let disposed = false
 
-  const readyTimer = setInterval(() => {
-    if (disposed) {
-      clearInterval(readyTimer)
+  // Announce readiness as soon as the workbook is mounted, then stop polling.
+  //
+  // The poll must never give up permanently: a cold dev start (vite serving the
+  // Univer bundle, the sidecar opening the workbook) can take longer than the
+  // fast window, and once the timer has stopped the tab stays unaddressable
+  // over MCP for the rest of its life — the grid looks perfectly normal in the
+  // UI while every sheet command times out in the shell. Back off instead.
+  let readyTimer: ReturnType<typeof setTimeout> | null = null
+  const mountedAt = performance.now()
+  const announceWhenMounted = (): void => {
+    readyTimer = null
+    if (disposed) return
+    if (handlers.hasWorkbook()) {
+      api.signalMcpReady()
       return
     }
-    if (handlers.hasWorkbook()) {
-      clearInterval(readyTimer)
-      api.signalMcpReady()
-    }
-  }, 50)
-  setTimeout(() => clearInterval(readyTimer), READY_TIMEOUT_MS)
+    const slow = performance.now() - mountedAt > READY_FAST_WINDOW_MS
+    readyTimer = setTimeout(announceWhenMounted, slow ? READY_SLOW_POLL_MS : READY_POLL_MS)
+  }
+  readyTimer = setTimeout(announceWhenMounted, READY_POLL_MS)
 
   const off = api.onMcpCommand((message: McpCommandMessage) => {
     queue = queue.then(() => runCommand(message)).catch(() => undefined)
@@ -62,6 +82,7 @@ export function installSheetsMcpBridge(handlers: McpSheetHandlers): () => void {
 
   return () => {
     disposed = true
+    if (readyTimer !== null) clearTimeout(readyTimer)
     off()
   }
 
@@ -82,6 +103,30 @@ export function installSheetsMcpBridge(handlers: McpSheetHandlers): () => void {
     return `op #${index} (${opName}) is invalid${field ? ` (${field})` : ''}: ${issue.message}${hint}`
   }
 
+  /**
+   * A read's target sheet: the name the caller gave (`sheet`, the CLI's
+   * vocabulary) resolved against the open workbook, else the id it passed.
+   * Ids are session artifacts, so a name that no longer matches fails loudly
+   * instead of reading the wrong sheet.
+   */
+  function resolveReadSheet(
+    name: string | undefined,
+    id: string | undefined,
+  ): { ok: true; sheetId?: string } | { ok: false; error: string } {
+    if (name === undefined) return { ok: true, ...(id === undefined ? {} : { sheetId: id }) }
+    const sheets = handlers.sheets()
+    if (sheets.some((sheet) => sheet.id === name)) return { ok: true, sheetId: name }
+    const match = sheets.find(
+      (sheet) => sheet.name.trim().toLowerCase() === name.trim().toLowerCase(),
+    )
+    if (match) return { ok: true, sheetId: match.id }
+    const known = sheets.length === 0 ? 'none' : sheets.map((sheet) => sheet.name).join(', ')
+    return {
+      ok: false,
+      error: `no worksheet named "${name}" in this workbook (sheets: ${known}); call read_sheet for the current sheets`,
+    }
+  }
+
   async function runCommand(message: McpCommandMessage): Promise<void> {
     const reply = (ok: boolean, result?: unknown, error?: string): void => {
       api.reportMcpResult({
@@ -98,9 +143,16 @@ export function installSheetsMcpBridge(handlers: McpSheetHandlers): () => void {
           const addresses = Array.isArray(payload.addresses)
             ? payload.addresses.filter((a): a is string => typeof a === 'string')
             : []
-          const sheetId = typeof payload.sheetId === 'string' ? payload.sheetId : undefined
+          const resolved = resolveReadSheet(
+            typeof payload.sheet === 'string' ? payload.sheet : undefined,
+            typeof payload.sheetId === 'string' ? payload.sheetId : undefined,
+          )
+          if (!resolved.ok) {
+            reply(false, undefined, resolved.error)
+            return
+          }
           if (addresses.length > 0) {
-            reply(true, { cells: handlers.readCells(addresses, sheetId) })
+            reply(true, { cells: handlers.readCells(addresses, resolved.sheetId) })
           } else {
             reply(true, { context: handlers.context() })
           }
@@ -112,14 +164,24 @@ export function installSheetsMcpBridge(handlers: McpSheetHandlers): () => void {
             reply(false, undefined, 'ops must be a non-empty array')
             return
           }
+          // Worksheet names are the stable reference (the CLI's vocabulary);
+          // ids remain accepted. Resolved here, in the renderer, because only
+          // this process knows the open workbook's sheets.
+          const named = normalizeSheetRefs(ops, handlers.sheets())
+          if (!named.ok) {
+            reply(false, undefined, named.error)
+            return
+          }
           // Same validation the built-in AI path applies (ai/tools.ts): without
           // it a missing sheetId surfaces later as a cryptic
           // "Unknown sheet: undefined" from the planner instead of naming the op.
-          const parsed = z.array(workbookOperationSchema).safeParse(ops)
+          const parsed = z.array(workbookOperationSchema).safeParse(named.ops)
           if (!parsed.success) {
-            reply(false, undefined, describeOpError(ops, parsed.error))
+            reply(false, undefined, describeOpError(named.ops, parsed.error))
             return
           }
+          const sheetId = primarySheetId(parsed.data)
+          if (sheetId !== undefined) handlers.focusSheet(sheetId, primaryCellOf(parsed.data))
           reply(true, await handlers.applyOps(parsed.data, payload.dryRun === true))
           return
         }
@@ -130,7 +192,13 @@ export function installSheetsMcpBridge(handlers: McpSheetHandlers): () => void {
             reply(false, undefined, 'save_sheet needs an absolute path')
             return
           }
-          reply(true, await handlers.saveTo(path, overwrite))
+          const saved = await handlers.saveTo(path, overwrite)
+          // a refused save must surface as an error so the agent keeps its session and can retry
+          if (!saved.ok) {
+            reply(false, undefined, saved.error ?? 'the spreadsheet could not be saved')
+            return
+          }
+          reply(true, saved)
           return
         }
         default:

@@ -54,7 +54,6 @@ import {
   SAVE_EDITS_CHUNK_JSON_MAX,
 } from '../shared/ipc-channels'
 import { installDropOpenBridge } from '@genoffice/electron-utils/drop-open'
-import { installFilesPaneBridge } from '@genoffice/electron-utils/files-pane-bridge'
 
 const desktopApi: DesktopApi = {
   getLanguage: () => ipcRenderer.invoke('app:get-language'),
@@ -79,6 +78,7 @@ const desktopApi: DesktopApi = {
     return () => ipcRenderer.removeListener('app:auto-save-default-changed', listener)
   },
   getAiPanelPrefs: () => ipcRenderer.invoke('app:get-ai-panel-prefs'),
+  setAiPanelPrefs: (patch) => ipcRenderer.invoke('app:set-ai-panel-prefs', patch),
   onAiPanelPrefsChanged: (handler) => {
     const listener = (_event: Electron.IpcRendererEvent, prefs: AiPanelPrefs) => handler(prefs)
     ipcRenderer.on('app:ai-panel-prefs-changed', listener)
@@ -696,8 +696,6 @@ if (process.env.VEGAOFFICE_DEBUG_HOOKS === '1') {
 
 // open documents dragged from the OS onto this tab as a new shell tab
 installDropOpenBridge()
-// folder tree over the default save folder (Files pane)
-installFilesPaneBridge()
 
 function parseWorkbookFile(input: unknown): WorkbookFile {
   if (!isRecord(input)) throw new Error('Invalid workbook response.')

@@ -99,6 +99,17 @@ outline entry and the palette), `deck_build` and `deck_replace`
 command line's staged flow, so a deck started from either side can be finished
 from the other.
 
+`vegaoffice mcp --http <port> [--host <addr>] [--token <secret>]` serves the
+same tools over Streamable HTTP for clients on other machines (`src/mcp/http.ts`).
+Files travel with the calls: `PUT /files/<name>` uploads one and returns a URL,
+every path parameter also takes an http(s) URL (fetched into the session's
+scratch directory, `src/mcp/files.ts`), and a tool that writes a file returns
+`output_url` plus the bytes as an embedded resource when small or a
+`resource_link` otherwise (`src/mcp/remote.ts`). Each session has its own
+scratch directory, working directory and deck state; `open` is not registered;
+with `VEGAOFFICE_ALLOWED_ROOTS` unset the tools are confined to the server's
+file store.
+
 ## Putting vegaoffice on the PATH
 
 - **macOS**: the app tries to symlink `/usr/local/bin/vegaoffice` (or `/opt/homebrew/bin/vegaoffice`) on every launch until one succeeds. If neither directory is writable it stays silent; run `vegaoffice install-cli` from the launcher, or `sudo mkdir -p /usr/local/bin && sudo ln -sf "/Applications/VegaOffice.app/Contents/Resources/cli/vegaoffice" /usr/local/bin/vegaoffice`.

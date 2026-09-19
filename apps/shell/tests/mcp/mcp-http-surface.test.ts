@@ -9,6 +9,7 @@ import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/
 import { parseDocx } from '@genoffice/docx-engine'
 import { openPptx } from '@genoffice/pptx-engine'
 import JSZip from 'jszip'
+import { PDFDocument, StandardFonts } from 'pdf-lib'
 import {
   applyMcpSettings,
   configureMcpRuntime,
@@ -39,10 +40,12 @@ const DEFAULT_NAMES = [
   'create_session',
   'get_app_info',
   'insert_content',
+  'open_documents',
   'open_in_vegaoffice',
   'read_deck',
   'read_document',
   'read_docx',
+  'read_pdf',
   'read_sheet',
   'replace_blocks',
   'save_session',
@@ -228,7 +231,7 @@ describe('MCP surface over Streamable HTTP (/mcp)', () => {
       // ── 1. handshake + tools/list ──────────────────────────────────────────
       const listed = (await client.listTools()).tools.map((t) => t.name).sort()
       expect(listed).toEqual(DEFAULT_NAMES)
-      expect(mcpStatus().capabilities).toEqual(['docs', 'slides', 'sheets'])
+      expect(mcpStatus().capabilities).toEqual(['docs', 'slides', 'sheets', 'pdf'])
 
       // ── 2. get_app_info: editor matrix + exposed formats ──────────────────
       const info = await call(client, 'get_app_info', {})
@@ -379,6 +382,32 @@ describe('MCP surface over Streamable HTTP (/mcp)', () => {
       const refusedOpen = await call(client, 'open_in_vegaoffice', { path: notOpenable })
       expect(refusedOpen.isError).toBe(true)
       expect(refusedOpen.text).toMatch(/could not open/)
+
+      // ── 9. read_pdf: real pdfium extraction, session-free ────────────────
+      const pdfPath = join(workDir, 'handout.pdf')
+      const pdfDoc = await PDFDocument.create()
+      pdfDoc.setTitle('Handout')
+      const font = await pdfDoc.embedFont(StandardFonts.Helvetica)
+      const pdfPage = pdfDoc.addPage([400, 300])
+      pdfPage.drawText('Read me through MCP', { x: 40, y: 200, size: 14, font })
+      pdfDoc.addPage([400, 300]) // scanned-page stand-in: no text layer
+      await writeFile(pdfPath, await pdfDoc.save())
+      const pdfRead = await call(client, 'read_pdf', { path: pdfPath })
+      expect(pdfRead.isError).toBe(false)
+      const pdfJson = pdfRead.json as {
+        pageCount: number
+        info: { title?: string }
+        pages: Array<{ page: number; text: string; hasTextLayer: boolean }>
+      }
+      expect(pdfJson.pageCount).toBe(2)
+      expect(pdfJson.info.title).toBe('Handout')
+      expect(pdfJson.pages[0]!.text).toContain('Read me through MCP')
+      expect(pdfJson.pages[1]!.hasTextLayer).toBe(false)
+      const pdfPaged = await call(client, 'read_pdf', { path: pdfPath, pages: '2' })
+      expect(pdfPaged.isError).toBe(false)
+      expect(
+        (pdfPaged.json as { pages: Array<{ page: number }> }).pages.map((p) => p.page),
+      ).toEqual([2])
     } finally {
       await client.close()
     }
@@ -524,6 +553,13 @@ describe('MCP surface over Streamable HTTP (/mcp)', () => {
     )
     expect(badSession.status).toBe(404)
     console.log('[bad session]', badSession.status, badSession.body)
+
+    // a malformed body is the caller's mistake: answer a JSON-RPC parse error,
+    // not a 500 that reads as a server fault
+    const malformed = await rawText(port, 'POST', '/mcp', '{"jsonrpc":"2.0","id":5,"method":')
+    expect(malformed.status).toBe(400)
+    expect(malformed.body).toContain('-32700')
+    console.log('[malformed body]', malformed.status, malformed.body)
   })
 
   it('isolates the active session between two concurrent clients', async () => {
@@ -600,6 +636,38 @@ function raw(
     )
     req.on('error', reject)
     if (data) req.write(data)
+    req.end()
+  })
+}
+
+/** post a raw body verbatim (for malformed-JSON cases the helpers cannot express) */
+function rawText(
+  p: number,
+  method: 'GET' | 'POST',
+  path: string,
+  body: string,
+): Promise<{ status: number; body: string }> {
+  return new Promise((resolve, reject) => {
+    const req = httpRequest(
+      {
+        hostname: '127.0.0.1',
+        port: p,
+        path,
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(body),
+          Accept: 'application/json, text/event-stream',
+        },
+      },
+      (res) => {
+        let text = ''
+        res.on('data', (c) => (text += c))
+        res.on('end', () => resolve({ status: res.statusCode ?? 0, body: text }))
+      },
+    )
+    req.on('error', reject)
+    req.write(body)
     req.end()
   })
 }
