@@ -4371,6 +4371,14 @@ export function setDocsExtraFileMenuItems(items: MenuItemConstructorOptions[]): 
   extraFileMenuItems = items
 }
 
+/** shell-injected top-level items appended after Help (e.g. Settings…); same
+ * rebuild persistence as extraFileMenuItems */
+let extraAppMenuItems: MenuItemConstructorOptions[] = []
+
+export function setDocsExtraAppMenuItems(items: MenuItemConstructorOptions[]): void {
+  extraAppMenuItems = items
+}
+
 /** Shell-installed gate: inside the shell the docs menu may only take over the
  * application menu while a docs tab is active — internal rebuilds (pushRecent
  * after opening/saving any file) must not clobber another tab's menu.
@@ -4605,6 +4613,7 @@ export function buildDocsMenu(): void {
         aboutMenuItem(appMenuLabels(getUiLang())),
       ],
     },
+    ...extraAppMenuItems,
   ]
 
   Menu.setApplicationMenu(Menu.buildFromTemplate(template))

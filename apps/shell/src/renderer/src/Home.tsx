@@ -742,6 +742,12 @@ function AccountEntry({
     return () => clearInterval(timer)
   }, [waiting, loginNonce])
 
+  // the app menu's Settings… item: main activates the home tab, then pushes
+  // the event so the modal opens here (it lives in this component)
+  useEffect(() => {
+    return window.aiOffice?.onOpenSettings?.(() => setSettingsOpen(true))
+  }, [])
+
   // sign-in/out done elsewhere (a chat panel's login button, another view):
   // pushed by the AI IPC layer so this chip never waits for a click/poll
   useEffect(() => {

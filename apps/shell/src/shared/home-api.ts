@@ -208,6 +208,8 @@ export interface HomeApi {
   pickDefaultSaveDir(): Promise<string | null>
   /** theme switched anywhere (broadcast from the main process) */
   onThemeChanged(handler: (theme: UiTheme) => void): () => void
+  /** the app menu's Settings item: main activates the home tab, then pushes this */
+  onOpenSettings(handler: () => void): () => void
   /** open the VEGA keys/deposit dashboard in the default browser */
   openCreditUsage(): Promise<void>
   /** open the public GitHub repository in the default browser */
@@ -431,6 +433,7 @@ export const HOME_CHANNELS = {
   setAiPanelPrefs: 'home:set-ai-panel-prefs',
   getDefaultSaveDir: 'home:get-default-save-dir',
   pickDefaultSaveDir: 'home:pick-default-save-dir',
+  openSettings: 'home:open-settings',
   openCreditUsage: 'home:open-credit-usage',
   openGitHubRepo: 'home:open-github-repo',
   githubStars: 'home:github-stars',

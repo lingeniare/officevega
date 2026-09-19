@@ -109,6 +109,7 @@ import {
   registerDocsIpc,
   exportDocsHeadless,
   setDocsExtraFileMenuItems,
+  setDocsExtraAppMenuItems,
   setDocsMenuGate,
   setDocsShellHooks,
   createAiDocument,
@@ -155,6 +156,7 @@ import {
   sheetsFileRenamed,
   setSheetsCloseTabHook,
   setSheetsExtraFileMenuItems,
+  setSheetsExtraAppMenuItems,
   setSheetsShellWindow,
   setSheetsWorkbookOpenedHook,
   startSheetsCaptureServer,
@@ -169,6 +171,7 @@ import {
   requestSlidesClose,
   setSlidesCloseTabHook,
   setSlidesExtraFileMenuItems,
+  setSlidesExtraAppMenuItems,
   setSlidesOpenedHook,
   setSlidesShellWindow,
   setSlidesShowBleed,
@@ -563,6 +566,7 @@ const tMain = createI18n({
     menuWindow: '窗口',
     menuHome: '首页',
     backToHome: '返回首页',
+    menuSettings: '设置…',
     dlgOpenTitle: '打开文件',
     filterSupported: '支持的文件',
     filterWord: 'Word 文档',
@@ -644,6 +648,7 @@ const tMain = createI18n({
     menuWindow: 'Window',
     menuHome: 'Home',
     backToHome: 'Back to Home',
+    menuSettings: 'Settings…',
     dlgOpenTitle: 'Open File',
     filterSupported: 'Supported Files',
     filterWord: 'Word Documents',
@@ -733,6 +738,7 @@ const tMain = createI18n({
     menuWindow: 'ウィンドウ',
     menuHome: 'ホーム',
     backToHome: 'ホームに戻る',
+    menuSettings: '設定…',
     dlgOpenTitle: 'ファイルを開く',
     filterSupported: '対応ファイル',
     filterWord: 'Word 文書',
@@ -822,6 +828,7 @@ const tMain = createI18n({
     menuWindow: '창',
     menuHome: '홈',
     backToHome: '홈으로 돌아가기',
+    menuSettings: '설정…',
     dlgOpenTitle: '파일 열기',
     filterSupported: '지원되는 파일',
     filterWord: 'Word 문서',
@@ -910,6 +917,7 @@ const tMain = createI18n({
     menuWindow: 'Fenêtre',
     menuHome: 'Accueil',
     backToHome: "Retour à l'accueil",
+    menuSettings: 'Paramètres…',
     dlgOpenTitle: 'Ouvrir un fichier',
     filterSupported: 'Fichiers pris en charge',
     filterWord: 'Documents Word',
@@ -1000,6 +1008,7 @@ const tMain = createI18n({
     menuWindow: 'Fenster',
     menuHome: 'Startseite',
     backToHome: 'Zurück zur Startseite',
+    menuSettings: 'Einstellungen…',
     dlgOpenTitle: 'Datei öffnen',
     filterSupported: 'Unterstützte Dateien',
     filterWord: 'Word-Dokumente',
@@ -1090,6 +1099,7 @@ const tMain = createI18n({
     menuWindow: 'Ventana',
     menuHome: 'Inicio',
     backToHome: 'Volver al inicio',
+    menuSettings: 'Configuración…',
     dlgOpenTitle: 'Abrir archivo',
     filterSupported: 'Archivos compatibles',
     filterWord: 'Documentos de Word',
@@ -1180,6 +1190,7 @@ const tMain = createI18n({
     menuWindow: 'หน้าต่าง',
     menuHome: 'หน้าแรก',
     backToHome: 'กลับไปหน้าแรก',
+    menuSettings: 'การตั้งค่า…',
     dlgOpenTitle: 'เปิดไฟล์',
     filterSupported: 'ไฟล์ที่รองรับ',
     filterWord: 'เอกสาร Word',
@@ -1266,6 +1277,7 @@ const tMain = createI18n({
     menuWindow: 'Jendela',
     menuHome: 'Beranda',
     backToHome: 'Kembali ke Beranda',
+    menuSettings: 'Pengaturan…',
     dlgOpenTitle: 'Buka File',
     filterSupported: 'File yang Didukung',
     filterWord: 'Dokumen Word',
@@ -1356,6 +1368,7 @@ const tMain = createI18n({
     menuWindow: 'Окно',
     menuHome: 'Главная',
     backToHome: 'Вернуться на главную',
+    menuSettings: 'Настройки…',
     dlgOpenTitle: 'Открытие файла',
     filterSupported: 'Поддерживаемые файлы',
     filterWord: 'Документы Word',
@@ -1446,6 +1459,7 @@ const tMain = createI18n({
     menuWindow: 'نافذة',
     menuHome: 'الصفحة الرئيسية',
     backToHome: 'العودة إلى الصفحة الرئيسية',
+    menuSettings: 'الإعدادات…',
     dlgOpenTitle: 'فتح ملف',
     filterSupported: 'الملفات المدعومة',
     filterWord: 'مستندات Word',
@@ -1532,6 +1546,7 @@ const tMain = createI18n({
     menuWindow: 'Janela',
     menuHome: 'Início',
     backToHome: 'Voltar ao início',
+    menuSettings: 'Configurações…',
     dlgOpenTitle: 'Abrir arquivo',
     filterSupported: 'Arquivos compatíveis',
     filterWord: 'Documentos do Word',
@@ -1622,6 +1637,7 @@ const tMain = createI18n({
     menuWindow: 'Finestra',
     menuHome: 'Home',
     backToHome: 'Torna alla Home',
+    menuSettings: 'Impostazioni…',
     dlgOpenTitle: 'Apri file',
     filterSupported: 'File supportati',
     filterWord: 'Documenti Word',
@@ -1712,6 +1728,7 @@ const tMain = createI18n({
     menuWindow: 'Okno',
     menuHome: 'Strona główna',
     backToHome: 'Wróć do strony głównej',
+    menuSettings: 'Ustawienia…',
     dlgOpenTitle: 'Otwieranie pliku',
     filterSupported: 'Obsługiwane pliki',
     filterWord: 'Dokumenty programu Word',
@@ -1802,6 +1819,7 @@ const tMain = createI18n({
     menuWindow: 'Okno',
     menuHome: 'Domů',
     backToHome: 'Zpět na domovskou stránku',
+    menuSettings: 'Nastavení…',
     dlgOpenTitle: 'Otevřít soubor',
     filterSupported: 'Podporované soubory',
     filterWord: 'Dokumenty Word',
@@ -1890,6 +1908,7 @@ const tMain = createI18n({
     menuWindow: 'Venster',
     menuHome: 'Start',
     backToHome: 'Terug naar start',
+    menuSettings: 'Instellingen…',
     dlgOpenTitle: 'Bestand openen',
     filterSupported: 'Ondersteunde bestanden',
     filterWord: 'Word-documenten',
@@ -1980,6 +1999,7 @@ const tMain = createI18n({
     menuWindow: 'Tetingkap',
     menuHome: 'Laman Utama',
     backToHome: 'Kembali ke Laman Utama',
+    menuSettings: 'Tetapan…',
     dlgOpenTitle: 'Buka Fail',
     filterSupported: 'Fail yang Disokong',
     filterWord: 'Dokumen Word',
@@ -2069,6 +2089,7 @@ const tMain = createI18n({
     menuWindow: 'חלון',
     menuHome: 'דף הבית',
     backToHome: 'חזרה לדף הבית',
+    menuSettings: 'הגדרות…',
     dlgOpenTitle: 'פתיחת קובץ',
     filterSupported: 'קבצים נתמכים',
     filterWord: 'מסמכי Word',
@@ -2156,6 +2177,7 @@ const tMain = createI18n({
     menuWindow: 'विंडो',
     menuHome: 'होम',
     backToHome: 'होम पर वापस जाएँ',
+    menuSettings: 'सेटिंग्स…',
     dlgOpenTitle: 'फ़ाइल खोलें',
     filterSupported: 'समर्थित फ़ाइलें',
     filterWord: 'Word दस्तावेज़',
@@ -2246,6 +2268,7 @@ const tMain = createI18n({
     menuWindow: '視窗',
     menuHome: '首頁',
     backToHome: '返回首頁',
+    menuSettings: '設定…',
     dlgOpenTitle: '開啟檔案',
     filterSupported: '支援的檔案',
     filterWord: 'Word 文件',
@@ -3615,7 +3638,6 @@ function registerHomeIpc(): void {
     // 'later' needs no write: the display was already counted by the query
     if (action === 'starred') writeStarPrompt(withResolved(readStarPrompt()))
   })
-
 }
 
 function stringPaths(value: unknown): string[] {
@@ -3765,6 +3787,29 @@ function registerTabsIpc(): void {
 
 // ---- home menu ----
 
+/** Menu → Settings…: the modal lives in the home renderer, so the home tab
+ * must be active before the push lands (a just-created window queues the
+ * send on did-finish-load) */
+function openHomeSettings(): void {
+  revealShellWindow()
+  tabManager?.openHomeTab()
+  const wc = shellWindow?.webContents
+  if (!wc) return
+  if (wc.isLoadingMainFrame()) {
+    wc.once('did-finish-load', () => wc.send(HOME_CHANNELS.openSettings))
+  } else {
+    wc.send(HOME_CHANNELS.openSettings)
+  }
+}
+
+/** top-level Settings… entry appended after Help in every shell-built menu:
+ * the tab strip's menu button pops the application menu, so a top-level item
+ * is directly clickable there (and on the macOS menu bar). No accelerator —
+ * CmdOrCtrl+, is the docs editor's subscript chord. */
+function settingsMenuItem(): MenuItemConstructorOptions {
+  return { label: tm('menuSettings'), click: openHomeSettings }
+}
+
 async function openFileViaDialog(): Promise<void> {
   const win = shellWindow ?? BrowserWindow.getFocusedWindow()
   if (!win) return
@@ -3818,6 +3863,7 @@ function buildHomeMenu(): void {
         aboutMenuItem(appMenuLabels(currentLang())),
       ],
     },
+    settingsMenuItem(),
   ]
   Menu.setApplicationMenu(Menu.buildFromTemplate(template))
 }
@@ -3901,6 +3947,7 @@ function buildPdfMenu(): void {
         aboutMenuItem(appMenuLabels(currentLang())),
       ],
     },
+    settingsMenuItem(),
   ]
   Menu.setApplicationMenu(Menu.buildFromTemplate(template))
 }
@@ -3993,6 +4040,7 @@ function buildMarkdownMenu(): void {
         aboutMenuItem(appMenuLabels(currentLang())),
       ],
     },
+    settingsMenuItem(),
   ]
   Menu.setApplicationMenu(Menu.buildFromTemplate(template))
 }
@@ -4085,6 +4133,7 @@ function buildHtmlMenu(): void {
         aboutMenuItem(appMenuLabels(currentLang())),
       ],
     },
+    settingsMenuItem(),
   ]
   Menu.setApplicationMenu(Menu.buildFromTemplate(template))
 }
@@ -4507,7 +4556,9 @@ function openThirdPartyNotices(): Promise<string> {
   return shell.openPath(path)
 }
 
-/** every module's File menu gets a way back to the launcher */
+/** every module's File menu gets a way back to the launcher, and every menu
+ * bar a trailing Settings… entry (the tab strip's menu button pops whatever
+ * menu the active tab installed) */
 function installBackToHomeItems(): void {
   const backToHomeItem: MenuItemConstructorOptions = {
     label: tm('backToHome'),
@@ -4517,6 +4568,10 @@ function installBackToHomeItems(): void {
   setDocsExtraFileMenuItems([backToHomeItem])
   setSheetsExtraFileMenuItems([backToHomeItem])
   setSlidesExtraFileMenuItems([backToHomeItem])
+  const settings = settingsMenuItem()
+  setDocsExtraAppMenuItems([settings])
+  setSheetsExtraAppMenuItems([settings])
+  setSlidesExtraAppMenuItems([settings])
 }
 
 function installDockMenu(): void {

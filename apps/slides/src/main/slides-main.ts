@@ -4577,6 +4577,12 @@ export function setSlidesExtraFileMenuItems(items: Electron.MenuItemConstructorO
   extraFileMenuItems = items
 }
 
+/** shell-injected top-level items appended after Help (e.g. Settings…) */
+let extraAppMenuItems: Electron.MenuItemConstructorOptions[] = []
+export function setSlidesExtraAppMenuItems(items: Electron.MenuItemConstructorOptions[]): void {
+  extraAppMenuItems = items
+}
+
 /** Tab mode: Cmd+W closes the current tab rather than the whole shell window */
 let closeActiveTabHook: (() => void) | null = null
 export function setSlidesCloseTabHook(fn: (() => void) | null): void {
@@ -4660,6 +4666,7 @@ export function buildSlidesMenu(): Menu {
       ],
     },
     helpMenuTemplate(labels),
+    ...extraAppMenuItems,
   ]
   return Menu.buildFromTemplate(template)
 }

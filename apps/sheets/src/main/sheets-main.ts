@@ -4044,6 +4044,13 @@ export function setSheetsExtraFileMenuItems(items: MenuItemConstructorOptions[])
   extraFileMenuItems = items
 }
 
+/** shell-injected top-level items appended after Help (e.g. Settings…) */
+let extraAppMenuItems: MenuItemConstructorOptions[] = []
+
+export function setSheetsExtraAppMenuItems(items: MenuItemConstructorOptions[]): void {
+  extraAppMenuItems = items
+}
+
 /** tab mode: closes the sheets tab instead of the whole shell window (Cmd+W / role:'close') */
 let closeActiveTabHook: (() => void) | null = null
 export function setSheetsCloseTabHook(fn: (() => void) | null): void {
@@ -4133,6 +4140,7 @@ function installApplicationMenu(): void {
       viewMenuTemplate(labels),
       windowMenuTemplate(process.platform, labels),
       helpMenuTemplate(labels),
+      ...extraAppMenuItems,
     ]),
   )
 }
