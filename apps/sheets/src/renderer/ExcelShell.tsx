@@ -1273,7 +1273,7 @@ function Ribbon({
   readonly onRefreshPivot: () => string | null
   readonly onIsSelectionInPivot: () => boolean
 }): React.JSX.Element {
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
   const [fontColor, setFontColor] = useState('#C00000')
   const [fillColor, setFillColor] = useState('#FFF2CC')
   const [borderColor, setBorderColor] = useState('#000000')

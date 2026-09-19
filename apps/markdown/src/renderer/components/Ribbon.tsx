@@ -177,7 +177,7 @@ export function Ribbon({
   onToggleAi,
   onAiPreset,
 }: Props) {
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
   const collapse = useRibbonCollapse('mdapp.ribbonCollapsed')
   const [linkOpen, setLinkOpen] = useState(false)
   const [linkUrl, setLinkUrl] = useState('')

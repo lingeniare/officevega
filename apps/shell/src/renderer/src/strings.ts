@@ -5252,6 +5252,9 @@ export const strings = {
     themeDark: 'Tmavý',
     themeSystem: 'Podle systému',
     saveLocation: 'Umístění pro ukládání',
+    setAnalytics: 'Odesílat anonymní statistiky používání',
+    setAnalyticsDesc:
+      'Ve výchozím nastavení zapnuto, kdykoli lze vypnout v Nastavení → Obecné. Používá Google Analytics 4; Google obdrží vaši veřejnou IP adresu a přenosová metadata, obsah dokumentů ani názvy souborů se však nikdy neshromažďují.',
     settings: 'Nastavení',
     setSecAccount: 'Účet',
     setSecGeneral: 'Obecné',

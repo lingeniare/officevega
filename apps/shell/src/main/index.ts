@@ -4831,8 +4831,6 @@ app.whenReady().then(async () => {
         discard: htmlDiscardPendingAssets,
       },
     }),
-    slidesControl: createSlidesControl({ openBlankTab: () => openBlankSlidesTabForMcp() }),
-    sheetsControl: createSheetsControl({ openBlankTab: () => openBlankSheetsTabForMcp() }),
     // the headless create_*/read_* tools delegate to the bundled vegaoffice CLI
     // (the same engines, no second implementation); it runs on the app's own
     // Node runtime via ELECTRON_RUN_AS_NODE

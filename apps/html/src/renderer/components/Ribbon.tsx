@@ -128,7 +128,7 @@ const TABLE_PICKER_COLS = 10
 const ICON = 20
 
 export function Ribbon(p: Props) {
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
   const collapse = useRibbonCollapse('htmlapp.ribbonCollapsed')
   const [themeOpen, setThemeOpen] = useState(false)
   const themeRef = useRef<HTMLDivElement>(null)
