@@ -6179,7 +6179,7 @@ export default function App() {
         <div className="ribbon-body" data-ribbon-body="">
           {ribbonTab === 'home' && (
             <>
-              {/* ---- VEGA AI (first slot: entry + one-click AI actions, docs parity) ---- */}
+              {/* ---- VEGA (first slot: entry + one-click AI actions, docs parity) ---- */}
               <div className="ribbon-group">
                 <div className="ribbon-group-items">
                   <button
@@ -6190,7 +6190,7 @@ export default function App() {
                     <span className="rb-big-icon">
                       <VegaMark size={26} />
                     </span>
-                    <span>{lang === 'ru' ? 'ВЕГА ИИ' : 'VEGA AI'}</span>
+                    <span>{lang === 'ru' ? 'ВЕГА' : 'VEGA'}</span>
                   </button>
                   <button
                     className="rb-big ai-entry"

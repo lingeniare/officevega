@@ -1,4 +1,4 @@
-import { aiPanelWidthAtPointer, AiPanelSideButton } from '@genoffice/ui'
+import { aiPanelWidthAtPointer } from '@genoffice/ui'
 import React, { useEffect, useRef, useState, useCallback } from 'react'
 import {
   AgentLoop,
@@ -49,6 +49,7 @@ import {
   type AiScopeQuoteData,
 } from '@genoffice/ui'
 import { VegaMark } from '../components/icons'
+import attachIcon from '../assets/attach-icon.png'
 import filePdfIcon from '../assets/file-pdf.png'
 import fileWordIcon from '../assets/file-word.png'
 import fileExcelIcon from '../assets/file-excel.png'
@@ -58,7 +59,7 @@ import fileVideoIcon from '../assets/file-video.png'
 import fileVoiceIcon from '../assets/file-voice.png'
 import fileDocumentIcon from '../assets/file-document.png'
 import fileGeneralIcon from '../assets/file-general.png'
-import { IconNewChat, IconSidebarCollapseLeft } from '../components/icons'
+import { IconSidebarCollapseLeft } from '../components/icons'
 
 interface ToolActivity {
   name: string
@@ -2089,18 +2090,11 @@ export function AiPanel({
         onPointerDown={startResize}
         role="separator"
         aria-orientation="vertical"
-        aria-label={lang === 'ru' ? 'ВЕГА ИИ' : 'VEGA AI'}
+        aria-label={lang === 'ru' ? 'ВЕГА' : 'VEGA'}
       />
       <div className="ai-panel-header">
-        <span className="ai-panel-title">
-          <VegaMark size={22} />
-          {t('aiPanelTitle')}
-        </span>
+        <span className="ai-panel-title">{t('aiPanelTitle')}</span>
         <div className="ai-panel-header-actions">
-          <AiPanelSideButton
-            lang={lang}
-            onMove={(side) => window.slidesApi.setAiPanelPrefs({ side })}
-          />
           {(chat.length > 0 || historicChat.length > 0) && (
             <button
               className="ai-header-btn"
@@ -2108,7 +2102,7 @@ export function AiPanel({
               data-tip={t('aiNewChat')}
               aria-label={t('aiNewChat')}
             >
-              <IconNewChat size={15} />
+              <IconPlus size={15} />
             </button>
           )}
           {onCollapse && (
@@ -2449,7 +2443,7 @@ export function AiPanel({
                 data-tip={t('aiAttachTitle')}
                 aria-label={t('aiAttachTitle')}
               >
-                <IconPlus size={15} />
+                <img src={attachIcon} alt="" aria-hidden />
               </button>
               {busy ? (
                 <button

@@ -3631,7 +3631,7 @@ export function App() {
                               onClick={toggleAi}
                             >
                               <VegaMark size={14} />
-                              <span>{lang === 'ru' ? 'ВЕГА ИИ' : 'VEGA AI'}</span>
+                              <span>{lang === 'ru' ? 'ВЕГА' : 'VEGA'}</span>
                             </button>
                             {/* Same one-click presets as the Home tab; hidden instead of
                         disabled while the deck has no real content */}

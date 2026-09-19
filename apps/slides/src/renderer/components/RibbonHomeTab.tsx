@@ -218,7 +218,7 @@ export function RibbonHomeTab({ rb }: { rb: RibbonTabCtx }) {
   }
   return (
     <>
-      <Group label={lang === 'ru' ? 'ВЕГА ИИ' : 'VEGA AI'}>
+      <Group label={lang === 'ru' ? 'ВЕГА' : 'VEGA'}>
         <button
           className={`rb-big ai-entry${aiOpen ? ' active' : ''}`}
           data-tip={t('aiOpenAssistant')}
@@ -227,7 +227,7 @@ export function RibbonHomeTab({ rb }: { rb: RibbonTabCtx }) {
           <span className="rb-big-icon">
             <VegaMark size={26} />
           </span>
-          <span>{lang === 'ru' ? 'ВЕГА ИИ' : 'VEGA AI'}</span>
+          <span>{lang === 'ru' ? 'ВЕГА' : 'VEGA'}</span>
         </button>
         <button
           className="rb-big ai-entry"

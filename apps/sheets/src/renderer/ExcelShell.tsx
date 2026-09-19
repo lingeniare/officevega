@@ -390,10 +390,14 @@ export function ExcelShell({
   const [activeTab, setActiveTab] = useState<RibbonTab>('Home')
   const [fileOpen, setFileOpen] = useState(false)
   const fileWrapRef = useRef<HTMLDivElement>(null)
-  useDismissablePopover(fileOpen, useCallback(() => setFileOpen(false), []), {
-    // the wrap holds trigger + menu: inside presses toggle/choose instead of dismissing
-    inside: () => [fileWrapRef.current],
-  })
+  useDismissablePopover(
+    fileOpen,
+    useCallback(() => setFileOpen(false), []),
+    {
+      // the wrap holds trigger + menu: inside presses toggle/choose instead of dismissing
+      inside: () => [fileWrapRef.current],
+    },
+  )
   const collapse = useRibbonCollapse('ai-sheets-ribbon-collapsed')
   // Persisted so a closed AI panel stays closed on next launch (docs/slides parity)
   const [isCopilotOpen, setIsCopilotOpen] = useState(
@@ -2608,7 +2612,7 @@ function Ribbon({
             <VegaMark size={26} />
           </span>
           <span>
-            <strong>{lang === 'ru' ? 'ВЕГА ИИ' : 'VEGA AI'}</strong>
+            <strong>{lang === 'ru' ? 'ВЕГА' : 'VEGA'}</strong>
           </span>
         </button>
         <button

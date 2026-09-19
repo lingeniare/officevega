@@ -38,7 +38,7 @@ export function IconStop(props: IconProps) {
   )
 }
 
-/** plus (+) for the attach-files button — replaces the paperclip PNG art */
+/** plus (+) icon — used for New Conversation button */
 export function IconPlus(props: IconProps) {
   return (
     <svg
@@ -57,7 +57,7 @@ export function IconPlus(props: IconProps) {
   )
 }
 
-/** upward arrow (↑) for the icon-only send button — VEGA AIChatDrawer style */
+/** upward arrow (↑) for the icon-only send button — VEGAChatDrawer style */
 export function IconArrowUp(props: IconProps) {
   return (
     <svg

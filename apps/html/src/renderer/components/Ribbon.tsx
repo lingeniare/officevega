@@ -381,7 +381,7 @@ export function Ribbon(p: Props) {
               <span className="rb-big-icon">
                 <VegaMark size={26} />
               </span>
-              <span>{lang === 'ru' ? 'ВЕГА ИИ' : 'VEGA AI'}</span>
+              <span>{lang === 'ru' ? 'ВЕГА' : 'VEGA'}</span>
             </button>
             <button
               type="button"

@@ -459,6 +459,7 @@
 }
 
 .set-pane-footer {
+  position: relative; /* anchor for the centered .set-ai-status pill */
   margin-top: auto;
   padding-top: 20px;
   display: flex;
@@ -553,11 +554,18 @@
 
 /* footer feedback pill: spinner while testing, green on success/saved, red on failure */
 .set-ai-status {
+  /* dead-center on the footer (top stays auto → keeps the flex static
+   * position, aligned with the action button on the right edge); the width
+   * cap reserves ~170px/side so long error text ellipsizes before reaching
+   * the button lane */
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: max(140px, calc(100% - 340px));
   display: inline-flex;
   align-items: center;
   gap: 6px;
   min-width: 0;
-  margin-right: auto; /* status hugs the left edge, action buttons stay right */
   padding: 4px 10px 4px 8px;
   border: 1px solid var(--border-subtle);
   border-radius: 999px;

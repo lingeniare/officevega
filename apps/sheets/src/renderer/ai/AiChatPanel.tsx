@@ -1,12 +1,19 @@
-import { aiPanelWidthAtPointer, AiPanelSideButton } from '@genoffice/ui'
+import { aiPanelWidthAtPointer } from '@genoffice/ui'
 import React, { useEffect, useRef, useState } from 'react'
-import { AiComposer, AiScopeQuote, AiTypingIndicator, IconPlus, type AiScopeQuoteData } from '@genoffice/ui'
+import {
+  AiComposer,
+  AiScopeQuote,
+  AiTypingIndicator,
+  IconPlus,
+  type AiScopeQuoteData,
+} from '@genoffice/ui'
 import { VegaMark } from '../ribbon-icons'
 import type { ChangePlan } from '@genoffice/xlsx-gateway/domain/workbook.types'
 import { ATTACHMENT_IMAGE_EXTS, type AttachmentMeta } from '../../shared/desktop-api'
 import { useI18n, type TFunc } from '../i18n/locale'
 import { Markdown } from '@genoffice/ui'
 import { SHEET_NAV_SCHEME } from './sheet-nav'
+import attachIcon from '../assets/attach-icon.png'
 import filePdfIcon from '../assets/file-pdf.png'
 import fileWordIcon from '../assets/file-word.png'
 import fileExcelIcon from '../assets/file-excel.png'
@@ -509,15 +516,8 @@ export function AiChatPanel({
         aria-label={lang === 'ru' ? 'ВЕГА' : 'VEGA'}
       />
       <header className="ai-panel-header">
-        <span className="ai-panel-title">
-          <VegaMark size={22} />
-          {lang === 'ru' ? 'ВЕГА' : 'VEGA'}
-        </span>
+        <span className="ai-panel-title">{lang === 'ru' ? 'ВЕГА' : 'VEGA'}</span>
         <div className="ai-panel-header-actions">
-          <AiPanelSideButton
-            lang={lang}
-            onMove={(side) => window.desktopApi.setAiPanelPrefs({ side })}
-          />
           {(chat.length > 0 || historicChat.length > 0) && (
             <button
               className="ai-header-btn"
@@ -525,7 +525,7 @@ export function AiChatPanel({
               data-tip={t('aiNewChat')}
               aria-label={t('aiNewChat')}
             >
-              <IconNewChat size={15} />
+              <IconPlus size={15} />
             </button>
           )}
           <button
@@ -816,7 +816,7 @@ export function AiChatPanel({
               data-tip={t('aiAttachTitle')}
               aria-label={t('aiAttachTitle')}
             >
-              <IconPlus size={15} />
+              <img src={attachIcon} alt="" aria-hidden />
             </button>
           }
           textareaRef={inputRef}
@@ -855,18 +855,6 @@ function Svg({ size, children }: { size: number; children: React.ReactNode }): R
     >
       {children}
     </svg>
-  )
-}
-
-function IconNewChat({ size }: { size: number }): React.JSX.Element {
-  return (
-    <Svg size={size}>
-      <path
-        d="M13.5 7.2v-3A1.7 1.7 0 0 0 11.8 2.5H4.2a1.7 1.7 0 0 0-1.7 1.7v6.1a1.7 1.7 0 0 0 1.7 1.7h1.1v2l2.6-2h1.3"
-        strokeLinejoin="round"
-      />
-      <path d="M12.2 9.4v4M10.2 11.4h4" />
-    </Svg>
   )
 }
 

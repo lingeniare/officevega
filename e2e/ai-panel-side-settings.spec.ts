@@ -27,11 +27,25 @@ test('AI panel side persists across restart and updates an open Docs tab without
     const draft = editor.locator('.ai-composer textarea')
     await draft.fill('Keep this unsent draft when switching sides')
 
-    await editor.getByRole('button', { name: 'Move AI panel to the left', exact: true }).click()
+    await expect(editor.getByRole('button', { name: 'Move AI panel to the left' })).toHaveCount(0)
+    await expect(editor.getByRole('button', { name: 'Move AI panel to the right' })).toHaveCount(0)
+
+    await page.getByRole('button', { name: 'Settings', exact: true }).click()
+    await page.locator('.set-nav-item').filter({ hasText: 'General' }).click()
+    await page.getByRole('button', { name: 'AI sidebar position', exact: true }).click()
+    await page.getByRole('option', { name: 'Left', exact: true }).click()
+    await page.locator('.set-close').click()
+
     await expect(editor.locator('html')).toHaveAttribute('data-ai-panel-side', 'left')
     expect((await dock.boundingBox())!.x).toBeLessThan((await content.boundingBox())!.x)
     await expect(draft).toHaveValue('Keep this unsent draft when switching sides')
-    await editor.getByRole('button', { name: 'Move AI panel to the right', exact: true }).click()
+
+    await page.getByRole('button', { name: 'Settings', exact: true }).click()
+    await page.locator('.set-nav-item').filter({ hasText: 'General' }).click()
+    await page.getByRole('button', { name: 'AI sidebar position', exact: true }).click()
+    await page.getByRole('option', { name: 'Right', exact: true }).click()
+    await page.locator('.set-close').click()
+
     await expect(editor.locator('html')).toHaveAttribute('data-ai-panel-side', 'right')
     const before = (await dock.boundingBox())!.width
     const resizer = editor.locator('.ai-panel-resizer')

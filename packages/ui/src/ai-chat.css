@@ -1,4 +1,4 @@
-/* VEGA AI-chat skin — the shared look of the .ai-* class family, after the
+/* VEGA-chat skin — the shared look of the .ai-* class family, after the
    api.vega.chat AIChatDrawer design (see ai-chat-modal-design.md): tailed
    bubbles, borderless suggestion links, thin scrollbar, dark input band.
    The accent follows the host tool: every rule references the per-app
@@ -291,7 +291,8 @@
   color: var(--color-text-secondary);
 }
 
-.ai-attach-btn svg {
+.ai-attach-btn svg,
+.ai-attach-btn img {
   display: block;
 }
 

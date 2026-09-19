@@ -490,7 +490,6 @@ export const strings = {
     fileTab: '文件',
     fileOpen: '打开…',
     fileSaveAs: '另存为…',
-
   },
   en: {
     ...fillFormStringsFor('en'),
@@ -830,7 +829,6 @@ export const strings = {
     fileTab: 'File',
     fileOpen: 'Open…',
     fileSaveAs: 'Save As…',
-
   },
   ja: {
     ...fillFormStringsFor('ja'),
@@ -1159,7 +1157,6 @@ export const strings = {
     fileTab: 'ファイル',
     fileOpen: '開く…',
     fileSaveAs: '名前を付けて保存…',
-
   },
   ko: {
     ...fillFormStringsFor('ko'),
@@ -1488,7 +1485,6 @@ export const strings = {
     fileTab: '파일',
     fileOpen: '열기…',
     fileSaveAs: '다른 이름으로 저장…',
-
   },
   fr: {
     ...fillFormStringsFor('fr'),
@@ -1647,8 +1643,7 @@ export const strings = {
     aiOverloadedError: "Le service d'IA est actuellement surchargé — réessayez dans un instant",
     aiNetworkError:
       'Problème réseau : impossible de joindre le service IA. Vérifiez votre connexion et réessayez',
-    aiCreditsExhausted:
-      'Vos crédits VEGA sont épuisés. Rechargez sur api.vega.chat puis réessayez',
+    aiCreditsExhausted: 'Vos crédits VEGA sont épuisés. Rechargez sur api.vega.chat puis réessayez',
     aiToolReadPages: 'Lire les pages {start}-{end}',
     aiToolSearch: 'Rechercher « {query} » ({count} occurrences)',
     aiToolGoto: 'Aller à la page {page}',
@@ -1824,7 +1819,6 @@ export const strings = {
     fileTab: 'Fichier',
     fileOpen: 'Ouvrir…',
     fileSaveAs: 'Enregistrer sous…',
-
   },
   de: {
     ...fillFormStringsFor('de'),
@@ -2158,7 +2152,6 @@ export const strings = {
     fileTab: 'Datei',
     fileOpen: 'Öffnen…',
     fileSaveAs: 'Speichern unter…',
-
   },
   es: {
     ...fillFormStringsFor('es'),
@@ -2493,7 +2486,6 @@ export const strings = {
     fileTab: 'Archivo',
     fileOpen: 'Abrir…',
     fileSaveAs: 'Guardar como…',
-
   },
   th: {
     ...fillFormStringsFor('th'),
@@ -2648,8 +2640,7 @@ export const strings = {
     aiOverloadedError: 'บริการ AI มีผู้ใช้งานจำนวนมากในขณะนี้ โปรดลองอีกครั้งในอีกสักครู่',
     aiNetworkError:
       'เครือข่ายมีปัญหา ไม่สามารถเชื่อมต่อบริการ AI ได้ โปรดตรวจสอบการเชื่อมต่อแล้วลองใหม่',
-    aiCreditsExhausted:
-      'เครดิต VEGA ของคุณหมดแล้ว โปรดเติมเครดิตที่ api.vega.chat แล้วลองใหม่',
+    aiCreditsExhausted: 'เครดิต VEGA ของคุณหมดแล้ว โปรดเติมเครดิตที่ api.vega.chat แล้วลองใหม่',
     aiToolReadPages: 'อ่านหน้า {start}-{end}',
     aiToolSearch: 'ค้นหา "{query}" ({count} แห่ง)',
     aiToolGoto: 'ไปที่หน้า {page}',
@@ -2822,7 +2813,6 @@ export const strings = {
     fileTab: 'ไฟล์',
     fileOpen: 'เปิด…',
     fileSaveAs: 'บันทึกเป็น…',
-
   },
   id: {
     ...fillFormStringsFor('id'),
@@ -2978,8 +2968,7 @@ export const strings = {
     aiOverloadedError: 'Layanan AI sedang sibuk — silakan coba lagi sebentar lagi',
     aiNetworkError:
       'Masalah jaringan: tidak dapat terhubung ke layanan AI. Periksa koneksi Anda lalu coba lagi',
-    aiCreditsExhausted:
-      'Kredit VEGA Anda telah habis. Isi ulang di api.vega.chat lalu coba lagi',
+    aiCreditsExhausted: 'Kredit VEGA Anda telah habis. Isi ulang di api.vega.chat lalu coba lagi',
     aiToolReadPages: 'Baca halaman {start}-{end}',
     aiToolSearch: 'Cari "{query}" ({count} temuan)',
     aiToolGoto: 'Ke halaman {page}',
@@ -3154,7 +3143,6 @@ export const strings = {
     fileTab: 'File',
     fileOpen: 'Buka…',
     fileSaveAs: 'Simpan Sebagai…',
-
   },
   ru: {
     ...fillFormStringsFor('ru'),
@@ -3470,7 +3458,7 @@ export const strings = {
     removeStamp: 'Нажмите, чтобы выбрать этот знак / колонтитул',
     props: 'Свойства',
     propsTitle: 'Свойства документа',
-    ribbonAiAssistant: 'ВЕГА ИИ',
+    ribbonAiAssistant: 'ВЕГА',
     ribbonAiAssistantTip: 'Открыть помощника ИИ',
     propTitle: 'Заголовок',
     propAuthor: 'Автор',
@@ -3487,7 +3475,6 @@ export const strings = {
     fileTab: 'Файл',
     fileOpen: 'Открыть…',
     fileSaveAs: 'Сохранить как…',
-
   },
   ar: {
     ...fillFormStringsFor('ar'),
@@ -3815,7 +3802,6 @@ export const strings = {
     fileTab: 'ملف',
     fileOpen: 'فتح…',
     fileSaveAs: 'حفظ باسم…',
-
   },
   pt: {
     ...fillFormStringsFor('pt'),
@@ -4148,7 +4134,6 @@ export const strings = {
     fileTab: 'Arquivo',
     fileOpen: 'Abrir…',
     fileSaveAs: 'Salvar Como…',
-
   },
   it: {
     ...fillFormStringsFor('it'),
@@ -4306,8 +4291,7 @@ export const strings = {
     aiOverloadedError: 'Il servizio IA è momentaneamente sovraccarico — riprova tra poco',
     aiNetworkError:
       'Problema di rete: impossibile raggiungere il servizio IA. Controlla la connessione e riprova',
-    aiCreditsExhausted:
-      'I tuoi crediti VEGA sono esauriti. Ricarica su api.vega.chat e riprova',
+    aiCreditsExhausted: 'I tuoi crediti VEGA sono esauriti. Ricarica su api.vega.chat e riprova',
     aiToolReadPages: 'Leggi le pagine {start}-{end}',
     aiToolSearch: 'Cerca "{query}" ({count} risultati)',
     aiToolGoto: 'Vai alla pagina {page}',
@@ -4484,7 +4468,6 @@ export const strings = {
     fileTab: 'File',
     fileOpen: 'Apri…',
     fileSaveAs: 'Salva con nome…',
-
   },
   pl: {
     ...fillFormStringsFor('pl'),
@@ -4817,7 +4800,6 @@ export const strings = {
     fileTab: 'Plik',
     fileOpen: 'Otwórz…',
     fileSaveAs: 'Zapisz jako…',
-
   },
   cs: {
     ...fillFormStringsFor('cs'),
@@ -5148,7 +5130,6 @@ export const strings = {
     fileTab: 'Soubor',
     fileOpen: 'Otevřít…',
     fileSaveAs: 'Uložit jako…',
-
   },
   nl: {
     ...fillFormStringsFor('nl'),
@@ -5481,7 +5462,6 @@ export const strings = {
     fileTab: 'Bestand',
     fileOpen: 'Openen…',
     fileSaveAs: 'Opslaan als…',
-
   },
   ms: {
     ...fillFormStringsFor('ms'),
@@ -5637,8 +5617,7 @@ export const strings = {
     aiOverloadedError: 'Perkhidmatan AI sedang sibuk — sila cuba lagi sebentar lagi',
     aiNetworkError:
       'Masalah rangkaian: tidak dapat menghubungi perkhidmatan AI. Semak sambungan anda dan cuba lagi',
-    aiCreditsExhausted:
-      'Kredit VEGA anda telah habis. Tambah nilai di api.vega.chat dan cuba lagi',
+    aiCreditsExhausted: 'Kredit VEGA anda telah habis. Tambah nilai di api.vega.chat dan cuba lagi',
     aiToolReadPages: 'Baca halaman {start}-{end}',
     aiToolSearch: 'Cari "{query}" ({count} padanan)',
     aiToolGoto: 'Pergi ke halaman {page}',
@@ -5813,7 +5792,6 @@ export const strings = {
     fileTab: 'Fail',
     fileOpen: 'Buka…',
     fileSaveAs: 'Simpan Sebagai…',
-
   },
   he: {
     ...fillFormStringsFor('he'),
@@ -6137,7 +6115,6 @@ export const strings = {
     fileTab: 'קובץ',
     fileOpen: 'פתיחה…',
     fileSaveAs: 'שמירה בשם…',
-
   },
   hi: {
     ...fillFormStringsFor('hi'),
@@ -6467,7 +6444,6 @@ export const strings = {
     fileTab: 'फ़ाइल',
     fileOpen: 'खोलें…',
     fileSaveAs: 'इस रूप में सहेजें…',
-
   },
   'zh-TW': {
     ...fillFormStringsFor('zh-TW'),
@@ -6789,6 +6765,5 @@ export const strings = {
     fileTab: '檔案',
     fileOpen: '開啟…',
     fileSaveAs: '另存新檔…',
-
   },
 }

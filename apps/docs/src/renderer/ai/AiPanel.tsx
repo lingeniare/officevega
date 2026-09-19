@@ -1,4 +1,4 @@
-import { aiPanelWidthAtPointer, AiPanelSideButton } from '@genoffice/ui'
+import { aiPanelWidthAtPointer } from '@genoffice/ui'
 import { useEffect, useRef, useState } from 'react'
 import type { Editor } from '@tiptap/core'
 import type { Block } from '@genoffice/docx-engine'
@@ -44,8 +44,15 @@ import { createFilesSkill } from './files-skill'
 import { createElectronTransport } from './transport'
 import { useI18n, t as tModule, aiLangDirective, type StringKey } from '../i18n/locale'
 import { Markdown } from '@genoffice/ui'
-import { AiComposer, AiScopeQuote, AiTypingIndicator, IconPlus, type AiScopeQuoteData } from '@genoffice/ui'
+import {
+  AiComposer,
+  AiScopeQuote,
+  AiTypingIndicator,
+  IconPlus,
+  type AiScopeQuoteData,
+} from '@genoffice/ui'
 import { VegaMark } from '../components/icons'
+import attachIcon from '../assets/attach-icon.png'
 import filePdfIcon from '../assets/file-pdf.png'
 import fileWordIcon from '../assets/file-word.png'
 import fileExcelIcon from '../assets/file-excel.png'
@@ -55,7 +62,7 @@ import fileVideoIcon from '../assets/file-video.png'
 import fileVoiceIcon from '../assets/file-voice.png'
 import fileDocumentIcon from '../assets/file-document.png'
 import fileGeneralIcon from '../assets/file-general.png'
-import { IconNewChat, IconSidebarCollapse } from '../components/icons'
+import { IconSidebarCollapse } from '../components/icons'
 
 interface ToolActivity {
   name: string
@@ -1288,15 +1295,8 @@ export function AiPanel({
         aria-label={t('aiPanelTitle')}
       />
       <div className="ai-panel-header">
-        <span className="ai-panel-title">
-          <VegaMark size={22} />
-          {t('aiPanelTitle')}
-        </span>
+        <span className="ai-panel-title">{t('aiPanelTitle')}</span>
         <div className="ai-panel-header-actions">
-          <AiPanelSideButton
-            lang={lang}
-            onMove={(side) => window.desktop.setAiPanelPrefs({ side })}
-          />
           {(chat.length > 0 || historicChat.length > 0) && (
             <button
               className="ai-header-btn"
@@ -1304,7 +1304,7 @@ export function AiPanel({
               data-tip={t('aiNewChatTitle')}
               aria-label={t('aiNewChatTitle')}
             >
-              <IconNewChat size={16} />
+              <IconPlus size={16} />
             </button>
           )}
           {onCollapse && (
@@ -1660,7 +1660,7 @@ export function AiPanel({
                 data-tip={t('aiAttachTitle')}
                 aria-label={t('aiAttachTitle')}
               >
-                <IconPlus size={15} />
+                <img src={attachIcon} alt="" aria-hidden />
               </button>
               <button
                 className={`ai-track-btn${trackChanges ? ' on' : ''}`}

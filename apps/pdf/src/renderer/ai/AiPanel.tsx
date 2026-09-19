@@ -1,9 +1,15 @@
-import { aiPanelWidthAtPointer, AiPanelSideButton } from '@genoffice/ui'
+import { aiPanelWidthAtPointer } from '@genoffice/ui'
 import { useEffect, useRef, useState } from 'react'
 import type { PointerEvent as ReactPointerEvent, ReactElement } from 'react'
 import { AgentLoop } from '@genoffice/agent-core'
 import { imageGenerationAvailable, type AiSettings } from '@genoffice/ai-provider/browser'
-import { AiComposer, AiScopeQuote, AiTypingIndicator, type AiScopeQuoteData } from '@genoffice/ui'
+import {
+  AiComposer,
+  AiScopeQuote,
+  AiTypingIndicator,
+  IconPlus,
+  type AiScopeQuoteData,
+} from '@genoffice/ui'
 import { aiLangDirective, t as tGlobal, useI18n } from '../i18n/locale'
 import { Markdown } from '@genoffice/ui'
 import { createPdfSkill } from './pdf-skill'
@@ -617,15 +623,8 @@ export function AiPanel({
         aria-label={lang === 'ru' ? 'ВЕГА' : 'VEGA'}
       />
       <header className="ai-panel-header">
-        <span className="ai-panel-title">
-          <VegaMark size={22} />
-          {lang === 'ru' ? 'ВЕГА' : 'VEGA'}
-        </span>
+        <span className="ai-panel-title">{lang === 'ru' ? 'ВЕГА' : 'VEGA'}</span>
         <div className="ai-panel-header-actions">
-          <AiPanelSideButton
-            lang={lang}
-            onMove={(side) => window.pdfApi.setAiPanelPrefs({ side })}
-          />
           {chat.length > 0 && (
             <button
               className="ai-header-btn"
@@ -638,7 +637,7 @@ export function AiPanel({
               data-tip={t('aiNewChat')}
               aria-label={t('aiNewChat')}
             >
-              <IconNewChat />
+              <IconPlus size={15} />
             </button>
           )}
           <button
@@ -944,35 +943,6 @@ function ToolChipList({ tools }: { tools: ToolActivity[] }) {
         </div>
       </div>
     </div>
-  )
-}
-
-function Svg({ children }: { children: React.ReactNode }): ReactElement {
-  return (
-    <svg
-      width="15"
-      height="15"
-      viewBox="0 0 16 16"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.2"
-      strokeLinecap="round"
-      aria-hidden
-    >
-      {children}
-    </svg>
-  )
-}
-
-function IconNewChat(): ReactElement {
-  return (
-    <Svg>
-      <path
-        d="M13.5 7.2v-3A1.7 1.7 0 0 0 11.8 2.5H4.2a1.7 1.7 0 0 0-1.7 1.7v6.1a1.7 1.7 0 0 0 1.7 1.7h1.1v2l2.6-2h1.3"
-        strokeLinejoin="round"
-      />
-      <path d="M12.2 9.4v4M10.2 11.4h4" />
-    </Svg>
   )
 }
 

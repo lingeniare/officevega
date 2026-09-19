@@ -2888,7 +2888,7 @@ function RibbonInner({
           </div>
         ) : tab === 'home' ? (
           <>
-            {/* ---- VEGA AI (first slot: entry + one-click AI actions) ---- */}
+            {/* ---- VEGA (first slot: entry + one-click AI actions) ---- */}
             <div className="ribbon-group">
               <div className="ribbon-group-items">
                 <button
@@ -2899,7 +2899,7 @@ function RibbonInner({
                   <span className="rb-big-icon">
                     <VegaMark size={26} />
                   </span>
-                  <span>{lang === 'ru' ? 'ВЕГА ИИ' : 'VEGA AI'}</span>
+                  <span>{lang === 'ru' ? 'ВЕГА' : 'VEGA'}</span>
                 </button>
                 <button
                   className="rb-big ai-entry"
@@ -2999,7 +2999,7 @@ function RibbonInner({
                   <span>{t('aiTidyBtn')}</span>
                 </button>
               </div>
-              <div className="ribbon-group-label">{lang === 'ru' ? 'ВЕГА ИИ' : 'VEGA AI'}</div>
+              <div className="ribbon-group-label">{lang === 'ru' ? 'ВЕГА' : 'VEGA'}</div>
             </div>
 
             <div className="ribbon-sep" />
