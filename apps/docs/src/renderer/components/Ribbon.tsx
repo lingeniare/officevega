@@ -82,7 +82,7 @@ import {
 import { WRAP_OPTIONS } from './ContextMenu'
 import { CropDialog, CutoutDialog } from './PictureDialogs'
 import {
-  GensparkMark,
+  VegaMark,
   IconAlignCenter,
   IconAlignJustify,
   IconAlignLeft,
@@ -2855,9 +2855,9 @@ function RibbonInner({
                   onClick={onToggleAi}
                 >
                   <span className="rb-big-icon">
-                    <GensparkMark size={26} />
+                    <VegaMark size={26} />
                   </span>
-                  <span>VEGA AI</span>
+                  <span>{lang === 'ru' ? 'ВЕГА ИИ' : 'VEGA AI'}</span>
                 </button>
                 <button
                   className="rb-big ai-entry"
@@ -2957,7 +2957,7 @@ function RibbonInner({
                   <span>{t('aiTidyBtn')}</span>
                 </button>
               </div>
-              <div className="ribbon-group-label">VEGA AI</div>
+              <div className="ribbon-group-label">{lang === 'ru' ? 'ВЕГА ИИ' : 'VEGA AI'}</div>
             </div>
 
             <div className="ribbon-sep" />

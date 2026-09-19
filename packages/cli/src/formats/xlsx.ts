@@ -184,7 +184,7 @@ async function withSidecar<T>(fn: (client: XlsxSidecarClient) => Promise<T>): Pr
   const binary = xlsxSidecarPath()
   if (!binary) {
     throw new CliError(EXIT.conversion, 'xlsx engine (xlsx-sidecar) not found', {
-      hint: 'set XLSX_SIDECAR_PATH or run a packaged GetOffice',
+      hint: 'set XLSX_SIDECAR_PATH or run a packaged VegaOffice',
     })
   }
   const client = new XlsxSidecarClient(binary)
@@ -479,7 +479,7 @@ export async function readSheet(path: string, opts: ReadOptions): Promise<SheetR
           pending.push({ row: c.row, column: c.column })
       }
     }
-    // formulas written without a cached value (e.g. by getoffice itself) are evaluated on the fly
+    // formulas written without a cached value (e.g. by vegaoffice itself) are evaluated on the fly
     if (pending.length) {
       const box = boundingBox(pending)
       const cells = await recalcRange(client, path, meta.name, box)

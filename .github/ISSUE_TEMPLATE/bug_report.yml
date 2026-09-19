@@ -8,11 +8,11 @@ body:
       label: App
       description: Which part of the suite is affected?
       options:
-        - GetOffice Docs (docs)
-        - GetOffice Sheets (sheets)
-        - GetOffice Slides (slides)
-        - GetOffice PDF (pdf)
-        - GetOffice Markdown (markdown)
+        - VegaOffice Docs (docs)
+        - VegaOffice Sheets (sheets)
+        - VegaOffice Slides (slides)
+        - VegaOffice PDF (pdf)
+        - VegaOffice Markdown (markdown)
         - Shell / home screen
         - AI panel / providers
         - Build / packaging

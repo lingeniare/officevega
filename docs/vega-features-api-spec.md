@@ -2,7 +2,7 @@
 
 ## Context
 
-GetOffice is an Electron desktop suite. Per `docs/vega-auth-api-spec.md`
+VegaOffice is an Electron desktop suite. Per `docs/vega-auth-api-spec.md`
 (implemented), sign-in mints one `sk-apivega-...` key per account. This
 document covers the **feature surface** that key unlocks: `api.vega.chat` acts
 as a 100% OpenRouter-compatible proxy, and every AI capability in the app —
@@ -13,7 +13,7 @@ to VEGA on that key.
 
 - All calls are `Authorization: Bearer sk-apivega-...` against
   `https://api.vega.chat/api/v1` — the same key for every feature, billed to
-  the account deposit and attributed to the registered key name `genoffice`.
+  the account deposit and attributed to the registered key name `vegaoffice`.
 - The issued key **never enters the renderer**. Settings UI has no API-key,
   Base-URL or model picker for VEGA; the client sends fixed model ids (below)
   and the server is free to remap them.
@@ -109,7 +109,7 @@ and we will wire it as a separate opt-in feature.
 
 ### R7. Key secrecy
 
-- `sk-apivega-...` lives only in `~/.getoffice/auth.json` (0600) in the main
+- `sk-apivega-...` lives only in `~/.vegaoffice/auth.json` (0600) in the main
   process; it is injected into requests there.
 - Never return the plaintext key from any endpoint after issuance; account
   info comes from `GET /api/v1/account` (email, balance, plan — no key).

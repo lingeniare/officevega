@@ -1,7 +1,7 @@
 import type { Editor } from '@tiptap/core'
 import { navigateToBlock } from './ai/doc-nav'
 
-/** Request/reply the shell relays from `getoffice open --block` and `getoffice selection`. */
+/** Request/reply the shell relays from `vegaoffice open --block` and `vegaoffice selection`. */
 export type ControlRequest =
   { cmd: 'goto'; target: { kind: string; block?: number } } | { cmd: 'selection' }
 

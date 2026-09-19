@@ -67,7 +67,7 @@ export const nl = {
   aiNetworkError:
     'Netwerkprobleem: kan de AI-service niet bereiken. Controleer je verbinding en probeer het opnieuw',
   aiCreditsExhausted:
-    'Je VEGA-credits zijn op. Waardeer op via api.vega.chat/keys en probeer het opnieuw',
+    'Je VEGA-credits zijn op. Waardeer op via api.vega.chat en probeer het opnieuw',
   aiToolWorkbookContext: 'Werkmapgegevens lezen',
   aiToolReadRange: 'Bereik lezen',
   aiToolReadRangeOf: 'Bereik {range} lezen',

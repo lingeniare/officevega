@@ -450,8 +450,8 @@ export function fontAttrsFromFamilyChain(chain: string | undefined): Record<stri
         !/^var\(|\)$/.test(x) &&
         !/^(serif|sans-serif|monospace|cursive|fantasy|system-ui)$/i.test(x) &&
         // internal fonts.css aliases are not user picks: 'GenOffice *' /
-        // 'GetOffice *' faces (bundled fonts still carry the GenOffice names
-        // while chrome strings moved to GetOffice), the '* GO'
+        // 'VegaOffice *' faces (bundled fonts still carry the GenOffice names
+        // while chrome strings moved to VegaOffice), the '* GO'
         // renamed/range-limited faces (Carlito GO, KR Theme Latin GO,
         // Noto Sans/Serif CJK GO...) and the size-adjusted Noto Arabic aliases
         !/^ge[nt]office /i.test(x) &&

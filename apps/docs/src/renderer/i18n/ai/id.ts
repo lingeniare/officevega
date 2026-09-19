@@ -114,7 +114,7 @@ export const id = {
   aiNetworkError:
     'Masalah jaringan: tidak dapat terhubung ke layanan AI. Periksa koneksi Anda lalu coba lagi',
   aiCreditsExhausted:
-    'Kredit VEGA Anda telah habis. Isi ulang di api.vega.chat/keys lalu coba lagi',
+    'Kredit VEGA Anda telah habis. Isi ulang di api.vega.chat lalu coba lagi',
   aiSumReadAttachment: 'Baca lampiran',
   aiSumImageAttachment: 'Lampiran gambar {name}',
   aiSumRead: 'Baca {name}',

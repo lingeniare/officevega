@@ -338,7 +338,7 @@ interface RuntimePaths {
   preloadPath: string
   rendererUrl?: string
   rendererFile?: string
-  /** Shell router used to open exported PDFs in a new GetOffice tab. */
+  /** Shell router used to open exported PDFs in a new VegaOffice tab. */
   openGeneratedPath?: (path: string) => boolean
 }
 
@@ -852,7 +852,7 @@ function registerMarkdownIpc(): void {
             )
       if (picked.canceled || !picked.filePath) return { ok: true, canceled: true }
       // sheets-style: render the print HTML in a hidden scripting-disabled window
-      const workDir = await mkdtemp(join(tmpdir(), 'getoffice-md-pdf-'))
+      const workDir = await mkdtemp(join(tmpdir(), 'vegaoffice-md-pdf-'))
       const printWin = new BrowserWindow({
         show: false,
         webPreferences: { sandbox: true, javascript: false },

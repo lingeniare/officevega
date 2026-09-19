@@ -16,7 +16,6 @@ import { normalizeAiPanelPrefs } from '@genoffice/ui/ai-panel-prefs'
 import type {
   AccountLoginEvent,
   AccountStatus,
-  CloudProjectsSnapshot,
   FolderListing,
   FolderRoot,
   MoveResult,
@@ -327,9 +326,6 @@ const homeApi: HomeApi = {
     ipcRenderer.on('app:theme-changed', listener)
     return () => ipcRenderer.removeListener('app:theme-changed', listener)
   },
-  async openGenTeam() {
-    await ipcRenderer.invoke(HOME_CHANNELS.openGenTeam)
-  },
   async openCreditUsage() {
     await ipcRenderer.invoke(HOME_CHANNELS.openCreditUsage)
   },
@@ -352,23 +348,6 @@ const homeApi: HomeApi = {
   async starPromptAction(action) {
     if (action !== 'starred' && action !== 'later') throw new Error('Invalid star prompt action.')
     await ipcRenderer.invoke(HOME_CHANNELS.starPromptAction, action)
-  },
-  async cloudProjectsCached() {
-    const result: unknown = await ipcRenderer.invoke(HOME_CHANNELS.cloudProjectsCached)
-    return asCloudProjectsSnapshot(result)
-  },
-  async cloudProjectsSync() {
-    // failures (network / CLI) resolve to null so the renderer keeps whatever it has
-    try {
-      const result: unknown = await ipcRenderer.invoke(HOME_CHANNELS.cloudProjects)
-      return asCloudProjectsSnapshot(result)
-    } catch {
-      return null
-    }
-  },
-  async openCloudProject(projectUrl) {
-    if (typeof projectUrl !== 'string' || !projectUrl) throw new Error('Invalid project URL.')
-    await ipcRenderer.invoke(HOME_CHANNELS.openCloudProject, projectUrl)
   },
   // AI settings channels are registered once by the shell's aggregated docs handlers
   async getAiSettings() {
@@ -431,17 +410,6 @@ const homeApi: HomeApi = {
       ? { ok: true }
       : { ok: false, error: typeof raw.error === 'string' ? raw.error : 'Connection failed' }
   },
-}
-
-function asCloudProjectsSnapshot(result: unknown): CloudProjectsSnapshot | null {
-  if (
-    result &&
-    typeof result === 'object' &&
-    Array.isArray((result as CloudProjectsSnapshot).projects)
-  ) {
-    return result as CloudProjectsSnapshot
-  }
-  return null
 }
 
 contextBridge.exposeInMainWorld('aiOffice', homeApi)

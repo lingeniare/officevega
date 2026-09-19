@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { DragEvent as ReactDragEvent, ReactElement } from 'react'
-import logoLockup from './assets/getoffice-logo.svg'
+import logoLockup from './assets/vegaoffice-logo.svg'
 import iconDocx from './assets/file-docx.svg'
 import iconXlsx from './assets/file-xlsx.svg'
 import iconPptx from './assets/file-pptx.svg'
@@ -9,8 +9,6 @@ import iconMd from './assets/file-md.svg'
 import iconHtml from './assets/file-html.svg'
 import type {
   AccountStatus,
-  CloudProjectKind,
-  CloudProjectsSnapshot,
   FolderEntry,
   FolderListing,
   FolderRoot,
@@ -55,7 +53,7 @@ const FILE_ICONS: Record<string, string> = {
 const OPEN_LOCAL_EXTENSIONS = '.docx / .xlsx / .xlsm / .xls / .csv / .pptx / .pdf / .md / .html'
 
 /** drag payload of home file/folder rows (JSON array of absolute paths) */
-const DRAG_PATHS_MIME = 'application/x-getoffice-paths'
+const DRAG_PATHS_MIME = 'application/x-vegaoffice-paths'
 /** hovering a collapsed folder this long while dragging expands it */
 const DRAG_EXPAND_DELAY_MS = 600
 /** expanded folders survive a home reload; the selection is per session */
@@ -231,7 +229,7 @@ function matchesFilter(entry: RecentEntry, filter: string): boolean {
 function SortCheck({ visible }: { visible: boolean }): ReactElement {
   return (
     <svg
-      className="cloud-sort-check"
+      className="file-sort-check"
       width="12"
       height="12"
       viewBox="0 0 16 16"
@@ -899,10 +897,10 @@ function AccountEntry({
         aria-expanded={settingsOpen}
         data-tip={
           loggedIn
-            ? email || t('loggedInGenspark')
+            ? email || t('loggedInVega')
             : waiting
               ? t('waitingLogin')
-              : (errorText ?? t('loginGenspark'))
+              : (errorText ?? t('loginVega'))
         }
         aria-label={t('settings')}
       >
@@ -968,320 +966,6 @@ function AccountEntry({
         </svg>
       </button>
     </div>
-  )
-}
-
-// ── Cloud (Genspark web) projects view ──────────────────
-
-/** kind filter segments; labels shared with the recents type filter */
-const CLOUD_FILTERS = [
-  { key: 'all', label: 'filterAll' },
-  { key: 'docs', label: 'filterDocs' },
-  { key: 'sheets', label: 'filterSheets' },
-  { key: 'slides', label: 'filterSlides' },
-] as const satisfies readonly { key: 'all' | CloudProjectKind; label: StringKey }[]
-
-/** module kind → file icon extension */
-const CLOUD_KIND_EXT: Record<string, string> = { docs: 'docx', sheets: 'xlsx', slides: 'pptx' }
-
-/** rows revealed per "load more" step; purely client-side over the local snapshot */
-const CLOUD_REVEAL_STEP = 100
-
-function CloudProjectsView() {
-  const i18n = useI18n()
-  const { t } = i18n
-  const [snapshot, setSnapshot] = useState<CloudProjectsSnapshot | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [syncing, setSyncing] = useState(false)
-  const [loginWaiting, setLoginWaiting] = useState(false)
-  const [kind, setKind] = useState<'all' | CloudProjectKind>('all')
-  const [query, setQuery] = useState('')
-  const [sort, setSort] = useState<'recent' | 'oldest'>('recent')
-  const [sortMenuOpen, setSortMenuOpen] = useState(false)
-  const [revealed, setRevealed] = useState(CLOUD_REVEAL_STEP)
-  const sortRef = useRef<HTMLDivElement>(null)
-
-  // the local store paints instantly; a background sync replaces it when done.
-  // a failed sync keeps whatever is shown; with nothing shown the
-  // !snapshot && !loading branch below renders the retry state
-  const startSync = () => {
-    setSyncing(true)
-    void window.aiOffice.cloudProjectsSync?.().then((synced) => {
-      setSyncing(false)
-      setLoading(false)
-      if (synced) setSnapshot(synced)
-    })
-  }
-  const startSyncRef = useRef(startSync)
-  startSyncRef.current = startSync
-
-  useEffect(() => {
-    let cancelled = false
-    void window.aiOffice.cloudProjectsCached?.().then((stored) => {
-      if (cancelled || !stored) return
-      setSnapshot((prev) => prev ?? stored)
-      setLoading(false)
-    })
-    startSyncRef.current()
-    return () => {
-      cancelled = true
-    }
-  }, [])
-
-  // the sign-in button reuses the account login flow; sync once it lands
-  useEffect(() => {
-    const off = window.aiOffice.onAccountLogin?.((ev) => {
-      if (ev.phase === 'success') {
-        setLoginWaiting(false)
-        startSyncRef.current()
-      } else if (ev.phase === 'error') {
-        setLoginWaiting(false)
-      }
-    })
-    return off
-  }, [])
-
-  // unified dismissal: outside press, window blur, chrome press (tab strip / window drag)
-  useDismissablePopover(sortMenuOpen, () => setSortMenuOpen(false), {
-    inside: () => [sortRef.current],
-  })
-
-  const startLogin = () => {
-    setLoginWaiting(true)
-    void window.aiOffice.accountLogin?.().then((ok) => {
-      if (!ok) setLoginWaiting(false)
-    })
-  }
-
-  const changeKind = (k: 'all' | CloudProjectKind) => {
-    if (k === kind) return
-    setKind(k)
-    setRevealed(CLOUD_REVEAL_STEP)
-  }
-
-  const openProject = (projectUrl: string) => {
-    void window.aiOffice.openCloudProject?.(projectUrl)
-  }
-
-  // filter / search / sort are all local over the snapshot — no requests
-  const q = query.trim().toLowerCase()
-  let list = snapshot?.projects.filter((proj) => kind === 'all' || proj.kind === kind) ?? []
-  if (q) list = list.filter((proj) => proj.title.toLowerCase().includes(q))
-  if (sort === 'oldest') list = [...list].reverse()
-  const visible = list.slice(0, revealed)
-
-  const renderRows = () => {
-    const items: ReactElement[] = []
-    for (const proj of visible) {
-      items.push(
-        <li key={proj.projectId}>
-          <button
-            className="cloud-row"
-            data-tip={t('cloudOpenInBrowser')}
-            data-tip-anchor=".cloud-row-external"
-            data-tip-place="right"
-            onClick={() => openProject(proj.projectUrl)}
-          >
-            <FileBadge ext={CLOUD_KIND_EXT[proj.kind] ?? ''} size={24} />
-            <span className="cloud-row-main">
-              <span className="cloud-row-title">{proj.title || t('untitled')}</span>
-              <svg
-                className="cloud-row-external"
-                width="13"
-                height="13"
-                viewBox="0 0 16 16"
-                fill="none"
-                aria-hidden="true"
-              >
-                <path
-                  d="M6.5 3.5H4a1.5 1.5 0 0 0-1.5 1.5v7A1.5 1.5 0 0 0 4 13.5h7A1.5 1.5 0 0 0 12.5 12V9.5M9.5 2.5h4v4M13 3l-5.5 5.5"
-                  stroke="currentColor"
-                  strokeWidth="1.3"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </span>
-            <span className="cloud-row-time">
-              {proj.ctimeMs ? formatModified(proj.ctimeMs, i18n) : ''}
-            </span>
-          </button>
-        </li>,
-      )
-    }
-    return items
-  }
-
-  const renderBody = () => {
-    if (snapshot && !snapshot.available) {
-      return (
-        <p className="empty proj-empty">
-          <span className="empty-hint">{t('cloudLoginHint')}</span>
-          <button className="btn btn-secondary" disabled={loginWaiting} onClick={startLogin}>
-            {loginWaiting ? t('waitingShort') : t('loginGenspark')}
-          </button>
-        </p>
-      )
-    }
-    if (!snapshot) {
-      if (loading || syncing) {
-        return (
-          <div className="load-more" aria-hidden="true">
-            <span className="load-more-spinner" />
-          </div>
-        )
-      }
-      return (
-        <p className="empty proj-empty">
-          <span className="empty-hint">{t('cloudError')}</span>
-          <button className="btn btn-secondary" onClick={() => startSync()}>
-            {t('cloudRetry')}
-          </button>
-        </p>
-      )
-    }
-    if (list.length === 0) {
-      return (
-        <p className="empty proj-empty">
-          <span className="empty-hint">
-            {t(q ? 'cloudNoResults' : kind === 'all' ? 'cloudEmpty' : 'emptyFiltered')}
-          </span>
-        </p>
-      )
-    }
-    return (
-      <div className="cloud-scroll">
-        <div className="cloud-table">
-          <div className="cloud-columns">
-            <span className="col-name">{t('colName')}</span>
-            <div className="cloud-col-sort" ref={sortRef}>
-              <button
-                className="cloud-col-sort-btn"
-                aria-haspopup="menu"
-                aria-expanded={sortMenuOpen}
-                onClick={() => setSortMenuOpen((o) => !o)}
-              >
-                {t('colModified')}
-                <svg
-                  width="12"
-                  height="12"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  aria-hidden="true"
-                  style={sort === 'oldest' ? { transform: 'rotate(180deg)' } : undefined}
-                >
-                  <path
-                    d="M8 3v10M4.5 9.5L8 13l3.5-3.5"
-                    stroke="currentColor"
-                    strokeWidth="1.4"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
-              {sortMenuOpen && (
-                <div className="cloud-sort-menu" role="menu">
-                  {(['recent', 'oldest'] as const).map((key) => (
-                    <button
-                      key={key}
-                      className={sort === key ? 'active' : ''}
-                      role="menuitemradio"
-                      aria-checked={sort === key}
-                      onClick={() => {
-                        setSort(key)
-                        setSortMenuOpen(false)
-                        setRevealed(CLOUD_REVEAL_STEP)
-                      }}
-                    >
-                      <SortCheck visible={sort === key} />
-                      {t(key === 'recent' ? 'cloudSortRecent' : 'cloudSortOldest')}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-          <ul className="cloud-list">{renderRows()}</ul>
-        </div>
-        {list.length > revealed && (
-          <div className="load-more">
-            <button
-              className="btn btn-secondary"
-              onClick={() => setRevealed((n) => n + CLOUD_REVEAL_STEP)}
-            >
-              {t('cloudLoadMore')}
-            </button>
-          </div>
-        )}
-      </div>
-    )
-  }
-
-  return (
-    <main className="content">
-      <section className="cloud-projects" aria-label={t('navCloud')}>
-        <header className="cloud-hero">
-          <div className="cloud-hero-top">
-            <h1 className="cloud-title">{t('navCloud')}</h1>
-          </div>
-          <p className="cloud-subtitle">{t('cloudSubtitle')}</p>
-          {snapshot?.available && (
-            <div className="cloud-controls">
-              <div className="cloud-seg" role="tablist" aria-label={t('filterAria')}>
-                {CLOUD_FILTERS.map((f) => (
-                  <button
-                    key={f.key}
-                    className={kind === f.key ? 'active' : ''}
-                    role="tab"
-                    aria-selected={kind === f.key}
-                    onClick={() => changeKind(f.key)}
-                  >
-                    {t(f.label)}
-                  </button>
-                ))}
-              </div>
-              <button
-                className={`cloud-refresh-btn${syncing ? ' syncing' : ''}`}
-                data-tip={t('cloudRefresh')}
-                aria-label={t('cloudRefresh')}
-                disabled={syncing}
-                onClick={() => startSync()}
-              >
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <path
-                    d="M13.6 8a5.6 5.6 0 1 1-1.64-3.96M13.6 2.4v3.2h-3.2"
-                    stroke="currentColor"
-                    strokeWidth="1.4"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
-              <div className="cloud-search">
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                  <circle cx="7" cy="7" r="4.6" stroke="currentColor" strokeWidth="1.4" />
-                  <path
-                    d="M10.5 10.5L14 14"
-                    stroke="currentColor"
-                    strokeWidth="1.4"
-                    strokeLinecap="round"
-                  />
-                </svg>
-                <input
-                  value={query}
-                  placeholder={t('cloudSearchPlaceholder', { n: snapshot.projects.length })}
-                  onChange={(e) => {
-                    setQuery(e.target.value)
-                    setRevealed(CLOUD_REVEAL_STEP)
-                  }}
-                />
-              </div>
-            </div>
-          )}
-        </header>
-        {renderBody()}
-      </section>
-    </main>
   )
 }
 
@@ -1371,8 +1055,6 @@ export function Home() {
   const [navCounts, setNavCounts] = useState({ recent: 0, starred: 0 })
   const [loadingMore, setLoadingMore] = useState(false)
   const [view, setView] = useState<'recent' | 'starred'>('recent')
-  // Genspark web projects take over the content area (like a selected folder)
-  const [cloudMode, setCloudMode] = useState(false)
   const [filter, setFilter] = useState('all')
   // modified-column sort (WPS-style header popover), shared by the global and folder tables
   const [fileSort, setFileSort] = useState<'recent' | 'oldest'>('recent')
@@ -1388,15 +1070,10 @@ export function Home() {
   const [confirmMissing, setConfirmMissing] = useState<RecentEntry | null>(null)
   // name in the greeting; omitted when logged out
   const [accountName, setAccountName] = useState('')
-  // Genspark Projects is web-account data, so its nav entry only shows when logged in
-  const [loggedIn, setLoggedIn] = useState(false)
   // single source of account state: AccountEntry reports every change (initial
-  // load, login, logout), keeping the greeting name and the nav entry in sync
+  // load, login, logout), keeping the greeting name in sync
   const handleAccountStatus = useCallback((s: AccountStatus | null) => {
-    const on = s?.loggedIn ?? false
-    setLoggedIn(on)
-    if (!on) setCloudMode(false)
-    const name = on ? (s?.email ?? '').split('@')[0] : ''
+    const name = s?.loggedIn ? (s?.email ?? '').split('@')[0] : ''
     setAccountName(name ? name[0].toUpperCase() + name.slice(1) : '')
   }, [])
   const [greetAskKey] = useState(
@@ -1640,9 +1317,9 @@ export function Home() {
 
   // WPS-style sortable "modified" column header, shared by both file tables
   const renderModifiedHeader = () => (
-    <div className="cloud-col-sort" ref={fileSortRef}>
+    <div className="file-sort" ref={fileSortRef}>
       <button
-        className="cloud-col-sort-btn"
+        className="file-sort-btn"
         aria-haspopup="menu"
         aria-expanded={fileSortMenuOpen}
         onClick={() => setFileSortMenuOpen((o) => !o)}
@@ -1666,7 +1343,7 @@ export function Home() {
         </svg>
       </button>
       {fileSortMenuOpen && (
-        <div className="cloud-sort-menu" role="menu">
+        <div className="file-sort-menu" role="menu">
           {(['recent', 'oldest'] as const).map((key) => (
             <button
               key={key}
@@ -1679,7 +1356,7 @@ export function Home() {
               }}
             >
               <SortCheck visible={fileSort === key} />
-              {t(key === 'recent' ? 'cloudSortRecent' : 'cloudSortOldest')}
+              {t(key === 'recent' ? 'fileSortRecent' : 'fileSortOldest')}
             </button>
           ))}
         </div>
@@ -1702,7 +1379,6 @@ export function Home() {
   const changeView = (next: 'recent' | 'starred') => {
     setView(next)
     setSelectedFolder(null)
-    setCloudMode(false)
     setSelected(new Set())
     setRowMenu(null)
   }
@@ -1715,7 +1391,6 @@ export function Home() {
 
   const selectFolder = (dir: string) => {
     setSelectedFolder(dir)
-    setCloudMode(false)
     setSelected(new Set())
     setRowMenu(null)
     setFolderMenu(null)
@@ -2812,11 +2487,11 @@ export function Home() {
     <div className="home">
       <aside className="sidebar">
         <div className="sidebar-logo">
-          <img className="logo-lockup" src={logoLockup} alt="GetOffice" />
+          <img className="logo-lockup" src={logoLockup} alt="VegaOffice" />
         </div>
         <nav className="sidebar-nav">
           <button
-            className={`nav-item${view === 'recent' && !selectedFolder && !cloudMode ? ' active' : ''}`}
+            className={`nav-item${view === 'recent' && !selectedFolder ? ' active' : ''}`}
             onClick={() => changeView('recent')}
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -2832,7 +2507,7 @@ export function Home() {
             <span className="nav-count">{navCounts.recent}</span>
           </button>
           <button
-            className={`nav-item${view === 'starred' && !selectedFolder && !cloudMode ? ' active' : ''}`}
+            className={`nav-item${view === 'starred' && !selectedFolder ? ' active' : ''}`}
             onClick={() => changeView('starred')}
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -2846,55 +2521,12 @@ export function Home() {
             <span className="nav-label">{t('navStarred')}</span>
             <span className="nav-count">{navCounts.starred}</span>
           </button>
-          {loggedIn && (
-            <button
-              className={`nav-item${cloudMode && !selectedFolder ? ' active' : ''}`}
-              onClick={() => {
-                setCloudMode(true)
-                setSelectedFolder(null)
-                setSelected(new Set())
-                setRowMenu(null)
-              }}
-            >
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                <path
-                  d="M8 1.8l1.55 4.65L14.2 8l-4.65 1.55L8 14.2 6.45 9.55 1.8 8l4.65-1.55z"
-                  stroke="currentColor"
-                  strokeWidth="1.3"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <span className="nav-label">{t('navCloud')}</span>
-              <svg
-                className="nav-external"
-                width="13"
-                height="13"
-                viewBox="0 0 16 16"
-                fill="none"
-                aria-hidden="true"
-              >
-                <path
-                  d="M6.5 3.5H4a1.5 1.5 0 0 0-1.5 1.5v7A1.5 1.5 0 0 0 4 13.5h7A1.5 1.5 0 0 0 12.5 12V9.5M9.5 2.5h4v4M13 3l-5.5 5.5"
-                  stroke="currentColor"
-                  strokeWidth="1.3"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
-          )}
         </nav>
         <div className="sidebar-divider" />
         {renderFolderPanel()}
         <AccountEntry onStatusChange={handleAccountStatus} />
       </aside>
-      {selectedFolder && root?.usable ? (
-        renderFolderContent()
-      ) : cloudMode ? (
-        <CloudProjectsView />
-      ) : (
-        renderGlobalContent()
-      )}
+      {selectedFolder && root?.usable ? renderFolderContent() : renderGlobalContent()}
       {confirmDelete && (
         <div className="modal-overlay" onClick={() => setConfirmDelete(null)}>
           <div

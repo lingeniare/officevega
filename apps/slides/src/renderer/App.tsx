@@ -94,7 +94,7 @@ import {
   type WordArtPreset,
 } from '@genoffice/ui'
 import type { ChartPresetDef, IconDef, SmartArtDef } from './insert-presets'
-import { GensparkMark, IconAiBeautify, IconAiFactCheck, IconAiImage } from './components/icons'
+import { VegaMark, IconAiBeautify, IconAiFactCheck, IconAiImage } from './components/icons'
 import { ToastHost } from './components/toast'
 import { showToast } from './components/toast-bus'
 import { t, useI18n } from './i18n/locale'
@@ -2913,9 +2913,9 @@ export function App() {
 
   const _fileName = slide ? path?.split('/').pop() || t('appUntitledPresentation') : undefined
 
-  // getoffice CLI (`open --slide/--el`, `selection`): the shell evaluates this hook
+  // vegaoffice CLI (`open --slide/--el`, `selection`): the shell evaluates this hook
   useEffect(() => {
-    ;(window as unknown as Record<string, unknown>).__getofficeControl = (req: ControlRequest) =>
+    ;(window as unknown as Record<string, unknown>).__vegaofficeControl = (req: ControlRequest) =>
       handleSlidesControl(req, {
         slides,
         path,
@@ -3306,7 +3306,7 @@ export function App() {
                 data-tip={t('appAiRailExpand')}
                 aria-label={t('appAiRailExpand')}
               >
-                <GensparkMark size={22} />
+                <VegaMark size={22} />
               </button>
             )}
           </div>
@@ -3656,8 +3656,8 @@ export function App() {
                               data-tip={t('aiOpenAssistant')}
                               onClick={toggleAi}
                             >
-                              <GensparkMark size={14} />
-                              <span>VEGA AI</span>
+                              <VegaMark size={14} />
+                              <span>{lang === 'ru' ? 'ВЕГА ИИ' : 'VEGA AI'}</span>
                             </button>
                             {/* Same one-click presets as the Home tab; hidden instead of
                         disabled while the deck has no real content */}

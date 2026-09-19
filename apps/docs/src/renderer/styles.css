@@ -429,7 +429,7 @@ button {
 
 /* While a popover is open the row must deliver presses (drag regions swallow
    them), so outside-press dismissal can see presses on the blank band */
-html.getoffice-popover-open .ribbon-tabs {
+html.vegaoffice-popover-open .ribbon-tabs {
   -webkit-app-region: no-drag;
 }
 
@@ -589,18 +589,6 @@ html.getoffice-popover-open .ribbon-tabs {
   box-shadow: var(--docs-shadow-badge);
 }
 
-/* Genspark brand logo (Ribbon AI button and AI panel title) */
-.genspark-badge {
-  display: block;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-}
-
-.ai-panel-title .genspark-badge {
-  width: 18px;
-  height: 18px;
-}
 /* ---- ribbon body ---- */
 
 .ribbon-body {
@@ -6475,7 +6463,7 @@ body.docs-crop-active
   display: flex;
   flex-direction: column;
   background: var(--color-bg-page);
-  /* Same visible divider as the GetOffice Sheets panel: the editor canvas is gray, so the default border would drown */
+  /* Same visible divider as the VegaOffice Sheets panel: the editor canvas is gray, so the default border would drown */
   border-right: 1px solid var(--color-border-strong);
   font-family: var(--gs-font-sans);
   color: var(--color-text-primary);

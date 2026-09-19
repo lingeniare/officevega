@@ -77,7 +77,7 @@ vi.mock('@genoffice/electron-utils', () => ({
   contextMenuLabels: vi.fn(() => ({})),
   installContextMenu: vi.fn(),
   installNavigationGuard: vi.fn(),
-  rendererUrl: vi.fn(() => 'getoffice-app://markdown/index.html'),
+  rendererUrl: vi.fn(() => 'vegaoffice-app://markdown/index.html'),
   safeExternalUrl: vi.fn(() => null),
   showOpenDialogWithMemory: vi.fn(),
   showSaveDialogWithMemory: (...args: unknown[]) => showSaveDialogWithMemory(...args),

@@ -447,7 +447,7 @@ async function analyzeMediaOpenAi(
       throw new Error(
         `${meta.label} cannot analyze ${m.name ?? m.mime} (${m.mime}) here; ${
           meta.videoAnalysis ? 'audio' : 'video and audio'
-        } analysis needs Gemini or Genspark.`,
+        } analysis needs Gemini or account sign-in.`,
       )
     }
   }

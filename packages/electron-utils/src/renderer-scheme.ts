@@ -1,8 +1,8 @@
 import type { CustomScheme } from 'electron'
 import { resolve, sep } from 'node:path'
 
-/** Origin the built renderers are served from (`getoffice-app://<module>/index.html`). */
-export const RENDERER_SCHEME = 'getoffice-app'
+/** Origin the built renderers are served from (`vegaoffice-app://<module>/index.html`). */
+export const RENDERER_SCHEME = 'vegaoffice-app'
 
 /** Chromium persists V8 code caches only for http(s) and for privileged custom
  * schemes; a file:// renderer recompiled its whole bundle on every open. */

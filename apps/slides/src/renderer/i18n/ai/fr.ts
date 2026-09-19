@@ -116,7 +116,7 @@ export const fr = {
   aiErrNetwork:
     'Problème réseau : impossible de joindre le service IA. Vérifiez votre connexion et réessayez',
   aiCreditsExhausted:
-    'Vos crédits VEGA sont épuisés. Rechargez sur api.vega.chat/keys puis réessayez',
+    'Vos crédits VEGA sont épuisés. Rechargez sur api.vega.chat puis réessayez',
   aiErrRequestFailed: "Échec de l'envoi de la requête : {msg}",
   aiErrGenerateFailed: 'Échec de la génération',
   aiErrRegenFailed: 'Échec de la régénération de la diapositive',

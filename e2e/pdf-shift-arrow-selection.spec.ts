@@ -36,7 +36,7 @@ function twoRunTextPdf(): Buffer {
  * non-collapsed selection present, Shift+navigation must reach the browser.
  */
 test('Shift+ArrowRight extends the text selection instead of flipping the page', async () => {
-  const dir = await mkdtemp(join(tmpdir(), 'getoffice-pdf-select-'))
+  const dir = await mkdtemp(join(tmpdir(), 'vegaoffice-pdf-select-'))
   const pdfPath = join(dir, 'tworuns.pdf')
   await writeFile(pdfPath, twoRunTextPdf())
 

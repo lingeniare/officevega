@@ -21,7 +21,7 @@ export const MARKDOWN_CHANNELS = {
   saveImage: 'markdown:save-image',
   readImage: 'markdown:read-image',
   saveImageAs: 'markdown:save-image-as',
-  viewImage: 'getoffice:view-image',
+  viewImage: 'vegaoffice:view-image',
   exportRequest: 'markdown:export-request',
   exportDocx: 'markdown:export-docx',
   exportPdf: 'markdown:export-pdf',

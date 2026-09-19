@@ -8,25 +8,25 @@ import { CliError, EXIT } from '../result'
 export function launcherPath(): string | null {
   const packaged = packagedResourcesDir()
   if (packaged)
-    return join(packaged, 'cli', process.platform === 'win32' ? 'getoffice.cmd' : 'getoffice')
+    return join(packaged, 'cli', process.platform === 'win32' ? 'vegaoffice.cmd' : 'vegaoffice')
   const root = repoRoot()
-  return root ? join(root, 'packages', 'cli', 'bin', 'getoffice') : null
+  return root ? join(root, 'packages', 'cli', 'bin', 'vegaoffice') : null
 }
 
 export const installCommand: CommandDef = {
   name: 'install-cli',
-  summary: 'Put getoffice on the PATH (symlink into /usr/local/bin, or the user PATH on Windows).',
+  summary: 'Put vegaoffice on the PATH (symlink into /usr/local/bin, or the user PATH on Windows).',
   usage: 'install-cli',
   async run() {
     const launcher = launcherPath()
-    if (!launcher) throw new CliError(EXIT.app, 'cannot locate the getoffice launcher')
+    if (!launcher) throw new CliError(EXIT.app, 'cannot locate the vegaoffice launcher')
     const r = installCliLink({ launcher })
     const detail = { status: r.status, launcher, ...(r.location ? { location: r.location } : {}) }
     switch (r.status) {
       case 'linked':
-        return { summary: `getoffice is now on the PATH (${r.location})`, detail }
+        return { summary: `vegaoffice is now on the PATH (${r.location})`, detail }
       case 'present':
-        return { summary: `getoffice is already on the PATH (${r.location})`, detail }
+        return { summary: `vegaoffice is already on the PATH (${r.location})`, detail }
       case 'occupied':
         throw new CliError(EXIT.app, `${r.location} is another program; not replacing it`, {
           ...detail,

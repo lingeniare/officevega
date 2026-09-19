@@ -431,7 +431,7 @@ textarea:disabled {
 
 /* While a popover is open the row must deliver presses (drag regions swallow
    them), so outside-press dismissal can see presses on the blank band */
-html.getoffice-popover-open .ribbon-tabs {
+html.vegaoffice-popover-open .ribbon-tabs {
   -webkit-app-region: no-drag;
 }
 
@@ -1858,18 +1858,6 @@ button.check-item:hover {
   box-shadow: var(--sheets-shadow-badge);
 }
 
-/* Genspark brand logo (shared by the collapse button and the AI panel title) */
-.genspark-badge {
-  display: block;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-}
-
-.ai-panel-title .genspark-badge {
-  width: 18px;
-  height: 18px;
-}
 
 .ai-panel-header-actions {
   display: flex;

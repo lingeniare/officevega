@@ -1,8 +1,8 @@
 #!/bin/sh
-# deb/rpm post-install: expose the getoffice command line shipped inside the app.
+# deb/rpm post-install: expose the vegaoffice command line shipped inside the app.
 set -e
-launcher="/opt/GetOffice/resources/cli/getoffice"
+launcher="/opt/VegaOffice/resources/cli/vegaoffice"
 if [ -x "$launcher" ]; then
-  ln -sf "$launcher" /usr/bin/getoffice
+  ln -sf "$launcher" /usr/bin/vegaoffice
 fi
 exit 0

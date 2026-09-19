@@ -11,23 +11,23 @@ const requested = new Set<string>()
 declare global {
   interface Window {
     /** Set after each private-font sync completes; the fidelity harness waits on it before screenshots. */
-    __getofficeDocFontsSynced?: boolean
+    __vegaofficeDocFontsSynced?: boolean
   }
 }
 
 /** Fetch and register any private faces not yet requested. Safe to call often (idempotent). */
 export async function syncPrivateFonts(): Promise<void> {
-  window.__getofficeDocFontsSynced = false
+  window.__vegaofficeDocFontsSynced = false
   let faces: Array<{ id: string; family: string; bold: boolean; italic: boolean }>
   try {
     faces = await window.slidesApi.privateFontFaces()
   } catch {
-    window.__getofficeDocFontsSynced = true
+    window.__vegaofficeDocFontsSynced = true
     return
   }
   // Test harnesses stub the bridge with null results
   if (!Array.isArray(faces)) {
-    window.__getofficeDocFontsSynced = true
+    window.__vegaofficeDocFontsSynced = true
     return
   }
   const added = await Promise.all(
@@ -61,5 +61,5 @@ export async function syncPrivateFonts(): Promise<void> {
     // redraw has actually presented (two rAFs = schedule + commit).
     await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))
   }
-  window.__getofficeDocFontsSynced = true
+  window.__vegaofficeDocFontsSynced = true
 }

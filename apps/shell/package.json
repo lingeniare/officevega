@@ -1,13 +1,13 @@
 {
-  "name": "@getoffice/shell",
-  "productName": "GetOffice",
+  "name": "@vegaoffice/shell",
+  "productName": "VegaOffice",
   "version": "0.10.1",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/lingeniare/getoffice",
+  "homepage": "https://github.com/LINGENIARE_VEGAOFFICE_GUARD",
   "private": true,
-  "description": "Unified GetOffice shell: one app hosting the docs and sheets modules behind a home/launcher window",
+  "description": "Unified VegaOffice shell: one app hosting the docs and sheets modules behind a home/launcher window",
   "main": "out/main/index.js",
-  "desktopName": "getoffice.desktop",
+  "desktopName": "vegaoffice.desktop",
   "scripts": {
     "dev": "electron-vite dev --watch",
     "build": "electron-vite build",
@@ -49,5 +49,5 @@
     "vite": "^7.3.1",
     "vitest": "^4.1.11"
   },
-  "author": "GetOffice"
+  "author": "VegaOffice"
 }

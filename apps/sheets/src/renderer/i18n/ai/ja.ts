@@ -65,7 +65,7 @@ export const ja = {
   aiNetworkError:
     'ネットワークに問題があり、AI サービスに接続できません。接続を確認して再試行してください',
   aiCreditsExhausted:
-    'VEGAクレジットを使い切りました。api.vega.chat/keys でチャージしてから再試行してください',
+    'VEGAクレジットを使い切りました。api.vega.chat でチャージしてから再試行してください',
   aiToolWorkbookContext: 'ブック情報を読み取り',
   aiToolReadRange: '範囲を読み取り',
   aiToolReadRangeOf: '範囲 {range} を読み取り',

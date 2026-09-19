@@ -1,4 +1,4 @@
-/** Main-process i18n strings for GetOffice Slides (dialogs, native menus, export, autosave prompts). */
+/** Main-process i18n strings for VegaOffice Slides (dialogs, native menus, export, autosave prompts). */
 import { createI18n, getUiLang } from '@genoffice/i18n'
 
 export const tMain = createI18n({
@@ -1091,11 +1091,11 @@ export const tMain = createI18n({
       'Вложения-изображения не содержат текста; изображение отправлено вместе с сообщением пользователя, просто посмотрите на него',
     errNotImage: 'неподдерживаемый тип изображения',
     errGskNotLoggedIn:
-      'Вы не вошли в VEGA: нажмите «Войти в VEGA» ниже, войдите и повторите попытку',
+      'Вы не вошли в ВЕГА: нажмите «Войти в ВЕГА» ниже, войдите и повторите попытку',
     errNoApiKey: 'API-ключ для {provider} не настроен',
     errNoModel: 'Не указано имя модели',
     errGskCli:
-      'нет входа: войдите в VEGA в приложении (меню аккаунта) или задайте API-ключ медиа-провайдера в настройках ИИ',
+      'нет входа: войдите в ВЕГА в приложении (меню аккаунта) или задайте API-ключ медиа-провайдера в настройках ИИ',
     errNoDeckAppend:
       'Нет презентации для добавления страниц (сессия отсутствует). Сначала создайте первую страницу с mode:"replace" или добавьте страницы нативными инструментами.',
     errAppendFailed: 'Сбой добавления: {reason}',

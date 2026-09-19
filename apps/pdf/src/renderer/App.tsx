@@ -6,7 +6,7 @@ import type { CSSProperties, MouseEvent as ReactMouseEvent } from 'react'
 import { GlobalWorkerOptions, getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs'
 import type { PDFDocumentProxy } from 'pdfjs-dist'
 import workerUrl from 'pdfjs-dist/legacy/build/pdf.worker.min.mjs?url'
-import { AiPanel, GensparkMark } from './ai/AiPanel'
+import { AiPanel, VegaMark } from './ai/AiPanel'
 import { AiAskPopover, type AskAnchorRect } from './AiAskPopover'
 import { loadSavedAnnots } from './annotation-catalog'
 import {
@@ -287,7 +287,7 @@ type RibbonTab = (typeof RIBBON_TABS)[number]['id'] | 'fillForm'
 
 export default function App() {
   const { lang, t } = useI18n()
-  const collapse = useRibbonCollapse('getoffice-pdf-ribbon-collapsed')
+  const collapse = useRibbonCollapse('vegaoffice-pdf-ribbon-collapsed')
   const [doc, setDoc] = useState<PDFDocumentProxy | null>(null)
   const [filePath, setFilePath] = useState('')
   const [status, setStatus] = useState<'loading' | 'error' | 'empty' | 'password' | 'ready'>(
@@ -300,10 +300,10 @@ export default function App() {
   const [pageInput, setPageInput] = useState('1')
   const [sidebar, setSidebar] = useState<'thumbs' | 'outline' | null>('thumbs')
   const [filesOpen, setFilesOpen] = useState(
-    () => localStorage.getItem('getoffice-pdf-show-files') === '1',
+    () => localStorage.getItem('vegaoffice-pdf-show-files') === '1',
   )
   useEffect(() => {
-    localStorage.setItem('getoffice-pdf-show-files', filesOpen ? '1' : '0')
+    localStorage.setItem('vegaoffice-pdf-show-files', filesOpen ? '1' : '0')
   }, [filesOpen])
   const [sidebarW, setSidebarW] = useState(loadSidebarW)
   /** raster width for thumbnails — only updated when a drag ends (re-rastering every frame would jank) */
@@ -346,10 +346,10 @@ export default function App() {
   }
   // Persisted so a closed AI panel stays closed on next launch (docs/slides parity)
   const [aiCollapsed, setAiCollapsed] = useState(
-    () => localStorage.getItem('getoffice-pdf-show-ai') === '0',
+    () => localStorage.getItem('vegaoffice-pdf-show-ai') === '0',
   )
   useEffect(() => {
-    localStorage.setItem('getoffice-pdf-show-ai', aiCollapsed ? '0' : '1')
+    localStorage.setItem('vegaoffice-pdf-show-ai', aiCollapsed ? '0' : '1')
   }, [aiCollapsed])
   /** One-shot prompt pushed by the ribbon AI buttons; the panel auto-runs it (docs preset pattern) */
   const [aiPreset, setAiPreset] = useState<{ text: string; nonce: number } | null>(null)
@@ -1483,9 +1483,9 @@ export default function App() {
     el.scrollTop = rowTop(rowOfVis(target - 1)) - PAGE_GAP / 2
   }
 
-  // getoffice CLI (`open --page`, `selection`): the shell evaluates this hook
+  // vegaoffice CLI (`open --page`, `selection`): the shell evaluates this hook
   useEffect(() => {
-    ;(window as unknown as Record<string, unknown>).__getofficeControl = (req: ControlRequest) =>
+    ;(window as unknown as Record<string, unknown>).__vegaofficeControl = (req: ControlRequest) =>
       handlePdfControl(req, {
         loaded: doc !== null,
         pageCount,
@@ -5999,9 +5999,9 @@ export default function App() {
                     onClick={() => setAiCollapsed((v) => !v)}
                   >
                     <span className="rb-big-icon">
-                      <GensparkMark size={26} />
+                      <VegaMark size={26} />
                     </span>
-                    <span>VEGA AI</span>
+                    <span>{lang === 'ru' ? 'ВЕГА ИИ' : 'VEGA AI'}</span>
                   </button>
                   <button
                     className="rb-big ai-entry"
@@ -6141,7 +6141,7 @@ export default function App() {
                   >
                     <span className="rb-big-icon">
                       <span className="ai-feature-icon" aria-hidden="true">
-                        <GensparkMark size={20} />
+                        <VegaMark size={20} />
                       </span>
                     </span>
                     <span>{t('aiProcessNotesBtn')}</span>
@@ -6288,7 +6288,7 @@ export default function App() {
                   >
                     <span className="rb-big-icon">
                       <span className="ai-feature-icon" aria-hidden="true">
-                        <GensparkMark size={20} />
+                        <VegaMark size={20} />
                       </span>
                     </span>
                     <span>{t('aiFillFormBtn')}</span>
@@ -6621,7 +6621,7 @@ export default function App() {
               aria-label={t('aiOpenAssistant')}
               onClick={() => setAiCollapsed(false)}
             >
-              <GensparkMark size={22} />
+              <VegaMark size={22} />
             </button>
           )}
           <AiPanel

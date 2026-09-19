@@ -9,7 +9,7 @@ import type { InstallOutcome } from '@genoffice/cli/install'
 export type { AgentId, AgentTarget, SkillInstallState, SkillInstallStatus }
 
 export interface CliStatus extends InstallOutcome {
-  /** directory holding the getoffice launcher (what `~/.getoffice/launcher` points at) */
+  /** directory holding the vegaoffice launcher (what `~/.vegaoffice/launcher` points at) */
   launcherDir: string
   /** app runs from a dmg / AppImage mount: the launcher path will not survive a restart */
   ephemeral: boolean
@@ -19,7 +19,7 @@ export interface CliStatus extends InstallOutcome {
 
 export interface IntegrationsStatus {
   cli: CliStatus
-  /** version of the bundled skill (skills/getoffice/SKILL.md front matter) */
+  /** version of the bundled skill (skills/vegaoffice/SKILL.md front matter) */
   skillVersion: string
   /** lowest CLI version that skill describes */
   skillNeedsCli: string
@@ -35,7 +35,7 @@ export interface IntegrationsApi {
   uninstallSkill(agentId: AgentId): Promise<SkillInstallState>
   /** folder picker for "install elsewhere"; null when cancelled */
   pickSkillDir(title: string): Promise<string | null>
-  /** save dialog + write of getoffice-skill-<version>.zip; the saved path, null when cancelled */
+  /** save dialog + write of vegaoffice-skill-<version>.zip; the saved path, null when cancelled */
   saveSkillZip(title: string): Promise<string | null>
   /** put text on the clipboard (paths, the manual PATH command) */
   copyText(text: string): Promise<void>

@@ -457,10 +457,10 @@ interface Props {
  */
 export const CANVAS_BLEED = 160
 
-/* Screenshot-automation hook (fidelity-compare): window.__getofficeHidePhPrompts = true +
- * dispatching 'getoffice:hide-ph-prompts' hides empty-placeholder hints on the edit canvas. */
+/* Screenshot-automation hook (fidelity-compare): window.__vegaofficeHidePhPrompts = true +
+ * dispatching 'vegaoffice:hide-ph-prompts' hides empty-placeholder hints on the edit canvas. */
 const hidePhPromptsListeners = new Set<() => void>()
-window.addEventListener('getoffice:hide-ph-prompts', () => {
+window.addEventListener('vegaoffice:hide-ph-prompts', () => {
   for (const l of hidePhPromptsListeners) l()
 })
 const subscribeHidePhPrompts = (cb: () => void) => {
@@ -470,7 +470,7 @@ const subscribeHidePhPrompts = (cb: () => void) => {
   }
 }
 const getHidePhPrompts = () =>
-  !!(window as { __getofficeHidePhPrompts?: boolean }).__getofficeHidePhPrompts
+  !!(window as { __vegaofficeHidePhPrompts?: boolean }).__vegaofficeHidePhPrompts
 
 /** Default rotate-handle snapping: lock onto 45° multiples (Shift switches to 15° steps) */
 const ROTATION_SNAPS = [0, 45, 90, 135, 180, 225, 270, 315]

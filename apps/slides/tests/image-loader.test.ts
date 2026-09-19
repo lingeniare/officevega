@@ -84,7 +84,7 @@ describe('createImageLoader', () => {
 })
 
 describe('metafile rasterization waits for private fonts', () => {
-  const flag = window as { __getofficeDocFontsSynced?: boolean }
+  const flag = window as { __vegaofficeDocFontsSynced?: boolean }
   beforeEach(() => {
     FakeImage.instances = []
     vi.stubGlobal('Image', FakeImage)
@@ -95,16 +95,16 @@ describe('metafile rasterization waits for private fonts', () => {
   afterEach(() => {
     vi.unstubAllGlobals()
     vi.useRealTimers()
-    delete flag.__getofficeDocFontsSynced
+    delete flag.__vegaofficeDocFontsSynced
   })
 
   it('holds the EMF until the doc-fonts sync flag flips, then rasterizes', async () => {
-    flag.__getofficeDocFontsSynced = false
+    flag.__vegaofficeDocFontsSynced = false
     const loader = createImageLoader(vi.fn(), 16, 100)
     loader.load(['data:image/x-emf;base64,AQAAAA=='])
     await vi.advanceTimersByTimeAsync(300)
     expect(metafileToDataUrl).not.toHaveBeenCalled()
-    flag.__getofficeDocFontsSynced = true
+    flag.__vegaofficeDocFontsSynced = true
     await vi.advanceTimersByTimeAsync(100)
     expect(metafileToDataUrl).toHaveBeenCalledTimes(1)
   })

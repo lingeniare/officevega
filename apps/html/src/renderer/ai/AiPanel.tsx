@@ -1118,12 +1118,12 @@ export function AiPanel({
         onPointerDown={startResize}
         role="separator"
         aria-orientation="vertical"
-        aria-label="VEGA"
+        aria-label={lang === 'ru' ? 'ВЕГА' : 'VEGA'}
       />
       <header className="ai-panel-header">
         <span className="ai-panel-title">
-          <GensparkMark size={22} />
-          VEGA
+          <VegaMark size={22} />
+          {lang === 'ru' ? 'ВЕГА' : 'VEGA'}
         </span>
         <div className="ai-panel-header-actions">
           {chat.length > 0 && (
@@ -1724,8 +1724,8 @@ function IconClock(): ReactElement {
   )
 }
 
-/** Genspark brand mark, inline for crisp device-resolution rendering */
-export function GensparkMark({ size = 18 }: { size?: number }): React.JSX.Element {
+/** Vega brand mark, inline for crisp device-resolution rendering */
+export function VegaMark({ size = 18 }: { size?: number }): React.JSX.Element {
   return (
     <svg
       width={size}

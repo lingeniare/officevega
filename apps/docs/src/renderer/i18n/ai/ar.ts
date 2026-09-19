@@ -112,7 +112,7 @@ export const ar = {
   aiNetworkError:
     'مشكلة في الشبكة: تعذّر الوصول إلى خدمة الذكاء الاصطناعي. تحقق من الاتصال وحاول مجددًا',
   aiCreditsExhausted:
-    'نفدت أرصدة VEGA لديك. يرجى إعادة الشحن عبر api.vega.chat/keys ثم المحاولة مجددًا',
+    'نفدت أرصدة VEGA لديك. يرجى إعادة الشحن عبر api.vega.chat ثم المحاولة مجددًا',
   aiSumReadAttachment: 'قراءة المرفق',
   aiSumImageAttachment: 'مرفق صورة {name}',
   aiSumRead: 'قراءة {name}',

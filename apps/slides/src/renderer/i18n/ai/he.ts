@@ -109,7 +109,7 @@ export const he = {
   aiErrStreamTimeout: 'תם הזמן לבקשת ה-AI: אין תגובה מהרשת וההרצה הופסקה. בדוק את החיבור ונסה שוב',
   aiErrOverloaded: 'שירות ה-AI עמוס כרגע — נסו שוב בעוד רגע',
   aiErrNetwork: 'בעיית רשת: לא ניתן להתחבר לשירות ה-AI. בדוק את החיבור ונסה שוב',
-  aiCreditsExhausted: 'קרדיטי VEGA שלך אזלו. טען מחדש ב-api.vega.chat/keys ונסה שוב',
+  aiCreditsExhausted: 'קרדיטי VEGA שלך אזלו. טען מחדש ב-api.vega.chat ונסה שוב',
   aiErrRequestFailed: 'שליחת הבקשה נכשלה: {msg}',
   aiErrGenerateFailed: 'היצירה נכשלה',
   aiErrRegenFailed: 'יצירת השקופית מחדש נכשלה',

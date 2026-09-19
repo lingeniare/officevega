@@ -1,6 +1,7 @@
 /** Home tab of the slides ribbon. Extracted from Ribbon.tsx. */
 import { useState } from 'react'
 import { platformShortcuts } from '@genoffice/i18n'
+import { useI18n } from '../i18n/locale'
 import { ColorPicker, isSymbolFontFamily } from '@genoffice/ui'
 import { saveEditSelection } from '../TextEditOverlay'
 import { armColorInput } from '../color-input'
@@ -8,7 +9,7 @@ import { displayFontFamily } from '../konva-adapter'
 import { useSystemFontFamilies } from '../system-fonts'
 import { useFontCatalog } from '../font-manager'
 import {
-  GensparkMark,
+  VegaMark,
   IconAiBeautify,
   IconAiFactCheck,
   IconAiImage,
@@ -159,6 +160,7 @@ export function RibbonHomeTab({ rb }: { rb: RibbonTabCtx }) {
     slideShowOpen,
     t,
   } = rb
+  const { lang } = useI18n()
   const [hangDraft, setHangDraft] = useState('')
   // Typed-ahead font query: only what the user actually typed filters the menu
   // (opening via the caret or focusing shows the full list)
@@ -216,16 +218,16 @@ export function RibbonHomeTab({ rb }: { rb: RibbonTabCtx }) {
   }
   return (
     <>
-      <Group label="VEGA AI">
+      <Group label={lang === 'ru' ? 'ВЕГА ИИ' : 'VEGA AI'}>
         <button
           className={`rb-big ai-entry${aiOpen ? ' active' : ''}`}
           data-tip={t('aiOpenAssistant')}
           onClick={onToggleAi}
         >
           <span className="rb-big-icon">
-            <GensparkMark size={26} />
+            <VegaMark size={26} />
           </span>
-          <span>VEGA AI</span>
+          <span>{lang === 'ru' ? 'ВЕГА ИИ' : 'VEGA AI'}</span>
         </button>
         <button
           className="rb-big ai-entry"

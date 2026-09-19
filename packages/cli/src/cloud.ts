@@ -1,18 +1,18 @@
 import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { setGskProxyUrl } from '@genoffice/ai-search'
-import { getofficeUserDataDir } from './gui'
+import { vegaofficeUserDataDir } from './gui'
 import { packagedResourcesDir } from './resources'
 
 /**
  * The cloud commands (search / image / media) reuse the editors' provider
- * routing: Genspark when signed in (~/.getoffice/auth.json) and cloud tools
+ * routing: Genspark when signed in (~/.vegaoffice/auth.json) and cloud tools
  * are on, otherwise the BYOK provider chosen in the app's AI settings. That
- * settings file lives in the shell's Electron userData directory, which getoffice
+ * settings file lives in the shell's Electron userData directory, which vegaoffice
  * has to locate without Electron.
  */
 export function aiSettingsPath(env: NodeJS.ProcessEnv): string {
-  return env.GETOFFICE_AI_SETTINGS || join(getofficeUserDataDir(env), 'ai-settings.json')
+  return env.VEGAOFFICE_AI_SETTINGS || join(vegaofficeUserDataDir(env), 'ai-settings.json')
 }
 
 /** First http(s) proxy in the usual environment variables, as the app's main process reads them. */

@@ -111,7 +111,7 @@ export const th = {
   aiErrOverloaded: 'บริการ AI มีผู้ใช้งานจำนวนมากในขณะนี้ โปรดลองอีกครั้งในอีกสักครู่',
   aiErrNetwork:
     'เครือข่ายมีปัญหา ไม่สามารถเชื่อมต่อบริการ AI ได้ โปรดตรวจสอบการเชื่อมต่อแล้วลองใหม่',
-  aiCreditsExhausted: 'เครดิต VEGA ของคุณหมดแล้ว โปรดเติมเครดิตที่ api.vega.chat/keys แล้วลองใหม่',
+  aiCreditsExhausted: 'เครดิต VEGA ของคุณหมดแล้ว โปรดเติมเครดิตที่ api.vega.chat แล้วลองใหม่',
   aiErrRequestFailed: 'ส่งคำขอไม่สำเร็จ: {msg}',
   aiErrGenerateFailed: 'สร้างไม่สำเร็จ',
   aiErrRegenFailed: 'ทำหน้าใหม่ไม่สำเร็จ',

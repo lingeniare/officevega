@@ -68,7 +68,7 @@ export const es = {
   aiNetworkError:
     'Problema de red: no se pudo conectar con el servicio de IA. Comprueba tu conexión e inténtalo de nuevo',
   aiCreditsExhausted:
-    'Tus créditos de VEGA se han agotado. Recarga en api.vega.chat/keys e inténtalo de nuevo',
+    'Tus créditos de VEGA se han agotado. Recarga en api.vega.chat e inténtalo de nuevo',
   aiToolWorkbookContext: 'Leer información del libro',
   aiToolReadRange: 'Leer rango',
   aiToolReadRangeOf: 'Leer rango {range}',

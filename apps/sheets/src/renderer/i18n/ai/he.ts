@@ -61,7 +61,7 @@ export const he = {
   aiTimeoutError: 'תם הזמן לבקשת ה-AI: אין תגובה מהרשת וההרצה הופסקה. בדוק את החיבור ונסה שוב',
   aiOverloadedError: 'שירות ה-AI עמוס כרגע — נסו שוב בעוד רגע',
   aiNetworkError: 'בעיית רשת: לא ניתן להתחבר לשירות ה-AI. בדוק את החיבור ונסה שוב',
-  aiCreditsExhausted: 'קרדיטי VEGA שלך אזלו. טען מחדש ב-api.vega.chat/keys ונסה שוב',
+  aiCreditsExhausted: 'קרדיטי VEGA שלך אזלו. טען מחדש ב-api.vega.chat ונסה שוב',
   aiToolWorkbookContext: 'קריאת פרטי חוברת העבודה',
   aiToolReadRange: 'קריאת טווח',
   aiToolReadRangeOf: 'קריאת הטווח {range}',

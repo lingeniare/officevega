@@ -1,4 +1,4 @@
-# Contributing to GetOffice
+# Contributing to VegaOffice
 
 Thanks for your interest in contributing. This document covers the local
 setup, the checks a change must pass, and the conventions used in this
@@ -51,7 +51,7 @@ All pure TypeScript, no Electron dependency, unit-tested (except the UI kit):
   every app.
 - `packages/ai-provider` — provider abstraction and streaming for the model
   backends.
-- `packages/ai-search` — Genspark auth + web/image search tools.
+- `packages/ai-search` — VEGA auth + web/image search tools.
 - `packages/i18n`, `packages/ui`, `packages/project-store`,
   `packages/electron-utils` — shared i18n core, React UI kit, recent-files
   store, and Electron main-process helpers.
@@ -130,7 +130,7 @@ over them. Point the output directory at an APFS path instead of moving the
 repository:
 
 ```bash
-BUILD_DIR=/tmp/getoffice-release npm run dist:mac
+BUILD_DIR=/tmp/vegaoffice-release npm run dist:mac
 ```
 
 `dist:win` additionally expects the xlsx sidecar at the MinGW cross-compilation
@@ -152,11 +152,11 @@ testing and local overrides:
 | Variable                                                    | Effect                                                                        |
 | ----------------------------------------------------------- | ----------------------------------------------------------------------------- |
 | `BUILD_DIR`                                                 | Override the electron-builder output directory (default `apps/shell/release`) |
-| `GETOFFICE_USER_DATA`                                       | Override the Electron userData directory (test isolation)                     |
-| `GETOFFICE_LANG`                                            | Force the UI language instead of following the OS locale                      |
-| `GETOFFICE_FAKE_UPDATE`                                     | Exercise the updater UI without a real release feed                           |
-| `GETOFFICE_CLOUD_SLIDE`, `GETOFFICE_CLOUD_SLIDE_TIER`       | Route slide generation through the cloud endpoint                             |
-| `GSK_API_KEY`, `GSK_CLI_PATH`                               | Genspark credentials / CLI location for the built-in AI provider              |
+| `VEGAOFFICE_USER_DATA`                                       | Override the Electron userData directory (test isolation)                     |
+| `VEGAOFFICE_LANG`                                            | Force the UI language instead of following the OS locale                      |
+| `VEGAOFFICE_FAKE_UPDATE`                                     | Exercise the updater UI without a real release feed                           |
+| `VEGAOFFICE_CLOUD_SLIDE`, `VEGAOFFICE_CLOUD_SLIDE_TIER`       | Route slide generation through the cloud endpoint                             |
+| `GSK_API_KEY`, `GSK_CLI_PATH`                               | account-provider credentials / gsk CLI location for the built-in AI provider              |
 | `AI_SEARCH_DISABLE_GSK`, `SERPER_API_KEY`, `TAVILY_API_KEY` | Disable the gsk search backend / supply a Serper or Tavily key                |
 | `XLSX_SIDECAR_PATH`, `XLSX_OPEN_PATH`, `XLSX_DEBUG_PORT`    | Point at a locally built xlsx sidecar and its debug port                      |
 | `*_DEV_PORT`, `*_RENDERER_URL`                              | Per-app Vite dev server ports and renderer URLs (set by `npm run dev`)        |

@@ -5,8 +5,8 @@ import { CliError, EXIT } from '../result'
 
 /**
  * Conversions that need an app renderer (Word, Excel and PowerPoint layout,
- * HTML and Markdown print, Word ↔ HTML) run in the GetOffice binary itself through its
- * `--headless-export` entry: Dock hidden, no window, one export, exit. getoffice
+ * HTML and Markdown print, Word ↔ HTML) run in the VegaOffice binary itself through its
+ * `--headless-export` entry: Dock hidden, no window, one export, exit. vegaoffice
  * just spawns it and reads the JSON envelope it prints. The app skips the
  * single-instance lock in that mode, so a running GUI does not interfere.
  */
@@ -39,8 +39,8 @@ export async function exportViaApp(
   const env = opts.env ?? process.env
   const launch = appLaunch(env)
   if (!launch) {
-    throw new CliError(EXIT.app, 'GetOffice app not found (needed for this conversion)', {
-      hint: 'install GetOffice, or set GETOFFICE_APP_BIN to its executable',
+    throw new CliError(EXIT.app, 'VegaOffice app not found (needed for this conversion)', {
+      hint: 'install VegaOffice, or set VEGAOFFICE_APP_BIN to its executable',
     })
   }
   const args = [
@@ -55,7 +55,7 @@ export async function exportViaApp(
   ]
   const childEnv = { ...env }
   delete childEnv.ELECTRON_RUN_AS_NODE
-  opts.log?.(`starting GetOffice for ${target} export`)
+  opts.log?.(`starting VegaOffice for ${target} export`)
   const spawn = opts.spawn ?? nodeSpawn
   const child = spawn(launch.command, args, { env: childEnv, stdio: ['ignore', 'pipe', 'pipe'] })
   const { code, stdout, stderr, timedOut } = await waitFor(
@@ -66,13 +66,13 @@ export async function exportViaApp(
   const envelope = parseEnvelope(stdout)
   const exported = envelope?.status === 'ok' && existsSync(outputPath)
   if (exported && (code === 0 || timedOut)) {
-    if (timedOut) opts.log?.('export finished but GetOffice had to be terminated on quit')
+    if (timedOut) opts.log?.('export finished but VegaOffice had to be terminated on quit')
     return { outputPath, summary: envelope.summary ?? `exported to ${outputPath}` }
   }
   if (timedOut) {
     throw new CliError(
       EXIT.conversion,
-      `GetOffice did not finish the export within ${Math.round((opts.timeoutMs ?? DEFAULT_TIMEOUT_MS) / 1000)}s`,
+      `VegaOffice did not finish the export within ${Math.round((opts.timeoutMs ?? DEFAULT_TIMEOUT_MS) / 1000)}s`,
       {
         app: launch.command,
       },
@@ -84,8 +84,8 @@ export async function exportViaApp(
     envelope?.summary ??
     (tail ||
       (code === 0
-        ? 'GetOffice exited without writing the file; this GetOffice version may not support --headless-export'
-        : `GetOffice exited with code ${code}`))
+        ? 'VegaOffice exited without writing the file; this VegaOffice version may not support --headless-export'
+        : `VegaOffice exited with code ${code}`))
   throw new CliError(exitCodeFor(code), message, {
     app: launch.command,
     exit_code: code,

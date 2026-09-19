@@ -118,7 +118,7 @@ export const de = {
   aiErrNetwork:
     'Netzwerkproblem: Der KI-Dienst ist nicht erreichbar. Prüfe deine Verbindung und versuche es erneut',
   aiCreditsExhausted:
-    'Deine VEGA-Credits sind aufgebraucht. Lade unter api.vega.chat/keys auf und versuche es erneut',
+    'Deine VEGA-Credits sind aufgebraucht. Lade unter api.vega.chat auf und versuche es erneut',
   aiErrRequestFailed: 'Senden der Anfrage fehlgeschlagen: {msg}',
   aiErrGenerateFailed: 'Generierung fehlgeschlagen',
   aiErrRegenFailed: 'Neuerstellung der Folie fehlgeschlagen',

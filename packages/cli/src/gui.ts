@@ -4,16 +4,16 @@ import { join } from 'node:path'
 import { realizedPath } from './fs'
 import { CliError, EXIT } from './result'
 
-/** The shell's Electron userData directory, located without Electron (GETOFFICE_USER_DATA overrides). */
-export function getofficeUserDataDir(env: NodeJS.ProcessEnv): string {
-  if (env.GETOFFICE_USER_DATA) return env.GETOFFICE_USER_DATA
+/** The shell's Electron userData directory, located without Electron (VEGAOFFICE_USER_DATA overrides). */
+export function vegaofficeUserDataDir(env: NodeJS.ProcessEnv): string {
+  if (env.VEGAOFFICE_USER_DATA) return env.VEGAOFFICE_USER_DATA
   const base =
     process.platform === 'darwin'
       ? join(homedir(), 'Library', 'Application Support')
       : process.platform === 'win32'
         ? env.APPDATA || join(homedir(), 'AppData', 'Roaming')
         : env.XDG_CONFIG_HOME || join(homedir(), '.config')
-  return join(base, 'GetOffice')
+  return join(base, 'VegaOffice')
 }
 
 export interface GuiOpenDocuments {
@@ -22,15 +22,15 @@ export interface GuiOpenDocuments {
 }
 
 /**
- * Files the running GetOffice shell has open, from the registry it publishes
+ * Files the running VegaOffice shell has open, from the registry it publishes
  * on every tab change (apps/shell/src/main/open-documents.ts). Null when no
  * shell is running: a registry whose pid is gone is a crash leftover.
  */
 export function guiOpenDocuments(env: NodeJS.ProcessEnv): GuiOpenDocuments | null {
   // a checkout's shell keeps its userData in "<name> Dev" beside the packaged one
-  const dirs = env.GETOFFICE_USER_DATA
-    ? [env.GETOFFICE_USER_DATA]
-    : [getofficeUserDataDir(env), `${getofficeUserDataDir(env)} Dev`]
+  const dirs = env.VEGAOFFICE_USER_DATA
+    ? [env.VEGAOFFICE_USER_DATA]
+    : [vegaofficeUserDataDir(env), `${vegaofficeUserDataDir(env)} Dev`]
   for (const dir of dirs) {
     const path = join(dir, 'open-documents.json')
     if (!existsSync(path)) continue
@@ -63,12 +63,12 @@ export function assertNotOpenInGui(abs: string, env: NodeJS.ProcessEnv): void {
   if (!open.paths.some((p) => realizedPath(p) === target)) return
   throw new CliError(
     EXIT.file,
-    `GetOffice has this file open: ${abs}`,
+    `VegaOffice has this file open: ${abs}`,
     { gui_pid: open.pid },
     {
       reason: 'file_open_in_gui',
       suggestion:
-        'close the tab in GetOffice first, or pass --force to write anyway (the editor may overwrite your change on its next save)',
+        'close the tab in VegaOffice first, or pass --force to write anyway (the editor may overwrite your change on its next save)',
     },
   )
 }

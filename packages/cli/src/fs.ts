@@ -34,12 +34,12 @@ export interface PathContext {
 }
 
 /**
- * GETOFFICE_ALLOWED_ROOTS: PATH-style list of directories getoffice may read from and
+ * VEGAOFFICE_ALLOWED_ROOTS: PATH-style list of directories vegaoffice may read from and
  * write to. Unset means unrestricted. Roots are compared after resolving
  * symlinks so a link inside a root cannot point out of it.
  */
 export function allowedRoots(env: NodeJS.ProcessEnv): string[] | null {
-  const raw = env.GETOFFICE_ALLOWED_ROOTS
+  const raw = env.VEGAOFFICE_ALLOWED_ROOTS
   if (raw === undefined || raw.trim() === '') return null
   return raw
     .split(delimiter)
@@ -79,7 +79,7 @@ export function assertAllowed(
   if (!roots.some((root) => isInside(root, real))) {
     throw new CliError(
       EXIT.file,
-      `refusing to ${purpose} outside GETOFFICE_ALLOWED_ROOTS: ${abs}`,
+      `refusing to ${purpose} outside VEGAOFFICE_ALLOWED_ROOTS: ${abs}`,
       { allowed_roots: roots },
       {
         reason: 'outside_allowed_roots',
@@ -148,7 +148,7 @@ export interface OutputOptions {
 
 /**
  * The single place an output path is resolved, policy-checked and its
- * directory created. A file the running GetOffice shell has open is refused
+ * directory created. A file the running VegaOffice shell has open is refused
  * without --force, so a CLI edit cannot race the editor's own save.
  */
 export function resolveOutput(

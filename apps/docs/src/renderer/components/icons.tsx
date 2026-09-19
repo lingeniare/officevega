@@ -1751,9 +1751,9 @@ export function IconClose(props: IconProps) {
   )
 }
 
-/** Genspark brand mark (rounded-square sparkle badge), inline so it renders
+/** Vega brand mark (rounded-square sparkle badge), inline so it renders
  * crisply at device resolution instead of going through <img> rasterization */
-export function GensparkMark({ size = 30 }: { size?: number }) {
+export function VegaMark({ size = 30 }: { size?: number }) {
   return (
     <svg
       width={size}

@@ -1,4 +1,4 @@
-/** Request/reply the shell relays from `getoffice open --page` and `getoffice selection`. */
+/** Request/reply the shell relays from `vegaoffice open --page` and `vegaoffice selection`. */
 export type ControlRequest =
   { cmd: 'goto'; target: { kind: string; page?: number } } | { cmd: 'selection' }
 

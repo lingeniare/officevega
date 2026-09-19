@@ -66,7 +66,7 @@ function electronCompatArgs(): string[] {
   if (!process.versions.electron) return []
   if (compatPath === undefined) {
     try {
-      const dir = join(homedir(), '.getoffice', 'bin')
+      const dir = join(homedir(), '.vegaoffice', 'bin')
       mkdirSync(dir, { recursive: true })
       compatPath = join(dir, 'electron-compat.js')
       writeFileSync(compatPath, 'delete process.versions.electron;\n')
@@ -80,7 +80,7 @@ function electronCompatArgs(): string[] {
 /**
  * API key for Genspark LLM proxy / tool_cli auth; '' when not logged in.
  * Priority: GSK_API_KEY env → shared gsk CLI login (bills to the Claw bucket).
- * GetOffice's own sign-in lives on VEGA now (getoffice-auth.ts) and mints a
+ * VegaOffice's own sign-in lives on VEGA now (vegaoffice-auth.ts) and mints a
  * sk-apivega-… key — it must not be sent to Genspark endpoints.
  */
 export function gskApiKey(): string {
@@ -384,7 +384,7 @@ async function toolCliPost(
   signal?: AbortSignal,
 ): Promise<unknown> {
   const key = gskApiKey()
-  if (!key) throw new Error('Not logged in to Genspark (gsk login)')
+  if (!key) throw new Error('Not logged in to the account provider (run gsk login)')
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), timeoutMs)
   const onAbort = () => controller.abort()
@@ -392,7 +392,7 @@ async function toolCliPost(
   try {
     const resp = await fetch(`${GSK_TOOL_CLI_BASE}${path}`, {
       method: 'POST',
-      // X-Agent-Type splits GetOffice usage out of the proxy's "Claw" billing
+      // X-Agent-Type splits VegaOffice usage out of the proxy's "Claw" billing
       // bucket — the value is registered server-side as "genoffice"
       headers: {
         'X-Api-Key': key,

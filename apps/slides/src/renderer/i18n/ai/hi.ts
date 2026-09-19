@@ -114,7 +114,7 @@ export const hi = {
   aiErrNetwork:
     'नेटवर्क समस्या: AI सेवा से कनेक्ट नहीं हो सका। कनेक्शन जांचें और फिर से प्रयास करें',
   aiCreditsExhausted:
-    'आपके VEGA क्रेडिट समाप्त हो गए हैं। api.vega.chat/keys पर रिचार्ज करें और फिर से प्रयास करें',
+    'आपके VEGA क्रेडिट समाप्त हो गए हैं। api.vega.chat पर रिचार्ज करें और फिर से प्रयास करें',
   aiErrRequestFailed: 'अनुरोध भेजने में विफल: {msg}',
   aiErrGenerateFailed: 'जनरेशन विफल',
   aiErrRegenFailed: 'स्लाइड फिर से बनाने में विफल',

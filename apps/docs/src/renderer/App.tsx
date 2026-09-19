@@ -1569,7 +1569,7 @@ export function App() {
 
   // window title follows the document, so the OS window list and Switch Window show file names
   useEffect(() => {
-    document.title = doc ? doc.fileName : 'GetOffice Docs'
+    document.title = doc ? doc.fileName : 'VegaOffice Docs'
   }, [doc])
 
   useEffect(() => window.desktop.onTeardown?.(() => setTornDown(true)), [])
@@ -2196,7 +2196,7 @@ export function App() {
       window.desktop.onZoteroRequest(async (request) => {
         try {
           const activeEditor = editorRef.current
-          if (!activeEditor) throw new Error('No active GetOffice document')
+          if (!activeEditor) throw new Error('No active VegaOffice document')
           const controller =
             zoteroControllerRef.current ??
             new ZoteroDocumentController(activeEditor, {
@@ -4895,9 +4895,9 @@ export function App() {
     if (src) setViewImage(src)
   }, [])
 
-  // getoffice CLI (`open --block`, `selection`): the shell evaluates this hook
+  // vegaoffice CLI (`open --block`, `selection`): the shell evaluates this hook
   useEffect(() => {
-    ;(window as unknown as Record<string, unknown>).__getofficeControl = (req: ControlRequest) =>
+    ;(window as unknown as Record<string, unknown>).__vegaofficeControl = (req: ControlRequest) =>
       handleDocsControl(req, editor, doc !== null)
   })
 

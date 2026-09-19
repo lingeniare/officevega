@@ -19,7 +19,7 @@ import {
   type LegacyAiSettings,
   type MediaBlob,
 } from '@genoffice/ai-provider'
-// deep imports: the package root re-exports Electron-bound modules, and this file also runs in the getoffice CLI
+// deep imports: the package root re-exports Electron-bound modules, and this file also runs in the vegaoffice CLI
 import { readGeneratedImage, storeGeneratedImage } from '@genoffice/electron-utils/generated-images'
 import { fetchRemoteImage } from '@genoffice/electron-utils/remote-image'
 import { fetchWithSsrfGuard } from '@genoffice/electron-utils/safe-remote-url'

@@ -113,7 +113,7 @@ export const ja = {
   aiErrNetwork:
     'ネットワークに問題があり、AI サービスに接続できません。接続を確認して再試行してください',
   aiCreditsExhausted:
-    'VEGAクレジットを使い切りました。api.vega.chat/keys でチャージしてから再試行してください',
+    'VEGAクレジットを使い切りました。api.vega.chat でチャージしてから再試行してください',
   aiErrRequestFailed: 'リクエストの送信に失敗しました: {msg}',
   aiErrGenerateFailed: '生成に失敗しました',
   aiErrRegenFailed: 'ページの再生成に失敗しました',

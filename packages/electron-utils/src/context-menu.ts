@@ -6,7 +6,7 @@ import type { App, ContextMenuParams, MenuItemConstructorOptions, WebContents } 
 import { saveImageFromUrl } from './save-image'
 
 /** Native "View Image" hands the src to the renderer, which owns the viewer overlay */
-export const VIEW_IMAGE_CHANNEL = 'getoffice:view-image'
+export const VIEW_IMAGE_CHANNEL = 'vegaoffice:view-image'
 
 export interface ContextMenuLabels {
   cut: string
@@ -264,7 +264,7 @@ function buildEditItems(params: BuildParams, labels: ContextMenuLabels): Context
 }
 
 // Symbol.for: survives multiple bundled copies (see navigation-guard.ts).
-const INSTALLED = Symbol.for('getoffice.context-menu-installed')
+const INSTALLED = Symbol.for('vegaoffice.context-menu-installed')
 
 export function installContextMenu(app: App, getLabels: () => ContextMenuLabels): void {
   const holder = app as unknown as Record<symbol, boolean | undefined>

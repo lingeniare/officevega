@@ -115,7 +115,7 @@ export const it = {
   aiErrOverloaded: 'Il servizio IA è momentaneamente sovraccarico — riprova tra poco',
   aiErrNetwork:
     'Problema di rete: impossibile raggiungere il servizio IA. Controlla la connessione e riprova',
-  aiCreditsExhausted: 'I tuoi crediti VEGA sono esauriti. Ricarica su api.vega.chat/keys e riprova',
+  aiCreditsExhausted: 'I tuoi crediti VEGA sono esauriti. Ricarica su api.vega.chat e riprova',
   aiErrRequestFailed: 'Invio della richiesta non riuscito: {msg}',
   aiErrGenerateFailed: 'Generazione non riuscita',
   aiErrRegenFailed: 'Rigenerazione della diapositiva non riuscita',

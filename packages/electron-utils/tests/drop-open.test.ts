@@ -50,7 +50,7 @@ type GlobalWithWindow = { window?: unknown }
 /** the idempotence flag lives on globalThis; clear it between installs */
 function resetInstallFlag(): void {
   delete (globalThis as Record<symbol | string, unknown>)[
-    Symbol.for('getoffice.drop-open-installed')
+    Symbol.for('vegaoffice.drop-open-installed')
   ]
 }
 

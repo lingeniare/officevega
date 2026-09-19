@@ -16,13 +16,13 @@ import {
   type SkillLedger,
 } from '../src/agent-skills'
 
-const skillText = (version: string, body = 'Run `getoffice --version` first.') =>
-  `---\nname: getoffice\ndescription: test\nmetadata:\n  version: ${version}\n  cli: '>=0.4.0'\n---\n\n${body}\n`
+const skillText = (version: string, body = 'Run `vegaoffice --version` first.') =>
+  `---\nname: vegaoffice\ndescription: test\nmetadata:\n  version: ${version}\n  cli: '>=0.4.0'\n---\n\n${body}\n`
 
 const bundled = (version = '1.2.0') => bundledSkillFrom(Buffer.from(skillText(version)))
 
 function home(): string {
-  return mkdtempSync(join(tmpdir(), 'getoffice-skills-'))
+  return mkdtempSync(join(tmpdir(), 'vegaoffice-skills-'))
 }
 
 describe('detectAgents', () => {
@@ -46,7 +46,7 @@ describe('detectAgents', () => {
 describe('parseSkillFrontmatter / compareVersions', () => {
   it('reads name and metadata.version', () => {
     expect(parseSkillFrontmatter(skillText('2.1.0'))).toEqual({
-      name: 'getoffice',
+      name: 'vegaoffice',
       version: '2.1.0',
     })
     expect(parseSkillFrontmatter('---\nname: other\n---\nx')).toEqual({
@@ -73,7 +73,7 @@ describe('readInstallState', () => {
 
     // our install, current
     const path = installSkill(dir, b, ledger)
-    expect(path).toBe(join(dir, 'getoffice', 'SKILL.md'))
+    expect(path).toBe(join(dir, 'vegaoffice', 'SKILL.md'))
     expect(readFileSync(path, 'utf-8')).toBe(b.text)
     expect(ledger[path]).toMatchObject({ version: '1.2.0', sha256: b.sha256, channel: 'app' })
     expect(readInstallState(dir, b, ledger)).toMatchObject({
@@ -112,7 +112,7 @@ describe('readInstallState', () => {
     // the folder holds something else
     writeFileSync(path, '---\nname: other-skill\n---\n')
     expect(readInstallState(dir, b, ledger).status).toBe('occupied')
-    mkdirSync(join(dir, 'getoffice', 'nested'))
+    mkdirSync(join(dir, 'vegaoffice', 'nested'))
     writeFileSync(path, 'not a skill at all')
     expect(readInstallState(dir, b, ledger).status).toBe('occupied')
   })
@@ -124,16 +124,16 @@ describe('uninstallSkill', () => {
     const b = bundled()
     const ledger: SkillLedger = {}
     // foreign file: never touched
-    mkdirSync(join(dir, 'getoffice'), { recursive: true })
-    writeFileSync(join(dir, 'getoffice', 'SKILL.md'), skillText('1.0.0'))
+    mkdirSync(join(dir, 'vegaoffice'), { recursive: true })
+    writeFileSync(join(dir, 'vegaoffice', 'SKILL.md'), skillText('1.0.0'))
     expect(uninstallSkill(dir, ledger)).toBe(false)
-    expect(existsSync(join(dir, 'getoffice', 'SKILL.md'))).toBe(true)
+    expect(existsSync(join(dir, 'vegaoffice', 'SKILL.md'))).toBe(true)
 
     const path = installSkill(dir, b, ledger)
-    writeFileSync(join(dir, 'getoffice', 'notes.txt'), 'mine')
+    writeFileSync(join(dir, 'vegaoffice', 'notes.txt'), 'mine')
     expect(uninstallSkill(dir, ledger)).toBe(true)
     expect(existsSync(path)).toBe(false)
-    expect(existsSync(join(dir, 'getoffice', 'notes.txt'))).toBe(true)
+    expect(existsSync(join(dir, 'vegaoffice', 'notes.txt'))).toBe(true)
     expect(ledger[path]).toBeUndefined()
 
     installSkill(dir, b, ledger)
@@ -141,16 +141,16 @@ describe('uninstallSkill', () => {
     const dir2 = join(home(), 'skills')
     const p2 = installSkill(dir2, b, ledger)
     expect(uninstallSkill(dir2, ledger)).toBe(true)
-    expect(existsSync(join(dir2, 'getoffice'))).toBe(false)
+    expect(existsSync(join(dir2, 'vegaoffice'))).toBe(false)
     expect(existsSync(p2)).toBe(false)
   })
 })
 
 describe('buildSkillZip', () => {
-  it('holds getoffice/SKILL.md with the exact bundled bytes', async () => {
+  it('holds vegaoffice/SKILL.md with the exact bundled bytes', async () => {
     const b = bundled('1.2.0')
     const zip = await JSZip.loadAsync(await buildSkillZip(b))
-    expect(Object.keys(zip.files).filter((f) => !zip.files[f]!.dir)).toEqual(['getoffice/SKILL.md'])
-    expect(await zip.file('getoffice/SKILL.md')!.async('string')).toBe(b.text)
+    expect(Object.keys(zip.files).filter((f) => !zip.files[f]!.dir)).toEqual(['vegaoffice/SKILL.md'])
+    expect(await zip.file('vegaoffice/SKILL.md')!.async('string')).toBe(b.text)
   })
 })

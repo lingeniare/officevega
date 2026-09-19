@@ -24,7 +24,7 @@ export function createContext(base: {
 }): McpContext {
   const scratchDir = join(
     tmpdir(),
-    `getoffice-mcp-${process.pid}-${randomBytes(4).toString('hex')}`,
+    `vegaoffice-mcp-${process.pid}-${randomBytes(4).toString('hex')}`,
   )
   mkdirSync(scratchDir, { recursive: true })
   return { ...base, env: allowScratch(base.env, scratchDir), scratchDir }
@@ -34,14 +34,14 @@ export function disposeContext(ctx: McpContext): void {
   rmSync(ctx.scratchDir, { recursive: true, force: true })
 }
 
-/** GETOFFICE_ALLOWED_ROOTS stays in force for the caller's paths; the server's own scratch dir is added so inline ops can be read. */
+/** VEGAOFFICE_ALLOWED_ROOTS stays in force for the caller's paths; the server's own scratch dir is added so inline ops can be read. */
 function allowScratch(env: NodeJS.ProcessEnv, scratchDir: string): NodeJS.ProcessEnv {
-  const roots = env.GETOFFICE_ALLOWED_ROOTS
+  const roots = env.VEGAOFFICE_ALLOWED_ROOTS
   if (roots === undefined || roots.trim() === '') return env
-  return { ...env, GETOFFICE_ALLOWED_ROOTS: `${roots}${delimiter}${scratchDir}` }
+  return { ...env, VEGAOFFICE_ALLOWED_ROOTS: `${roots}${delimiter}${scratchDir}` }
 }
 
-/** One command, as `getoffice <argv> --json` would run it, with the JSON envelope parsed back. */
+/** One command, as `vegaoffice <argv> --json` would run it, with the JSON envelope parsed back. */
 export async function runJson(argv: string[], ctx: McpContext): Promise<Outcome> {
   const out: string[] = []
   await runCli([...argv, '--json'], {
@@ -60,7 +60,7 @@ export async function runJson(argv: string[], ctx: McpContext): Promise<Outcome>
         command: argv[0] ?? null,
         code: 3,
         error: 'conversion_failed',
-        message: `getoffice printed no JSON: ${text.slice(0, 200)}`,
+        message: `vegaoffice printed no JSON: ${text.slice(0, 200)}`,
       },
     }
   }

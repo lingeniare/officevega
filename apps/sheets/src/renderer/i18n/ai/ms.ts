@@ -66,7 +66,7 @@ export const ms = {
   aiNetworkError:
     'Masalah rangkaian: tidak dapat menghubungi perkhidmatan AI. Semak sambungan anda dan cuba lagi',
   aiCreditsExhausted:
-    'Kredit VEGA anda telah habis. Tambah nilai di api.vega.chat/keys dan cuba lagi',
+    'Kredit VEGA anda telah habis. Tambah nilai di api.vega.chat dan cuba lagi',
   aiToolWorkbookContext: 'Baca maklumat buku kerja',
   aiToolReadRange: 'Baca julat',
   aiToolReadRangeOf: 'Baca julat {range}',

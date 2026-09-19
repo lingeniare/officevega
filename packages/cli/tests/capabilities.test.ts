@@ -6,8 +6,8 @@ import { run, tempDir } from './helpers'
 // hasGskAuth reads process.env, not the command context: isolate the login state per test
 const saved: Record<string, string | undefined> = {}
 beforeEach(() => {
-  for (const k of ['GETOFFICE_AUTH_DIR', 'AI_SEARCH_DISABLE_GSK']) saved[k] = process.env[k]
-  process.env.GETOFFICE_AUTH_DIR = join(tempDir(), 'no-auth')
+  for (const k of ['VEGAOFFICE_AUTH_DIR', 'AI_SEARCH_DISABLE_GSK']) saved[k] = process.env[k]
+  process.env.VEGAOFFICE_AUTH_DIR = join(tempDir(), 'no-auth')
   process.env.AI_SEARCH_DISABLE_GSK = '1'
 })
 afterEach(() => {
@@ -24,14 +24,14 @@ function settingsFile(dir: string, settings: Record<string, unknown>): string {
   return path
 }
 
-describe('getoffice capabilities', () => {
+describe('vegaoffice capabilities', () => {
   it('reports nothing configured when signed out with default settings', async () => {
     const dir = tempDir()
     const r = await run(['capabilities', '--json'], {
       env: {
         ...process.env,
-        GETOFFICE_AI_SETTINGS: join(dir, 'missing.json'),
-        GETOFFICE_APP_BIN: '',
+        VEGAOFFICE_AI_SETTINGS: join(dir, 'missing.json'),
+        VEGAOFFICE_APP_BIN: '',
       },
     })
     expect(r.code).toBe(0)
@@ -58,8 +58,8 @@ describe('getoffice capabilities', () => {
     const r = await run(['capabilities', '--json'], {
       env: {
         ...process.env,
-        GETOFFICE_AI_SETTINGS: settings,
-        GETOFFICE_APP_BIN: join(dir, 'bin', 'app'),
+        VEGAOFFICE_AI_SETTINGS: settings,
+        VEGAOFFICE_APP_BIN: join(dir, 'bin', 'app'),
       },
     })
     expect(r.code).toBe(0)
@@ -81,7 +81,7 @@ describe('getoffice capabilities', () => {
       },
     })
     const r = await run(['capabilities', '--json'], {
-      env: { ...process.env, GETOFFICE_AI_SETTINGS: settings },
+      env: { ...process.env, VEGAOFFICE_AI_SETTINGS: settings },
     })
     const d = r.json().detail
     expect(d.search).toEqual({ available: true, via: 'tavily' })

@@ -17,8 +17,8 @@ export const ru = {
   aiQcPageSkipped: 'Страница {n}: автоматическая проверка макета пропущена',
   aiQcStopped: 'Проверка макета остановлена',
   aiQcCapped: 'Ещё {count} стр. не проверено (лимит за один запуск)',
-  aiGskLoginBtn: 'Войти в VEGA',
-  aiPanelTitle: 'VEGA',
+  aiGskLoginBtn: 'Войти в ВЕГА',
+  aiPanelTitle: 'ВЕГА',
   aiOpenAssistant: 'Открыть ИИ-помощника',
   aiFactCheckBtn: 'ИИ-фактчекинг',
   aiFactCheckPrompt:
@@ -115,7 +115,7 @@ export const ru = {
   aiErrNetwork:
     'Проблема с сетью: не удалось подключиться к сервису ИИ. Проверьте подключение и повторите попытку',
   aiCreditsExhausted:
-    'Кредиты VEGA исчерпаны. Пополните баланс на api.vega.chat/keys и повторите попытку',
+    'Кредиты ВЕГА исчерпаны. Пополните баланс на api.vega.chat и повторите попытку',
   aiErrRequestFailed: 'Не удалось отправить запрос: {msg}',
   aiErrGenerateFailed: 'Сбой генерации',
   aiErrRegenFailed: 'Не удалось переделать слайд',

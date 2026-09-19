@@ -8,14 +8,14 @@ import { run, tempDir } from './helpers'
 
 const env = (over: Record<string, string>) => ({
   ...process.env,
-  GETOFFICE_AUDIT_LOG: 'off',
+  VEGAOFFICE_AUDIT_LOG: 'off',
   ...over,
 })
 
-describe('GETOFFICE_ALLOWED_ROOTS', () => {
+describe('VEGAOFFICE_ALLOWED_ROOTS', () => {
   it('is unrestricted when unset and blank', () => {
     expect(allowedRoots({})).toBeNull()
-    expect(allowedRoots({ GETOFFICE_ALLOWED_ROOTS: '  ' })).toBeNull()
+    expect(allowedRoots({ VEGAOFFICE_ALLOWED_ROOTS: '  ' })).toBeNull()
   })
 
   it('refuses inputs and outputs outside the roots (exit 2, roots in detail)', async () => {
@@ -23,7 +23,7 @@ describe('GETOFFICE_ALLOWED_ROOTS', () => {
     const outside = tempDir()
     const csv = join(outside, 'a.csv')
     writeFileSync(csv, 'x,y\n1,2\n')
-    const e = env({ GETOFFICE_ALLOWED_ROOTS: inside })
+    const e = env({ VEGAOFFICE_ALLOWED_ROOTS: inside })
     const read = await run(['info', csv, '--json'], { env: e })
     expect(read.code).toBe(2)
     expect(read.json().message).toContain('refusing to read')
@@ -69,7 +69,7 @@ describe('GETOFFICE_ALLOWED_ROOTS', () => {
     symlinkSync(join(outside, 'real.csv'), join(inside, 'link.csv'))
     mkdirSync(join(inside, 'escape-dir'))
     symlinkSync(outside, join(inside, 'escape'), 'dir')
-    const e = env({ GETOFFICE_ALLOWED_ROOTS: inside })
+    const e = env({ VEGAOFFICE_ALLOWED_ROOTS: inside })
     expect((await run(['info', join(inside, 'link.csv'), '--json'], { env: e })).code).toBe(2)
     writeFileSync(join(inside, 'b.csv'), 'x\n1\n')
     const viaLink = await run(
@@ -93,7 +93,7 @@ describe('GETOFFICE_ALLOWED_ROOTS', () => {
     const inside = tempDir()
     mkdirSync(join(inside, '..hidden'))
     writeFileSync(join(inside, '..hidden', 'a.csv'), 'x\n1\n')
-    const e = env({ GETOFFICE_ALLOWED_ROOTS: inside })
+    const e = env({ VEGAOFFICE_ALLOWED_ROOTS: inside })
     expect(
       (await run(['info', join(inside, '..hidden', 'a.csv'), '--json'], { env: e })).code,
     ).toBe(0)
@@ -108,7 +108,7 @@ describe('GETOFFICE_ALLOWED_ROOTS', () => {
       ops,
       JSON.stringify([{ op: 'addPicture', target: { slide: 0 }, bytes: join(outside, 'pic.png') }]),
     )
-    const e = env({ GETOFFICE_ALLOWED_ROOTS: inside })
+    const e = env({ VEGAOFFICE_ALLOWED_ROOTS: inside })
     const r = await run(
       ['create', '--type', 'pptx', '--ops', ops, '--out', join(inside, 'deck.pptx'), '--json'],
       { env: e },
@@ -157,7 +157,7 @@ describe('GETOFFICE_ALLOWED_ROOTS', () => {
     const b = tempDir()
     writeFileSync(join(b, 'a.csv'), 'x\n1\n')
     const e = env({
-      GETOFFICE_ALLOWED_ROOTS: [a, b].join(process.platform === 'win32' ? ';' : ':'),
+      VEGAOFFICE_ALLOWED_ROOTS: [a, b].join(process.platform === 'win32' ? ';' : ':'),
     })
     expect((await run(['info', join(b, 'a.csv'), '--json'], { env: e })).code).toBe(0)
   })
@@ -181,10 +181,10 @@ describe('audit log', () => {
     expect(redactArgv(['info', 'a.pdf', '--password'])).toEqual(['info', 'a.pdf', '--password'])
   })
 
-  it('defaults under ~/.getoffice and honours GETOFFICE_AUDIT_LOG', () => {
-    expect(auditLogPath({})).toMatch(/[\\/]\.getoffice[\\/]cli-audit\.jsonl$/)
-    expect(auditLogPath({ GETOFFICE_AUDIT_LOG: 'off' })).toBeNull()
-    expect(auditLogPath({ GETOFFICE_AUDIT_LOG: '/x/y.jsonl' })).toBe('/x/y.jsonl')
+  it('defaults under ~/.vegaoffice and honours VEGAOFFICE_AUDIT_LOG', () => {
+    expect(auditLogPath({})).toMatch(/[\\/]\.vegaoffice[\\/]cli-audit\.jsonl$/)
+    expect(auditLogPath({ VEGAOFFICE_AUDIT_LOG: 'off' })).toBeNull()
+    expect(auditLogPath({ VEGAOFFICE_AUDIT_LOG: '/x/y.jsonl' })).toBe('/x/y.jsonl')
   })
 
   it('appends one line per executed command, success or failure', async () => {
@@ -192,7 +192,7 @@ describe('audit log', () => {
     const log = join(dir, 'nested/audit.jsonl')
     const csv = join(dir, 'a.csv')
     writeFileSync(csv, 'x,y\n1,2\n')
-    const e = { ...process.env, GETOFFICE_AUDIT_LOG: log }
+    const e = { ...process.env, VEGAOFFICE_AUDIT_LOG: log }
     expect((await run(['info', csv, '--json'], { env: e })).code).toBe(0)
     expect((await run(['convert', csv, '--to', 'xlsx', '--json'], { env: e })).code).toBe(0)
     expect((await run(['info', join(dir, 'missing.csv'), '--json'], { env: e })).code).toBe(2)

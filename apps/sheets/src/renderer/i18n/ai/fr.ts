@@ -67,7 +67,7 @@ export const fr = {
   aiNetworkError:
     'Problème réseau : impossible de joindre le service IA. Vérifiez votre connexion et réessayez',
   aiCreditsExhausted:
-    'Vos crédits VEGA sont épuisés. Rechargez sur api.vega.chat/keys puis réessayez',
+    'Vos crédits VEGA sont épuisés. Rechargez sur api.vega.chat puis réessayez',
   aiToolWorkbookContext: 'Lire les informations du classeur',
   aiToolReadRange: 'Lire la plage',
   aiToolReadRangeOf: 'Lire la plage {range}',

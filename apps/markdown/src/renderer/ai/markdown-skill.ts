@@ -21,7 +21,7 @@ export const MARKDOWN_RULES = [
 ].join('\n')
 
 const AGENT_SYSTEM_PROMPT = [
-  'You are the writing assistant inside GetOffice Markdown, a markdown document editor.',
+  'You are the writing assistant inside VegaOffice Markdown, a markdown document editor.',
   'You read and edit the open document through tools that address top-level blocks by 0-based index.',
   '',
   '## Markdown syntax rules',

@@ -1,22 +1,22 @@
 <p align="center">
-  <a href="https://genoffice.ai/">
+  <a href="https://github.com/lingeniare/getoffice/">
     <picture>
       <source srcset="../assets/readme/hero-dark.webp" media="(prefers-color-scheme: dark)">
-      <img src="../assets/readme/hero.webp" alt="GetOffice — la suite Office AI open source: Docs, Sheets, Slides, PDF, Markdown e HTML con un pannello AI integrato" width="100%">
+      <img src="../assets/readme/hero.webp" alt="VegaOffice — la suite Office AI open source: Docs, Sheets, Slides, PDF, Markdown e HTML con un pannello AI integrato" width="100%">
     </picture>
   </a>
 </p>
 
-<h1 align="center">GetOffice</h1>
+<h1 align="center">VegaOffice</h1>
 
 <p align="center"><b>La prima suite office AI open source e completa al mondo.</b><br>
 File Word, Excel, PowerPoint e PDF, modificati da te e dalla tua AI, salvati negli stessi formati reali.</p>
 
 <p align="center">
-  <a href="../../LICENSE"><img src="https://img.shields.io/github/license/genspark-ai/genoffice" alt="License: Apache-2.0"></a>
-  <a href="https://github.com/genspark-ai/genoffice/releases/latest"><img src="https://img.shields.io/github/v/release/genspark-ai/genoffice" alt="Latest release"></a>
-  <a href="https://github.com/genspark-ai/genoffice/releases"><img src="https://img.shields.io/github/downloads/genspark-ai/genoffice/total" alt="Downloads"></a>
-  <a href="https://github.com/genspark-ai/genoffice/stargazers"><img src="https://img.shields.io/github/stars/genspark-ai/genoffice?style=flat" alt="GitHub stars"></a>
+  <a href="../../LICENSE"><img src="https://img.shields.io/github/license/lingeniare/getoffice" alt="License: Apache-2.0"></a>
+  <a href="https://github.com/lingeniare/getoffice/releases/latest"><img src="https://img.shields.io/github/v/release/lingeniare/getoffice" alt="Latest release"></a>
+  <a href="https://github.com/lingeniare/getoffice/releases"><img src="https://img.shields.io/github/downloads/lingeniare/getoffice/total" alt="Downloads"></a>
+  <a href="https://github.com/lingeniare/getoffice/stargazers"><img src="https://img.shields.io/github/stars/lingeniare/getoffice?style=flat" alt="GitHub stars"></a>
 </p>
 
 <p align="center"><a href="../../README.md">English</a> · <a href="README.es.md">Español</a> · <a href="README.pt-BR.md">Português (Brasil)</a> · <a href="README.de.md">Deutsch</a> · <a href="README.fr.md">Français</a> · <a href="README.zh-CN.md">简体中文</a> · <a href="README.zh-TW.md">繁體中文</a> · <a href="README.ko.md">한국어</a> · <a href="README.ja.md">日本語</a> · <a href="README.ar.md">العربية</a> · <a href="README.ru.md">Русский</a> · <b>Italiano</b> · <a href="README.nl.md">Nederlands</a> · <a href="README.pl.md">Polski</a> · <a href="README.cs.md">Čeština</a> · <a href="README.id.md">Bahasa Indonesia</a> · <a href="README.ms.md">Bahasa Melayu</a> · <a href="README.th.md">ไทย</a> · <a href="README.hi.md">हिन्दी</a> · <a href="README.he.md">עברית</a></p>
@@ -25,12 +25,12 @@ File Word, Excel, PowerPoint e PDF, modificati da te e dalla tua AI, salvati neg
   <a href="#download"><b>Download</b></a> ·
   <a href="#command-line-and-agent-skill"><b>CLI</b></a> ·
   <a href="#mcp-server"><b>MCP</b></a> ·
-  <a href="https://genoffice.ai/"><b>Sito web</b></a> ·
-  <a href="https://genoffice.ai/join"><b>Community</b></a> ·
+  <a href="https://github.com/lingeniare/getoffice/"><b>Sito web</b></a> ·
+  <a href="https://github.com/lingeniare/getoffice"><b>Community</b></a> ·
   <a href="../../PRIVACY.md"><b>Privacy</b></a>
 </p>
 
-GetOffice è un'alternativa gratuita e open source a Microsoft Office per
+VegaOffice è un'alternativa gratuita e open source a Microsoft Office per
 macOS, Windows e Linux. Apre e salva file nativi `.docx`, `.xlsx` e `.pptx`,
 permette di modificare PDF, Markdown e HTML, e affianca un agente AI a ogni
 documento — non una chat incollata a fianco, ma un editor che legge il file,
@@ -47,19 +47,19 @@ applica la modifica e ti mostra esattamente cosa ha toccato.
   si convertono sul tuo computer. Le conversioni PDF → Word / Excel /
   PowerPoint, Markdown → Word e HTML → Word avvengono tutte in locale. Solo
   le chiamate AI lasciano la macchina, verso il provider che scegli.
-- **Le tue chiavi, o nessuna.** Accedi con Genspark e non dovrai configurare
+- **Le tue chiavi, o nessuna.** Accedi con VEGA e non dovrai configurare
   nulla, oppure usa la tua chiave per Claude, OpenAI, Gemini, DeepSeek, Kimi,
   GLM, Qwen, Doubao, MiniMax, Grok, Mistral, OpenRouter, Requesty o qualsiasi endpoint
   compatibile con OpenAI, inclusi i server locali.
 - **Scriptabile e pronto per gli agenti.** L'app include una riga di comando
-  `getoffice` e uno skill per Claude Code, Codex, Cursor, Gemini CLI, GitHub
+  `vegaoffice` e uno skill per Claude Code, Codex, Cursor, Gemini CLI, GitHub
   Copilot, OpenCode e Windsurf, così un agente di coding può creare,
   convertire, leggere e modificare file Office reali sul tuo computer senza
   aprire una finestra.
 
-**Scaricalo:** [macOS](https://github.com/genspark-ai/genoffice/releases/latest) (Apple Silicon e Intel) ·
-[Windows](https://github.com/genspark-ai/genoffice/releases/latest) (x64 e Arm) ·
-[Linux](https://github.com/genspark-ai/genoffice/releases/latest) (deb, rpm, AppImage) —
+**Scaricalo:** [macOS](https://github.com/lingeniare/getoffice/releases/latest) (Apple Silicon e Intel) ·
+[Windows](https://github.com/lingeniare/getoffice/releases/latest) (x64 e Arm) ·
+[Linux](https://github.com/lingeniare/getoffice/releases/latest) (deb, rpm, AppImage) —
 dettagli e requisiti nella sezione [Download](#download).
 
 ## Demo
@@ -72,8 +72,8 @@ prompt che puoi leggere nel pannello.
 
 <table>
 <tr>
-<td width="50%"><img src="../assets/readme/docs-report.webp" alt="GetOffice Docs visualizza una pagina di relazione annuale a due colonne con un'immagine di copertina a piena larghezza, una tabella KPI con sfondo colorato, intestazione e piè di pagina, a zoom 80% con il pannello AI ridotto a icona"></td>
-<td width="50%"><img src="../assets/readme/docs-ai.webp" alt="GetOffice Docs: una panoramica aziendale con un'immagine banner; l'AI ha reso più conciso il paragrafo Overview e inserito una nuova sezione a elenco puntato, e il pannello offre un ripristino a un clic"></td>
+<td width="50%"><img src="../assets/readme/docs-report.webp" alt="VegaOffice Docs visualizza una pagina di relazione annuale a due colonne con un'immagine di copertina a piena larghezza, una tabella KPI con sfondo colorato, intestazione e piè di pagina, a zoom 80% con il pannello AI ridotto a icona"></td>
+<td width="50%"><img src="../assets/readme/docs-ai.webp" alt="VegaOffice Docs: una panoramica aziendale con un'immagine banner; l'AI ha reso più conciso il paragrafo Overview e inserito una nuova sezione a elenco puntato, e il pannello offre un ripristino a un clic"></td>
 </tr>
 <tr>
 <td><b>Apre il file esattamente come lo impagina Word</b> — sezioni a due colonne, immagini a piena pagina, tabelle con sfondo colorato, intestazioni e piè di pagina, impaginazione sulle stesse metriche di riga di Word. Stili, commenti, revisioni tracciate, equazioni e input a penna vengono preservati senza alterazioni.</td>
@@ -85,8 +85,8 @@ prompt che puoi leggere nel pannello.
 
 <table>
 <tr>
-<td width="50%"><img src="../assets/readme/sheets-ai.webp" alt="GetOffice Sheets: l'AI ha aggiunto un foglio Summary con i ricavi per area e categoria usando formule SUMIF, più un grafico a colonne, e segnala 43 modifiche applicate con un pulsante Annulla"></td>
-<td width="50%"><img src="../assets/readme/sheets-qa.webp" alt="GetOffice Sheets: alla domanda su quale area ha guidato i ricavi del Q2, l'AI risponde Europa con la suddivisione per categoria e cita come link le celle utilizzate, accanto al foglio Orders"></td>
+<td width="50%"><img src="../assets/readme/sheets-ai.webp" alt="VegaOffice Sheets: l'AI ha aggiunto un foglio Summary con i ricavi per area e categoria usando formule SUMIF, più un grafico a colonne, e segnala 43 modifiche applicate con un pulsante Annulla"></td>
+<td width="50%"><img src="../assets/readme/sheets-qa.webp" alt="VegaOffice Sheets: alla domanda su quale area ha guidato i ricavi del Q2, l'AI risponde Europa con la suddivisione per categoria e cita come link le celle utilizzate, accanto al foglio Orders"></td>
 </tr>
 <tr>
 <td><b>Costruiscilo</b> — da una singola frase l'agente aggiunge un foglio Summary con vere <code>SUMIF</code> per area e categoria, inserisce un grafico a colonne e applica le 43 modifiche come un unico batch annullabile.</td>
@@ -96,15 +96,15 @@ prompt che puoi leggere nel pannello.
 
 ### 3 · Slides — da un prompt a una presentazione `.pptx`
 
-<img src="../assets/readme/slides-generate.webp" alt="Time-lapse di GetOffice Slides che genera il deck per investitori Aurora Home: l'IA pianifica la narrazione nel pannello, le diapositive appaiono sulla tela una dopo l'altra e il deck finito si conclude con la richiesta finale" width="100%">
+<img src="../assets/readme/slides-generate.webp" alt="Time-lapse di VegaOffice Slides che genera il deck per investitori Aurora Home: l'IA pianifica la narrazione nel pannello, le diapositive appaiono sulla tela una dopo l'altra e il deck finito si conclude con la richiesta finale" width="100%">
 
 <table>
 <tr>
-<td width="50%"><img src="../assets/readme/slides-cover.webp" alt="GetOffice Slides: la slide di copertina di una presentazione per investitori Aurora Home generata dall'AI sulla canvas, con il prompt originale di una riga e il riepilogo dell'AI su cosa ha creato, nel pannello"></td>
-<td width="50%"><img src="../assets/readme/slides-ai.webp" alt="GetOffice Slides: la slide di chiusura progettata della stessa presentazione di 11 slide, con la striscia di miniature a sinistra e il pannello AI che riassume la storyline"></td>
+<td width="50%"><img src="../assets/readme/slides-cover.webp" alt="VegaOffice Slides: la slide di copertina di una presentazione per investitori Aurora Home generata dall'AI sulla canvas, con il prompt originale di una riga e il riepilogo dell'AI su cosa ha creato, nel pannello"></td>
+<td width="50%"><img src="../assets/readme/slides-ai.webp" alt="VegaOffice Slides: la slide di chiusura progettata della stessa presentazione di 11 slide, con la striscia di miniature a sinistra e il pannello AI che riassume la storyline"></td>
 </tr>
 <tr>
-<td><b>Una riga in ingresso</b> — "Crea una presentazione per investitori di 10 slide per Aurora Home…". GetOffice pianifica la storyline, ricerca i numeri e disegna ogni slide sulla canvas come una vera <code>.pptx</code>.</td>
+<td><b>Una riga in ingresso</b> — "Crea una presentazione per investitori di 10 slide per Aurora Home…". VegaOffice pianifica la storyline, ricerca i numeri e disegna ogni slide sulla canvas come una vera <code>.pptx</code>.</td>
 <td><b>Una presentazione finita in uscita</b> — undici slide progettate con tipografia e immagini coerenti e una call to action di chiusura; continua a modificare con master, layout, guide intelligenti e ritaglio non distruttivo, oppure chiedi al pannello di cambiare stile, riscrivere e riordinare.</td>
 </tr>
 </table>
@@ -113,8 +113,8 @@ prompt che puoi leggere nel pannello.
 
 <table>
 <tr>
-<td width="50%"><img src="../assets/readme/pdf-edit.webp" alt="GetOffice PDF: la modalità Modifica testo delimita ogni blocco di testo della pagina per la modifica sul posto, mentre il pannello AI risponde a una domanda sul report con citazioni di pagina"></td>
-<td width="50%"><img src="../assets/readme/pdf-convert.webp" alt="GetOffice Docs mostra un documento Word convertito in locale dal PDF Helios quarterly review, aperto in una seconda scheda accanto al PDF originale"></td>
+<td width="50%"><img src="../assets/readme/pdf-edit.webp" alt="VegaOffice PDF: la modalità Modifica testo delimita ogni blocco di testo della pagina per la modifica sul posto, mentre il pannello AI risponde a una domanda sul report con citazioni di pagina"></td>
+<td width="50%"><img src="../assets/readme/pdf-convert.webp" alt="VegaOffice Docs mostra un documento Word convertito in locale dal PDF Helios quarterly review, aperto in una seconda scheda accanto al PDF originale"></td>
 </tr>
 <tr>
 <td><b>Modifica direttamente nella pagina</b> — la modalità Modifica testo delimita ogni blocco di testo per riscriverlo sul posto; il content stream viene riscritto tramite PDFium con i font originali, non con un'annotazione che copre il testo. Chiedi all'AI informazioni su un report lungo e ottieni risposte con citazioni di pagina.</td>
@@ -128,11 +128,11 @@ Descrivi a cosa serve la pagina e a chi è destinata. L'AI propone prima un
 **design brief** — hook, palette, tipografia e direzioni di stile — poi
 costruisce un unico file `.html` autosufficiente basato su quei token.
 
-<img src="../assets/readme/html-restyle-motion.webp" alt="Time-lapse di GetOffice HTML che ristilizza la landing page Lumen: una richiesta di Restyle nel pannello trasforma la pagina scura Midnight Studio nella calda versione Solar Daybreak, mantenendo invariate tutte le sezioni e tutti i testi" width="100%">
+<img src="../assets/readme/html-restyle-motion.webp" alt="Time-lapse di VegaOffice HTML che ristilizza la landing page Lumen: una richiesta di Restyle nel pannello trasforma la pagina scura Midnight Studio nella calda versione Solar Daybreak, mantenendo invariate tutte le sezioni e tutti i testi" width="100%">
 
 <table>
 <tr>
-<td width="50%"><img src="../assets/readme/html-ai.webp" alt="GetOffice HTML: una landing page generata per una lampada da scrivania solare nella direzione scura Midnight Studio, mostrata nella live preview con il pannello AI che riassume la pagina appena creata"></td>
+<td width="50%"><img src="../assets/readme/html-ai.webp" alt="VegaOffice HTML: una landing page generata per una lampada da scrivania solare nella direzione scura Midnight Studio, mostrata nella live preview con il pannello AI che riassume la pagina appena creata"></td>
 <td width="50%"><img src="../assets/readme/html-restyle.webp" alt="La stessa landing page Lumen ristilizzata dall'AI nella calda direzione Solar Daybreak: sfondo carta, titoli serif e un accento arancione, con tutte le sezioni e tutti i testi mantenuti"></td>
 </tr>
 <tr>
@@ -142,8 +142,8 @@ costruisce un unico file `.html` autosufficiente basato su quei token.
 </table>
 <table>
 <tr>
-<td width="50%"><img src="../assets/readme/html-dashboard.webp" alt="GetOffice HTML: un'interfaccia dashboard personale generata per un designer freelance in stile lino caldo, con una barra laterale sinistra, un saluto in serif e quattro card di metriche"></td>
-<td width="50%"><img src="../assets/readme/html-report.webp" alt="GetOffice HTML: un report dati generato sul mercato dei veicoli elettrici in stile broadsheet, con una testata serif, una cifra principale di 17,3 milioni e una riga di statistiche"></td>
+<td width="50%"><img src="../assets/readme/html-dashboard.webp" alt="VegaOffice HTML: un'interfaccia dashboard personale generata per un designer freelance in stile lino caldo, con una barra laterale sinistra, un saluto in serif e quattro card di metriche"></td>
+<td width="50%"><img src="../assets/readme/html-report.webp" alt="VegaOffice HTML: un report dati generato sul mercato dei veicoli elettrici in stile broadsheet, con una testata serif, una cifra principale di 17,3 milioni e una riga di statistiche"></td>
 </tr>
 <tr>
 <td><b>Mockup UI</b> — lo starter "personal dashboard" trasforma una persona in un layout funzionante: barra laterale, saluto, sparkline delle ore fatturabili, card di fatture e utilizzo, tutto HTML reale che puoi consegnare a un developer.</td>
@@ -155,8 +155,8 @@ costruisce un unico file `.html` autosufficiente basato su quei token.
 
 <table>
 <tr>
-<td width="50%"><img src="../assets/readme/markdown-ai.webp" alt="GetOffice Markdown: un paragrafo selezionato mostra un popover Ask AI con un'istruzione digitata e chip di suggerimento come Migliora, Rendi più conciso, Espandi e Correggi la grammatica, più i pulsanti Invia ora e Aggiungi alla coda"></td>
-<td width="50%"><img src="../assets/readme/markdown-render.webp" alt="GetOffice Markdown visualizza un documento di note di lancio con una tabella, un diagramma di flusso Mermaid e un elenco di attività, con i prompt di partenza del pannello AI a sinistra"></td>
+<td width="50%"><img src="../assets/readme/markdown-ai.webp" alt="VegaOffice Markdown: un paragrafo selezionato mostra un popover Ask AI con un'istruzione digitata e chip di suggerimento come Migliora, Rendi più conciso, Espandi e Correggi la grammatica, più i pulsanti Invia ora e Aggiungi alla coda"></td>
+<td width="50%"><img src="../assets/readme/markdown-render.webp" alt="VegaOffice Markdown visualizza un documento di note di lancio con una tabella, un diagramma di flusso Mermaid e un elenco di attività, con i prompt di partenza del pannello AI a sinistra"></td>
 </tr>
 <tr>
 <td><b>Ask AI su una selezione</b> — seleziona qualsiasi passaggio e appare un chip <b>Ask AI</b>: digita un'istruzione o scegli un suggerimento, invia subito, oppure accoda diverse modifiche ancorate ed eseguile in un'unica passata. Lo stesso punto di accesso esiste in ogni app.</td>
@@ -164,41 +164,41 @@ costruisce un unico file `.html` autosufficiente basato su quei token.
 </tr>
 </table>
 
-### 7 · CLI — il tuo agente di coding guida GetOffice, sul tuo computer
+### 7 · CLI — il tuo agente di coding guida VegaOffice, sul tuo computer
 
-GetOffice include una riga di comando `getoffice` e uno skill per agenti.
+VegaOffice include una riga di comando `vegaoffice` e uno skill per agenti.
 Installa lo skill e Claude Code, Codex, Cursor, Gemini CLI, GitHub Copilot,
 OpenCode o Windsurf potranno creare, convertire, leggere e modificare file
 Office reali con gli stessi motori delle app, senza aprire una finestra.
 
-<img src="../assets/readme/cli-deck-in-app.webp" alt="GetOffice Slides mostra una presentazione di otto slide sul Sistema Solare creata da un agente di coding tramite la riga di comando getoffice: la slide di copertina sulla canvas, otto miniature a sinistra e il pannello AI aperto" width="100%">
+<img src="../assets/readme/cli-deck-in-app.webp" alt="VegaOffice Slides mostra una presentazione di otto slide sul Sistema Solare creata da un agente di coding tramite la riga di comando vegaoffice: la slide di copertina sulla canvas, otto miniature a sinistra e il pannello AI aperto" width="100%">
 
 <table>
 <tr>
 <td width="50%"><img src="../assets/readme/cli-slides-grid.webp" alt="Le otto slide renderizzate della presentazione sul Sistema Solare una accanto all'altra: copertina, cronologia dell'esplorazione, quattro numeri chiave, grafico a barre dei diametri dei pianeti, mondi rocciosi contro giganti, il numero in evidenza del 99,8% del Sole, la griglia dei quattro giganti e le conclusioni"></td>
-<td width="50%"><img src="../assets/readme/cli-integrations.webp" alt="Impostazioni di GetOffice, pagina Integrazioni: lo skill getoffice installato in Claude Code, con pulsanti Installa accanto a Codex e Cursor"></td>
+<td width="50%"><img src="../assets/readme/cli-integrations.webp" alt="Impostazioni di VegaOffice, pagina Integrazioni: lo skill vegaoffice installato in Claude Code, con pulsanti Installa accanto a Codex e Cursor"></td>
 </tr>
 <tr>
-<td><b>Un solo prompt al tuo agente</b> — "Crea una presentazione di otto slide sul Sistema Solare." L'agente legge lo skill, scrive un foglio di stile, una scaletta e una specifica di pagina per ogni slide, genera le due foto con <code>getoffice image</code> e lascia che <code>getoffice slides check</code> respinga tutto ciò che sborda o si sovrappone prima che <code>getoffice create</code> assembli il <code>.pptx</code> e <code>slides render</code> restituisca un PNG per slide da controllare.</td>
-<td><b>Installa una volta sola, da Impostazioni → Integrazioni</b> — GetOffice elenca gli agenti di coding che trova su questo computer e scrive lo skill in ognuno di quelli che scegli. Oppure scarica lo skill come zip, o esegui <code>npx skills add genspark-ai/genoffice</code>. I comandi e il flusso di lavoro completo sono in <a href="#command-line-and-agent-skill">Riga di comando e skill per agenti</a>.</td>
+<td><b>Un solo prompt al tuo agente</b> — "Crea una presentazione di otto slide sul Sistema Solare." L'agente legge lo skill, scrive un foglio di stile, una scaletta e una specifica di pagina per ogni slide, genera le due foto con <code>vegaoffice image</code> e lascia che <code>vegaoffice slides check</code> respinga tutto ciò che sborda o si sovrappone prima che <code>vegaoffice create</code> assembli il <code>.pptx</code> e <code>slides render</code> restituisca un PNG per slide da controllare.</td>
+<td><b>Installa una volta sola, da Impostazioni → Integrazioni</b> — VegaOffice elenca gli agenti di coding che trova su questo computer e scrive lo skill in ognuno di quelli che scegli. Oppure scarica lo skill come zip, o esegui <code>npx skills add lingeniare/getoffice</code>. I comandi e il flusso di lavoro completo sono in <a href="#command-line-and-agent-skill">Riga di comando e skill per agenti</a>.</td>
 </tr>
 </table>
 
 ### 8 · MCP — gli stessi strumenti tramite il Model Context Protocol
 
-Ogni comando `getoffice` è anche uno strumento MCP. Claude Code, Claude
-Desktop, Cursor e qualsiasi altro client MCP possono avviare `getoffice mcp`
+Ogni comando `vegaoffice` è anche uno strumento MCP. Claude Code, Claude
+Desktop, Cursor e qualsiasi altro client MCP possono avviare `vegaoffice mcp`
 da soli, senza alcuno skill da installare né finestre aperte, e ottengono 29
 strumenti più i riferimenti delle operazioni come risorse. Un secondo
 server HTTP dentro l'app permette a un agente di costruire un documento
 Word in una scheda dell'editor visibile mentre osservi.
 
-<img src="../assets/readme/mcp-deck-motion.webp" alt="Time-lapse di Claude Code che costruisce una presentazione per investitori di otto slide sulle energie rinnovabili tramite il server MCP di getoffice: cerca figure e foto, verifica ogni immagine candidata con media, deck_start scrive il foglio di stile e la scaletta, deck_page aggiunge una pagina controllata alla volta, deck_build assembla il .pptx e slides_render restituisce un'immagine di ogni slide; la presentazione finita si apre poi in GetOffice Slides" width="100%">
+<img src="../assets/readme/mcp-deck-motion.webp" alt="Time-lapse di Claude Code che costruisce una presentazione per investitori di otto slide sulle energie rinnovabili tramite il server MCP di vegaoffice: cerca figure e foto, verifica ogni immagine candidata con media, deck_start scrive il foglio di stile e la scaletta, deck_page aggiunge una pagina controllata alla volta, deck_build assembla il .pptx e slides_render restituisce un'immagine di ogni slide; la presentazione finita si apre poi in VegaOffice Slides" width="100%">
 
 <table>
 <tr>
-<td width="50%"><img src="../assets/readme/mcp-deck-in-app.webp" alt="GetOffice Slides mostra la presentazione Renewable Energy 2026 di otto slide che Claude Code ha costruito tramite il server MCP di getoffice: la slide di copertina con una fotografia di un parco eolico sulla canvas e otto miniature a sinistra"></td>
-<td width="50%"><img src="../assets/readme/mcp-integrations.webp" alt="Impostazioni di GetOffice, pagina Integrazioni, parte MCP: il comando in una riga claude mcp add per Claude Code, il blocco JSON per Cursor, Claude Desktop e altri client MCP, e l'opzione del server HTTP locale sotto"></td>
+<td width="50%"><img src="../assets/readme/mcp-deck-in-app.webp" alt="VegaOffice Slides mostra la presentazione Renewable Energy 2026 di otto slide che Claude Code ha costruito tramite il server MCP di vegaoffice: la slide di copertina con una fotografia di un parco eolico sulla canvas e otto miniature a sinistra"></td>
+<td width="50%"><img src="../assets/readme/mcp-integrations.webp" alt="Impostazioni di VegaOffice, pagina Integrazioni, parte MCP: il comando in una riga claude mcp add per Claude Code, il blocco JSON per Cursor, Claude Desktop e altri client MCP, e l'opzione del server HTTP locale sotto"></td>
 </tr>
 <tr>
 <td><b>Un prompt, 38 chiamate a strumenti, nessun terminale</b> — "Crea una presentazione per investitori di otto slide sulle energie rinnovabili nel 2026, con una foto reale in copertina e ovunque una foto sia utile." L'agente recupera le figure e le foto con <code>search</code>, chiede a <code>media</code> se ogni immagine candidata è una fotografia reale, chiama <code>deck_start</code> con un foglio di stile e una scaletta, poi <code>deck_page</code> una volta per slide; ogni pagina viene controllata rispetto alla scaletta e alla palette prima di essere conservata, <code>deck_build</code> assembla il <code>.pptx</code>, <code>slides_audit</code> cerca sbordamenti, <code>slides_render</code> restituisce un PNG per slide come contenuto immagine che il modello può guardare, e <code>deck_replace</code> corregge le tre pagine che non gli erano piaciute.</td>
@@ -206,7 +206,7 @@ Word in una scheda dell'editor visibile mentre osservi.
 </tr>
 </table>
 
-## Perché GetOffice
+## Perché VegaOffice
 
 - **Open source**, Apache-2.0, sviluppato in modo aperto su GitHub.
 - **Tuo da eseguire.** App native per macOS, Windows e Linux; i file restano
@@ -218,7 +218,7 @@ Word in una scheda dell'editor visibile mentre osservi.
 - **Un'AI che modifica direttamente il documento.** Revisioni tracciate in
   Docs, formule e grafici live in Sheets, slide disegnate sulla canvas, ogni
   intervento dell'AI genera uno snapshot da cui puoi tornare indietro.
-- **Il tuo modello, la tua chiave.** Accedi con Genspark, oppure usa una
+- **Il tuo modello, la tua chiave.** Accedi con VEGA, oppure usa una
   chiave per Claude, OpenAI, Gemini, DeepSeek e altri, con server locali e
   qualsiasi endpoint compatibile con OpenAI incluso.
 - **PDF fatto bene.** Modifica il testo direttamente nella pagina e converti
@@ -226,15 +226,15 @@ Word in una scheda dell'editor visibile mentre osservi.
   scansioni.
 - **Anche Markdown e HTML**, con lo stesso pannello AI e l'esportazione locale
   in Word.
-- **Scriptabile.** Una riga di comando `getoffice`, uno skill per agenti e
+- **Scriptabile.** Una riga di comando `vegaoffice`, uno skill per agenti e
   un server MCP mettono ogni motore al servizio di Claude Code, Claude
   Desktop, Codex, Cursor e altri agenti, sempre in locale.
 - **Gratuito**, per singoli utenti e team.
 
 ## Backend AI
 
-**Accedi con Genspark** e non c'è nulla da configurare: le chiamate ai
-modelli passano attraverso il proxy Genspark (famiglie Claude, GPT e Gemini)
+**Accedi con VEGA** e non c'è nulla da configurare: le chiamate ai
+modelli passano attraverso il proxy VEGA (famiglie Claude, GPT e Gemini)
 e gli agenti hanno accesso a ricerca web e per immagini, generazione di
 immagini e analisi di immagini/audio/video.
 
@@ -256,10 +256,10 @@ sempre i colori originali del documento.
 
 ## Riga di comando e skill per agenti
 
-Tutto ciò che le app possono fare a un file, la riga di comando `getoffice`
+Tutto ciò che le app possono fare a un file, la riga di comando `vegaoffice`
 può farlo da un terminale: ispezionare, convertire, creare, leggere e
 modificare Word, Excel, PowerPoint, PDF, Markdown e HTML con gli stessi
-motori, senza interfaccia grafica. Si installa insieme a GetOffice, non ha
+motori, senza interfaccia grafica. Si installa insieme a VegaOffice, non ha
 bisogno di un runtime proprio e non invia mai un documento da nessuna parte.
 Abbinata allo **skill per agenti** incluso, trasforma un agente di coding in
 un operaio dei documenti che produce file Office reali invece di
@@ -274,30 +274,30 @@ qualsiasi client MCP.
 
 | Come                                     | Cosa succede                                                                                                                                                                                        |
 | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Impostazioni → Integrazioni** nell'app | Elenca gli agenti trovati su questo computer; un clic scrive lo skill in ognuno di quelli che scegli. Un pulsante **Aggiorna** compare quando una release di GetOffice porta uno skill più recente. |
+| **Impostazioni → Integrazioni** nell'app | Elenca gli agenti trovati su questo computer; un clic scrive lo skill in ognuno di quelli che scegli. Un pulsante **Aggiorna** compare quando una release di VegaOffice porta uno skill più recente. |
 | **Scarica come zip** nella stessa pagina | Il formato che claude.ai, le app desktop di Claude e altri assistenti accettano come skill caricato.                                                                                                |
-| `npx skills add genspark-ai/genoffice`   | Installa da questo repository in qualsiasi agente compatibile con gli skill.                                                                                                                        |
+| `npx skills add lingeniare/getoffice`   | Installa da questo repository in qualsiasi agente compatibile con gli skill.                                                                                                                        |
 
 Poi apri una nuova chat e chiedi un documento. Lo skill insegna all'agente
-quando ricorrere a `getoffice`, come leggere un file prima di modificarlo e
+quando ricorrere a `vegaoffice`, come leggere un file prima di modificarlo e
 come controllare il proprio lavoro.
 
 ### Avvio rapido dal terminale
 
 ```bash
-getoffice --version
-getoffice info report.docx --json                  # headings and blocks; or sheets, slides, pages
-getoffice convert report.md --to pdf               # md/html/docx/xlsx/pptx → pdf, pdf → docx/xlsx/pptx, …
-getoffice create --type docx --from notes.md --out notes.docx
-getoffice create --type xlsx --from table.json --out sales.xlsx   # "=SUM(B2:B9)" cells stay live formulas
-getoffice docs read report.docx --range 0-9 --json # then `docs apply --ops edits.json` edits in place
-getoffice render report.docx --out shots/          # one PNG per page, to look at what you made
-getoffice open sales.xlsx                          # hand the result to the editor
+vegaoffice --version
+vegaoffice info report.docx --json                  # headings and blocks; or sheets, slides, pages
+vegaoffice convert report.md --to pdf               # md/html/docx/xlsx/pptx → pdf, pdf → docx/xlsx/pptx, …
+vegaoffice create --type docx --from notes.md --out notes.docx
+vegaoffice create --type xlsx --from table.json --out sales.xlsx   # "=SUM(B2:B9)" cells stay live formulas
+vegaoffice docs read report.docx --range 0-9 --json # then `docs apply --ops edits.json` edits in place
+vegaoffice render report.docx --out shots/          # one PNG per page, to look at what you made
+vegaoffice open sales.xlsx                          # hand the result to the editor
 ```
 
 Ogni comando stampa un riepilogo di una riga, oppure un singolo oggetto JSON
 con `--json`. Le modifiche sono atomiche: un'operazione respinta lascia il
-file intatto e restituisce un errore guidato. `getoffice help` elenca i
+file intatto e restituisce un errore guidato. `vegaoffice help` elenca i
 comandi attualmente disponibili; il riferimento completo è in
 [packages/cli/README.md](../../packages/cli/README.md).
 
@@ -309,21 +309,21 @@ di lavoro a fasi dello skill e la CLI ha controllato ogni fase prima di
 avviare la successiva:
 
 ```bash
-getoffice capabilities --json                        # which cloud tools GetOffice has configured
-getoffice guide slides design                        # the deck workflow and layout library
-getoffice image "the eight planets in a row …" --aspect 16:9 --out deck/assets/cover.jpg
-getoffice slides check deck/outline.json --json      # 8 pages, no findings
-getoffice slides check deck/pages/01.json --json     # builds one slide, audits overflow and overlap
+vegaoffice capabilities --json                        # which cloud tools VegaOffice has configured
+vegaoffice guide slides design                        # the deck workflow and layout library
+vegaoffice image "the eight planets in a row …" --aspect 16:9 --out deck/assets/cover.jpg
+vegaoffice slides check deck/outline.json --json      # 8 pages, no findings
+vegaoffice slides check deck/pages/01.json --json     # builds one slide, audits overflow and overlap
 …                                                    # one page file per slide, fixed until each check is clean
-getoffice create --type pptx --spec deck/pages --outline deck/outline.json --out deck/solar-system.pptx --json
-getoffice slides render deck/solar-system.pptx --out deck/shots --json
-getoffice slides audit deck/solar-system.pptx --json    # 8 slides, no layout issues
-getoffice slides replace deck/solar-system.pptx --slide 4 --spec deck/pages/05.json --json
-getoffice open deck/solar-system.pptx
+vegaoffice create --type pptx --spec deck/pages --outline deck/outline.json --out deck/solar-system.pptx --json
+vegaoffice slides render deck/solar-system.pptx --out deck/shots --json
+vegaoffice slides audit deck/solar-system.pptx --json    # 8 slides, no layout issues
+vegaoffice slides replace deck/solar-system.pptx --slide 4 --spec deck/pages/05.json --json
+vegaoffice open deck/solar-system.pptx
 ```
 
-Nessuna chiamata a un modello avviene dentro `getoffice`: l'agente pensa, la
-CLI costruisce e controlla, e il risultato si apre in GetOffice o PowerPoint
+Nessuna chiamata a un modello avviene dentro `vegaoffice`: l'agente pensa, la
+CLI costruisce e controlla, e il risultato si apre in VegaOffice o PowerPoint
 come un normale `.pptx`.
 
 <a id="mcp-server"></a>
@@ -338,33 +338,33 @@ pronti da copiare in **Impostazioni → Integrazioni → MCP**:
 
 | Modo                                  | Cos'è                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **A · `getoffice mcp`** (consigliato) | Un server stdio che l'assistente avvia da sé; GetOffice non deve essere aperto. Uno strumento per comando (`info`, `convert`, `create_docx`, `create_xlsx`, `create_pptx`, `create_pdf`, `docs_read` / `docs_apply` / `docs_check`, `sheet_*`, `slides_*`, `render`, `guide`, `search`, `image`, `media`, `open`) più il flusso di presentazione a fasi `deck_start` → `deck_page` → `deck_build` → `deck_replace`. Operazioni, specifiche e Markdown vengono passati inline, quindi funziona anche un client senza file system. |
-| **B · Server HTTP locale**            | Gira dentro l'app GetOffice su `http://127.0.0.1:3093/mcp` (Streamable HTTP, con SSE legacy). I suoi strumenti guidano una scheda dell'editor Word visibile: `create_session`, `insert_content`, `replace_blocks`, `apply_ops`, `read_document`, `save_session`, e osservi il documento prendere forma. Disattivato di default; attivalo nello stesso pannello delle impostazioni.                                                                                                                                               |
+| **A · `vegaoffice mcp`** (consigliato) | Un server stdio che l'assistente avvia da sé; VegaOffice non deve essere aperto. Uno strumento per comando (`info`, `convert`, `create_docx`, `create_xlsx`, `create_pptx`, `create_pdf`, `docs_read` / `docs_apply` / `docs_check`, `sheet_*`, `slides_*`, `render`, `guide`, `search`, `image`, `media`, `open`) più il flusso di presentazione a fasi `deck_start` → `deck_page` → `deck_build` → `deck_replace`. Operazioni, specifiche e Markdown vengono passati inline, quindi funziona anche un client senza file system. |
+| **B · Server HTTP locale**            | Gira dentro l'app VegaOffice su `http://127.0.0.1:3093/mcp` (Streamable HTTP, con SSE legacy). I suoi strumenti guidano una scheda dell'editor Word visibile: `create_session`, `insert_content`, `replace_blocks`, `apply_ops`, `read_document`, `save_session`, e osservi il documento prendere forma. Disattivato di default; attivalo nello stesso pannello delle impostazioni.                                                                                                                                               |
 
 ```bash
 # Claude Code
-claude mcp add --transport stdio getoffice -- getoffice mcp
+claude mcp add --transport stdio vegaoffice -- vegaoffice mcp
 ```
 
 ```jsonc
 // Cursor, Claude Desktop o qualsiasi altro client MCP
-{ "mcpServers": { "getoffice": { "command": "getoffice", "args": ["mcp"] } } }
+{ "mcpServers": { "vegaoffice": { "command": "vegaoffice", "args": ["mcp"] } } }
 ```
 
-Qui `getoffice` è la CLI inclusa nell'app (su macOS
-`/Applications/GetOffice.app/Contents/Resources/cli/getoffice`; il pannello
+Qui `vegaoffice` è la CLI inclusa nell'app (su macOS
+`/Applications/VegaOffice.app/Contents/Resources/cli/vegaoffice`; il pannello
 delle impostazioni mostra il percorso esatto della tua installazione). Il
 server porta con sé le proprie istruzioni di workflow ed espone i
-riferimenti delle operazioni come risorse `getoffice://guide/*`, quindi non
+riferimenti delle operazioni come risorse `vegaoffice://guide/*`, quindi non
 serve alcuno skill; lo skill e il server MCP possono coesistere e
 l'assistente ne sceglie uno. Le funzionalità cloud (`search`, `image`,
-`media`) passano comunque dal provider configurato in GetOffice; tutto il
-resto gira in locale, e `GETOFFICE_ALLOWED_ROOTS` limita ogni strumento
+`media`) passano comunque dal provider configurato in VegaOffice; tutto il
+resto gira in locale, e `VEGAOFFICE_ALLOWED_ROOTS` limita ogni strumento
 alle cartelle che indichi.
 
 La presentazione sulle energie rinnovabili della demo qui sopra è come
 appare, dal lato del protocollo, un solo prompt in Claude Code con
-collegato solo il server MCP di `getoffice`:
+collegato solo il server MCP di `vegaoffice`:
 
 ```text
 capabilities · guide(slides, spec) · guide(slides, design)
@@ -385,7 +385,7 @@ Trentotto chiamate, circa tredici minuti, e l'assistente non ha mai
 toccato un terminale: le figure, le foto, le guide, i controlli e i render
 sono arrivati tutti come risultati di strumenti MCP. Solo `search` e
 `media` hanno lasciato la macchina, verso il provider configurato in
-GetOffice.
+VegaOffice.
 
 <a id="download"></a>
 
@@ -393,33 +393,33 @@ GetOffice.
 
 | Piattaforma                                | Requisiti                                             | Download                                                                                   |
 | ------------------------------------------ | ----------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| **macOS** — Apple Silicon (arm64)          | macOS 11+                                             | [Ultima versione `.dmg` (arm64)](https://github.com/genspark-ai/genoffice/releases/latest) |
-| **macOS** — Intel (x64)                    | macOS 11+                                             | [Ultima versione `.dmg` (x64)](https://github.com/genspark-ai/genoffice/releases/latest)   |
-| **Windows** (x64, la maggior parte dei PC) | Windows 10+, Intel/AMD                                | [Ultimo installer `-x64.exe`](https://github.com/genspark-ai/genoffice/releases/latest)    |
-| **Windows** su Arm (ARM64)                 | Windows 11 su Arm (Snapdragon X e simili)             | [Ultimo installer `-arm64.exe`](https://github.com/genspark-ai/genoffice/releases/latest)  |
-| **Linux** — Debian / Ubuntu                | x86_64, glibc 2.34+ (Ubuntu 22.04 o successivo)       | [Ultimo `.deb`](https://github.com/genspark-ai/genoffice/releases/latest)                  |
-| **Linux** — Fedora / RHEL / openSUSE       | x86_64, glibc 2.34+ (Fedora 35+, RHEL 9+, Leap 15.6+) | [Ultimo `.rpm`](https://github.com/genspark-ai/genoffice/releases/latest)                  |
-| **Linux** — altre distribuzioni            | x86_64, glibc 2.34+, FUSE 2                           | [Ultimo `.AppImage`](https://github.com/genspark-ai/genoffice/releases/latest)             |
+| **macOS** — Apple Silicon (arm64)          | macOS 11+                                             | [Ultima versione `.dmg` (arm64)](https://github.com/lingeniare/getoffice/releases/latest) |
+| **macOS** — Intel (x64)                    | macOS 11+                                             | [Ultima versione `.dmg` (x64)](https://github.com/lingeniare/getoffice/releases/latest)   |
+| **Windows** (x64, la maggior parte dei PC) | Windows 10+, Intel/AMD                                | [Ultimo installer `-x64.exe`](https://github.com/lingeniare/getoffice/releases/latest)    |
+| **Windows** su Arm (ARM64)                 | Windows 11 su Arm (Snapdragon X e simili)             | [Ultimo installer `-arm64.exe`](https://github.com/lingeniare/getoffice/releases/latest)  |
+| **Linux** — Debian / Ubuntu                | x86_64, glibc 2.34+ (Ubuntu 22.04 o successivo)       | [Ultimo `.deb`](https://github.com/lingeniare/getoffice/releases/latest)                  |
+| **Linux** — Fedora / RHEL / openSUSE       | x86_64, glibc 2.34+ (Fedora 35+, RHEL 9+, Leap 15.6+) | [Ultimo `.rpm`](https://github.com/lingeniare/getoffice/releases/latest)                  |
+| **Linux** — altre distribuzioni            | x86_64, glibc 2.34+, FUSE 2                           | [Ultimo `.AppImage`](https://github.com/lingeniare/getoffice/releases/latest)             |
 
 Tutte le build provengono da `main`; gli installer per macOS e Windows sono
 firmati. Le versioni precedenti sono disponibili nella pagina
-[Releases](https://github.com/genspark-ai/genoffice/releases).
+[Releases](https://github.com/lingeniare/getoffice/releases).
 
 <details>
 <summary><b>Installazione su Linux</b></summary>
 
-Il deb si installa con apt — scarica le dipendenze e aggiunge GetOffice al
+Il deb si installa con apt — scarica le dipendenze e aggiunge VegaOffice al
 menu delle applicazioni:
 
 ```bash
-sudo apt install ./getoffice_<version>_amd64.deb
+sudo apt install ./vegaoffice_<version>_amd64.deb
 ```
 
 Su Fedora / famiglia RHEL / openSUSE, installa invece l'rpm:
 
 ```bash
-sudo dnf install ./getoffice-<version>.x86_64.rpm     # Fedora / RHEL family
-sudo zypper install ./getoffice-<version>.x86_64.rpm  # openSUSE
+sudo dnf install ./vegaoffice-<version>.x86_64.rpm     # Fedora / RHEL family
+sudo zypper install ./vegaoffice-<version>.x86_64.rpm  # openSUSE
 ```
 
 L'AppImage viene eseguito così com'è: installa il runtime FUSE 2
@@ -427,8 +427,8 @@ L'AppImage viene eseguito così com'è: installa il runtime FUSE 2
 rendi il file eseguibile, poi eseguilo:
 
 ```bash
-chmod +x GetOffice-<version>.AppImage
-./GetOffice-<version>.AppImage
+chmod +x VegaOffice-<version>.AppImage
+./VegaOffice-<version>.AppImage
 ```
 
 </details>
@@ -477,30 +477,30 @@ pull request.
 
 ## Community
 
-GetOffice è in sviluppo attivo e il tuo feedback lo plasma.
+VegaOffice è in sviluppo attivo e il tuo feedback lo plasma.
 
 - **Segnala un bug o richiedi una funzionalità** su
-  [GitHub Issues](https://github.com/genspark-ai/genoffice/issues).
-- **Unisciti alla chat di gruppo di GetOffice** su
-  [GenTeam](https://genoffice.ai/join) per parlare con il team e con altri
+  [GitHub Issues](https://github.com/lingeniare/getoffice/issues).
+- **Unisciti alla chat di gruppo di VegaOffice** su
+  [GitHub](https://github.com/lingeniare/getoffice) per parlare con il team e con altri
   utenti.
-- **Metti una stella al repo** se GetOffice ti è utile — è il modo migliore
+- **Metti una stella al repo** se VegaOffice ti è utile — è il modo migliore
   per supportare il progetto.
 
 ## FAQ
 
 <details>
-<summary><b>GetOffice è gratuito?</b></summary>
+<summary><b>VegaOffice è gratuito?</b></summary>
 
-Sì. GetOffice è gratuito e open source sotto licenza Apache-2.0 — nessuna
+Sì. VegaOffice è gratuito e open source sotto licenza Apache-2.0 — nessuna
 prova, nessun piano a pagamento per le app in sé.
 
 </details>
 
 <details>
-<summary><b>GetOffice può aprire file Microsoft Word, Excel e PowerPoint?</b></summary>
+<summary><b>VegaOffice può aprire file Microsoft Word, Excel e PowerPoint?</b></summary>
 
-Sì. GetOffice apre e salva file nativi `.docx`, `.xlsx` e `.pptx`. Il
+Sì. VegaOffice apre e salva file nativi `.docx`, `.xlsx` e `.pptx`. Il
 salvataggio preserva i byte: le parti del file che non hai toccato vengono
 riscritte byte per byte, così i documenti continuano a funzionare in
 Microsoft Office.
@@ -508,18 +508,18 @@ Microsoft Office.
 </details>
 
 <details>
-<summary><b>GetOffice funziona offline?</b></summary>
+<summary><b>VegaOffice funziona offline?</b></summary>
 
 La modifica dei documenti è completamente locale — i file non lasciano mai
 il tuo computer per essere aperti, modificati, salvati o convertiti. Le
 funzionalità AI (agenti, ricerca, strumenti per le immagini) richiedono una
-connessione di rete, con l'accesso Genspark oppure con una tua chiave API
+connessione di rete, con l'accesso VEGA oppure con una tua chiave API
 per il modello.
 
 </details>
 
 <details>
-<summary><b>GetOffice può modificare file PDF?</b></summary>
+<summary><b>VegaOffice può modificare file PDF?</b></summary>
 
 Sì — una vera modifica di testo e immagini nel PDF, che riscrive il content
 stream della pagina preservando i font originali, non con annotazioni che
@@ -528,7 +528,7 @@ coprono il testo.
 </details>
 
 <details>
-<summary><b>GetOffice può convertire PDF in Word, Excel o PowerPoint?</b></summary>
+<summary><b>VegaOffice può convertire PDF in Word, Excel o PowerPoint?</b></summary>
 
 Sì — completamente in locale: estrazione a livello di carattere con PDFium
 più un'analisi del layout basata sulla geometria, nessun servizio cloud,
@@ -541,7 +541,7 @@ invece che in un'immagine di pagina.
 <details>
 <summary><b>Posso usare un mio modello AI o una mia chiave API?</b></summary>
 
-Sì. Oltre all'accesso Genspark senza chiavi, GetOffice supporta l'uso della
+Sì. Oltre all'accesso VEGA senza chiavi, VegaOffice supporta l'uso della
 tua chiave per Claude, OpenAI, Gemini, DeepSeek, Kimi, GLM, Qwen, Doubao,
 MiniMax, Grok, Mistral, OpenRouter, Requesty e OpenCode Zen/Go, più qualsiasi endpoint
 compatibile con OpenAI — inclusi i server con modelli locali. Ricerca,
@@ -551,7 +551,7 @@ chiavi in Settings → AI Media & Search.
 </details>
 
 <details>
-<summary><b>GetOffice può convertire HTML in Word?</b></summary>
+<summary><b>VegaOffice può convertire HTML in Word?</b></summary>
 
 Sì — Export as Word nell'app HTML produce un `.docx` nativo e modificabile,
 interamente in locale. La pagina viene renderizzata nel Chromium integrato e
@@ -563,9 +563,9 @@ come immagini.
 </details>
 
 <details>
-<summary><b>Posso guidare GetOffice da Claude Code, Codex, Cursor o da uno script?</b></summary>
+<summary><b>Posso guidare VegaOffice da Claude Code, Codex, Cursor o da uno script?</b></summary>
 
-Sì. GetOffice installa una riga di comando `getoffice` che esegue gli stessi
+Sì. VegaOffice installa una riga di comando `vegaoffice` che esegue gli stessi
 motori senza interfaccia grafica: ispeziona, converti, crea, leggi e modifica
 documenti da un terminale o da uno script, con output `--json` per i
 programmi. Lo skill per agenti incluso insegna a Claude Code, Codex, Cursor,
@@ -576,9 +576,9 @@ Gemini CLI, GitHub Copilot, OpenCode e Windsurf a usarla; installalo da
 </details>
 
 <details>
-<summary><b>GetOffice raccoglie dati?</b></summary>
+<summary><b>VegaOffice raccoglie dati?</b></summary>
 
-GetOffice non raccoglie né invia alcuna analytics d'uso o telemetria. Consulta [GetOffice Privacy](../../PRIVACY.md) per i dettagli.
+VegaOffice non raccoglie né invia alcuna analytics d'uso o telemetria. Consulta [VegaOffice Privacy](../../PRIVACY.md) per i dettagli.
 
 </details>
 
@@ -590,7 +590,7 @@ e i modelli di minaccia per i contenuti generati dall'AI.
 
 ## Ringraziamenti
 
-GetOffice non sarebbe possibile senza questi progetti open source:
+VegaOffice non sarebbe possibile senza questi progetti open source:
 
 - [Electron](https://www.electronjs.org/) — il runtime desktop per ogni app.
 - [Univer](https://github.com/dream-num/univer) (Apache-2.0) — il core
@@ -638,11 +638,11 @@ MIT/Apache-2.0/BSD-3-Clause/OFL.
 
 ## Licenza
 
-GetOffice è distribuito con licenza [Apache License 2.0](../../LICENSE), con
+VegaOffice è distribuito con licenza [Apache License 2.0](../../LICENSE), con
 un'unica eccezione: la directory `ee/` è riservata a futuri moduli
 enterprise ed è coperta dalla
-[GetOffice Enterprise License](../../ee/LICENSE).
+[VegaOffice Enterprise License](../../ee/LICENSE).
 
-I nomi e i loghi GetOffice e Genspark sono marchi di Mainfunc, Inc. La
+I nomi e i loghi GenOffice e Genspark sono marchi di Mainfunc, Inc. La
 licenza Apache-2.0 non concede il permesso di utilizzarli (vedi la sezione
 6); i fork dovrebbero usare un proprio branding.

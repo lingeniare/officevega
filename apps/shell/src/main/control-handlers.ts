@@ -27,7 +27,7 @@ const TARGET_KIND_BY_TAB: Partial<Record<TabKind, ControlTarget['kind']>> = {
 
 /**
  * Runs one CLI control request against the open tabs. Renderers register
- * `window.__getofficeControl`; the shell evaluates it through the debugger
+ * `window.__vegaofficeControl`; the shell evaluates it through the debugger
  * channel, so no preload surface grows and an unloaded document simply
  * answers `not_ready` until its file is in.
  */
@@ -42,7 +42,7 @@ export function controlHandler(host: ControlHost): (req: ControlRequest) => Prom
       const existing = host.findTab(req.path)
       if (existing) host.activateTab(existing.id)
       else if (!host.openDocument(req.path)) {
-        return fail('unsupported', `GetOffice cannot open ${req.path}`)
+        return fail('unsupported', `VegaOffice cannot open ${req.path}`)
       }
       if (!req.target) return { ok: true, result: { opened: req.path } }
       const tab = existing ?? host.findTab(req.path)
@@ -57,8 +57,8 @@ export function controlHandler(host: ControlHost): (req: ControlRequest) => Prom
     }
     const tab = host.findTab(req.path)
     if (!tab) {
-      return fail('file_not_open_in_gui', `GetOffice does not have ${req.path} open`, {
-        suggestion: `getoffice open ${req.path}`,
+      return fail('file_not_open_in_gui', `VegaOffice does not have ${req.path} open`, {
+        suggestion: `vegaoffice open ${req.path}`,
       })
     }
     return ask(tab.webContents, { cmd: 'selection' }, host.readyTimeoutMs)
@@ -111,7 +111,7 @@ async function evaluateControl(
 ): Promise<RendererControlReply> {
   if (wc.isDestroyed() || wc.isLoading()) return { status: 'not_ready' }
   const script = `(async () => {
-    const handler = window.__getofficeControl
+    const handler = window.__vegaofficeControl
     if (typeof handler !== 'function') return { status: 'not_ready' }
     try {
       return await handler(${JSON.stringify(request)})

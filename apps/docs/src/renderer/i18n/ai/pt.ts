@@ -117,7 +117,7 @@ export const pt = {
   aiNetworkError:
     'Problema de rede: não foi possível conectar ao serviço de IA. Verifique sua conexão e tente novamente',
   aiCreditsExhausted:
-    'Seus créditos VEGA acabaram. Recarregue em api.vega.chat/keys e tente novamente',
+    'Seus créditos VEGA acabaram. Recarregue em api.vega.chat e tente novamente',
   aiSumReadAttachment: 'Ler anexo',
   aiSumImageAttachment: 'Imagem anexada {name}',
   aiSumRead: 'Ler {name}',

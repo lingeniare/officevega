@@ -203,14 +203,12 @@ export interface HomeApi {
   getAiPanelPrefs(): Promise<AiPanelPrefs>
   /** merge + persist; broadcasts 'app:ai-panel-prefs-changed' to all web contents */
   setAiPanelPrefs(patch: Partial<AiPanelPrefs>): Promise<AiPanelPrefs>
-  /** effective default save folder for new/untitled files (configured in userData/app-settings.json, falls back to <Documents>/GetOffice) */
+  /** effective default save folder for new/untitled files (configured in userData/app-settings.json, falls back to <Documents>/VegaOffice) */
   getDefaultSaveDir(): Promise<string>
   /** directory picker to change the default save folder; resolves to the new folder, or null when canceled or the pick was unusable */
   pickDefaultSaveDir(): Promise<string | null>
   /** theme switched anywhere (broadcast from the main process) */
   onThemeChanged(handler: (theme: UiTheme) => void): () => void
-  /** open the GenTeam community page in the default browser */
-  openGenTeam(): Promise<void>
   /** open the VEGA keys/deposit dashboard in the default browser */
   openCreditUsage(): Promise<void>
   /** open the public GitHub repository in the default browser */
@@ -222,12 +220,6 @@ export interface HomeApi {
   starPromptShouldShow(): Promise<StarPromptShow>
   /** user reacted to the star prompt; 'starred' resolves it permanently */
   starPromptAction(action: StarPromptAction): Promise<void>
-  /** locally stored full cloud project list (instant; null when no store or logged out) */
-  cloudProjectsCached(): Promise<CloudProjectsSnapshot | null>
-  /** sync the full list from Genspark and return it (1 request when nothing changed); null when the sync failed */
-  cloudProjectsSync(): Promise<CloudProjectsSnapshot | null>
-  /** open a cloud project (relative '/agents?id=...' URL) in the default browser */
-  openCloudProject(projectUrl: string): Promise<void>
   /** AI settings (userData/ai-settings.json, shared by every editor); the genspark key never appears here */
   getAiSettings(): Promise<AiSettings>
   /** persist AI settings; open editors pick the change up on their next settings read */
@@ -298,32 +290,8 @@ export interface StarPromptShow {
   docOpens: number
 }
 
-export type CloudProjectKind = 'docs' | 'sheets' | 'slides'
-
-/** a Genspark web project shown in the home cloud section */
-export interface CloudProjectEntry {
-  projectId: string
-  title: string
-  /** module kind derived from the API project type ('docs_agent' → 'docs') */
-  kind: CloudProjectKind | 'other'
-  /** creation time, ms since epoch (0 when unparsable) */
-  ctimeMs: number
-  /** relative genspark.ai URL ('/agents?id=...') */
-  projectUrl: string
-}
-
-/** full local copy of the cloud project list; filtering/paging are client-side */
-export interface CloudProjectsSnapshot {
-  /** false when gsk is unavailable (CLI missing or not logged in) */
-  available: boolean
-  /** all projects, newest first */
-  projects: CloudProjectEntry[]
-  /** ms epoch of the last successful sync (0 when never synced) */
-  syncedAt: number
-}
-
 export interface AccountStatus {
-  /** a GetOffice-named VEGA key exists in the local auth file */
+  /** a VegaOffice-named VEGA key exists in the local auth file */
   loggedIn: boolean
   email?: string
   /** deposit balance in `currency` (USD); absent when the account query failed */
@@ -422,13 +390,9 @@ export const HOME_CHANNELS = {
   setAiPanelPrefs: 'home:set-ai-panel-prefs',
   getDefaultSaveDir: 'home:get-default-save-dir',
   pickDefaultSaveDir: 'home:pick-default-save-dir',
-  openGenTeam: 'home:open-genteam',
   openCreditUsage: 'home:open-credit-usage',
   openGitHubRepo: 'home:open-github-repo',
   githubStars: 'home:github-stars',
   starPromptShouldShow: 'home:star-prompt-should-show',
   starPromptAction: 'home:star-prompt-action',
-  cloudProjects: 'home:cloud-projects',
-  cloudProjectsCached: 'home:cloud-projects-cached',
-  openCloudProject: 'home:open-cloud-project',
 } as const

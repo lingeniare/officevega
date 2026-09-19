@@ -1730,7 +1730,7 @@ export function App(): React.JSX.Element {
     })
     // Wide expression CF rules register folded/windowed formula ranges so
     // the engine stops rebuilding millions of per-cell dependency trees on
-    // every stream-in recalculation (getoffice#158).
+    // every stream-in recalculation (vegaoffice#158).
     const cfFormulaFoldDisposable = installCfFormulaFold(runtime)
     // duplicateValues / uniqueValues compare display text like Excel (1981233
     // and "1981233" are duplicates).
@@ -3806,10 +3806,10 @@ export function App(): React.JSX.Element {
       ;(window as unknown as Record<string, unknown>).__ribbonCommand = handleRibbonCommand
     }
     // Built-app e2e hook, off by default: the preload exposes
-    // __getofficeDebugHooks only when GETOFFICE_DEBUG_HOOKS=1 (scroll/freeze
+    // __vegaofficeDebugHooks only when VEGAOFFICE_DEBUG_HOOKS=1 (scroll/freeze
     // drivers read Univer's render state through the Facade).
-    if ((window as unknown as Record<string, unknown>).__getofficeDebugHooks === true) {
-      ;(window as unknown as Record<string, unknown>).__getofficeDebug = {
+    if ((window as unknown as Record<string, unknown>).__vegaofficeDebugHooks === true) {
+      ;(window as unknown as Record<string, unknown>).__vegaofficeDebug = {
         univerAPI: univerRef.current?.univerAPI,
       }
     }
@@ -4204,9 +4204,9 @@ export function App(): React.JSX.Element {
     }
   })()
 
-  // getoffice CLI (`open --range`, `selection`): the shell evaluates this hook
+  // vegaoffice CLI (`open --range`, `selection`): the shell evaluates this hook
   useEffect(() => {
-    ;(window as unknown as Record<string, unknown>).__getofficeControl = (req: ControlRequest) =>
+    ;(window as unknown as Record<string, unknown>).__vegaofficeControl = (req: ControlRequest) =>
       handleSheetsControl(
         req,
         univerRef.current?.univerAPI.getActiveWorkbook(),

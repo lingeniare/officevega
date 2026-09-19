@@ -20,7 +20,7 @@ export const GENSPARK_LLM_BASE_URLS = {
 } as const
 
 /**
- * Splits GetOffice usage out of the proxy's default "Claw" billing bucket
+ * Splits VegaOffice usage out of the proxy's default "Claw" billing bucket
  * (the backend attributes gsk-key traffic by X-Agent-Type). Only sent to the
  * Genspark proxy — never to direct vendor APIs. The value is registered
  * server-side as "genoffice" — a billing wire name, not the product name.
@@ -35,7 +35,7 @@ export function gensparkAttributionHeaders(baseUrl?: string): Record<string, str
 
 /**
  * OpenCode Zen / Go route and cache per conversation and answer 400
- * MissingSessionID without this header (getoffice#331). The renderer's
+ * MissingSessionID without this header (vegaoffice#331). The renderer's
  * transport id is stable for a chat; a one-shot call is its own conversation.
  */
 export function opencodeSessionHeaders(
@@ -61,7 +61,7 @@ export const AI_PROVIDERS: AiProviderMeta[] = [
   },
   {
     id: 'genspark',
-    label: 'Genspark',
+    label: 'Account',
     // must stay within the proxy's served set (GET /api/llm_proxy/v1/models);
     // bare gpt-5.6 and the gemini family dropped off it (verified 2026-08-31).
     // DeepSeek goes by the proxy's hyphenated pool id; V4.1 Flash takes images
@@ -75,7 +75,7 @@ export const AI_PROVIDERS: AiProviderMeta[] = [
       'deep-seek-v4.1-flash',
     ],
     defaultModel: 'claude-opus-4-7',
-    keyPlaceholder: 'Not required - sign in to Genspark',
+    keyPlaceholder: 'Not required - sign in to your account',
   },
   {
     id: 'codex',

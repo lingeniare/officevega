@@ -1,5 +1,5 @@
 /**
- * GetOffice Slides main process — pptx parsing/render-tree building/edit application/saving all live
+ * VegaOffice Slides main process — pptx parsing/render-tree building/edit application/saving all live
  * here (Node side). The renderer only gets plain-data RenderSlide; edit intents are sent back
  * here to apply. Structure mirrors apps/docs: exports embeddable configure/register/start for
  * future shell reuse.
@@ -527,7 +527,7 @@ const AUTOSAVE_BACKOFF_TICKS = 10
 let autosaveRunning = false
 
 /**
- * Recovery drafts for never-saved decks (wcId → visible path in <Documents>/GetOffice):
+ * Recovery drafts for never-saved decks (wcId → visible path in <Documents>/VegaOffice):
  * the sha1-keyed recovery copy needs session.path, so before the first save a freeze or
  * crash used to lose everything. Removed on save, explicit discard, or clean close.
  */
@@ -805,7 +805,7 @@ async function openAndBuild(
   }
 }
 
-/** Directory where AI-generated drafts are saved: the configurable default save folder (falls back to <Documents>/GetOffice) */
+/** Directory where AI-generated drafts are saved: the configurable default save folder (falls back to <Documents>/VegaOffice) */
 function getDraftsDir(): string {
   return configuredDefaultSaveDir(app)
 }
@@ -848,7 +848,7 @@ function pickDraftPath(draftsDir: string, deckName?: string): string {
 }
 
 /**
- * Auto-save the draft to <Documents>/GetOffice/<name>.pptx after AI generation completes.
+ * Auto-save the draft to <Documents>/VegaOffice/<name>.pptx after AI generation completes.
  * Append mode reuses the session's existing draft path (overwrite); replace mode generates a
  * new filename. On successful write, update session.path, pushRecent, slidesOpenedHook.
  * On write failure, degrade silently (console.warn) without blocking the in-memory session.
@@ -1628,8 +1628,8 @@ export function registerSlidesIpc(): void {
   })
   // ── Cloud single-page generation (gsk slide_generate): brief → cloud HTML+conversion → one-slide
   // pptx saved to a temp file. Returns a marker string that slides:land-generated-pages redeems for
-  // the bytes. Enabled when gsk is logged in; GETOFFICE_CLOUD_SLIDE=0 is the kill switch.
-  const cloudSlideEnabled = () => process.env.GETOFFICE_CLOUD_SLIDE !== '0' && !!gskApiKey()
+  // the bytes. Enabled when gsk is logged in; VEGAOFFICE_CLOUD_SLIDE=0 is the kill switch.
+  const cloudSlideEnabled = () => process.env.VEGAOFFICE_CLOUD_SLIDE !== '0' && !!gskApiKey()
 
   ipcMain.handle('slides:cloud-gen-status', () => ({ enabled: cloudSlideEnabled() }))
 
@@ -1652,7 +1652,7 @@ export function registerSlidesIpc(): void {
         // Ultra resolves to the opus-class slide model server-side; standard is the
         // lighter MiniMax M3 model. Keep an explicit escape hatch for quality
         // comparisons and emergency rollback.
-        const tier = process.env.GETOFFICE_CLOUD_SLIDE_TIER === 'standard' ? 'standard' : 'ultra'
+        const tier = process.env.VEGAOFFICE_CLOUD_SLIDE_TIER === 'standard' ? 'standard' : 'ultra'
         const started = Date.now()
         const { bytes, model } = await gskSlideGenerate({
           tier,
@@ -1667,7 +1667,7 @@ export function registerSlidesIpc(): void {
         console.log(
           `[cloud-slide] page generated: tier=${tier} model=${model} bytes=${bytes.length} ms=${Date.now() - started}`,
         )
-        const dir = join(app.getPath('temp'), 'getoffice-cloud-pages')
+        const dir = join(app.getPath('temp'), 'vegaoffice-cloud-pages')
         mkdirSync(dir, { recursive: true })
         const path = join(dir, `${randomUUID()}.pptx`)
         await writeFile(path, bytes)
@@ -1723,7 +1723,7 @@ export function registerSlidesIpc(): void {
         console.log(
           `[local-slide] page generated: bytes=${bytes.length} imageFails=${imageFailures.length} ms=${Date.now() - started}`,
         )
-        const dir = join(app.getPath('temp'), 'getoffice-local-pages')
+        const dir = join(app.getPath('temp'), 'vegaoffice-local-pages')
         mkdirSync(dir, { recursive: true })
         const path = join(dir, `${randomUUID()}.pptx`)
         await writeFile(path, bytes)
@@ -2430,7 +2430,7 @@ export function registerSlidesIpc(): void {
     if (!bundle) return false
     slideClipboard = { bundle, ...(pngBase64 ? { png: pngBase64 } : {}) }
     // Marker so plain ⌘V knows the latest copy was a slide (element copies / external copies overwrite it)
-    clipboard.writeBuffer('io.getoffice.slides.slide', Buffer.from('1'))
+    clipboard.writeBuffer('io.vegaoffice.slides.slide', Buffer.from('1'))
     return true
   })
 
@@ -3198,8 +3198,8 @@ export function registerSlidesIpc(): void {
   }
 
   ipcMain.handle('slides:clipboard-external', () => {
-    if (slideClipboard && clipboardMarker('io.getoffice.slides.slide')) return { kind: 'slide' }
-    if (elementClipboard && clipboardMarker('io.getoffice.slides.elements'))
+    if (slideClipboard && clipboardMarker('io.vegaoffice.slides.slide')) return { kind: 'slide' }
+    if (elementClipboard && clipboardMarker('io.vegaoffice.slides.elements'))
       return { kind: 'internal' }
     const img = clipboard.readImage()
     if (!img.isEmpty()) return { kind: 'image', base64: img.toPNG().toString('base64'), ext: 'png' }
@@ -3210,8 +3210,8 @@ export function registerSlidesIpc(): void {
 
   // Menu-enable probe: is there anything a paste would act on? (no image decode)
   ipcMain.handle('slides:clipboard-probe', () => {
-    if (slideClipboard && clipboardMarker('io.getoffice.slides.slide')) return true
-    if (elementClipboard && clipboardMarker('io.getoffice.slides.elements')) return true
+    if (slideClipboard && clipboardMarker('io.vegaoffice.slides.slide')) return true
+    if (elementClipboard && clipboardMarker('io.vegaoffice.slides.elements')) return true
     if (clipboard.availableFormats().some((f) => f.startsWith('image/'))) return true
     return clipboard.readText().trim().length > 0
   })
@@ -3231,7 +3231,7 @@ export function registerSlidesIpc(): void {
         cascade: newPasteCascade(op.cut ? null : pageKey(e.sender.id, op.slideIndex)),
       }
       // Write our marker to the OS clipboard: an external copy overwrites it, so at paste time it tells whether internal or external is newer
-      clipboard.writeBuffer('io.getoffice.slides.elements', Buffer.from('1'))
+      clipboard.writeBuffer('io.vegaoffice.slides.elements', Buffer.from('1'))
     }
     return items.length
   })
@@ -4468,7 +4468,7 @@ export function createSlidesWindow(openPath?: string | null): BrowserWindow {
   const win = new BrowserWindow({
     width: 1280,
     height: 840,
-    title: 'GetOffice Slides',
+    title: 'VegaOffice Slides',
     ...(process.platform === 'darwin'
       ? { titleBarStyle: 'hiddenInset' as const }
       : {
@@ -4689,8 +4689,8 @@ async function applyMainProcessProxy(): Promise<void> {
   try {
     await app.whenReady()
     // PAC/rule proxies answer per-host: probe the host the login flow, the
-    // Genspark LLM proxy and the gsk CLI actually target
-    const resolved = await electronSession.defaultSession.resolveProxy('https://www.genspark.ai/')
+    // VEGA LLM proxy and the gsk CLI actually target
+    const resolved = await electronSession.defaultSession.resolveProxy('https://api.vega.chat/')
     // resolveProxy returns strings like "PROXY 127.0.0.1:1087" or "DIRECT"
     const m = /PROXY\s+([^;]+)/i.exec(resolved || '')
     if (m) {
@@ -4713,11 +4713,11 @@ export function startSlidesStandalone(): void {
     app.commandLine.appendSwitch('remote-debugging-port', process.env.SLIDES_CDP_PORT)
     app.commandLine.appendSwitch('remote-allow-origins', '*')
   }
-  // GETOFFICE_USER_DATA: test drivers point this at a scratch dir so automated
+  // VEGAOFFICE_USER_DATA: test drivers point this at a scratch dir so automated
   // instances get their own userData AND single-instance lock (the lock is scoped
   // to userData), allowing parallel instances alongside a normal dev run.
-  if (!app.isPackaged && process.env.GETOFFICE_USER_DATA) {
-    app.setPath('userData', process.env.GETOFFICE_USER_DATA)
+  if (!app.isPackaged && process.env.VEGAOFFICE_USER_DATA) {
+    app.setPath('userData', process.env.VEGAOFFICE_USER_DATA)
   }
   // The main process's Node fetch (undici) does not use the system proxy by default, so access
   // from mainland China to overseas LLM APIs like api.anthropic.com hits ETIMEDOUT on direct
@@ -4750,7 +4750,7 @@ export function startSlidesStandalone(): void {
 
   app.whenReady().then(async () => {
     installRendererProtocol({ slides: join(__dirname, '../renderer') })
-    setUiLang(normalizeLang(process.env.GETOFFICE_LANG ?? app.getLocale()))
+    setUiLang(normalizeLang(process.env.VEGAOFFICE_LANG ?? app.getLocale()))
     registerSlidesIpc()
     registerAiIpc()
     registerProjectIpc()

@@ -39,9 +39,9 @@ export const MINIMAX_BASE_URL = 'https://api.minimax.io/v1'
 export const AI_MEDIA_PROVIDERS: AiMediaProviderMeta[] = [
   {
     id: 'genspark',
-    label: 'Genspark',
-    description: 'Image generation, media analysis and search through your Genspark sign-in',
-    keyPlaceholder: 'Not required - sign in to Genspark',
+    label: 'Account',
+    description: 'Image generation, media analysis and search through your account sign-in',
+    keyPlaceholder: 'Not required - sign in to your account',
     defaultBaseUrl: '',
     imageProtocol: 'openai-images',
     imageModels: [],

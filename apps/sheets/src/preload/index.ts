@@ -464,7 +464,7 @@ const desktopApi: DesktopApi = {
   async aiGskStatus(withEmail) {
     const result: unknown = await ipcRenderer.invoke(IPC_CHANNELS.aiGskStatus, withEmail)
     if (!isRecord(result) || typeof result.loggedIn !== 'boolean') {
-      throw new Error('Invalid Genspark account status response.')
+      throw new Error('Invalid account status response.')
     }
     return result as unknown as GenSparkAccountStatus
   },
@@ -687,11 +687,11 @@ const projectApi: ProjectApi = {
 }
 contextBridge.exposeInMainWorld('projectApi', projectApi)
 
-// Off by default. e2e drivers launch the BUILT app with GETOFFICE_DEBUG_HOOKS=1
-// so the renderer exposes window.__getofficeDebug (see App.tsx) — the dev-only
+// Off by default. e2e drivers launch the BUILT app with VEGAOFFICE_DEBUG_HOOKS=1
+// so the renderer exposes window.__vegaofficeDebug (see App.tsx) — the dev-only
 // __univerAPI hook does not exist in production bundles.
-if (process.env.GETOFFICE_DEBUG_HOOKS === '1') {
-  contextBridge.exposeInMainWorld('__getofficeDebugHooks', true)
+if (process.env.VEGAOFFICE_DEBUG_HOOKS === '1') {
+  contextBridge.exposeInMainWorld('__vegaofficeDebugHooks', true)
 }
 
 // open documents dragged from the OS onto this tab as a new shell tab

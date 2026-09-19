@@ -35,7 +35,7 @@ import { createHash } from 'node:crypto'
 
 beforeEach(() => {
   availability.clear()
-  vi.stubEnv('GETOFFICE_FONT_CDN_URL', fontCdnBaseUrl)
+  vi.stubEnv('VEGAOFFICE_FONT_CDN_URL', fontCdnBaseUrl)
   vi.mocked(net.fetch).mockReset()
 })
 afterEach(() => vi.unstubAllEnvs())
@@ -64,27 +64,27 @@ describe('font catalog', () => {
   })
 
   it('hides the downloadable catalog when no CDN URL is configured', () => {
-    vi.stubEnv('GETOFFICE_FONT_CDN_URL', '')
+    vi.stubEnv('VEGAOFFICE_FONT_CDN_URL', '')
     expect(listFontCatalog()).toEqual([])
   })
 
   it('extracts and validates the packaged CDN URL', () => {
     expect(
       extractFontCdnBaseUrl({
-        getofficeFontCdn: { baseUrl: ' https://fonts.example.test/v1/ ' },
+        vegaofficeFontCdn: { baseUrl: ' https://fonts.example.test/v1/ ' },
       }),
     ).toBe(fontCdnBaseUrl)
     expect(
-      extractFontCdnBaseUrl({ getofficeFontCdn: { baseUrl: 'http://fonts.example.test/v1' } }),
+      extractFontCdnBaseUrl({ vegaofficeFontCdn: { baseUrl: 'http://fonts.example.test/v1' } }),
     ).toBeNull()
     expect(
       extractFontCdnBaseUrl({
-        getofficeFontCdn: { baseUrl: 'https://user@fonts.example.test/v1' },
+        vegaofficeFontCdn: { baseUrl: 'https://user@fonts.example.test/v1' },
       }),
     ).toBeNull()
     expect(
       extractFontCdnBaseUrl({
-        getofficeFontCdn: { baseUrl: 'https://fonts.example.test/v1?token=secret' },
+        vegaofficeFontCdn: { baseUrl: 'https://fonts.example.test/v1?token=secret' },
       }),
     ).toBeNull()
   })
@@ -130,7 +130,7 @@ describe('downloadFontFamily', () => {
   })
 
   it('rejects downloads when no CDN URL is configured', async () => {
-    vi.stubEnv('GETOFFICE_FONT_CDN_URL', '')
+    vi.stubEnv('VEGAOFFICE_FONT_CDN_URL', '')
     await expect(downloadFontFamily(FONT_CATALOG[0]!.family)).rejects.toThrow(/unavailable/)
     expect(net.fetch).not.toHaveBeenCalled()
   })
@@ -171,7 +171,7 @@ describe('missingCatalogFonts', () => {
     const missing = missingCatalogFonts({ deck } as never)
     expect(missing).toEqual(['Poppins', 'Rubik'])
 
-    vi.stubEnv('GETOFFICE_FONT_CDN_URL', '')
+    vi.stubEnv('VEGAOFFICE_FONT_CDN_URL', '')
     expect(missingCatalogFonts({ deck } as never)).toEqual([])
   })
 })

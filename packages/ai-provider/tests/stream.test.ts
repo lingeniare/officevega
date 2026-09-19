@@ -371,7 +371,7 @@ describe('streamForProvider: anthropic', () => {
 
   it('never sends an empty assistant content array when history has edits-only replies', async () => {
     // Prior empty terminal turns would map to content:[] and break follow-ups
-    // on Anthropic (getoffice#12 / #22 class of multi-turn failures).
+    // on Anthropic (vegaoffice#12 / #22 class of multi-turn failures).
     const fetchMock = vi
       .fn()
       .mockResolvedValue(

@@ -679,7 +679,7 @@ function faceSrc(items: readonly string[]): string {
 
 function genuineLocalExists(names: readonly string[]): Promise<boolean> {
   const probes = names.map((n) =>
-    new FontFace('__getoffice-font-probe', `local('${n}')`).load().then(
+    new FontFace('__vegaoffice-font-probe', `local('${n}')`).load().then(
       () => true,
       () => false,
     ),

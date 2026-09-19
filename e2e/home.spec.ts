@@ -22,7 +22,7 @@ test.describe('home screen', () => {
     }
   })
 
-  test('renders localized UI when GETOFFICE_LANG=zh-CN', async () => {
+  test('renders localized UI when VEGAOFFICE_LANG=zh-CN', async () => {
     const launched = await launchShell({
       onboardingSeen: true,
       lang: 'zh-CN',

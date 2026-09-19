@@ -13,7 +13,7 @@ async function part(path: string, name: string): Promise<string> {
   return zip.file(name)!.async('string')
 }
 
-describe('getoffice create --type xlsx / sheet', () => {
+describe('vegaoffice create --type xlsx / sheet', () => {
   it('builds a workbook from a JSON table with formulas', async () => {
     const dir = tempDir()
     const table = join(dir, 'table.json')
@@ -347,7 +347,7 @@ describe('getoffice create --type xlsx / sheet', () => {
   )
 })
 
-describe('getoffice sheet read: --cols, --max-rows, --where, --stats', () => {
+describe('vegaoffice sheet read: --cols, --max-rows, --where, --stats', () => {
   async function book(dir: string): Promise<string> {
     const table = join(dir, 'r.json')
     writeFileSync(
@@ -460,7 +460,7 @@ describe('getoffice sheet read: --cols, --max-rows, --where, --stats', () => {
   })
 })
 
-describe('getoffice convert xlsx → csv', () => {
+describe('vegaoffice convert xlsx → csv', () => {
   it.skipIf(!sidecar)('writes the active sheet as displayed text with a BOM', async () => {
     const dir = tempDir()
     const table = join(dir, 'table.json')

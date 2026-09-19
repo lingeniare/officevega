@@ -1,14 +1,14 @@
 /**
- * GetOffice's VEGA identity (api.vega.chat, better-auth): OAuth device
- * authorization (RFC 8628) minting one sk-apivega-… API key named "genoffice"
- * — usage_logs.api_key_id attributes all traffic to GetOffice. Stored in
- * ~/.getoffice/auth.json.
+ * VegaOffice's VEGA identity (api.vega.chat, better-auth): OAuth device
+ * authorization (RFC 8628) minting one sk-apivega-… API key named "vegaoffice"
+ * — usage_logs.api_key_id attributes all traffic to VegaOffice. Stored in
+ * ~/.vegaoffice/auth.json.
  *
  * Flow: POST /api/auth/device/code → browser approve at verification_uri →
  * poll POST /api/auth/device/token for a session Bearer →
- * POST /api/v1/keys/genoffice. The session token is dropped after key
+ * POST /api/v1/keys/vegaoffice. The session token is dropped after key
  * issuance; the API key self-revokes on logout
- * (POST /api/v1/keys/genoffice/revoke) and GET /api/v1/account reads the
+ * (POST /api/v1/keys/vegaoffice/revoke) and GET /api/v1/account reads the
  * deposit for the account UI.
  */
 
@@ -29,11 +29,11 @@ export interface GskLoginProgress {
   error?: string
 }
 
-// Server-registered wire identity — NOT the product name. api.vega.chat
-// whitelists client_id "genoffice" and serves /api/v1/keys/genoffice only;
-// anything else gets 400 invalid_client / 404. Do not rename with the app.
-const CLIENT_ID = 'genoffice'
-const KEY_NAME = 'genoffice'
+// Server-registered wire identity, matched to the product name. api.vega.chat
+// whitelists client_id "vegaoffice" and serves /api/v1/keys/vegaoffice only;
+// anything else gets 400 invalid_client / 404. Keep in sync with the server.
+const CLIENT_ID = 'vegaoffice'
+const KEY_NAME = 'vegaoffice'
 const HTTP_TIMEOUT_MS = 30_000
 /** RFC 8628: a slow_down answer adds 5 s to the poll interval */
 const SLOW_DOWN_EXTRA_MS = 5_000
@@ -103,7 +103,7 @@ async function proxyFallbackFetch(): Promise<typeof fetch | null> {
         session?: { fromPartition: (partition: string) => ProxySession }
       }
       if (session) {
-        const ses = session.fromPartition('getoffice-login-proxy')
+        const ses = session.fromPartition('vegaoffice-login-proxy')
         await ses.setProxy({ proxyRules: proxyUrl })
         impl = ses.fetch.bind(ses)
       }
@@ -123,30 +123,32 @@ async function loginFetchChannels(): Promise<(typeof fetch)[]> {
   return proxyFallbackPreferred ? [fallback, primary] : [primary, fallback]
 }
 
-/** Override dir via GETOFFICE_AUTH_DIR (test isolation). */
-export function getofficeAuthPath(): string {
-  return join(process.env.GETOFFICE_AUTH_DIR || join(homedir(), '.getoffice'), 'auth.json')
+/** Override dir via VEGAOFFICE_AUTH_DIR (test isolation). */
+export function vegaofficeAuthPath(): string {
+  return join(process.env.VEGAOFFICE_AUTH_DIR || join(homedir(), '.vegaoffice'), 'auth.json')
 }
 
 /**
- * Pre-rename installs kept the key at ~/.genoffice/auth.json (overridable via
- * the legacy GENOFFICE_AUTH_DIR env). Returns null when GETOFFICE_AUTH_DIR is
- * set without GENOFFICE_AUTH_DIR — tests must never touch the real home dir.
+ * Pre-rename installs kept the key at ~/.getoffice or ~/.genoffice auth.json
+ * (overridable via the legacy GETOFFICE_AUTH_DIR / GENOFFICE_AUTH_DIR envs).
+ * Returns null when VEGAOFFICE_AUTH_DIR is set without a matching legacy env —
+ * tests must never touch the real home dir.
  */
-function legacyAuthPath(): string | null {
-  if (process.env.GENOFFICE_AUTH_DIR) return join(process.env.GENOFFICE_AUTH_DIR, 'auth.json')
-  if (process.env.GETOFFICE_AUTH_DIR) return null
-  return join(homedir(), '.genoffice', 'auth.json')
+function legacyAuthPaths(): string[] {
+  if (process.env.GETOFFICE_AUTH_DIR) return [join(process.env.GETOFFICE_AUTH_DIR, 'auth.json')]
+  if (process.env.GENOFFICE_AUTH_DIR) return [join(process.env.GENOFFICE_AUTH_DIR, 'auth.json')]
+  if (process.env.VEGAOFFICE_AUTH_DIR) return []
+  return [join(homedir(), '.getoffice', 'auth.json'), join(homedir(), '.genoffice', 'auth.json')]
 }
 
-export interface GetofficeAuth {
+export interface VegaofficeAuth {
   apiKey: string
   keyId?: string
 }
 
-let cachedAuth: GetofficeAuth | null | undefined
+let cachedAuth: VegaofficeAuth | null | undefined
 
-function parseAuthFile(path: string): GetofficeAuth | null {
+function parseAuthFile(path: string): VegaofficeAuth | null {
   try {
     const raw = asRecord(JSON.parse(readFileSync(path, 'utf-8')))
     const apiKey = typeof raw.api_key === 'string' ? raw.api_key : ''
@@ -162,25 +164,27 @@ function parseAuthFile(path: string): GetofficeAuth | null {
   }
 }
 
-function readAuthFile(): GetofficeAuth | null {
-  const current = parseAuthFile(getofficeAuthPath())
+function readAuthFile(): VegaofficeAuth | null {
+  const current = parseAuthFile(vegaofficeAuthPath())
   if (current) return current
-  // upgrade path: adopt a key the pre-rename build stored in ~/.genoffice so
-  // the product rename doesn't sign the user out
-  const legacy = legacyAuthPath()
-  if (!legacy || legacy === getofficeAuthPath()) return null
-  const auth = parseAuthFile(legacy)
-  if (auth) {
-    try {
-      saveAuth(auth) // migrate into ~/.getoffice; a failed write just retries next read
-    } catch {
-      /* best-effort migration — the key is still usable from the old file */
+  // upgrade path: adopt a key a pre-rename build stored in ~/.getoffice or
+  // ~/.genoffice so the product renames don't sign the user out
+  for (const legacy of legacyAuthPaths()) {
+    if (legacy === vegaofficeAuthPath()) continue
+    const auth = parseAuthFile(legacy)
+    if (auth) {
+      try {
+        saveAuth(auth) // migrate into ~/.vegaoffice; a failed write just retries next read
+      } catch {
+        /* best-effort migration — the key is still usable from the old file */
+      }
+      return auth
     }
   }
-  return auth
+  return null
 }
 
-export function loadGetofficeAuth(): GetofficeAuth | null {
+export function loadVegaofficeAuth(): VegaofficeAuth | null {
   if (cachedAuth === undefined) cachedAuth = readAuthFile()
   return cachedAuth
 }
@@ -195,13 +199,13 @@ export function loadGetofficeAuth(): GetofficeAuth | null {
  * registrar runs per process (shell mode registers docs'; a standalone app
  * build registers its own — a re-register just swaps the same broadcast).
  */
-let authChangedListener: ((auth: GetofficeAuth | null) => void) | null = null
+let authChangedListener: ((auth: VegaofficeAuth | null) => void) | null = null
 
-export function setGetofficeAuthListener(fn: ((auth: GetofficeAuth | null) => void) | null): void {
+export function setVegaofficeAuthListener(fn: ((auth: VegaofficeAuth | null) => void) | null): void {
   authChangedListener = fn
 }
 
-function emitAuthChanged(auth: GetofficeAuth | null): void {
+function emitAuthChanged(auth: VegaofficeAuth | null): void {
   try {
     authChangedListener?.(auth)
   } catch {
@@ -209,13 +213,13 @@ function emitAuthChanged(auth: GetofficeAuth | null): void {
   }
 }
 
-/** The app-issued VEGA key (server key name "genoffice"); '' when not signed in. Cached (invalidated by login/logout). */
-export function getofficeApiKey(): string {
-  return loadGetofficeAuth()?.apiKey ?? ''
+/** The app-issued VEGA key (server key name "vegaoffice"); '' when not signed in. Cached (invalidated by login/logout). */
+export function vegaofficeApiKey(): string {
+  return loadVegaofficeAuth()?.apiKey ?? ''
 }
 
-function saveAuth(auth: GetofficeAuth): void {
-  const path = getofficeAuthPath()
+function saveAuth(auth: VegaofficeAuth): void {
+  const path = vegaofficeAuthPath()
   mkdirSync(dirname(path), { recursive: true })
   writeFileSync(
     path,
@@ -229,7 +233,7 @@ function saveAuth(auth: GetofficeAuth): void {
 function clearAuth(): void {
   // the legacy file too — otherwise the next read re-adopts it and sign-out
   // never sticks
-  for (const path of [getofficeAuthPath(), legacyAuthPath()]) {
+  for (const path of [vegaofficeAuthPath(), ...legacyAuthPaths()]) {
     try {
       if (path && existsSync(path)) unlinkSync(path)
     } catch {
@@ -311,7 +315,7 @@ function sleep(ms: number, signal: AbortSignal): Promise<void> {
 /**
  * VEGA device authorization (better-auth deviceAuthorization plugin, RFC 8628):
  * request a code, let the user approve it in the browser, poll for the session
- * token, then mint the single "genoffice" API key (the server deletes any
+ * token, then mint the single "vegaoffice" API key (the server deletes any
  * previous key of the same name before inserting — re-login rotates it).
  */
 async function runDeviceLogin(
@@ -402,11 +406,11 @@ async function runDeviceLogin(
 let activeLogin: { cancel: () => void } | null = null
 
 /**
- * Starts the GetOffice device-code login, cancelling a previous in-flight one
+ * Starts the VegaOffice device-code login, cancelling a previous in-flight one
  * (its device code would otherwise be approved into a dead flow). The caller
  * opens `url` in the system browser. Returns whether the flow was started.
  */
-export function startGetofficeLogin(onEvent?: (progress: GskLoginProgress) => void): boolean {
+export function startVegaofficeLogin(onEvent?: (progress: GskLoginProgress) => void): boolean {
   activeLogin?.cancel()
   const emit = onEvent ?? (() => {})
   const controller = new AbortController()
@@ -438,8 +442,8 @@ export function startGetofficeLogin(onEvent?: (progress: GskLoginProgress) => vo
   return true
 }
 
-/** True while a login started via startGetofficeLogin is in flight. */
-export function getofficeLoginInFlight(): boolean {
+/** True while a login started via startVegaofficeLogin is in flight. */
+export function vegaofficeLoginInFlight(): boolean {
   return activeLogin !== null
 }
 
@@ -448,19 +452,19 @@ export function getofficeLoginInFlight(): boolean {
  * in-flight flow (restarting would strand it on a dead device code); openUrl
  * is the caller's browser opener (this module is Electron-free).
  */
-export function ensureGetofficeLogin(openUrl: (url: string) => void): void {
-  if (getofficeLoginInFlight()) return
-  startGetofficeLogin((progress) => {
+export function ensureVegaofficeLogin(openUrl: (url: string) => void): void {
+  if (vegaofficeLoginInFlight()) return
+  startVegaofficeLogin((progress) => {
     if (progress.url) openUrl(progress.url)
   })
 }
 
 /**
- * Signs out: best-effort server-side self-revocation of the genoffice key
+ * Signs out: best-effort server-side self-revocation of the vegaoffice key
  * (the API key itself is the Bearer — no session needed), then local removal.
  */
-export async function getofficeLogout(): Promise<void> {
-  const auth = loadGetofficeAuth()
+export async function vegaofficeLogout(): Promise<void> {
+  const auth = loadVegaofficeAuth()
   if (auth?.apiKey) {
     const controller = new AbortController()
     const timer = setTimeout(() => controller.abort(), HTTP_TIMEOUT_MS)
@@ -502,7 +506,7 @@ export interface VegaAccountInfo {
  * 401 and also reads as null.
  */
 export async function vegaAccountInfo(): Promise<VegaAccountInfo | null> {
-  const key = getofficeApiKey()
+  const key = vegaofficeApiKey()
   if (!key) return null
   try {
     const resp = await resolveFetch()(`${apiBase()}/account`, {
@@ -530,7 +534,7 @@ export async function vegaAccountInfo(): Promise<VegaAccountInfo | null> {
 }
 
 /** Test hook: drop the auth cache, the listener and fetch-channel state. */
-export function resetGetofficeAuthCache(): void {
+export function resetVegaofficeAuthCache(): void {
   cachedAuth = undefined
   authChangedListener = null
   proxyFetchCache = undefined
@@ -538,6 +542,6 @@ export function resetGetofficeAuthCache(): void {
 }
 
 /** Test hook: whether the proxy fallback channel is currently preferred. */
-export function getofficeProxyFallbackPreferred(): boolean {
+export function vegaofficeProxyFallbackPreferred(): boolean {
   return proxyFallbackPreferred
 }

@@ -10,7 +10,7 @@ what the client sends today and what the backend must guarantee.
 - Everything goes to `https://api.vega.chat/api/v1` with
   `Authorization: Bearer sk-apivega-...` — one issued key for all features,
   billed to the account deposit, attributed to the server-registered key
-  name `genoffice`.
+  name `vegaoffice`.
 - The key is main-process only: never rendered, never editable, never in
   `ai-settings.json`. The client has **no user-facing override** for VEGA —
   no key field, no Base URL field, no media model pickers.
@@ -130,7 +130,7 @@ Drives the account block and low-balance warnings; keep it <1 s and key-auth
 ## Sync protocol going forward
 
 - Contract changes (endpoints, payload shapes, engine names, model slots)
-  land in this file + `vega-features-api-spec.md`; ping the GetOffice side
+  land in this file + `vega-features-api-spec.md`; ping the VegaOffice side
   before shipping a breaking change.
 - The `/models` catalog is the source of truth for capabilities — keep
   modality metadata accurate and the client stays compatible without a
@@ -142,16 +142,15 @@ Drives the account block and low-balance warnings; keep it <1 s and key-auth
 
 ### Backend changes confirmed
 
-- `client_id` whitelist and key name remain **`genoffice`** — the product
-  rename did NOT reach the server-registered wire names. Verified live
-  2026-09-17: `client_id:"getoffice"` → `400 invalid_client`;
-  `POST /api/v1/keys/getoffice` → 404, while `/api/v1/keys/genoffice`
-  answers 401 (exists, needs the session Bearer). The client keeps sending
-  `genoffice` (`CLIENT_ID`/`KEY_NAME` in `getoffice-auth.ts`) until the
-  backend registers the new value — these constants must not follow app
-  rebrands.
-- Key endpoints: `POST /api/v1/keys/genoffice` (mint),
-  `POST /api/v1/keys/genoffice/revoke` (sign-out).
+- `client_id` whitelist and key name are now **`vegaoffice`** — the client
+  was switched to the product-consistent wire names
+  (`CLIENT_ID`/`KEY_NAME` in `vegaoffice-auth.ts`). Verified live
+  2026-09-17: `client_id:"vegaoffice"` → `400 invalid_client` and
+  `POST /api/v1/keys/vegaoffice` → 404 while only `genoffice` was
+  registered — **the backend must register `vegaoffice`** (or accept both)
+  before this client can sign in.
+- Key endpoints: `POST /api/v1/keys/vegaoffice` (mint),
+  `POST /api/v1/keys/vegaoffice/revoke` (sign-out).
 - Keys are never deleted: revocation flips `enabled=false`; the row, prefix
   and `usage_logs.api_key_id` billing attribution persist. No delete affordance
   for app-managed keys, dashboard or server-side.
@@ -176,8 +175,8 @@ limit, keyName}` — all fields the client reads are present.
 
 ### Our answers to the VEGA questions
 
-1. `client_id: "genoffice"` — what the client sends and what the whitelist
-   accepts; mint/revoke paths are `/api/v1/keys/genoffice*`.
+1. `client_id: "vegaoffice"` — what the client sends and what the whitelist
+   must accept; mint/revoke paths are `/api/v1/keys/vegaoffice*`.
 2. Complete pinned-id list: `openrouter/auto` (chat default),
    `google/gemini-3.1-flash-image` (image generation),
    `google/gemini-3.5-flash-lite` (web-search synthesis + image/video

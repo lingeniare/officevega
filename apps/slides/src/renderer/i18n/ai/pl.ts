@@ -114,7 +114,7 @@ export const pl = {
   aiErrNetwork:
     'Problem z siecią: nie można połączyć się z usługą AI. Sprawdź połączenie i spróbuj ponownie',
   aiCreditsExhausted:
-    'Twoje kredyty VEGA wyczerpały się. Doładuj konto na api.vega.chat/keys i spróbuj ponownie',
+    'Twoje kredyty VEGA wyczerpały się. Doładuj konto na api.vega.chat i spróbuj ponownie',
   aiErrRequestFailed: 'Wysłanie żądania nie powiodło się: {msg}',
   aiErrGenerateFailed: 'Generowanie nie powiodło się',
   aiErrRegenFailed: 'Ponowne wygenerowanie slajdu nie powiodło się',

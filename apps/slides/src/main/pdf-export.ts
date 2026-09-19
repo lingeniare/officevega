@@ -111,7 +111,7 @@ export async function exportSlidesPdf({
   const win = createWindow()
   let tempDir: string | null = null
   try {
-    tempDir = await mkdtemp(join(tmpdir(), 'getoffice-slides-pdf-'))
+    tempDir = await mkdtemp(join(tmpdir(), 'vegaoffice-slides-pdf-'))
     const htmlPath = join(tempDir, 'slides.html')
     await writeFile(htmlPath, buildPdfExportHtml(pngsBase64, widthIn, heightIn, links), 'utf8')
     await win.loadFile(htmlPath)

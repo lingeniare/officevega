@@ -65,7 +65,7 @@ export const it = {
   aiOverloadedError: 'Il servizio IA è momentaneamente sovraccarico — riprova tra poco',
   aiNetworkError:
     'Problema di rete: impossibile raggiungere il servizio IA. Controlla la connessione e riprova',
-  aiCreditsExhausted: 'I tuoi crediti VEGA sono esauriti. Ricarica su api.vega.chat/keys e riprova',
+  aiCreditsExhausted: 'I tuoi crediti VEGA sono esauriti. Ricarica su api.vega.chat e riprova',
   aiToolWorkbookContext: 'Lettura delle informazioni della cartella di lavoro',
   aiToolReadRange: "Lettura dell'intervallo",
   aiToolReadRangeOf: "Lettura dell'intervallo {range}",

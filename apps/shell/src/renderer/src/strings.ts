@@ -4,22 +4,8 @@ export const strings = {
     // Sidebar navigation
     navRecent: '最近',
     navStarred: '收藏',
-    navCloud: 'VEGA Projects',
-    cloudSubtitle: '在网页端用 VEGA AI 创建的项目。编辑在浏览器中继续——点击任意项目即可打开。',
-    cloudSearchPlaceholder: '搜索 {n} 个项目…',
-    cloudNoResults: '没有匹配的项目。',
-    cloudGroupThisWeek: '本周',
-    cloudGroupThisMonth: '本月',
-    cloudSortLabel: '排序：{v}',
-    cloudSortRecent: '最近',
-    cloudSortOldest: '最早',
-    cloudRefresh: '刷新',
-    cloudLoginHint: '登录 VEGA` 账号，查看你在网页端创建的项目。',
-    cloudEmpty: '还没有网页端项目。',
-    cloudError: '加载失败，请稍后重试。',
-    cloudRetry: '重试',
-    cloudLoadMore: '加载更多',
-    cloudOpenInBrowser: '在浏览器中打开',
+    fileSortRecent: '最近',
+    fileSortOldest: '最早',
     navTrash: '回收站',
     navTrashTip: '删除的文件在系统废纸篓中，可从那里还原',
     secQuickStart: '快速开始',
@@ -121,12 +107,11 @@ export const strings = {
     untitled: '未命名',
     noContent: '（无内容）',
     // Account
-    accountGenspark: 'VEGA 账号',
     account: '账号',
     login: '登录',
-    loginGenspark: '登录 VEGA 账号',
+    loginVega: '登录 VEGA 账号',
     loggedIn: '已登录',
-    loggedInGenspark: '已登录 VEGA',
+    loggedInVega: '已登录 VEGA',
     waitingLogin: '等待浏览器登录…点击可重新拉起登录页',
     loginDeviceCode: '设备代码',
     waitingShort: '等待登录…',
@@ -191,7 +176,7 @@ export const strings = {
     setMcpLogEmpty: '暂无日志',
     setSecAbout: '关于',
     setSecIntegrations: '集成',
-    intgHeroTitle: '在 AI 助手里使用 GetOffice',
+    intgHeroTitle: '在 AI 助手里使用 VegaOffice',
     intgHeroDesc:
       '接好后，Claude Code、Codex、Cursor、Claude Desktop 等助手就能替你创建、转换、读取和编辑 Word、Excel、PowerPoint、PDF 和 Markdown 文件。全部在本机完成，不会上传任何内容。',
     intgHeroStep1: '选接法：助手能运行终端命令就用 CLI，不能就用 MCP',
@@ -199,14 +184,14 @@ export const strings = {
     intgHeroStep3: '新开一个对话，直接提需求',
     intgStep1Title: '把 skill 安装到你的助手',
     intgStep1Desc: '这里只列出本机检测到的助手。装到你实际在用的那一个即可，不必全装。',
-    intgStep1Update: 'GetOffice 升级带来新版 skill 时，对应助手旁会出现「更新」按钮。',
+    intgStep1Update: 'VegaOffice 升级带来新版 skill 时，对应助手旁会出现「更新」按钮。',
     intgSkillVersion: 'skill {v}',
     intgStateMissing: 'skill 未安装',
     intgStateInstalled: '已安装 skill {v} · 下次对话即可使用',
     intgOtherToggle: '没有列出我的助手',
     intgOtherDesc: '以下三种方式任选一种即可。装的是同一份 skill，不需要重复操作。',
     intgOtherFolderTitle: '任何能读取 SKILL.md 目录的助手',
-    intgOtherFolderDesc: '选择它的 skills 目录，GetOffice 把文件写进去。',
+    intgOtherFolderDesc: '选择它的 skills 目录，VegaOffice 把文件写进去。',
     intgOtherZipTitle: '把文件交给助手',
     intgOtherZipDesc: '把 skill 保存为 zip，然后让助手自己安装。',
     intgOtherNpxTitle: '用 skills 命令安装（需要 Node.js）',
@@ -217,32 +202,32 @@ export const strings = {
     intgStep2DescBefore: '装好后，在助手里新开一个对话，用平常说话的方式提需求，例如：',
     intgExample1: '把 ~/Downloads/report.md 转成 Word 文档',
     intgExample2: '做一份 6 页的幻灯片，介绍我们第三季度的业绩',
-    intgExample3: '把 budget.xlsx 转成 PDF，并在 GetOffice 里打开',
-    intgStep2Note: '助手会自己调用 getoffice 命令行，你不需要输入任何命令。',
+    intgExample3: '把 budget.xlsx 转成 PDF，并在 VegaOffice 里打开',
+    intgStep2Note: '助手会自己调用 vegaoffice 命令行，你不需要输入任何命令。',
     intgCliPartTitle: 'CLI · 命令行 + skill',
     intgCliPartDesc:
-      '适合能运行终端命令的助手（Claude Code、Codex、Cursor 等）。安装 skill 后，助手会自己调用 getoffice 命令行创建、转换、读取和编辑文件，你不需要输入任何命令。',
+      '适合能运行终端命令的助手（Claude Code、Codex、Cursor 等）。安装 skill 后，助手会自己调用 vegaoffice 命令行创建、转换、读取和编辑文件，你不需要输入任何命令。',
     intgMcpPartTitle: 'MCP',
     intgMcpPartDesc:
-      'MCP 是 AI 助手调用外部工具的通用协议。助手不能运行命令（如 Claude Desktop），或你想让它直接操作 GetOffice 窗口时用这条路。下面两种接法任选一种。',
+      'MCP 是 AI 助手调用外部工具的通用协议。助手不能运行命令（如 Claude Desktop），或你想让它直接操作 VegaOffice 窗口时用这条路。下面两种接法任选一种。',
     intgMcpStdioTitle: '由助手启动（推荐）',
     intgMcpStdioDesc:
-      '助手自己拉起 getoffice mcp，不需要在这里开任何开关，GetOffice 也不用开着。功能与 CLI 完全相同。',
+      '助手自己拉起 vegaoffice mcp，不需要在这里开任何开关，VegaOffice 也不用开着。功能与 CLI 完全相同。',
     intgMcpHttpTitle: '本地 HTTP 服务',
     intgMcpHttpDesc:
-      '在 GetOffice 内运行，助手通过网址连接，可以看着它在 Word 编辑器里逐步生成。需要 GetOffice 保持打开；目前只支持 Word。',
+      '在 VegaOffice 内运行，助手通过网址连接，可以看着它在 Word 编辑器里逐步生成。需要 VegaOffice 保持打开；目前只支持 Word。',
     intgMcpHttpAdvanced: '高级：其他地址与日志',
-    intgMcpTryNote: '助手会通过 MCP 调用 GetOffice，你不需要输入任何命令。',
+    intgMcpTryNote: '助手会通过 MCP 调用 VegaOffice，你不需要输入任何命令。',
     intgMcpClaudeTitle: 'Claude Code',
     intgMcpClaudeDesc: '在终端运行一次：',
     intgMcpOtherTitle: 'Cursor、Claude Desktop 或其他支持 MCP 的助手',
     intgMcpOtherDesc:
       '把这段加进它的 MCP 服务器配置（一个 JSON 文件，或设置里的「添加 MCP 服务器」）：',
     intgMcpNote: 'skill 和 MCP 可以同时存在，助手会自己选用；两者做的事完全一样。',
-    intgCliTitle: '高级：命令行 getoffice',
-    intgCliReady: 'getoffice {v} · 已可在终端直接使用（{path}）',
+    intgCliTitle: '高级：命令行 vegaoffice',
+    intgCliReady: 'vegaoffice {v} · 已可在终端直接使用（{path}）',
     intgCliNotOnPath:
-      'getoffice {v} · 尚未加入终端 PATH。助手仍能通过 ~/.getoffice/launcher 找到它，skill 不受影响。若想自己在终端输入 getoffice，运行一次：',
+      'vegaoffice {v} · 尚未加入终端 PATH。助手仍能通过 ~/.vegaoffice/launcher 找到它，skill 不受影响。若想自己在终端输入 vegaoffice，运行一次：',
     intgCliLauncher: '启动器目录',
     intgStateOutdated: '已安装 {v}，可更新到 {next}',
     intgStateModified: '已安装 {v}（已被修改）',
@@ -266,9 +251,9 @@ export const strings = {
     intgSaveZipTitle: '保存 skill',
     intgSavedTo: '已保存到 {path}',
     intgCopied: '已复制',
-    intgCliEphemeral: '请先把 GetOffice 拖到「应用程序」，再使用命令行。',
+    intgCliEphemeral: '请先把 VegaOffice 拖到「应用程序」，再使用命令行。',
     intgCopyPath: '复制路径',
-    intgCliNeedsUpdate: '此 skill 需要命令行 {v} 或更新版本，请更新 GetOffice。',
+    intgCliNeedsUpdate: '此 skill 需要命令行 {v} 或更新版本，请更新 VegaOffice。',
     intgLoading: '正在检测…',
     intgUpdateDue: 'skill 有新版本可更新',
     setSecAiModel: 'AI 模型',
@@ -279,14 +264,14 @@ export const strings = {
     setAiKeyHint: '密钥仅保存在本机。',
     setAiBaseUrl: 'Base URL',
     setAiBaseUrlHint: '留空使用官方端点。',
-    setAiGensparkHint: '使用 Genspark 账号登录，无需 API key。',
+    setAiAccountHint: '使用 VEGA 账号登录，无需 API key。',
     setAiCodexPath: 'Codex 可执行文件',
     setAiCodexPathHint: '仅自定义安装时填写；留空会自动检测。',
     setAiCodexAutoPlaceholder: '留空自动检测（推荐）',
     setAiCodexHint:
       '自动查找并使用当前 Codex CLI，更新后无需重新选择；也可填写自定义路径。无需 API Key。',
     setAiByokNote:
-      '对话使用你自己的 key；生图与媒体解析按「生图与媒体」设置；网页搜索仍走 Genspark 登录或免费来源。',
+      '对话使用你自己的 key；生图与媒体解析按「生图与媒体」设置；网页搜索仍走 VEGA 登录或免费来源。',
     setAiSave: '保存',
     setAiSaved: '已保存',
     setAiTest: '测试连接',
@@ -297,11 +282,11 @@ export const strings = {
     setAiMaxTokensDesc:
       '一次回合的输出预算。推理模型会先消耗预算用于思考，预算用完时回复可能变成空白，遇到这种情况请调大此项。',
     setSecAiMedia: '生图、媒体与搜索',
-    setAiMediaGensparkHint: '生图与图片/视频解析使用 Genspark 账号登录。',
+    setAiMediaAccountHint: '生图与图片/视频解析使用 VEGA 账号登录。',
     setAiImageModel: '生图模型',
     setAiAnalysisModel: '解析模型',
-    setAiSearchGensparkHint:
-      '网页与图片搜索使用 Genspark 账号登录；未登录或关闭云工具时改用免费来源。',
+    setAiSearchAccountHint:
+      '网页与图片搜索使用 VEGA 账号登录；未登录或关闭云工具时改用免费来源。',
     setAiSearchSerperHint: 'Serper 用你的 key 同时提供网页与图片搜索。',
     setAiSearchTavilyHint: 'Tavily 用你的 key 提供网页搜索；图片搜索改用免费来源。',
     setAiCapImage: '生图',
@@ -311,7 +296,7 @@ export const strings = {
     setAiSharedKeyHint: '同一服务商的 key 与 Base URL 在各项能力间共用，只需填一次。',
     setAiVegaTools: 'VEGA 云工具',
     setAiVegaToolsDesc:
-      '当服务商选择 VEGA 时，网页搜索、生图与媒体解析经 api.vega.chat 并使用 VEGA key；关闭后这些工具回退到 Genspark 登录或免费来源。聊天服务商不受影响。',
+      '当服务商选择 VEGA 时，网页搜索、生图与媒体解析经 api.vega.chat 并使用 VEGA key；关闭后这些工具回退到 VEGA 登录或免费来源。聊天服务商不受影响。',
     setAiVegaNote: '兼容 OpenRouter 的网关——登录后自动签发 API key，界面不显示也不可编辑。',
     setAiVegaSigninDesc: '登录一次即自动签发 API key 并安全存储在本设备上——无需手动填写。',
     setAiVegaSignedIn: '已登录——key 自动管理',
@@ -320,13 +305,13 @@ export const strings = {
     setAiSearchVegaHint: '网页搜索经 api.vega.chat 并使用登录签发的 key；图片搜索使用免费来源。',
     setGithub: '开源项目',
     starOnGitHub: '去 GitHub 点 Star',
-    starPromptTitle: '喜欢 GetOffice 吗？',
-    starPromptTitleN: '你已经用 GetOffice 打开了 {n} 个文档',
-    starPromptBody: 'GetOffice 是免费开源软件。到 GitHub 给我们一个 Star，是对团队最好的支持。',
+    starPromptTitle: '喜欢 VegaOffice 吗？',
+    starPromptTitleN: '你已经用 VegaOffice 打开了 {n} 个文档',
+    starPromptBody: 'VegaOffice 是免费开源软件。到 GitHub 给我们一个 Star，是对团队最好的支持。',
     starPromptGo: '去点 Star',
     starPromptDone: '已经点过了',
     starPromptLater: '以后再说',
-    onbStarHint: '如果你喜欢 GetOffice，欢迎到 GitHub 给我们一个 Star。',
+    onbStarHint: '如果你喜欢 VegaOffice，欢迎到 GitHub 给我们一个 Star。',
     setEmail: '邮箱',
     setNotLoggedIn: '未登录',
     setViewUsage: '查看用量',
@@ -342,13 +327,13 @@ export const strings = {
     appMenu: '菜单',
     newTab: '新建标签页',
     // First-run onboarding
-    onbTitle1: '欢迎使用 GetOffice',
+    onbTitle1: '欢迎使用 VegaOffice',
     onbSubtitle1: '第一个开源的 AI 原生 Office 套件',
     onbBody1: '创建文档、制作表格、生成演示、审阅 PDF。AI 深度融入每个环节。',
     onbTitle2: '这只是一个开始',
-    onbBody2: 'GetOffice 目前处于 alpha 阶段。欢迎加入 GenTeam 群聊，分享反馈，一起塑造它的未来。',
+    onbBody2: 'VegaOffice 目前处于 alpha 阶段。欢迎在 GitHub 上为我们点星并分享反馈，一起塑造它的未来。',
     onbCredits: '活跃贡献者可获得 **1,000+ VEGA 积分**',
-    onbJoinGenTeam: '加入 GenTeam',
+    onbJoinGitHub: '在 GitHub 上点星',
     onbSkip: '跳过',
     onbNext: '下一步',
     onbStart: '开始使用',
@@ -361,23 +346,8 @@ export const strings = {
   en: {
     navRecent: 'Recent',
     navStarred: 'Starred',
-    navCloud: 'Genspark Projects',
-    cloudSubtitle:
-      'Projects created on the web with Genspark AI. Editing continues in your browser — click any project to open it.',
-    cloudSearchPlaceholder: 'Search {n} projects…',
-    cloudNoResults: 'No matching projects.',
-    cloudGroupThisWeek: 'This week',
-    cloudGroupThisMonth: 'Earlier this month',
-    cloudSortLabel: 'Sort: {v}',
-    cloudSortRecent: 'Recent',
-    cloudSortOldest: 'Oldest',
-    cloudRefresh: 'Refresh',
-    cloudLoginHint: 'Sign in to your Genspark account to see projects you created on the web.',
-    cloudEmpty: 'No web projects yet.',
-    cloudError: 'Failed to load. Try again later.',
-    cloudRetry: 'Retry',
-    cloudLoadMore: 'Load more',
-    cloudOpenInBrowser: 'Open in browser',
+    fileSortRecent: 'Recent',
+    fileSortOldest: 'Oldest',
     navTrash: 'Trash',
     navTrashTip: 'Deleted files go to the system Trash and can be restored there',
     secQuickStart: 'Quick start',
@@ -475,12 +445,11 @@ export const strings = {
     timelineUserAria: 'User',
     untitled: 'Untitled',
     noContent: '(empty)',
-    accountGenspark: 'VEGA Account',
     account: 'Account',
     login: 'Sign in',
-    loginGenspark: 'Sign in with VEGA',
+    loginVega: 'Sign in with VEGA',
     loggedIn: 'Signed in',
-    loggedInGenspark: 'Signed in to VEGA',
+    loggedInVega: 'Signed in to VEGA',
     waitingLogin: 'Waiting for browser sign-in… Click to relaunch the sign-in page',
     loginTimeout: 'Sign-in timed out — click to retry',
     loginLaunchFailed: 'Could not start sign-in — click to retry',
@@ -547,7 +516,7 @@ export const strings = {
     setMcpLogEmpty: 'No log entries yet',
     setSecAbout: 'About',
     setSecIntegrations: 'Integrations',
-    intgHeroTitle: 'Use GetOffice from your AI assistant',
+    intgHeroTitle: 'Use VegaOffice from your AI assistant',
     intgHeroDesc:
       'Once connected, Claude Code, Codex, Cursor, Claude Desktop and similar assistants can create, convert, read and edit Word, Excel, PowerPoint, PDF and Markdown files for you. Everything runs on this computer; nothing is uploaded.',
     intgHeroStep1:
@@ -558,7 +527,7 @@ export const strings = {
     intgStep1Desc:
       'Only assistants found on this computer are listed. Install into the one you actually use; you do not need all of them.',
     intgStep1Update:
-      'When a GetOffice update ships a newer skill, an Update button appears next to that assistant.',
+      'When a VegaOffice update ships a newer skill, an Update button appears next to that assistant.',
     intgSkillVersion: 'skill {v}',
     intgStateMissing: 'Skill not installed',
     intgStateInstalled: 'Skill {v} installed · ready in your next chat',
@@ -566,7 +535,7 @@ export const strings = {
     intgOtherDesc:
       'Pick any one of these three ways. They all install the same skill, so there is no need to do more than one.',
     intgOtherFolderTitle: 'Any assistant that reads SKILL.md folders',
-    intgOtherFolderDesc: 'Pick its skills folder and GetOffice writes the file there.',
+    intgOtherFolderDesc: 'Pick its skills folder and VegaOffice writes the file there.',
     intgOtherZipTitle: 'Hand the file to the assistant',
     intgOtherZipDesc: 'Save the skill as a zip, then ask the assistant to install it.',
     intgOtherNpxTitle: 'With the skills command (needs Node.js)',
@@ -578,23 +547,23 @@ export const strings = {
       'Once installed, open a new chat in your assistant and ask in plain words, for example:',
     intgExample1: 'Turn ~/Downloads/report.md into a Word document',
     intgExample2: 'Make a 6-slide deck about our Q3 results',
-    intgExample3: 'Convert budget.xlsx to PDF and open it in GetOffice',
+    intgExample3: 'Convert budget.xlsx to PDF and open it in VegaOffice',
     intgStep2Note:
-      'The assistant runs the getoffice command line itself; you never have to type it.',
+      'The assistant runs the vegaoffice command line itself; you never have to type it.',
     intgCliPartTitle: 'CLI · command line + skill',
     intgCliPartDesc:
-      'For assistants that can run terminal commands (Claude Code, Codex, Cursor and others). Once the skill is installed, the assistant calls the getoffice command line itself to create, convert, read and edit files; you never type a command.',
+      'For assistants that can run terminal commands (Claude Code, Codex, Cursor and others). Once the skill is installed, the assistant calls the vegaoffice command line itself to create, convert, read and edit files; you never type a command.',
     intgMcpPartTitle: 'MCP',
     intgMcpPartDesc:
-      'MCP is the common protocol AI assistants use to call external tools. Use it when your assistant cannot run commands (Claude Desktop, for example) or when you want it to drive the GetOffice window directly. Pick either of the two ways below.',
+      'MCP is the common protocol AI assistants use to call external tools. Use it when your assistant cannot run commands (Claude Desktop, for example) or when you want it to drive the VegaOffice window directly. Pick either of the two ways below.',
     intgMcpStdioTitle: 'Started by the assistant (recommended)',
     intgMcpStdioDesc:
-      'The assistant launches getoffice mcp itself: nothing to switch on here, and GetOffice does not need to be open. Same features as the CLI.',
+      'The assistant launches vegaoffice mcp itself: nothing to switch on here, and VegaOffice does not need to be open. Same features as the CLI.',
     intgMcpHttpTitle: 'Local HTTP server',
     intgMcpHttpDesc:
-      'Runs inside GetOffice; the assistant connects to a URL and you can watch it build the document step by step in the Word editor. GetOffice must stay open; Word documents only for now.',
+      'Runs inside VegaOffice; the assistant connects to a URL and you can watch it build the document step by step in the Word editor. VegaOffice must stay open; Word documents only for now.',
     intgMcpHttpAdvanced: 'Advanced: other endpoints and log',
-    intgMcpTryNote: 'The assistant calls GetOffice through MCP; you never type a command.',
+    intgMcpTryNote: 'The assistant calls VegaOffice through MCP; you never type a command.',
     intgMcpClaudeTitle: 'Claude Code',
     intgMcpClaudeDesc: 'Run this once in a terminal:',
     intgMcpOtherTitle: 'Cursor, Claude Desktop or any other MCP-capable assistant',
@@ -602,10 +571,10 @@ export const strings = {
       'Add this to its MCP server settings (a JSON file, or "Add MCP server" in its settings):',
     intgMcpNote:
       'The skill and MCP can be set up side by side; the assistant picks one. They do exactly the same things.',
-    intgCliTitle: 'Advanced: getoffice command line',
-    intgCliReady: 'getoffice {v} · ready in your terminal ({path})',
+    intgCliTitle: 'Advanced: vegaoffice command line',
+    intgCliReady: 'vegaoffice {v} · ready in your terminal ({path})',
     intgCliNotOnPath:
-      "getoffice {v} · not on your terminal's PATH. Assistants still find it through ~/.getoffice/launcher, so the skill works. To type getoffice yourself, run this once:",
+      "vegaoffice {v} · not on your terminal's PATH. Assistants still find it through ~/.vegaoffice/launcher, so the skill works. To type vegaoffice yourself, run this once:",
     intgCliLauncher: 'Launcher folder',
     intgStateOutdated: 'Installed {v}, update to {next} available',
     intgStateModified: 'Installed {v} (modified)',
@@ -629,9 +598,9 @@ export const strings = {
     intgSaveZipTitle: 'Save skill',
     intgSavedTo: 'Saved to {path}',
     intgCopied: 'Copied',
-    intgCliEphemeral: 'Drag GetOffice into Applications first, then use the command line.',
+    intgCliEphemeral: 'Drag VegaOffice into Applications first, then use the command line.',
     intgCopyPath: 'Copy path',
-    intgCliNeedsUpdate: 'This skill needs command line {v} or newer; update GetOffice.',
+    intgCliNeedsUpdate: 'This skill needs command line {v} or newer; update VegaOffice.',
     intgLoading: 'Checking…',
     intgUpdateDue: 'Skill update available',
     setSecAiModel: 'AI Model',
@@ -642,14 +611,14 @@ export const strings = {
     setAiKeyHint: 'Stored only on this device.',
     setAiBaseUrl: 'Base URL',
     setAiBaseUrlHint: 'Leave empty for the official endpoint.',
-    setAiGensparkHint: 'Uses your Genspark sign-in; no API key needed.',
+    setAiAccountHint: 'Uses your VEGA sign-in; no API key needed.',
     setAiCodexPath: 'Codex executable',
     setAiCodexPathHint: 'Only set this for a custom install; leave blank to auto-detect.',
     setAiCodexAutoPlaceholder: 'Auto-detect (recommended)',
     setAiCodexHint:
       'Automatically finds the current signed-in Codex CLI after updates; a custom path is optional. No API key is needed.',
     setAiByokNote:
-      'Chats use your own key. Image generation and media analysis follow the AI Media section; web search still uses the Genspark sign-in or free sources.',
+      'Chats use your own key. Image generation and media analysis follow the AI Media section; web search still uses the VEGA sign-in or free sources.',
     setAiSave: 'Save',
     setAiSaved: 'Saved',
     setAiTest: 'Test connection',
@@ -660,11 +629,11 @@ export const strings = {
     setAiMaxTokensDesc:
       'Output budget for one turn. Reasoning models spend part of it thinking, so an answer can come back empty once the budget runs out; raise this value if that happens.',
     setSecAiMedia: 'AI Media & Search',
-    setAiMediaGensparkHint: 'Image generation and image/video analysis use your Genspark sign-in.',
+    setAiMediaAccountHint: 'Image generation and image/video analysis use your VEGA sign-in.',
     setAiImageModel: 'Image model',
     setAiAnalysisModel: 'Analysis model',
-    setAiSearchGensparkHint:
-      'Web and image search use your Genspark sign-in; signed out or with cloud tools off they fall back to free sources.',
+    setAiSearchAccountHint:
+      'Web and image search use your VEGA sign-in; signed out or with cloud tools off they fall back to free sources.',
     setAiSearchSerperHint: 'Serper serves both web and image search with your key.',
     setAiSearchTavilyHint:
       'Tavily serves web search with your key; image search falls back to free sources.',
@@ -676,7 +645,7 @@ export const strings = {
       "A vendor's key and base URL are shared across capabilities; enter them once.",
     setAiVegaTools: 'VEGA cloud tools',
     setAiVegaToolsDesc:
-      'Web search, image generation and media analysis run through api.vega.chat with your VEGA key while their provider is set to VEGA; when off, those tools fall back to the Genspark sign-in or free sources. The chat provider is unaffected.',
+      'Web search, image generation and media analysis run through api.vega.chat with your VEGA key while their provider is set to VEGA; when off, those tools fall back to the VEGA sign-in or free sources. The chat provider is unaffected.',
     setAiVegaNote:
       'OpenRouter-compatible gateway — sign in once and the API key is issued automatically; it is never shown or editable.',
     setAiVegaSigninDesc:
@@ -687,14 +656,14 @@ export const strings = {
       'Web search runs through api.vega.chat on your sign-in key; image search uses free sources.',
     setGithub: 'Open Source',
     starOnGitHub: 'Star on GitHub',
-    starPromptTitle: 'Enjoying GetOffice?',
-    starPromptTitleN: "You've opened {n} documents with GetOffice",
+    starPromptTitle: 'Enjoying VegaOffice?',
+    starPromptTitleN: "You've opened {n} documents with VegaOffice",
     starPromptBody:
-      'GetOffice is free and open source. A star on GitHub is the best way to support the team.',
+      'VegaOffice is free and open source. A star on GitHub is the best way to support the team.',
     starPromptGo: 'Star on GitHub',
     starPromptDone: 'Already starred',
     starPromptLater: 'Maybe later',
-    onbStarHint: 'If you like GetOffice, give us a star on GitHub.',
+    onbStarHint: 'If you like VegaOffice, give us a star on GitHub.',
     setEmail: 'Email',
     setNotLoggedIn: 'Not signed in',
     setViewUsage: 'View usage',
@@ -708,15 +677,14 @@ export const strings = {
     appMenu: 'Menu',
     newTab: 'New tab',
     // First-run onboarding
-    onbTitle1: 'Welcome to GetOffice',
+    onbTitle1: 'Welcome to VegaOffice',
     onbSubtitle1: 'The first open-source, AI-native office suite',
     onbBody1:
       'Create docs, build sheets, make slides, and review PDFs. AI is built into every step.',
     onbTitle2: 'This is just the beginning',
-    onbBody2:
-      'GetOffice is still in alpha. Join the group chat on GenTeam to share feedback and help shape what comes next.',
+    onbBody2: 'VegaOffice is still in alpha. Star us on GitHub and share feedback to help shape what comes next.',
     onbCredits: 'Active contributors get **1,000+ VEGA credits**',
-    onbJoinGenTeam: 'Join GenTeam',
+    onbJoinGitHub: 'Star on GitHub',
     onbSkip: 'Skip',
     onbNext: 'Next',
     onbStart: 'Get started',
@@ -730,24 +698,8 @@ export const strings = {
     // Sidebar navigation
     navRecent: '最近使用',
     navStarred: 'お気に入り',
-    navCloud: 'Genspark Projects',
-    cloudSubtitle:
-      'Web で Genspark AI を使って作成したプロジェクト。編集はブラウザで続行します。クリックで開きます。',
-    cloudSearchPlaceholder: '{n} 件のプロジェクトを検索…',
-    cloudNoResults: '一致するプロジェクトはありません。',
-    cloudGroupThisWeek: '今週',
-    cloudGroupThisMonth: '今月',
-    cloudSortLabel: '並び替え: {v}',
-    cloudSortRecent: '新しい順',
-    cloudSortOldest: '古い順',
-    cloudRefresh: '更新',
-    cloudLoginHint:
-      'Genspark アカウントにサインインすると、Web で作成したプロジェクトを表示できます。',
-    cloudEmpty: 'Web のプロジェクトはまだありません。',
-    cloudError: '読み込みに失敗しました。後でもう一度お試しください。',
-    cloudRetry: '再試行',
-    cloudLoadMore: 'もっと見る',
-    cloudOpenInBrowser: 'ブラウザで開く',
+    fileSortRecent: '新しい順',
+    fileSortOldest: '古い順',
     navTrash: 'ゴミ箱',
     navTrashTip: '削除したファイルはシステムのゴミ箱に移動され、そこから復元できます',
     // Section headings
@@ -851,12 +803,11 @@ export const strings = {
     untitled: '無題',
     noContent: '（内容なし）',
     // Account
-    accountGenspark: 'VEGA アカウント',
     account: 'アカウント',
     login: 'サインイン',
-    loginGenspark: 'VEGA アカウントでサインイン',
+    loginVega: 'VEGA アカウントでサインイン',
     loggedIn: 'サインイン済み',
-    loggedInGenspark: 'VEGA にサインイン済み',
+    loggedInVega: 'VEGA にサインイン済み',
     waitingLogin:
       'ブラウザーでのサインインを待っています… クリックするとサインインページを再表示します',
     loginDeviceCode: 'デバイスコード',
@@ -924,7 +875,7 @@ export const strings = {
     setMcpLogEmpty: 'ログはまだありません',
     setSecAbout: '情報',
     setSecIntegrations: '連携',
-    intgHeroTitle: 'AI アシスタントから GetOffice を使う',
+    intgHeroTitle: 'AI アシスタントから VegaOffice を使う',
     intgHeroDesc:
       '接続すると、Claude Code、Codex、Cursor、Claude Desktop などのアシスタントが Word、Excel、PowerPoint、PDF、Markdown ファイルの作成・変換・読み取り・編集を代行します。すべてこの PC 上で完結し、何もアップロードされません。',
     intgHeroStep1:
@@ -935,7 +886,7 @@ export const strings = {
     intgStep1Desc:
       'このパソコンで見つかったアシスタントだけを表示しています。実際に使っているものにだけインストールすれば十分で、すべてに入れる必要はありません。',
     intgStep1Update:
-      'GetOffice の更新で新しいスキルが届くと、そのアシスタントの横に「更新」ボタンが表示されます。',
+      'VegaOffice の更新で新しいスキルが届くと、そのアシスタントの横に「更新」ボタンが表示されます。',
     intgSkillVersion: 'スキル {v}',
     intgStateMissing: 'スキル未インストール',
     intgStateInstalled: 'スキル {v} をインストール済み · 次のチャットから使えます',
@@ -943,7 +894,7 @@ export const strings = {
     intgOtherDesc:
       '次の 3 つの方法からどれか 1 つを選んでください。どれも同じスキルをインストールするので、複数行う必要はありません。',
     intgOtherFolderTitle: 'SKILL.md フォルダーを読むアシスタント全般',
-    intgOtherFolderDesc: 'その skills フォルダーを選ぶと、GetOffice がファイルを書き込みます。',
+    intgOtherFolderDesc: 'その skills フォルダーを選ぶと、VegaOffice がファイルを書き込みます。',
     intgOtherZipTitle: 'ファイルをアシスタントに渡す',
     intgOtherZipDesc: 'スキルを zip で保存し、アシスタントにインストールを頼みます。',
     intgOtherNpxTitle: 'skills コマンドで入れる（Node.js が必要）',
@@ -955,24 +906,24 @@ export const strings = {
       'インストール後、アシスタントで新しいチャットを開き、普通の言葉で頼んでください。例：',
     intgExample1: '~/Downloads/report.md を Word 文書にして',
     intgExample2: '第 3 四半期の業績について 6 枚のスライドを作って',
-    intgExample3: 'budget.xlsx を PDF に変換して GetOffice で開いて',
+    intgExample3: 'budget.xlsx を PDF に変換して VegaOffice で開いて',
     intgStep2Note:
-      'getoffice コマンドラインはアシスタントが自分で実行します。あなたが入力する必要はありません。',
+      'vegaoffice コマンドラインはアシスタントが自分で実行します。あなたが入力する必要はありません。',
     intgCliPartTitle: 'CLI · コマンドライン + skill',
     intgCliPartDesc:
-      'ターミナルコマンドを実行できるアシスタント（Claude Code、Codex、Cursor など）向け。skill をインストールすると、アシスタントが自分で getoffice コマンドラインを呼び出してファイルを作成・変換・読み取り・編集します。コマンドを入力する必要はありません。',
+      'ターミナルコマンドを実行できるアシスタント（Claude Code、Codex、Cursor など）向け。skill をインストールすると、アシスタントが自分で vegaoffice コマンドラインを呼び出してファイルを作成・変換・読み取り・編集します。コマンドを入力する必要はありません。',
     intgMcpPartTitle: 'MCP',
     intgMcpPartDesc:
-      'MCP は AI アシスタントが外部ツールを呼び出すための共通プロトコルです。アシスタントがコマンドを実行できない場合（Claude Desktop など）や、GetOffice のウィンドウを直接操作させたい場合に使います。下の 2 つの方法からどちらか 1 つを選んでください。',
+      'MCP は AI アシスタントが外部ツールを呼び出すための共通プロトコルです。アシスタントがコマンドを実行できない場合（Claude Desktop など）や、VegaOffice のウィンドウを直接操作させたい場合に使います。下の 2 つの方法からどちらか 1 つを選んでください。',
     intgMcpStdioTitle: 'アシスタントが起動する（推奨）',
     intgMcpStdioDesc:
-      'アシスタントが getoffice mcp を自分で起動します。ここで何かをオンにする必要はなく、GetOffice を開いておく必要もありません。機能は CLI と同じです。',
+      'アシスタントが vegaoffice mcp を自分で起動します。ここで何かをオンにする必要はなく、VegaOffice を開いておく必要もありません。機能は CLI と同じです。',
     intgMcpHttpTitle: 'ローカル HTTP サーバー',
     intgMcpHttpDesc:
-      'GetOffice 内で動作し、アシスタントは URL で接続します。Word エディター上で文書が段階的に生成される様子を見られます。GetOffice を開いたままにする必要があり、現時点では Word のみ対応です。',
+      'VegaOffice 内で動作し、アシスタントは URL で接続します。Word エディター上で文書が段階的に生成される様子を見られます。VegaOffice を開いたままにする必要があり、現時点では Word のみ対応です。',
     intgMcpHttpAdvanced: '詳細：その他のエンドポイントとログ',
     intgMcpTryNote:
-      'アシスタントが MCP 経由で GetOffice を呼び出します。コマンドを入力する必要はありません。',
+      'アシスタントが MCP 経由で VegaOffice を呼び出します。コマンドを入力する必要はありません。',
     intgMcpClaudeTitle: 'Claude Code',
     intgMcpClaudeDesc: 'ターミナルで一度だけ実行します：',
     intgMcpOtherTitle: 'Cursor、Claude Desktop、その他 MCP 対応のアシスタント',
@@ -980,10 +931,10 @@ export const strings = {
       'これを MCP サーバー設定（JSON ファイル、または設定の「MCP サーバーを追加」）に追加します：',
     intgMcpNote:
       'スキルと MCP は併用できます。アシスタントがどちらかを選びます。両者の機能はまったく同じです。',
-    intgCliTitle: '上級：コマンドライン getoffice',
-    intgCliReady: 'getoffice {v} · ターミナルで使えます（{path}）',
+    intgCliTitle: '上級：コマンドライン vegaoffice',
+    intgCliReady: 'vegaoffice {v} · ターミナルで使えます（{path}）',
     intgCliNotOnPath:
-      'getoffice {v} · ターミナルの PATH にありません。アシスタントは ~/.getoffice/launcher 経由で見つけられるため、スキルは動作します。自分で getoffice を入力したい場合は一度だけ次を実行：',
+      'vegaoffice {v} · ターミナルの PATH にありません。アシスタントは ~/.vegaoffice/launcher 経由で見つけられるため、スキルは動作します。自分で vegaoffice を入力したい場合は一度だけ次を実行：',
     intgCliLauncher: 'ランチャーフォルダー',
     intgStateOutdated: 'インストール済み {v}、{next} に更新できます',
     intgStateModified: 'インストール済み {v}（変更されています）',
@@ -1008,10 +959,10 @@ export const strings = {
     intgSavedTo: '{path} に保存しました',
     intgCopied: 'コピーしました',
     intgCliEphemeral:
-      '先に GetOffice を「アプリケーション」に移してから、コマンドラインを使ってください。',
+      '先に VegaOffice を「アプリケーション」に移してから、コマンドラインを使ってください。',
     intgCopyPath: 'パスをコピー',
     intgCliNeedsUpdate:
-      'このスキルにはコマンドライン {v} 以降が必要です。GetOffice を更新してください。',
+      'このスキルにはコマンドライン {v} 以降が必要です。VegaOffice を更新してください。',
     intgLoading: '確認中…',
     intgUpdateDue: 'スキルの更新があります',
     setSecAiModel: 'AIモデル',
@@ -1022,13 +973,13 @@ export const strings = {
     setAiKeyHint: 'キーはこの端末にのみ保存されます。',
     setAiBaseUrl: 'Base URL',
     setAiBaseUrlHint: '空欄で公式エンドポイントを使用します。',
-    setAiGensparkHint: 'Genspark アカウントでサインインするため、API キーは不要です。',
+    setAiAccountHint: 'VEGA アカウントでサインインするため、API キーは不要です。',
     setAiCodexPath: 'Codex 実行ファイル',
     setAiCodexPathHint: 'カスタムインストール時のみ指定します。空欄なら自動検出します。',
     setAiCodexAutoPlaceholder: '自動検出（推奨）',
     setAiCodexHint: 'ローカルでサインイン済みの Codex CLI を使用します。API キーは不要です。',
     setAiByokNote:
-      'チャットは自分のキーを使用します。画像生成とメディア解析は「AI メディア」の設定に従い、Web 検索は引き続き Genspark のサインインまたは無料ソースを使用します。',
+      'チャットは自分のキーを使用します。画像生成とメディア解析は「AI メディア」の設定に従い、Web 検索は引き続き VEGA のサインインまたは無料ソースを使用します。',
     setAiSave: '保存',
     setAiSaved: '保存しました',
     setAiTest: '接続テスト',
@@ -1039,11 +990,11 @@ export const strings = {
     setAiMaxTokensDesc:
       '1 ターンの出力予算です。推論モデルは思考にも消費するため、使い切ると返信が空になることがあります。その場合は値を大きくしてください。',
     setSecAiMedia: 'AI メディアと検索',
-    setAiMediaGensparkHint: '画像生成と画像/動画解析は Genspark のサインインを使用します。',
+    setAiMediaAccountHint: '画像生成と画像/動画解析は VEGA のサインインを使用します。',
     setAiImageModel: '画像モデル',
     setAiAnalysisModel: '解析モデル',
-    setAiSearchGensparkHint:
-      'Web 検索と画像検索は Genspark のサインインを使用します。サインアウト時やクラウドツールがオフのときは無料ソースにフォールバックします。',
+    setAiSearchAccountHint:
+      'Web 検索と画像検索は VEGA のサインインを使用します。サインアウト時やクラウドツールがオフのときは無料ソースにフォールバックします。',
     setAiSearchSerperHint: 'Serper はあなたのキーで Web 検索と画像検索の両方を提供します。',
     setAiSearchTavilyHint:
       'Tavily はあなたのキーで Web 検索を提供します。画像検索は無料ソースにフォールバックします。',
@@ -1055,7 +1006,7 @@ export const strings = {
       '同じプロバイダーのキーと Base URL は各機能で共有されます。一度入力すれば済みます。',
     setAiVegaTools: 'VEGA クラウドツール',
     setAiVegaToolsDesc:
-      'プロバイダーに VEGA を選ぶと、Web 検索・画像生成・メディア解析は api.vega.chat 経由で VEGA キーを使用します。オフにすると Genspark サインインまたは無料ソースへ切り替わります。チャットプロバイダーには影響しません。',
+      'プロバイダーに VEGA を選ぶと、Web 検索・画像生成・メディア解析は api.vega.chat 経由で VEGA キーを使用します。オフにすると VEGA サインインまたは無料ソースへ切り替わります。チャットプロバイダーには影響しません。',
     setAiVegaNote:
       'OpenRouter 互換ゲートウェイ — サインイン時に API キーが自動発行され、表示・編集はできません。',
     setAiVegaSigninDesc:
@@ -1067,14 +1018,14 @@ export const strings = {
       'Web 検索はサインインのキーで api.vega.chat 経由。画像検索は無料ソースを使います。',
     setGithub: 'オープンソース',
     starOnGitHub: 'GitHub でスターを付ける',
-    starPromptTitle: 'GetOffice はいかがですか？',
-    starPromptTitleN: 'GetOffice で {n} 件のドキュメントを開きました',
+    starPromptTitle: 'VegaOffice はいかがですか？',
+    starPromptTitleN: 'VegaOffice で {n} 件のドキュメントを開きました',
     starPromptBody:
-      'GetOffice は無料のオープンソースソフトウェアです。GitHub のスターがチームへの何よりの応援になります。',
+      'VegaOffice は無料のオープンソースソフトウェアです。GitHub のスターがチームへの何よりの応援になります。',
     starPromptGo: 'スターを付ける',
     starPromptDone: 'スター済み',
     starPromptLater: 'あとで',
-    onbStarHint: 'GetOffice が気に入ったら、GitHub でスターをお願いします。',
+    onbStarHint: 'VegaOffice が気に入ったら、GitHub でスターをお願いします。',
     setEmail: 'メール',
     setNotLoggedIn: '未ログイン',
     setViewUsage: '使用状況を見る',
@@ -1090,15 +1041,14 @@ export const strings = {
     appMenu: 'メニュー',
     newTab: '新しいタブ',
     // First-run onboarding
-    onbTitle1: 'GetOffice へようこそ',
+    onbTitle1: 'VegaOffice へようこそ',
     onbSubtitle1: '初のオープンソース AI ネイティブ Office スイート',
     onbBody1:
       '文書の作成、表計算、プレゼン作成、PDF のレビュー。あらゆるステップに AI が組み込まれています。',
     onbTitle2: 'これはまだ始まりにすぎません',
-    onbBody2:
-      'GetOffice はまだアルファ版です。GenTeam のグループチャットに参加して、フィードバックを共有し、今後の開発を一緒に形作りましょう。',
+    onbBody2: 'VegaOffice はまだアルファ版です。GitHub でスターを付けてフィードバックを共有し、今後の開発を一緒に形作りましょう。',
     onbCredits: 'アクティブな貢献者への特典 **1,000+ VEGA クレジット**',
-    onbJoinGenTeam: 'GenTeam に参加',
+    onbJoinGitHub: 'GitHub でスター',
     onbSkip: 'スキップ',
     onbNext: '次へ',
     onbStart: 'はじめる',
@@ -1112,23 +1062,8 @@ export const strings = {
     // Sidebar navigation
     navRecent: '최근 사용',
     navStarred: '즐겨찾기',
-    navCloud: 'Genspark Projects',
-    cloudSubtitle:
-      'Genspark AI로 웹에서 만든 프로젝트입니다. 편집은 브라우저에서 계속됩니다. 프로젝트를 클릭하면 열립니다.',
-    cloudSearchPlaceholder: '프로젝트 {n}개 검색…',
-    cloudNoResults: '일치하는 프로젝트가 없습니다.',
-    cloudGroupThisWeek: '이번 주',
-    cloudGroupThisMonth: '이번 달',
-    cloudSortLabel: '정렬: {v}',
-    cloudSortRecent: '최신순',
-    cloudSortOldest: '오래된순',
-    cloudRefresh: '새로고침',
-    cloudLoginHint: 'Genspark 계정에 로그인하면 웹에서 만든 프로젝트를 볼 수 있습니다.',
-    cloudEmpty: '아직 웹 프로젝트가 없습니다.',
-    cloudError: '불러오지 못했습니다. 나중에 다시 시도해 주세요.',
-    cloudRetry: '다시 시도',
-    cloudLoadMore: '더 보기',
-    cloudOpenInBrowser: '브라우저에서 열기',
+    fileSortRecent: '최신순',
+    fileSortOldest: '오래된순',
     navTrash: '휴지통',
     navTrashTip: '삭제된 파일은 시스템 휴지통으로 이동되며 그곳에서 복원할 수 있습니다',
     // Section headings
@@ -1231,12 +1166,11 @@ export const strings = {
     untitled: '제목 없음',
     noContent: '(내용 없음)',
     // Account
-    accountGenspark: 'VEGA 계정',
     account: '계정',
     login: '로그인',
-    loginGenspark: 'VEGA 계정으로 로그인',
+    loginVega: 'VEGA 계정으로 로그인',
     loggedIn: '로그인됨',
-    loggedInGenspark: 'VEGA에 로그인됨',
+    loggedInVega: 'VEGA에 로그인됨',
     waitingLogin: '브라우저 로그인을 기다리는 중… 클릭하면 로그인 페이지를 다시 엽니다',
     loginDeviceCode: '기기 코드',
     waitingShort: '로그인 대기 중…',
@@ -1302,7 +1236,7 @@ export const strings = {
     setMcpLogEmpty: '로그가 아직 없습니다',
     setSecAbout: '정보',
     setSecIntegrations: '연동',
-    intgHeroTitle: 'AI 어시스턴트에서 GetOffice 사용하기',
+    intgHeroTitle: 'AI 어시스턴트에서 VegaOffice 사용하기',
     intgHeroDesc:
       '연결하면 Claude Code, Codex, Cursor, Claude Desktop 등의 어시스턴트가 Word, Excel, PowerPoint, PDF, Markdown 파일을 대신 만들고 변환하고 읽고 편집합니다. 모두 이 컴퓨터에서 처리되며 어떤 내용도 업로드되지 않습니다.',
     intgHeroStep1: '연결 방식 선택: 어시스턴트가 터미널 명령을 실행할 수 있으면 CLI, 없으면 MCP',
@@ -1312,7 +1246,7 @@ export const strings = {
     intgStep1Desc:
       '이 컴퓨터에서 발견된 어시스턴트만 표시됩니다. 실제로 사용하는 하나에만 설치하면 되고, 모두 설치할 필요는 없습니다.',
     intgStep1Update:
-      'GetOffice 업데이트에 새 스킬이 포함되면 해당 어시스턴트 옆에 업데이트 버튼이 나타납니다.',
+      'VegaOffice 업데이트에 새 스킬이 포함되면 해당 어시스턴트 옆에 업데이트 버튼이 나타납니다.',
     intgSkillVersion: '스킬 {v}',
     intgStateMissing: '스킬 미설치',
     intgStateInstalled: '스킬 {v} 설치됨 · 다음 대화부터 사용 가능',
@@ -1320,7 +1254,7 @@ export const strings = {
     intgOtherDesc:
       '다음 세 가지 방법 중 하나만 선택하세요. 모두 같은 스킬을 설치하므로 여러 번 할 필요가 없습니다.',
     intgOtherFolderTitle: 'SKILL.md 폴더를 읽는 모든 어시스턴트',
-    intgOtherFolderDesc: '해당 skills 폴더를 선택하면 GetOffice가 파일을 기록합니다.',
+    intgOtherFolderDesc: '해당 skills 폴더를 선택하면 VegaOffice가 파일을 기록합니다.',
     intgOtherZipTitle: '파일을 어시스턴트에게 전달',
     intgOtherZipDesc: '스킬을 zip으로 저장한 뒤 어시스턴트에게 설치를 요청하세요.',
     intgOtherNpxTitle: 'skills 명령으로 설치(Node.js 필요)',
@@ -1331,24 +1265,24 @@ export const strings = {
     intgStep2DescBefore: '설치 후 어시스턴트에서 새 대화를 열고 평소 말투로 요청하세요. 예:',
     intgExample1: '~/Downloads/report.md를 Word 문서로 만들어 줘',
     intgExample2: '3분기 실적을 소개하는 6장짜리 슬라이드를 만들어 줘',
-    intgExample3: 'budget.xlsx를 PDF로 변환해서 GetOffice에서 열어 줘',
+    intgExample3: 'budget.xlsx를 PDF로 변환해서 VegaOffice에서 열어 줘',
     intgStep2Note:
-      'getoffice 명령줄은 어시스턴트가 직접 실행하므로 여러분이 입력할 필요가 없습니다.',
+      'vegaoffice 명령줄은 어시스턴트가 직접 실행하므로 여러분이 입력할 필요가 없습니다.',
     intgCliPartTitle: 'CLI · 명령줄 + skill',
     intgCliPartDesc:
-      '터미널 명령을 실행할 수 있는 어시스턴트(Claude Code, Codex, Cursor 등)용입니다. skill을 설치하면 어시스턴트가 스스로 getoffice 명령줄을 호출해 파일을 만들고 변환하고 읽고 편집합니다. 명령을 직접 입력할 필요가 없습니다.',
+      '터미널 명령을 실행할 수 있는 어시스턴트(Claude Code, Codex, Cursor 등)용입니다. skill을 설치하면 어시스턴트가 스스로 vegaoffice 명령줄을 호출해 파일을 만들고 변환하고 읽고 편집합니다. 명령을 직접 입력할 필요가 없습니다.',
     intgMcpPartTitle: 'MCP',
     intgMcpPartDesc:
-      'MCP는 AI 어시스턴트가 외부 도구를 호출하는 공통 프로토콜입니다. 어시스턴트가 명령을 실행할 수 없거나(예: Claude Desktop) GetOffice 창을 직접 조작하게 하려면 이 방식을 사용하세요. 아래 두 방법 중 하나를 선택하면 됩니다.',
+      'MCP는 AI 어시스턴트가 외부 도구를 호출하는 공통 프로토콜입니다. 어시스턴트가 명령을 실행할 수 없거나(예: Claude Desktop) VegaOffice 창을 직접 조작하게 하려면 이 방식을 사용하세요. 아래 두 방법 중 하나를 선택하면 됩니다.',
     intgMcpStdioTitle: '어시스턴트가 실행(권장)',
     intgMcpStdioDesc:
-      '어시스턴트가 getoffice mcp를 직접 실행합니다. 여기서 켤 것이 없고 GetOffice가 열려 있을 필요도 없습니다. 기능은 CLI와 같습니다.',
+      '어시스턴트가 vegaoffice mcp를 직접 실행합니다. 여기서 켤 것이 없고 VegaOffice가 열려 있을 필요도 없습니다. 기능은 CLI와 같습니다.',
     intgMcpHttpTitle: '로컬 HTTP 서버',
     intgMcpHttpDesc:
-      'GetOffice 안에서 실행되며 어시스턴트가 URL로 연결합니다. Word 편집기에서 문서가 단계별로 만들어지는 과정을 볼 수 있습니다. GetOffice를 열어 두어야 하며 현재는 Word만 지원합니다.',
+      'VegaOffice 안에서 실행되며 어시스턴트가 URL로 연결합니다. Word 편집기에서 문서가 단계별로 만들어지는 과정을 볼 수 있습니다. VegaOffice를 열어 두어야 하며 현재는 Word만 지원합니다.',
     intgMcpHttpAdvanced: '고급: 기타 주소와 로그',
     intgMcpTryNote:
-      '어시스턴트가 MCP를 통해 GetOffice를 호출합니다. 명령을 직접 입력할 필요가 없습니다.',
+      '어시스턴트가 MCP를 통해 VegaOffice를 호출합니다. 명령을 직접 입력할 필요가 없습니다.',
     intgMcpClaudeTitle: 'Claude Code',
     intgMcpClaudeDesc: '터미널에서 한 번만 실행하세요:',
     intgMcpOtherTitle: 'Cursor, Claude Desktop 또는 MCP를 지원하는 다른 어시스턴트',
@@ -1356,10 +1290,10 @@ export const strings = {
       '이 내용을 해당 어시스턴트의 MCP 서버 설정(JSON 파일 또는 설정의 "MCP 서버 추가")에 추가하세요:',
     intgMcpNote:
       '스킬과 MCP는 함께 설정할 수 있으며 어시스턴트가 하나를 선택합니다. 두 방식이 하는 일은 완전히 같습니다.',
-    intgCliTitle: '고급: 명령줄 getoffice',
-    intgCliReady: 'getoffice {v} · 터미널에서 바로 사용 가능({path})',
+    intgCliTitle: '고급: 명령줄 vegaoffice',
+    intgCliReady: 'vegaoffice {v} · 터미널에서 바로 사용 가능({path})',
     intgCliNotOnPath:
-      'getoffice {v} · 터미널 PATH에 없습니다. 어시스턴트는 ~/.getoffice/launcher로 찾을 수 있어 스킬은 정상 작동합니다. 직접 getoffice를 입력하려면 한 번만 실행:',
+      'vegaoffice {v} · 터미널 PATH에 없습니다. 어시스턴트는 ~/.vegaoffice/launcher로 찾을 수 있어 스킬은 정상 작동합니다. 직접 vegaoffice를 입력하려면 한 번만 실행:',
     intgCliLauncher: '런처 폴더',
     intgStateOutdated: '설치됨 {v}, {next}(으)로 업데이트 가능',
     intgStateModified: '설치됨 {v} (수정됨)',
@@ -1383,9 +1317,9 @@ export const strings = {
     intgSaveZipTitle: '스킬 저장',
     intgSavedTo: '{path}에 저장됨',
     intgCopied: '복사됨',
-    intgCliEphemeral: '먼저 GetOffice를 응용 프로그램 폴더로 옮긴 뒤 명령줄을 사용하세요.',
+    intgCliEphemeral: '먼저 VegaOffice를 응용 프로그램 폴더로 옮긴 뒤 명령줄을 사용하세요.',
     intgCopyPath: '경로 복사',
-    intgCliNeedsUpdate: '이 스킬은 명령줄 {v} 이상이 필요합니다. GetOffice를 업데이트하세요.',
+    intgCliNeedsUpdate: '이 스킬은 명령줄 {v} 이상이 필요합니다. VegaOffice를 업데이트하세요.',
     intgLoading: '확인 중…',
     intgUpdateDue: '스킬 업데이트 가능',
     setSecAiModel: 'AI 모델',
@@ -1396,13 +1330,13 @@ export const strings = {
     setAiKeyHint: '키는 이 기기에만 저장됩니다.',
     setAiBaseUrl: 'Base URL',
     setAiBaseUrlHint: '비워 두면 공식 엔드포인트를 사용합니다.',
-    setAiGensparkHint: 'Genspark 로그인으로 사용하며 API 키가 필요 없습니다.',
+    setAiAccountHint: 'VEGA 로그인으로 사용하며 API 키가 필요 없습니다.',
     setAiCodexPath: 'Codex 실행 파일',
     setAiCodexPathHint: '사용자 지정 설치에만 입력하세요. 비워 두면 자동 감지합니다.',
     setAiCodexAutoPlaceholder: '자동 감지(권장)',
     setAiCodexHint: '로컬에서 로그인된 Codex CLI를 사용하므로 API 키가 필요 없습니다.',
     setAiByokNote:
-      '채팅은 내 키를 사용합니다. 이미지 생성과 미디어 분석은 「AI 미디어」 설정을 따르며, 웹 검색은 여전히 Genspark 로그인 또는 무료 소스를 사용합니다.',
+      '채팅은 내 키를 사용합니다. 이미지 생성과 미디어 분석은 「AI 미디어」 설정을 따르며, 웹 검색은 여전히 VEGA 로그인 또는 무료 소스를 사용합니다.',
     setAiSave: '저장',
     setAiSaved: '저장됨',
     setAiTest: '연결 테스트',
@@ -1413,11 +1347,11 @@ export const strings = {
     setAiMaxTokensDesc:
       '한 턴의 출력 예산입니다. 추론 모델은 생각하는 데 소모하므로 예산이 떨어지면 응답이 비어 올 수 있습니다. 그럴 때 값을 키우세요.',
     setSecAiMedia: 'AI 미디어 및 검색',
-    setAiMediaGensparkHint: '이미지 생성과 이미지/동영상 분석은 Genspark 로그인을 사용합니다.',
+    setAiMediaAccountHint: '이미지 생성과 이미지/동영상 분석은 VEGA 로그인을 사용합니다.',
     setAiImageModel: '이미지 모델',
     setAiAnalysisModel: '분석 모델',
-    setAiSearchGensparkHint:
-      '웹 검색과 이미지 검색은 Genspark 로그인을 사용합니다. 로그아웃 상태거나 클라우드 도구가 꺼져 있으면 무료 소스로 대체됩니다.',
+    setAiSearchAccountHint:
+      '웹 검색과 이미지 검색은 VEGA 로그인을 사용합니다. 로그아웃 상태거나 클라우드 도구가 꺼져 있으면 무료 소스로 대체됩니다.',
     setAiSearchSerperHint: 'Serper는 내 키로 웹 검색과 이미지 검색을 모두 제공합니다.',
     setAiSearchTavilyHint:
       'Tavily는 내 키로 웹 검색을 제공합니다. 이미지 검색은 무료 소스로 대체됩니다.',
@@ -1429,7 +1363,7 @@ export const strings = {
       '같은 제공자의 키와 Base URL은 모든 기능에서 공유되므로 한 번만 입력하면 됩니다.',
     setAiVegaTools: 'VEGA 클라우드 도구',
     setAiVegaToolsDesc:
-      '프로바이더가 VEGA이면 웹 검색·이미지 생성·미디어 분석이 api.vega.chat을 통해 VEGA 키를 사용합니다. 끄면 Genspark 로그인 또는 무료 소스로 대체됩니다. 채팅 프로바이더에는 영향이 없습니다.',
+      '프로바이더가 VEGA이면 웹 검색·이미지 생성·미디어 분석이 api.vega.chat을 통해 VEGA 키를 사용합니다. 끄면 VEGA 로그인 또는 무료 소스로 대체됩니다. 채팅 프로바이더에는 영향이 없습니다.',
     setAiVegaNote:
       'OpenRouter 호환 게이트웨이 — 로그인하면 API 키가 자동 발급되며 표시되거나 수정할 수 없습니다.',
     setAiVegaSigninDesc:
@@ -1440,14 +1374,14 @@ export const strings = {
       '웹 검색은 로그인 키로 api.vega.chat을 사용하고, 이미지 검색은 무료 소스를 사용합니다.',
     setGithub: '오픈 소스',
     starOnGitHub: 'GitHub에서 스타 누르기',
-    starPromptTitle: 'GetOffice가 마음에 드시나요?',
-    starPromptTitleN: 'GetOffice로 문서를 {n}개 열어보셨네요',
+    starPromptTitle: 'VegaOffice가 마음에 드시나요?',
+    starPromptTitleN: 'VegaOffice로 문서를 {n}개 열어보셨네요',
     starPromptBody:
-      'GetOffice는 무료 오픈 소스 소프트웨어입니다. GitHub 스타 하나가 팀에게 가장 큰 응원이 됩니다.',
+      'VegaOffice는 무료 오픈 소스 소프트웨어입니다. GitHub 스타 하나가 팀에게 가장 큰 응원이 됩니다.',
     starPromptGo: '스타 누르기',
     starPromptDone: '이미 눌렀어요',
     starPromptLater: '나중에',
-    onbStarHint: 'GetOffice가 마음에 들면 GitHub에서 스타를 눌러 주세요.',
+    onbStarHint: 'VegaOffice가 마음에 들면 GitHub에서 스타를 눌러 주세요.',
     setEmail: '이메일',
     setNotLoggedIn: '로그인되지 않음',
     setViewUsage: '사용량 보기',
@@ -1463,15 +1397,14 @@ export const strings = {
     appMenu: '메뉴',
     newTab: '새 탭',
     // First-run onboarding
-    onbTitle1: 'GetOffice에 오신 것을 환영합니다',
+    onbTitle1: 'VegaOffice에 오신 것을 환영합니다',
     onbSubtitle1: '최초의 오픈소스 AI 네이티브 오피스 제품군',
     onbBody1:
       '문서 작성, 스프레드시트 제작, 프레젠테이션 생성, PDF 검토. 모든 단계에 AI가 녹아 있습니다.',
     onbTitle2: '이제 시작일 뿐입니다',
-    onbBody2:
-      'GetOffice는 아직 알파 단계입니다. GenTeam 그룹 채팅에 참여해 피드백을 공유하고 앞으로의 방향을 함께 만들어 가세요.',
+    onbBody2: 'VegaOffice는 아직 알파 단계입니다. GitHub에서 별표를 눌러 피드백을 공유하고 앞으로의 방향을 함께 만들어 가세요.',
     onbCredits: '활발한 기여자를 위한 혜택 **1,000+ VEGA 크레딧**',
-    onbJoinGenTeam: 'GenTeam 참여하기',
+    onbJoinGitHub: 'GitHub에서 별표',
     onbSkip: '건너뛰기',
     onbNext: '다음',
     onbStart: '시작하기',
@@ -1485,24 +1418,8 @@ export const strings = {
     // Sidebar navigation
     navRecent: 'Récents',
     navStarred: 'Favoris',
-    navCloud: 'Genspark Projects',
-    cloudSubtitle:
-      "Projets créés sur le web avec Genspark AI. L'édition continue dans votre navigateur — cliquez sur un projet pour l'ouvrir.",
-    cloudSearchPlaceholder: 'Rechercher parmi {n} projets…',
-    cloudNoResults: 'Aucun projet correspondant.',
-    cloudGroupThisWeek: 'Cette semaine',
-    cloudGroupThisMonth: 'Plus tôt ce mois-ci',
-    cloudSortLabel: 'Tri : {v}',
-    cloudSortRecent: 'Récents',
-    cloudSortOldest: 'Plus anciens',
-    cloudRefresh: 'Actualiser',
-    cloudLoginHint:
-      'Connectez-vous à votre compte Genspark pour voir les projets créés sur le web.',
-    cloudEmpty: 'Aucun projet web pour le moment.',
-    cloudError: 'Échec du chargement. Réessayez plus tard.',
-    cloudRetry: 'Réessayer',
-    cloudLoadMore: 'Charger plus',
-    cloudOpenInBrowser: 'Ouvrir dans le navigateur',
+    fileSortRecent: 'Récents',
+    fileSortOldest: 'Plus anciens',
     navTrash: 'Corbeille',
     navTrashTip:
       'Les fichiers supprimés sont placés dans la corbeille du système et peuvent y être restaurés',
@@ -1608,12 +1525,11 @@ export const strings = {
     untitled: 'Sans titre',
     noContent: '(vide)',
     // Account
-    accountGenspark: 'Compte VEGA',
     account: 'Compte',
     login: 'Se connecter',
-    loginGenspark: 'Se connecter avec VEGA',
+    loginVega: 'Se connecter avec VEGA',
     loggedIn: 'Connecté',
-    loggedInGenspark: 'Connecté à VEGA',
+    loggedInVega: 'Connecté à VEGA',
     waitingLogin:
       'En attente de la connexion dans le navigateur… Cliquez pour rouvrir la page de connexion',
     loginDeviceCode: 'Code de l’appareil',
@@ -1683,7 +1599,7 @@ export const strings = {
     setMcpLogEmpty: 'Journal vide',
     setSecAbout: 'À propos',
     setSecIntegrations: 'Intégrations',
-    intgHeroTitle: 'Utiliser GetOffice depuis votre assistant IA',
+    intgHeroTitle: 'Utiliser VegaOffice depuis votre assistant IA',
     intgHeroDesc:
       'Une fois connectés, Claude Code, Codex, Cursor, Claude Desktop et les assistants similaires peuvent créer, convertir, lire et modifier vos fichiers Word, Excel, PowerPoint, PDF et Markdown. Tout se passe sur cet ordinateur ; rien n’est envoyé.',
     intgHeroStep1:
@@ -1694,7 +1610,7 @@ export const strings = {
     intgStep1Desc:
       'Seuls les assistants trouvés sur cet ordinateur sont listés. Installez-le dans celui que vous utilisez vraiment ; inutile de le faire pour tous.',
     intgStep1Update:
-      'Quand une mise à jour de GetOffice apporte un skill plus récent, un bouton Mettre à jour apparaît à côté de cet assistant.',
+      'Quand une mise à jour de VegaOffice apporte un skill plus récent, un bouton Mettre à jour apparaît à côté de cet assistant.',
     intgSkillVersion: 'skill {v}',
     intgStateMissing: 'Skill non installé',
     intgStateInstalled: 'Skill {v} installé · prêt pour votre prochaine discussion',
@@ -1702,7 +1618,7 @@ export const strings = {
     intgOtherDesc:
       "Choisissez une seule de ces trois méthodes. Elles installent toutes le même skill : inutile d'en faire plusieurs.",
     intgOtherFolderTitle: 'Tout assistant qui lit des dossiers SKILL.md',
-    intgOtherFolderDesc: 'Choisissez son dossier skills et GetOffice y écrit le fichier.',
+    intgOtherFolderDesc: 'Choisissez son dossier skills et VegaOffice y écrit le fichier.',
     intgOtherZipTitle: "Remettre le fichier à l'assistant",
     intgOtherZipDesc: "Enregistrez le skill en zip, puis demandez à l'assistant de l'installer.",
     intgOtherNpxTitle: 'Avec la commande skills (nécessite Node.js)',
@@ -1715,23 +1631,23 @@ export const strings = {
       'Une fois installé, ouvrez une nouvelle discussion dans votre assistant et demandez simplement, par exemple :',
     intgExample1: 'Transforme ~/Downloads/report.md en document Word',
     intgExample2: 'Prépare une présentation de 6 diapositives sur nos résultats du T3',
-    intgExample3: 'Convertis budget.xlsx en PDF et ouvre-le dans GetOffice',
+    intgExample3: 'Convertis budget.xlsx en PDF et ouvre-le dans VegaOffice',
     intgStep2Note:
-      "L'assistant lance lui-même la ligne de commande getoffice ; vous n'avez jamais à la saisir.",
+      "L'assistant lance lui-même la ligne de commande vegaoffice ; vous n'avez jamais à la saisir.",
     intgCliPartTitle: 'CLI · ligne de commande + skill',
     intgCliPartDesc:
-      'Pour les assistants capables de lancer des commandes dans le terminal (Claude Code, Codex, Cursor, etc.). Une fois le skill installé, l’assistant appelle lui-même la ligne de commande getoffice pour créer, convertir, lire et modifier les fichiers ; vous ne tapez jamais de commande.',
+      'Pour les assistants capables de lancer des commandes dans le terminal (Claude Code, Codex, Cursor, etc.). Une fois le skill installé, l’assistant appelle lui-même la ligne de commande vegaoffice pour créer, convertir, lire et modifier les fichiers ; vous ne tapez jamais de commande.',
     intgMcpPartTitle: 'MCP',
     intgMcpPartDesc:
-      'MCP est le protocole commun que les assistants IA utilisent pour appeler des outils externes. Utilisez-le si votre assistant ne peut pas lancer de commandes (Claude Desktop, par exemple) ou si vous voulez qu’il pilote directement la fenêtre GetOffice. Choisissez l’une des deux méthodes ci-dessous.',
+      'MCP est le protocole commun que les assistants IA utilisent pour appeler des outils externes. Utilisez-le si votre assistant ne peut pas lancer de commandes (Claude Desktop, par exemple) ou si vous voulez qu’il pilote directement la fenêtre VegaOffice. Choisissez l’une des deux méthodes ci-dessous.',
     intgMcpStdioTitle: 'Lancé par l’assistant (recommandé)',
     intgMcpStdioDesc:
-      'L’assistant lance lui-même getoffice mcp : rien à activer ici, et GetOffice n’a pas besoin d’être ouvert. Mêmes fonctions que la CLI.',
+      'L’assistant lance lui-même vegaoffice mcp : rien à activer ici, et VegaOffice n’a pas besoin d’être ouvert. Mêmes fonctions que la CLI.',
     intgMcpHttpTitle: 'Serveur HTTP local',
     intgMcpHttpDesc:
-      'Tourne dans GetOffice ; l’assistant se connecte à une URL et vous voyez le document se construire pas à pas dans l’éditeur Word. GetOffice doit rester ouvert ; documents Word uniquement pour l’instant.',
+      'Tourne dans VegaOffice ; l’assistant se connecte à une URL et vous voyez le document se construire pas à pas dans l’éditeur Word. VegaOffice doit rester ouvert ; documents Word uniquement pour l’instant.',
     intgMcpHttpAdvanced: 'Avancé : autres adresses et journal',
-    intgMcpTryNote: 'L’assistant appelle GetOffice via MCP ; vous ne tapez jamais de commande.',
+    intgMcpTryNote: 'L’assistant appelle VegaOffice via MCP ; vous ne tapez jamais de commande.',
     intgMcpClaudeTitle: 'Claude Code',
     intgMcpClaudeDesc: 'Exécutez ceci une fois dans un terminal :',
     intgMcpOtherTitle: 'Cursor, Claude Desktop ou tout autre assistant compatible MCP',
@@ -1739,10 +1655,10 @@ export const strings = {
       'Ajoutez ceci à sa configuration de serveurs MCP (un fichier JSON, ou « Ajouter un serveur MCP » dans ses réglages) :',
     intgMcpNote:
       "Le skill et MCP peuvent coexister ; l'assistant choisit l'un des deux. Ils font exactement la même chose.",
-    intgCliTitle: 'Avancé : ligne de commande getoffice',
-    intgCliReady: 'getoffice {v} · prêt dans votre terminal ({path})',
+    intgCliTitle: 'Avancé : ligne de commande vegaoffice',
+    intgCliReady: 'vegaoffice {v} · prêt dans votre terminal ({path})',
     intgCliNotOnPath:
-      'getoffice {v} · absent du PATH de votre terminal. Les assistants le trouvent quand même via ~/.getoffice/launcher, le skill fonctionne donc. Pour taper getoffice vous-même, exécutez ceci une fois :',
+      'vegaoffice {v} · absent du PATH de votre terminal. Les assistants le trouvent quand même via ~/.vegaoffice/launcher, le skill fonctionne donc. Pour taper vegaoffice vous-même, exécutez ceci une fois :',
     intgCliLauncher: 'Dossier du lanceur',
     intgStateOutdated: 'Installé {v}, mise à jour {next} disponible',
     intgStateModified: 'Installé {v} (modifié)',
@@ -1767,10 +1683,10 @@ export const strings = {
     intgSavedTo: 'Enregistré dans {path}',
     intgCopied: 'Copié',
     intgCliEphemeral:
-      "Glissez d'abord GetOffice dans Applications, puis utilisez la ligne de commande.",
+      "Glissez d'abord VegaOffice dans Applications, puis utilisez la ligne de commande.",
     intgCopyPath: 'Copier le chemin',
     intgCliNeedsUpdate:
-      'Ce skill requiert la ligne de commande {v} ou plus récente ; mettez GetOffice à jour.',
+      'Ce skill requiert la ligne de commande {v} ou plus récente ; mettez VegaOffice à jour.',
     intgLoading: 'Vérification…',
     intgUpdateDue: 'Mise à jour du skill disponible',
     setSecAiModel: 'Modèle IA',
@@ -1781,14 +1697,14 @@ export const strings = {
     setAiKeyHint: 'Stockée uniquement sur cet appareil.',
     setAiBaseUrl: 'Base URL',
     setAiBaseUrlHint: 'Laisser vide pour le point de terminaison officiel.',
-    setAiGensparkHint: 'Utilise votre connexion Genspark ; aucune clé API requise.',
+    setAiAccountHint: 'Utilise votre connexion VEGA ; aucune clé API requise.',
     setAiCodexPath: 'Exécutable Codex',
     setAiCodexPathHint:
       'À renseigner uniquement pour une installation personnalisée ; sinon, détection automatique.',
     setAiCodexAutoPlaceholder: 'Détection auto (recommandé)',
     setAiCodexHint: 'Utilise le CLI Codex connecté localement ; aucune clé API requise.',
     setAiByokNote:
-      "Les conversations utilisent votre propre clé. La génération d'images et l'analyse de médias suivent la section « Médias IA » ; la recherche web utilise toujours la connexion Genspark ou des sources gratuites.",
+      "Les conversations utilisent votre propre clé. La génération d'images et l'analyse de médias suivent la section « Médias IA » ; la recherche web utilise toujours la connexion VEGA ou des sources gratuites.",
     setAiSave: 'Enregistrer',
     setAiSaved: 'Enregistré',
     setAiTest: 'Tester la connexion',
@@ -1799,12 +1715,12 @@ export const strings = {
     setAiMaxTokensDesc:
       'Budget de sortie pour un tour. Les modèles à raisonnement le dépensent en réflexion ; quand il est épuisé, la réponse arrive vide : augmentez cette valeur.',
     setSecAiMedia: 'Médias IA et recherche',
-    setAiMediaGensparkHint:
-      "La génération d'images et l'analyse d'images/vidéos utilisent votre connexion Genspark.",
+    setAiMediaAccountHint:
+      "La génération d'images et l'analyse d'images/vidéos utilisent votre connexion VEGA.",
     setAiImageModel: "Modèle d'image",
     setAiAnalysisModel: "Modèle d'analyse",
-    setAiSearchGensparkHint:
-      "La recherche web et d'images utilise votre connexion Genspark ; déconnecté ou avec les outils cloud désactivés, elle se rabat sur des sources gratuites.",
+    setAiSearchAccountHint:
+      "La recherche web et d'images utilise votre connexion VEGA ; déconnecté ou avec les outils cloud désactivés, elle se rabat sur des sources gratuites.",
     setAiSearchSerperHint:
       "Serper assure la recherche web et la recherche d'images avec votre clé.",
     setAiSearchTavilyHint:
@@ -1817,7 +1733,7 @@ export const strings = {
       "La clé et l'URL de base d'un fournisseur sont partagées entre les capacités ; saisissez-les une seule fois.",
     setAiVegaTools: 'Outils cloud VEGA',
     setAiVegaToolsDesc:
-      "Quand VEGA est le fournisseur, la recherche web, la génération d'images et l'analyse de médias passent par api.vega.chat avec votre clé VEGA ; désactivés, ils basculent sur la connexion Genspark ou des sources gratuites. Le fournisseur de chat n'est pas affecté.",
+      "Quand VEGA est le fournisseur, la recherche web, la génération d'images et l'analyse de médias passent par api.vega.chat avec votre clé VEGA ; désactivés, ils basculent sur la connexion VEGA ou des sources gratuites. Le fournisseur de chat n'est pas affecté.",
     setAiVegaNote:
       "Passerelle compatible OpenRouter — la clé API est émise automatiquement à la connexion et n'est jamais affichée ni modifiable.",
     setAiVegaSigninDesc:
@@ -1829,14 +1745,14 @@ export const strings = {
       "La recherche web passe par api.vega.chat avec votre clé de connexion ; la recherche d'images utilise des sources gratuites.",
     setGithub: 'Open source',
     starOnGitHub: 'Mettre une étoile sur GitHub',
-    starPromptTitle: 'GetOffice vous plaît ?',
-    starPromptTitleN: 'Vous avez ouvert {n} documents avec GetOffice',
+    starPromptTitle: 'VegaOffice vous plaît ?',
+    starPromptTitleN: 'Vous avez ouvert {n} documents avec VegaOffice',
     starPromptBody:
-      'GetOffice est gratuit et open source. Une étoile sur GitHub est le meilleur moyen de soutenir l’équipe.',
+      'VegaOffice est gratuit et open source. Une étoile sur GitHub est le meilleur moyen de soutenir l’équipe.',
     starPromptGo: 'Mettre une étoile',
     starPromptDone: 'Déjà fait',
     starPromptLater: 'Plus tard',
-    onbStarHint: 'Si GetOffice vous plaît, mettez-nous une étoile sur GitHub.',
+    onbStarHint: 'Si VegaOffice vous plaît, mettez-nous une étoile sur GitHub.',
     setEmail: 'E-mail',
     setNotLoggedIn: 'Non connecté',
     setViewUsage: "Voir l'utilisation",
@@ -1852,15 +1768,14 @@ export const strings = {
     appMenu: 'Menu',
     newTab: 'Nouvel onglet',
     // First-run onboarding
-    onbTitle1: 'Bienvenue dans GetOffice',
+    onbTitle1: 'Bienvenue dans VegaOffice',
     onbSubtitle1: 'La première suite bureautique open source et native IA',
     onbBody1:
       'Créez des documents, des feuilles de calcul et des présentations, et relisez des PDF. L’IA est intégrée à chaque étape.',
     onbTitle2: 'Ce n’est qu’un début',
-    onbBody2:
-      'GetOffice est encore en alpha. Rejoignez la discussion de groupe sur GenTeam pour partager vos retours et façonner la suite.',
+    onbBody2: 'VegaOffice est encore en alpha. Donnez-nous une étoile sur GitHub et partagez vos retours pour façonner la suite.',
     onbCredits: 'Les contributeurs actifs reçoivent **1 000+ crédits VEGA**',
-    onbJoinGenTeam: 'Rejoindre GenTeam',
+    onbJoinGitHub: 'Étoile sur GitHub',
     onbSkip: 'Passer',
     onbNext: 'Suivant',
     onbStart: 'Commencer',
@@ -1874,24 +1789,8 @@ export const strings = {
     // Sidebar navigation
     navRecent: 'Zuletzt verwendet',
     navStarred: 'Favoriten',
-    navCloud: 'Genspark Projects',
-    cloudSubtitle:
-      'Mit Genspark AI im Web erstellte Projekte. Die Bearbeitung läuft im Browser weiter – klicken Sie auf ein Projekt, um es zu öffnen.',
-    cloudSearchPlaceholder: '{n} Projekte durchsuchen…',
-    cloudNoResults: 'Keine passenden Projekte.',
-    cloudGroupThisWeek: 'Diese Woche',
-    cloudGroupThisMonth: 'Früher in diesem Monat',
-    cloudSortLabel: 'Sortierung: {v}',
-    cloudSortRecent: 'Neueste',
-    cloudSortOldest: 'Älteste',
-    cloudRefresh: 'Aktualisieren',
-    cloudLoginHint:
-      'Melden Sie sich bei Ihrem Genspark-Konto an, um Ihre im Web erstellten Projekte zu sehen.',
-    cloudEmpty: 'Noch keine Web-Projekte.',
-    cloudError: 'Laden fehlgeschlagen. Bitte später erneut versuchen.',
-    cloudRetry: 'Erneut versuchen',
-    cloudLoadMore: 'Mehr laden',
-    cloudOpenInBrowser: 'Im Browser öffnen',
+    fileSortRecent: 'Neueste',
+    fileSortOldest: 'Älteste',
     navTrash: 'Papierkorb',
     navTrashTip:
       'Gelöschte Dateien werden in den System-Papierkorb verschoben und können dort wiederhergestellt werden',
@@ -2000,12 +1899,11 @@ export const strings = {
     untitled: 'Unbenannt',
     noContent: '(leer)',
     // Account
-    accountGenspark: 'VEGA-Konto',
     account: 'Konto',
     login: 'Anmelden',
-    loginGenspark: 'Mit VEGA anmelden',
+    loginVega: 'Mit VEGA anmelden',
     loggedIn: 'Angemeldet',
-    loggedInGenspark: 'Bei VEGA angemeldet',
+    loggedInVega: 'Bei VEGA angemeldet',
     waitingLogin:
       'Warten auf Anmeldung im Browser… Klicken Sie, um die Anmeldeseite erneut zu öffnen',
     loginDeviceCode: 'Gerätecode',
@@ -2074,7 +1972,7 @@ export const strings = {
     setMcpLogEmpty: 'Keine Einträge',
     setSecAbout: 'Über',
     setSecIntegrations: 'Integrationen',
-    intgHeroTitle: 'GetOffice aus Ihrem KI-Assistenten nutzen',
+    intgHeroTitle: 'VegaOffice aus Ihrem KI-Assistenten nutzen',
     intgHeroDesc:
       'Einmal verbunden, können Claude Code, Codex, Cursor, Claude Desktop und ähnliche Assistenten Word-, Excel-, PowerPoint-, PDF- und Markdown-Dateien für Sie erstellen, konvertieren, lesen und bearbeiten. Alles läuft auf diesem Rechner; nichts wird hochgeladen.',
     intgHeroStep1: 'Weg wählen: CLI, wenn der Assistent Terminalbefehle ausführen kann, sonst MCP',
@@ -2084,7 +1982,7 @@ export const strings = {
     intgStep1Desc:
       'Es werden nur Assistenten angezeigt, die auf diesem Rechner gefunden wurden. Installieren Sie ihn in dem, den Sie tatsächlich nutzen; Sie brauchen nicht alle.',
     intgStep1Update:
-      'Bringt ein GetOffice-Update einen neueren Skill mit, erscheint neben diesem Assistenten ein Aktualisieren-Button.',
+      'Bringt ein VegaOffice-Update einen neueren Skill mit, erscheint neben diesem Assistenten ein Aktualisieren-Button.',
     intgSkillVersion: 'Skill {v}',
     intgStateMissing: 'Skill nicht installiert',
     intgStateInstalled: 'Skill {v} installiert · ab dem nächsten Chat bereit',
@@ -2093,7 +1991,7 @@ export const strings = {
       'Wählen Sie genau einen dieser drei Wege. Alle installieren denselben Skill, mehr als einer ist nicht nötig.',
     intgOtherFolderTitle: 'Jeder Assistent, der SKILL.md-Ordner liest',
     intgOtherFolderDesc:
-      'Wählen Sie seinen Skills-Ordner, und GetOffice schreibt die Datei dorthin.',
+      'Wählen Sie seinen Skills-Ordner, und VegaOffice schreibt die Datei dorthin.',
     intgOtherZipTitle: 'Datei an den Assistenten übergeben',
     intgOtherZipDesc:
       'Speichern Sie den Skill als Zip und bitten Sie den Assistenten, ihn zu installieren.',
@@ -2107,23 +2005,23 @@ export const strings = {
       'Öffnen Sie nach der Installation einen neuen Chat in Ihrem Assistenten und fragen Sie in normalen Worten, zum Beispiel:',
     intgExample1: 'Mach aus ~/Downloads/report.md ein Word-Dokument',
     intgExample2: 'Erstelle eine Präsentation mit 6 Folien zu unseren Q3-Ergebnissen',
-    intgExample3: 'Wandle budget.xlsx in PDF um und öffne es in GetOffice',
+    intgExample3: 'Wandle budget.xlsx in PDF um und öffne es in VegaOffice',
     intgStep2Note:
-      'Der Assistent ruft die getoffice-Befehlszeile selbst auf; Sie müssen sie nie eintippen.',
+      'Der Assistent ruft die vegaoffice-Befehlszeile selbst auf; Sie müssen sie nie eintippen.',
     intgCliPartTitle: 'CLI · Kommandozeile + Skill',
     intgCliPartDesc:
-      'Für Assistenten, die Terminalbefehle ausführen können (Claude Code, Codex, Cursor u. a.). Nach der Installation des Skills ruft der Assistent die getoffice-Kommandozeile selbst auf, um Dateien zu erstellen, zu konvertieren, zu lesen und zu bearbeiten; Sie tippen nie einen Befehl.',
+      'Für Assistenten, die Terminalbefehle ausführen können (Claude Code, Codex, Cursor u. a.). Nach der Installation des Skills ruft der Assistent die vegaoffice-Kommandozeile selbst auf, um Dateien zu erstellen, zu konvertieren, zu lesen und zu bearbeiten; Sie tippen nie einen Befehl.',
     intgMcpPartTitle: 'MCP',
     intgMcpPartDesc:
-      'MCP ist das gemeinsame Protokoll, über das KI-Assistenten externe Werkzeuge aufrufen. Nutzen Sie es, wenn der Assistent keine Befehle ausführen kann (z. B. Claude Desktop) oder wenn er das GetOffice-Fenster direkt steuern soll. Wählen Sie einen der beiden Wege unten.',
+      'MCP ist das gemeinsame Protokoll, über das KI-Assistenten externe Werkzeuge aufrufen. Nutzen Sie es, wenn der Assistent keine Befehle ausführen kann (z. B. Claude Desktop) oder wenn er das VegaOffice-Fenster direkt steuern soll. Wählen Sie einen der beiden Wege unten.',
     intgMcpStdioTitle: 'Vom Assistenten gestartet (empfohlen)',
     intgMcpStdioDesc:
-      'Der Assistent startet getoffice mcp selbst: hier ist nichts einzuschalten, und GetOffice muss nicht geöffnet sein. Gleicher Funktionsumfang wie die CLI.',
+      'Der Assistent startet vegaoffice mcp selbst: hier ist nichts einzuschalten, und VegaOffice muss nicht geöffnet sein. Gleicher Funktionsumfang wie die CLI.',
     intgMcpHttpTitle: 'Lokaler HTTP-Server',
     intgMcpHttpDesc:
-      'Läuft in GetOffice; der Assistent verbindet sich über eine URL, und Sie sehen im Word-Editor zu, wie das Dokument Schritt für Schritt entsteht. GetOffice muss geöffnet bleiben; derzeit nur Word-Dokumente.',
+      'Läuft in VegaOffice; der Assistent verbindet sich über eine URL, und Sie sehen im Word-Editor zu, wie das Dokument Schritt für Schritt entsteht. VegaOffice muss geöffnet bleiben; derzeit nur Word-Dokumente.',
     intgMcpHttpAdvanced: 'Erweitert: weitere Adressen und Protokoll',
-    intgMcpTryNote: 'Der Assistent ruft GetOffice über MCP auf; Sie tippen nie einen Befehl.',
+    intgMcpTryNote: 'Der Assistent ruft VegaOffice über MCP auf; Sie tippen nie einen Befehl.',
     intgMcpClaudeTitle: 'Claude Code',
     intgMcpClaudeDesc: 'Einmal im Terminal ausführen:',
     intgMcpOtherTitle: 'Cursor, Claude Desktop oder ein anderer MCP-fähiger Assistent',
@@ -2131,10 +2029,10 @@ export const strings = {
       'Fügen Sie dies in seine MCP-Server-Konfiguration ein (eine JSON-Datei oder „MCP-Server hinzufügen“ in den Einstellungen):',
     intgMcpNote:
       'Skill und MCP können nebeneinander eingerichtet sein; der Assistent wählt eines. Beide tun genau dasselbe.',
-    intgCliTitle: 'Erweitert: Befehlszeile getoffice',
-    intgCliReady: 'getoffice {v} · im Terminal verfügbar ({path})',
+    intgCliTitle: 'Erweitert: Befehlszeile vegaoffice',
+    intgCliReady: 'vegaoffice {v} · im Terminal verfügbar ({path})',
     intgCliNotOnPath:
-      'getoffice {v} · nicht im PATH Ihres Terminals. Assistenten finden es trotzdem über ~/.getoffice/launcher, der Skill funktioniert also. Um getoffice selbst einzugeben, führen Sie dies einmal aus:',
+      'vegaoffice {v} · nicht im PATH Ihres Terminals. Assistenten finden es trotzdem über ~/.vegaoffice/launcher, der Skill funktioniert also. Um vegaoffice selbst einzugeben, führen Sie dies einmal aus:',
     intgCliLauncher: 'Launcher-Ordner',
     intgStateOutdated: 'Installiert {v}, Update auf {next} verfügbar',
     intgStateModified: 'Installiert {v} (geändert)',
@@ -2159,10 +2057,10 @@ export const strings = {
     intgSavedTo: 'Gespeichert unter {path}',
     intgCopied: 'Kopiert',
     intgCliEphemeral:
-      'Ziehen Sie GetOffice zuerst in „Programme“, dann nutzen Sie die Befehlszeile.',
+      'Ziehen Sie VegaOffice zuerst in „Programme“, dann nutzen Sie die Befehlszeile.',
     intgCopyPath: 'Pfad kopieren',
     intgCliNeedsUpdate:
-      'Dieser Skill braucht Befehlszeile {v} oder neuer; aktualisieren Sie GetOffice.',
+      'Dieser Skill braucht Befehlszeile {v} oder neuer; aktualisieren Sie VegaOffice.',
     intgLoading: 'Prüfe …',
     intgUpdateDue: 'Skill-Update verfügbar',
     setSecAiModel: 'KI-Modell',
@@ -2173,14 +2071,14 @@ export const strings = {
     setAiKeyHint: 'Wird nur auf diesem Gerät gespeichert.',
     setAiBaseUrl: 'Base URL',
     setAiBaseUrlHint: 'Leer lassen für den offiziellen Endpunkt.',
-    setAiGensparkHint: 'Nutzt Ihre Genspark-Anmeldung; kein API-Schlüssel nötig.',
+    setAiAccountHint: 'Nutzt Ihre VEGA-Anmeldung; kein API-Schlüssel nötig.',
     setAiCodexPath: 'Codex-Programmdatei',
     setAiCodexPathHint:
       'Nur bei einer benutzerdefinierten Installation angeben; leer lassen für automatische Erkennung.',
     setAiCodexAutoPlaceholder: 'Automatisch erkennen (empfohlen)',
     setAiCodexHint: 'Verwendet die lokal angemeldete Codex CLI; kein API-Schlüssel nötig.',
     setAiByokNote:
-      'Chats nutzen deinen eigenen Schlüssel. Bildgenerierung und Medienanalyse folgen dem Abschnitt „KI-Medien“; die Websuche nutzt weiterhin die Genspark-Anmeldung oder kostenlose Quellen.',
+      'Chats nutzen deinen eigenen Schlüssel. Bildgenerierung und Medienanalyse folgen dem Abschnitt „KI-Medien“; die Websuche nutzt weiterhin die VEGA-Anmeldung oder kostenlose Quellen.',
     setAiSave: 'Speichern',
     setAiSaved: 'Gespeichert',
     setAiTest: 'Verbindung testen',
@@ -2191,12 +2089,12 @@ export const strings = {
     setAiMaxTokensDesc:
       'Ausgabe-Budget pro Durchlauf. Denk-Modelle verbrauchen es beim Reasoning; ist es erschöpft, kommt eine leere Antwort zurück — dann diesen Wert erhöhen.',
     setSecAiMedia: 'KI-Medien & Suche',
-    setAiMediaGensparkHint:
-      'Bildgenerierung und Bild-/Videoanalyse nutzen deine Genspark-Anmeldung.',
+    setAiMediaAccountHint:
+      'Bildgenerierung und Bild-/Videoanalyse nutzen deine VEGA-Anmeldung.',
     setAiImageModel: 'Bildmodell',
     setAiAnalysisModel: 'Analysemodell',
-    setAiSearchGensparkHint:
-      'Web- und Bildsuche nutzen deine Genspark-Anmeldung; abgemeldet oder mit ausgeschalteten Cloud-Tools greifen sie auf kostenlose Quellen zurück.',
+    setAiSearchAccountHint:
+      'Web- und Bildsuche nutzen deine VEGA-Anmeldung; abgemeldet oder mit ausgeschalteten Cloud-Tools greifen sie auf kostenlose Quellen zurück.',
     setAiSearchSerperHint: 'Serper liefert mit deinem Schlüssel Web- und Bildsuche.',
     setAiSearchTavilyHint:
       'Tavily liefert mit deinem Schlüssel die Websuche; die Bildsuche greift auf kostenlose Quellen zurück.',
@@ -2208,7 +2106,7 @@ export const strings = {
       'Schlüssel und Base URL eines Anbieters gelten für alle Fähigkeiten; einmal eintragen genügt.',
     setAiVegaTools: 'VEGA-Cloud-Tools',
     setAiVegaToolsDesc:
-      'Websuche, Bildgenerierung und Medienanalyse laufen über api.vega.chat mit Ihrem VEGA-Key, solange VEGA als Anbieter gewählt ist; deaktiviert greifen sie auf die Genspark-Anmeldung oder kostenlose Quellen zurück. Der Chat-Anbieter bleibt unberührt.',
+      'Websuche, Bildgenerierung und Medienanalyse laufen über api.vega.chat mit Ihrem VEGA-Key, solange VEGA als Anbieter gewählt ist; deaktiviert greifen sie auf die VEGA-Anmeldung oder kostenlose Quellen zurück. Der Chat-Anbieter bleibt unberührt.',
     setAiVegaNote:
       'OpenRouter-kompatibles Gateway — der API-Key wird bei der Anmeldung automatisch ausgestellt und nie angezeigt oder bearbeitbar.',
     setAiVegaSigninDesc:
@@ -2220,14 +2118,14 @@ export const strings = {
       'Websuche läuft über api.vega.chat mit Ihrem Anmelde-Key; die Bildersuche nutzt kostenlose Quellen.',
     setGithub: 'Open Source',
     starOnGitHub: 'Auf GitHub Stern geben',
-    starPromptTitle: 'Gefällt Ihnen GetOffice?',
-    starPromptTitleN: 'Sie haben {n} Dokumente mit GetOffice geöffnet',
+    starPromptTitle: 'Gefällt Ihnen VegaOffice?',
+    starPromptTitleN: 'Sie haben {n} Dokumente mit VegaOffice geöffnet',
     starPromptBody:
-      'GetOffice ist kostenlos und Open Source. Ein Stern auf GitHub ist die beste Unterstützung für das Team.',
+      'VegaOffice ist kostenlos und Open Source. Ein Stern auf GitHub ist die beste Unterstützung für das Team.',
     starPromptGo: 'Stern geben',
     starPromptDone: 'Schon erledigt',
     starPromptLater: 'Später',
-    onbStarHint: 'Wenn Ihnen GetOffice gefällt, geben Sie uns einen Stern auf GitHub.',
+    onbStarHint: 'Wenn Ihnen VegaOffice gefällt, geben Sie uns einen Stern auf GitHub.',
     setEmail: 'E-Mail',
     setNotLoggedIn: 'Nicht angemeldet',
     setViewUsage: 'Verbrauch anzeigen',
@@ -2243,15 +2141,14 @@ export const strings = {
     appMenu: 'Menü',
     newTab: 'Neuer Tab',
     // First-run onboarding
-    onbTitle1: 'Willkommen bei GetOffice',
+    onbTitle1: 'Willkommen bei VegaOffice',
     onbSubtitle1: 'Die erste quelloffene, KI-native Office-Suite',
     onbBody1:
       'Dokumente erstellen, Tabellen bauen, Präsentationen gestalten und PDFs prüfen. KI ist in jedem Schritt integriert.',
     onbTitle2: 'Das ist erst der Anfang',
-    onbBody2:
-      'GetOffice ist noch in der Alpha-Phase. Treten Sie dem Gruppenchat auf GenTeam bei, um Feedback zu teilen und die Zukunft mitzugestalten.',
+    onbBody2: 'VegaOffice ist noch in der Alpha-Phase. Geben Sie uns einen Stern auf GitHub und teilen Sie Feedback, um die Zukunft mitzugestalten.',
     onbCredits: 'Aktive Mitwirkende erhalten **1.000+ VEGA-Guthaben**',
-    onbJoinGenTeam: 'GenTeam beitreten',
+    onbJoinGitHub: 'Stern auf GitHub',
     onbSkip: 'Überspringen',
     onbNext: 'Weiter',
     onbStart: 'Loslegen',
@@ -2265,24 +2162,8 @@ export const strings = {
     // Sidebar navigation
     navRecent: 'Recientes',
     navStarred: 'Destacados',
-    navCloud: 'Genspark Projects',
-    cloudSubtitle:
-      'Proyectos creados en la web con Genspark AI. La edición continúa en tu navegador: haz clic en un proyecto para abrirlo.',
-    cloudSearchPlaceholder: 'Buscar entre {n} proyectos…',
-    cloudNoResults: 'No hay proyectos coincidentes.',
-    cloudGroupThisWeek: 'Esta semana',
-    cloudGroupThisMonth: 'Este mes',
-    cloudSortLabel: 'Orden: {v}',
-    cloudSortRecent: 'Recientes',
-    cloudSortOldest: 'Más antiguos',
-    cloudRefresh: 'Actualizar',
-    cloudLoginHint:
-      'Inicia sesión en tu cuenta de Genspark para ver los proyectos creados en la web.',
-    cloudEmpty: 'Aún no hay proyectos en la web.',
-    cloudError: 'Error al cargar. Inténtalo más tarde.',
-    cloudRetry: 'Reintentar',
-    cloudLoadMore: 'Cargar más',
-    cloudOpenInBrowser: 'Abrir en el navegador',
+    fileSortRecent: 'Recientes',
+    fileSortOldest: 'Más antiguos',
     navTrash: 'Papelera',
     navTrashTip:
       'Los archivos eliminados van a la papelera del sistema y pueden restaurarse desde allí',
@@ -2389,12 +2270,11 @@ export const strings = {
     untitled: 'Sin título',
     noContent: '(vacío)',
     // Account
-    accountGenspark: 'Cuenta de VEGA',
     account: 'Cuenta',
     login: 'Iniciar sesión',
-    loginGenspark: 'Iniciar sesión con VEGA',
+    loginVega: 'Iniciar sesión con VEGA',
     loggedIn: 'Sesión iniciada',
-    loggedInGenspark: 'Sesión iniciada en VEGA',
+    loggedInVega: 'Sesión iniciada en VEGA',
     waitingLogin:
       'Esperando el inicio de sesión en el navegador… Haga clic para volver a abrir la página de inicio de sesión',
     loginDeviceCode: 'Código del dispositivo',
@@ -2465,7 +2345,7 @@ export const strings = {
     setMcpLogEmpty: 'Aún sin entradas',
     setSecAbout: 'Acerca de',
     setSecIntegrations: 'Integraciones',
-    intgHeroTitle: 'Usa GetOffice desde tu asistente de IA',
+    intgHeroTitle: 'Usa VegaOffice desde tu asistente de IA',
     intgHeroDesc:
       'Una vez conectados, Claude Code, Codex, Cursor, Claude Desktop y asistentes similares pueden crear, convertir, leer y editar archivos Word, Excel, PowerPoint, PDF y Markdown por ti. Todo ocurre en este equipo; no se sube nada.',
     intgHeroStep1:
@@ -2476,7 +2356,7 @@ export const strings = {
     intgStep1Desc:
       'Solo se muestran los asistentes encontrados en este equipo. Instálalo en el que realmente usas; no necesitas todos.',
     intgStep1Update:
-      'Cuando una actualización de GetOffice traiga un skill más nuevo, aparecerá un botón Actualizar junto a ese asistente.',
+      'Cuando una actualización de VegaOffice traiga un skill más nuevo, aparecerá un botón Actualizar junto a ese asistente.',
     intgSkillVersion: 'skill {v}',
     intgStateMissing: 'Skill no instalado',
     intgStateInstalled: 'Skill {v} instalado · listo en tu próximo chat',
@@ -2484,7 +2364,7 @@ export const strings = {
     intgOtherDesc:
       'Elige solo una de estas tres formas. Todas instalan el mismo skill, así que no hace falta hacer más de una.',
     intgOtherFolderTitle: 'Cualquier asistente que lea carpetas SKILL.md',
-    intgOtherFolderDesc: 'Elige su carpeta de skills y GetOffice escribe el archivo ahí.',
+    intgOtherFolderDesc: 'Elige su carpeta de skills y VegaOffice escribe el archivo ahí.',
     intgOtherZipTitle: 'Entrega el archivo al asistente',
     intgOtherZipDesc: 'Guarda el skill como zip y pide al asistente que lo instale.',
     intgOtherNpxTitle: 'Con el comando skills (requiere Node.js)',
@@ -2496,23 +2376,23 @@ export const strings = {
       'Una vez instalado, abre un chat nuevo en tu asistente y pídelo con tus palabras, por ejemplo:',
     intgExample1: 'Convierte ~/Downloads/report.md en un documento de Word',
     intgExample2: 'Haz una presentación de 6 diapositivas sobre nuestros resultados del T3',
-    intgExample3: 'Convierte budget.xlsx a PDF y ábrelo en GetOffice',
+    intgExample3: 'Convierte budget.xlsx a PDF y ábrelo en VegaOffice',
     intgStep2Note:
-      'El asistente ejecuta la línea de comandos getoffice por sí mismo; nunca tienes que escribirla.',
+      'El asistente ejecuta la línea de comandos vegaoffice por sí mismo; nunca tienes que escribirla.',
     intgCliPartTitle: 'CLI · línea de comandos + skill',
     intgCliPartDesc:
-      'Para asistentes que pueden ejecutar comandos de terminal (Claude Code, Codex, Cursor y otros). Con el skill instalado, el asistente llama por sí mismo a la línea de comandos getoffice para crear, convertir, leer y editar archivos; nunca escribes un comando.',
+      'Para asistentes que pueden ejecutar comandos de terminal (Claude Code, Codex, Cursor y otros). Con el skill instalado, el asistente llama por sí mismo a la línea de comandos vegaoffice para crear, convertir, leer y editar archivos; nunca escribes un comando.',
     intgMcpPartTitle: 'MCP',
     intgMcpPartDesc:
-      'MCP es el protocolo común con el que los asistentes de IA llaman a herramientas externas. Úsalo cuando tu asistente no pueda ejecutar comandos (Claude Desktop, por ejemplo) o cuando quieras que controle directamente la ventana de GetOffice. Elige una de las dos formas de abajo.',
+      'MCP es el protocolo común con el que los asistentes de IA llaman a herramientas externas. Úsalo cuando tu asistente no pueda ejecutar comandos (Claude Desktop, por ejemplo) o cuando quieras que controle directamente la ventana de VegaOffice. Elige una de las dos formas de abajo.',
     intgMcpStdioTitle: 'Iniciado por el asistente (recomendado)',
     intgMcpStdioDesc:
-      'El asistente lanza getoffice mcp por sí mismo: nada que activar aquí, y GetOffice no necesita estar abierto. Mismas funciones que la CLI.',
+      'El asistente lanza vegaoffice mcp por sí mismo: nada que activar aquí, y VegaOffice no necesita estar abierto. Mismas funciones que la CLI.',
     intgMcpHttpTitle: 'Servidor HTTP local',
     intgMcpHttpDesc:
-      'Se ejecuta dentro de GetOffice; el asistente se conecta a una URL y puedes ver cómo construye el documento paso a paso en el editor de Word. GetOffice debe permanecer abierto; por ahora solo documentos Word.',
+      'Se ejecuta dentro de VegaOffice; el asistente se conecta a una URL y puedes ver cómo construye el documento paso a paso en el editor de Word. VegaOffice debe permanecer abierto; por ahora solo documentos Word.',
     intgMcpHttpAdvanced: 'Avanzado: otras direcciones y registro',
-    intgMcpTryNote: 'El asistente llama a GetOffice a través de MCP; nunca escribes un comando.',
+    intgMcpTryNote: 'El asistente llama a VegaOffice a través de MCP; nunca escribes un comando.',
     intgMcpClaudeTitle: 'Claude Code',
     intgMcpClaudeDesc: 'Ejecuta esto una vez en una terminal:',
     intgMcpOtherTitle: 'Cursor, Claude Desktop o cualquier otro asistente compatible con MCP',
@@ -2520,10 +2400,10 @@ export const strings = {
       'Añade esto a su configuración de servidores MCP (un archivo JSON, o «Añadir servidor MCP» en sus ajustes):',
     intgMcpNote:
       'El skill y MCP pueden convivir; el asistente elige uno. Ambos hacen exactamente lo mismo.',
-    intgCliTitle: 'Avanzado: línea de comandos getoffice',
-    intgCliReady: 'getoffice {v} · listo en tu terminal ({path})',
+    intgCliTitle: 'Avanzado: línea de comandos vegaoffice',
+    intgCliReady: 'vegaoffice {v} · listo en tu terminal ({path})',
     intgCliNotOnPath:
-      'getoffice {v} · no está en el PATH de tu terminal. Los asistentes lo encuentran igualmente mediante ~/.getoffice/launcher, así que el skill funciona. Para escribir getoffice tú mismo, ejecuta esto una vez:',
+      'vegaoffice {v} · no está en el PATH de tu terminal. Los asistentes lo encuentran igualmente mediante ~/.vegaoffice/launcher, así que el skill funciona. Para escribir vegaoffice tú mismo, ejecuta esto una vez:',
     intgCliLauncher: 'Carpeta del lanzador',
     intgStateOutdated: 'Instalado {v}, actualización a {next} disponible',
     intgStateModified: 'Instalado {v} (modificado)',
@@ -2547,10 +2427,10 @@ export const strings = {
     intgSaveZipTitle: 'Guardar skill',
     intgSavedTo: 'Guardado en {path}',
     intgCopied: 'Copiado',
-    intgCliEphemeral: 'Arrastra primero GetOffice a Aplicaciones y luego usa la línea de comandos.',
+    intgCliEphemeral: 'Arrastra primero VegaOffice a Aplicaciones y luego usa la línea de comandos.',
     intgCopyPath: 'Copiar ruta',
     intgCliNeedsUpdate:
-      'Este skill necesita la línea de comandos {v} o superior; actualiza GetOffice.',
+      'Este skill necesita la línea de comandos {v} o superior; actualiza VegaOffice.',
     intgLoading: 'Comprobando…',
     intgUpdateDue: 'Actualización del skill disponible',
     setSecAiModel: 'Modelo de IA',
@@ -2561,14 +2441,14 @@ export const strings = {
     setAiKeyHint: 'Se guarda solo en este dispositivo.',
     setAiBaseUrl: 'Base URL',
     setAiBaseUrlHint: 'Deja vacío para usar el endpoint oficial.',
-    setAiGensparkHint: 'Usa tu inicio de sesión de Genspark; no se necesita clave de API.',
+    setAiAccountHint: 'Usa tu inicio de sesión de VEGA; no se necesita clave de API.',
     setAiCodexPath: 'Ejecutable de Codex',
     setAiCodexPathHint:
       'Indícalo solo para una instalación personalizada; déjalo vacío para detectarlo automáticamente.',
     setAiCodexAutoPlaceholder: 'Detección automática (recomendado)',
     setAiCodexHint: 'Usa la CLI de Codex con sesión local; no se necesita clave de API.',
     setAiByokNote:
-      'Los chats usan tu propia clave. La generación de imágenes y el análisis de medios siguen la sección «Medios de IA»; la búsqueda web sigue usando el inicio de sesión de Genspark o fuentes gratuitas.',
+      'Los chats usan tu propia clave. La generación de imágenes y el análisis de medios siguen la sección «Medios de IA»; la búsqueda web sigue usando el inicio de sesión de VEGA o fuentes gratuitas.',
     setAiSave: 'Guardar',
     setAiSaved: 'Guardado',
     setAiTest: 'Probar conexión',
@@ -2579,12 +2459,12 @@ export const strings = {
     setAiMaxTokensDesc:
       'Presupuesto de salida por turno. Los modelos de razonamiento lo gastan en pensar; si se agota, la respuesta llega vacía: suba este valor.',
     setSecAiMedia: 'Medios de IA y búsqueda',
-    setAiMediaGensparkHint:
-      'La generación de imágenes y el análisis de imágenes/vídeos usan tu inicio de sesión de Genspark.',
+    setAiMediaAccountHint:
+      'La generación de imágenes y el análisis de imágenes/vídeos usan tu inicio de sesión de VEGA.',
     setAiImageModel: 'Modelo de imagen',
     setAiAnalysisModel: 'Modelo de análisis',
-    setAiSearchGensparkHint:
-      'La búsqueda web y de imágenes usa tu inicio de sesión de Genspark; sin sesión o con las herramientas en la nube desactivadas recurre a fuentes gratuitas.',
+    setAiSearchAccountHint:
+      'La búsqueda web y de imágenes usa tu inicio de sesión de VEGA; sin sesión o con las herramientas en la nube desactivadas recurre a fuentes gratuitas.',
     setAiSearchSerperHint: 'Serper ofrece búsqueda web y de imágenes con tu clave.',
     setAiSearchTavilyHint:
       'Tavily ofrece búsqueda web con tu clave; la búsqueda de imágenes recurre a fuentes gratuitas.',
@@ -2596,7 +2476,7 @@ export const strings = {
       'La clave y la URL base de un proveedor se comparten entre capacidades; introdúcelas una sola vez.',
     setAiVegaTools: 'Herramientas en la nube de VEGA',
     setAiVegaToolsDesc:
-      'Con VEGA como proveedor, la búsqueda web, la generación de imágenes y el análisis de medios pasan por api.vega.chat con tu clave VEGA; al desactivarlo, usan el inicio de sesión de Genspark o fuentes gratuitas. El proveedor de chat no cambia.',
+      'Con VEGA como proveedor, la búsqueda web, la generación de imágenes y el análisis de medios pasan por api.vega.chat con tu clave VEGA; al desactivarlo, usan el inicio de sesión de VEGA o fuentes gratuitas. El proveedor de chat no cambia.',
     setAiVegaNote:
       'Pasarela compatible con OpenRouter: la clave API se emite automáticamente al iniciar sesión y nunca se muestra ni es editable.',
     setAiVegaSigninDesc:
@@ -2608,14 +2488,14 @@ export const strings = {
       'La búsqueda web usa api.vega.chat con tu clave de acceso; la búsqueda de imágenes usa fuentes gratuitas.',
     setGithub: 'Código abierto',
     starOnGitHub: 'Dar una estrella en GitHub',
-    starPromptTitle: '¿Te gusta GetOffice?',
-    starPromptTitleN: 'Has abierto {n} documentos con GetOffice',
+    starPromptTitle: '¿Te gusta VegaOffice?',
+    starPromptTitleN: 'Has abierto {n} documentos con VegaOffice',
     starPromptBody:
-      'GetOffice es gratuito y de código abierto. Una estrella en GitHub es la mejor forma de apoyar al equipo.',
+      'VegaOffice es gratuito y de código abierto. Una estrella en GitHub es la mejor forma de apoyar al equipo.',
     starPromptGo: 'Dar una estrella',
     starPromptDone: 'Ya la di',
     starPromptLater: 'Más tarde',
-    onbStarHint: 'Si te gusta GetOffice, danos una estrella en GitHub.',
+    onbStarHint: 'Si te gusta VegaOffice, danos una estrella en GitHub.',
     setEmail: 'Correo electrónico',
     setNotLoggedIn: 'Sesión no iniciada',
     setViewUsage: 'Ver uso',
@@ -2631,15 +2511,14 @@ export const strings = {
     appMenu: 'Menú',
     newTab: 'Nueva pestaña',
     // First-run onboarding
-    onbTitle1: 'Bienvenido a GetOffice',
+    onbTitle1: 'Bienvenido a VegaOffice',
     onbSubtitle1: 'La primera suite ofimática de código abierto y nativa de IA',
     onbBody1:
       'Crea documentos, hojas de cálculo y presentaciones, y revisa PDF. La IA está integrada en cada paso.',
     onbTitle2: 'Esto es solo el comienzo',
-    onbBody2:
-      'GetOffice aún está en alfa. Únete al chat grupal en GenTeam para compartir comentarios y ayudar a dar forma a lo que viene.',
+    onbBody2: 'VegaOffice aún está en alfa. Danos una estrella en GitHub y comparte tus comentarios para ayudar a dar forma a lo que viene.',
     onbCredits: 'Los colaboradores activos reciben **1.000+ créditos de VEGA**',
-    onbJoinGenTeam: 'Unirse a GenTeam',
+    onbJoinGitHub: 'Estrella en GitHub',
     onbSkip: 'Omitir',
     onbNext: 'Siguiente',
     onbStart: 'Empezar',
@@ -2653,23 +2532,8 @@ export const strings = {
     // Sidebar navigation
     navRecent: 'ล่าสุด',
     navStarred: 'รายการโปรด',
-    navCloud: 'Genspark Projects',
-    cloudSubtitle:
-      'โปรเจกต์ที่สร้างบนเว็บด้วย Genspark AI แก้ไขต่อได้ในเบราว์เซอร์ — คลิกโปรเจกต์เพื่อเปิด',
-    cloudSearchPlaceholder: 'ค้นหา {n} โปรเจกต์…',
-    cloudNoResults: 'ไม่มีโปรเจกต์ที่ตรงกัน',
-    cloudGroupThisWeek: 'สัปดาห์นี้',
-    cloudGroupThisMonth: 'เดือนนี้',
-    cloudSortLabel: 'เรียง: {v}',
-    cloudSortRecent: 'ล่าสุด',
-    cloudSortOldest: 'เก่าสุด',
-    cloudRefresh: 'รีเฟรช',
-    cloudLoginHint: 'ลงชื่อเข้าใช้บัญชี Genspark เพื่อดูโปรเจกต์ที่คุณสร้างบนเว็บ',
-    cloudEmpty: 'ยังไม่มีโปรเจกต์บนเว็บ',
-    cloudError: 'โหลดไม่สำเร็จ โปรดลองอีกครั้งภายหลัง',
-    cloudRetry: 'ลองอีกครั้ง',
-    cloudLoadMore: 'โหลดเพิ่มเติม',
-    cloudOpenInBrowser: 'เปิดในเบราว์เซอร์',
+    fileSortRecent: 'ล่าสุด',
+    fileSortOldest: 'เก่าสุด',
     navTrash: 'ถังขยะ',
     navTrashTip: 'ไฟล์ที่ถูกลบจะถูกย้ายไปยังถังขยะของระบบ และสามารถกู้คืนได้จากที่นั่น',
     // Section headings
@@ -2772,12 +2636,11 @@ export const strings = {
     untitled: 'ไม่มีชื่อ',
     noContent: '(ไม่มีเนื้อหา)',
     // Account
-    accountGenspark: 'บัญชี VEGA',
     account: 'บัญชี',
     login: 'ลงชื่อเข้าใช้',
-    loginGenspark: 'ลงชื่อเข้าใช้ด้วย VEGA',
+    loginVega: 'ลงชื่อเข้าใช้ด้วย VEGA',
     loggedIn: 'ลงชื่อเข้าใช้แล้ว',
-    loggedInGenspark: 'ลงชื่อเข้าใช้ VEGA แล้ว',
+    loggedInVega: 'ลงชื่อเข้าใช้ VEGA แล้ว',
     waitingLogin: 'กำลังรอการลงชื่อเข้าใช้ในเบราว์เซอร์… คลิกเพื่อเปิดหน้าลงชื่อเข้าใช้อีกครั้ง',
     loginDeviceCode: 'รหัสอุปกรณ์',
     waitingShort: 'กำลังรอ…',
@@ -2842,7 +2705,7 @@ export const strings = {
     setMcpLogEmpty: 'ยังไม่มีปูม',
     setSecAbout: 'เกี่ยวกับ',
     setSecIntegrations: 'การเชื่อมต่อ',
-    intgHeroTitle: 'ใช้ GetOffice จากผู้ช่วย AI ของคุณ',
+    intgHeroTitle: 'ใช้ VegaOffice จากผู้ช่วย AI ของคุณ',
     intgHeroDesc:
       'เมื่อเชื่อมต่อแล้ว Claude Code, Codex, Cursor, Claude Desktop และผู้ช่วยลักษณะเดียวกันจะสร้าง แปลง อ่าน และแก้ไขไฟล์ Word, Excel, PowerPoint, PDF และ Markdown แทนคุณได้ ทุกอย่างทำงานบนคอมพิวเตอร์เครื่องนี้ ไม่มีการอัปโหลดใด ๆ',
     intgHeroStep1: 'เลือกวิธี: ใช้ CLI ถ้าผู้ช่วยรันคำสั่งเทอร์มินัลได้ ใช้ MCP ถ้าไม่ได้',
@@ -2852,7 +2715,7 @@ export const strings = {
     intgStep1Desc:
       'แสดงเฉพาะผู้ช่วยที่พบบนคอมพิวเตอร์เครื่องนี้ ติดตั้งเฉพาะตัวที่คุณใช้จริงก็พอ ไม่จำเป็นต้องติดตั้งทั้งหมด',
     intgStep1Update:
-      'เมื่อการอัปเดต GetOffice มาพร้อมสกิลเวอร์ชันใหม่ ปุ่มอัปเดตจะปรากฏข้างผู้ช่วยนั้น',
+      'เมื่อการอัปเดต VegaOffice มาพร้อมสกิลเวอร์ชันใหม่ ปุ่มอัปเดตจะปรากฏข้างผู้ช่วยนั้น',
     intgSkillVersion: 'สกิล {v}',
     intgStateMissing: 'ยังไม่ติดตั้งสกิล',
     intgStateInstalled: 'ติดตั้งสกิล {v} แล้ว · พร้อมใช้ในแชตถัดไป',
@@ -2860,7 +2723,7 @@ export const strings = {
     intgOtherDesc:
       'เลือกเพียงวิธีใดวิธีหนึ่งจากสามวิธีนี้ ทุกวิธีติดตั้งสกิลเดียวกัน จึงไม่ต้องทำมากกว่าหนึ่งวิธี',
     intgOtherFolderTitle: 'ผู้ช่วยใดก็ได้ที่อ่านโฟลเดอร์ SKILL.md',
-    intgOtherFolderDesc: 'เลือกโฟลเดอร์ skills ของผู้ช่วย แล้ว GetOffice จะเขียนไฟล์ลงไป',
+    intgOtherFolderDesc: 'เลือกโฟลเดอร์ skills ของผู้ช่วย แล้ว VegaOffice จะเขียนไฟล์ลงไป',
     intgOtherZipTitle: 'ส่งไฟล์ให้ผู้ช่วย',
     intgOtherZipDesc: 'บันทึกสกิลเป็น zip แล้วขอให้ผู้ช่วยติดตั้งเอง',
     intgOtherNpxTitle: 'ใช้คำสั่ง skills (ต้องมี Node.js)',
@@ -2871,22 +2734,22 @@ export const strings = {
     intgStep2DescBefore: 'เมื่อติดตั้งแล้ว เปิดแชตใหม่ในผู้ช่วยแล้วสั่งด้วยภาษาธรรมดา เช่น:',
     intgExample1: 'แปลง ~/Downloads/report.md เป็นเอกสาร Word',
     intgExample2: 'ทำสไลด์ 6 หน้าเกี่ยวกับผลประกอบการไตรมาส 3 ของเรา',
-    intgExample3: 'แปลง budget.xlsx เป็น PDF แล้วเปิดใน GetOffice',
-    intgStep2Note: 'ผู้ช่วยจะเรียกใช้บรรทัดคำสั่ง getoffice เอง คุณไม่ต้องพิมพ์คำสั่งใด ๆ',
+    intgExample3: 'แปลง budget.xlsx เป็น PDF แล้วเปิดใน VegaOffice',
+    intgStep2Note: 'ผู้ช่วยจะเรียกใช้บรรทัดคำสั่ง vegaoffice เอง คุณไม่ต้องพิมพ์คำสั่งใด ๆ',
     intgCliPartTitle: 'CLI · บรรทัดคำสั่ง + skill',
     intgCliPartDesc:
-      'สำหรับผู้ช่วยที่รันคำสั่งเทอร์มินัลได้ (Claude Code, Codex, Cursor และอื่น ๆ) เมื่อติดตั้ง skill แล้ว ผู้ช่วยจะเรียกบรรทัดคำสั่ง getoffice เองเพื่อสร้าง แปลง อ่าน และแก้ไขไฟล์ คุณไม่ต้องพิมพ์คำสั่งใด ๆ',
+      'สำหรับผู้ช่วยที่รันคำสั่งเทอร์มินัลได้ (Claude Code, Codex, Cursor และอื่น ๆ) เมื่อติดตั้ง skill แล้ว ผู้ช่วยจะเรียกบรรทัดคำสั่ง vegaoffice เองเพื่อสร้าง แปลง อ่าน และแก้ไขไฟล์ คุณไม่ต้องพิมพ์คำสั่งใด ๆ',
     intgMcpPartTitle: 'MCP',
     intgMcpPartDesc:
-      'MCP คือโปรโตคอลกลางที่ผู้ช่วย AI ใช้เรียกเครื่องมือภายนอก ใช้เมื่อผู้ช่วยรันคำสั่งไม่ได้ (เช่น Claude Desktop) หรือเมื่อต้องการให้มันควบคุมหน้าต่าง GetOffice โดยตรง เลือกวิธีใดวิธีหนึ่งจากสองวิธีด้านล่าง',
+      'MCP คือโปรโตคอลกลางที่ผู้ช่วย AI ใช้เรียกเครื่องมือภายนอก ใช้เมื่อผู้ช่วยรันคำสั่งไม่ได้ (เช่น Claude Desktop) หรือเมื่อต้องการให้มันควบคุมหน้าต่าง VegaOffice โดยตรง เลือกวิธีใดวิธีหนึ่งจากสองวิธีด้านล่าง',
     intgMcpStdioTitle: 'ให้ผู้ช่วยเป็นผู้เริ่ม (แนะนำ)',
     intgMcpStdioDesc:
-      'ผู้ช่วยจะเรียก getoffice mcp ขึ้นมาเอง ไม่ต้องเปิดสวิตช์ใดที่นี่ และไม่ต้องเปิด GetOffice ไว้ ความสามารถเหมือน CLI ทุกประการ',
+      'ผู้ช่วยจะเรียก vegaoffice mcp ขึ้นมาเอง ไม่ต้องเปิดสวิตช์ใดที่นี่ และไม่ต้องเปิด VegaOffice ไว้ ความสามารถเหมือน CLI ทุกประการ',
     intgMcpHttpTitle: 'เซิร์ฟเวอร์ HTTP ในเครื่อง',
     intgMcpHttpDesc:
-      'ทำงานอยู่ใน GetOffice ผู้ช่วยเชื่อมต่อผ่าน URL และคุณจะเห็นเอกสารค่อย ๆ ถูกสร้างขึ้นในตัวแก้ไข Word ต้องเปิด GetOffice ไว้ตลอด ปัจจุบันรองรับเฉพาะ Word',
+      'ทำงานอยู่ใน VegaOffice ผู้ช่วยเชื่อมต่อผ่าน URL และคุณจะเห็นเอกสารค่อย ๆ ถูกสร้างขึ้นในตัวแก้ไข Word ต้องเปิด VegaOffice ไว้ตลอด ปัจจุบันรองรับเฉพาะ Word',
     intgMcpHttpAdvanced: 'ขั้นสูง: ที่อยู่อื่นและบันทึก',
-    intgMcpTryNote: 'ผู้ช่วยจะเรียก GetOffice ผ่าน MCP คุณไม่ต้องพิมพ์คำสั่งใด ๆ',
+    intgMcpTryNote: 'ผู้ช่วยจะเรียก VegaOffice ผ่าน MCP คุณไม่ต้องพิมพ์คำสั่งใด ๆ',
     intgMcpClaudeTitle: 'Claude Code',
     intgMcpClaudeDesc: 'รันคำสั่งนี้ครั้งเดียวในเทอร์มินัล:',
     intgMcpOtherTitle: 'Cursor, Claude Desktop หรือผู้ช่วยอื่นที่รองรับ MCP',
@@ -2894,10 +2757,10 @@ export const strings = {
       'เพิ่มส่วนนี้ลงในการตั้งค่าเซิร์ฟเวอร์ MCP ของผู้ช่วย (ไฟล์ JSON หรือ "เพิ่มเซิร์ฟเวอร์ MCP" ในการตั้งค่า):',
     intgMcpNote:
       'สกิลและ MCP ตั้งค่าไว้พร้อมกันได้ ผู้ช่วยจะเลือกใช้เอง ทั้งสองทำงานเหมือนกันทุกอย่าง',
-    intgCliTitle: 'ขั้นสูง: บรรทัดคำสั่ง getoffice',
-    intgCliReady: 'getoffice {v} · พร้อมใช้ในเทอร์มินัล ({path})',
+    intgCliTitle: 'ขั้นสูง: บรรทัดคำสั่ง vegaoffice',
+    intgCliReady: 'vegaoffice {v} · พร้อมใช้ในเทอร์มินัล ({path})',
     intgCliNotOnPath:
-      'getoffice {v} · ยังไม่อยู่ใน PATH ของเทอร์มินัล ผู้ช่วยยังหาเจอผ่าน ~/.getoffice/launcher สกิลจึงใช้งานได้ตามปกติ หากต้องการพิมพ์ getoffice เอง ให้รันคำสั่งนี้ครั้งเดียว:',
+      'vegaoffice {v} · ยังไม่อยู่ใน PATH ของเทอร์มินัล ผู้ช่วยยังหาเจอผ่าน ~/.vegaoffice/launcher สกิลจึงใช้งานได้ตามปกติ หากต้องการพิมพ์ vegaoffice เอง ให้รันคำสั่งนี้ครั้งเดียว:',
     intgCliLauncher: 'โฟลเดอร์ตัวเรียกใช้',
     intgStateOutdated: 'ติดตั้งแล้ว {v} อัปเดตเป็น {next} ได้',
     intgStateModified: 'ติดตั้งแล้ว {v} (ถูกแก้ไข)',
@@ -2921,9 +2784,9 @@ export const strings = {
     intgSaveZipTitle: 'บันทึกสกิล',
     intgSavedTo: 'บันทึกไว้ที่ {path}',
     intgCopied: 'คัดลอกแล้ว',
-    intgCliEphemeral: 'กรุณาลาก GetOffice ไปที่ Applications ก่อน แล้วจึงใช้บรรทัดคำสั่ง',
+    intgCliEphemeral: 'กรุณาลาก VegaOffice ไปที่ Applications ก่อน แล้วจึงใช้บรรทัดคำสั่ง',
     intgCopyPath: 'คัดลอกพาธ',
-    intgCliNeedsUpdate: 'สกิลนี้ต้องใช้บรรทัดคำสั่ง {v} หรือใหม่กว่า โปรดอัปเดต GetOffice',
+    intgCliNeedsUpdate: 'สกิลนี้ต้องใช้บรรทัดคำสั่ง {v} หรือใหม่กว่า โปรดอัปเดต VegaOffice',
     intgLoading: 'กำลังตรวจสอบ…',
     intgUpdateDue: 'มีอัปเดตสกิล',
     setSecAiModel: 'โมเดล AI',
@@ -2934,13 +2797,13 @@ export const strings = {
     setAiKeyHint: 'จัดเก็บไว้ในเครื่องนี้เท่านั้น',
     setAiBaseUrl: 'Base URL',
     setAiBaseUrlHint: 'เว้นว่างเพื่อใช้ปลายทางอย่างเป็นทางการ',
-    setAiGensparkHint: 'ใช้การลงชื่อเข้าใช้ Genspark ไม่ต้องใช้คีย์ API',
+    setAiAccountHint: 'ใช้การลงชื่อเข้าใช้ VEGA ไม่ต้องใช้คีย์ API',
     setAiCodexPath: 'ไฟล์ปฏิบัติการ Codex',
     setAiCodexPathHint: 'กรอกเฉพาะเมื่อติดตั้งแบบกำหนดเอง เว้นว่างไว้เพื่อค้นหาอัตโนมัติ',
     setAiCodexAutoPlaceholder: 'ค้นหาอัตโนมัติ (แนะนำ)',
     setAiCodexHint: 'ใช้ Codex CLI ที่เข้าสู่ระบบไว้ในเครื่อง โดยไม่ต้องใช้คีย์ API',
     setAiByokNote:
-      'การแชทใช้คีย์ของคุณเอง การสร้างภาพและการวิเคราะห์สื่อเป็นไปตามส่วน "สื่อ AI" ส่วนการค้นหาเว็บยังใช้การลงชื่อเข้าใช้ Genspark หรือแหล่งข้อมูลฟรี',
+      'การแชทใช้คีย์ของคุณเอง การสร้างภาพและการวิเคราะห์สื่อเป็นไปตามส่วน "สื่อ AI" ส่วนการค้นหาเว็บยังใช้การลงชื่อเข้าใช้ VEGA หรือแหล่งข้อมูลฟรี',
     setAiSave: 'บันทึก',
     setAiSaved: 'บันทึกแล้ว',
     setAiTest: 'ทดสอบการเชื่อมต่อ',
@@ -2951,12 +2814,12 @@ export const strings = {
     setAiMaxTokensDesc:
       'งบผลลัพธ์ต่อหนึ่งรอบ โมเดลแบบใช้เหตุผลจะใช้ส่วนหนึ่งไปกับการคิด หากงบหมด คำตอบอาจกลับมาว่างเปล่า ให้เพิ่มค่านี้',
     setSecAiMedia: 'สื่อ AI และการค้นหา',
-    setAiMediaGensparkHint:
-      'การสร้างภาพและการวิเคราะห์ภาพ/วิดีโอใช้การลงชื่อเข้าใช้ Genspark ของคุณ',
+    setAiMediaAccountHint:
+      'การสร้างภาพและการวิเคราะห์ภาพ/วิดีโอใช้การลงชื่อเข้าใช้ VEGA ของคุณ',
     setAiImageModel: 'โมเดลสร้างภาพ',
     setAiAnalysisModel: 'โมเดลวิเคราะห์',
-    setAiSearchGensparkHint:
-      'การค้นหาเว็บและภาพใช้การลงชื่อเข้าใช้ Genspark หากไม่ได้ลงชื่อเข้าใช้หรือปิดเครื่องมือคลาวด์ จะใช้แหล่งข้อมูลฟรีแทน',
+    setAiSearchAccountHint:
+      'การค้นหาเว็บและภาพใช้การลงชื่อเข้าใช้ VEGA หากไม่ได้ลงชื่อเข้าใช้หรือปิดเครื่องมือคลาวด์ จะใช้แหล่งข้อมูลฟรีแทน',
     setAiSearchSerperHint: 'Serper ให้บริการค้นหาเว็บและภาพด้วยคีย์ของคุณ',
     setAiSearchTavilyHint:
       'Tavily ให้บริการค้นหาเว็บด้วยคีย์ของคุณ ส่วนการค้นหาภาพจะใช้แหล่งข้อมูลฟรีแทน',
@@ -2968,7 +2831,7 @@ export const strings = {
       'คีย์และ Base URL ของผู้ให้บริการเดียวกันใช้ร่วมกันทุกความสามารถ กรอกครั้งเดียวพอ',
     setAiVegaTools: 'เครื่องมือคลาวด์ VEGA',
     setAiVegaToolsDesc:
-      'เมื่อเลือก VEGA เป็นผู้ให้บริการ การค้นหาเว็บ การสร้างภาพ และการวิเคราะห์สื่อจะผ่าน api.vega.chat ด้วยคีย์ VEGA เมื่อปิด เครื่องมือเหล่านั้นจะใช้การลงชื่อเข้าใช้ Genspark หรือแหล่งฟรีแทน ไม่กระทบผู้ให้บริการแชท',
+      'เมื่อเลือก VEGA เป็นผู้ให้บริการ การค้นหาเว็บ การสร้างภาพ และการวิเคราะห์สื่อจะผ่าน api.vega.chat ด้วยคีย์ VEGA เมื่อปิด เครื่องมือเหล่านั้นจะใช้การลงชื่อเข้าใช้ VEGA หรือแหล่งฟรีแทน ไม่กระทบผู้ให้บริการแชท',
     setAiVegaNote:
       'เกตเวย์ที่เข้ากันได้กับ OpenRouter — เมื่อลงชื่อเข้าใช้ ระบบจะออกคีย์ API ให้อัตโนมัติ ไม่แสดงและแก้ไขไม่ได้',
     setAiVegaSigninDesc:
@@ -2979,14 +2842,14 @@ export const strings = {
       'การค้นหาเว็บใช้ api.vega.chat กับคีย์จากการลงชื่อเข้าใช้ ส่วนการค้นหารูปภาพใช้แหล่งฟรี',
     setGithub: 'โอเพนซอร์ส',
     starOnGitHub: 'กดดาวบน GitHub',
-    starPromptTitle: 'ชอบ GetOffice ไหม?',
-    starPromptTitleN: 'คุณเปิดเอกสารด้วย GetOffice ไปแล้ว {n} ไฟล์',
+    starPromptTitle: 'ชอบ VegaOffice ไหม?',
+    starPromptTitleN: 'คุณเปิดเอกสารด้วย VegaOffice ไปแล้ว {n} ไฟล์',
     starPromptBody:
-      'GetOffice ฟรีและเป็นโอเพนซอร์ส การกดดาวบน GitHub คือกำลังใจที่ดีที่สุดสำหรับทีม',
+      'VegaOffice ฟรีและเป็นโอเพนซอร์ส การกดดาวบน GitHub คือกำลังใจที่ดีที่สุดสำหรับทีม',
     starPromptGo: 'กดดาวเลย',
     starPromptDone: 'กดแล้ว',
     starPromptLater: 'ไว้ทีหลัง',
-    onbStarHint: 'ถ้าชอบ GetOffice ฝากกดดาวให้เราบน GitHub ด้วยนะ',
+    onbStarHint: 'ถ้าชอบ VegaOffice ฝากกดดาวให้เราบน GitHub ด้วยนะ',
     setEmail: 'อีเมล',
     setNotLoggedIn: 'ยังไม่ได้เข้าสู่ระบบ',
     setViewUsage: 'ดูการใช้งาน',
@@ -3002,14 +2865,13 @@ export const strings = {
     appMenu: 'เมนู',
     newTab: 'แท็บใหม่',
     // First-run onboarding
-    onbTitle1: 'ยินดีต้อนรับสู่ GetOffice',
+    onbTitle1: 'ยินดีต้อนรับสู่ VegaOffice',
     onbSubtitle1: 'ชุดโปรแกรมออฟฟิศ AI-native โอเพนซอร์สตัวแรก',
     onbBody1: 'สร้างเอกสาร ทำสเปรดชีต สร้างงานนำเสนอ และตรวจทาน PDF ทุกขั้นตอนมี AI ในตัว',
     onbTitle2: 'นี่เป็นเพียงจุดเริ่มต้น',
-    onbBody2:
-      'GetOffice ยังอยู่ในช่วงอัลฟ่า เข้าร่วมแชทกลุ่มบน GenTeam เพื่อแบ่งปันความคิดเห็นและร่วมกำหนดทิศทางต่อไป',
+    onbBody2: 'VegaOffice ยังอยู่ในช่วงอัลฟ่า กดดาวให้เราบน GitHub และแบ่งปันความคิดเห็นเพื่อร่วมกำหนดทิศทางต่อไป',
     onbCredits: 'ผู้มีส่วนร่วมอย่างต่อเนื่องจะได้รับ **เครดิต VEGA กว่า 1,000**',
-    onbJoinGenTeam: 'เข้าร่วม GenTeam',
+    onbJoinGitHub: 'กดดาวบน GitHub',
     onbSkip: 'ข้าม',
     onbNext: 'ถัดไป',
     onbStart: 'เริ่มใช้งาน',
@@ -3023,23 +2885,8 @@ export const strings = {
     // Sidebar navigation
     navRecent: 'Terbaru',
     navStarred: 'Berbintang',
-    navCloud: 'Genspark Projects',
-    cloudSubtitle:
-      'Proyek yang dibuat di web dengan Genspark AI. Pengeditan berlanjut di browser — klik proyek untuk membukanya.',
-    cloudSearchPlaceholder: 'Cari {n} proyek…',
-    cloudNoResults: 'Tidak ada proyek yang cocok.',
-    cloudGroupThisWeek: 'Minggu ini',
-    cloudGroupThisMonth: 'Bulan ini',
-    cloudSortLabel: 'Urutkan: {v}',
-    cloudSortRecent: 'Terbaru',
-    cloudSortOldest: 'Terlama',
-    cloudRefresh: 'Segarkan',
-    cloudLoginHint: 'Masuk ke akun Genspark untuk melihat proyek yang Anda buat di web.',
-    cloudEmpty: 'Belum ada proyek web.',
-    cloudError: 'Gagal memuat. Coba lagi nanti.',
-    cloudRetry: 'Coba lagi',
-    cloudLoadMore: 'Muat lebih banyak',
-    cloudOpenInBrowser: 'Buka di browser',
+    fileSortRecent: 'Terbaru',
+    fileSortOldest: 'Terlama',
     navTrash: 'Sampah',
     navTrashTip:
       'File yang dihapus akan dipindahkan ke tempat sampah sistem dan dapat dipulihkan dari sana',
@@ -3145,12 +2992,11 @@ export const strings = {
     untitled: 'Tanpa judul',
     noContent: '(kosong)',
     // Account
-    accountGenspark: 'Akun VEGA',
     account: 'Akun',
     login: 'Masuk',
-    loginGenspark: 'Masuk dengan VEGA',
+    loginVega: 'Masuk dengan VEGA',
     loggedIn: 'Sudah masuk',
-    loggedInGenspark: 'Sudah masuk ke VEGA',
+    loggedInVega: 'Sudah masuk ke VEGA',
     waitingLogin: 'Menunggu login di browser… Klik untuk membuka kembali halaman login',
     loginDeviceCode: 'Kode perangkat',
     waitingShort: 'Menunggu…',
@@ -3218,7 +3064,7 @@ export const strings = {
     setMcpLogEmpty: 'Belum ada log',
     setSecAbout: 'Tentang',
     setSecIntegrations: 'Integrasi',
-    intgHeroTitle: 'Gunakan GetOffice dari asisten AI Anda',
+    intgHeroTitle: 'Gunakan VegaOffice dari asisten AI Anda',
     intgHeroDesc:
       'Setelah terhubung, Claude Code, Codex, Cursor, Claude Desktop, dan asisten serupa dapat membuat, mengonversi, membaca, dan mengedit file Word, Excel, PowerPoint, PDF, dan Markdown untuk Anda. Semuanya berjalan di komputer ini; tidak ada yang diunggah.',
     intgHeroStep1:
@@ -3229,7 +3075,7 @@ export const strings = {
     intgStep1Desc:
       'Hanya asisten yang ditemukan di komputer ini yang ditampilkan. Pasang ke yang benar-benar Anda pakai; tidak perlu semuanya.',
     intgStep1Update:
-      'Saat pembaruan GetOffice membawa skill yang lebih baru, tombol Perbarui muncul di samping asisten itu.',
+      'Saat pembaruan VegaOffice membawa skill yang lebih baru, tombol Perbarui muncul di samping asisten itu.',
     intgSkillVersion: 'skill {v}',
     intgStateMissing: 'Skill belum terpasang',
     intgStateInstalled: 'Skill {v} terpasang · siap di obrolan berikutnya',
@@ -3237,7 +3083,7 @@ export const strings = {
     intgOtherDesc:
       'Pilih salah satu saja dari tiga cara ini. Semuanya memasang skill yang sama, jadi tidak perlu lebih dari satu.',
     intgOtherFolderTitle: 'Asisten apa pun yang membaca folder SKILL.md',
-    intgOtherFolderDesc: 'Pilih folder skills-nya dan GetOffice menulis file di sana.',
+    intgOtherFolderDesc: 'Pilih folder skills-nya dan VegaOffice menulis file di sana.',
     intgOtherZipTitle: 'Serahkan file ke asisten',
     intgOtherZipDesc: 'Simpan skill sebagai zip, lalu minta asisten memasangnya.',
     intgOtherNpxTitle: 'Dengan perintah skills (butuh Node.js)',
@@ -3249,23 +3095,23 @@ export const strings = {
       'Setelah terpasang, buka obrolan baru di asisten Anda dan minta dengan bahasa biasa, misalnya:',
     intgExample1: 'Ubah ~/Downloads/report.md menjadi dokumen Word',
     intgExample2: 'Buat presentasi 6 slide tentang hasil Q3 kami',
-    intgExample3: 'Konversi budget.xlsx ke PDF dan buka di GetOffice',
+    intgExample3: 'Konversi budget.xlsx ke PDF dan buka di VegaOffice',
     intgStep2Note:
-      'Asisten menjalankan baris perintah getoffice sendiri; Anda tidak perlu mengetiknya.',
+      'Asisten menjalankan baris perintah vegaoffice sendiri; Anda tidak perlu mengetiknya.',
     intgCliPartTitle: 'CLI · baris perintah + skill',
     intgCliPartDesc:
-      'Untuk asisten yang bisa menjalankan perintah terminal (Claude Code, Codex, Cursor, dan lainnya). Setelah skill terpasang, asisten memanggil baris perintah getoffice sendiri untuk membuat, mengonversi, membaca, dan mengedit file; Anda tidak pernah mengetik perintah.',
+      'Untuk asisten yang bisa menjalankan perintah terminal (Claude Code, Codex, Cursor, dan lainnya). Setelah skill terpasang, asisten memanggil baris perintah vegaoffice sendiri untuk membuat, mengonversi, membaca, dan mengedit file; Anda tidak pernah mengetik perintah.',
     intgMcpPartTitle: 'MCP',
     intgMcpPartDesc:
-      'MCP adalah protokol umum yang dipakai asisten AI untuk memanggil alat eksternal. Gunakan saat asisten Anda tidak bisa menjalankan perintah (misalnya Claude Desktop) atau saat Anda ingin ia mengendalikan jendela GetOffice secara langsung. Pilih salah satu dari dua cara di bawah.',
+      'MCP adalah protokol umum yang dipakai asisten AI untuk memanggil alat eksternal. Gunakan saat asisten Anda tidak bisa menjalankan perintah (misalnya Claude Desktop) atau saat Anda ingin ia mengendalikan jendela VegaOffice secara langsung. Pilih salah satu dari dua cara di bawah.',
     intgMcpStdioTitle: 'Dijalankan oleh asisten (disarankan)',
     intgMcpStdioDesc:
-      'Asisten menjalankan getoffice mcp sendiri: tidak ada yang perlu dinyalakan di sini, dan GetOffice tidak perlu terbuka. Fitur sama dengan CLI.',
+      'Asisten menjalankan vegaoffice mcp sendiri: tidak ada yang perlu dinyalakan di sini, dan VegaOffice tidak perlu terbuka. Fitur sama dengan CLI.',
     intgMcpHttpTitle: 'Server HTTP lokal',
     intgMcpHttpDesc:
-      'Berjalan di dalam GetOffice; asisten terhubung lewat URL dan Anda bisa melihat dokumen dibangun langkah demi langkah di editor Word. GetOffice harus tetap terbuka; untuk saat ini hanya dokumen Word.',
+      'Berjalan di dalam VegaOffice; asisten terhubung lewat URL dan Anda bisa melihat dokumen dibangun langkah demi langkah di editor Word. VegaOffice harus tetap terbuka; untuk saat ini hanya dokumen Word.',
     intgMcpHttpAdvanced: 'Lanjutan: alamat lain dan log',
-    intgMcpTryNote: 'Asisten memanggil GetOffice melalui MCP; Anda tidak pernah mengetik perintah.',
+    intgMcpTryNote: 'Asisten memanggil VegaOffice melalui MCP; Anda tidak pernah mengetik perintah.',
     intgMcpClaudeTitle: 'Claude Code',
     intgMcpClaudeDesc: 'Jalankan ini sekali di terminal:',
     intgMcpOtherTitle: 'Cursor, Claude Desktop, atau asisten lain yang mendukung MCP',
@@ -3273,10 +3119,10 @@ export const strings = {
       'Tambahkan ini ke pengaturan server MCP miliknya (berkas JSON, atau "Tambah server MCP" di pengaturannya):',
     intgMcpNote:
       'Skill dan MCP bisa dipasang bersamaan; asisten akan memilih salah satu. Keduanya melakukan hal yang sama persis.',
-    intgCliTitle: 'Lanjutan: baris perintah getoffice',
-    intgCliReady: 'getoffice {v} · siap di terminal Anda ({path})',
+    intgCliTitle: 'Lanjutan: baris perintah vegaoffice',
+    intgCliReady: 'vegaoffice {v} · siap di terminal Anda ({path})',
     intgCliNotOnPath:
-      'getoffice {v} · belum ada di PATH terminal Anda. Asisten tetap menemukannya lewat ~/.getoffice/launcher, jadi skill tetap berfungsi. Untuk mengetik getoffice sendiri, jalankan ini sekali:',
+      'vegaoffice {v} · belum ada di PATH terminal Anda. Asisten tetap menemukannya lewat ~/.vegaoffice/launcher, jadi skill tetap berfungsi. Untuk mengetik vegaoffice sendiri, jalankan ini sekali:',
     intgCliLauncher: 'Folder peluncur',
     intgStateOutdated: 'Terpasang {v}, pembaruan ke {next} tersedia',
     intgStateModified: 'Terpasang {v} (dimodifikasi)',
@@ -3300,10 +3146,10 @@ export const strings = {
     intgSaveZipTitle: 'Simpan skill',
     intgSavedTo: 'Disimpan ke {path}',
     intgCopied: 'Disalin',
-    intgCliEphemeral: 'Seret GetOffice ke Applications dulu, lalu gunakan baris perintah.',
+    intgCliEphemeral: 'Seret VegaOffice ke Applications dulu, lalu gunakan baris perintah.',
     intgCopyPath: 'Salin path',
     intgCliNeedsUpdate:
-      'Skill ini memerlukan baris perintah {v} atau lebih baru; perbarui GetOffice.',
+      'Skill ini memerlukan baris perintah {v} atau lebih baru; perbarui VegaOffice.',
     intgLoading: 'Memeriksa…',
     intgUpdateDue: 'Pembaruan skill tersedia',
     setSecAiModel: 'Model AI',
@@ -3314,13 +3160,13 @@ export const strings = {
     setAiKeyHint: 'Hanya disimpan di perangkat ini.',
     setAiBaseUrl: 'Base URL',
     setAiBaseUrlHint: 'Kosongkan untuk endpoint resmi.',
-    setAiGensparkHint: 'Menggunakan login Genspark; tanpa kunci API.',
+    setAiAccountHint: 'Menggunakan login VEGA; tanpa kunci API.',
     setAiCodexPath: 'Berkas eksekusi Codex',
     setAiCodexPathHint: 'Isi hanya untuk instalasi khusus; kosongkan agar terdeteksi otomatis.',
     setAiCodexAutoPlaceholder: 'Deteksi otomatis (disarankan)',
     setAiCodexHint: 'Menggunakan Codex CLI yang sudah login secara lokal; tanpa kunci API.',
     setAiByokNote:
-      'Chat memakai kunci Anda sendiri. Pembuatan gambar dan analisis media mengikuti bagian "Media AI"; pencarian web tetap memakai login Genspark atau sumber gratis.',
+      'Chat memakai kunci Anda sendiri. Pembuatan gambar dan analisis media mengikuti bagian "Media AI"; pencarian web tetap memakai login VEGA atau sumber gratis.',
     setAiSave: 'Simpan',
     setAiSaved: 'Tersimpan',
     setAiTest: 'Uji koneksi',
@@ -3331,12 +3177,12 @@ export const strings = {
     setAiMaxTokensDesc:
       'Anggaran keluaran untuk satu giliran. Model penalaran memakainya untuk berpikir; jika habis, balasan datang kosong — naikkan nilai ini.',
     setSecAiMedia: 'Media & Pencarian AI',
-    setAiMediaGensparkHint:
-      'Pembuatan gambar dan analisis gambar/video menggunakan login Genspark Anda.',
+    setAiMediaAccountHint:
+      'Pembuatan gambar dan analisis gambar/video menggunakan login VEGA Anda.',
     setAiImageModel: 'Model gambar',
     setAiAnalysisModel: 'Model analisis',
-    setAiSearchGensparkHint:
-      'Pencarian web dan gambar memakai login Genspark Anda; saat keluar atau alat cloud dimatikan, keduanya memakai sumber gratis.',
+    setAiSearchAccountHint:
+      'Pencarian web dan gambar memakai login VEGA Anda; saat keluar atau alat cloud dimatikan, keduanya memakai sumber gratis.',
     setAiSearchSerperHint: 'Serper menyediakan pencarian web dan gambar dengan kunci Anda.',
     setAiSearchTavilyHint:
       'Tavily menyediakan pencarian web dengan kunci Anda; pencarian gambar memakai sumber gratis.',
@@ -3348,7 +3194,7 @@ export const strings = {
       'Kunci dan Base URL satu penyedia dipakai bersama oleh semua kemampuan; cukup isi sekali.',
     setAiVegaTools: 'Alat cloud VEGA',
     setAiVegaToolsDesc:
-      'Saat VEGA menjadi penyedia, pencarian web, pembuatan gambar, dan analisis media berjalan melalui api.vega.chat dengan kunci VEGA Anda; bila dimatikan, alat tersebut kembali ke login Genspark atau sumber gratis. Penyedia chat tidak terpengaruh.',
+      'Saat VEGA menjadi penyedia, pencarian web, pembuatan gambar, dan analisis media berjalan melalui api.vega.chat dengan kunci VEGA Anda; bila dimatikan, alat tersebut kembali ke login VEGA atau sumber gratis. Penyedia chat tidak terpengaruh.',
     setAiVegaNote:
       'Gateway kompatibel OpenRouter — kunci API diterbitkan otomatis saat masuk dan tidak pernah ditampilkan atau dapat diubah.',
     setAiVegaSigninDesc:
@@ -3360,14 +3206,14 @@ export const strings = {
       'Pencarian web memakai api.vega.chat dengan kunci masuk Anda; pencarian gambar memakai sumber gratis.',
     setGithub: 'Sumber Terbuka',
     starOnGitHub: 'Beri Bintang di GitHub',
-    starPromptTitle: 'Suka GetOffice?',
-    starPromptTitleN: 'Anda telah membuka {n} dokumen dengan GetOffice',
+    starPromptTitle: 'Suka VegaOffice?',
+    starPromptTitleN: 'Anda telah membuka {n} dokumen dengan VegaOffice',
     starPromptBody:
-      'GetOffice gratis dan open source. Bintang di GitHub adalah dukungan terbaik untuk tim kami.',
+      'VegaOffice gratis dan open source. Bintang di GitHub adalah dukungan terbaik untuk tim kami.',
     starPromptGo: 'Beri Bintang',
     starPromptDone: 'Sudah',
     starPromptLater: 'Nanti saja',
-    onbStarHint: 'Jika Anda menyukai GetOffice, beri kami bintang di GitHub.',
+    onbStarHint: 'Jika Anda menyukai VegaOffice, beri kami bintang di GitHub.',
     setEmail: 'Email',
     setNotLoggedIn: 'Belum masuk',
     setViewUsage: 'Lihat penggunaan',
@@ -3383,15 +3229,14 @@ export const strings = {
     appMenu: 'Menu',
     newTab: 'Tab baru',
     // First-run onboarding
-    onbTitle1: 'Selamat datang di GetOffice',
+    onbTitle1: 'Selamat datang di VegaOffice',
     onbSubtitle1: 'Suite office open source AI-native pertama',
     onbBody1:
       'Buat dokumen, susun spreadsheet, rancang presentasi, dan tinjau PDF. AI hadir di setiap langkah.',
     onbTitle2: 'Ini baru permulaan',
-    onbBody2:
-      'GetOffice masih dalam tahap alpha. Gabung obrolan grup di GenTeam untuk berbagi masukan dan ikut menentukan arah ke depan.',
+    onbBody2: 'VegaOffice masih dalam tahap alpha. Beri kami bintang di GitHub dan bagikan masukan untuk ikut menentukan arah ke depan.',
     onbCredits: 'Kontributor aktif mendapat **1.000+ kredit VEGA**',
-    onbJoinGenTeam: 'Gabung GenTeam',
+    onbJoinGitHub: 'Bintang di GitHub',
     onbSkip: 'Lewati',
     onbNext: 'Berikutnya',
     onbStart: 'Mulai',
@@ -3405,23 +3250,8 @@ export const strings = {
     // Sidebar navigation
     navRecent: 'Недавние',
     navStarred: 'Избранное',
-    navCloud: 'Genspark Projects',
-    cloudSubtitle:
-      'Проекты, созданные в вебе с Genspark AI. Редактирование продолжается в браузере — нажмите на проект, чтобы открыть его.',
-    cloudSearchPlaceholder: 'Поиск среди {n} проектов…',
-    cloudNoResults: 'Нет подходящих проектов.',
-    cloudGroupThisWeek: 'На этой неделе',
-    cloudGroupThisMonth: 'Ранее в этом месяце',
-    cloudSortLabel: 'Сортировка: {v}',
-    cloudSortRecent: 'Сначала новые',
-    cloudSortOldest: 'Сначала старые',
-    cloudRefresh: 'Обновить',
-    cloudLoginHint: 'Войдите в аккаунт Genspark, чтобы увидеть проекты, созданные в вебе.',
-    cloudEmpty: 'Пока нет веб-проектов.',
-    cloudError: 'Не удалось загрузить. Повторите попытку позже.',
-    cloudRetry: 'Повторить',
-    cloudLoadMore: 'Загрузить ещё',
-    cloudOpenInBrowser: 'Открыть в браузере',
+    fileSortRecent: 'Сначала новые',
+    fileSortOldest: 'Сначала старые',
     navTrash: 'Корзина',
     navTrashTip: 'Удалённые файлы перемещаются в системную корзину, откуда их можно восстановить',
     // Section headings
@@ -3525,12 +3355,11 @@ export const strings = {
     untitled: 'Без названия',
     noContent: '(пусто)',
     // Account
-    accountGenspark: 'Учётная запись VEGA',
     account: 'Учётная запись',
     login: 'Войти',
-    loginGenspark: 'Войти через VEGA',
+    loginVega: 'Войти через ВЕГА',
     loggedIn: 'Вход выполнен',
-    loggedInGenspark: 'Выполнен вход в VEGA',
+    loggedInVega: 'Выполнен вход в ВЕГА',
     waitingLogin: 'Ожидание входа в браузере… Нажмите, чтобы снова открыть страницу входа',
     loginDeviceCode: 'Код устройства',
     waitingShort: 'Ожидание…',
@@ -3540,7 +3369,7 @@ export const strings = {
     loginOpenShort: 'Открыть страницу входа вручную',
     loginCopyUrl: 'Скопировать ссылку для входа',
     loginCopied: 'Скопировано',
-    loginNetworkError: 'Не удаётся подключиться к VEGA — проверьте сеть или настройки прокси',
+    loginNetworkError: 'Не удаётся подключиться к ВЕГА — проверьте сеть или настройки прокси',
     loginExpired: 'Срок авторизации истёк — нажмите, чтобы повторить',
     loginFailed: 'Не удалось войти — нажмите, чтобы повторить',
     loggingOut: 'Выход…',
@@ -3597,7 +3426,7 @@ export const strings = {
     setMcpLogEmpty: 'Записей пока нет',
     setSecAbout: 'О программе',
     setSecIntegrations: 'Интеграции',
-    intgHeroTitle: 'Используйте GetOffice из своего ИИ-ассистента',
+    intgHeroTitle: 'Используйте «Офис ВЕГА» из своего ИИ-ассистента',
     intgHeroDesc:
       'После подключения Claude Code, Codex, Cursor, Claude Desktop и похожие ассистенты смогут создавать, конвертировать, читать и редактировать файлы Word, Excel, PowerPoint, PDF и Markdown за вас. Всё выполняется на этом компьютере; ничего не загружается.',
     intgHeroStep1:
@@ -3608,7 +3437,7 @@ export const strings = {
     intgStep1Desc:
       'Показаны только ассистенты, найденные на этом компьютере. Установите скилл в тот, которым действительно пользуетесь; все не нужны.',
     intgStep1Update:
-      'Когда обновление GetOffice принесёт более новый скилл, рядом с этим ассистентом появится кнопка «Обновить».',
+      'Когда обновление «Офис ВЕГА» принесёт более новый скилл, рядом с этим ассистентом появится кнопка «Обновить».',
     intgSkillVersion: 'скилл {v}',
     intgStateMissing: 'Скилл не установлен',
     intgStateInstalled: 'Скилл {v} установлен · готов к следующему чату',
@@ -3616,7 +3445,7 @@ export const strings = {
     intgOtherDesc:
       'Выберите только один из трёх способов. Все они устанавливают один и тот же скилл, повторять не нужно.',
     intgOtherFolderTitle: 'Любой ассистент, читающий папки SKILL.md',
-    intgOtherFolderDesc: 'Выберите его папку skills, и GetOffice запишет файл туда.',
+    intgOtherFolderDesc: 'Выберите его папку skills, и «Офис ВЕГА» запишет файл туда.',
     intgOtherZipTitle: 'Передать файл ассистенту',
     intgOtherZipDesc: 'Сохраните скилл как zip и попросите ассистента установить его.',
     intgOtherNpxTitle: 'Командой skills (нужен Node.js)',
@@ -3628,23 +3457,23 @@ export const strings = {
       'После установки откройте новый чат в ассистенте и попросите обычными словами, например:',
     intgExample1: 'Преврати ~/Downloads/report.md в документ Word',
     intgExample2: 'Сделай презентацию из 6 слайдов о наших результатах за 3-й квартал',
-    intgExample3: 'Конвертируй budget.xlsx в PDF и открой в GetOffice',
+    intgExample3: 'Конвертируй budget.xlsx в PDF и открой в «Офис ВЕГА»',
     intgStep2Note:
-      'Ассистент сам запускает командную строку getoffice; вводить её вам не придётся.',
+      'Ассистент сам запускает командную строку vegaoffice; вводить её вам не придётся.',
     intgCliPartTitle: 'CLI · командная строка + skill',
     intgCliPartDesc:
-      'Для ассистентов, умеющих выполнять команды терминала (Claude Code, Codex, Cursor и другие). После установки skill ассистент сам вызывает командную строку getoffice, чтобы создавать, конвертировать, читать и редактировать файлы; вам не нужно вводить команды.',
+      'Для ассистентов, умеющих выполнять команды терминала (Claude Code, Codex, Cursor и другие). После установки skill ассистент сам вызывает командную строку vegaoffice, чтобы создавать, конвертировать, читать и редактировать файлы; вам не нужно вводить команды.',
     intgMcpPartTitle: 'MCP',
     intgMcpPartDesc:
-      'MCP — общий протокол, через который ИИ-ассистенты вызывают внешние инструменты. Используйте его, если ассистент не умеет выполнять команды (например, Claude Desktop) или если хотите, чтобы он напрямую управлял окном GetOffice. Выберите один из двух способов ниже.',
+      'MCP — общий протокол, через который ИИ-ассистенты вызывают внешние инструменты. Используйте его, если ассистент не умеет выполнять команды (например, Claude Desktop) или если хотите, чтобы он напрямую управлял окном «Офис ВЕГА». Выберите один из двух способов ниже.',
     intgMcpStdioTitle: 'Запускает ассистент (рекомендуется)',
     intgMcpStdioDesc:
-      'Ассистент сам запускает getoffice mcp: здесь ничего включать не нужно, и GetOffice не обязан быть открыт. Те же возможности, что у CLI.',
+      'Ассистент сам запускает vegaoffice mcp: здесь ничего включать не нужно, и «Офис ВЕГА» не обязан быть открыт. Те же возможности, что у CLI.',
     intgMcpHttpTitle: 'Локальный HTTP-сервер',
     intgMcpHttpDesc:
-      'Работает внутри GetOffice; ассистент подключается по URL, и вы видите, как документ шаг за шагом собирается в редакторе Word. GetOffice должен оставаться открытым; пока только документы Word.',
+      'Работает внутри «Офис ВЕГА»; ассистент подключается по URL, и вы видите, как документ шаг за шагом собирается в редакторе Word. «Офис ВЕГА» должен оставаться открытым; пока только документы Word.',
     intgMcpHttpAdvanced: 'Дополнительно: другие адреса и журнал',
-    intgMcpTryNote: 'Ассистент обращается к GetOffice через MCP; вам не нужно вводить команды.',
+    intgMcpTryNote: 'Ассистент обращается к «Офис ВЕГА» через MCP; вам не нужно вводить команды.',
     intgMcpClaudeTitle: 'Claude Code',
     intgMcpClaudeDesc: 'Выполните один раз в терминале:',
     intgMcpOtherTitle: 'Cursor, Claude Desktop или другой ассистент с поддержкой MCP',
@@ -3652,10 +3481,10 @@ export const strings = {
       'Добавьте это в его настройки MCP-серверов (JSON-файл или «Добавить MCP-сервер» в настройках):',
     intgMcpNote:
       'Скилл и MCP могут быть настроены одновременно; ассистент выберет один из них. Они делают одно и то же.',
-    intgCliTitle: 'Дополнительно: командная строка getoffice',
-    intgCliReady: 'getoffice {v} · доступен в терминале ({path})',
+    intgCliTitle: 'Дополнительно: командная строка vegaoffice',
+    intgCliReady: 'vegaoffice {v} · доступен в терминале ({path})',
     intgCliNotOnPath:
-      'getoffice {v} · отсутствует в PATH терминала. Ассистенты всё равно находят его через ~/.getoffice/launcher, так что скилл работает. Чтобы вводить getoffice самостоятельно, выполните один раз:',
+      'vegaoffice {v} · отсутствует в PATH терминала. Ассистенты всё равно находят его через ~/.vegaoffice/launcher, так что скилл работает. Чтобы вводить vegaoffice самостоятельно, выполните один раз:',
     intgCliLauncher: 'Папка лаунчера',
     intgStateOutdated: 'Установлен {v}, доступно обновление до {next}',
     intgStateModified: 'Установлен {v} (изменён)',
@@ -3680,9 +3509,9 @@ export const strings = {
     intgSavedTo: 'Сохранено в {path}',
     intgCopied: 'Скопировано',
     intgCliEphemeral:
-      'Сначала перетащите GetOffice в «Программы», затем используйте командную строку.',
+      'Сначала перетащите «Офис ВЕГА» в «Программы», затем используйте командную строку.',
     intgCopyPath: 'Копировать путь',
-    intgCliNeedsUpdate: 'Этому скиллу нужна командная строка {v} или новее; обновите GetOffice.',
+    intgCliNeedsUpdate: 'Этому скиллу нужна командная строка {v} или новее; обновите «Офис ВЕГА».',
     intgLoading: 'Проверка…',
     intgUpdateDue: 'Доступно обновление скилла',
     setSecAiModel: 'Модель ИИ',
@@ -3693,14 +3522,14 @@ export const strings = {
     setAiKeyHint: 'Хранится только на этом устройстве.',
     setAiBaseUrl: 'Base URL',
     setAiBaseUrlHint: 'Оставьте пустым для официальной конечной точки.',
-    setAiGensparkHint: 'Использует вход в Genspark; ключ API не нужен.',
+    setAiAccountHint: 'Использует вход в VEGA; ключ API не нужен.',
     setAiCodexPath: 'Исполняемый файл Codex',
     setAiCodexPathHint:
       'Указывайте только для нестандартной установки; оставьте пустым для автоопределения.',
     setAiCodexAutoPlaceholder: 'Автоопределение (рекомендуется)',
     setAiCodexHint: 'Использует локально авторизованный Codex CLI; ключ API не нужен.',
     setAiByokNote:
-      'Чаты используют ваш собственный ключ. Генерация изображений и анализ медиа настраиваются в разделе «Медиа ИИ»; веб-поиск по-прежнему использует вход в Genspark или бесплатные источники.',
+      'Чаты используют ваш собственный ключ. Генерация изображений и анализ медиа настраиваются в разделе «Медиа ИИ»; веб-поиск по-прежнему использует вход в VEGA или бесплатные источники.',
     setAiSave: 'Сохранить',
     setAiSaved: 'Сохранено',
     setAiTest: 'Проверить подключение',
@@ -3711,12 +3540,12 @@ export const strings = {
     setAiMaxTokensDesc:
       'Бюджет вывода за один ход. Модели рассуждений тратят его на размышления: если бюджет иссякнет, ответ придёт пустым — увеличьте значение.',
     setSecAiMedia: 'Медиа и поиск ИИ',
-    setAiMediaGensparkHint:
-      'Генерация изображений и анализ изображений/видео используют ваш вход в Genspark.',
+    setAiMediaAccountHint:
+      'Генерация изображений и анализ изображений/видео используют ваш вход в VEGA.',
     setAiImageModel: 'Модель изображений',
     setAiAnalysisModel: 'Модель анализа',
-    setAiSearchGensparkHint:
-      'Веб-поиск и поиск изображений используют ваш вход в Genspark; без входа или при выключенных облачных инструментах используются бесплатные источники.',
+    setAiSearchAccountHint:
+      'Веб-поиск и поиск изображений используют ваш вход в VEGA; без входа или при выключенных облачных инструментах используются бесплатные источники.',
     setAiSearchSerperHint: 'Serper обеспечивает веб-поиск и поиск изображений с вашим ключом.',
     setAiSearchTavilyHint:
       'Tavily обеспечивает веб-поиск с вашим ключом; поиск изображений использует бесплатные источники.',
@@ -3726,28 +3555,28 @@ export const strings = {
     setAiCapSearch: 'Веб-поиск',
     setAiSharedKeyHint:
       'Ключ и базовый URL провайдера общие для всех функций; введите их один раз.',
-    setAiVegaTools: 'Облачные инструменты VEGA',
+    setAiVegaTools: 'Облачные инструменты ВЕГА',
     setAiVegaToolsDesc:
-      'Когда провайдером выбран VEGA, веб-поиск, генерация изображений и анализ медиа идут через api.vega.chat с вашим ключом VEGA; при выключении они переключаются на вход в Genspark или бесплатные источники. Провайдер чата не затрагивается.',
+      'Когда провайдером выбран ВЕГА, веб-поиск, генерация изображений и анализ медиа идут через api.vega.chat с вашим ключом ВЕГА; при выключении они переключаются на вход в VEGA или бесплатные источники. Провайдер чата не затрагивается.',
     setAiVegaNote:
       'Совместимый с OpenRouter шлюз — при входе ключ API выдаётся автоматически и никогда не показывается и не редактируется.',
     setAiVegaSigninDesc:
       'Один вход — ключ API выдаётся автоматически и надёжно хранится на этом устройстве.',
     setAiVegaSignedIn: 'Вход выполнен — ключ управляется автоматически',
     setAiMediaVegaHint:
-      'Работает через api.vega.chat с ключом от вашего входа; модель задаёт VEGA.',
+      'Работает через api.vega.chat с ключом от вашего входа; модель задаёт ВЕГА.',
     setAiSearchVegaHint:
       'Веб-поиск идёт через api.vega.chat с ключом от вашего входа; поиск изображений использует бесплатные источники.',
     setGithub: 'Открытый код',
     starOnGitHub: 'Поставить звезду на GitHub',
-    starPromptTitle: 'Нравится GetOffice?',
-    starPromptTitleN: 'Вы уже открыли {n} документов в GetOffice',
+    starPromptTitle: 'Нравится «Офис ВЕГА»?',
+    starPromptTitleN: 'Вы уже открыли {n} документов в «Офис ВЕГА»',
     starPromptBody:
-      'GetOffice — бесплатное ПО с открытым кодом. Звезда на GitHub — лучшая поддержка для команды.',
+      '«Офис ВЕГА» — бесплатное ПО с открытым кодом. Звезда на GitHub — лучшая поддержка для команды.',
     starPromptGo: 'Поставить звезду',
     starPromptDone: 'Уже поставлена',
     starPromptLater: 'Позже',
-    onbStarHint: 'Если вам нравится GetOffice, поставьте нам звезду на GitHub.',
+    onbStarHint: 'Если вам нравится «Офис ВЕГА», поставьте нам звезду на GitHub.',
     setEmail: 'Эл. почта',
     setNotLoggedIn: 'Вы не вошли',
     setViewUsage: 'Посмотреть расход',
@@ -3763,45 +3592,29 @@ export const strings = {
     appMenu: 'Меню',
     newTab: 'Новая вкладка',
     // First-run onboarding
-    onbTitle1: 'Добро пожаловать в GetOffice',
+    onbTitle1: 'Добро пожаловать в «Офис ВЕГА»',
     onbSubtitle1: 'Первый открытый AI-нативный офисный пакет',
     onbBody1:
       'Создавайте документы, таблицы и презентации, работайте с PDF. ИИ встроен в каждый шаг.',
     onbTitle2: 'Это только начало',
-    onbBody2:
-      'GetOffice пока в альфа-версии. Присоединяйтесь к групповому чату в GenTeam, чтобы делиться отзывами и влиять на дальнейшее развитие.',
-    onbCredits: 'Активные участники получают **1000+ кредитов VEGA**',
-    onbJoinGenTeam: 'Присоединиться к GenTeam',
+    onbBody2: '«Офис ВЕГА» пока в альфа-версии. Поставьте нам звезду на GitHub и делитесь отзывами — помогите сформировать дальнейшее развитие.',
+    onbCredits: 'Активные участники получают **1000+ кредитов ВЕГА**',
+    onbJoinGitHub: 'Звезда на GitHub',
     onbSkip: 'Пропустить',
     onbNext: 'Далее',
     onbStart: 'Начать',
     onbStepAria: 'Страница {n} из {total}',
     onbTitle3: 'Бесплатно для всех',
     onbBody3: 'Без лицензий. Без рекламы. Без водяных знаков.',
-    onbNote3: 'Функции ИИ могут расходовать ваш депозит VEGA.',
+    onbNote3: 'Функции ИИ могут расходовать ваш депозит ВЕГА.',
     onbBack: 'Назад',
   },
   ar: {
     // Sidebar navigation
     navRecent: 'الأخيرة',
     navStarred: 'المفضلة',
-    navCloud: 'Genspark Projects',
-    cloudSubtitle:
-      'مشاريع أُنشئت على الويب باستخدام Genspark AI. يستمر التحرير في المتصفح — انقر على أي مشروع لفتحه.',
-    cloudSearchPlaceholder: 'ابحث في {n} مشروعًا…',
-    cloudNoResults: 'لا توجد مشاريع مطابقة.',
-    cloudGroupThisWeek: 'هذا الأسبوع',
-    cloudGroupThisMonth: 'في وقت سابق من هذا الشهر',
-    cloudSortLabel: 'الترتيب: {v}',
-    cloudSortRecent: 'الأحدث',
-    cloudSortOldest: 'الأقدم',
-    cloudRefresh: 'تحديث',
-    cloudLoginHint: 'سجّل الدخول إلى حساب Genspark لعرض المشاريع التي أنشأتها على الويب.',
-    cloudEmpty: 'لا توجد مشاريع على الويب بعد.',
-    cloudError: 'فشل التحميل. حاول مرة أخرى لاحقًا.',
-    cloudRetry: 'إعادة المحاولة',
-    cloudLoadMore: 'تحميل المزيد',
-    cloudOpenInBrowser: 'فتح في المتصفح',
+    fileSortRecent: 'الأحدث',
+    fileSortOldest: 'الأقدم',
     navTrash: 'سلة المهملات',
     navTrashTip: 'تُنقل الملفات المحذوفة إلى سلة مهملات النظام ويمكن استعادتها من هناك',
     // Section headings
@@ -3904,12 +3717,11 @@ export const strings = {
     untitled: 'بدون عنوان',
     noContent: '(فارغ)',
     // Account
-    accountGenspark: 'حساب VEGA',
     account: 'الحساب',
     login: 'تسجيل الدخول',
-    loginGenspark: 'تسجيل الدخول باستخدام VEGA',
+    loginVega: 'تسجيل الدخول باستخدام VEGA',
     loggedIn: 'تم تسجيل الدخول',
-    loggedInGenspark: 'تم تسجيل الدخول إلى VEGA',
+    loggedInVega: 'تم تسجيل الدخول إلى VEGA',
     waitingLogin: 'في انتظار تسجيل الدخول في المتصفح… انقر لإعادة فتح صفحة تسجيل الدخول',
     loginDeviceCode: 'رمز الجهاز',
     waitingShort: 'في الانتظار…',
@@ -3977,7 +3789,7 @@ export const strings = {
     setMcpLogEmpty: 'لا توجد سجلات بعد',
     setSecAbout: 'حول',
     setSecIntegrations: 'التكاملات',
-    intgHeroTitle: 'استخدم GetOffice من مساعد الذكاء الاصطناعي',
+    intgHeroTitle: 'استخدم VegaOffice من مساعد الذكاء الاصطناعي',
     intgHeroDesc:
       'بعد الربط، يمكن لـ Claude Code وCodex وCursor وClaude Desktop والمساعدين المشابهين إنشاء ملفات Word وExcel وPowerPoint وPDF وMarkdown وتحويلها وقراءتها وتحريرها نيابةً عنك. كل شيء يعمل على هذا الجهاز؛ لا يُرفع أي شيء.',
     intgHeroStep1: 'اختر الطريقة: CLI إذا كان مساعدك يستطيع تنفيذ أوامر الطرفية، وMCP إذا لم يستطع',
@@ -3986,7 +3798,7 @@ export const strings = {
     intgStep1Title: 'ثبّت المهارة في مساعدك',
     intgStep1Desc:
       'تُعرض فقط المساعدات الموجودة على هذا الجهاز. ثبّتها في المساعد الذي تستخدمه فعلاً؛ لا حاجة لتثبيتها في الجميع.',
-    intgStep1Update: 'عندما يجلب تحديث GetOffice مهارة أحدث، يظهر زر «تحديث» بجوار ذلك المساعد.',
+    intgStep1Update: 'عندما يجلب تحديث VegaOffice مهارة أحدث، يظهر زر «تحديث» بجوار ذلك المساعد.',
     intgSkillVersion: 'المهارة {v}',
     intgStateMissing: 'المهارة غير مثبّتة',
     intgStateInstalled: 'المهارة {v} مثبّتة · جاهزة في محادثتك التالية',
@@ -3994,7 +3806,7 @@ export const strings = {
     intgOtherDesc:
       'اختر طريقة واحدة فقط من هذه الطرق الثلاث. جميعها تثبّت المهارة نفسها، فلا حاجة لأكثر من واحدة.',
     intgOtherFolderTitle: 'أي مساعد يقرأ مجلدات SKILL.md',
-    intgOtherFolderDesc: 'اختر مجلد skills الخاص به وسيكتب GetOffice الملف هناك.',
+    intgOtherFolderDesc: 'اختر مجلد skills الخاص به وسيكتب VegaOffice الملف هناك.',
     intgOtherZipTitle: 'سلّم الملف إلى المساعد',
     intgOtherZipDesc: 'احفظ المهارة كملف zip ثم اطلب من المساعد تثبيتها.',
     intgOtherNpxTitle: 'بأمر skills (يتطلب Node.js)',
@@ -4005,22 +3817,22 @@ export const strings = {
     intgStep2DescBefore: 'بعد التثبيت، افتح محادثة جديدة في مساعدك واطلب بكلمات عادية، مثلاً:',
     intgExample1: 'حوّل ~/Downloads/report.md إلى مستند Word',
     intgExample2: 'أنشئ عرضاً من 6 شرائح عن نتائج الربع الثالث',
-    intgExample3: 'حوّل budget.xlsx إلى PDF وافتحه في GetOffice',
-    intgStep2Note: 'المساعد يشغّل سطر أوامر getoffice بنفسه؛ لن تحتاج إلى كتابته أبداً.',
+    intgExample3: 'حوّل budget.xlsx إلى PDF وافتحه في VegaOffice',
+    intgStep2Note: 'المساعد يشغّل سطر أوامر vegaoffice بنفسه؛ لن تحتاج إلى كتابته أبداً.',
     intgCliPartTitle: 'CLI · سطر الأوامر + skill',
     intgCliPartDesc:
-      'للمساعدين الذين يستطيعون تنفيذ أوامر الطرفية (Claude Code وCodex وCursor وغيرها). بعد تثبيت skill، يستدعي المساعد سطر أوامر getoffice بنفسه لإنشاء الملفات وتحويلها وقراءتها وتحريرها؛ لن تكتب أي أمر.',
+      'للمساعدين الذين يستطيعون تنفيذ أوامر الطرفية (Claude Code وCodex وCursor وغيرها). بعد تثبيت skill، يستدعي المساعد سطر أوامر vegaoffice بنفسه لإنشاء الملفات وتحويلها وقراءتها وتحريرها؛ لن تكتب أي أمر.',
     intgMcpPartTitle: 'MCP',
     intgMcpPartDesc:
-      'MCP هو البروتوكول المشترك الذي يستخدمه مساعدو الذكاء الاصطناعي لاستدعاء أدوات خارجية. استخدمه إذا كان مساعدك لا يستطيع تنفيذ الأوامر (مثل Claude Desktop) أو إذا أردت أن يتحكم في نافذة GetOffice مباشرة. اختر إحدى الطريقتين أدناه.',
+      'MCP هو البروتوكول المشترك الذي يستخدمه مساعدو الذكاء الاصطناعي لاستدعاء أدوات خارجية. استخدمه إذا كان مساعدك لا يستطيع تنفيذ الأوامر (مثل Claude Desktop) أو إذا أردت أن يتحكم في نافذة VegaOffice مباشرة. اختر إحدى الطريقتين أدناه.',
     intgMcpStdioTitle: 'يشغّله المساعد (موصى به)',
     intgMcpStdioDesc:
-      'يشغّل المساعد getoffice mcp بنفسه: لا شيء لتفعيله هنا، ولا يلزم أن يكون GetOffice مفتوحًا. نفس إمكانات CLI.',
+      'يشغّل المساعد vegaoffice mcp بنفسه: لا شيء لتفعيله هنا، ولا يلزم أن يكون VegaOffice مفتوحًا. نفس إمكانات CLI.',
     intgMcpHttpTitle: 'خادم HTTP محلي',
     intgMcpHttpDesc:
-      'يعمل داخل GetOffice؛ يتصل المساعد عبر عنوان URL ويمكنك مشاهدة المستند يُبنى خطوة بخطوة في محرر Word. يجب أن يبقى GetOffice مفتوحًا؛ مستندات Word فقط حاليًا.',
+      'يعمل داخل VegaOffice؛ يتصل المساعد عبر عنوان URL ويمكنك مشاهدة المستند يُبنى خطوة بخطوة في محرر Word. يجب أن يبقى VegaOffice مفتوحًا؛ مستندات Word فقط حاليًا.',
     intgMcpHttpAdvanced: 'متقدم: عناوين أخرى والسجل',
-    intgMcpTryNote: 'يستدعي المساعد GetOffice عبر MCP؛ لن تكتب أي أمر.',
+    intgMcpTryNote: 'يستدعي المساعد VegaOffice عبر MCP؛ لن تكتب أي أمر.',
     intgMcpClaudeTitle: 'Claude Code',
     intgMcpClaudeDesc: 'شغّل هذا مرة واحدة في الطرفية:',
     intgMcpOtherTitle: 'Cursor أو Claude Desktop أو أي مساعد آخر يدعم MCP',
@@ -4028,10 +3840,10 @@ export const strings = {
       'أضف هذا إلى إعدادات خوادم MCP لديه (ملف JSON، أو «إضافة خادم MCP» في إعداداته):',
     intgMcpNote:
       'يمكن إعداد المهارة و MCP معاً؛ يختار المساعد أحدهما. كلاهما يقوم بالأشياء نفسها تماماً.',
-    intgCliTitle: 'متقدم: سطر أوامر getoffice',
-    intgCliReady: 'getoffice {v} · جاهز في الطرفية ({path})',
+    intgCliTitle: 'متقدم: سطر أوامر vegaoffice',
+    intgCliReady: 'vegaoffice {v} · جاهز في الطرفية ({path})',
     intgCliNotOnPath:
-      'getoffice {v} · غير موجود في PATH الطرفية. ما زال المساعدون يجدونه عبر ~/.getoffice/launcher، فالمهارة تعمل. لكتابة getoffice بنفسك، شغّل هذا مرة واحدة:',
+      'vegaoffice {v} · غير موجود في PATH الطرفية. ما زال المساعدون يجدونه عبر ~/.vegaoffice/launcher، فالمهارة تعمل. لكتابة vegaoffice بنفسك، شغّل هذا مرة واحدة:',
     intgCliLauncher: 'مجلد المشغّل',
     intgStateOutdated: 'مثبّت {v}، يتوفر تحديث إلى {next}',
     intgStateModified: 'مثبّت {v} (تم تعديله)',
@@ -4055,9 +3867,9 @@ export const strings = {
     intgSaveZipTitle: 'حفظ المهارة',
     intgSavedTo: 'تم الحفظ في {path}',
     intgCopied: 'تم النسخ',
-    intgCliEphemeral: 'اسحب GetOffice إلى مجلد التطبيقات أولاً، ثم استخدم سطر الأوامر.',
+    intgCliEphemeral: 'اسحب VegaOffice إلى مجلد التطبيقات أولاً، ثم استخدم سطر الأوامر.',
     intgCopyPath: 'نسخ المسار',
-    intgCliNeedsUpdate: 'تحتاج هذه المهارة إلى سطر الأوامر {v} أو أحدث؛ حدّث GetOffice.',
+    intgCliNeedsUpdate: 'تحتاج هذه المهارة إلى سطر الأوامر {v} أو أحدث؛ حدّث VegaOffice.',
     intgLoading: 'جارٍ التحقق…',
     intgUpdateDue: 'يتوفر تحديث للمهارة',
     setSecAiModel: 'نموذج الذكاء الاصطناعي',
@@ -4068,13 +3880,13 @@ export const strings = {
     setAiKeyHint: 'يُحفظ على هذا الجهاز فقط.',
     setAiBaseUrl: 'Base URL',
     setAiBaseUrlHint: 'اتركه فارغًا لاستخدام نقطة النهاية الرسمية.',
-    setAiGensparkHint: 'يستخدم تسجيل الدخول إلى Genspark؛ لا حاجة لمفتاح API.',
+    setAiAccountHint: 'يستخدم تسجيل الدخول إلى VEGA؛ لا حاجة لمفتاح API.',
     setAiCodexPath: 'ملف Codex التنفيذي',
     setAiCodexPathHint: 'حدده فقط للتثبيت المخصص؛ اتركه فارغًا للاكتشاف التلقائي.',
     setAiCodexAutoPlaceholder: 'اكتشاف تلقائي (موصى به)',
     setAiCodexHint: 'يستخدم Codex CLI المسجل محليًا؛ لا حاجة إلى مفتاح API.',
     setAiByokNote:
-      'تستخدم المحادثات مفتاحك الخاص. يتبع توليد الصور وتحليل الوسائط قسم «وسائط الذكاء الاصطناعي»؛ ولا يزال البحث في الويب يستخدم تسجيل دخول Genspark أو مصادر مجانية.',
+      'تستخدم المحادثات مفتاحك الخاص. يتبع توليد الصور وتحليل الوسائط قسم «وسائط الذكاء الاصطناعي»؛ ولا يزال البحث في الويب يستخدم تسجيل دخول VEGA أو مصادر مجانية.',
     setAiSave: 'حفظ',
     setAiSaved: 'تم الحفظ',
     setAiTest: 'اختبار الاتصال',
@@ -4085,11 +3897,11 @@ export const strings = {
     setAiMaxTokensDesc:
       'ميزانية الإخراج في الدورة الواحدة. نماذج الاستدلال تصرفها على التفكير، فإذا نفدت جاء الرد فارغًا؛ ارفع هذه القيمة عندئذ.',
     setSecAiMedia: 'وسائط الذكاء الاصطناعي والبحث',
-    setAiMediaGensparkHint: 'يستخدم توليد الصور وتحليل الصور/الفيديو تسجيل دخولك إلى Genspark.',
+    setAiMediaAccountHint: 'يستخدم توليد الصور وتحليل الصور/الفيديو تسجيل دخولك إلى VEGA.',
     setAiImageModel: 'نموذج الصور',
     setAiAnalysisModel: 'نموذج التحليل',
-    setAiSearchGensparkHint:
-      'يستخدم البحث في الويب والصور تسجيل دخولك إلى Genspark؛ وعند الخروج أو إيقاف الأدوات السحابية يعود إلى مصادر مجانية.',
+    setAiSearchAccountHint:
+      'يستخدم البحث في الويب والصور تسجيل دخولك إلى VEGA؛ وعند الخروج أو إيقاف الأدوات السحابية يعود إلى مصادر مجانية.',
     setAiSearchSerperHint: 'يوفّر Serper البحث في الويب والصور بمفتاحك.',
     setAiSearchTavilyHint:
       'يوفّر Tavily البحث في الويب بمفتاحك؛ ويعود البحث في الصور إلى مصادر مجانية.',
@@ -4101,7 +3913,7 @@ export const strings = {
       'مفتاح المزوّد وعنوان Base URL مشتركان بين جميع القدرات؛ أدخلهما مرة واحدة فقط.',
     setAiVegaTools: 'أدوات VEGA السحابية',
     setAiVegaToolsDesc:
-      'عند اختيار VEGA كموفّر، يعمل البحث على الويب وتوليد الصور وتحليل الوسائط عبر api.vega.chat بمفتاح VEGA؛ وعند إيقافها تعود إلى تسجيل دخول Genspark أو المصادر المجانية. لا يتأثر موفّر الدردشة.',
+      'عند اختيار VEGA كموفّر، يعمل البحث على الويب وتوليد الصور وتحليل الوسائط عبر api.vega.chat بمفتاح VEGA؛ وعند إيقافها تعود إلى تسجيل دخول VEGA أو المصادر المجانية. لا يتأثر موفّر الدردشة.',
     setAiVegaNote:
       'بوابة متوافقة مع OpenRouter — يُصدر مفتاح API تلقائياً عند تسجيل الدخول ولا يُعرض أبداً ولا يمكن تعديله.',
     setAiVegaSigninDesc:
@@ -4112,13 +3924,13 @@ export const strings = {
       'البحث على الويب عبر api.vega.chat بمفتاح تسجيل دخولك؛ والبحث عن الصور يستخدم مصادر مجانية.',
     setGithub: 'مفتوح المصدر',
     starOnGitHub: 'ضع نجمة على GitHub',
-    starPromptTitle: 'هل أعجبك GetOffice؟',
-    starPromptTitleN: 'لقد فتحت {n} من المستندات في GetOffice',
-    starPromptBody: 'GetOffice مجاني ومفتوح المصدر. نجمة على GitHub هي أفضل دعم للفريق.',
+    starPromptTitle: 'هل أعجبك VegaOffice؟',
+    starPromptTitleN: 'لقد فتحت {n} من المستندات في VegaOffice',
+    starPromptBody: 'VegaOffice مجاني ومفتوح المصدر. نجمة على GitHub هي أفضل دعم للفريق.',
     starPromptGo: 'ضع نجمة',
     starPromptDone: 'وضعتها بالفعل',
     starPromptLater: 'لاحقًا',
-    onbStarHint: 'إذا أعجبك GetOffice، ضع لنا نجمة على GitHub.',
+    onbStarHint: 'إذا أعجبك VegaOffice، ضع لنا نجمة على GitHub.',
     setEmail: 'البريد الإلكتروني',
     setNotLoggedIn: 'لم يتم تسجيل الدخول',
     setViewUsage: 'عرض الاستخدام',
@@ -4134,15 +3946,14 @@ export const strings = {
     appMenu: 'القائمة',
     newTab: 'علامة تبويب جديدة',
     // First-run onboarding
-    onbTitle1: 'مرحبًا بك في GetOffice',
+    onbTitle1: 'مرحبًا بك في VegaOffice',
     onbSubtitle1: 'أول حزمة مكتبية مفتوحة المصدر وأصيلة في الذكاء الاصطناعي',
     onbBody1:
       'أنشئ المستندات وجداول البيانات والعروض التقديمية وراجع ملفات PDF. الذكاء الاصطناعي مدمج في كل خطوة.',
     onbTitle2: 'هذه مجرد البداية',
-    onbBody2:
-      'لا يزال GetOffice في مرحلة ألفا. انضم إلى الدردشة الجماعية على GenTeam لمشاركة ملاحظاتك والمساهمة في تشكيل المستقبل.',
+    onbBody2: 'لا يزال VegaOffice في مرحلة ألفا. امنحنا نجمة على GitHub وشارك ملاحظاتك للمساهمة في تشكيل المستقبل.',
     onbCredits: 'يحصل المساهمون النشطون على **+1,000 من أرصدة VEGA**',
-    onbJoinGenTeam: 'الانضمام إلى GenTeam',
+    onbJoinGitHub: 'نجمة على GitHub',
     onbSkip: 'تخطي',
     onbNext: 'التالي',
     onbStart: 'ابدأ الآن',
@@ -4155,23 +3966,8 @@ export const strings = {
   pt: {
     navRecent: 'Recentes',
     navStarred: 'Favoritos',
-    navCloud: 'Genspark Projects',
-    cloudSubtitle:
-      'Projetos criados na web com o Genspark AI. A edição continua no navegador — clique em um projeto para abri-lo.',
-    cloudSearchPlaceholder: 'Pesquisar {n} projetos…',
-    cloudNoResults: 'Nenhum projeto correspondente.',
-    cloudGroupThisWeek: 'Esta semana',
-    cloudGroupThisMonth: 'Este mês',
-    cloudSortLabel: 'Ordenar: {v}',
-    cloudSortRecent: 'Recentes',
-    cloudSortOldest: 'Mais antigos',
-    cloudRefresh: 'Atualizar',
-    cloudLoginHint: 'Entre na sua conta Genspark para ver os projetos criados na web.',
-    cloudEmpty: 'Ainda não há projetos na web.',
-    cloudError: 'Falha ao carregar. Tente novamente mais tarde.',
-    cloudRetry: 'Tentar novamente',
-    cloudLoadMore: 'Carregar mais',
-    cloudOpenInBrowser: 'Abrir no navegador',
+    fileSortRecent: 'Recentes',
+    fileSortOldest: 'Mais antigos',
     navTrash: 'Lixeira',
     navTrashTip:
       'Os arquivos excluídos vão para a lixeira do sistema e podem ser restaurados de lá',
@@ -4271,12 +4067,11 @@ export const strings = {
     timelineUserAria: 'Usuário',
     untitled: 'Sem título',
     noContent: '(vazio)',
-    accountGenspark: 'Conta VEGA',
     account: 'Conta',
     login: 'Entrar',
-    loginGenspark: 'Entrar com a VEGA',
+    loginVega: 'Entrar com a VEGA',
     loggedIn: 'Conectado',
-    loggedInGenspark: 'Conectado à VEGA',
+    loggedInVega: 'Conectado à VEGA',
     waitingLogin: 'Aguardando o login no navegador… Clique para reabrir a página de login',
     loginDeviceCode: 'Código do dispositivo',
     waitingShort: 'Aguardando…',
@@ -4346,7 +4141,7 @@ export const strings = {
     setMcpLogEmpty: 'Ainda sem registros',
     setSecAbout: 'Sobre',
     setSecIntegrations: 'Integrações',
-    intgHeroTitle: 'Use o GetOffice a partir do seu assistente de IA',
+    intgHeroTitle: 'Use o VegaOffice a partir do seu assistente de IA',
     intgHeroDesc:
       'Depois de conectados, Claude Code, Codex, Cursor, Claude Desktop e assistentes semelhantes podem criar, converter, ler e editar arquivos Word, Excel, PowerPoint, PDF e Markdown por você. Tudo roda neste computador; nada é enviado.',
     intgHeroStep1:
@@ -4357,7 +4152,7 @@ export const strings = {
     intgStep1Desc:
       'Só aparecem os assistentes encontrados neste computador. Instale no que você realmente usa; não precisa de todos.',
     intgStep1Update:
-      'Quando uma atualização do GetOffice trouxer um skill mais novo, um botão Atualizar aparece ao lado desse assistente.',
+      'Quando uma atualização do VegaOffice trouxer um skill mais novo, um botão Atualizar aparece ao lado desse assistente.',
     intgSkillVersion: 'skill {v}',
     intgStateMissing: 'Skill não instalado',
     intgStateInstalled: 'Skill {v} instalado · pronto no seu próximo chat',
@@ -4365,7 +4160,7 @@ export const strings = {
     intgOtherDesc:
       'Escolha apenas uma destas três formas. Todas instalam o mesmo skill, então não é preciso fazer mais de uma.',
     intgOtherFolderTitle: 'Qualquer assistente que leia pastas SKILL.md',
-    intgOtherFolderDesc: 'Escolha a pasta de skills dele e o GetOffice grava o arquivo lá.',
+    intgOtherFolderDesc: 'Escolha a pasta de skills dele e o VegaOffice grava o arquivo lá.',
     intgOtherZipTitle: 'Entregue o arquivo ao assistente',
     intgOtherZipDesc: 'Salve o skill como zip e peça ao assistente para instalá-lo.',
     intgOtherNpxTitle: 'Com o comando skills (requer Node.js)',
@@ -4377,23 +4172,23 @@ export const strings = {
       'Depois de instalar, abra um chat novo no seu assistente e peça com suas palavras, por exemplo:',
     intgExample1: 'Transforme ~/Downloads/report.md em um documento Word',
     intgExample2: 'Monte uma apresentação de 6 slides sobre nossos resultados do 3º trimestre',
-    intgExample3: 'Converta budget.xlsx para PDF e abra no GetOffice',
+    intgExample3: 'Converta budget.xlsx para PDF e abra no VegaOffice',
     intgStep2Note:
-      'O assistente executa a linha de comando getoffice sozinho; você nunca precisa digitá-la.',
+      'O assistente executa a linha de comando vegaoffice sozinho; você nunca precisa digitá-la.',
     intgCliPartTitle: 'CLI · linha de comando + skill',
     intgCliPartDesc:
-      'Para assistentes que executam comandos de terminal (Claude Code, Codex, Cursor e outros). Com o skill instalado, o assistente chama a linha de comando getoffice sozinho para criar, converter, ler e editar arquivos; você nunca digita um comando.',
+      'Para assistentes que executam comandos de terminal (Claude Code, Codex, Cursor e outros). Com o skill instalado, o assistente chama a linha de comando vegaoffice sozinho para criar, converter, ler e editar arquivos; você nunca digita um comando.',
     intgMcpPartTitle: 'MCP',
     intgMcpPartDesc:
-      'MCP é o protocolo comum que assistentes de IA usam para chamar ferramentas externas. Use-o quando o assistente não puder executar comandos (Claude Desktop, por exemplo) ou quando quiser que ele controle a janela do GetOffice diretamente. Escolha uma das duas formas abaixo.',
+      'MCP é o protocolo comum que assistentes de IA usam para chamar ferramentas externas. Use-o quando o assistente não puder executar comandos (Claude Desktop, por exemplo) ou quando quiser que ele controle a janela do VegaOffice diretamente. Escolha uma das duas formas abaixo.',
     intgMcpStdioTitle: 'Iniciado pelo assistente (recomendado)',
     intgMcpStdioDesc:
-      'O assistente inicia o getoffice mcp sozinho: nada para ligar aqui, e o GetOffice não precisa estar aberto. Mesmos recursos da CLI.',
+      'O assistente inicia o vegaoffice mcp sozinho: nada para ligar aqui, e o VegaOffice não precisa estar aberto. Mesmos recursos da CLI.',
     intgMcpHttpTitle: 'Servidor HTTP local',
     intgMcpHttpDesc:
-      'Roda dentro do GetOffice; o assistente conecta por URL e você acompanha o documento sendo montado passo a passo no editor Word. O GetOffice precisa ficar aberto; por enquanto só documentos Word.',
+      'Roda dentro do VegaOffice; o assistente conecta por URL e você acompanha o documento sendo montado passo a passo no editor Word. O VegaOffice precisa ficar aberto; por enquanto só documentos Word.',
     intgMcpHttpAdvanced: 'Avançado: outros endereços e log',
-    intgMcpTryNote: 'O assistente chama o GetOffice via MCP; você nunca digita um comando.',
+    intgMcpTryNote: 'O assistente chama o VegaOffice via MCP; você nunca digita um comando.',
     intgMcpClaudeTitle: 'Claude Code',
     intgMcpClaudeDesc: 'Execute isto uma vez no terminal:',
     intgMcpOtherTitle: 'Cursor, Claude Desktop ou qualquer outro assistente compatível com MCP',
@@ -4401,10 +4196,10 @@ export const strings = {
       'Adicione isto à configuração de servidores MCP dele (um arquivo JSON, ou "Adicionar servidor MCP" nas configurações):',
     intgMcpNote:
       'O skill e o MCP podem coexistir; o assistente escolhe um deles. Ambos fazem exatamente as mesmas coisas.',
-    intgCliTitle: 'Avançado: linha de comando getoffice',
-    intgCliReady: 'getoffice {v} · pronto no seu terminal ({path})',
+    intgCliTitle: 'Avançado: linha de comando vegaoffice',
+    intgCliReady: 'vegaoffice {v} · pronto no seu terminal ({path})',
     intgCliNotOnPath:
-      'getoffice {v} · não está no PATH do seu terminal. Os assistentes ainda o encontram por ~/.getoffice/launcher, então o skill funciona. Para digitar getoffice você mesmo, execute isto uma vez:',
+      'vegaoffice {v} · não está no PATH do seu terminal. Os assistentes ainda o encontram por ~/.vegaoffice/launcher, então o skill funciona. Para digitar vegaoffice você mesmo, execute isto uma vez:',
     intgCliLauncher: 'Pasta do inicializador',
     intgStateOutdated: 'Instalado {v}, atualização para {next} disponível',
     intgStateModified: 'Instalado {v} (modificado)',
@@ -4429,10 +4224,10 @@ export const strings = {
     intgSavedTo: 'Salvo em {path}',
     intgCopied: 'Copiado',
     intgCliEphemeral:
-      'Arraste o GetOffice para Aplicativos primeiro e depois use a linha de comando.',
+      'Arraste o VegaOffice para Aplicativos primeiro e depois use a linha de comando.',
     intgCopyPath: 'Copiar caminho',
     intgCliNeedsUpdate:
-      'Este skill precisa da linha de comando {v} ou mais recente; atualize o GetOffice.',
+      'Este skill precisa da linha de comando {v} ou mais recente; atualize o VegaOffice.',
     intgLoading: 'Verificando…',
     intgUpdateDue: 'Atualização do skill disponível',
     setSecAiModel: 'Modelo de IA',
@@ -4443,14 +4238,14 @@ export const strings = {
     setAiKeyHint: 'Armazenada apenas neste dispositivo.',
     setAiBaseUrl: 'Base URL',
     setAiBaseUrlHint: 'Deixe vazio para o endpoint oficial.',
-    setAiGensparkHint: 'Usa seu login Genspark; nenhuma chave de API necessária.',
+    setAiAccountHint: 'Usa seu login VEGA; nenhuma chave de API necessária.',
     setAiCodexPath: 'Executável do Codex',
     setAiCodexPathHint:
       'Preencha apenas para uma instalação personalizada; deixe em branco para detectar automaticamente.',
     setAiCodexAutoPlaceholder: 'Detectar automaticamente (recomendado)',
     setAiCodexHint: 'Usa o Codex CLI conectado localmente; nenhuma chave de API é necessária.',
     setAiByokNote:
-      'Os chats usam a sua própria chave. A geração de imagens e a análise de mídia seguem a seção «Mídia de IA»; a busca na web continua usando o login do Genspark ou fontes gratuitas.',
+      'Os chats usam a sua própria chave. A geração de imagens e a análise de mídia seguem a seção «Mídia de IA»; a busca na web continua usando o login do VEGA ou fontes gratuitas.',
     setAiSave: 'Salvar',
     setAiSaved: 'Salvo',
     setAiTest: 'Testar conexão',
@@ -4461,12 +4256,12 @@ export const strings = {
     setAiMaxTokensDesc:
       'Orçamento de saída por turno. Modelos de raciocínio gastam-no pensando; se esgotar, a resposta vem vazia — aumente este valor.',
     setSecAiMedia: 'Mídia e busca de IA',
-    setAiMediaGensparkHint:
-      'A geração de imagens e a análise de imagens/vídeos usam o seu login do Genspark.',
+    setAiMediaAccountHint:
+      'A geração de imagens e a análise de imagens/vídeos usam o seu login do VEGA.',
     setAiImageModel: 'Modelo de imagem',
     setAiAnalysisModel: 'Modelo de análise',
-    setAiSearchGensparkHint:
-      'A busca na web e de imagens usa o seu login do Genspark; desconectado ou com as ferramentas na nuvem desativadas, recorre a fontes gratuitas.',
+    setAiSearchAccountHint:
+      'A busca na web e de imagens usa o seu login do VEGA; desconectado ou com as ferramentas na nuvem desativadas, recorre a fontes gratuitas.',
     setAiSearchSerperHint: 'O Serper oferece busca na web e de imagens com a sua chave.',
     setAiSearchTavilyHint:
       'O Tavily oferece busca na web com a sua chave; a busca de imagens recorre a fontes gratuitas.',
@@ -4478,7 +4273,7 @@ export const strings = {
       'A chave e a URL base de um provedor são compartilhadas entre as capacidades; insira-as uma só vez.',
     setAiVegaTools: 'Ferramentas na nuvem VEGA',
     setAiVegaToolsDesc:
-      'Com VEGA como provedor, a pesquisa web, a geração de imagens e a análise de mídia passam por api.vega.chat com a sua chave VEGA; desligadas, usam o login Genspark ou fontes gratuitas. O provedor de chat não é afetado.',
+      'Com VEGA como provedor, a pesquisa web, a geração de imagens e a análise de mídia passam por api.vega.chat com a sua chave VEGA; desligadas, usam o login VEGA ou fontes gratuitas. O provedor de chat não é afetado.',
     setAiVegaNote:
       'Gateway compatível com OpenRouter — a chave de API é emitida automaticamente no login e nunca é mostrada nem editável.',
     setAiVegaSigninDesc:
@@ -4490,14 +4285,14 @@ export const strings = {
       'A pesquisa web usa api.vega.chat com a sua chave de login; a pesquisa de imagens usa fontes gratuitas.',
     setGithub: 'Código aberto',
     starOnGitHub: 'Dar uma estrela no GitHub',
-    starPromptTitle: 'Gostando do GetOffice?',
-    starPromptTitleN: 'Você já abriu {n} documentos com o GetOffice',
+    starPromptTitle: 'Gostando do VegaOffice?',
+    starPromptTitleN: 'Você já abriu {n} documentos com o VegaOffice',
     starPromptBody:
-      'O GetOffice é gratuito e de código aberto. Uma estrela no GitHub é a melhor forma de apoiar a equipe.',
+      'O VegaOffice é gratuito e de código aberto. Uma estrela no GitHub é a melhor forma de apoiar a equipe.',
     starPromptGo: 'Dar uma estrela',
     starPromptDone: 'Já dei',
     starPromptLater: 'Mais tarde',
-    onbStarHint: 'Se você gosta do GetOffice, deixe uma estrela no GitHub.',
+    onbStarHint: 'Se você gosta do VegaOffice, deixe uma estrela no GitHub.',
     setEmail: 'E-mail',
     setNotLoggedIn: 'Não conectado',
     setViewUsage: 'Ver uso',
@@ -4511,15 +4306,14 @@ export const strings = {
     appMenu: 'Menu',
     newTab: 'Nova guia',
     // First-run onboarding
-    onbTitle1: 'Bem-vindo ao GetOffice',
+    onbTitle1: 'Bem-vindo ao VegaOffice',
     onbSubtitle1: 'A primeira suíte de escritório open source e nativa de IA',
     onbBody1:
       'Crie documentos, planilhas e apresentações e revise PDFs. A IA está integrada em cada etapa.',
     onbTitle2: 'Isto é só o começo',
-    onbBody2:
-      'O GetOffice ainda está em alfa. Entre no chat em grupo no GenTeam para compartilhar feedback e ajudar a moldar o que vem a seguir.',
+    onbBody2: 'O VegaOffice ainda está em alfa. Dê-nos uma estrela no GitHub e compartilhe feedback para ajudar a moldar o que vem a seguir.',
     onbCredits: 'Contribuidores ativos recebem **1.000+ créditos VEGA**',
-    onbJoinGenTeam: 'Entrar no GenTeam',
+    onbJoinGitHub: 'Estrela no GitHub',
     onbSkip: 'Pular',
     onbNext: 'Avançar',
     onbStart: 'Começar',
@@ -4532,23 +4326,8 @@ export const strings = {
   it: {
     navRecent: 'Recenti',
     navStarred: 'Preferiti',
-    navCloud: 'Genspark Projects',
-    cloudSubtitle:
-      'Progetti creati sul web con Genspark AI. La modifica continua nel browser: fai clic su un progetto per aprirlo.',
-    cloudSearchPlaceholder: 'Cerca tra {n} progetti…',
-    cloudNoResults: 'Nessun progetto corrispondente.',
-    cloudGroupThisWeek: 'Questa settimana',
-    cloudGroupThisMonth: 'Questo mese',
-    cloudSortLabel: 'Ordina: {v}',
-    cloudSortRecent: 'Recenti',
-    cloudSortOldest: 'Meno recenti',
-    cloudRefresh: 'Aggiorna',
-    cloudLoginHint: 'Accedi al tuo account Genspark per vedere i progetti creati sul web.',
-    cloudEmpty: 'Ancora nessun progetto web.',
-    cloudError: 'Caricamento non riuscito. Riprova più tardi.',
-    cloudRetry: 'Riprova',
-    cloudLoadMore: 'Carica altri',
-    cloudOpenInBrowser: 'Apri nel browser',
+    fileSortRecent: 'Recenti',
+    fileSortOldest: 'Meno recenti',
     navTrash: 'Cestino',
     navTrashTip:
       'I file eliminati vengono spostati nel cestino di sistema e possono essere ripristinati da lì',
@@ -4648,12 +4427,11 @@ export const strings = {
     timelineUserAria: 'Utente',
     untitled: 'Senza titolo',
     noContent: '(vuoto)',
-    accountGenspark: 'Account VEGA',
     account: 'Account',
     login: 'Accedi',
-    loginGenspark: 'Accedi con VEGA',
+    loginVega: 'Accedi con VEGA',
     loggedIn: 'Accesso effettuato',
-    loggedInGenspark: 'Accesso effettuato a VEGA',
+    loggedInVega: 'Accesso effettuato a VEGA',
     waitingLogin: "In attesa dell'accesso nel browser… Fai clic per riaprire la pagina di accesso",
     loginDeviceCode: 'Codice dispositivo',
     waitingShort: 'In attesa…',
@@ -4722,7 +4500,7 @@ export const strings = {
     setMcpLogEmpty: 'Nessuna voce di registro',
     setSecAbout: 'Informazioni',
     setSecIntegrations: 'Integrazioni',
-    intgHeroTitle: 'Usa GetOffice dal tuo assistente IA',
+    intgHeroTitle: 'Usa VegaOffice dal tuo assistente IA',
     intgHeroDesc:
       'Una volta collegati, Claude Code, Codex, Cursor, Claude Desktop e assistenti simili possono creare, convertire, leggere e modificare file Word, Excel, PowerPoint, PDF e Markdown per te. Tutto avviene su questo computer; nulla viene caricato.',
     intgHeroStep1:
@@ -4733,7 +4511,7 @@ export const strings = {
     intgStep1Desc:
       'Sono elencati solo gli assistenti trovati su questo computer. Installalo in quello che usi davvero; non servono tutti.',
     intgStep1Update:
-      "Quando un aggiornamento di GetOffice porta uno skill più recente, accanto a quell'assistente compare un pulsante Aggiorna.",
+      "Quando un aggiornamento di VegaOffice porta uno skill più recente, accanto a quell'assistente compare un pulsante Aggiorna.",
     intgSkillVersion: 'skill {v}',
     intgStateMissing: 'Skill non installato',
     intgStateInstalled: 'Skill {v} installato · pronto nella prossima chat',
@@ -4741,7 +4519,7 @@ export const strings = {
     intgOtherDesc:
       'Scegli una sola di queste tre strade. Installano tutte lo stesso skill, quindi non serve farne più di una.',
     intgOtherFolderTitle: 'Qualsiasi assistente che legge cartelle SKILL.md',
-    intgOtherFolderDesc: 'Scegli la sua cartella skills e GetOffice vi scrive il file.',
+    intgOtherFolderDesc: 'Scegli la sua cartella skills e VegaOffice vi scrive il file.',
     intgOtherZipTitle: "Consegna il file all'assistente",
     intgOtherZipDesc: "Salva lo skill come zip, poi chiedi all'assistente di installarlo.",
     intgOtherNpxTitle: 'Con il comando skills (richiede Node.js)',
@@ -4754,23 +4532,23 @@ export const strings = {
       "Dopo l'installazione, apri una nuova chat nel tuo assistente e chiedi con parole semplici, ad esempio:",
     intgExample1: 'Trasforma ~/Downloads/report.md in un documento Word',
     intgExample2: 'Prepara una presentazione di 6 slide sui nostri risultati del terzo trimestre',
-    intgExample3: 'Converti budget.xlsx in PDF e aprilo in GetOffice',
+    intgExample3: 'Converti budget.xlsx in PDF e aprilo in VegaOffice',
     intgStep2Note:
-      "L'assistente esegue da solo la riga di comando getoffice; non dovrai mai digitarla.",
+      "L'assistente esegue da solo la riga di comando vegaoffice; non dovrai mai digitarla.",
     intgCliPartTitle: 'CLI · riga di comando + skill',
     intgCliPartDesc:
-      'Per assistenti che possono eseguire comandi da terminale (Claude Code, Codex, Cursor e altri). Installato lo skill, l’assistente richiama da sé la riga di comando getoffice per creare, convertire, leggere e modificare file; non digiti mai un comando.',
+      'Per assistenti che possono eseguire comandi da terminale (Claude Code, Codex, Cursor e altri). Installato lo skill, l’assistente richiama da sé la riga di comando vegaoffice per creare, convertire, leggere e modificare file; non digiti mai un comando.',
     intgMcpPartTitle: 'MCP',
     intgMcpPartDesc:
-      'MCP è il protocollo comune con cui gli assistenti IA richiamano strumenti esterni. Usalo quando l’assistente non può eseguire comandi (Claude Desktop, ad esempio) o quando vuoi che controlli direttamente la finestra di GetOffice. Scegli uno dei due modi qui sotto.',
+      'MCP è il protocollo comune con cui gli assistenti IA richiamano strumenti esterni. Usalo quando l’assistente non può eseguire comandi (Claude Desktop, ad esempio) o quando vuoi che controlli direttamente la finestra di VegaOffice. Scegli uno dei due modi qui sotto.',
     intgMcpStdioTitle: 'Avviato dall’assistente (consigliato)',
     intgMcpStdioDesc:
-      'L’assistente avvia getoffice mcp da sé: niente da attivare qui, e GetOffice non deve essere aperto. Stesse funzioni della CLI.',
+      'L’assistente avvia vegaoffice mcp da sé: niente da attivare qui, e VegaOffice non deve essere aperto. Stesse funzioni della CLI.',
     intgMcpHttpTitle: 'Server HTTP locale',
     intgMcpHttpDesc:
-      'Gira dentro GetOffice; l’assistente si collega a un URL e puoi vedere il documento prendere forma passo dopo passo nell’editor Word. GetOffice deve restare aperto; per ora solo documenti Word.',
+      'Gira dentro VegaOffice; l’assistente si collega a un URL e puoi vedere il documento prendere forma passo dopo passo nell’editor Word. VegaOffice deve restare aperto; per ora solo documenti Word.',
     intgMcpHttpAdvanced: 'Avanzato: altri indirizzi e registro',
-    intgMcpTryNote: 'L’assistente richiama GetOffice tramite MCP; non digiti mai un comando.',
+    intgMcpTryNote: 'L’assistente richiama VegaOffice tramite MCP; non digiti mai un comando.',
     intgMcpClaudeTitle: 'Claude Code',
     intgMcpClaudeDesc: 'Esegui questo una volta nel terminale:',
     intgMcpOtherTitle: 'Cursor, Claude Desktop o qualsiasi altro assistente compatibile con MCP',
@@ -4778,10 +4556,10 @@ export const strings = {
       'Aggiungi questo alla sua configurazione dei server MCP (un file JSON, oppure «Aggiungi server MCP» nelle impostazioni):',
     intgMcpNote:
       "Skill e MCP possono convivere; l'assistente ne sceglie uno. Fanno esattamente le stesse cose.",
-    intgCliTitle: 'Avanzato: riga di comando getoffice',
-    intgCliReady: 'getoffice {v} · pronto nel terminale ({path})',
+    intgCliTitle: 'Avanzato: riga di comando vegaoffice',
+    intgCliReady: 'vegaoffice {v} · pronto nel terminale ({path})',
     intgCliNotOnPath:
-      'getoffice {v} · non è nel PATH del terminale. Gli assistenti lo trovano comunque tramite ~/.getoffice/launcher, quindi lo skill funziona. Per digitare getoffice tu stesso, esegui questo una volta:',
+      'vegaoffice {v} · non è nel PATH del terminale. Gli assistenti lo trovano comunque tramite ~/.vegaoffice/launcher, quindi lo skill funziona. Per digitare vegaoffice tu stesso, esegui questo una volta:',
     intgCliLauncher: 'Cartella del launcher',
     intgStateOutdated: 'Installato {v}, aggiornamento a {next} disponibile',
     intgStateModified: 'Installato {v} (modificato)',
@@ -4805,10 +4583,10 @@ export const strings = {
     intgSaveZipTitle: 'Salva skill',
     intgSavedTo: 'Salvato in {path}',
     intgCopied: 'Copiato',
-    intgCliEphemeral: 'Trascina prima GetOffice in Applicazioni, poi usa la riga di comando.',
+    intgCliEphemeral: 'Trascina prima VegaOffice in Applicazioni, poi usa la riga di comando.',
     intgCopyPath: 'Copia percorso',
     intgCliNeedsUpdate:
-      'Questo skill richiede la riga di comando {v} o successiva; aggiorna GetOffice.',
+      'Questo skill richiede la riga di comando {v} o successiva; aggiorna VegaOffice.',
     intgLoading: 'Verifica in corso…',
     intgUpdateDue: 'Aggiornamento dello skill disponibile',
     setSecAiModel: 'Modello IA',
@@ -4819,14 +4597,14 @@ export const strings = {
     setAiKeyHint: 'Salvata solo su questo dispositivo.',
     setAiBaseUrl: 'Base URL',
     setAiBaseUrlHint: "Lascia vuoto per l'endpoint ufficiale.",
-    setAiGensparkHint: 'Usa il tuo accesso Genspark; nessuna chiave API richiesta.',
+    setAiAccountHint: 'Usa il tuo accesso VEGA; nessuna chiave API richiesta.',
     setAiCodexPath: 'Eseguibile Codex',
     setAiCodexPathHint:
       'Compila solo per un’installazione personalizzata; lascia vuoto per il rilevamento automatico.',
     setAiCodexAutoPlaceholder: 'Rilevamento automatico (consigliato)',
     setAiCodexHint: 'Usa Codex CLI con accesso locale; non è richiesta alcuna chiave API.',
     setAiByokNote:
-      "Le chat usano la tua chiave. La generazione di immagini e l'analisi dei media seguono la sezione «Media IA»; la ricerca web usa ancora l'accesso Genspark o fonti gratuite.",
+      "Le chat usano la tua chiave. La generazione di immagini e l'analisi dei media seguono la sezione «Media IA»; la ricerca web usa ancora l'accesso VEGA o fonti gratuite.",
     setAiSave: 'Salva',
     setAiSaved: 'Salvato',
     setAiTest: 'Prova connessione',
@@ -4837,12 +4615,12 @@ export const strings = {
     setAiMaxTokensDesc:
       'Budget di uscita per singolo turno. I modelli di ragionamento lo consumano pensando: se si esaurisce, la risposta arriva vuota; aumentalo.',
     setSecAiMedia: 'Media e ricerca IA',
-    setAiMediaGensparkHint:
-      "La generazione di immagini e l'analisi di immagini/video usano il tuo accesso Genspark.",
+    setAiMediaAccountHint:
+      "La generazione di immagini e l'analisi di immagini/video usano il tuo accesso VEGA.",
     setAiImageModel: 'Modello immagini',
     setAiAnalysisModel: 'Modello di analisi',
-    setAiSearchGensparkHint:
-      'La ricerca web e di immagini usa il tuo accesso Genspark; disconnesso o con gli strumenti cloud disattivati ricorre a fonti gratuite.',
+    setAiSearchAccountHint:
+      'La ricerca web e di immagini usa il tuo accesso VEGA; disconnesso o con gli strumenti cloud disattivati ricorre a fonti gratuite.',
     setAiSearchSerperHint: 'Serper offre ricerca web e di immagini con la tua chiave.',
     setAiSearchTavilyHint:
       'Tavily offre la ricerca web con la tua chiave; la ricerca di immagini ricorre a fonti gratuite.',
@@ -4854,7 +4632,7 @@ export const strings = {
       "La chiave e l'URL base di un provider sono condivisi tra le capacità; inseriscili una volta sola.",
     setAiVegaTools: 'Strumenti cloud VEGA',
     setAiVegaToolsDesc:
-      "Con VEGA come provider, ricerca web, generazione di immagini e analisi dei media passano per api.vega.chat con la tua chiave VEGA; disattivati, ripiegano sull'accesso Genspark o su fonti gratuite. Il provider della chat non cambia.",
+      "Con VEGA come provider, ricerca web, generazione di immagini e analisi dei media passano per api.vega.chat con la tua chiave VEGA; disattivati, ripiegano sull'accesso VEGA o su fonti gratuite. Il provider della chat non cambia.",
     setAiVegaNote:
       "Gateway compatibile con OpenRouter — la chiave API viene emessa automaticamente all'accesso e non è mai mostrata né modificabile.",
     setAiVegaSigninDesc:
@@ -4866,14 +4644,14 @@ export const strings = {
       'La ricerca web usa api.vega.chat con la tua chiave di accesso; la ricerca immagini usa fonti gratuite.',
     setGithub: 'Open source',
     starOnGitHub: 'Metti una stella su GitHub',
-    starPromptTitle: 'Ti piace GetOffice?',
-    starPromptTitleN: 'Hai aperto {n} documenti con GetOffice',
+    starPromptTitle: 'Ti piace VegaOffice?',
+    starPromptTitleN: 'Hai aperto {n} documenti con VegaOffice',
     starPromptBody:
-      'GetOffice è gratuito e open source. Una stella su GitHub è il modo migliore per sostenere il team.',
+      'VegaOffice è gratuito e open source. Una stella su GitHub è il modo migliore per sostenere il team.',
     starPromptGo: 'Metti una stella',
     starPromptDone: 'Già fatto',
     starPromptLater: 'Più tardi',
-    onbStarHint: 'Se ti piace GetOffice, lasciaci una stella su GitHub.',
+    onbStarHint: 'Se ti piace VegaOffice, lasciaci una stella su GitHub.',
     setEmail: 'Email',
     setNotLoggedIn: 'Non connesso',
     setViewUsage: 'Vedi utilizzo',
@@ -4887,15 +4665,14 @@ export const strings = {
     appMenu: 'Menu',
     newTab: 'Nuova scheda',
     // First-run onboarding
-    onbTitle1: 'Benvenuto in GetOffice',
+    onbTitle1: 'Benvenuto in VegaOffice',
     onbSubtitle1: 'La prima suite per ufficio open source e nativa per l’IA',
     onbBody1:
       'Crea documenti, fogli di calcolo e presentazioni e rivedi i PDF. L’IA è integrata in ogni passaggio.',
     onbTitle2: 'Questo è solo l’inizio',
-    onbBody2:
-      'GetOffice è ancora in alpha. Unisciti alla chat di gruppo su GenTeam per condividere feedback e contribuire a plasmare il futuro.',
+    onbBody2: 'VegaOffice è ancora in alpha. Mettici una stella su GitHub e condividi il tuo feedback per contribuire a plasmare il futuro.',
     onbCredits: 'I collaboratori attivi ricevono **1.000+ crediti VEGA**',
-    onbJoinGenTeam: 'Unisciti a GenTeam',
+    onbJoinGitHub: 'Stella su GitHub',
     onbSkip: 'Salta',
     onbNext: 'Avanti',
     onbStart: 'Inizia',
@@ -4908,23 +4685,8 @@ export const strings = {
   pl: {
     navRecent: 'Ostatnie',
     navStarred: 'Ulubione',
-    navCloud: 'Genspark Projects',
-    cloudSubtitle:
-      'Projekty utworzone w sieci za pomocą Genspark AI. Edycja jest kontynuowana w przeglądarce — kliknij projekt, aby go otworzyć.',
-    cloudSearchPlaceholder: 'Szukaj wśród {n} projektów…',
-    cloudNoResults: 'Brak pasujących projektów.',
-    cloudGroupThisWeek: 'W tym tygodniu',
-    cloudGroupThisMonth: 'Wcześniej w tym miesiącu',
-    cloudSortLabel: 'Sortuj: {v}',
-    cloudSortRecent: 'Najnowsze',
-    cloudSortOldest: 'Najstarsze',
-    cloudRefresh: 'Odśwież',
-    cloudLoginHint: 'Zaloguj się na konto Genspark, aby zobaczyć projekty utworzone w sieci.',
-    cloudEmpty: 'Brak projektów w sieci.',
-    cloudError: 'Nie udało się wczytać. Spróbuj ponownie później.',
-    cloudRetry: 'Spróbuj ponownie',
-    cloudLoadMore: 'Wczytaj więcej',
-    cloudOpenInBrowser: 'Otwórz w przeglądarce',
+    fileSortRecent: 'Najnowsze',
+    fileSortOldest: 'Najstarsze',
     navTrash: 'Kosz',
     navTrashTip: 'Usunięte pliki trafiają do systemowego kosza i można je stamtąd przywrócić',
     secQuickStart: 'Szybki start',
@@ -5023,12 +4785,11 @@ export const strings = {
     timelineUserAria: 'Użytkownik',
     untitled: 'Bez tytułu',
     noContent: '(pusto)',
-    accountGenspark: 'Konto VEGA',
     account: 'Konto',
     login: 'Zaloguj się',
-    loginGenspark: 'Zaloguj się przez VEGA',
+    loginVega: 'Zaloguj się przez VEGA',
     loggedIn: 'Zalogowano',
-    loggedInGenspark: 'Zalogowano do VEGA',
+    loggedInVega: 'Zalogowano do VEGA',
     waitingLogin:
       'Oczekiwanie na logowanie w przeglądarce… Kliknij, aby ponownie otworzyć stronę logowania',
     loginDeviceCode: 'Kod urządzenia',
@@ -5096,7 +4857,7 @@ export const strings = {
     setMcpLogEmpty: 'Brak wpisów',
     setSecAbout: 'O aplikacji',
     setSecIntegrations: 'Integracje',
-    intgHeroTitle: 'Używaj GetOffice ze swojego asystenta AI',
+    intgHeroTitle: 'Używaj VegaOffice ze swojego asystenta AI',
     intgHeroDesc:
       'Po połączeniu Claude Code, Codex, Cursor, Claude Desktop i podobni asystenci mogą tworzyć, konwertować, czytać i edytować pliki Word, Excel, PowerPoint, PDF i Markdown za Ciebie. Wszystko działa na tym komputerze; nic nie jest przesyłane.',
     intgHeroStep1:
@@ -5107,7 +4868,7 @@ export const strings = {
     intgStep1Desc:
       'Widoczne są tylko asystenty znalezione na tym komputerze. Zainstaluj w tym, którego naprawdę używasz; nie potrzebujesz wszystkich.',
     intgStep1Update:
-      'Gdy aktualizacja GetOffice przyniesie nowszy skill, obok tego asystenta pojawi się przycisk Aktualizuj.',
+      'Gdy aktualizacja VegaOffice przyniesie nowszy skill, obok tego asystenta pojawi się przycisk Aktualizuj.',
     intgSkillVersion: 'skill {v}',
     intgStateMissing: 'Skill niezainstalowany',
     intgStateInstalled: 'Skill {v} zainstalowany · gotowy w następnym czacie',
@@ -5115,7 +4876,7 @@ export const strings = {
     intgOtherDesc:
       'Wybierz tylko jeden z tych trzech sposobów. Wszystkie instalują ten sam skill, więc nie trzeba robić więcej niż jednego.',
     intgOtherFolderTitle: 'Dowolny asystent czytający foldery SKILL.md',
-    intgOtherFolderDesc: 'Wybierz jego folder skills, a GetOffice zapisze tam plik.',
+    intgOtherFolderDesc: 'Wybierz jego folder skills, a VegaOffice zapisze tam plik.',
     intgOtherZipTitle: 'Przekaż plik asystentowi',
     intgOtherZipDesc: 'Zapisz skill jako zip, a potem poproś asystenta o instalację.',
     intgOtherNpxTitle: 'Poleceniem skills (wymaga Node.js)',
@@ -5127,22 +4888,22 @@ export const strings = {
       'Po instalacji otwórz nowy czat w asystencie i poproś zwykłymi słowami, na przykład:',
     intgExample1: 'Zamień ~/Downloads/report.md na dokument Word',
     intgExample2: 'Zrób prezentację z 6 slajdów o naszych wynikach za III kwartał',
-    intgExample3: 'Przekonwertuj budget.xlsx do PDF i otwórz w GetOffice',
-    intgStep2Note: 'Asystent sam uruchamia wiersz poleceń getoffice; nigdy nie musisz go wpisywać.',
+    intgExample3: 'Przekonwertuj budget.xlsx do PDF i otwórz w VegaOffice',
+    intgStep2Note: 'Asystent sam uruchamia wiersz poleceń vegaoffice; nigdy nie musisz go wpisywać.',
     intgCliPartTitle: 'CLI · wiersz poleceń + skill',
     intgCliPartDesc:
-      'Dla asystentów, które potrafią uruchamiać polecenia terminala (Claude Code, Codex, Cursor i inne). Po zainstalowaniu skilla asystent sam wywołuje wiersz poleceń getoffice, aby tworzyć, konwertować, czytać i edytować pliki; nigdy nie wpisujesz polecenia.',
+      'Dla asystentów, które potrafią uruchamiać polecenia terminala (Claude Code, Codex, Cursor i inne). Po zainstalowaniu skilla asystent sam wywołuje wiersz poleceń vegaoffice, aby tworzyć, konwertować, czytać i edytować pliki; nigdy nie wpisujesz polecenia.',
     intgMcpPartTitle: 'MCP',
     intgMcpPartDesc:
-      'MCP to wspólny protokół, którym asystenci AI wywołują zewnętrzne narzędzia. Użyj go, gdy asystent nie potrafi uruchamiać poleceń (np. Claude Desktop) lub gdy chcesz, aby bezpośrednio sterował oknem GetOffice. Wybierz jeden z dwóch sposobów poniżej.',
+      'MCP to wspólny protokół, którym asystenci AI wywołują zewnętrzne narzędzia. Użyj go, gdy asystent nie potrafi uruchamiać poleceń (np. Claude Desktop) lub gdy chcesz, aby bezpośrednio sterował oknem VegaOffice. Wybierz jeden z dwóch sposobów poniżej.',
     intgMcpStdioTitle: 'Uruchamiany przez asystenta (zalecane)',
     intgMcpStdioDesc:
-      'Asystent sam uruchamia getoffice mcp: nic tu nie trzeba włączać, a GetOffice nie musi być otwarty. Te same funkcje co CLI.',
+      'Asystent sam uruchamia vegaoffice mcp: nic tu nie trzeba włączać, a VegaOffice nie musi być otwarty. Te same funkcje co CLI.',
     intgMcpHttpTitle: 'Lokalny serwer HTTP',
     intgMcpHttpDesc:
-      'Działa wewnątrz GetOffice; asystent łączy się przez URL, a Ty widzisz, jak dokument powstaje krok po kroku w edytorze Word. GetOffice musi pozostać otwarty; na razie tylko dokumenty Word.',
+      'Działa wewnątrz VegaOffice; asystent łączy się przez URL, a Ty widzisz, jak dokument powstaje krok po kroku w edytorze Word. VegaOffice musi pozostać otwarty; na razie tylko dokumenty Word.',
     intgMcpHttpAdvanced: 'Zaawansowane: inne adresy i dziennik',
-    intgMcpTryNote: 'Asystent wywołuje GetOffice przez MCP; nigdy nie wpisujesz polecenia.',
+    intgMcpTryNote: 'Asystent wywołuje VegaOffice przez MCP; nigdy nie wpisujesz polecenia.',
     intgMcpClaudeTitle: 'Claude Code',
     intgMcpClaudeDesc: 'Uruchom to raz w terminalu:',
     intgMcpOtherTitle: 'Cursor, Claude Desktop lub inny asystent obsługujący MCP',
@@ -5150,10 +4911,10 @@ export const strings = {
       'Dodaj to do jego konfiguracji serwerów MCP (plik JSON lub „Dodaj serwer MCP” w ustawieniach):',
     intgMcpNote:
       'Skill i MCP mogą działać obok siebie; asystent wybiera jedno z nich. Oba robią dokładnie to samo.',
-    intgCliTitle: 'Zaawansowane: wiersz poleceń getoffice',
-    intgCliReady: 'getoffice {v} · gotowy w terminalu ({path})',
+    intgCliTitle: 'Zaawansowane: wiersz poleceń vegaoffice',
+    intgCliReady: 'vegaoffice {v} · gotowy w terminalu ({path})',
     intgCliNotOnPath:
-      'getoffice {v} · nie ma go w PATH terminala. Asystenty i tak znajdą go przez ~/.getoffice/launcher, więc skill działa. Aby samodzielnie wpisywać getoffice, uruchom to raz:',
+      'vegaoffice {v} · nie ma go w PATH terminala. Asystenty i tak znajdą go przez ~/.vegaoffice/launcher, więc skill działa. Aby samodzielnie wpisywać vegaoffice, uruchom to raz:',
     intgCliLauncher: 'Folder programu uruchamiającego',
     intgStateOutdated: 'Zainstalowano {v}, dostępna aktualizacja do {next}',
     intgStateModified: 'Zainstalowano {v} (zmodyfikowano)',
@@ -5177,9 +4938,9 @@ export const strings = {
     intgSaveZipTitle: 'Zapisz skill',
     intgSavedTo: 'Zapisano w {path}',
     intgCopied: 'Skopiowano',
-    intgCliEphemeral: 'Najpierw przenieś GetOffice do Aplikacji, potem użyj wiersza poleceń.',
+    intgCliEphemeral: 'Najpierw przenieś VegaOffice do Aplikacji, potem użyj wiersza poleceń.',
     intgCopyPath: 'Kopiuj ścieżkę',
-    intgCliNeedsUpdate: 'Ten skill wymaga wiersza poleceń {v} lub nowszego; zaktualizuj GetOffice.',
+    intgCliNeedsUpdate: 'Ten skill wymaga wiersza poleceń {v} lub nowszego; zaktualizuj VegaOffice.',
     intgLoading: 'Sprawdzanie…',
     intgUpdateDue: 'Dostępna aktualizacja skilla',
     setSecAiModel: 'Model AI',
@@ -5190,14 +4951,14 @@ export const strings = {
     setAiKeyHint: 'Przechowywany tylko na tym urządzeniu.',
     setAiBaseUrl: 'Base URL',
     setAiBaseUrlHint: 'Pozostaw puste, aby użyć oficjalnego punktu końcowego.',
-    setAiGensparkHint: 'Korzysta z logowania Genspark; klucz API nie jest potrzebny.',
+    setAiAccountHint: 'Korzysta z logowania VEGA; klucz API nie jest potrzebny.',
     setAiCodexPath: 'Plik wykonywalny Codex',
     setAiCodexPathHint:
       'Ustaw tylko dla instalacji niestandardowej; pozostaw puste, aby wykryć automatycznie.',
     setAiCodexAutoPlaceholder: 'Wykryj automatycznie (zalecane)',
     setAiCodexHint: 'Używa lokalnie zalogowanego Codex CLI; klucz API nie jest potrzebny.',
     setAiByokNote:
-      'Czaty używają Twojego klucza. Generowanie obrazów i analiza mediów zależą od sekcji „Media AI”; wyszukiwanie w sieci nadal korzysta z logowania Genspark lub darmowych źródeł.',
+      'Czaty używają Twojego klucza. Generowanie obrazów i analiza mediów zależą od sekcji „Media AI”; wyszukiwanie w sieci nadal korzysta z logowania VEGA lub darmowych źródeł.',
     setAiSave: 'Zapisz',
     setAiSaved: 'Zapisano',
     setAiTest: 'Testuj połączenie',
@@ -5208,12 +4969,12 @@ export const strings = {
     setAiMaxTokensDesc:
       'Budżet wyjścia na jedną turę. Modele rozumowania zużywają go na myślenie; gdy się wyczerpie, odpowiedź przychodzi pusta — zwiększ tę wartość.',
     setSecAiMedia: 'Media i wyszukiwanie AI',
-    setAiMediaGensparkHint:
-      'Generowanie obrazów i analiza obrazów/wideo korzystają z logowania Genspark.',
+    setAiMediaAccountHint:
+      'Generowanie obrazów i analiza obrazów/wideo korzystają z logowania VEGA.',
     setAiImageModel: 'Model obrazów',
     setAiAnalysisModel: 'Model analizy',
-    setAiSearchGensparkHint:
-      'Wyszukiwanie w sieci i obrazów korzysta z logowania Genspark; po wylogowaniu lub przy wyłączonych narzędziach chmurowych używa darmowych źródeł.',
+    setAiSearchAccountHint:
+      'Wyszukiwanie w sieci i obrazów korzysta z logowania VEGA; po wylogowaniu lub przy wyłączonych narzędziach chmurowych używa darmowych źródeł.',
     setAiSearchSerperHint: 'Serper zapewnia wyszukiwanie w sieci i obrazów z Twoim kluczem.',
     setAiSearchTavilyHint:
       'Tavily zapewnia wyszukiwanie w sieci z Twoim kluczem; wyszukiwanie obrazów używa darmowych źródeł.',
@@ -5225,7 +4986,7 @@ export const strings = {
       'Klucz i bazowy URL dostawcy są wspólne dla wszystkich funkcji; wpisz je raz.',
     setAiVegaTools: 'Narzędzia chmurowe VEGA',
     setAiVegaToolsDesc:
-      'Gdy dostawcą jest VEGA, wyszukiwanie w sieci, generowanie obrazów i analiza mediów działają przez api.vega.chat z kluczem VEGA; po wyłączeniu wracają do logowania Genspark lub darmowych źródeł. Dostawca czatu pozostaje bez zmian.',
+      'Gdy dostawcą jest VEGA, wyszukiwanie w sieci, generowanie obrazów i analiza mediów działają przez api.vega.chat z kluczem VEGA; po wyłączeniu wracają do logowania VEGA lub darmowych źródeł. Dostawca czatu pozostaje bez zmian.',
     setAiVegaNote:
       'Brama zgodna z OpenRouter — klucz API jest wydawany automatycznie przy logowaniu i nigdy nie jest pokazywany ani edytowalny.',
     setAiVegaSigninDesc:
@@ -5236,14 +4997,14 @@ export const strings = {
       'Wyszukiwanie w sieci używa api.vega.chat z kluczem logowania; wyszukiwanie obrazów korzysta z darmowych źródeł.',
     setGithub: 'Open source',
     starOnGitHub: 'Gwiazdka na GitHubie',
-    starPromptTitle: 'Podoba Ci się GetOffice?',
-    starPromptTitleN: 'Otwarto już {n} dokumentów w GetOffice',
+    starPromptTitle: 'Podoba Ci się VegaOffice?',
+    starPromptTitleN: 'Otwarto już {n} dokumentów w VegaOffice',
     starPromptBody:
-      'GetOffice jest darmowy i open source. Gwiazdka na GitHubie to najlepsze wsparcie dla zespołu.',
+      'VegaOffice jest darmowy i open source. Gwiazdka na GitHubie to najlepsze wsparcie dla zespołu.',
     starPromptGo: 'Daj gwiazdkę',
     starPromptDone: 'Już zrobione',
     starPromptLater: 'Później',
-    onbStarHint: 'Jeśli podoba Ci się GetOffice, zostaw nam gwiazdkę na GitHubie.',
+    onbStarHint: 'Jeśli podoba Ci się VegaOffice, zostaw nam gwiazdkę na GitHubie.',
     setEmail: 'E-mail',
     setNotLoggedIn: 'Nie zalogowano',
     setViewUsage: 'Zobacz zużycie',
@@ -5257,15 +5018,14 @@ export const strings = {
     appMenu: 'Menu',
     newTab: 'Nowa karta',
     // First-run onboarding
-    onbTitle1: 'Witamy w GetOffice',
+    onbTitle1: 'Witamy w VegaOffice',
     onbSubtitle1: 'Pierwszy otwartoźródłowy, natywnie oparty na AI pakiet biurowy',
     onbBody1:
       'Twórz dokumenty, arkusze i prezentacje oraz przeglądaj pliki PDF. AI jest wbudowana w każdy etap.',
     onbTitle2: 'To dopiero początek',
-    onbBody2:
-      'GetOffice jest wciąż w fazie alfa. Dołącz do czatu grupowego na GenTeam, aby dzielić się opiniami i współtworzyć jego przyszłość.',
+    onbBody2: 'VegaOffice jest wciąż w fazie alfa. Zostaw nam gwiazdkę na GitHubie i podziel się opinią, aby współtworzyć jego przyszłość.',
     onbCredits: 'Aktywni współtwórcy otrzymują **1000+ kredytów VEGA**',
-    onbJoinGenTeam: 'Dołącz do GenTeam',
+    onbJoinGitHub: 'Gwiazdka na GitHubie',
     onbSkip: 'Pomiń',
     onbNext: 'Dalej',
     onbStart: 'Rozpocznij',
@@ -5278,24 +5038,8 @@ export const strings = {
   cs: {
     navRecent: 'Nedávné',
     navStarred: 'Oblíbené',
-    navCloud: 'Genspark Projects',
-    cloudSubtitle:
-      'Projekty vytvořené na webu pomocí Genspark AI. Úpravy pokračují v prohlížeči — klikněte na projekt a otevřete ho.',
-    cloudSearchPlaceholder: 'Hledat mezi {n} projekty…',
-    cloudNoResults: 'Žádné odpovídající projekty.',
-    cloudGroupThisWeek: 'Tento týden',
-    cloudGroupThisMonth: 'Dříve tento měsíc',
-    cloudSortLabel: 'Řazení: {v}',
-    cloudSortRecent: 'Nejnovější',
-    cloudSortOldest: 'Nejstarší',
-    cloudRefresh: 'Obnovit',
-    cloudLoginHint:
-      'Přihlaste se ke svému účtu Genspark a zobrazte projekty, které jste vytvořili na webu.',
-    cloudEmpty: 'Zatím žádné webové projekty.',
-    cloudError: 'Načtení se nezdařilo. Zkuste to později.',
-    cloudRetry: 'Zkusit znovu',
-    cloudLoadMore: 'Načíst další',
-    cloudOpenInBrowser: 'Otevřít v prohlížeči',
+    fileSortRecent: 'Nejnovější',
+    fileSortOldest: 'Nejstarší',
     navTrash: 'Koš',
     navTrashTip: 'Odstraněné soubory se přesunou do systémového koše, odkud je lze obnovit',
     secQuickStart: 'Rychlý start',
@@ -5392,12 +5136,11 @@ export const strings = {
     timelineUserAria: 'Uživatel',
     untitled: 'Bez názvu',
     noContent: '(prázdné)',
-    accountGenspark: 'Účet VEGA',
     account: 'Účet',
     login: 'Přihlásit se',
-    loginGenspark: 'Přihlásit se přes VEGA',
+    loginVega: 'Přihlásit se přes VEGA',
     loggedIn: 'Přihlášeno',
-    loggedInGenspark: 'Přihlášeno k VEGA',
+    loggedInVega: 'Přihlášeno k VEGA',
     waitingLogin:
       'Čeká se na přihlášení v prohlížeči… Kliknutím znovu otevřete přihlašovací stránku',
     loginTimeout: 'Vypršel čas přihlášení — kliknutím to zkusíte znovu',
@@ -5455,7 +5198,7 @@ export const strings = {
     setMcpLogEmpty: 'Zatím žádné záznamy',
     setSecAbout: 'O aplikaci',
     setSecIntegrations: 'Integrace',
-    intgHeroTitle: 'Používejte GetOffice ze svého AI asistenta',
+    intgHeroTitle: 'Používejte VegaOffice ze svého AI asistenta',
     intgHeroDesc:
       'Po připojení mohou Claude Code, Codex, Cursor, Claude Desktop a podobní asistenti za vás vytvářet, převádět, číst a upravovat soubory Word, Excel, PowerPoint, PDF a Markdown. Vše běží na tomto počítači; nic se neodesílá.',
     intgHeroStep1: 'Zvolte cestu: CLI, pokud asistent umí spouštět příkazy terminálu, jinak MCP',
@@ -5465,7 +5208,7 @@ export const strings = {
     intgStep1Desc:
       'Zobrazeni jsou jen asistenti nalezení na tomto počítači. Nainstalujte jej do toho, který skutečně používáte; všechny nepotřebujete.',
     intgStep1Update:
-      'Když aktualizace GetOffice přinese novější skill, u daného asistenta se objeví tlačítko Aktualizovat.',
+      'Když aktualizace VegaOffice přinese novější skill, u daného asistenta se objeví tlačítko Aktualizovat.',
     intgSkillVersion: 'skill {v}',
     intgStateMissing: 'Skill není nainstalován',
     intgStateInstalled: 'Skill {v} nainstalován · připraven v příštím chatu',
@@ -5473,7 +5216,7 @@ export const strings = {
     intgOtherDesc:
       'Zvolte pouze jeden z těchto tří způsobů. Všechny instalují stejný skill, takže není třeba dělat více než jeden.',
     intgOtherFolderTitle: 'Jakýkoli asistent, který čte složky SKILL.md',
-    intgOtherFolderDesc: 'Vyberte jeho složku skills a GetOffice tam soubor zapíše.',
+    intgOtherFolderDesc: 'Vyberte jeho složku skills a VegaOffice tam soubor zapíše.',
     intgOtherZipTitle: 'Předejte soubor asistentovi',
     intgOtherZipDesc: 'Uložte skill jako zip a požádejte asistenta, aby jej nainstaloval.',
     intgOtherNpxTitle: 'Příkazem skills (vyžaduje Node.js)',
@@ -5485,22 +5228,22 @@ export const strings = {
       'Po instalaci otevřete v asistentovi nový chat a požádejte běžnými slovy, například:',
     intgExample1: 'Převeď ~/Downloads/report.md na dokument Word',
     intgExample2: 'Udělej prezentaci o 6 snímcích o našich výsledcích za 3. čtvrtletí',
-    intgExample3: 'Převeď budget.xlsx do PDF a otevři ho v GetOffice',
-    intgStep2Note: 'Asistent spouští příkazový řádek getoffice sám; nikdy ho nemusíte psát.',
+    intgExample3: 'Převeď budget.xlsx do PDF a otevři ho v VegaOffice',
+    intgStep2Note: 'Asistent spouští příkazový řádek vegaoffice sám; nikdy ho nemusíte psát.',
     intgCliPartTitle: 'CLI · příkazový řádek + skill',
     intgCliPartDesc:
-      'Pro asistenty, kteří umí spouštět příkazy terminálu (Claude Code, Codex, Cursor a další). Po instalaci skillu asistent sám volá příkazový řádek getoffice k vytváření, převodu, čtení a úpravám souborů; žádný příkaz nepíšete.',
+      'Pro asistenty, kteří umí spouštět příkazy terminálu (Claude Code, Codex, Cursor a další). Po instalaci skillu asistent sám volá příkazový řádek vegaoffice k vytváření, převodu, čtení a úpravám souborů; žádný příkaz nepíšete.',
     intgMcpPartTitle: 'MCP',
     intgMcpPartDesc:
-      'MCP je společný protokol, kterým AI asistenti volají externí nástroje. Použijte ho, když asistent neumí spouštět příkazy (např. Claude Desktop) nebo když chcete, aby přímo ovládal okno GetOffice. Vyberte jeden ze dvou způsobů níže.',
+      'MCP je společný protokol, kterým AI asistenti volají externí nástroje. Použijte ho, když asistent neumí spouštět příkazy (např. Claude Desktop) nebo když chcete, aby přímo ovládal okno VegaOffice. Vyberte jeden ze dvou způsobů níže.',
     intgMcpStdioTitle: 'Spouští asistent (doporučeno)',
     intgMcpStdioDesc:
-      'Asistent spustí getoffice mcp sám: tady není co zapínat a GetOffice nemusí být otevřený. Stejné funkce jako CLI.',
+      'Asistent spustí vegaoffice mcp sám: tady není co zapínat a VegaOffice nemusí být otevřený. Stejné funkce jako CLI.',
     intgMcpHttpTitle: 'Místní HTTP server',
     intgMcpHttpDesc:
-      'Běží uvnitř GetOffice; asistent se připojí přes URL a v editoru Word sledujete, jak dokument krok za krokem vzniká. GetOffice musí zůstat otevřený; zatím jen dokumenty Word.',
+      'Běží uvnitř VegaOffice; asistent se připojí přes URL a v editoru Word sledujete, jak dokument krok za krokem vzniká. VegaOffice musí zůstat otevřený; zatím jen dokumenty Word.',
     intgMcpHttpAdvanced: 'Pokročilé: další adresy a protokol',
-    intgMcpTryNote: 'Asistent volá GetOffice přes MCP; žádný příkaz nepíšete.',
+    intgMcpTryNote: 'Asistent volá VegaOffice přes MCP; žádný příkaz nepíšete.',
     intgMcpClaudeTitle: 'Claude Code',
     intgMcpClaudeDesc: 'Spusťte jednou v terminálu:',
     intgMcpOtherTitle: 'Cursor, Claude Desktop nebo jiný asistent s podporou MCP',
@@ -5508,10 +5251,10 @@ export const strings = {
       'Přidejte toto do jeho nastavení MCP serverů (soubor JSON nebo „Přidat MCP server“ v nastavení):',
     intgMcpNote:
       'Skill a MCP mohou být nastaveny současně; asistent si jeden vybere. Oba dělají přesně to samé.',
-    intgCliTitle: 'Pokročilé: příkazový řádek getoffice',
-    intgCliReady: 'getoffice {v} · připraven v terminálu ({path})',
+    intgCliTitle: 'Pokročilé: příkazový řádek vegaoffice',
+    intgCliReady: 'vegaoffice {v} · připraven v terminálu ({path})',
     intgCliNotOnPath:
-      'getoffice {v} · není v PATH terminálu. Asistenti ho i tak najdou přes ~/.getoffice/launcher, skill tedy funguje. Chcete-li getoffice psát sami, spusťte jednou:',
+      'vegaoffice {v} · není v PATH terminálu. Asistenti ho i tak najdou přes ~/.vegaoffice/launcher, skill tedy funguje. Chcete-li vegaoffice psát sami, spusťte jednou:',
     intgCliLauncher: 'Složka spouštěče',
     intgStateOutdated: 'Nainstalováno {v}, k dispozici aktualizace na {next}',
     intgStateModified: 'Nainstalováno {v} (upraveno)',
@@ -5535,10 +5278,10 @@ export const strings = {
     intgSaveZipTitle: 'Uložit skill',
     intgSavedTo: 'Uloženo do {path}',
     intgCopied: 'Zkopírováno',
-    intgCliEphemeral: 'Nejprve přetáhněte GetOffice do Aplikací a poté použijte příkazový řádek.',
+    intgCliEphemeral: 'Nejprve přetáhněte VegaOffice do Aplikací a poté použijte příkazový řádek.',
     intgCopyPath: 'Kopírovat cestu',
     intgCliNeedsUpdate:
-      'Tento skill vyžaduje příkazový řádek {v} nebo novější; aktualizujte GetOffice.',
+      'Tento skill vyžaduje příkazový řádek {v} nebo novější; aktualizujte VegaOffice.',
     intgLoading: 'Kontrola…',
     intgUpdateDue: 'K dispozici je aktualizace skillu',
     setSecAiModel: 'Model AI',
@@ -5549,7 +5292,7 @@ export const strings = {
     setAiKeyHint: 'Ukládá se pouze na tomto zařízení.',
     setAiBaseUrl: 'Základní URL',
     setAiBaseUrlHint: 'Pro oficiální koncový bod ponechte prázdné.',
-    setAiGensparkHint: 'Používá vaše přihlášení ke Genspark; klíč API není potřeba.',
+    setAiAccountHint: 'Používá vaše přihlášení ke VEGA; klíč API není potřeba.',
     setAiCodexPath: 'Spustitelný soubor Codex',
     setAiCodexPathHint:
       'Vyplňte jen u vlastní instalace; prázdné pole znamená automatickou detekci.',
@@ -5557,7 +5300,7 @@ export const strings = {
     setAiCodexHint:
       'Automaticky najde a použije aktuální Codex CLI, po aktualizaci není třeba nic měnit; lze zadat i vlastní cestu. API klíč není potřeba.',
     setAiByokNote:
-      'Chaty používají váš vlastní klíč. Generování obrázků a analýza médií se řídí sekcí AI média; webové vyhledávání dál používá přihlášení ke Genspark nebo bezplatné zdroje.',
+      'Chaty používají váš vlastní klíč. Generování obrázků a analýza médií se řídí sekcí AI média; webové vyhledávání dál používá přihlášení ke VEGA nebo bezplatné zdroje.',
     setAiSave: 'Uložit',
     setAiSaved: 'Uloženo',
     setAiTest: 'Otestovat připojení',
@@ -5568,12 +5311,12 @@ export const strings = {
     setAiMaxTokensDesc:
       'Rozpočet výstupu na jeden tah. Modely s uvažováním jeho část spotřebují na přemýšlení, takže po vyčerpání rozpočtu může být odpověď prázdná; v takovém případě hodnotu zvyšte.',
     setSecAiMedia: 'AI média a vyhledávání',
-    setAiMediaGensparkHint:
-      'Generování obrázků a analýza obrázků/videí používají vaše přihlášení ke Genspark.',
+    setAiMediaAccountHint:
+      'Generování obrázků a analýza obrázků/videí používají vaše přihlášení ke VEGA.',
     setAiImageModel: 'Model pro obrázky',
     setAiAnalysisModel: 'Model pro analýzu',
-    setAiSearchGensparkHint:
-      'Webové a obrázkové vyhledávání používá vaše přihlášení ke Genspark; při odhlášení nebo vypnutých cloudových nástrojích se použijí bezplatné zdroje.',
+    setAiSearchAccountHint:
+      'Webové a obrázkové vyhledávání používá vaše přihlášení ke VEGA; při odhlášení nebo vypnutých cloudových nástrojích se použijí bezplatné zdroje.',
     setAiSearchSerperHint: 'Serper zajišťuje webové i obrázkové vyhledávání s vaším klíčem.',
     setAiSearchTavilyHint:
       'Tavily zajišťuje webové vyhledávání s vaším klíčem; obrázkové vyhledávání použije bezplatné zdroje.',
@@ -5585,7 +5328,7 @@ export const strings = {
       'Klíč a základní URL jednoho poskytovatele se sdílejí mezi funkcemi; zadejte je jen jednou.',
     setAiVegaTools: 'Cloudové nástroje VEGA',
     setAiVegaToolsDesc:
-      'Když je poskytovatelem VEGA, webové vyhledávání, generování obrázků a analýza médií běží přes api.vega.chat s vaším klíčem VEGA; po vypnutí se přepnou na přihlášení Genspark nebo bezplatné zdroje. Poskytovatel chatu zůstává beze změny.',
+      'Když je poskytovatelem VEGA, webové vyhledávání, generování obrázků a analýza médií běží přes api.vega.chat s vaším klíčem VEGA; po vypnutí se přepnou na přihlášení VEGA nebo bezplatné zdroje. Poskytovatel chatu zůstává beze změny.',
     setAiVegaNote:
       'Brána kompatibilní s OpenRouter — klíč API se při přihlášení vydá automaticky a nikdy se nezobrazuje ani nelze upravit.',
     setAiVegaSigninDesc: 'Jedno přihlášení vydá klíč API a bezpečně ho uloží v tomto zařízení.',
@@ -5595,14 +5338,14 @@ export const strings = {
       'Webové vyhledávání používá api.vega.chat s vaším přihlašovacím klíčem; vyhledávání obrázků používá bezplatné zdroje.',
     setGithub: 'Open source',
     starOnGitHub: 'Dát hvězdičku na GitHubu',
-    starPromptTitle: 'Líbí se vám GetOffice?',
-    starPromptTitleN: 'V GetOffice jste otevřeli už {n} dokumentů',
+    starPromptTitle: 'Líbí se vám VegaOffice?',
+    starPromptTitleN: 'V VegaOffice jste otevřeli už {n} dokumentů',
     starPromptBody:
-      'GetOffice je zdarma a open source. Hvězdička na GitHubu je nejlepší způsob, jak tým podpořit.',
+      'VegaOffice je zdarma a open source. Hvězdička na GitHubu je nejlepší způsob, jak tým podpořit.',
     starPromptGo: 'Dát hvězdičku na GitHubu',
     starPromptDone: 'Hvězdička už udělena',
     starPromptLater: 'Možná později',
-    onbStarHint: 'Pokud se vám GetOffice líbí, dejte nám hvězdičku na GitHubu.',
+    onbStarHint: 'Pokud se vám VegaOffice líbí, dejte nám hvězdičku na GitHubu.',
     setEmail: 'E-mail',
     setNotLoggedIn: 'Nepřihlášeno',
     setViewUsage: 'Zobrazit využití',
@@ -5616,15 +5359,14 @@ export const strings = {
     appMenu: 'Nabídka',
     newTab: 'Nová karta',
     // First-run onboarding
-    onbTitle1: 'Vítejte v GetOffice',
+    onbTitle1: 'Vítejte v VegaOffice',
     onbSubtitle1: 'První open-source kancelářský balík s nativní AI',
     onbBody1:
       'Vytvářejte dokumenty, tabulky a prezentace a kontrolujte PDF. AI je součástí každého kroku.',
     onbTitle2: 'Toto je jen začátek',
-    onbBody2:
-      'GetOffice je stále ve fázi alfa. Připojte se ke skupinovému chatu na GenTeam, sdílejte zpětnou vazbu a pomozte utvářet, co přijde dál.',
+    onbBody2: 'VegaOffice je stále ve fázi alfa. Dejte nám hvězdičku na GitHubu a podělte se o zpětnou vazbu, abyste pomohli utvářet, co přijde dál.',
     onbCredits: 'Aktivní přispěvatelé získají **1 000+ kreditů VEGA**',
-    onbJoinGenTeam: 'Připojit se ke GenTeam',
+    onbJoinGitHub: 'Hvězdička na GitHubu',
     onbSkip: 'Přeskočit',
     onbNext: 'Další',
     onbStart: 'Začít',
@@ -5647,24 +5389,8 @@ export const strings = {
   nl: {
     navRecent: 'Recent',
     navStarred: 'Favorieten',
-    navCloud: 'Genspark Projects',
-    cloudSubtitle:
-      'Projecten gemaakt op het web met Genspark AI. Bewerken gaat verder in je browser — klik op een project om het te openen.',
-    cloudSearchPlaceholder: 'Zoek in {n} projecten…',
-    cloudNoResults: 'Geen overeenkomende projecten.',
-    cloudGroupThisWeek: 'Deze week',
-    cloudGroupThisMonth: 'Eerder deze maand',
-    cloudSortLabel: 'Sorteren: {v}',
-    cloudSortRecent: 'Recent',
-    cloudSortOldest: 'Oudste',
-    cloudRefresh: 'Vernieuwen',
-    cloudLoginHint:
-      'Log in op je Genspark-account om projecten te zien die je op het web hebt gemaakt.',
-    cloudEmpty: 'Nog geen webprojecten.',
-    cloudError: 'Laden mislukt. Probeer het later opnieuw.',
-    cloudRetry: 'Opnieuw proberen',
-    cloudLoadMore: 'Meer laden',
-    cloudOpenInBrowser: 'Openen in browser',
+    fileSortRecent: 'Recent',
+    fileSortOldest: 'Oudste',
     navTrash: 'Prullenbak',
     navTrashTip:
       'Verwijderde bestanden gaan naar de systeemprullenbak en kunnen daar worden hersteld',
@@ -5763,12 +5489,11 @@ export const strings = {
     timelineUserAria: 'Gebruiker',
     untitled: 'Naamloos',
     noContent: '(leeg)',
-    accountGenspark: 'VEGA-account',
     account: 'Account',
     login: 'Inloggen',
-    loginGenspark: 'Inloggen met VEGA',
+    loginVega: 'Inloggen met VEGA',
     loggedIn: 'Ingelogd',
-    loggedInGenspark: 'Ingelogd bij VEGA',
+    loggedInVega: 'Ingelogd bij VEGA',
     waitingLogin: 'Wachten op inloggen in de browser… Klik om de inlogpagina opnieuw te openen',
     loginDeviceCode: 'Apparaatcode',
     waitingShort: 'Wachten…',
@@ -5836,7 +5561,7 @@ export const strings = {
     setMcpLogEmpty: 'Nog geen logregels',
     setSecAbout: 'Over',
     setSecIntegrations: 'Integraties',
-    intgHeroTitle: 'GetOffice gebruiken vanuit uw AI-assistent',
+    intgHeroTitle: 'VegaOffice gebruiken vanuit uw AI-assistent',
     intgHeroDesc:
       'Eenmaal verbonden kunnen Claude Code, Codex, Cursor, Claude Desktop en vergelijkbare assistenten Word-, Excel-, PowerPoint-, PDF- en Markdown-bestanden voor je maken, converteren, lezen en bewerken. Alles draait op deze computer; er wordt niets geüpload.',
     intgHeroStep1:
@@ -5847,7 +5572,7 @@ export const strings = {
     intgStep1Desc:
       'Alleen assistenten die op deze computer zijn gevonden staan hier. Installeer in die u echt gebruikt; u hebt ze niet allemaal nodig.',
     intgStep1Update:
-      'Wanneer een GetOffice-update een nieuwere skill meebrengt, verschijnt naast die assistent een knop Bijwerken.',
+      'Wanneer een VegaOffice-update een nieuwere skill meebrengt, verschijnt naast die assistent een knop Bijwerken.',
     intgSkillVersion: 'skill {v}',
     intgStateMissing: 'Skill niet geïnstalleerd',
     intgStateInstalled: 'Skill {v} geïnstalleerd · klaar in uw volgende chat',
@@ -5855,7 +5580,7 @@ export const strings = {
     intgOtherDesc:
       'Kies één van deze drie manieren. Ze installeren allemaal dezelfde skill, dus meer dan één is niet nodig.',
     intgOtherFolderTitle: 'Elke assistent die SKILL.md-mappen leest',
-    intgOtherFolderDesc: 'Kies zijn skills-map en GetOffice schrijft het bestand daar.',
+    intgOtherFolderDesc: 'Kies zijn skills-map en VegaOffice schrijft het bestand daar.',
     intgOtherZipTitle: 'Geef het bestand aan de assistent',
     intgOtherZipDesc: 'Sla de skill op als zip en vraag de assistent hem te installeren.',
     intgOtherNpxTitle: 'Met de skills-opdracht (vereist Node.js)',
@@ -5868,23 +5593,23 @@ export const strings = {
       'Open na de installatie een nieuwe chat in uw assistent en vraag het in gewone woorden, bijvoorbeeld:',
     intgExample1: 'Maak van ~/Downloads/report.md een Word-document',
     intgExample2: 'Maak een presentatie van 6 dia’s over onze Q3-resultaten',
-    intgExample3: 'Zet budget.xlsx om naar PDF en open het in GetOffice',
+    intgExample3: 'Zet budget.xlsx om naar PDF en open het in VegaOffice',
     intgStep2Note:
-      'De assistent voert de getoffice-opdrachtregel zelf uit; u hoeft die nooit te typen.',
+      'De assistent voert de vegaoffice-opdrachtregel zelf uit; u hoeft die nooit te typen.',
     intgCliPartTitle: 'CLI · opdrachtregel + skill',
     intgCliPartDesc:
-      'Voor assistenten die terminalopdrachten kunnen uitvoeren (Claude Code, Codex, Cursor en andere). Na installatie van de skill roept de assistent zelf de getoffice-opdrachtregel aan om bestanden te maken, converteren, lezen en bewerken; je typt nooit een opdracht.',
+      'Voor assistenten die terminalopdrachten kunnen uitvoeren (Claude Code, Codex, Cursor en andere). Na installatie van de skill roept de assistent zelf de vegaoffice-opdrachtregel aan om bestanden te maken, converteren, lezen en bewerken; je typt nooit een opdracht.',
     intgMcpPartTitle: 'MCP',
     intgMcpPartDesc:
-      'MCP is het gemeenschappelijke protocol waarmee AI-assistenten externe tools aanroepen. Gebruik het als je assistent geen opdrachten kan uitvoeren (bijvoorbeeld Claude Desktop) of als je wilt dat hij het GetOffice-venster rechtstreeks bestuurt. Kies een van de twee manieren hieronder.',
+      'MCP is het gemeenschappelijke protocol waarmee AI-assistenten externe tools aanroepen. Gebruik het als je assistent geen opdrachten kan uitvoeren (bijvoorbeeld Claude Desktop) of als je wilt dat hij het VegaOffice-venster rechtstreeks bestuurt. Kies een van de twee manieren hieronder.',
     intgMcpStdioTitle: 'Gestart door de assistent (aanbevolen)',
     intgMcpStdioDesc:
-      'De assistent start getoffice mcp zelf: hier hoeft niets aan, en GetOffice hoeft niet open te staan. Dezelfde functies als de CLI.',
+      'De assistent start vegaoffice mcp zelf: hier hoeft niets aan, en VegaOffice hoeft niet open te staan. Dezelfde functies als de CLI.',
     intgMcpHttpTitle: 'Lokale HTTP-server',
     intgMcpHttpDesc:
-      'Draait in GetOffice; de assistent verbindt via een URL en je ziet het document stap voor stap ontstaan in de Word-editor. GetOffice moet open blijven; voorlopig alleen Word-documenten.',
+      'Draait in VegaOffice; de assistent verbindt via een URL en je ziet het document stap voor stap ontstaan in de Word-editor. VegaOffice moet open blijven; voorlopig alleen Word-documenten.',
     intgMcpHttpAdvanced: 'Geavanceerd: andere adressen en logboek',
-    intgMcpTryNote: 'De assistent roept GetOffice aan via MCP; je typt nooit een opdracht.',
+    intgMcpTryNote: 'De assistent roept VegaOffice aan via MCP; je typt nooit een opdracht.',
     intgMcpClaudeTitle: 'Claude Code',
     intgMcpClaudeDesc: 'Voer dit één keer uit in een terminal:',
     intgMcpOtherTitle: 'Cursor, Claude Desktop of een andere assistent met MCP-ondersteuning',
@@ -5892,10 +5617,10 @@ export const strings = {
       'Voeg dit toe aan de MCP-serverinstellingen (een JSON-bestand, of "MCP-server toevoegen" in de instellingen):',
     intgMcpNote:
       'De skill en MCP kunnen naast elkaar bestaan; de assistent kiest er een. Ze doen precies hetzelfde.',
-    intgCliTitle: 'Geavanceerd: getoffice-opdrachtregel',
-    intgCliReady: 'getoffice {v} · klaar in uw terminal ({path})',
+    intgCliTitle: 'Geavanceerd: vegaoffice-opdrachtregel',
+    intgCliReady: 'vegaoffice {v} · klaar in uw terminal ({path})',
     intgCliNotOnPath:
-      'getoffice {v} · staat niet in het PATH van uw terminal. Assistenten vinden het toch via ~/.getoffice/launcher, dus de skill werkt. Om zelf getoffice te typen, voert u dit één keer uit:',
+      'vegaoffice {v} · staat niet in het PATH van uw terminal. Assistenten vinden het toch via ~/.vegaoffice/launcher, dus de skill werkt. Om zelf vegaoffice te typen, voert u dit één keer uit:',
     intgCliLauncher: 'Launcher-map',
     intgStateOutdated: 'Geïnstalleerd {v}, update naar {next} beschikbaar',
     intgStateModified: 'Geïnstalleerd {v} (gewijzigd)',
@@ -5919,9 +5644,9 @@ export const strings = {
     intgSaveZipTitle: 'Skill opslaan',
     intgSavedTo: 'Opgeslagen in {path}',
     intgCopied: 'Gekopieerd',
-    intgCliEphemeral: "Sleep GetOffice eerst naar Programma's en gebruik daarna de opdrachtregel.",
+    intgCliEphemeral: "Sleep VegaOffice eerst naar Programma's en gebruik daarna de opdrachtregel.",
     intgCopyPath: 'Pad kopiëren',
-    intgCliNeedsUpdate: 'Deze skill vereist opdrachtregel {v} of nieuwer; werk GetOffice bij.',
+    intgCliNeedsUpdate: 'Deze skill vereist opdrachtregel {v} of nieuwer; werk VegaOffice bij.',
     intgLoading: 'Controleren…',
     intgUpdateDue: 'Skill-update beschikbaar',
     setSecAiModel: 'AI-model',
@@ -5932,14 +5657,14 @@ export const strings = {
     setAiKeyHint: 'Alleen op dit apparaat opgeslagen.',
     setAiBaseUrl: 'Base URL',
     setAiBaseUrlHint: 'Leeg laten voor het officiële eindpunt.',
-    setAiGensparkHint: 'Gebruikt je Genspark-login; geen API-sleutel nodig.',
+    setAiAccountHint: 'Gebruikt je VEGA-login; geen API-sleutel nodig.',
     setAiCodexPath: 'Codex-uitvoerbaar bestand',
     setAiCodexPathHint:
       'Alleen invullen voor een aangepaste installatie; laat leeg voor automatische detectie.',
     setAiCodexAutoPlaceholder: 'Automatisch detecteren (aanbevolen)',
     setAiCodexHint: 'Gebruikt de lokaal aangemelde Codex CLI; geen API-sleutel nodig.',
     setAiByokNote:
-      'Chats gebruiken je eigen sleutel. Afbeeldingen genereren en media-analyse volgen de sectie "AI-media"; zoeken op het web gebruikt nog steeds de Genspark-aanmelding of gratis bronnen.',
+      'Chats gebruiken je eigen sleutel. Afbeeldingen genereren en media-analyse volgen de sectie "AI-media"; zoeken op het web gebruikt nog steeds de VEGA-aanmelding of gratis bronnen.',
     setAiSave: 'Opslaan',
     setAiSaved: 'Opgeslagen',
     setAiTest: 'Verbinding testen',
@@ -5950,12 +5675,12 @@ export const strings = {
     setAiMaxTokensDesc:
       'Uitvoerbudget voor één beurt. Redeneermodellen geven dit uit aan denken; is het op, dan komt een leeg antwoord terug — verhoog deze waarde.',
     setSecAiMedia: 'AI-media en zoeken',
-    setAiMediaGensparkHint:
-      'Afbeeldingen genereren en afbeelding-/video-analyse gebruiken je Genspark-aanmelding.',
+    setAiMediaAccountHint:
+      'Afbeeldingen genereren en afbeelding-/video-analyse gebruiken je VEGA-aanmelding.',
     setAiImageModel: 'Afbeeldingsmodel',
     setAiAnalysisModel: 'Analysemodel',
-    setAiSearchGensparkHint:
-      'Web- en afbeeldingszoeken gebruiken je Genspark-aanmelding; afgemeld of met cloudtools uit vallen ze terug op gratis bronnen.',
+    setAiSearchAccountHint:
+      'Web- en afbeeldingszoeken gebruiken je VEGA-aanmelding; afgemeld of met cloudtools uit vallen ze terug op gratis bronnen.',
     setAiSearchSerperHint: 'Serper levert web- en afbeeldingszoeken met je sleutel.',
     setAiSearchTavilyHint:
       'Tavily levert webzoeken met je sleutel; afbeeldingszoeken valt terug op gratis bronnen.',
@@ -5967,7 +5692,7 @@ export const strings = {
       'De sleutel en basis-URL van een provider gelden voor alle functies; één keer invoeren volstaat.',
     setAiVegaTools: 'VEGA-cloudtools',
     setAiVegaToolsDesc:
-      'Wanneer VEGA de provider is, lopen webzoeken, beeldgeneratie en media-analyse via api.vega.chat met je VEGA-sleutel; uitgeschakeld vallen ze terug op de Genspark-login of gratis bronnen. De chatprovider blijft ongewijzigd.',
+      'Wanneer VEGA de provider is, lopen webzoeken, beeldgeneratie en media-analyse via api.vega.chat met je VEGA-sleutel; uitgeschakeld vallen ze terug op de VEGA-login of gratis bronnen. De chatprovider blijft ongewijzigd.',
     setAiVegaNote:
       'OpenRouter-compatibele gateway — de API-sleutel wordt bij het inloggen automatisch uitgegeven en nooit getoond of bewerkbaar.',
     setAiVegaSigninDesc:
@@ -5979,14 +5704,14 @@ export const strings = {
       'Webzoeken gebruikt api.vega.chat met je inlogsleutel; beeldzoeken gebruikt gratis bronnen.',
     setGithub: 'Open source',
     starOnGitHub: 'Geef een ster op GitHub',
-    starPromptTitle: 'Bevalt GetOffice?',
-    starPromptTitleN: 'Je hebt al {n} documenten geopend met GetOffice',
+    starPromptTitle: 'Bevalt VegaOffice?',
+    starPromptTitleN: 'Je hebt al {n} documenten geopend met VegaOffice',
     starPromptBody:
-      'GetOffice is gratis en open source. Een ster op GitHub is de beste steun voor het team.',
+      'VegaOffice is gratis en open source. Een ster op GitHub is de beste steun voor het team.',
     starPromptGo: 'Geef een ster',
     starPromptDone: 'Al gedaan',
     starPromptLater: 'Later',
-    onbStarHint: 'Als GetOffice je bevalt, geef ons dan een ster op GitHub.',
+    onbStarHint: 'Als VegaOffice je bevalt, geef ons dan een ster op GitHub.',
     setEmail: 'E-mail',
     setNotLoggedIn: 'Niet ingelogd',
     setViewUsage: 'Verbruik bekijken',
@@ -6000,15 +5725,14 @@ export const strings = {
     appMenu: 'Menu',
     newTab: 'Nieuw tabblad',
     // First-run onboarding
-    onbTitle1: 'Welkom bij GetOffice',
+    onbTitle1: 'Welkom bij VegaOffice',
     onbSubtitle1: 'De eerste open source, AI-native officesuite',
     onbBody1:
       'Maak documenten, bouw spreadsheets, maak presentaties en beoordeel PDF-bestanden. AI zit in elke stap ingebouwd.',
     onbTitle2: 'Dit is nog maar het begin',
-    onbBody2:
-      'GetOffice is nog in alfa. Doe mee aan de groepschat op GenTeam om feedback te delen en mee te bepalen wat er komt.',
+    onbBody2: 'VegaOffice is nog in alfa. Geef ons een ster op GitHub en deel feedback om mee te bepalen wat er komt.',
     onbCredits: 'Actieve bijdragers krijgen **1.000+ VEGA-credits**',
-    onbJoinGenTeam: 'Word lid van GenTeam',
+    onbJoinGitHub: 'Ster op GitHub',
     onbSkip: 'Overslaan',
     onbNext: 'Volgende',
     onbStart: 'Aan de slag',
@@ -6021,23 +5745,8 @@ export const strings = {
   ms: {
     navRecent: 'Terkini',
     navStarred: 'Berbintang',
-    navCloud: 'Genspark Projects',
-    cloudSubtitle:
-      'Projek yang dicipta di web dengan Genspark AI. Penyuntingan diteruskan dalam pelayar — klik projek untuk membukanya.',
-    cloudSearchPlaceholder: 'Cari {n} projek…',
-    cloudNoResults: 'Tiada projek sepadan.',
-    cloudGroupThisWeek: 'Minggu ini',
-    cloudGroupThisMonth: 'Bulan ini',
-    cloudSortLabel: 'Isih: {v}',
-    cloudSortRecent: 'Terbaru',
-    cloudSortOldest: 'Terlama',
-    cloudRefresh: 'Muat semula',
-    cloudLoginHint: 'Log masuk ke akaun Genspark untuk melihat projek yang anda cipta di web.',
-    cloudEmpty: 'Belum ada projek web.',
-    cloudError: 'Gagal memuatkan. Cuba lagi kemudian.',
-    cloudRetry: 'Cuba lagi',
-    cloudLoadMore: 'Muat lagi',
-    cloudOpenInBrowser: 'Buka dalam pelayar',
+    fileSortRecent: 'Terbaru',
+    fileSortOldest: 'Terlama',
     navTrash: 'Tong sampah',
     navTrashTip:
       'Fail yang dipadamkan akan dipindahkan ke tong sampah sistem dan boleh dipulihkan dari sana',
@@ -6136,12 +5845,11 @@ export const strings = {
     timelineUserAria: 'Pengguna',
     untitled: 'Tanpa tajuk',
     noContent: '(kosong)',
-    accountGenspark: 'Akaun VEGA',
     account: 'Akaun',
     login: 'Log masuk',
-    loginGenspark: 'Log masuk dengan VEGA',
+    loginVega: 'Log masuk dengan VEGA',
     loggedIn: 'Telah log masuk',
-    loggedInGenspark: 'Telah log masuk ke VEGA',
+    loggedInVega: 'Telah log masuk ke VEGA',
     waitingLogin: 'Menunggu log masuk dalam pelayar… Klik untuk membuka semula halaman log masuk',
     loginDeviceCode: 'Kod peranti',
     waitingShort: 'Menunggu…',
@@ -6209,7 +5917,7 @@ export const strings = {
     setMcpLogEmpty: 'Belum ada log',
     setSecAbout: 'Perihal',
     setSecIntegrations: 'Integrasi',
-    intgHeroTitle: 'Gunakan GetOffice daripada pembantu AI anda',
+    intgHeroTitle: 'Gunakan VegaOffice daripada pembantu AI anda',
     intgHeroDesc:
       'Setelah disambungkan, Claude Code, Codex, Cursor, Claude Desktop dan pembantu serupa boleh mencipta, menukar, membaca dan mengedit fail Word, Excel, PowerPoint, PDF dan Markdown untuk anda. Semuanya berjalan di komputer ini; tiada apa yang dimuat naik.',
     intgHeroStep1:
@@ -6220,7 +5928,7 @@ export const strings = {
     intgStep1Desc:
       'Hanya pembantu yang ditemui pada komputer ini disenaraikan. Pasang pada yang anda benar-benar guna; tidak perlu kesemuanya.',
     intgStep1Update:
-      'Apabila kemas kini GetOffice membawa skill yang lebih baharu, butang Kemas kini muncul di sebelah pembantu itu.',
+      'Apabila kemas kini VegaOffice membawa skill yang lebih baharu, butang Kemas kini muncul di sebelah pembantu itu.',
     intgSkillVersion: 'skill {v}',
     intgStateMissing: 'Skill belum dipasang',
     intgStateInstalled: 'Skill {v} dipasang · sedia dalam sembang seterusnya',
@@ -6228,7 +5936,7 @@ export const strings = {
     intgOtherDesc:
       'Pilih satu sahaja daripada tiga cara ini. Semuanya memasang skill yang sama, jadi tidak perlu lebih daripada satu.',
     intgOtherFolderTitle: 'Mana-mana pembantu yang membaca folder SKILL.md',
-    intgOtherFolderDesc: 'Pilih folder skills pembantu itu dan GetOffice menulis fail di sana.',
+    intgOtherFolderDesc: 'Pilih folder skills pembantu itu dan VegaOffice menulis fail di sana.',
     intgOtherZipTitle: 'Serahkan fail kepada pembantu',
     intgOtherZipDesc: 'Simpan skill sebagai zip, kemudian minta pembantu memasangnya.',
     intgOtherNpxTitle: 'Dengan arahan skills (perlukan Node.js)',
@@ -6241,24 +5949,24 @@ export const strings = {
       'Selepas dipasang, buka sembang baharu dalam pembantu anda dan minta dengan bahasa biasa, contohnya:',
     intgExample1: 'Tukar ~/Downloads/report.md kepada dokumen Word',
     intgExample2: 'Buat pembentangan 6 slaid tentang hasil S3 kami',
-    intgExample3: 'Tukar budget.xlsx kepada PDF dan buka dalam GetOffice',
+    intgExample3: 'Tukar budget.xlsx kepada PDF dan buka dalam VegaOffice',
     intgStep2Note:
-      'Pembantu menjalankan baris arahan getoffice sendiri; anda tidak perlu menaipnya.',
+      'Pembantu menjalankan baris arahan vegaoffice sendiri; anda tidak perlu menaipnya.',
     intgCliPartTitle: 'CLI · baris arahan + skill',
     intgCliPartDesc:
-      'Untuk pembantu yang boleh menjalankan arahan terminal (Claude Code, Codex, Cursor dan lain-lain). Setelah skill dipasang, pembantu memanggil baris arahan getoffice sendiri untuk mencipta, menukar, membaca dan mengedit fail; anda tidak perlu menaip sebarang arahan.',
+      'Untuk pembantu yang boleh menjalankan arahan terminal (Claude Code, Codex, Cursor dan lain-lain). Setelah skill dipasang, pembantu memanggil baris arahan vegaoffice sendiri untuk mencipta, menukar, membaca dan mengedit fail; anda tidak perlu menaip sebarang arahan.',
     intgMcpPartTitle: 'MCP',
     intgMcpPartDesc:
-      'MCP ialah protokol umum yang digunakan pembantu AI untuk memanggil alat luaran. Gunakannya apabila pembantu anda tidak boleh menjalankan arahan (contohnya Claude Desktop) atau apabila anda mahu ia mengawal tetingkap GetOffice secara langsung. Pilih salah satu daripada dua cara di bawah.',
+      'MCP ialah protokol umum yang digunakan pembantu AI untuk memanggil alat luaran. Gunakannya apabila pembantu anda tidak boleh menjalankan arahan (contohnya Claude Desktop) atau apabila anda mahu ia mengawal tetingkap VegaOffice secara langsung. Pilih salah satu daripada dua cara di bawah.',
     intgMcpStdioTitle: 'Dimulakan oleh pembantu (disyorkan)',
     intgMcpStdioDesc:
-      'Pembantu melancarkan getoffice mcp sendiri: tiada apa yang perlu dihidupkan di sini, dan GetOffice tidak perlu dibuka. Ciri sama seperti CLI.',
+      'Pembantu melancarkan vegaoffice mcp sendiri: tiada apa yang perlu dihidupkan di sini, dan VegaOffice tidak perlu dibuka. Ciri sama seperti CLI.',
     intgMcpHttpTitle: 'Pelayan HTTP tempatan',
     intgMcpHttpDesc:
-      'Berjalan di dalam GetOffice; pembantu menyambung melalui URL dan anda boleh melihat dokumen dibina langkah demi langkah dalam editor Word. GetOffice mesti kekal dibuka; buat masa ini dokumen Word sahaja.',
+      'Berjalan di dalam VegaOffice; pembantu menyambung melalui URL dan anda boleh melihat dokumen dibina langkah demi langkah dalam editor Word. VegaOffice mesti kekal dibuka; buat masa ini dokumen Word sahaja.',
     intgMcpHttpAdvanced: 'Lanjutan: alamat lain dan log',
     intgMcpTryNote:
-      'Pembantu memanggil GetOffice melalui MCP; anda tidak perlu menaip sebarang arahan.',
+      'Pembantu memanggil VegaOffice melalui MCP; anda tidak perlu menaip sebarang arahan.',
     intgMcpClaudeTitle: 'Claude Code',
     intgMcpClaudeDesc: 'Jalankan ini sekali dalam terminal:',
     intgMcpOtherTitle: 'Cursor, Claude Desktop atau pembantu lain yang menyokong MCP',
@@ -6266,10 +5974,10 @@ export const strings = {
       'Tambahkan ini pada tetapan pelayan MCP pembantu tersebut (fail JSON, atau "Tambah pelayan MCP" dalam tetapannya):',
     intgMcpNote:
       'Skill dan MCP boleh dipasang serentak; pembantu akan memilih satu. Kedua-duanya melakukan perkara yang sama.',
-    intgCliTitle: 'Lanjutan: baris arahan getoffice',
-    intgCliReady: 'getoffice {v} · sedia dalam terminal anda ({path})',
+    intgCliTitle: 'Lanjutan: baris arahan vegaoffice',
+    intgCliReady: 'vegaoffice {v} · sedia dalam terminal anda ({path})',
     intgCliNotOnPath:
-      'getoffice {v} · tiada dalam PATH terminal anda. Pembantu masih menemuinya melalui ~/.getoffice/launcher, jadi skill berfungsi. Untuk menaip getoffice sendiri, jalankan ini sekali:',
+      'vegaoffice {v} · tiada dalam PATH terminal anda. Pembantu masih menemuinya melalui ~/.vegaoffice/launcher, jadi skill berfungsi. Untuk menaip vegaoffice sendiri, jalankan ini sekali:',
     intgCliLauncher: 'Folder pelancar',
     intgStateOutdated: 'Dipasang {v}, kemas kini ke {next} tersedia',
     intgStateModified: 'Dipasang {v} (diubah suai)',
@@ -6293,10 +6001,10 @@ export const strings = {
     intgSaveZipTitle: 'Simpan skill',
     intgSavedTo: 'Disimpan ke {path}',
     intgCopied: 'Disalin',
-    intgCliEphemeral: 'Seret GetOffice ke Applications dahulu, kemudian gunakan baris arahan.',
+    intgCliEphemeral: 'Seret VegaOffice ke Applications dahulu, kemudian gunakan baris arahan.',
     intgCopyPath: 'Salin laluan',
     intgCliNeedsUpdate:
-      'Skill ini memerlukan baris arahan {v} atau lebih baharu; kemas kini GetOffice.',
+      'Skill ini memerlukan baris arahan {v} atau lebih baharu; kemas kini VegaOffice.',
     intgLoading: 'Menyemak…',
     intgUpdateDue: 'Kemas kini skill tersedia',
     setSecAiModel: 'Model AI',
@@ -6307,7 +6015,7 @@ export const strings = {
     setAiKeyHint: 'Disimpan pada peranti ini sahaja.',
     setAiBaseUrl: 'Base URL',
     setAiBaseUrlHint: 'Biarkan kosong untuk endpoint rasmi.',
-    setAiGensparkHint: 'Menggunakan log masuk Genspark; tiada kunci API diperlukan.',
+    setAiAccountHint: 'Menggunakan log masuk VEGA; tiada kunci API diperlukan.',
     setAiCodexPath: 'Fail boleh laku Codex',
     setAiCodexPathHint:
       'Isi hanya untuk pemasangan tersuai; biarkan kosong untuk pengesanan automatik.',
@@ -6315,7 +6023,7 @@ export const strings = {
     setAiCodexHint:
       'Menggunakan Codex CLI yang telah log masuk secara setempat; tiada kunci API diperlukan.',
     setAiByokNote:
-      'Sembang menggunakan kunci anda sendiri. Penjanaan imej dan analisis media mengikut bahagian "Media AI"; carian web masih menggunakan log masuk Genspark atau sumber percuma.',
+      'Sembang menggunakan kunci anda sendiri. Penjanaan imej dan analisis media mengikut bahagian "Media AI"; carian web masih menggunakan log masuk VEGA atau sumber percuma.',
     setAiSave: 'Simpan',
     setAiSaved: 'Disimpan',
     setAiTest: 'Uji sambungan',
@@ -6326,12 +6034,12 @@ export const strings = {
     setAiMaxTokensDesc:
       'Belanjawan output untuk satu pusingan. Model penaakulan menghabiskannya untuk berfikir; jika habis, balasan datang kosong — tingkatkan nilai ini.',
     setSecAiMedia: 'Media & Carian AI',
-    setAiMediaGensparkHint:
-      'Penjanaan imej dan analisis imej/video menggunakan log masuk Genspark anda.',
+    setAiMediaAccountHint:
+      'Penjanaan imej dan analisis imej/video menggunakan log masuk VEGA anda.',
     setAiImageModel: 'Model imej',
     setAiAnalysisModel: 'Model analisis',
-    setAiSearchGensparkHint:
-      'Carian web dan imej menggunakan log masuk Genspark anda; apabila log keluar atau alat awan dimatikan, ia menggunakan sumber percuma.',
+    setAiSearchAccountHint:
+      'Carian web dan imej menggunakan log masuk VEGA anda; apabila log keluar atau alat awan dimatikan, ia menggunakan sumber percuma.',
     setAiSearchSerperHint: 'Serper menyediakan carian web dan imej dengan kunci anda.',
     setAiSearchTavilyHint:
       'Tavily menyediakan carian web dengan kunci anda; carian imej menggunakan sumber percuma.',
@@ -6343,7 +6051,7 @@ export const strings = {
       'Kunci dan Base URL pembekal dikongsi oleh semua keupayaan; isi sekali sahaja.',
     setAiVegaTools: 'Alat awan VEGA',
     setAiVegaToolsDesc:
-      'Apabila VEGA menjadi penyedia, carian web, penjanaan imej dan analisis media berjalan melalui api.vega.chat dengan kunci VEGA anda; apabila dimatikan, ia kembali kepada log masuk Genspark atau sumber percuma. Penyedia sembang tidak terjejas.',
+      'Apabila VEGA menjadi penyedia, carian web, penjanaan imej dan analisis media berjalan melalui api.vega.chat dengan kunci VEGA anda; apabila dimatikan, ia kembali kepada log masuk VEGA atau sumber percuma. Penyedia sembang tidak terjejas.',
     setAiVegaNote:
       'Gerbang serasi OpenRouter — kunci API diterbitkan secara automatik semasa log masuk dan tidak pernah dipaparkan atau boleh diubah.',
     setAiVegaSigninDesc:
@@ -6355,14 +6063,14 @@ export const strings = {
       'Carian web menggunakan api.vega.chat dengan kunci log masuk anda; carian imej menggunakan sumber percuma.',
     setGithub: 'Sumber Terbuka',
     starOnGitHub: 'Beri Bintang di GitHub',
-    starPromptTitle: 'Suka GetOffice?',
-    starPromptTitleN: 'Anda telah membuka {n} dokumen dengan GetOffice',
+    starPromptTitle: 'Suka VegaOffice?',
+    starPromptTitleN: 'Anda telah membuka {n} dokumen dengan VegaOffice',
     starPromptBody:
-      'GetOffice percuma dan sumber terbuka. Bintang di GitHub ialah sokongan terbaik untuk pasukan kami.',
+      'VegaOffice percuma dan sumber terbuka. Bintang di GitHub ialah sokongan terbaik untuk pasukan kami.',
     starPromptGo: 'Beri Bintang',
     starPromptDone: 'Sudah',
     starPromptLater: 'Kemudian',
-    onbStarHint: 'Jika anda suka GetOffice, beri kami bintang di GitHub.',
+    onbStarHint: 'Jika anda suka VegaOffice, beri kami bintang di GitHub.',
     setEmail: 'E-mel',
     setNotLoggedIn: 'Belum log masuk',
     setViewUsage: 'Lihat penggunaan',
@@ -6376,15 +6084,14 @@ export const strings = {
     appMenu: 'Menu',
     newTab: 'Tab baharu',
     // First-run onboarding
-    onbTitle1: 'Selamat datang ke GetOffice',
+    onbTitle1: 'Selamat datang ke VegaOffice',
     onbSubtitle1: 'Suite pejabat sumber terbuka natif AI yang pertama',
     onbBody1:
       'Cipta dokumen, bina hamparan, hasilkan persembahan dan semak PDF. AI tersedia pada setiap langkah.',
     onbTitle2: 'Ini baru permulaan',
-    onbBody2:
-      'GetOffice masih dalam peringkat alfa. Sertai sembang kumpulan di GenTeam untuk berkongsi maklum balas dan membentuk masa depannya.',
+    onbBody2: 'VegaOffice masih dalam peringkat alfa. Berikan kami bintang di GitHub dan kongsi maklum balas untuk membentuk masa depannya.',
     onbCredits: 'Penyumbang aktif menerima **1,000+ kredit VEGA**',
-    onbJoinGenTeam: 'Sertai GenTeam',
+    onbJoinGitHub: 'Bintang di GitHub',
     onbSkip: 'Langkau',
     onbNext: 'Seterusnya',
     onbStart: 'Mula',
@@ -6397,23 +6104,8 @@ export const strings = {
   he: {
     navRecent: 'אחרונים',
     navStarred: 'מועדפים',
-    navCloud: 'Genspark Projects',
-    cloudSubtitle:
-      'פרויקטים שנוצרו באינטרנט עם Genspark AI. העריכה נמשכת בדפדפן — לחצו על פרויקט כדי לפתוח אותו.',
-    cloudSearchPlaceholder: 'חיפוש בין {n} פרויקטים…',
-    cloudNoResults: 'אין פרויקטים תואמים.',
-    cloudGroupThisWeek: 'השבוע',
-    cloudGroupThisMonth: 'מוקדם יותר החודש',
-    cloudSortLabel: 'מיון: {v}',
-    cloudSortRecent: 'החדשים ביותר',
-    cloudSortOldest: 'הישנים ביותר',
-    cloudRefresh: 'רענון',
-    cloudLoginHint: 'התחברו לחשבון Genspark כדי לראות פרויקטים שיצרתם באתר.',
-    cloudEmpty: 'אין עדיין פרויקטים מהאתר.',
-    cloudError: 'הטעינה נכשלה. נסו שוב מאוחר יותר.',
-    cloudRetry: 'נסו שוב',
-    cloudLoadMore: 'טענו עוד',
-    cloudOpenInBrowser: 'פתיחה בדפדפן',
+    fileSortRecent: 'החדשים ביותר',
+    fileSortOldest: 'הישנים ביותר',
     navTrash: 'אשפה',
     navTrashTip: 'קבצים שנמחקו עוברים לאשפה של המערכת וניתן לשחזר אותם משם',
     secQuickStart: 'התחלה מהירה',
@@ -6510,12 +6202,11 @@ export const strings = {
     timelineUserAria: 'משתמש',
     untitled: 'ללא שם',
     noContent: '(ריק)',
-    accountGenspark: 'חשבון VEGA',
     account: 'חשבון',
     login: 'התחברות',
-    loginGenspark: 'התחברות עם VEGA',
+    loginVega: 'התחברות עם VEGA',
     loggedIn: 'מחובר',
-    loggedInGenspark: 'מחובר ל-VEGA',
+    loggedInVega: 'מחובר ל-VEGA',
     waitingLogin: 'ממתין להתחברות בדפדפן… לחצו כדי לפתוח שוב את דף ההתחברות',
     loginDeviceCode: 'קוד המכשיר',
     waitingShort: 'ממתין…',
@@ -6581,7 +6272,7 @@ export const strings = {
     setMcpLogEmpty: 'עדיין אין רישומים',
     setSecAbout: 'אודות',
     setSecIntegrations: 'שילובים',
-    intgHeroTitle: 'שימוש ב-GetOffice מתוך עוזר ה-AI שלכם',
+    intgHeroTitle: 'שימוש ב-VegaOffice מתוך עוזר ה-AI שלכם',
     intgHeroDesc:
       'לאחר החיבור, Claude Code‏, Codex‏, Cursor‏, Claude Desktop ועוזרים דומים יכולים ליצור, להמיר, לקרוא ולערוך עבורך קובצי Word‏, Excel‏, PowerPoint‏, PDF ו‑Markdown. הכול פועל במחשב זה; דבר אינו נשלח.',
     intgHeroStep1: 'בחרו מסלול: CLI אם העוזר יכול להריץ פקודות טרמינל, MCP אם לא',
@@ -6590,7 +6281,7 @@ export const strings = {
     intgStep1Title: 'התקינו את ה-skill בעוזר שלכם',
     intgStep1Desc:
       'מוצגים רק עוזרים שנמצאו במחשב הזה. התקינו בזה שבו אתם משתמשים באמת; אין צורך בכולם.',
-    intgStep1Update: 'כשעדכון של GetOffice מביא skill חדש יותר, ליד אותו עוזר יופיע כפתור עדכון.',
+    intgStep1Update: 'כשעדכון של VegaOffice מביא skill חדש יותר, ליד אותו עוזר יופיע כפתור עדכון.',
     intgSkillVersion: 'skill {v}',
     intgStateMissing: 'ה-skill לא מותקן',
     intgStateInstalled: 'skill {v} מותקן · מוכן בשיחה הבאה',
@@ -6598,7 +6289,7 @@ export const strings = {
     intgOtherDesc:
       'בחרו רק דרך אחת מבין השלוש. כולן מתקינות את אותו skill, ולכן אין צורך ביותר מאחת.',
     intgOtherFolderTitle: 'כל עוזר שקורא תיקיות SKILL.md',
-    intgOtherFolderDesc: 'בחרו את תיקיית ה-skills שלו ו-GetOffice יכתוב שם את הקובץ.',
+    intgOtherFolderDesc: 'בחרו את תיקיית ה-skills שלו ו-VegaOffice יכתוב שם את הקובץ.',
     intgOtherZipTitle: 'מסרו את הקובץ לעוזר',
     intgOtherZipDesc: 'שמרו את ה-skill כ-zip ובקשו מהעוזר להתקין אותו.',
     intgOtherNpxTitle: 'באמצעות פקודת skills (דורש Node.js)',
@@ -6609,32 +6300,32 @@ export const strings = {
     intgStep2DescBefore: 'לאחר ההתקנה, פתחו שיחה חדשה בעוזר ובקשו במילים פשוטות, למשל:',
     intgExample1: 'הפוך את ~/Downloads/report.md למסמך Word',
     intgExample2: 'הכן מצגת של 6 שקופיות על תוצאות הרבעון השלישי שלנו',
-    intgExample3: 'המר את budget.xlsx ל-PDF ופתח אותו ב-GetOffice',
-    intgStep2Note: 'העוזר מריץ בעצמו את שורת הפקודה getoffice; לעולם לא תצטרכו להקליד אותה.',
+    intgExample3: 'המר את budget.xlsx ל-PDF ופתח אותו ב-VegaOffice',
+    intgStep2Note: 'העוזר מריץ בעצמו את שורת הפקודה vegaoffice; לעולם לא תצטרכו להקליד אותה.',
     intgCliPartTitle: 'CLI · שורת פקודה + skill',
     intgCliPartDesc:
-      'לעוזרים שיכולים להריץ פקודות טרמינל (Claude Code‏, Codex‏, Cursor ואחרים). לאחר התקנת ה‑skill העוזר קורא בעצמו לשורת הפקודה getoffice כדי ליצור, להמיר, לקרוא ולערוך קבצים; אתם לא מקלידים שום פקודה.',
+      'לעוזרים שיכולים להריץ פקודות טרמינל (Claude Code‏, Codex‏, Cursor ואחרים). לאחר התקנת ה‑skill העוזר קורא בעצמו לשורת הפקודה vegaoffice כדי ליצור, להמיר, לקרוא ולערוך קבצים; אתם לא מקלידים שום פקודה.',
     intgMcpPartTitle: 'MCP',
     intgMcpPartDesc:
-      'MCP הוא הפרוטוקול המשותף שבו עוזרי AI קוראים לכלים חיצוניים. השתמשו בו כשהעוזר אינו יכול להריץ פקודות (למשל Claude Desktop) או כשאתם רוצים שהוא ישלוט ישירות בחלון GetOffice. בחרו אחת משתי הדרכים למטה.',
+      'MCP הוא הפרוטוקול המשותף שבו עוזרי AI קוראים לכלים חיצוניים. השתמשו בו כשהעוזר אינו יכול להריץ פקודות (למשל Claude Desktop) או כשאתם רוצים שהוא ישלוט ישירות בחלון VegaOffice. בחרו אחת משתי הדרכים למטה.',
     intgMcpStdioTitle: 'מופעל על ידי העוזר (מומלץ)',
     intgMcpStdioDesc:
-      'העוזר מפעיל את getoffice mcp בעצמו: אין מה להפעיל כאן, ו‑GetOffice לא חייב להיות פתוח. אותן יכולות כמו ב‑CLI.',
+      'העוזר מפעיל את vegaoffice mcp בעצמו: אין מה להפעיל כאן, ו‑VegaOffice לא חייב להיות פתוח. אותן יכולות כמו ב‑CLI.',
     intgMcpHttpTitle: 'שרת HTTP מקומי',
     intgMcpHttpDesc:
-      'פועל בתוך GetOffice; העוזר מתחבר דרך כתובת URL ואפשר לראות את המסמך נבנה צעד אחר צעד בעורך Word. GetOffice חייב להישאר פתוח; בשלב זה מסמכי Word בלבד.',
+      'פועל בתוך VegaOffice; העוזר מתחבר דרך כתובת URL ואפשר לראות את המסמך נבנה צעד אחר צעד בעורך Word. VegaOffice חייב להישאר פתוח; בשלב זה מסמכי Word בלבד.',
     intgMcpHttpAdvanced: 'מתקדם: כתובות נוספות ויומן',
-    intgMcpTryNote: 'העוזר קורא ל‑GetOffice דרך MCP; אתם לא מקלידים שום פקודה.',
+    intgMcpTryNote: 'העוזר קורא ל‑VegaOffice דרך MCP; אתם לא מקלידים שום פקודה.',
     intgMcpClaudeTitle: 'Claude Code',
     intgMcpClaudeDesc: 'הריצו זאת פעם אחת בטרמינל:',
     intgMcpOtherTitle: 'Cursor, Claude Desktop או כל עוזר אחר התומך ב-MCP',
     intgMcpOtherDesc: 'הוסיפו זאת להגדרות שרתי ה-MCP שלו (קובץ JSON, או "הוספת שרת MCP" בהגדרות):',
     intgMcpNote:
       'הסקיל ו-MCP יכולים להיות מוגדרים יחד; העוזר יבחר אחד מהם. שניהם עושים בדיוק את אותם הדברים.',
-    intgCliTitle: 'מתקדם: שורת הפקודה getoffice',
-    intgCliReady: 'getoffice {v} · מוכן בטרמינל ({path})',
+    intgCliTitle: 'מתקדם: שורת הפקודה vegaoffice',
+    intgCliReady: 'vegaoffice {v} · מוכן בטרמינל ({path})',
     intgCliNotOnPath:
-      'getoffice {v} · לא נמצא ב-PATH של הטרמינל. העוזרים עדיין מוצאים אותו דרך ~/.getoffice/launcher, ולכן ה-skill עובד. כדי להקליד getoffice בעצמכם, הריצו זאת פעם אחת:',
+      'vegaoffice {v} · לא נמצא ב-PATH של הטרמינל. העוזרים עדיין מוצאים אותו דרך ~/.vegaoffice/launcher, ולכן ה-skill עובד. כדי להקליד vegaoffice בעצמכם, הריצו זאת פעם אחת:',
     intgCliLauncher: 'תיקיית המשגר',
     intgStateOutdated: 'מותקן {v}, זמין עדכון ל-{next}',
     intgStateModified: 'מותקן {v} (שונה)',
@@ -6658,9 +6349,9 @@ export const strings = {
     intgSaveZipTitle: 'שמירת skill',
     intgSavedTo: 'נשמר אל {path}',
     intgCopied: 'הועתק',
-    intgCliEphemeral: 'גררו קודם את GetOffice לתיקיית היישומים, ואז השתמשו בשורת הפקודה.',
+    intgCliEphemeral: 'גררו קודם את VegaOffice לתיקיית היישומים, ואז השתמשו בשורת הפקודה.',
     intgCopyPath: 'העתקת נתיב',
-    intgCliNeedsUpdate: 'skill זה דורש שורת פקודה {v} ומעלה; עדכנו את GetOffice.',
+    intgCliNeedsUpdate: 'skill זה דורש שורת פקודה {v} ומעלה; עדכנו את VegaOffice.',
     intgLoading: 'בודק…',
     intgUpdateDue: 'עדכון skill זמין',
     setSecAiModel: 'מודל AI',
@@ -6671,13 +6362,13 @@ export const strings = {
     setAiKeyHint: 'נשמר רק במכשיר זה.',
     setAiBaseUrl: 'Base URL',
     setAiBaseUrlHint: 'השאר ריק לנקודת הקצה הרשמית.',
-    setAiGensparkHint: 'משתמש בכניסת Genspark שלך; אין צורך במפתח API.',
+    setAiAccountHint: 'משתמש בכניסת VEGA שלך; אין צורך במפתח API.',
     setAiCodexPath: 'קובץ ההפעלה של Codex',
     setAiCodexPathHint: 'יש למלא רק בהתקנה מותאמת; השאר ריק לזיהוי אוטומטי.',
     setAiCodexAutoPlaceholder: 'זיהוי אוטומטי (מומלץ)',
     setAiCodexHint: 'משתמש ב-Codex CLI המחובר מקומית; אין צורך במפתח API.',
     setAiByokNote:
-      'הצ׳אטים משתמשים במפתח שלך. יצירת תמונות וניתוח מדיה נקבעים בקטע "מדיה AI"; חיפוש באינטרנט עדיין משתמש בהתחברות Genspark או במקורות חינמיים.',
+      'הצ׳אטים משתמשים במפתח שלך. יצירת תמונות וניתוח מדיה נקבעים בקטע "מדיה AI"; חיפוש באינטרנט עדיין משתמש בהתחברות VEGA או במקורות חינמיים.',
     setAiSave: 'שמירה',
     setAiSaved: 'נשמר',
     setAiTest: 'בדיקת חיבור',
@@ -6688,11 +6379,11 @@ export const strings = {
     setAiMaxTokensDesc:
       'תקציב פלט לסיבוב אחד. מודלי היסק מנצלים חלק ממנו לחשיבה, ואם הוא נגמר התשובה עלולה לחזור ריקה — במקרה כזה העלו את הערך.',
     setSecAiMedia: 'מדיה וחיפוש AI',
-    setAiMediaGensparkHint: 'יצירת תמונות וניתוח תמונות/וידאו משתמשים בהתחברות Genspark שלך.',
+    setAiMediaAccountHint: 'יצירת תמונות וניתוח תמונות/וידאו משתמשים בהתחברות VEGA שלך.',
     setAiImageModel: 'מודל תמונות',
     setAiAnalysisModel: 'מודל ניתוח',
-    setAiSearchGensparkHint:
-      'חיפוש באינטרנט ובתמונות משתמש בהתחברות Genspark שלך; כשלא מחוברים או כשכלי הענן כבויים הוא חוזר למקורות חינמיים.',
+    setAiSearchAccountHint:
+      'חיפוש באינטרנט ובתמונות משתמש בהתחברות VEGA שלך; כשלא מחוברים או כשכלי הענן כבויים הוא חוזר למקורות חינמיים.',
     setAiSearchSerperHint: 'Serper מספק חיפוש באינטרנט ובתמונות עם המפתח שלך.',
     setAiSearchTavilyHint:
       'Tavily מספק חיפוש באינטרנט עם המפתח שלך; חיפוש תמונות חוזר למקורות חינמיים.',
@@ -6704,7 +6395,7 @@ export const strings = {
       'המפתח וכתובת ה-Base URL של ספק משותפים לכל היכולות; יש להזין אותם פעם אחת בלבד.',
     setAiVegaTools: 'כלי הענן של VEGA',
     setAiVegaToolsDesc:
-      "כש-VEGA הוא הספק, חיפוש באינטרנט, יצירת תמונות וניתוח מדיה עוברים דרך api.vega.chat עם מפתח VEGA; כשהם כבויים הם חוזרים לחשבון Genspark או למקורות חינמיים. ספק הצ'אט לא מושפע.",
+      "כש-VEGA הוא הספק, חיפוש באינטרנט, יצירת תמונות וניתוח מדיה עוברים דרך api.vega.chat עם מפתח VEGA; כשהם כבויים הם חוזרים לחשבון VEGA או למקורות חינמיים. ספק הצ'אט לא מושפע.",
     setAiVegaNote:
       'שער תואם OpenRouter — מפתח ה-API מונפק אוטומטית בעת הכניסה ואינו מוצג או ניתן לעריכה.',
     setAiVegaSigninDesc: 'כניסה אחת מנפיקה את מפתח ה-API ושומרת אותו בבטחה במכשיר זה.',
@@ -6714,13 +6405,13 @@ export const strings = {
       'חיפוש באינטרנט עובר דרך api.vega.chat עם מפתח הכניסה שלך; חיפוש תמונות משתמש במקורות חינמיים.',
     setGithub: 'קוד פתוח',
     starOnGitHub: 'תנו כוכב ב-GitHub',
-    starPromptTitle: 'נהנים מ-GetOffice?',
-    starPromptTitleN: 'פתחת {n} מסמכים עם GetOffice',
-    starPromptBody: 'GetOffice חינמי ובקוד פתוח. כוכב ב-GitHub הוא התמיכה הטובה ביותר בצוות.',
+    starPromptTitle: 'נהנים מ-VegaOffice?',
+    starPromptTitleN: 'פתחת {n} מסמכים עם VegaOffice',
+    starPromptBody: 'VegaOffice חינמי ובקוד פתוח. כוכב ב-GitHub הוא התמיכה הטובה ביותר בצוות.',
     starPromptGo: 'לתת כוכב',
     starPromptDone: 'כבר נתתי',
     starPromptLater: 'אחר כך',
-    onbStarHint: 'אם GetOffice מוצא חן בעיניכם, תנו לנו כוכב ב-GitHub.',
+    onbStarHint: 'אם VegaOffice מוצא חן בעיניכם, תנו לנו כוכב ב-GitHub.',
     setEmail: 'אימייל',
     setNotLoggedIn: 'לא מחובר',
     setViewUsage: 'הצגת שימוש',
@@ -6734,14 +6425,13 @@ export const strings = {
     appMenu: 'תפריט',
     newTab: 'כרטיסייה חדשה',
     // First-run onboarding
-    onbTitle1: 'ברוכים הבאים ל-GetOffice',
+    onbTitle1: 'ברוכים הבאים ל-VegaOffice',
     onbSubtitle1: 'חבילת המשרד הראשונה בקוד פתוח שהיא AI-נייטיב',
     onbBody1: 'צרו מסמכים, בנו גיליונות, הכינו מצגות ובדקו קובצי PDF. ה-AI מובנה בכל שלב.',
     onbTitle2: 'זו רק ההתחלה',
-    onbBody2:
-      'GetOffice עדיין בגרסת אלפא. הצטרפו לצ׳אט הקבוצתי ב-GenTeam כדי לשתף משוב ולעזור לעצב את ההמשך.',
+    onbBody2: 'VegaOffice עדיין בגרסת אלפא. הוסיפו לנו כוכב ב-GitHub ושתפו משוב כדי לעצב את ההמשך.',
     onbCredits: 'תורמים פעילים מקבלים **1,000+ נקודות VEGA**',
-    onbJoinGenTeam: 'הצטרפו ל-GenTeam',
+    onbJoinGitHub: 'כוכב ב-GitHub',
     onbSkip: 'דילוג',
     onbNext: 'הבא',
     onbStart: 'להתחיל',
@@ -6754,23 +6444,8 @@ export const strings = {
   hi: {
     navRecent: 'हाल के',
     navStarred: 'तारांकित',
-    navCloud: 'Genspark Projects',
-    cloudSubtitle:
-      'Genspark AI के साथ वेब पर बनाए गए प्रोजेक्ट। संपादन ब्राउज़र में जारी रहता है — खोलने के लिए किसी प्रोजेक्ट पर क्लिक करें।',
-    cloudSearchPlaceholder: '{n} प्रोजेक्ट खोजें…',
-    cloudNoResults: 'कोई मिलान वाला प्रोजेक्ट नहीं।',
-    cloudGroupThisWeek: 'इस सप्ताह',
-    cloudGroupThisMonth: 'इस महीने',
-    cloudSortLabel: 'क्रम: {v}',
-    cloudSortRecent: 'हाल के',
-    cloudSortOldest: 'सबसे पुराने',
-    cloudRefresh: 'रीफ़्रेश',
-    cloudLoginHint: 'वेब पर बनाए गए प्रोजेक्ट देखने के लिए अपने Genspark खाते में साइन इन करें।',
-    cloudEmpty: 'अभी तक कोई वेब प्रोजेक्ट नहीं है।',
-    cloudError: 'लोड नहीं हो सका। बाद में फिर से कोशिश करें।',
-    cloudRetry: 'फिर से कोशिश करें',
-    cloudLoadMore: 'और लोड करें',
-    cloudOpenInBrowser: 'ब्राउज़र में खोलें',
+    fileSortRecent: 'हाल के',
+    fileSortOldest: 'सबसे पुराने',
     navTrash: 'ट्रैश',
     navTrashTip: 'हटाई गई फ़ाइलें सिस्टम ट्रैश में जाती हैं और वहाँ से पुनर्स्थापित की जा सकती हैं',
     secQuickStart: 'त्वरित प्रारंभ',
@@ -6869,12 +6544,11 @@ export const strings = {
     timelineUserAria: 'उपयोगकर्ता',
     untitled: 'बिना शीर्षक',
     noContent: '(खाली)',
-    accountGenspark: 'VEGA खाता',
     account: 'खाता',
     login: 'साइन इन करें',
-    loginGenspark: 'VEGA से साइन इन करें',
+    loginVega: 'VEGA से साइन इन करें',
     loggedIn: 'साइन इन हो गया',
-    loggedInGenspark: 'VEGA में साइन इन है',
+    loggedInVega: 'VEGA में साइन इन है',
     waitingLogin:
       'ब्राउज़र में साइन इन की प्रतीक्षा है… साइन इन पेज दोबारा खोलने के लिए क्लिक करें',
     loginDeviceCode: 'डिवाइस कोड',
@@ -6942,7 +6616,7 @@ export const strings = {
     setMcpLogEmpty: 'अभी कोई लॉग नहीं',
     setSecAbout: 'जानकारी',
     setSecIntegrations: 'इंटीग्रेशन',
-    intgHeroTitle: 'अपने AI असिस्टेंट से GetOffice इस्तेमाल करें',
+    intgHeroTitle: 'अपने AI असिस्टेंट से VegaOffice इस्तेमाल करें',
     intgHeroDesc:
       'कनेक्ट होने के बाद Claude Code, Codex, Cursor, Claude Desktop और ऐसे ही सहायक आपके लिए Word, Excel, PowerPoint, PDF और Markdown फ़ाइलें बना, बदल, पढ़ और संपादित कर सकते हैं। सब कुछ इसी कंप्यूटर पर चलता है; कुछ भी अपलोड नहीं होता।',
     intgHeroStep1: 'रास्ता चुनें: सहायक टर्मिनल कमांड चला सकता है तो CLI, नहीं तो MCP',
@@ -6952,7 +6626,7 @@ export const strings = {
     intgStep1Desc:
       'यहाँ केवल इस कंप्यूटर पर मिले असिस्टेंट दिखते हैं। जिसे आप सच में इस्तेमाल करते हैं उसी में इंस्टॉल करें; सभी की ज़रूरत नहीं।',
     intgStep1Update:
-      'जब GetOffice के अपडेट में नया skill आता है, तो उस असिस्टेंट के पास अपडेट बटन दिखता है।',
+      'जब VegaOffice के अपडेट में नया skill आता है, तो उस असिस्टेंट के पास अपडेट बटन दिखता है।',
     intgSkillVersion: 'skill {v}',
     intgStateMissing: 'skill इंस्टॉल नहीं है',
     intgStateInstalled: 'skill {v} इंस्टॉल हो गया · अगली चैट में तैयार',
@@ -6960,7 +6634,7 @@ export const strings = {
     intgOtherDesc:
       'इन तीन तरीकों में से कोई एक ही चुनें। सभी एक ही skill इंस्टॉल करते हैं, इसलिए एक से ज़्यादा की ज़रूरत नहीं।',
     intgOtherFolderTitle: 'कोई भी असिस्टेंट जो SKILL.md फ़ोल्डर पढ़ता है',
-    intgOtherFolderDesc: 'उसका skills फ़ोल्डर चुनें, GetOffice वहाँ फ़ाइल लिख देगा।',
+    intgOtherFolderDesc: 'उसका skills फ़ोल्डर चुनें, VegaOffice वहाँ फ़ाइल लिख देगा।',
     intgOtherZipTitle: 'फ़ाइल असिस्टेंट को दें',
     intgOtherZipDesc: 'skill को zip के रूप में सहेजें, फिर असिस्टेंट से इंस्टॉल करने को कहें।',
     intgOtherNpxTitle: 'skills कमांड से (Node.js ज़रूरी)',
@@ -6972,23 +6646,23 @@ export const strings = {
       'इंस्टॉल होने के बाद अपने असिस्टेंट में नई चैट खोलें और सादे शब्दों में कहें, जैसे:',
     intgExample1: '~/Downloads/report.md को Word दस्तावेज़ बना दो',
     intgExample2: 'हमारे Q3 नतीजों पर 6 स्लाइड का प्रेज़ेंटेशन बनाओ',
-    intgExample3: 'budget.xlsx को PDF में बदलो और GetOffice में खोलो',
-    intgStep2Note: 'getoffice कमांड लाइन असिस्टेंट खुद चलाता है; आपको कभी टाइप नहीं करना पड़ता।',
+    intgExample3: 'budget.xlsx को PDF में बदलो और VegaOffice में खोलो',
+    intgStep2Note: 'vegaoffice कमांड लाइन असिस्टेंट खुद चलाता है; आपको कभी टाइप नहीं करना पड़ता।',
     intgCliPartTitle: 'CLI · कमांड लाइन + skill',
     intgCliPartDesc:
-      'उन सहायकों के लिए जो टर्मिनल कमांड चला सकते हैं (Claude Code, Codex, Cursor आदि)। skill इंस्टॉल होने के बाद सहायक फ़ाइलें बनाने, बदलने, पढ़ने और संपादित करने के लिए खुद getoffice कमांड लाइन चलाता है; आपको कोई कमांड टाइप नहीं करना पड़ता।',
+      'उन सहायकों के लिए जो टर्मिनल कमांड चला सकते हैं (Claude Code, Codex, Cursor आदि)। skill इंस्टॉल होने के बाद सहायक फ़ाइलें बनाने, बदलने, पढ़ने और संपादित करने के लिए खुद vegaoffice कमांड लाइन चलाता है; आपको कोई कमांड टाइप नहीं करना पड़ता।',
     intgMcpPartTitle: 'MCP',
     intgMcpPartDesc:
-      'MCP वह साझा प्रोटोकॉल है जिससे AI सहायक बाहरी टूल बुलाते हैं। इसे तब चुनें जब सहायक कमांड न चला सके (जैसे Claude Desktop) या आप चाहें कि वह GetOffice की विंडो को सीधे चलाए। नीचे दिए दो तरीकों में से कोई एक चुनें।',
+      'MCP वह साझा प्रोटोकॉल है जिससे AI सहायक बाहरी टूल बुलाते हैं। इसे तब चुनें जब सहायक कमांड न चला सके (जैसे Claude Desktop) या आप चाहें कि वह VegaOffice की विंडो को सीधे चलाए। नीचे दिए दो तरीकों में से कोई एक चुनें।',
     intgMcpStdioTitle: 'सहायक द्वारा शुरू (अनुशंसित)',
     intgMcpStdioDesc:
-      'सहायक खुद getoffice mcp चलाता है: यहाँ कुछ चालू करने की ज़रूरत नहीं, और GetOffice खुला होना भी ज़रूरी नहीं। सुविधाएँ CLI जैसी ही।',
+      'सहायक खुद vegaoffice mcp चलाता है: यहाँ कुछ चालू करने की ज़रूरत नहीं, और VegaOffice खुला होना भी ज़रूरी नहीं। सुविधाएँ CLI जैसी ही।',
     intgMcpHttpTitle: 'स्थानीय HTTP सर्वर',
     intgMcpHttpDesc:
-      'GetOffice के अंदर चलता है; सहायक URL से जुड़ता है और आप Word संपादक में दस्तावेज़ को चरण-दर-चरण बनते देख सकते हैं। GetOffice खुला रहना चाहिए; अभी केवल Word दस्तावेज़।',
+      'VegaOffice के अंदर चलता है; सहायक URL से जुड़ता है और आप Word संपादक में दस्तावेज़ को चरण-दर-चरण बनते देख सकते हैं। VegaOffice खुला रहना चाहिए; अभी केवल Word दस्तावेज़।',
     intgMcpHttpAdvanced: 'उन्नत: अन्य पते और लॉग',
     intgMcpTryNote:
-      'सहायक MCP के ज़रिये GetOffice को बुलाता है; आपको कोई कमांड टाइप नहीं करना पड़ता।',
+      'सहायक MCP के ज़रिये VegaOffice को बुलाता है; आपको कोई कमांड टाइप नहीं करना पड़ता।',
     intgMcpClaudeTitle: 'Claude Code',
     intgMcpClaudeDesc: 'टर्मिनल में इसे एक बार चलाएँ:',
     intgMcpOtherTitle: 'Cursor, Claude Desktop या कोई अन्य MCP-समर्थित असिस्टेंट',
@@ -6996,10 +6670,10 @@ export const strings = {
       'इसे उसकी MCP सर्वर सेटिंग्स में जोड़ें (एक JSON फ़ाइल, या सेटिंग्स में "MCP सर्वर जोड़ें"):',
     intgMcpNote:
       'स्किल और MCP एक साथ सेट किए जा सकते हैं; असिस्टेंट एक को चुन लेता है। दोनों बिल्कुल एक जैसे काम करते हैं।',
-    intgCliTitle: 'उन्नत: getoffice कमांड लाइन',
-    intgCliReady: 'getoffice {v} · टर्मिनल में तैयार ({path})',
+    intgCliTitle: 'उन्नत: vegaoffice कमांड लाइन',
+    intgCliReady: 'vegaoffice {v} · टर्मिनल में तैयार ({path})',
     intgCliNotOnPath:
-      'getoffice {v} · टर्मिनल के PATH में नहीं है। असिस्टेंट इसे ~/.getoffice/launcher से फिर भी ढूँढ लेते हैं, इसलिए skill काम करता है। खुद getoffice टाइप करने के लिए यह एक बार चलाएँ:',
+      'vegaoffice {v} · टर्मिनल के PATH में नहीं है। असिस्टेंट इसे ~/.vegaoffice/launcher से फिर भी ढूँढ लेते हैं, इसलिए skill काम करता है। खुद vegaoffice टाइप करने के लिए यह एक बार चलाएँ:',
     intgCliLauncher: 'लॉन्चर फ़ोल्डर',
     intgStateOutdated: 'इंस्टॉल {v}, {next} पर अपडेट उपलब्ध',
     intgStateModified: 'इंस्टॉल {v} (बदला गया)',
@@ -7023,9 +6697,9 @@ export const strings = {
     intgSaveZipTitle: 'skill सहेजें',
     intgSavedTo: '{path} में सहेजा गया',
     intgCopied: 'कॉपी हो गया',
-    intgCliEphemeral: 'पहले GetOffice को Applications में खींचें, फिर कमांड लाइन का उपयोग करें।',
+    intgCliEphemeral: 'पहले VegaOffice को Applications में खींचें, फिर कमांड लाइन का उपयोग करें।',
     intgCopyPath: 'पथ कॉपी करें',
-    intgCliNeedsUpdate: 'इस skill को कमांड लाइन {v} या नया चाहिए; GetOffice अपडेट करें।',
+    intgCliNeedsUpdate: 'इस skill को कमांड लाइन {v} या नया चाहिए; VegaOffice अपडेट करें।',
     intgLoading: 'जाँच हो रही है…',
     intgUpdateDue: 'skill अपडेट उपलब्ध',
     setSecAiModel: 'AI मॉडल',
@@ -7036,14 +6710,14 @@ export const strings = {
     setAiKeyHint: 'केवल इसी डिवाइस पर संग्रहीत।',
     setAiBaseUrl: 'Base URL',
     setAiBaseUrlHint: 'आधिकारिक एंडपॉइंट के लिए खाली छोड़ें।',
-    setAiGensparkHint: 'आपके Genspark साइन-इन का उपयोग करता है; API कुंजी की आवश्यकता नहीं।',
+    setAiAccountHint: 'आपके VEGA साइन-इन का उपयोग करता है; API कुंजी की आवश्यकता नहीं।',
     setAiCodexPath: 'Codex निष्पादन फ़ाइल',
     setAiCodexPathHint: 'केवल कस्टम इंस्टॉलेशन के लिए भरें; स्वतः पहचान के लिए खाली छोड़ें।',
     setAiCodexAutoPlaceholder: 'स्वतः पहचान (अनुशंसित)',
     setAiCodexHint:
       'स्थानीय रूप से साइन-इन किए गए Codex CLI का उपयोग करता है; API कुंजी की आवश्यकता नहीं।',
     setAiByokNote:
-      'चैट आपकी अपनी कुंजी का उपयोग करती हैं। इमेज जनरेशन और मीडिया विश्लेषण "AI मीडिया" अनुभाग के अनुसार होते हैं; वेब खोज अभी भी Genspark साइन-इन या मुफ़्त स्रोतों का उपयोग करती है।',
+      'चैट आपकी अपनी कुंजी का उपयोग करती हैं। इमेज जनरेशन और मीडिया विश्लेषण "AI मीडिया" अनुभाग के अनुसार होते हैं; वेब खोज अभी भी VEGA साइन-इन या मुफ़्त स्रोतों का उपयोग करती है।',
     setAiSave: 'सहेजें',
     setAiSaved: 'सहेजा गया',
     setAiTest: 'कनेक्शन परखें',
@@ -7054,12 +6728,12 @@ export const strings = {
     setAiMaxTokensDesc:
       'एक टर्न का आउटपुट बजट। रीज़निंग मॉडल इसका कुछ हिस्सा सोचने में खर्च करते हैं; बजट खत्म होने पर उत्तर खाली आ सकता है — ऐसा हो तो इसे बढ़ाएँ।',
     setSecAiMedia: 'AI मीडिया और खोज',
-    setAiMediaGensparkHint:
-      'इमेज जनरेशन और इमेज/वीडियो विश्लेषण आपके Genspark साइन-इन का उपयोग करते हैं।',
+    setAiMediaAccountHint:
+      'इमेज जनरेशन और इमेज/वीडियो विश्लेषण आपके VEGA साइन-इन का उपयोग करते हैं।',
     setAiImageModel: 'इमेज मॉडल',
     setAiAnalysisModel: 'विश्लेषण मॉडल',
-    setAiSearchGensparkHint:
-      'वेब और इमेज खोज आपके Genspark साइन-इन का उपयोग करती हैं; साइन-आउट होने पर या क्लाउड टूल बंद होने पर वे मुफ़्त स्रोतों पर लौट जाती हैं।',
+    setAiSearchAccountHint:
+      'वेब और इमेज खोज आपके VEGA साइन-इन का उपयोग करती हैं; साइन-आउट होने पर या क्लाउड टूल बंद होने पर वे मुफ़्त स्रोतों पर लौट जाती हैं।',
     setAiSearchSerperHint: 'Serper आपकी कुंजी से वेब और इमेज खोज दोनों देता है।',
     setAiSearchTavilyHint:
       'Tavily आपकी कुंजी से वेब खोज देता है; इमेज खोज मुफ़्त स्रोतों पर लौट जाती है।',
@@ -7071,7 +6745,7 @@ export const strings = {
       'एक प्रदाता की कुंजी और Base URL सभी क्षमताओं में साझा होते हैं; एक बार ही दर्ज करें।',
     setAiVegaTools: 'VEGA क्लाउड टूल',
     setAiVegaToolsDesc:
-      'जब VEGA प्रोवाइडर हो, वेब सर्च, इमेज जनरेशन और मीडिया विश्लेषण api.vega.chat के माध्यम से आपकी VEGA कुंजी से चलते हैं; बंद करने पर वे Genspark साइन-इन या मुफ़्त स्रोतों पर वापस जाते हैं। चैट प्रोवाइडर अप्रभावित रहता है।',
+      'जब VEGA प्रोवाइडर हो, वेब सर्च, इमेज जनरेशन और मीडिया विश्लेषण api.vega.chat के माध्यम से आपकी VEGA कुंजी से चलते हैं; बंद करने पर वे VEGA साइन-इन या मुफ़्त स्रोतों पर वापस जाते हैं। चैट प्रोवाइडर अप्रभावित रहता है।',
     setAiVegaNote:
       'OpenRouter-संगत गेटवे — साइन-इन पर API कुंजी स्वचालित रूप से जारी होती है; यह कभी नहीं दिखाई जाती और संपादित नहीं की जा सकती।',
     setAiVegaSigninDesc:
@@ -7083,14 +6757,14 @@ export const strings = {
       'वेब सर्च आपकी साइन-इन कुंजी से api.vega.chat के माध्यम से चलती है; इमेज सर्च मुफ़्त स्रोतों का उपयोग करती है।',
     setGithub: 'ओपन सोर्स',
     starOnGitHub: 'GitHub पर स्टार दें',
-    starPromptTitle: 'GetOffice पसंद आ रहा है?',
-    starPromptTitleN: 'आपने GetOffice में {n} दस्तावेज़ खोले हैं',
+    starPromptTitle: 'VegaOffice पसंद आ रहा है?',
+    starPromptTitleN: 'आपने VegaOffice में {n} दस्तावेज़ खोले हैं',
     starPromptBody:
-      'GetOffice मुफ़्त और ओपन सोर्स है। GitHub पर एक स्टार टीम का सबसे अच्छा समर्थन है।',
+      'VegaOffice मुफ़्त और ओपन सोर्स है। GitHub पर एक स्टार टीम का सबसे अच्छा समर्थन है।',
     starPromptGo: 'स्टार दें',
     starPromptDone: 'पहले ही दे दिया',
     starPromptLater: 'बाद में',
-    onbStarHint: 'अगर आपको GetOffice पसंद है, तो हमें GitHub पर स्टार दें।',
+    onbStarHint: 'अगर आपको VegaOffice पसंद है, तो हमें GitHub पर स्टार दें।',
     setEmail: 'ईमेल',
     setNotLoggedIn: 'साइन इन नहीं किया गया',
     setViewUsage: 'उपयोग देखें',
@@ -7104,15 +6778,14 @@ export const strings = {
     appMenu: 'मेनू',
     newTab: 'नया टैब',
     // First-run onboarding
-    onbTitle1: 'GetOffice में आपका स्वागत है',
+    onbTitle1: 'VegaOffice में आपका स्वागत है',
     onbSubtitle1: 'पहला ओपन-सोर्स, AI-नेटिव ऑफ़िस सुइट',
     onbBody1:
       'दस्तावेज़ बनाएँ, स्प्रेडशीट तैयार करें, प्रस्तुतियाँ बनाएँ और PDF की समीक्षा करें। AI हर चरण में शामिल है।',
     onbTitle2: 'यह तो बस शुरुआत है',
-    onbBody2:
-      'GetOffice अभी अल्फ़ा में है। GenTeam पर ग्रुप चैट से जुड़ें, फ़ीडबैक साझा करें और आगे की दिशा तय करने में मदद करें।',
+    onbBody2: 'VegaOffice अभी अल्फ़ा में है। GitHub पर हमें स्टार दें और फ़ीडबैक साझा करें ताकि आगे की दिशा तय करने में मदद मिले।',
     onbCredits: 'सक्रिय योगदानकर्ताओं के लिए **1,000+ VEGA क्रेडिट**',
-    onbJoinGenTeam: 'GenTeam से जुड़ें',
+    onbJoinGitHub: 'GitHub पर स्टार',
     onbSkip: 'छोड़ें',
     onbNext: 'आगे',
     onbStart: 'शुरू करें',
@@ -7125,22 +6798,8 @@ export const strings = {
   'zh-TW': {
     navRecent: '最近',
     navStarred: '收藏',
-    navCloud: 'Genspark Projects',
-    cloudSubtitle: '在網頁端用 Genspark AI 建立的專案。編輯在瀏覽器中繼續——點擊任意專案即可開啟。',
-    cloudSearchPlaceholder: '搜尋 {n} 個專案…',
-    cloudNoResults: '沒有符合的專案。',
-    cloudGroupThisWeek: '本週',
-    cloudGroupThisMonth: '本月',
-    cloudSortLabel: '排序：{v}',
-    cloudSortRecent: '最近',
-    cloudSortOldest: '最早',
-    cloudRefresh: '重新整理',
-    cloudLoginHint: '登入 Genspark 帳號，查看你在網頁端建立的專案。',
-    cloudEmpty: '還沒有網頁端專案。',
-    cloudError: '載入失敗，請稍後再試。',
-    cloudRetry: '重試',
-    cloudLoadMore: '載入更多',
-    cloudOpenInBrowser: '在瀏覽器中開啟',
+    fileSortRecent: '最近',
+    fileSortOldest: '最早',
     navTrash: '垃圾桶',
     navTrashTip: '刪除的檔案會移至系統垃圾桶，可從那裡還原',
     secQuickStart: '快速開始',
@@ -7237,12 +6896,11 @@ export const strings = {
     timelineUserAria: '使用者',
     untitled: '未命名',
     noContent: '（無內容）',
-    accountGenspark: 'VEGA 帳號',
     account: '帳號',
     login: '登入',
-    loginGenspark: '登入 VEGA 帳號',
+    loginVega: '登入 VEGA 帳號',
     loggedIn: '已登入',
-    loggedInGenspark: '已登入 VEGA',
+    loggedInVega: '已登入 VEGA',
     waitingLogin: '正在等待瀏覽器登入…點按可重新開啟登入頁面',
     loginDeviceCode: '裝置代碼',
     waitingShort: '等待登入…',
@@ -7307,7 +6965,7 @@ export const strings = {
     setMcpLogEmpty: '尚無日誌',
     setSecAbout: '關於',
     setSecIntegrations: '整合',
-    intgHeroTitle: '在 AI 助理中使用 GetOffice',
+    intgHeroTitle: '在 AI 助理中使用 VegaOffice',
     intgHeroDesc:
       '接好後，Claude Code、Codex、Cursor、Claude Desktop 等助理就能替你建立、轉換、讀取和編輯 Word、Excel、PowerPoint、PDF 和 Markdown 檔案。全部在本機完成，不會上傳任何內容。',
     intgHeroStep1: '選接法：助理能執行終端機指令就用 CLI，不能就用 MCP',
@@ -7315,14 +6973,14 @@ export const strings = {
     intgHeroStep3: '開一個新對話，直接提需求',
     intgStep1Title: '將 skill 安裝到你的助理',
     intgStep1Desc: '這裡只列出本機偵測到的助理。安裝到你實際使用的那一個即可，不必全部安裝。',
-    intgStep1Update: 'GetOffice 升級帶來新版 skill 時，對應助理旁會出現「更新」按鈕。',
+    intgStep1Update: 'VegaOffice 升級帶來新版 skill 時，對應助理旁會出現「更新」按鈕。',
     intgSkillVersion: 'skill {v}',
     intgStateMissing: 'skill 未安裝',
     intgStateInstalled: '已安裝 skill {v} · 下次對話即可使用',
     intgOtherToggle: '沒有列出我的助理',
     intgOtherDesc: '以下三種方式任選一種即可。安裝的是同一份 skill，不需要重複操作。',
     intgOtherFolderTitle: '任何能讀取 SKILL.md 資料夾的助理',
-    intgOtherFolderDesc: '選擇它的 skills 資料夾，GetOffice 會把檔案寫進去。',
+    intgOtherFolderDesc: '選擇它的 skills 資料夾，VegaOffice 會把檔案寫進去。',
     intgOtherZipTitle: '把檔案交給助理',
     intgOtherZipDesc: '把 skill 儲存為 zip，然後讓助理自行安裝。',
     intgOtherNpxTitle: '用 skills 指令安裝（需要 Node.js）',
@@ -7333,32 +6991,32 @@ export const strings = {
     intgStep2DescBefore: '安裝好後，在助理中開一個新對話，用平常說話的方式提出需求，例如：',
     intgExample1: '把 ~/Downloads/report.md 轉成 Word 文件',
     intgExample2: '做一份 6 頁的簡報，介紹我們第三季的業績',
-    intgExample3: '把 budget.xlsx 轉成 PDF，並在 GetOffice 中開啟',
-    intgStep2Note: '助理會自行呼叫 getoffice 命令列，你不需要輸入任何指令。',
+    intgExample3: '把 budget.xlsx 轉成 PDF，並在 VegaOffice 中開啟',
+    intgStep2Note: '助理會自行呼叫 vegaoffice 命令列，你不需要輸入任何指令。',
     intgCliPartTitle: 'CLI · 命令列 + skill',
     intgCliPartDesc:
-      '適合能執行終端機指令的助理（Claude Code、Codex、Cursor 等）。安裝 skill 後，助理會自己呼叫 getoffice 命令列建立、轉換、讀取和編輯檔案，你不需要輸入任何指令。',
+      '適合能執行終端機指令的助理（Claude Code、Codex、Cursor 等）。安裝 skill 後，助理會自己呼叫 vegaoffice 命令列建立、轉換、讀取和編輯檔案，你不需要輸入任何指令。',
     intgMcpPartTitle: 'MCP',
     intgMcpPartDesc:
-      'MCP 是 AI 助理呼叫外部工具的通用協定。助理不能執行指令（如 Claude Desktop），或你想讓它直接操作 GetOffice 視窗時用這條路。下面兩種接法任選一種。',
+      'MCP 是 AI 助理呼叫外部工具的通用協定。助理不能執行指令（如 Claude Desktop），或你想讓它直接操作 VegaOffice 視窗時用這條路。下面兩種接法任選一種。',
     intgMcpStdioTitle: '由助理啟動（建議）',
     intgMcpStdioDesc:
-      '助理自己啟動 getoffice mcp，不需要在這裡開任何開關，GetOffice 也不用開著。功能與 CLI 完全相同。',
+      '助理自己啟動 vegaoffice mcp，不需要在這裡開任何開關，VegaOffice 也不用開著。功能與 CLI 完全相同。',
     intgMcpHttpTitle: '本機 HTTP 服務',
     intgMcpHttpDesc:
-      '在 GetOffice 內執行，助理透過網址連線，可以看著它在 Word 編輯器裡逐步產生。需要 GetOffice 保持開啟；目前只支援 Word。',
+      '在 VegaOffice 內執行，助理透過網址連線，可以看著它在 Word 編輯器裡逐步產生。需要 VegaOffice 保持開啟；目前只支援 Word。',
     intgMcpHttpAdvanced: '進階：其他位址與記錄',
-    intgMcpTryNote: '助理會透過 MCP 呼叫 GetOffice，你不需要輸入任何指令。',
+    intgMcpTryNote: '助理會透過 MCP 呼叫 VegaOffice，你不需要輸入任何指令。',
     intgMcpClaudeTitle: 'Claude Code',
     intgMcpClaudeDesc: '在終端機執行一次：',
     intgMcpOtherTitle: 'Cursor、Claude Desktop 或其他支援 MCP 的助理',
     intgMcpOtherDesc:
       '把這段加進它的 MCP 伺服器設定（一個 JSON 檔，或設定裡的「新增 MCP 伺服器」）：',
     intgMcpNote: 'skill 和 MCP 可以同時存在，助理會自行選用；兩者做的事完全相同。',
-    intgCliTitle: '進階：命令列 getoffice',
-    intgCliReady: 'getoffice {v} · 已可在終端機直接使用（{path}）',
+    intgCliTitle: '進階：命令列 vegaoffice',
+    intgCliReady: 'vegaoffice {v} · 已可在終端機直接使用（{path}）',
     intgCliNotOnPath:
-      'getoffice {v} · 尚未加入終端機 PATH。助理仍能透過 ~/.getoffice/launcher 找到它，skill 不受影響。若想自己在終端機輸入 getoffice，執行一次：',
+      'vegaoffice {v} · 尚未加入終端機 PATH。助理仍能透過 ~/.vegaoffice/launcher 找到它，skill 不受影響。若想自己在終端機輸入 vegaoffice，執行一次：',
     intgCliLauncher: '啟動器資料夾',
     intgStateOutdated: '已安裝 {v}，可更新至 {next}',
     intgStateModified: '已安裝 {v}（已被修改）',
@@ -7382,9 +7040,9 @@ export const strings = {
     intgSaveZipTitle: '儲存 skill',
     intgSavedTo: '已儲存至 {path}',
     intgCopied: '已複製',
-    intgCliEphemeral: '請先把 GetOffice 拖到「應用程式」，再使用命令列。',
+    intgCliEphemeral: '請先把 VegaOffice 拖到「應用程式」，再使用命令列。',
     intgCopyPath: '複製路徑',
-    intgCliNeedsUpdate: '此 skill 需要命令列 {v} 或更新版本，請更新 GetOffice。',
+    intgCliNeedsUpdate: '此 skill 需要命令列 {v} 或更新版本，請更新 VegaOffice。',
     intgLoading: '正在檢查…',
     intgUpdateDue: 'skill 有新版本可更新',
     setSecAiModel: 'AI 模型',
@@ -7395,14 +7053,14 @@ export const strings = {
     setAiKeyHint: '金鑰僅儲存在本機。',
     setAiBaseUrl: 'Base URL',
     setAiBaseUrlHint: '留空使用官方端點。',
-    setAiGensparkHint: '使用 Genspark 帳號登入，無需 API key。',
+    setAiAccountHint: '使用 VEGA 帳號登入，無需 API key。',
     setAiCodexPath: 'Codex 可執行檔',
     setAiCodexPathHint: '僅自訂安裝時填寫；留空會自動偵測。',
     setAiCodexAutoPlaceholder: '留空自動偵測（建議）',
     setAiCodexHint:
       '自動尋找目前的 Codex CLI，更新後無需重新選擇；也可填寫自訂路徑。無需 API Key。',
     setAiByokNote:
-      '對話使用你自己的 key；生圖與媒體解析依「生圖與媒體」設定；網頁搜尋仍走 Genspark 登入或免費來源。',
+      '對話使用你自己的 key；生圖與媒體解析依「生圖與媒體」設定；網頁搜尋仍走 VEGA 登入或免費來源。',
     setAiSave: '儲存',
     setAiSaved: '已儲存',
     setAiTest: '測試連線',
@@ -7413,11 +7071,11 @@ export const strings = {
     setAiMaxTokensDesc:
       '一次回合的輸出預算。推理模型會先消耗預算用於思考，預算用畢時回覆可能變成空白，遇到此情況請調高本項。',
     setSecAiMedia: '生圖、媒體與搜尋',
-    setAiMediaGensparkHint: '生圖與圖片/影片解析使用 Genspark 帳號登入。',
+    setAiMediaAccountHint: '生圖與圖片/影片解析使用 VEGA 帳號登入。',
     setAiImageModel: '生圖模型',
     setAiAnalysisModel: '解析模型',
-    setAiSearchGensparkHint:
-      '網頁與圖片搜尋使用 Genspark 帳號登入；未登入或關閉雲端工具時改用免費來源。',
+    setAiSearchAccountHint:
+      '網頁與圖片搜尋使用 VEGA 帳號登入；未登入或關閉雲端工具時改用免費來源。',
     setAiSearchSerperHint: 'Serper 用你的 key 同時提供網頁與圖片搜尋。',
     setAiSearchTavilyHint: 'Tavily 用你的 key 提供網頁搜尋；圖片搜尋改用免費來源。',
     setAiCapImage: '生圖',
@@ -7427,7 +7085,7 @@ export const strings = {
     setAiSharedKeyHint: '同一服務商的 key 與 Base URL 在各項能力間共用，只需填一次。',
     setAiVegaTools: 'VEGA 雲端工具',
     setAiVegaToolsDesc:
-      '當服務商選擇 VEGA 時，網頁搜尋、生圖與媒體解析經 api.vega.chat 並使用 VEGA key；關閉後這些工具回退到 Genspark 登入或免費來源。聊天服務商不受影響。',
+      '當服務商選擇 VEGA 時，網頁搜尋、生圖與媒體解析經 api.vega.chat 並使用 VEGA key；關閉後這些工具回退到 VEGA 登入或免費來源。聊天服務商不受影響。',
     setAiVegaNote: '相容 OpenRouter 的閘道——登入後自動簽發 API key，介面不顯示也不可編輯。',
     setAiVegaSigninDesc: '登入一次即自動簽發 API key 並安全儲存在本裝置上——無需手動填寫。',
     setAiVegaSignedIn: '已登入——key 自動管理',
@@ -7435,13 +7093,13 @@ export const strings = {
     setAiSearchVegaHint: '網頁搜尋經 api.vega.chat 並使用登入簽發的 key；圖片搜尋使用免費來源。',
     setGithub: '開源專案',
     starOnGitHub: '到 GitHub 給我們一顆星',
-    starPromptTitle: '喜歡 GetOffice 嗎？',
-    starPromptTitleN: '你已經用 GetOffice 開啟了 {n} 個文件',
-    starPromptBody: 'GetOffice 是免費的開源軟體。到 GitHub 給我們一顆星，是對團隊最好的支持。',
+    starPromptTitle: '喜歡 VegaOffice 嗎？',
+    starPromptTitleN: '你已經用 VegaOffice 開啟了 {n} 個文件',
+    starPromptBody: 'VegaOffice 是免費的開源軟體。到 GitHub 給我們一顆星，是對團隊最好的支持。',
     starPromptGo: '去給星星',
     starPromptDone: '已經給過了',
     starPromptLater: '以後再說',
-    onbStarHint: '如果你喜歡 GetOffice，歡迎到 GitHub 給我們一顆星。',
+    onbStarHint: '如果你喜歡 VegaOffice，歡迎到 GitHub 給我們一顆星。',
     setEmail: '電子郵件',
     setNotLoggedIn: '未登入',
     setViewUsage: '查看用量',
@@ -7455,13 +7113,13 @@ export const strings = {
     appMenu: '選單',
     newTab: '新分頁',
     // First-run onboarding
-    onbTitle1: '歡迎使用 GetOffice',
+    onbTitle1: '歡迎使用 VegaOffice',
     onbSubtitle1: '第一個開源的 AI 原生 Office 套件',
     onbBody1: '建立文件、製作試算表、產生簡報、審閱 PDF。AI 深度融入每個環節。',
     onbTitle2: '這只是一個開始',
-    onbBody2: 'GetOffice 目前仍在 alpha 階段。歡迎加入 GenTeam 群聊，分享回饋，一起打造它的未來。',
+    onbBody2: 'VegaOffice 目前仍在 alpha 階段。歡迎在 GitHub 上為我們點星並分享回饋，一起打造它的未來。',
     onbCredits: '活躍貢獻者可獲得 **1,000+ VEGA 點數**',
-    onbJoinGenTeam: '加入 GenTeam',
+    onbJoinGitHub: '在 GitHub 上點星',
     onbSkip: '略過',
     onbNext: '下一步',
     onbStart: '開始使用',

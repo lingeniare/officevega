@@ -23,7 +23,7 @@ import {
   BorderThickOuterIcon,
   BorderTopIcon,
   CaretIcon,
-  GensparkMark,
+  VegaMark,
   RIBBON_GLYPH_ICONS,
   RedoIcon,
   SaveAsIcon,
@@ -2562,10 +2562,10 @@ function Ribbon({
           onClick={onAiToggle}
         >
           <span className="tool-icon-row">
-            <GensparkMark size={26} />
+            <VegaMark size={26} />
           </span>
           <span>
-            <strong>VEGA AI</strong>
+            <strong>{lang === 'ru' ? 'ВЕГА ИИ' : 'VEGA AI'}</strong>
           </span>
         </button>
         <button

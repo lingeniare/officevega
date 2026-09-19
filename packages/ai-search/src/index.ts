@@ -19,17 +19,17 @@ import {
   type WebSearchResult,
 } from './shared'
 import { gskImageSearch, gskWebSearch, gskApiKey, hasGskAuth } from './gsk'
-import { getofficeApiKey } from './getoffice-auth'
+import { vegaofficeApiKey } from './vegaoffice-auth'
 
 // The sign-in credentials feed provider/media/search resolution in
 // @genoffice/ai-provider (it can't import this package — the registry is its
 // side of the boundary). Importing ai-search in a main process is enough.
-setIssuedVegaKeyGetter(getofficeApiKey)
+setIssuedVegaKeyGetter(vegaofficeApiKey)
 setLegacyGskKeyGetter(gskApiKey)
 
 export type { ImageSearchResult, WebSearchResult } from './shared'
 export * from './gsk'
-export * from './getoffice-auth'
+export * from './vegaoffice-auth'
 export * from './media-tools'
 export * from './search-tools'
 

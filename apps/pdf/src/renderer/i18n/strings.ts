@@ -301,7 +301,7 @@ export const strings = {
     aiTimeoutError: 'AI 请求超时：网络长时间无响应，已停止。请检查网络后重试',
     aiOverloadedError: 'AI 服务当前繁忙，请稍后重试',
     aiNetworkError: '网络有问题，无法连接 AI 服务。请检查网络后重试',
-    aiCreditsExhausted: 'VEGA 积分已用完，请前往 api.vega.chat/keys 充值后重试',
+    aiCreditsExhausted: 'VEGA 积分已用完，请前往 api.vega.chat 充值后重试',
     aiToolReadPages: '读取第 {start}-{end} 页',
     aiToolSearch: '搜索"{query}"（{count} 处）',
     aiToolGoto: '跳转到第 {page} 页',
@@ -622,7 +622,7 @@ export const strings = {
     aiNetworkError:
       'Network problem: could not reach the AI service. Check your connection and try again',
     aiCreditsExhausted:
-      'Your VEGA credits have run out. Visit api.vega.chat/keys to top up, then try again',
+      'Your VEGA credits have run out. Visit api.vega.chat to top up, then try again',
     aiToolReadPages: 'Read pages {start}-{end}',
     aiToolSearch: 'Search "{query}" ({count} hits)',
     aiToolGoto: 'Go to page {page}',
@@ -946,7 +946,7 @@ export const strings = {
     aiNetworkError:
       'ネットワークに問題があり、AI サービスに接続できません。接続を確認して再試行してください',
     aiCreditsExhausted:
-      'VEGAクレジットを使い切りました。api.vega.chat/keys でチャージしてから再試行してください',
+      'VEGAクレジットを使い切りました。api.vega.chat でチャージしてから再試行してください',
     aiToolReadPages: 'ページ {start}-{end} を読む',
     aiToolSearch: '「{query}」を検索（{count} 件）',
     aiToolGoto: 'ページ {page} へ移動',
@@ -1271,7 +1271,7 @@ export const strings = {
     aiNetworkError:
       '네트워크에 문제가 있어 AI 서비스에 연결할 수 없습니다. 연결을 확인한 후 다시 시도해 주세요',
     aiCreditsExhausted:
-      'VEGA 크레딧을 모두 사용했습니다. api.vega.chat/keys에서 충전한 후 다시 시도해 주세요',
+      'VEGA 크레딧을 모두 사용했습니다. api.vega.chat에서 충전한 후 다시 시도해 주세요',
     aiToolReadPages: '{start}-{end}쪽 읽기',
     aiToolSearch: '"{query}" 검색 ({count}건)',
     aiToolGoto: '{page}쪽으로 이동',
@@ -1599,7 +1599,7 @@ export const strings = {
     aiNetworkError:
       'Problème réseau : impossible de joindre le service IA. Vérifiez votre connexion et réessayez',
     aiCreditsExhausted:
-      'Vos crédits VEGA sont épuisés. Rechargez sur api.vega.chat/keys puis réessayez',
+      'Vos crédits VEGA sont épuisés. Rechargez sur api.vega.chat puis réessayez',
     aiToolReadPages: 'Lire les pages {start}-{end}',
     aiToolSearch: 'Rechercher « {query} » ({count} occurrences)',
     aiToolGoto: 'Aller à la page {page}',
@@ -1929,7 +1929,7 @@ export const strings = {
     aiNetworkError:
       'Netzwerkproblem: Der KI-Dienst ist nicht erreichbar. Prüfe deine Verbindung und versuche es erneut',
     aiCreditsExhausted:
-      'Deine VEGA-Credits sind aufgebraucht. Lade unter api.vega.chat/keys auf und versuche es erneut',
+      'Deine VEGA-Credits sind aufgebraucht. Lade unter api.vega.chat auf und versuche es erneut',
     aiToolReadPages: 'Seiten {start}-{end} lesen',
     aiToolSearch: '„{query}" suchen ({count} Treffer)',
     aiToolGoto: 'Zu Seite {page} springen',
@@ -2258,7 +2258,7 @@ export const strings = {
     aiNetworkError:
       'Problema de red: no se pudo conectar con el servicio de IA. Comprueba tu conexión e inténtalo de nuevo',
     aiCreditsExhausted:
-      'Tus créditos de VEGA se han agotado. Recarga en api.vega.chat/keys e inténtalo de nuevo',
+      'Tus créditos de VEGA se han agotado. Recarga en api.vega.chat e inténtalo de nuevo',
     aiToolReadPages: 'Leer páginas {start}-{end}',
     aiToolSearch: 'Buscar «{query}» ({count} resultados)',
     aiToolGoto: 'Ir a la página {page}',
@@ -2585,7 +2585,7 @@ export const strings = {
     aiNetworkError:
       'เครือข่ายมีปัญหา ไม่สามารถเชื่อมต่อบริการ AI ได้ โปรดตรวจสอบการเชื่อมต่อแล้วลองใหม่',
     aiCreditsExhausted:
-      'เครดิต VEGA ของคุณหมดแล้ว โปรดเติมเครดิตที่ api.vega.chat/keys แล้วลองใหม่',
+      'เครดิต VEGA ของคุณหมดแล้ว โปรดเติมเครดิตที่ api.vega.chat แล้วลองใหม่',
     aiToolReadPages: 'อ่านหน้า {start}-{end}',
     aiToolSearch: 'ค้นหา "{query}" ({count} แห่ง)',
     aiToolGoto: 'ไปที่หน้า {page}',
@@ -2910,7 +2910,7 @@ export const strings = {
     aiNetworkError:
       'Masalah jaringan: tidak dapat terhubung ke layanan AI. Periksa koneksi Anda lalu coba lagi',
     aiCreditsExhausted:
-      'Kredit VEGA Anda telah habis. Isi ulang di api.vega.chat/keys lalu coba lagi',
+      'Kredit VEGA Anda telah habis. Isi ulang di api.vega.chat lalu coba lagi',
     aiToolReadPages: 'Baca halaman {start}-{end}',
     aiToolSearch: 'Cari "{query}" ({count} temuan)',
     aiToolGoto: 'Ke halaman {page}',
@@ -3237,7 +3237,7 @@ export const strings = {
     aiNetworkError:
       'Проблема с сетью: не удалось подключиться к сервису ИИ. Проверьте подключение и повторите попытку',
     aiCreditsExhausted:
-      'Кредиты VEGA исчерпаны. Пополните баланс на api.vega.chat/keys и повторите попытку',
+      'Кредиты ВЕГА исчерпаны. Пополните баланс на api.vega.chat и повторите попытку',
     aiToolReadPages: 'Чтение страниц {start}-{end}',
     aiToolSearch: 'Поиск «{query}» ({count} совпадений)',
     aiToolGoto: 'Перейти на страницу {page}',
@@ -3396,7 +3396,7 @@ export const strings = {
     removeStamp: 'Нажмите, чтобы выбрать этот знак / колонтитул',
     props: 'Свойства',
     propsTitle: 'Свойства документа',
-    ribbonAiAssistant: 'VEGA',
+    ribbonAiAssistant: 'ВЕГА ИИ',
     ribbonAiAssistantTip: 'Открыть помощника ИИ',
     propTitle: 'Заголовок',
     propAuthor: 'Автор',
@@ -3563,7 +3563,7 @@ export const strings = {
     aiNetworkError:
       'مشكلة في الشبكة: تعذّر الوصول إلى خدمة الذكاء الاصطناعي. تحقق من الاتصال وحاول مجددًا',
     aiCreditsExhausted:
-      'نفدت أرصدة VEGA لديك. يرجى إعادة الشحن عبر api.vega.chat/keys ثم المحاولة مجددًا',
+      'نفدت أرصدة VEGA لديك. يرجى إعادة الشحن عبر api.vega.chat ثم المحاولة مجددًا',
     aiToolReadPages: 'قراءة الصفحات {start}-{end}',
     aiToolSearch: 'بحث عن "{query}" ({count} نتيجة)',
     aiToolGoto: 'الانتقال إلى الصفحة {page}',
@@ -3889,7 +3889,7 @@ export const strings = {
     aiNetworkError:
       'Problema de rede: não foi possível conectar ao serviço de IA. Verifique sua conexão e tente novamente',
     aiCreditsExhausted:
-      'Seus créditos VEGA acabaram. Recarregue em api.vega.chat/keys e tente novamente',
+      'Seus créditos VEGA acabaram. Recarregue em api.vega.chat e tente novamente',
     aiToolReadPages: 'Ler páginas {start}-{end}',
     aiToolSearch: 'Pesquisar "{query}" ({count} ocorrências)',
     aiToolGoto: 'Ir para a página {page}',
@@ -4218,7 +4218,7 @@ export const strings = {
     aiNetworkError:
       'Problema di rete: impossibile raggiungere il servizio IA. Controlla la connessione e riprova',
     aiCreditsExhausted:
-      'I tuoi crediti VEGA sono esauriti. Ricarica su api.vega.chat/keys e riprova',
+      'I tuoi crediti VEGA sono esauriti. Ricarica su api.vega.chat e riprova',
     aiToolReadPages: 'Leggi le pagine {start}-{end}',
     aiToolSearch: 'Cerca "{query}" ({count} risultati)',
     aiToolGoto: 'Vai alla pagina {page}',
@@ -4547,7 +4547,7 @@ export const strings = {
     aiNetworkError:
       'Problem z siecią: nie można połączyć się z usługą AI. Sprawdź połączenie i spróbuj ponownie',
     aiCreditsExhausted:
-      'Twoje kredyty VEGA wyczerpały się. Doładuj konto na api.vega.chat/keys i spróbuj ponownie',
+      'Twoje kredyty VEGA wyczerpały się. Doładuj konto na api.vega.chat i spróbuj ponownie',
     aiToolReadPages: 'Czytaj strony {start}-{end}',
     aiToolSearch: 'Szukaj „{query}" ({count} wyników)',
     aiToolGoto: 'Przejdź do strony {page}',
@@ -4874,7 +4874,7 @@ export const strings = {
     aiNetworkError:
       'Problém se sítí: službu AI se nepodařilo kontaktovat. Zkontrolujte připojení a zkuste to znovu',
     aiCreditsExhausted:
-      'Vaše kredity VEGA byly vyčerpány. Navštivte api.vega.chat/keys, dobijte je a zkuste to znovu',
+      'Vaše kredity VEGA byly vyčerpány. Navštivte api.vega.chat, dobijte je a zkuste to znovu',
     aiToolReadPages: 'Číst stránky {start}-{end}',
     aiToolSearch: 'Hledat „{query}“ ({count} výskytů)',
     aiToolGoto: 'Přejít na stránku {page}',
@@ -5202,7 +5202,7 @@ export const strings = {
     aiNetworkError:
       'Netwerkprobleem: kan de AI-service niet bereiken. Controleer je verbinding en probeer het opnieuw',
     aiCreditsExhausted:
-      'Je VEGA-credits zijn op. Waardeer op via api.vega.chat/keys en probeer het opnieuw',
+      'Je VEGA-credits zijn op. Waardeer op via api.vega.chat en probeer het opnieuw',
     aiToolReadPages: "Pagina's {start}-{end} lezen",
     aiToolSearch: 'Zoeken naar "{query}" ({count} resultaten)',
     aiToolGoto: 'Ga naar pagina {page}',
@@ -5529,7 +5529,7 @@ export const strings = {
     aiNetworkError:
       'Masalah rangkaian: tidak dapat menghubungi perkhidmatan AI. Semak sambungan anda dan cuba lagi',
     aiCreditsExhausted:
-      'Kredit VEGA anda telah habis. Tambah nilai di api.vega.chat/keys dan cuba lagi',
+      'Kredit VEGA anda telah habis. Tambah nilai di api.vega.chat dan cuba lagi',
     aiToolReadPages: 'Baca halaman {start}-{end}',
     aiToolSearch: 'Cari "{query}" ({count} padanan)',
     aiToolGoto: 'Pergi ke halaman {page}',
@@ -5851,7 +5851,7 @@ export const strings = {
     aiTimeoutError: 'תם הזמן לבקשת ה-AI: אין תגובה מהרשת וההרצה הופסקה. בדוק את החיבור ונסה שוב',
     aiOverloadedError: 'שירות ה-AI עמוס כרגע — נסו שוב בעוד רגע',
     aiNetworkError: 'בעיית רשת: לא ניתן להתחבר לשירות ה-AI. בדוק את החיבור ונסה שוב',
-    aiCreditsExhausted: 'קרדיטי VEGA שלך אזלו. טען מחדש ב-api.vega.chat/keys ונסה שוב',
+    aiCreditsExhausted: 'קרדיטי VEGA שלך אזלו. טען מחדש ב-api.vega.chat ונסה שוב',
     aiToolReadPages: 'קריאת עמודים {start}-{end}',
     aiToolSearch: 'חיפוש "{query}" ({count} תוצאות)',
     aiToolGoto: 'מעבר לעמוד {page}',
@@ -6174,7 +6174,7 @@ export const strings = {
     aiNetworkError:
       'नेटवर्क समस्या: AI सेवा से कनेक्ट नहीं हो सका। कनेक्शन जांचें और फिर से प्रयास करें',
     aiCreditsExhausted:
-      'आपके VEGA क्रेडिट समाप्त हो गए हैं। api.vega.chat/keys पर रिचार्ज करें और फिर से प्रयास करें',
+      'आपके VEGA क्रेडिट समाप्त हो गए हैं। api.vega.chat पर रिचार्ज करें और फिर से प्रयास करें',
     aiToolReadPages: 'पृष्ठ {start}-{end} पढ़ें',
     aiToolSearch: '"{query}" खोजें ({count} परिणाम)',
     aiToolGoto: 'पृष्ठ {page} पर जाएँ',
@@ -6495,7 +6495,7 @@ export const strings = {
     aiTimeoutError: 'AI 請求逾時：網路長時間無回應，已停止。請檢查網路後重試',
     aiOverloadedError: 'AI 服務目前繁忙，請稍後重試',
     aiNetworkError: '網路有問題，無法連接 AI 服務。請檢查網路後重試',
-    aiCreditsExhausted: 'VEGA 點數已用完，請前往 api.vega.chat/keys 儲值後重試',
+    aiCreditsExhausted: 'VEGA 點數已用完，請前往 api.vega.chat 儲值後重試',
     aiToolReadPages: '讀取第 {start}-{end} 頁',
     aiToolSearch: '搜尋「{query}」（{count} 處）',
     aiToolGoto: '跳至第 {page} 頁',

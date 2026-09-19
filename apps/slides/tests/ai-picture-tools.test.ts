@@ -90,10 +90,10 @@ describe('replace_image', () => {
 
   it('forwards file:// urls — the main process resolves only the generated-image store', async () => {
     await createSlidesSkill(mkAccess()).executeTool!(
-      call('replace_image', { url: 'file:///tmp/getoffice-ai-images/1234.png' }),
+      call('replace_image', { url: 'file:///tmp/vegaoffice-ai-images/1234.png' }),
     )
     expect(api().replacePictureUrl).toHaveBeenCalledWith(
-      expect.objectContaining({ url: 'file:///tmp/getoffice-ai-images/1234.png' }),
+      expect.objectContaining({ url: 'file:///tmp/vegaoffice-ai-images/1234.png' }),
     )
   })
 })

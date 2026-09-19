@@ -34,7 +34,7 @@ import { IntegrationsPane, skillUpdateDue } from './IntegrationsPane'
 import './settings.css'
 
 // ── Settings modal (opened from the account menu) ─────────
-// Genspark-style two-pane dialog: section nav on the left, fields on the right.
+// Two-pane dialog: section nav on the left, fields on the right.
 // All values go through the existing home IPC; nothing is stored locally.
 
 // sorted by ISO 639 language code — native-script labels have no natural
@@ -396,7 +396,7 @@ function AiModelPane({
     baseUrl: undefined,
     cliPath: undefined,
   }
-  const isGenspark = provider === 'genspark'
+  const isAccountSignIn = provider === 'genspark'
   const isCodex = provider === 'codex'
   const isVega = provider === 'vega'
 
@@ -474,7 +474,9 @@ function AiModelPane({
           className="set-dd"
           value={provider}
           ariaLabel={t('setAiProvider')}
-          options={catalog.map((c) => ({
+          options={catalog
+            .filter((c) => c.id !== 'genspark' || c.id === provider)
+            .map((c) => ({
             value: c.id,
             label: c.label,
             render: (
@@ -488,8 +490,8 @@ function AiModelPane({
         />
       </div>
       <div className="set-field-desc set-ai-note">
-        {isGenspark
-          ? t('setAiGensparkHint')
+        {isAccountSignIn
+          ? t('setAiAccountHint')
           : isCodex
             ? t('setAiCodexHint')
             : provider === 'vega'
@@ -565,7 +567,7 @@ function AiModelPane({
         account.loggedIn ? (
           <Field label={t('setEmail')} value={account.email || t('setAiVegaSignedIn')} />
         ) : null
-      ) : !isGenspark ? (
+      ) : !isAccountSignIn ? (
         <>
           <div className="set-field">
             <div className="set-field-text">
@@ -863,7 +865,9 @@ function AiMediaPane({ t }: { t: TFunc }) {
         className="set-dd"
         value={value}
         ariaLabel={label}
-        options={options.map((c) => ({
+        options={options
+          .filter((c) => c.id !== 'genspark' || c.id === value)
+          .map((c) => ({
           value: c.id,
           label: c.label,
           render: (
@@ -1025,7 +1029,7 @@ function AiMediaPane({ t }: { t: TFunc }) {
         {providerRow(title, id, options, pick)}
         <div className="set-field-desc set-ai-note">
           {id === 'genspark'
-            ? t('setAiMediaGensparkHint')
+            ? t('setAiMediaAccountHint')
             : id === 'vega'
               ? cap === 'image'
                 ? // image has its own picker now — the "model is set by VEGA" hint
@@ -1081,7 +1085,7 @@ function AiMediaPane({ t }: { t: TFunc }) {
         )}
         <div className="set-field-desc set-ai-note">
           {search.provider === 'genspark'
-            ? t('setAiSearchGensparkHint')
+            ? t('setAiSearchAccountHint')
             : search.provider === 'vega'
               ? t('setAiSearchVegaHint')
               : searchMeta?.imageSearch
@@ -1367,7 +1371,7 @@ export function SettingsModal({
                         />
                       )}
                       <button className="set-btn primary" onClick={onLogin}>
-                        {loginWaiting ? t('waitingShort') : t('loginGenspark')}
+                        {loginWaiting ? t('waitingShort') : t('loginVega')}
                       </button>
                     </>
                   )}
@@ -1514,8 +1518,8 @@ export function SettingsModal({
                   label={t('setGithub')}
                   value={
                     githubStars === null
-                      ? 'github.com/genspark-ai/genoffice'
-                      : `github.com/genspark-ai/genoffice · ★ ${formatStars(githubStars)}`
+                      ? 'github.com/lingeniare/getoffice'
+                      : `github.com/lingeniare/getoffice · ★ ${formatStars(githubStars)}`
                   }
                   action={
                     <button

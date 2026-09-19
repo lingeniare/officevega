@@ -114,7 +114,7 @@ export const ms = {
   aiErrNetwork:
     'Masalah rangkaian: tidak dapat menghubungi perkhidmatan AI. Semak sambungan anda dan cuba lagi',
   aiCreditsExhausted:
-    'Kredit VEGA anda telah habis. Tambah nilai di api.vega.chat/keys dan cuba lagi',
+    'Kredit VEGA anda telah habis. Tambah nilai di api.vega.chat dan cuba lagi',
   aiErrRequestFailed: 'Gagal menghantar permintaan: {msg}',
   aiErrGenerateFailed: 'Penjanaan gagal',
   aiErrRegenFailed: 'Gagal membuat semula slaid',

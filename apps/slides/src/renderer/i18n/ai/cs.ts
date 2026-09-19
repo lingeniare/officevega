@@ -115,7 +115,7 @@ export const cs = {
   aiErrNetwork:
     'Problém se sítí: službu AI se nepodařilo kontaktovat. Zkontrolujte připojení a zkuste to znovu',
   aiCreditsExhausted:
-    'Vaše kredity VEGA byly vyčerpány. Navštivte api.vega.chat/keys, dobijte je a zkuste to znovu',
+    'Vaše kredity VEGA byly vyčerpány. Navštivte api.vega.chat, dobijte je a zkuste to znovu',
   aiErrRequestFailed: 'Odeslání požadavku se nezdařilo: {msg}',
   aiErrGenerateFailed: 'Generování se nezdařilo',
   aiErrRegenFailed: 'Přepracování snímku se nezdařilo',
