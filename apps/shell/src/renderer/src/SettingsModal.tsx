@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import {
   AI_CUSTOM_FONT_MAX_PX,
@@ -267,6 +267,62 @@ function Field({
 const storedPick = (s: AiSettings): AiSettings =>
   s.storedProvider ? { ...s, provider: s.storedProvider, storedProvider: undefined } : s
 
+const AI_SETTINGS_AUTOSAVE_MS = 600
+
+/**
+ * Debounced autosave for the AI panes — there is no Save button: each mutation
+ * of `settings` is written to ai-settings.json ~600 ms after the last change,
+ * and unmounting the pane (switching sections or closing the dialog) flushes
+ * the pending tail so no edit is lost. `confirmLoaded` must be called with the
+ * freshly-read snapshot so the initial get-settings load doesn't echo back as
+ * a write. `saved`/`saveError` feed the footer's status pill.
+ */
+function useAiSettingsAutosave(settings: AiSettings | null) {
+  /** last snapshot the main process holds — the load or an acknowledged write */
+  const confirmed = useRef<AiSettings | null>(null)
+  const latest = useRef<AiSettings | null>(null)
+  const [saved, setSaved] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
+
+  useEffect(() => {
+    latest.current = settings
+    if (!settings || settings === confirmed.current) return
+    const timer = setTimeout(() => {
+      const snapshot = settings
+      window.aiOffice
+        .setAiSettings?.(snapshot)
+        .then(() => {
+          confirmed.current = snapshot
+          setSaveError(null)
+          // 'Saved' only when the acknowledged write covers the newest edits
+          if (latest.current === snapshot) setSaved(true)
+        })
+        .catch((error) => {
+          setSaveError(error instanceof Error ? error.message : String(error))
+        })
+    }, AI_SETTINGS_AUTOSAVE_MS)
+    return () => clearTimeout(timer)
+  }, [settings])
+
+  useEffect(
+    () => () => {
+      const s = latest.current
+      if (s && s !== confirmed.current) void window.aiOffice.setAiSettings?.(s).catch(() => {})
+    },
+    [],
+  )
+
+  const confirmLoaded = useCallback((s: AiSettings) => {
+    confirmed.current = s
+  }, [])
+  const clearFeedback = useCallback(() => {
+    setSaved(false)
+    setSaveError(null)
+  }, [])
+
+  return { confirmLoaded, saved, saveError, clearFeedback }
+}
+
 /**
  * Chat-model picker filter for the live catalog (VEGA, OpenRouter): text-out
  * models released since August 2026, minus free and batch duplicates
@@ -307,8 +363,7 @@ function AiModelPane({
     () => window.aiOffice.getAiProviders?.() ?? [],
   )
   const [settings, setSettings] = useState<AiSettings | null>(null)
-  const [dirty, setDirty] = useState(false)
-  const [saved, setSaved] = useState(false)
+  const { confirmLoaded, saved, saveError, clearFeedback } = useAiSettingsAutosave(settings)
   const [testing, setTesting] = useState(false)
   const [testResult, setTestResult] = useState<{ ok: boolean; error?: string } | null>(null)
   /** free-typed value of the output-cap field; committed (and clamped) on blur */
@@ -364,6 +419,7 @@ function AiModelPane({
     void window.aiOffice.getAiSettings?.().then((s) => {
       if (!alive || !s) return
       const shown = storedPick(s)
+      confirmLoaded(shown)
       setSettings(shown)
       const codex = s.providers.codex
       if (codex) {
@@ -385,7 +441,7 @@ function AiModelPane({
     }
     // catalog is only read once on mount for the liveCatalog flag
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [refreshCodexModels, refreshLiveModels])
+  }, [refreshCodexModels, refreshLiveModels, confirmLoaded])
 
   if (!settings) return null
   const provider = settings.provider
@@ -401,8 +457,7 @@ function AiModelPane({
   const isVega = provider === 'vega'
 
   const touch = () => {
-    setDirty(true)
-    setSaved(false)
+    clearFeedback()
     setTestResult(null)
   }
   const updateConfig = (patch: Partial<typeof config>) => {
@@ -429,17 +484,6 @@ function AiModelPane({
     if (picked?.liveCatalog && cfg) {
       void refreshLiveModels(id, cfg.apiKey, cfg.baseUrl ?? '', cfg.model).catch(() => undefined)
     }
-  }
-  const save = () => {
-    window.aiOffice
-      .setAiSettings?.(settings)
-      .then(() => {
-        setDirty(false)
-        setSaved(true)
-      })
-      .catch((error) => {
-        window.alert(error instanceof Error ? error.message : String(error))
-      })
   }
   const test = () => {
     setTesting(true)
@@ -660,16 +704,15 @@ function AiModelPane({
                 ? testResult.ok
                   ? { kind: 'ok', text: t('setAiTestOk') }
                   : { kind: 'err', text: testResult.error || t('setAiTestFail') }
-                : saved
-                  ? { kind: 'ok', text: t('setAiSaved') }
-                  : null
+                : saveError
+                  ? { kind: 'err', text: saveError }
+                  : saved
+                    ? { kind: 'ok', text: t('setAiSaved') }
+                    : null
           }
         />
         <button className="set-btn" disabled={testing} onClick={test}>
           {t('setAiTest')}
-        </button>
-        <button className="set-btn primary" disabled={!dirty} onClick={save}>
-          {t('setAiSave')}
         </button>
       </div>
     </>
@@ -693,8 +736,7 @@ function AiMediaPane({ t }: { t: TFunc }) {
     () => window.aiOffice.getAiSearchProviders?.() ?? [],
   )
   const [settings, setSettings] = useState<AiSettings | null>(null)
-  const [dirty, setDirty] = useState(false)
-  const [saved, setSaved] = useState(false)
+  const { confirmLoaded, saved, saveError, clearFeedback } = useAiSettingsAutosave(settings)
   const [testing, setTesting] = useState(false)
   const [testResult, setTestResult] = useState<{ ok: boolean; error?: string } | null>(null)
   /** live VEGA image→image catalog for the image-generation picker; empty = static meta fallback */
@@ -721,6 +763,7 @@ function AiMediaPane({ t }: { t: TFunc }) {
     void window.aiOffice.getAiSettings?.().then((s) => {
       if (!alive || !s) return
       const shown = storedPick(s)
+      confirmLoaded(shown)
       setSettings(shown)
       void refreshVegaImageModels(
         shown.media?.providers?.vega?.apiKey || shown.providers.vega?.apiKey || '',
@@ -730,15 +773,14 @@ function AiMediaPane({ t }: { t: TFunc }) {
     return () => {
       alive = false
     }
-  }, [refreshVegaImageModels])
+  }, [refreshVegaImageModels, confirmLoaded])
 
   if (!settings?.media || !settings.search) return null
   const media: AiMediaSettings = settings.media
   const search: AiSearchSettings = settings.search
 
   const touch = () => {
-    setDirty(true)
-    setSaved(false)
+    clearFeedback()
     setTestResult(null)
   }
   const setMedia = (next: AiMediaSettings) => {
@@ -787,17 +829,6 @@ function AiMediaPane({ t }: { t: TFunc }) {
     return [...pinned, ...options]
   }
 
-  const save = () => {
-    window.aiOffice
-      .setAiSettings?.(settings)
-      .then(() => {
-        setDirty(false)
-        setSaved(true)
-      })
-      .catch((error) => {
-        window.alert(error instanceof Error ? error.message : String(error))
-      })
-  }
   // a VEGA slot with an empty key shares the AI Model key — test the effective credential
   const vegaSharedKey = settings.providers.vega?.apiKey ?? ''
   const effectiveMediaConfig = (id: AiMediaProviderId) => {
@@ -1113,16 +1144,15 @@ function AiMediaPane({ t }: { t: TFunc }) {
                 ? testResult.ok
                   ? { kind: 'ok', text: t('setAiTestOk') }
                   : { kind: 'err', text: testResult.error || t('setAiTestFail') }
-                : saved
-                  ? { kind: 'ok', text: t('setAiSaved') }
-                  : null
+                : saveError
+                  ? { kind: 'err', text: saveError }
+                  : saved
+                    ? { kind: 'ok', text: t('setAiSaved') }
+                    : null
           }
         />
         <button className="set-btn" disabled={testing} onClick={() => void test()}>
           {t('setAiTest')}
-        </button>
-        <button className="set-btn primary" disabled={!dirty} onClick={save}>
-          {t('setAiSave')}
         </button>
       </div>
     </>

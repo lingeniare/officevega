@@ -278,7 +278,6 @@ export const strings = {
       '自动查找并使用当前 Codex CLI，更新后无需重新选择；也可填写自定义路径。无需 API Key。',
     setAiByokNote:
       '对话使用你自己的 key；生图与媒体解析按「生图与媒体」设置；网页搜索仍走 VEGA 登录或免费来源。',
-    setAiSave: '保存',
     setAiSaved: '已保存',
     setAiTest: '测试连接',
     setAiTesting: '测试中…',
@@ -631,7 +630,6 @@ export const strings = {
       'Automatically finds the current signed-in Codex CLI after updates; a custom path is optional. No API key is needed.',
     setAiByokNote:
       'Chats use your own key. Image generation and media analysis follow the AI Media section; web search still uses the VEGA sign-in or free sources.',
-    setAiSave: 'Save',
     setAiSaved: 'Saved',
     setAiTest: 'Test connection',
     setAiTesting: 'Testing…',
@@ -998,7 +996,6 @@ export const strings = {
     setAiCodexHint: 'ローカルでサインイン済みの Codex CLI を使用します。API キーは不要です。',
     setAiByokNote:
       'チャットは自分のキーを使用します。画像生成とメディア解析は「AI メディア」の設定に従い、Web 検索は引き続き VEGA のサインインまたは無料ソースを使用します。',
-    setAiSave: '保存',
     setAiSaved: '保存しました',
     setAiTest: '接続テスト',
     setAiTesting: 'テスト中…',
@@ -1361,7 +1358,6 @@ export const strings = {
     setAiCodexHint: '로컬에서 로그인된 Codex CLI를 사용하므로 API 키가 필요 없습니다.',
     setAiByokNote:
       '채팅은 내 키를 사용합니다. 이미지 생성과 미디어 분석은 「AI 미디어」 설정을 따르며, 웹 검색은 여전히 VEGA 로그인 또는 무료 소스를 사용합니다.',
-    setAiSave: '저장',
     setAiSaved: '저장됨',
     setAiTest: '연결 테스트',
     setAiTesting: '테스트 중…',
@@ -1735,7 +1731,6 @@ export const strings = {
     setAiCodexHint: 'Utilise le CLI Codex connecté localement ; aucune clé API requise.',
     setAiByokNote:
       "Les conversations utilisent votre propre clé. La génération d'images et l'analyse de médias suivent la section « Médias IA » ; la recherche web utilise toujours la connexion VEGA ou des sources gratuites.",
-    setAiSave: 'Enregistrer',
     setAiSaved: 'Enregistré',
     setAiTest: 'Tester la connexion',
     setAiTesting: 'Test en cours…',
@@ -2115,7 +2110,6 @@ export const strings = {
     setAiCodexHint: 'Verwendet die lokal angemeldete Codex CLI; kein API-Schlüssel nötig.',
     setAiByokNote:
       'Chats nutzen deinen eigenen Schlüssel. Bildgenerierung und Medienanalyse folgen dem Abschnitt „KI-Medien“; die Websuche nutzt weiterhin die VEGA-Anmeldung oder kostenlose Quellen.',
-    setAiSave: 'Speichern',
     setAiSaved: 'Gespeichert',
     setAiTest: 'Verbindung testen',
     setAiTesting: 'Wird getestet…',
@@ -2491,7 +2485,6 @@ export const strings = {
     setAiCodexHint: 'Usa la CLI de Codex con sesión local; no se necesita clave de API.',
     setAiByokNote:
       'Los chats usan tu propia clave. La generación de imágenes y el análisis de medios siguen la sección «Medios de IA»; la búsqueda web sigue usando el inicio de sesión de VEGA o fuentes gratuitas.',
-    setAiSave: 'Guardar',
     setAiSaved: 'Guardado',
     setAiTest: 'Probar conexión',
     setAiTesting: 'Probando…',
@@ -2852,7 +2845,6 @@ export const strings = {
     setAiCodexHint: 'ใช้ Codex CLI ที่เข้าสู่ระบบไว้ในเครื่อง โดยไม่ต้องใช้คีย์ API',
     setAiByokNote:
       'การแชทใช้คีย์ของคุณเอง การสร้างภาพและการวิเคราะห์สื่อเป็นไปตามส่วน "สื่อ AI" ส่วนการค้นหาเว็บยังใช้การลงชื่อเข้าใช้ VEGA หรือแหล่งข้อมูลฟรี',
-    setAiSave: 'บันทึก',
     setAiSaved: 'บันทึกแล้ว',
     setAiTest: 'ทดสอบการเชื่อมต่อ',
     setAiTesting: 'กำลังทดสอบ…',
@@ -3221,7 +3213,6 @@ export const strings = {
     setAiCodexHint: 'Menggunakan Codex CLI yang sudah login secara lokal; tanpa kunci API.',
     setAiByokNote:
       'Chat memakai kunci Anda sendiri. Pembuatan gambar dan analisis media mengikuti bagian "Media AI"; pencarian web tetap memakai login VEGA atau sumber gratis.',
-    setAiSave: 'Simpan',
     setAiSaved: 'Tersimpan',
     setAiTest: 'Uji koneksi',
     setAiTesting: 'Menguji…',
@@ -3590,7 +3581,6 @@ export const strings = {
     setAiCodexHint: 'Использует локально авторизованный Codex CLI; ключ API не нужен.',
     setAiByokNote:
       'Чаты используют ваш собственный ключ. Генерация изображений и анализ медиа настраиваются в разделе «Медиа ИИ»; веб-поиск по-прежнему использует вход в VEGA или бесплатные источники.',
-    setAiSave: 'Сохранить',
     setAiSaved: 'Сохранено',
     setAiTest: 'Проверить подключение',
     setAiTesting: 'Проверка…',
@@ -3953,7 +3943,6 @@ export const strings = {
     setAiCodexHint: 'يستخدم Codex CLI المسجل محليًا؛ لا حاجة إلى مفتاح API.',
     setAiByokNote:
       'تستخدم المحادثات مفتاحك الخاص. يتبع توليد الصور وتحليل الوسائط قسم «وسائط الذكاء الاصطناعي»؛ ولا يزال البحث في الويب يستخدم تسجيل دخول VEGA أو مصادر مجانية.',
-    setAiSave: 'حفظ',
     setAiSaved: 'تم الحفظ',
     setAiTest: 'اختبار الاتصال',
     setAiTesting: 'جارٍ الاختبار…',
@@ -4318,7 +4307,6 @@ export const strings = {
     setAiCodexHint: 'Usa o Codex CLI conectado localmente; nenhuma chave de API é necessária.',
     setAiByokNote:
       'Os chats usam a sua própria chave. A geração de imagens e a análise de mídia seguem a seção «Mídia de IA»; a busca na web continua usando o login do VEGA ou fontes gratuitas.',
-    setAiSave: 'Salvar',
     setAiSaved: 'Salvo',
     setAiTest: 'Testar conexão',
     setAiTesting: 'Testando…',
@@ -4683,7 +4671,6 @@ export const strings = {
     setAiCodexHint: 'Usa Codex CLI con accesso locale; non è richiesta alcuna chiave API.',
     setAiByokNote:
       "Le chat usano la tua chiave. La generazione di immagini e l'analisi dei media seguono la sezione «Media IA»; la ricerca web usa ancora l'accesso VEGA o fonti gratuite.",
-    setAiSave: 'Salva',
     setAiSaved: 'Salvato',
     setAiTest: 'Prova connessione',
     setAiTesting: 'Test in corso…',
@@ -5043,7 +5030,6 @@ export const strings = {
     setAiCodexHint: 'Używa lokalnie zalogowanego Codex CLI; klucz API nie jest potrzebny.',
     setAiByokNote:
       'Czaty używają Twojego klucza. Generowanie obrazów i analiza mediów zależą od sekcji „Media AI”; wyszukiwanie w sieci nadal korzysta z logowania VEGA lub darmowych źródeł.',
-    setAiSave: 'Zapisz',
     setAiSaved: 'Zapisano',
     setAiTest: 'Testuj połączenie',
     setAiTesting: 'Testowanie…',
@@ -5388,7 +5374,6 @@ export const strings = {
       'Automaticky najde a použije aktuální Codex CLI, po aktualizaci není třeba nic měnit; lze zadat i vlastní cestu. API klíč není potřeba.',
     setAiByokNote:
       'Chaty používají váš vlastní klíč. Generování obrázků a analýza médií se řídí sekcí AI média; webové vyhledávání dál používá přihlášení ke VEGA nebo bezplatné zdroje.',
-    setAiSave: 'Uložit',
     setAiSaved: 'Uloženo',
     setAiTest: 'Otestovat připojení',
     setAiTesting: 'Testování…',
@@ -5761,7 +5746,6 @@ export const strings = {
     setAiCodexHint: 'Gebruikt de lokaal aangemelde Codex CLI; geen API-sleutel nodig.',
     setAiByokNote:
       'Chats gebruiken je eigen sleutel. Afbeeldingen genereren en media-analyse volgen de sectie "AI-media"; zoeken op het web gebruikt nog steeds de VEGA-aanmelding of gratis bronnen.',
-    setAiSave: 'Opslaan',
     setAiSaved: 'Opgeslagen',
     setAiTest: 'Verbinding testen',
     setAiTesting: 'Testen…',
@@ -6126,7 +6110,6 @@ export const strings = {
       'Menggunakan Codex CLI yang telah log masuk secara setempat; tiada kunci API diperlukan.',
     setAiByokNote:
       'Sembang menggunakan kunci anda sendiri. Penjanaan imej dan analisis media mengikut bahagian "Media AI"; carian web masih menggunakan log masuk VEGA atau sumber percuma.',
-    setAiSave: 'Simpan',
     setAiSaved: 'Disimpan',
     setAiTest: 'Uji sambungan',
     setAiTesting: 'Menguji…',
@@ -6477,7 +6460,6 @@ export const strings = {
     setAiCodexHint: 'משתמש ב-Codex CLI המחובר מקומית; אין צורך במפתח API.',
     setAiByokNote:
       'הצ׳אטים משתמשים במפתח שלך. יצירת תמונות וניתוח מדיה נקבעים בקטע "מדיה AI"; חיפוש באינטרנט עדיין משתמש בהתחברות VEGA או במקורות חינמיים.',
-    setAiSave: 'שמירה',
     setAiSaved: 'נשמר',
     setAiTest: 'בדיקת חיבור',
     setAiTesting: 'בודק…',
@@ -6832,7 +6814,6 @@ export const strings = {
       'स्थानीय रूप से साइन-इन किए गए Codex CLI का उपयोग करता है; API कुंजी की आवश्यकता नहीं।',
     setAiByokNote:
       'चैट आपकी अपनी कुंजी का उपयोग करती हैं। इमेज जनरेशन और मीडिया विश्लेषण "AI मीडिया" अनुभाग के अनुसार होते हैं; वेब खोज अभी भी VEGA साइन-इन या मुफ़्त स्रोतों का उपयोग करती है।',
-    setAiSave: 'सहेजें',
     setAiSaved: 'सहेजा गया',
     setAiTest: 'कनेक्शन परखें',
     setAiTesting: 'परख रहे हैं…',
@@ -7181,7 +7162,6 @@ export const strings = {
       '自動尋找目前的 Codex CLI，更新後無需重新選擇；也可填寫自訂路徑。無需 API Key。',
     setAiByokNote:
       '對話使用你自己的 key；生圖與媒體解析依「生圖與媒體」設定；網頁搜尋仍走 VEGA 登入或免費來源。',
-    setAiSave: '儲存',
     setAiSaved: '已儲存',
     setAiTest: '測試連線',
     setAiTesting: '測試中…',
