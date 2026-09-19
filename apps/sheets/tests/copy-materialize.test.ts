@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { installCopyMaterialize } from '../src/renderer/copy-materialize'
+import { setModuleLang } from '../src/renderer/i18n/locale'
 import { ensureLazyRangeLoaded, readCopySourceDirect } from '../src/renderer/univer-sync'
 
 vi.mock('../src/renderer/univer-sync', () => ({
@@ -53,6 +54,7 @@ function harness(opts: {
 
 describe('copy materialize screen extent', () => {
   beforeEach(() => {
+    setModuleLang('en')
     mockEnsure.mockClear()
     mockDirect.mockReset()
   })
@@ -164,7 +166,8 @@ describe('copy materialize screen extent', () => {
       endColumn: 119,
     })
     expect(written).toEqual(['Año\t1,234.50\n\tTRUE'])
-    expect(h.messages.at(-1)).toMatch(/A1:DP12000.*1,440,000.*250,000/)
+    // the numbers are system-locale formatted (1,440,000 / 1 440 000 / 1.440.000)
+    expect(h.messages.at(-1)).toMatch(/A1:DP12000.*1\D?440\D?000.*250\D?000/)
     dispose()
   })
 

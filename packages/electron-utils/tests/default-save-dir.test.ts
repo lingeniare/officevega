@@ -58,7 +58,11 @@ describe('resolveDefaultSaveDir', () => {
     expect(existsSync(fallback)).toBe(true)
   })
 
-  it('degrades to the fallback when the configured folder is not writable', () => {
+  // chmod 0o500 does not make a directory unwritable on Windows (the ACL stays
+  // writable for the owner), so the POSIX-only degradation case is skipped there
+  it.skipIf(process.platform === 'win32')(
+    'degrades to the fallback when the configured folder is not writable',
+    () => {
     const readOnly = join(root, 'read-only')
     mkdirSync(readOnly)
     chmodSync(readOnly, 0o500)
@@ -68,7 +72,8 @@ describe('resolveDefaultSaveDir', () => {
     } finally {
       chmodSync(readOnly, 0o700)
     }
-  })
+    },
+  )
 
   it('throws a descriptive error when the fallback itself is unusable', () => {
     const blocker = join(root, 'blocker')

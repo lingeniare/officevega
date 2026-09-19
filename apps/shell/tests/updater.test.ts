@@ -543,7 +543,7 @@ describe('checkForUpdatesNow (r148 manual check)', () => {
     expect(showMessageBox).toHaveBeenCalledTimes(1)
     expect(lastDialogOpts().buttons.length).toBe(2)
     expect(openExternal).toHaveBeenCalledWith(
-      'https://github.com/genspark-ai/genoffice/releases/latest',
+      'https://github.com/lingeniare/getoffice/releases/latest',
     )
     expect(checkForUpdates).not.toHaveBeenCalled()
   })

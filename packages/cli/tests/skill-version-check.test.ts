@@ -38,7 +38,8 @@ describe('check-skill-version', () => {
     writeSkill('demo', skill('demo', '1.0.0', 'Run `demo --help`.'))
     git('add', '.')
     git('commit', '-q', '-m', 'base')
-  })
+    // a fresh repo's first commit can exceed the 10s default on Windows
+  }, 30000)
 
   it('passes when nothing changed and when the body change comes with a bump', () => {
     expect(check().ok).toBe(true)
