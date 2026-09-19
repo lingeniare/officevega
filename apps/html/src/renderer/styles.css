@@ -210,10 +210,14 @@ html.vegaoffice-popover-open .ribbon-tabs {
 }
 
 /* File dropdown at the row's left — same capsule + menu as the docs/slides
-   ribbons, with the html accent. */
+   ribbons. The capsule wears the .html file-type brand color (the shell tab
+   icon), not the neutral editing accent — same split as the .copilot accent
+   override below. */
 .file-tab-wrap {
   position: relative;
   -webkit-app-region: no-drag;
+  --accent: #0fa3a3;
+  --accent-dark: #0c8383;
 }
 
 .ribbon-tab-file {

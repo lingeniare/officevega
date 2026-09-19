@@ -251,18 +251,63 @@ button {
   flex-shrink: 0;
 }
 
-/* File dropdown at the tab row's left — same capsule + menu as the
-   docs/slides ribbons, with the pdf accent. */
-.file-tab-wrap {
+/* ── ribbon tab strip (docs/Word-style: semibold labels, accent underline on the active tab) ── */
+.ribbon-tab {
   position: relative;
+  border: none;
+  background: none;
+  padding: 7px 9px 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: inherit;
+  cursor: pointer;
+  /* transparent border keeps the row height; the visible underline is the
+     ::after, sized to the label text rather than the padded button */
+  border-bottom: 2.5px solid transparent;
 }
 
-.ribbon-tab-file {
-  color: var(--pdf-on-accent);
+.ribbon-tab:hover {
+  color: var(--accent);
+}
+
+.ribbon-tab.active {
+  color: var(--accent);
+}
+
+/* active underline: exactly the text width (insets = horizontal padding) */
+.ribbon-tab.active::after {
+  content: '';
+  position: absolute;
+  left: 13px;
+  right: 13px;
+  bottom: -2.5px;
+  height: 2.5px;
+  border-radius: 1px;
   background: var(--accent);
+}
+
+/* File dropdown at the tab row's left — same capsule + menu as the
+   docs/slides ribbons. The capsule wears the .pdf file-type brand color
+   (the shell tab icon), not the document-editing accent — same split as
+   the .copilot accent override below. */
+.file-tab-wrap {
+  position: relative;
+  --accent: #ef4444;
+  --accent-dark: #dc2626;
+}
+
+/* sits after .ribbon-tab so the capsule's box wins over plain-tab metrics;
+   border: none drops the transparent underline strip plain tabs carry */
+.ribbon-tab-file {
+  border: none;
   border-radius: 4px;
   padding: 6px 16px;
   margin-right: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--pdf-on-accent);
+  background: var(--accent);
 }
 
 .ribbon-tab-file:hover,
@@ -311,41 +356,6 @@ button {
 .file-menu-key {
   color: var(--text-dim);
   font-size: 12px;
-}
-
-/* ── ribbon tab strip (docs/Word-style: semibold labels, accent underline on the active tab) ── */
-.ribbon-tab {
-  position: relative;
-  border: none;
-  background: none;
-  padding: 7px 9px 6px;
-  font-size: 13px;
-  font-weight: 600;
-  color: inherit;
-  cursor: pointer;
-  /* transparent border keeps the row height; the visible underline is the
-     ::after, sized to the label text rather than the padded button */
-  border-bottom: 2.5px solid transparent;
-}
-
-.ribbon-tab:hover {
-  color: var(--accent);
-}
-
-.ribbon-tab.active {
-  color: var(--accent);
-}
-
-/* active underline: exactly the text width (insets = horizontal padding) */
-.ribbon-tab.active::after {
-  content: '';
-  position: absolute;
-  left: 13px;
-  right: 13px;
-  bottom: -2.5px;
-  height: 2.5px;
-  border-radius: 1px;
-  background: var(--accent);
 }
 
 .ribbon-body {

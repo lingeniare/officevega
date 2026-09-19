@@ -490,12 +490,18 @@ html.vegaoffice-popover-open .ribbon-tabs {
   background: var(--word-blue);
 }
 
+/* same capsule box in every app — border: none drops the transparent
+   underline strip plain .ribbon-tab carries */
 .ribbon-tab-file {
-  color: var(--docs-on-accent);
-  background: var(--word-blue);
+  border: none;
   border-radius: 4px;
   padding: 6px 16px;
   margin-right: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--docs-on-accent);
+  background: var(--word-blue);
 }
 
 .ribbon-tab-file:hover,

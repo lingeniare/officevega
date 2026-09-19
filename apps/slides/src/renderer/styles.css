@@ -521,12 +521,18 @@ button {
   background: var(--accent);
 }
 
+/* same capsule box in every app — border: none drops the transparent
+   underline strip plain .ribbon-tab carries */
 .ribbon-tab-file {
-  color: var(--slides-on-accent);
-  background: var(--accent);
+  border: none;
   border-radius: 4px;
   padding: 6px 16px;
   margin-right: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--slides-on-accent);
+  background: var(--accent);
 }
 
 .ribbon-tab-file:hover,
