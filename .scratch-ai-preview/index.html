@@ -215,11 +215,10 @@
       .ai-starter-list {
         display: flex;
         flex-direction: column;
-        align-items: flex-end;
+        align-items: stretch;
       }
       .ai-starter {
         max-width: 100%;
-        text-wrap: balance;
       }
       /* demo accents — in the apps these live in each app's styles.css :root/dark blocks */
       :root {
@@ -331,9 +330,9 @@
           <div class="ai-chat-empty-title">Чем помочь?</div>
           <div class="ai-chat-empty-body">Спросите что-нибудь или выберите подсказку</div>
           <div class="ai-starter-list">
-            <button class="ai-starter">Сделай текст короче</button>
-            <button class="ai-starter">Найди ошибки в документе</button>
-            <button class="ai-starter">Предложи заголовок раздела</button>
+            <button class="ai-starter"><span class="ai-starter-text">Сделай текст короче</span></button>
+            <button class="ai-starter"><span class="ai-starter-text">Найди ошибки в документе</span></button>
+            <button class="ai-starter"><span class="ai-starter-text">Предложи заголовок раздела</span></button>
           </div>
         </div>
       </div>

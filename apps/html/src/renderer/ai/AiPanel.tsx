@@ -1188,7 +1188,7 @@ export function AiPanel({
                     inputRef.current?.focus()
                   }}
                 >
-                  {t(label)}
+                  <span className="ai-starter-text">{t(label)}</span>
                 </button>
               ))}
             </div>

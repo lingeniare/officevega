@@ -663,7 +663,7 @@ export function AiPanel({
                   send(t(hasScopeSelection ? 'aiQuickSummarySelPrompt' : 'aiQuickSummaryPrompt'))
                 }
               >
-                {t('aiQuickSummary')}
+                <span className="ai-starter-text">{t('aiQuickSummary')}</span>
               </button>
               <button
                 className="ai-quick-btn"
@@ -673,7 +673,7 @@ export function AiPanel({
                   )
                 }
               >
-                {t('aiQuickKeyPoints')}
+                <span className="ai-starter-text">{t('aiQuickKeyPoints')}</span>
               </button>
             </div>
           </div>

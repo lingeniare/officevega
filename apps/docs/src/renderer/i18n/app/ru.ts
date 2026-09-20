@@ -359,7 +359,7 @@ export const ru = {
   appReplacePlaceholder: 'Заменить на',
   appReplace: 'Заменить',
   appReplaceAll: 'Заменить все',
-  appPaginationPreview: 'Предварительный просмотр страниц',
+  appPaginationPreview: 'Предварительный просмотр',
   appPvCommented: 'Примечание',
   appTotalPagesN: 'Всего страниц: {n}',
   appPvHint: 'Снимок только для чтения; после правки откройте заново · Esc — закрыть',

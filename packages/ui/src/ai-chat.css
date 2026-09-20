@@ -71,7 +71,9 @@
   background: var(--text-tertiary);
 }
 
-/* ---------- empty state: right-aligned, suggestion chips with accent outline ----------
+/* ---------- empty state: full-width suggestion rows with accent outline ----------
+   every chip keeps identical metrics — same width, same height, same label
+   alignment; long labels ellipsize instead of wrapping
    (.ai-quick-actions/.ai-quick-btn is the pdf app's name for the same block) */
 .ai-chat-empty {
   text-align: right;
@@ -87,14 +89,17 @@
 
 .ai-starter-list,
 .ai-quick-actions {
-  align-items: flex-end;
+  align-items: stretch;
   gap: 6px;
   margin-top: 20px;
 }
 
 .ai-starter,
 .ai-quick-btn {
-  max-width: 100%;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
   padding: 6px 12px;
   border: 1px solid var(--accent);
   border-radius: var(--radius-30);
@@ -102,8 +107,6 @@
   font-size: 13px;
   font-weight: 400;
   line-height: 1.4;
-  text-align: right;
-  text-wrap: balance;
   color: var(--color-text-secondary);
   cursor: pointer;
   transition:
@@ -112,18 +115,29 @@
     border-color var(--transition-fast);
 }
 
+/* label slot: single line, ellipsized — so every chip has the same height */
+.ai-starter-text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: start;
+}
+
 .ai-starter::after,
 .ai-quick-btn::after {
   content: '→';
   display: inline-block;
+  flex-shrink: 0;
   max-width: 0;
-  margin-left: 0;
+  margin-inline-start: 0;
   color: var(--accent);
   opacity: 0;
   transition:
     opacity var(--transition-fast),
     max-width var(--transition-fast),
-    margin-left var(--transition-fast);
+    margin-inline-start var(--transition-fast);
 }
 
 .ai-starter:hover,
@@ -135,7 +149,7 @@
 .ai-starter:hover::after,
 .ai-quick-btn:hover::after {
   max-width: 1em;
-  margin-left: 6px;
+  margin-inline-start: 6px;
   opacity: 1;
 }
 

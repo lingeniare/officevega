@@ -1984,8 +1984,10 @@ th.cell-rev-del {
 }
 
 .layout-num > span:first-child {
-  width: 44px;
-  text-align: right;
+  flex: 1;
+  min-width: 44px;
+  margin-right: 8px;
+  text-align: left;
   color: var(--text-dim);
 }
 

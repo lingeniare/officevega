@@ -809,7 +809,7 @@ export function AiPanel({
                   inputRef.current?.focus()
                 }}
               >
-                {t('aiQuickDraft')}
+                <span className="ai-starter-text">{t('aiQuickDraft')}</span>
               </button>
               <button
                 className="ai-starter"
@@ -818,7 +818,7 @@ export function AiPanel({
                   inputRef.current?.focus()
                 }}
               >
-                {t('aiQuickPolish')}
+                <span className="ai-starter-text">{t('aiQuickPolish')}</span>
               </button>
             </div>
           </div>
