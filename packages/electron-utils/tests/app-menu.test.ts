@@ -4,6 +4,7 @@ const electronMock = vi.hoisted(() => ({
   getFocusedWebContents: vi.fn(),
   showMessageBox: vi.fn(),
   writeText: vi.fn(),
+  openPath: vi.fn(),
 }))
 
 vi.mock('electron', () => ({
@@ -12,12 +13,17 @@ vi.mock('electron', () => ({
   },
   app: {
     getVersion: () => '1.2.3',
+    isPackaged: false,
+    getAppPath: () => '/fake/app',
   },
   dialog: {
     showMessageBox: electronMock.showMessageBox,
   },
   clipboard: {
     writeText: electronMock.writeText,
+  },
+  shell: {
+    openPath: electronMock.openPath,
   },
 }))
 
@@ -27,6 +33,8 @@ import {
   checkUpdatesMenuItem,
   editMenuTemplate,
   helpMenuTemplate,
+  licenseMenuItem,
+  privacyMenuItem,
   setUpdateCheckInvoker,
   viewMenuTemplate,
   windowMenuTemplate,
@@ -184,8 +192,8 @@ describe('viewMenuTemplate', () => {
 describe('checkUpdatesMenuItem / manual update check wiring', () => {
   it('sits directly above About in the help menu', () => {
     const items = submenuOf(helpMenuTemplate(en))
-    expect(items.at(-2)!.label).toBe(en.checkUpdates)
-    expect(items.at(-1)!.label).toBe(en.about)
+    const aboutIndex = items.findIndex((i) => i.label === en.about)
+    expect(items[aboutIndex - 1]!.label).toBe(en.checkUpdates)
   })
 
   it('invokes the shell-registered check on click, and no-ops unregistered', () => {
@@ -228,5 +236,30 @@ describe('checkUpdatesMenuItem / manual update check wiring', () => {
     electronMock.showMessageBox.mockResolvedValue({ response: 1 })
     await (aboutMenuItem(en) as { click: () => Promise<void> }).click()
     expect(electronMock.writeText).toHaveBeenCalledWith('Office VEGA 1.2.3')
+  })
+})
+
+describe('licenseMenuItem + privacyMenuItem / bundled legal docs', () => {
+  it('sit below About behind a separator in the help menu', () => {
+    const items = submenuOf(helpMenuTemplate(en))
+    const aboutIndex = items.findIndex((i) => i.label === en.about)
+    expect(items[aboutIndex + 1]!.type).toBe('separator')
+    expect(items[aboutIndex + 2]!.label).toBe(en.license)
+    expect(items[aboutIndex + 3]!.label).toBe(en.privacy)
+    expect(items.at(-1)!.label).toBe(en.privacy)
+  })
+
+  it.each([
+    ['license', licenseMenuItem, 'EULA.txt'],
+    ['privacy', privacyMenuItem, 'PRIVACY-POLICY.txt'],
+  ] as const)('%s item opens the bundled %s via the OS viewer', async (key, make, file) => {
+    const item = make(en) as { label: string; click: () => Promise<void> }
+    expect(item.label).toBe(en[key])
+
+    await item.click()
+    expect(electronMock.openPath).toHaveBeenCalledOnce()
+    expect(electronMock.openPath.mock.calls[0]![0]).toMatch(
+      new RegExp(`${file.replace('.', '\\.')}$`),
+    )
   })
 })

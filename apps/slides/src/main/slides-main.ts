@@ -13,6 +13,7 @@ import {
   ipcMain,
   Menu,
   nativeImage,
+  nativeTheme,
   session as electronSession,
   shell,
   webContents,
@@ -45,6 +46,7 @@ import {
   installRendererProtocol,
   registerRendererScheme,
   rendererUrl,
+  themedSurfaceColor,
 } from '@genoffice/electron-utils'
 import {
   resolveGroupChildId,
@@ -4482,11 +4484,14 @@ export function createSlidesWindow(openPath?: string | null): BrowserWindow {
     width: 1280,
     height: 840,
     title: 'Office VEGA Slides',
+    backgroundColor: themedSurfaceColor(),
     ...(process.platform === 'darwin'
       ? { titleBarStyle: 'hiddenInset' as const }
       : {
           titleBarStyle: 'hidden' as const,
-          titleBarOverlay: { color: '#ffffff', symbolColor: '#444444', height: 40 },
+          titleBarOverlay: nativeTheme.shouldUseDarkColors
+            ? { color: '#2a2a2a', symbolColor: '#e4e4e4', height: 40 }
+            : { color: '#ffffff', symbolColor: '#444444', height: 40 },
         }),
     webPreferences: {
       preload: runtime.preloadPath,
@@ -4534,19 +4539,19 @@ export function createSlidesWindow(openPath?: string | null): BrowserWindow {
   return win
 }
 
-/** per-webContents background setter: opaque white while (re)loading, flipped
- * to transparent by consume-pending-open once the renderer has mounted, so the
- * vibrancy hole never shows the raw desktop behind an unpainted page */
+/** per-webContents background setter: opaque themed surface while (re)loading,
+ * flipped to transparent by consume-pending-open once the renderer has mounted,
+ * so the vibrancy hole never shows the raw desktop behind an unpainted page */
 const vibFlip = new Map<number, (color: string) => void>()
 
 function armVibrancy(view: WebContentsView): void {
   if (process.platform !== 'darwin') return
   const setColor = (c: string) => view.setBackgroundColor(c)
-  setColor('#ffffff')
+  setColor(themedSurfaceColor())
   // view.webContents becomes undefined after destroy, so grab the id beforehand
   const wcId = view.webContents.id
   vibFlip.set(wcId, setColor)
-  view.webContents.on('did-start-loading', () => setColor('#ffffff'))
+  view.webContents.on('did-start-loading', () => setColor(themedSurfaceColor()))
   view.webContents.once('destroyed', () => vibFlip.delete(wcId))
 }
 

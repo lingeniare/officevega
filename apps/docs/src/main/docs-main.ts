@@ -32,6 +32,7 @@ import {
   dialog,
   ipcMain,
   nativeImage,
+  nativeTheme,
   net,
   shell,
   webContents,
@@ -53,6 +54,8 @@ import {
   showSaveDialogWithMemory,
   aboutMenuItem,
   checkUpdatesMenuItem,
+  licenseMenuItem,
+  privacyMenuItem,
   toggleDevToolsItem,
   windowMenuTemplate,
   type HeadlessExportFormat,
@@ -60,6 +63,7 @@ import {
   installRendererProtocol,
   registerRendererScheme,
   rendererUrl,
+  themedSurfaceColor,
 } from '@genoffice/electron-utils'
 import { configureMetricsCache, familyVerticalMetrics } from '@genoffice/font-metrics'
 import { createI18n, getUiLang, normalizeLang, setUiLang } from '@genoffice/i18n'
@@ -4611,6 +4615,9 @@ export function buildDocsMenu(): void {
         { type: 'separator' },
         checkUpdatesMenuItem(appMenuLabels(getUiLang())),
         aboutMenuItem(appMenuLabels(getUiLang())),
+        { type: 'separator' },
+        licenseMenuItem(appMenuLabels(getUiLang())),
+        privacyMenuItem(appMenuLabels(getUiLang())),
       ],
     },
     ...extraAppMenuItems,
@@ -4695,12 +4702,15 @@ export function createDocsWindow(openPath?: string): BrowserWindow {
     minWidth: 720,
     minHeight: 550,
     title: 'Office VEGA Docs',
+    backgroundColor: themedSurfaceColor(),
     // Word-like custom title bar (document name centered, quick-access buttons)
     ...(process.platform === 'darwin'
       ? { titleBarStyle: 'hiddenInset' as const }
       : {
           titleBarStyle: 'hidden' as const,
-          titleBarOverlay: { color: '#ffffff', symbolColor: '#444444', height: 40 },
+          titleBarOverlay: nativeTheme.shouldUseDarkColors
+            ? { color: '#2a2a2a', symbolColor: '#e4e4e4', height: 40 }
+            : { color: '#ffffff', symbolColor: '#444444', height: 40 },
         }),
     // packaged builds embed the icon (build/icon.icns|ico); dev needs the file path
     ...(isDev && process.platform !== 'darwin'

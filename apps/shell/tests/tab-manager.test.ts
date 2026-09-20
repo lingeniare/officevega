@@ -21,6 +21,7 @@ interface FakeView {
   webContents: FakeWebContents
   setVisible: ReturnType<typeof vi.fn>
   setBounds: ReturnType<typeof vi.fn>
+  setBackgroundColor: ReturnType<typeof vi.fn>
 }
 
 let nextWebContentsId = 1
@@ -41,10 +42,16 @@ function makeFakeView(): FakeView {
     },
     setVisible: vi.fn(),
     setBounds: vi.fn(),
+    setBackgroundColor: vi.fn(),
   }
 }
 
-vi.mock('electron', () => ({ BrowserWindow: class {} }))
+vi.mock('electron', () => ({
+  BrowserWindow: class {},
+  nativeTheme: { on: vi.fn(), off: vi.fn(), shouldUseDarkColors: false },
+}))
+
+vi.mock('@genoffice/electron-utils', () => ({ themedSurfaceColor: () => '#ffffff' }))
 
 const createDocsView = vi.fn(() => makeFakeView())
 const docsQueryDirty = vi.fn(() => Promise.resolve(false))
@@ -112,6 +119,7 @@ const WINDOW_HEIGHT = 600
 
 interface FakeShellWindow {
   on: ReturnType<typeof vi.fn>
+  once: ReturnType<typeof vi.fn>
   webContents: { once: ReturnType<typeof vi.fn> }
   isDestroyed: ReturnType<typeof vi.fn>
   getContentBounds: () => { x: number; y: number; width: number; height: number }
@@ -124,6 +132,7 @@ interface FakeShellWindow {
 function makeShellWindow(): FakeShellWindow {
   return {
     on: vi.fn(),
+    once: vi.fn(),
     webContents: { once: vi.fn() },
     isDestroyed: vi.fn(() => false),
     getContentBounds: () => ({ x: 0, y: 0, width: WINDOW_WIDTH, height: WINDOW_HEIGHT }),
@@ -217,6 +226,13 @@ describe('opening tabs', () => {
     expect(markDocsNewBlank).toHaveBeenCalledTimes(1)
     manager.openSheetsTab(undefined, { newBlank: true })
     expect(setSheetsNewBlank).toHaveBeenCalledTimes(1)
+  })
+
+  it('paints a new tab view with the themed surface color so it does not flash white', () => {
+    manager.openDocsTab()
+    manager.openSlidesTab()
+    expect(lastCreatedView(createDocsView).setBackgroundColor).toHaveBeenCalledWith('#ffffff')
+    expect(lastCreatedView(createSlidesView).setBackgroundColor).toHaveBeenCalledWith('#ffffff')
   })
 })
 

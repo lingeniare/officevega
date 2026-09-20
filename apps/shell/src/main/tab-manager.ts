@@ -1,7 +1,8 @@
 import { basename } from 'node:path'
 import { realpathSync } from 'node:fs'
-import { BrowserWindow } from 'electron'
+import { BrowserWindow, nativeTheme } from 'electron'
 import type { Rectangle, WebContents, WebContentsView } from 'electron'
+import { themedSurfaceColor } from '@genoffice/electron-utils'
 
 import {
   createDocsView,
@@ -105,6 +106,39 @@ export class TabManager {
       setImmediate(() => this.layout())
     })
     shellWindow.webContents.once('did-finish-load', () => this.scheduleSpareSheetsView(1500))
+    // A theme flip (in-app or OS-level under 'system') while a renderer is
+    // still loading must reach it: the fill is its only painted frame.
+    const retint = () => {
+      for (const tab of this.tabs) {
+        const wc = tab.view?.webContents
+        if (tab.view && wc && !wc.isDestroyed() && wc.isLoading()) this.tintView(tab.view)
+      }
+      const spare = this.spareSheetsView
+      if (spare && !spare.webContents.isDestroyed() && spare.webContents.isLoading()) {
+        this.tintView(spare)
+      }
+    }
+    nativeTheme.on('updated', retint)
+    shellWindow.once('closed', () => nativeTheme.off('updated', retint))
+  }
+
+  /**
+   * The fill a tab's view paints until its renderer's first frame — kept in
+   * sync with --surface (packages/ui/src/tokens.css) so opening a tab under
+   * the dark theme doesn't flash white.
+   */
+  private tintView(view: WebContentsView): void {
+    view.setBackgroundColor(themedSurfaceColor())
+  }
+
+  /** Add a fresh tab view to the window, hidden until activateTab reveals it. */
+  private attachView(view: WebContentsView): void {
+    this.tintView(view)
+    // a reload re-paints the fill: re-resolve it in case the theme changed
+    // while the tab sat idle
+    view.webContents.on('did-start-loading', () => this.tintView(view))
+    this.shellWindow.contentView.addChildView(view)
+    view.setVisible(false)
   }
 
   private scheduleSpareSheetsView(delayMs: number): void {
@@ -118,8 +152,7 @@ export class TabManager {
       setActiveSheetsWebContents(
         active?.kind === 'sheets' && active.view ? active.view.webContents : null,
       )
-      this.shellWindow.contentView.addChildView(view)
-      view.setVisible(false)
+      this.attachView(view)
       view.setBounds(this.contentBounds())
       view.webContents.once('render-process-gone', () => {
         if (this.spareSheetsView !== view) return
@@ -256,8 +289,7 @@ export class TabManager {
     const id = `t${this.nextId++}`
     if (options?.newBlank) markDocsNewBlank(view.webContents.id)
     if (options?.aiContent) queueDocsAiContent(view.webContents.id, options.aiContent)
-    this.shellWindow.contentView.addChildView(view)
-    view.setVisible(false)
+    this.attachView(view)
     this.trackHtmlFullScreen(id, view)
     this.tabs.push({
       id,
@@ -282,10 +314,7 @@ export class TabManager {
       if (spare) nudgeQueuedWorkbook(view.webContents)
     }
     const id = `t${this.nextId++}`
-    if (!spare) {
-      this.shellWindow.contentView.addChildView(view)
-      view.setVisible(false)
-    }
+    if (!spare) this.attachView(view)
     this.trackHtmlFullScreen(id, view)
     this.scheduleSpareSheetsView(3000)
     this.tabs.push({
@@ -302,8 +331,7 @@ export class TabManager {
   openSlidesTab(openPath?: string): string {
     const view = createSlidesView(openPath)
     const id = `t${this.nextId++}`
-    this.shellWindow.contentView.addChildView(view)
-    view.setVisible(false)
+    this.attachView(view)
     this.trackHtmlFullScreen(id, view)
     this.tabs.push({
       id,
@@ -319,8 +347,7 @@ export class TabManager {
   openPdfTab(openPath: string): string {
     const view = createPdfView(openPath)
     const id = `t${this.nextId++}`
-    this.shellWindow.contentView.addChildView(view)
-    view.setVisible(false)
+    this.attachView(view)
     this.trackHtmlFullScreen(id, view)
     this.tabs.push({ id, kind: 'pdf', view, title: basename(openPath), filePath: openPath })
     this.activateTab(id)
@@ -339,8 +366,7 @@ export class TabManager {
   openMarkdownTab(openPath?: string): string {
     const view = createMarkdownView(openPath)
     const id = `t${this.nextId++}`
-    this.shellWindow.contentView.addChildView(view)
-    view.setVisible(false)
+    this.attachView(view)
     this.trackHtmlFullScreen(id, view)
     this.tabs.push({
       id,
@@ -356,8 +382,7 @@ export class TabManager {
   openHtmlTab(openPath?: string): string {
     const view = createHtmlView(openPath)
     const id = `t${this.nextId++}`
-    this.shellWindow.contentView.addChildView(view)
-    view.setVisible(false)
+    this.attachView(view)
     this.trackHtmlFullScreen(id, view)
     this.tabs.push({
       id,
@@ -374,8 +399,7 @@ export class TabManager {
   openHtmlPresentTab(owner: WebContents, title: string): string {
     const view = createHtmlPresentView(owner, title)
     const id = `t${this.nextId++}`
-    this.shellWindow.contentView.addChildView(view)
-    view.setVisible(false)
+    this.attachView(view)
     this.trackHtmlFullScreen(id, view)
     this.tabs.push({
       id,

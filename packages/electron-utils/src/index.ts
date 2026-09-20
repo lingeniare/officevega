@@ -19,6 +19,8 @@ export {
   checkUpdatesMenuItem,
   editMenuTemplate,
   helpMenuTemplate,
+  licenseMenuItem,
+  privacyMenuItem,
   setUpdateCheckInvoker,
   toggleDevToolsItem,
   viewMenuTemplate,
@@ -66,6 +68,7 @@ export {
   type PrintWindow,
 } from './print-html-pdf'
 export { isHeadlessMode, setHeadlessMode } from './headless-mode'
+export { themedSurfaceColor } from './theme-surface'
 export {
   HEADLESS_EXIT,
   HEADLESS_EXPORT_FLAG,

@@ -239,6 +239,14 @@ const config = {
       to: 'THIRD-PARTY-NOTICES.txt',
     },
     {
+      from: 'build/EULA.txt',
+      to: 'EULA.txt',
+    },
+    {
+      from: 'build/PRIVACY-POLICY.txt',
+      to: 'PRIVACY-POLICY.txt',
+    },
+    {
       from: '../../node_modules/electron/dist/LICENSES.chromium.html',
       to: 'LICENSES.chromium.html',
     },

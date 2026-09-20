@@ -24,6 +24,8 @@ export interface AppMenuLabels extends ContextMenuLabels {
   about: string
   checkUpdates: string
   version: string
+  license: string
+  privacy: string
 }
 
 type Labels = Omit<AppMenuLabels, keyof ContextMenuLabels>
@@ -48,6 +50,8 @@ const EN: Labels = {
   about: 'About Office VEGA',
   checkUpdates: 'Check for Updates…',
   version: 'Version',
+  license: 'License',
+  privacy: 'Privacy Policy',
 }
 
 // Shared table, same rationale as context-menu.ts: one copy instead of
@@ -73,6 +77,8 @@ const LABELS: Record<string, Labels> = {
     about: '关于 Office VEGA',
     checkUpdates: '检查更新…',
     version: '版本',
+    license: '许可证',
+    privacy: '隐私政策',
   },
   en: EN,
   ja: {
@@ -95,6 +101,8 @@ const LABELS: Record<string, Labels> = {
     about: 'Office VEGA について',
     checkUpdates: '更新を確認…',
     version: 'バージョン',
+    license: 'ライセンス',
+    privacy: 'プライバシーポリシー',
   },
   ko: {
     window: '창',
@@ -116,6 +124,8 @@ const LABELS: Record<string, Labels> = {
     about: 'Office VEGA 정보',
     checkUpdates: '업데이트 확인…',
     version: '버전',
+    license: '라이선스',
+    privacy: '개인정보 처리방침',
   },
   fr: {
     window: 'Fenêtre',
@@ -137,6 +147,8 @@ const LABELS: Record<string, Labels> = {
     about: 'À propos de Office VEGA',
     checkUpdates: 'Rechercher les mises à jour…',
     version: 'Version',
+    license: 'Licence',
+    privacy: 'Politique de confidentialité',
   },
   de: {
     window: 'Fenster',
@@ -158,6 +170,8 @@ const LABELS: Record<string, Labels> = {
     about: 'Über Office VEGA',
     checkUpdates: 'Nach Updates suchen…',
     version: 'Version',
+    license: 'Lizenz',
+    privacy: 'Datenschutzrichtlinie',
   },
   es: {
     window: 'Ventana',
@@ -179,6 +193,8 @@ const LABELS: Record<string, Labels> = {
     about: 'Acerca de Office VEGA',
     checkUpdates: 'Buscar actualizaciones…',
     version: 'Versión',
+    license: 'Licencia',
+    privacy: 'Política de privacidad',
   },
   th: {
     window: 'หน้าต่าง',
@@ -200,6 +216,8 @@ const LABELS: Record<string, Labels> = {
     about: 'เกี่ยวกับ Office VEGA',
     checkUpdates: 'ตรวจหาการอัปเดต…',
     version: 'เวอร์ชัน',
+    license: 'ใบอนุญาต',
+    privacy: 'นโยบายความเป็นส่วนตัว',
   },
   id: {
     window: 'Jendela',
@@ -221,6 +239,8 @@ const LABELS: Record<string, Labels> = {
     about: 'Tentang Office VEGA',
     checkUpdates: 'Periksa Pembaruan…',
     version: 'Versi',
+    license: 'Lisensi',
+    privacy: 'Kebijakan Privasi',
   },
   ru: {
     window: 'Окно',
@@ -242,6 +262,8 @@ const LABELS: Record<string, Labels> = {
     about: 'Об «Офис ВЕГА»',
     checkUpdates: 'Проверить обновления…',
     version: 'Версия',
+    license: 'Лицензия',
+    privacy: 'Политика конфиденциальности',
   },
   ar: {
     window: 'نافذة',
@@ -263,6 +285,8 @@ const LABELS: Record<string, Labels> = {
     about: 'حول Office VEGA',
     checkUpdates: 'التحقق من التحديثات…',
     version: 'الإصدار',
+    license: 'الترخيص',
+    privacy: 'سياسة الخصوصية',
   },
   pt: {
     window: 'Janela',
@@ -284,6 +308,8 @@ const LABELS: Record<string, Labels> = {
     about: 'Sobre o Office VEGA',
     checkUpdates: 'Procurar atualizações…',
     version: 'Versão',
+    license: 'Licença',
+    privacy: 'Política de Privacidade',
   },
   it: {
     window: 'Finestra',
@@ -305,6 +331,8 @@ const LABELS: Record<string, Labels> = {
     about: 'Informazioni su Office VEGA',
     checkUpdates: 'Controlla aggiornamenti…',
     version: 'Versione',
+    license: 'Licenza',
+    privacy: 'Informativa sulla privacy',
   },
   pl: {
     window: 'Okno',
@@ -326,6 +354,8 @@ const LABELS: Record<string, Labels> = {
     about: 'O programie Office VEGA',
     checkUpdates: 'Sprawdź aktualizacje…',
     version: 'Wersja',
+    license: 'Licencja',
+    privacy: 'Polityka prywatności',
   },
   cs: {
     window: 'Okno',
@@ -347,6 +377,8 @@ const LABELS: Record<string, Labels> = {
     about: 'O aplikaci Office VEGA',
     checkUpdates: 'Zkontrolovat aktualizace…',
     version: 'Verze',
+    license: 'Licence',
+    privacy: 'Zásady ochrany osobních údajů',
   },
   nl: {
     window: 'Venster',
@@ -368,6 +400,8 @@ const LABELS: Record<string, Labels> = {
     about: 'Over Office VEGA',
     checkUpdates: 'Controleren op updates…',
     version: 'Versie',
+    license: 'Licentie',
+    privacy: 'Privacybeleid',
   },
   ms: {
     window: 'Tetingkap',
@@ -389,6 +423,8 @@ const LABELS: Record<string, Labels> = {
     about: 'Perihal Office VEGA',
     checkUpdates: 'Semak Kemas Kini…',
     version: 'Versi',
+    license: 'Lesen',
+    privacy: 'Dasar Privasi',
   },
   he: {
     window: 'חלון',
@@ -410,6 +446,8 @@ const LABELS: Record<string, Labels> = {
     about: 'אודות Office VEGA',
     checkUpdates: 'בדוק עדכונים…',
     version: 'גרסה',
+    license: 'רישיון',
+    privacy: 'מדיניות פרטיות',
   },
   hi: {
     window: 'विंडो',
@@ -431,6 +469,8 @@ const LABELS: Record<string, Labels> = {
     about: 'Office VEGA के बारे में',
     checkUpdates: 'अपडेट जांचें…',
     version: 'संस्करण',
+    license: 'लाइसेंस',
+    privacy: 'गोपनीयता नीति',
   },
   'zh-TW': {
     window: '視窗',
@@ -452,6 +492,8 @@ const LABELS: Record<string, Labels> = {
     about: '關於 Office VEGA',
     checkUpdates: '檢查更新…',
     version: '版本',
+    license: '授權',
+    privacy: '隱私權政策',
   },
 }
 
@@ -592,8 +634,43 @@ export function aboutMenuItem(labels: AppMenuLabels): MenuItemConstructorOptions
   }
 }
 
-/** Help menu with Check for Updates… + About; extra app-specific items go
- * before the separator. */
+/** Opens a text file bundled next to the executable (resources/ in packaged
+ * builds, apps/shell/build in dev) in the OS default viewer — the same
+ * approach as Third-Party Notices, so legal texts are readable everywhere but
+ * never editable inside the suite. The second dev candidate covers standalone
+ * app dev, where getAppPath() is apps/<app> and the files live in
+ * apps/shell/build. */
+async function openBundledText(fileName: string): Promise<void> {
+  const { app, shell } = await import('electron')
+  const { existsSync } = await import('node:fs')
+  const { join } = await import('node:path')
+  const candidates = app.isPackaged
+    ? [join(process.resourcesPath, fileName)]
+    : [
+        join(app.getAppPath(), 'build', fileName),
+        join(app.getAppPath(), '..', 'shell', 'build', fileName),
+      ]
+  void shell.openPath(candidates.find((p) => existsSync(p)) ?? candidates[0])
+}
+
+/** Help > License: opens the bundled EULA. */
+export function licenseMenuItem(labels: AppMenuLabels): MenuItemConstructorOptions {
+  return {
+    label: labels.license,
+    click: () => openBundledText('EULA.txt'),
+  }
+}
+
+/** Help > Privacy Policy: opens the bundled personal-data policy. */
+export function privacyMenuItem(labels: AppMenuLabels): MenuItemConstructorOptions {
+  return {
+    label: labels.privacy,
+    click: () => openBundledText('PRIVACY-POLICY.txt'),
+  }
+}
+
+/** Help menu with Check for Updates… + About + legal docs; extra app-specific
+ * items go before the separator. */
 export function helpMenuTemplate(
   labels: AppMenuLabels,
   extraItems: MenuItemConstructorOptions[] = [],
@@ -606,6 +683,9 @@ export function helpMenuTemplate(
       ...(extraItems.length > 0 ? [{ type: 'separator' } as const] : []),
       checkUpdatesMenuItem(labels),
       aboutMenuItem(labels),
+      { type: 'separator' },
+      licenseMenuItem(labels),
+      privacyMenuItem(labels),
     ],
   }
 }

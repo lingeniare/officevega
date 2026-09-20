@@ -27,6 +27,7 @@ import {
   installRendererProtocol,
   registerRendererScheme,
   rendererUrl,
+  themedSurfaceColor,
   OPEN_FILE_DIALOG_CHANNEL,
 } from '@genoffice/electron-utils'
 import { createI18n, getUiLang } from '@genoffice/i18n'
@@ -1147,6 +1148,7 @@ function createStandaloneWindow(openPath?: string | null): BrowserWindow {
   const win = new BrowserWindow({
     width: 1200,
     height: 850,
+    backgroundColor: themedSurfaceColor(),
     webPreferences: {
       preload: runtime.preloadPath,
       contextIsolation: true,

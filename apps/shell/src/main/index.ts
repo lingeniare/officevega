@@ -62,8 +62,11 @@ import {
   windowMenuTemplate,
   aboutMenuItem,
   checkUpdatesMenuItem,
+  licenseMenuItem,
+  privacyMenuItem,
   setUpdateCheckInvoker,
   installRendererProtocol,
+  themedSurfaceColor,
 } from '@genoffice/electron-utils'
 import { readAppSettings, writeAppSetting, writeAppSettings } from './app-settings'
 import { OPEN_DOCUMENTS_FILE, clearOpenDocuments, publishOpenDocuments } from './open-documents'
@@ -2493,6 +2496,9 @@ function createShellWindow(): void {
     minWidth: 720,
     minHeight: 550,
     title: 'Office VEGA',
+    // painted until the home renderer's first frame; matches --surface so a
+    // cold start under the dark theme doesn't flash white
+    backgroundColor: themedSurfaceColor(),
     // vibrancy: editor modules punch translucent regions (e.g. the slides
     // thumbnail pane) through to the desktop
     ...(process.platform === 'darwin'
@@ -3865,6 +3871,9 @@ function buildHomeMenu(): void {
         { type: 'separator' },
         checkUpdatesMenuItem(appMenuLabels(currentLang())),
         aboutMenuItem(appMenuLabels(currentLang())),
+        { type: 'separator' },
+        licenseMenuItem(appMenuLabels(currentLang())),
+        privacyMenuItem(appMenuLabels(currentLang())),
       ],
     },
     settingsMenuItem(),
@@ -3949,6 +3958,9 @@ function buildPdfMenu(): void {
         { type: 'separator' },
         checkUpdatesMenuItem(appMenuLabels(currentLang())),
         aboutMenuItem(appMenuLabels(currentLang())),
+        { type: 'separator' },
+        licenseMenuItem(appMenuLabels(currentLang())),
+        privacyMenuItem(appMenuLabels(currentLang())),
       ],
     },
     settingsMenuItem(),
@@ -4042,6 +4054,9 @@ function buildMarkdownMenu(): void {
         { type: 'separator' },
         checkUpdatesMenuItem(appMenuLabels(currentLang())),
         aboutMenuItem(appMenuLabels(currentLang())),
+        { type: 'separator' },
+        licenseMenuItem(appMenuLabels(currentLang())),
+        privacyMenuItem(appMenuLabels(currentLang())),
       ],
     },
     settingsMenuItem(),
@@ -4135,6 +4150,9 @@ function buildHtmlMenu(): void {
         { type: 'separator' },
         checkUpdatesMenuItem(appMenuLabels(currentLang())),
         aboutMenuItem(appMenuLabels(currentLang())),
+        { type: 'separator' },
+        licenseMenuItem(appMenuLabels(currentLang())),
+        privacyMenuItem(appMenuLabels(currentLang())),
       ],
     },
     settingsMenuItem(),
