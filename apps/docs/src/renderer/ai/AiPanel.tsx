@@ -225,7 +225,7 @@ function truncateCardName(name: string): string {
   if (!cardNameCtx) return name
   // must match the stack the card name actually renders with (body font in styles.css)
   cardNameCtx.font =
-    "500 13px 'Segoe UI', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif"
+    "500 13px 'Google Sans', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif"
   if (cardNameCtx.measureText(name).width <= CARD_NAME_MAX_WIDTH) return name
   let lo = 1
   let hi = name.length
@@ -1347,9 +1347,8 @@ export function AiPanel({
               {t(docEmpty ? 'aiEmptyDraftTitle' : 'aiEmptyTitle')}
             </div>
             <div className="ai-chat-empty-body">
-              {t(docEmpty ? 'aiEmptyDraftBody1' : 'aiEmptyBody1')}
-              <br />
-              {t(docEmpty ? 'aiEmptyDraftBody2' : 'aiEmptyBody2')}
+              <div>{t(docEmpty ? 'aiEmptyDraftBody1' : 'aiEmptyBody1')}</div>
+              <div>{t(docEmpty ? 'aiEmptyDraftBody2' : 'aiEmptyBody2')}</div>
             </div>
             <div className="ai-starter-list">
               {(docEmpty ? DRAFT_STARTER_PROMPTS : EDIT_STARTER_PROMPTS).map((p) => (

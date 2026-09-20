@@ -71,39 +71,59 @@
   background: var(--text-tertiary);
 }
 
-/* ---------- empty state: suggestion links flush right, no borders ----------
+/* ---------- empty state: right-aligned, suggestion chips with accent outline ----------
    (.ai-quick-actions/.ai-quick-btn is the pdf app's name for the same block) */
+.ai-chat-empty {
+  text-align: right;
+}
+
+.ai-chat-empty-title {
+  text-wrap: balance;
+}
+
+.ai-chat-empty-body {
+  text-wrap: pretty;
+}
+
 .ai-starter-list,
 .ai-quick-actions {
   align-items: flex-end;
-  gap: 4px;
+  gap: 6px;
   margin-top: 20px;
 }
 
 .ai-starter,
 .ai-quick-btn {
-  padding: 5px 10px;
-  border: none;
-  border-radius: var(--radius-8);
+  max-width: 100%;
+  padding: 6px 12px;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-30);
   background: none;
   font-size: 13px;
   font-weight: 400;
   line-height: 1.4;
   text-align: right;
+  text-wrap: balance;
   color: var(--color-text-secondary);
   cursor: pointer;
   transition:
     color var(--transition-fast),
-    background-color var(--transition-fast);
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
 }
 
 .ai-starter::after,
 .ai-quick-btn::after {
   content: '→';
-  margin-left: 6px;
+  display: inline-block;
+  max-width: 0;
+  margin-left: 0;
   color: var(--accent);
   opacity: 0;
-  transition: opacity var(--transition-fast);
+  transition:
+    opacity var(--transition-fast),
+    max-width var(--transition-fast),
+    margin-left var(--transition-fast);
 }
 
 .ai-starter:hover,
@@ -114,6 +134,8 @@
 
 .ai-starter:hover::after,
 .ai-quick-btn:hover::after {
+  max-width: 1em;
+  margin-left: 6px;
   opacity: 1;
 }
 

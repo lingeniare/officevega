@@ -2145,9 +2145,8 @@ export function AiPanel({
               {t(deckEmpty ? 'aiEmptyGenTitle' : 'aiEmptyTitle')}
             </div>
             <div className="ai-chat-empty-body">
-              {t(deckEmpty ? 'aiEmptyGenBody1' : 'aiEmptyBody1')}
-              <br />
-              {t(deckEmpty ? 'aiEmptyGenBody2' : 'aiEmptyBody2')}
+              <div>{t(deckEmpty ? 'aiEmptyGenBody1' : 'aiEmptyBody1')}</div>
+              <div>{t(deckEmpty ? 'aiEmptyGenBody2' : 'aiEmptyBody2')}</div>
             </div>
             <div className="ai-starter-list">
               {starterPrompts(t, deckEmpty ?? false).map((p) => (

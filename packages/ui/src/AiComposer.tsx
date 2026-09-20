@@ -2,8 +2,8 @@ import React, { useEffect, useRef } from 'react'
 import { IconArrowUp, IconSend, IconStop } from './icons'
 import { useAiPanelPrefs } from './ai-panel-prefs-store'
 
-// Keep in sync with the CSS `max-height` on `.ai-input-box textarea` (7 lines à 24px)
-const MAX_TEXTAREA_HEIGHT = 168
+// Keep in sync with the CSS `max-height` on `.ai-input-box textarea` (7 lines à 20px)
+const MAX_TEXTAREA_HEIGHT = 140
 
 /**
  * The AI panel input box shared by docs and sheets: auto-growing textarea

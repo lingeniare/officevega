@@ -6490,7 +6490,7 @@ body.docs-crop-active
   padding: 10px 12px 10px 14px;
   border-bottom: 1px solid var(--color-border-default);
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--color-text-primary);
 }
 
@@ -6499,6 +6499,9 @@ body.docs-crop-active
   align-items: center;
   gap: 7px;
   white-space: nowrap;
+  font-family: var(--gs-font-display);
+  font-weight: 600;
+  font-optical-sizing: auto;
 }
 
 .ai-panel-header-actions {
@@ -6574,26 +6577,28 @@ body.docs-crop-active
   align-items: center;
   justify-content: center;
   height: 30px;
-  font-size: 14px;
+  font-size: var(--text-caption);
   color: var(--color-text-tertiary);
 }
 
 .ai-chat-empty {
   margin-top: 36px;
   padding: 0 10px;
-  text-align: center;
+  text-align: right;
 }
 
 .ai-chat-empty-title {
-  font-size: var(--text-body-lg);
+  font-family: var(--gs-font-display);
+  font-size: 16px;
   font-weight: 600;
+  font-optical-sizing: auto;
   color: var(--color-text-primary);
   margin-bottom: 8px;
 }
 
 .ai-chat-empty-body {
   color: var(--color-text-secondary);
-  font-size: var(--text-small);
+  font-size: 13px;
   line-height: 1.5;
 }
 
@@ -6602,15 +6607,16 @@ body.docs-crop-active
 .ai-starter-list {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-end;
   gap: 8px;
   margin-top: 16px;
 }
 
 .ai-starter {
   padding: 8px 16px;
+  text-align: right;
   border-radius: var(--radius-30);
-  border: 1px solid var(--color-border-default);
+  border: 1px solid var(--accent);
   background: var(--color-bg-page);
   font-size: 13px;
   font-weight: 400;
@@ -6621,7 +6627,7 @@ body.docs-crop-active
 }
 
 .ai-starter:hover {
-  border-color: var(--color-border-strong);
+  border-color: var(--accent);
   background: var(--color-bg-subtle);
 }
 
@@ -6634,8 +6640,8 @@ body.docs-crop-active
 .ai-msg {
   position: relative;
   margin: 0;
-  font-size: 16px;
-  line-height: 1.6;
+  font-size: 14px;
+  line-height: 1.55;
   white-space: pre-wrap;
   word-break: break-word;
 }
@@ -6648,47 +6654,52 @@ body.docs-crop-active
 .ai-md p,
 .ai-md ul,
 .ai-md ol {
-  margin: 0 0 16px;
+  margin: 0 0 10px;
 }
 
 .ai-md :last-child {
   margin-bottom: 0;
 }
 
-/* blank markdown paragraphs would each eat a 16px margin — the stream never renders them */
+/* blank markdown paragraphs would each eat a 10px margin — the stream never renders them */
 .ai-md p:empty {
   display: none;
 }
 
 .ai-md ul,
 .ai-md ol {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   padding-left: 20px;
 }
 
 .ai-md li {
-  margin-left: 20px;
-  line-height: 28px;
+  margin-left: 4px;
+  line-height: 1.55;
+}
+
+.ai-md li + li {
+  margin-top: 3px;
 }
 
 .ai-md .ai-md-h {
-  font-weight: 700;
-  line-height: 1.3;
-  margin: 20px 0 8px;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.35;
+  margin: 14px 0 6px;
 }
 
 .ai-md .ai-md-h:first-child {
   margin-top: 0;
 }
 
-/* inline code: neutral gray chip (deliberately not red), 2px below body size */
+/* inline code: neutral gray chip (deliberately not red), ~1.5px below body size */
 .ai-md code {
   padding: 1px 6px;
   border-radius: 4px;
   background: var(--color-bg-subtle);
   color: var(--color-text-secondary);
-  font-size: 14px;
-  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 12.5px;
+  font-family: var(--gs-font-mono);
 }
 
 /* User pill: gray, fully rounded (no tail) */
@@ -6736,7 +6747,7 @@ body.docs-crop-active
   cursor: pointer;
   user-select: none;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.5;
   color: var(--color-text-tertiary);
   transition: color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
@@ -6864,8 +6875,8 @@ body.docs-crop-active
 }
 
 .ai-step-title {
-  font-size: 14px;
-  line-height: 1.3;
+  font-size: 13px;
+  line-height: 1.4;
   color: var(--color-text-secondary);
   text-align: left;
   background: none;
@@ -6972,7 +6983,7 @@ body.docs-crop-active
 }
 
 .ai-elapsed {
-  font-size: 14px;
+  font-size: var(--text-caption);
   color: var(--text-dim);
   font-variant-numeric: tabular-nums;
 }
@@ -7006,9 +7017,8 @@ body.docs-crop-active
   background: var(--color-bg-subtle);
   border: none;
   border-radius: 12px;
-  font-family:
-    ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
-  font-size: 14px;
+  font-family: var(--gs-font-mono);
+  font-size: 12.5px;
   color: var(--text-primary);
   max-height: 300px;
   overflow-y: auto;
@@ -7030,7 +7040,6 @@ body.docs-crop-active
   display: inline-flex;
   align-items: center;
   padding: 4px 0;
-  font-size: 15px;
 } /* Thinking indicator: shimmer label above two grow/shrink dots */
 .ai-typing {
   display: flex;
@@ -7043,7 +7052,7 @@ body.docs-crop-active
 .ai-typing-label {
   display: inline-block;
   position: relative;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1;
   letter-spacing: 0.01em;
   color: var(--docs-shimmer-base);
@@ -7181,7 +7190,7 @@ body.docs-crop-active
   border-radius: 8px;
   background: transparent;
   color: var(--color-text-secondary);
-  font-size: 13px;
+  font-size: var(--text-caption);
   cursor: pointer;
   transition: background-color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -7784,7 +7793,7 @@ body.docs-crop-active
     box-shadow var(--transition-fast);
 }
 
-/* textarea: 16px / 24px fixed line-height (chat body size), auto-grow band
+/* textarea: 14px / 20px fixed line-height (chat body size), auto-grow band
  * (resting height matches the sheets panel, 25% taller than default) */
 .ai-input-box textarea {
   display: block;
@@ -7797,13 +7806,13 @@ body.docs-crop-active
    * with the content, so clipped lines would sit flush against chips/footer */
   padding: 0 14px;
   margin: 12px 0 4px;
-  font-size: 16px;
+  font-size: 14px;
   font-family: inherit;
-  line-height: 24px;
+  line-height: 20px;
   outline: none;
   color: var(--color-text-primary);
-  min-height: 48px;
-  max-height: 168px;
+  min-height: 40px;
+  max-height: 140px;
   overflow-y: auto;
 }
 
@@ -8113,7 +8122,7 @@ body.docs-crop-active
 
 .ai-attach-notice {
   margin-bottom: 7px;
-  font-size: 11.5px;
+  font-size: var(--text-caption);
   color: var(--docs-ai-error);
 }
 
@@ -9638,7 +9647,7 @@ body.docs-crop-active
   align-items: center;
   justify-content: center;
   transform: rotate(-35deg);
-  font-size: 84px;
+  font-size: 60px;
   font-weight: 600;
   letter-spacing: 0.1em;
   color: var(--docs-paper-watermark);

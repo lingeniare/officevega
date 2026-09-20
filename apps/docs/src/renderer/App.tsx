@@ -4428,7 +4428,7 @@ export function App() {
       return
     localStorage.setItem(AI_REWRITE_ACK_KEY, '1')
     setShowAi(true)
-    setAiPreset({ text: t('ribbonEditorPrompt'), nonce: Date.now(), autoRun: true })
+    setAiPreset({ text: t('ribbonEditorPrompt'), nonce: Date.now() })
   }, [])
 
   // "has unsaved changes" check shared by the close guard and autosave; refreshed on every
@@ -5513,9 +5513,9 @@ export function App() {
     onZoomFit: zoomFit,
     onDarkPage: setDarkPage,
     onAiPreset: (text: string) => {
-      // Word's Editor / Translate start working as soon as they're clicked
+      // presets stage the prompt in the composer — the user reviews and sends
       setShowAi(true)
-      setAiPreset({ text, nonce: Date.now(), autoRun: true })
+      setAiPreset({ text, nonce: Date.now() })
     },
     onHeader: (next: HeaderFooter) => {
       setHeader(next)
@@ -6161,7 +6161,7 @@ export function App() {
           onSaveImageAs={saveImageAs}
           onAiPreset={(text) => {
             setShowAi(true)
-            setAiPreset({ text, nonce: Date.now(), autoRun: true })
+            setAiPreset({ text, nonce: Date.now() })
           }}
           onRestartNumbering={restartNumbering}
           onContinueNumbering={continueNumbering}

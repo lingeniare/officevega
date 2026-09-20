@@ -34,11 +34,11 @@
         background: none;
         padding: 0 14px;
         margin: 12px 0 4px;
-        font-size: 16px;
-        line-height: 24px;
+        font-size: 14px;
+        line-height: 20px;
         outline: none;
         color: var(--color-text-primary);
-        min-height: 48px;
+        min-height: 40px;
         box-sizing: border-box;
         font-family: inherit;
       }
@@ -74,8 +74,8 @@
       .ai-msg {
         position: relative;
         margin: 0;
-        font-size: 16px;
-        line-height: 1.6;
+        font-size: 14px;
+        line-height: 1.55;
         white-space: pre-wrap;
         word-break: break-word;
       }
@@ -90,7 +90,11 @@
         white-space: normal;
       }
       .ai-md p {
-        margin: 0 0 12px;
+        margin: 0 0 10px;
+      }
+      .ai-md code {
+        font-family: var(--gs-font-mono);
+        font-size: 12.5px;
       }
       .ai-md :last-child {
         margin-bottom: 0;
@@ -111,8 +115,28 @@
         border-radius: 8px;
         background: transparent;
         color: var(--color-text-secondary);
-        font-size: 13px;
+        font-size: 12px;
         cursor: pointer;
+      }
+      .ai-panel-title {
+        font-family: var(--gs-font-display);
+        font-weight: 600;
+        font-size: 13px;
+        font-optical-sizing: auto;
+      }
+      .ai-chat-empty-title {
+        font-family: var(--gs-font-display);
+        font-size: 16px;
+        font-weight: 600;
+        font-optical-sizing: auto;
+        color: var(--color-text-primary);
+        margin-bottom: 8px;
+        text-wrap: balance;
+      }
+      .ai-chat-empty-body {
+        font-size: 13px;
+        color: var(--color-text-secondary);
+        text-wrap: pretty;
       }
       .ai-typing {
         display: flex;
@@ -191,6 +215,11 @@
       .ai-starter-list {
         display: flex;
         flex-direction: column;
+        align-items: flex-end;
+      }
+      .ai-starter {
+        max-width: 100%;
+        text-wrap: balance;
       }
       /* demo accents — in the apps these live in each app's styles.css :root/dark blocks */
       :root {

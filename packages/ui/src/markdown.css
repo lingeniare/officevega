@@ -20,14 +20,14 @@
   font-weight: 600;
 }
 .ai-md-pre {
-  margin: 0 0 16px;
+  margin: 0 0 10px;
   padding: 10px 12px;
   border-radius: 6px;
   background: var(--color-bg-subtle);
   overflow-x: auto;
   line-height: 1.5;
-  font-size: 13px;
-  font-family: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 12.5px;
+  font-family: var(--gs-font-mono);
 }
 .ai-md .ai-md-pre code {
   padding: 0;
