@@ -406,6 +406,8 @@ export function ExcelShell({
   useEffect(() => {
     localStorage.setItem('ai-sheets-show-ai', isCopilotOpen ? '1' : '0')
   }, [isCopilotOpen])
+  /// bumped by ribbon AI actions so the composer refocuses even when the panel was already open
+  const [aiComposerFocusNonce, setAiComposerFocusNonce] = useState(0)
   const [showFormatCells, setShowFormatCells] = useState(false)
   const [axisSizeTarget, setAxisSizeTarget] = useState<'row' | 'col' | null>(null)
   const [showLinkDialog, setShowLinkDialog] = useState(false)
@@ -768,9 +770,11 @@ export function ExcelShell({
             else if (command === 'chart-element-axis-val') setChartTextTarget('axis-value')
             else onCommand(command)
           }}
-          onAiRun={(nextPrompt) => {
+          onAiPreset={(nextPrompt) => {
+            // ribbon AI buttons stage the prompt in the composer — the user reviews and sends (docs parity)
             setIsCopilotOpen(true)
-            onSend(nextPrompt)
+            onPromptChange(nextPrompt)
+            setAiComposerFocusNonce((n) => n + 1)
           }}
           aiOpen={isCopilotOpen}
           onAiToggle={() => setIsCopilotOpen((open) => !open)}
@@ -807,6 +811,7 @@ export function ExcelShell({
           scopeLocked={aiScopeLocked}
           onScopeDismiss={onAiScopeDismiss}
           onCitation={onAiCitation}
+          focusNonce={aiComposerFocusNonce}
           onExpand={() => setIsCopilotOpen(true)}
           onCollapse={() => setIsCopilotOpen(false)}
         />
@@ -1327,7 +1332,7 @@ function Ribbon({
   pageLayout,
   selectedChart,
   onCommand,
-  onAiRun,
+  onAiPreset,
   aiOpen,
   onAiToggle,
   onListNames,
@@ -1350,8 +1355,8 @@ function Ribbon({
   readonly onListNames: () => readonly string[]
   /** Manual-recalc mode echo for the Calculation Options menu. */
   readonly calcManual: boolean
-  /** Open the AI panel and immediately send the given prompt */
-  readonly onAiRun: (prompt: string) => void
+  /** Open the AI panel and stage the prompt in the composer — the user reviews and sends */
+  readonly onAiPreset: (prompt: string) => void
   /** AI side panel visibility (docs/slides parity: the entry button toggles it) */
   readonly aiOpen: boolean
   readonly onAiToggle: () => void
@@ -1985,14 +1990,16 @@ function Ribbon({
           )}
         </RibbonGroup>
         <RibbonGroup label={t('appGroupScaleToFit')}>
-          <div className="row-stack">
-            <label className="styles-row" data-tip={t('appWidth')}>
+          <div className="row-stack fit-grid">
+            <label className="styles-row fit-row" data-tip={t('appWidth')}>
               <ToolSymbol symbol="↔" />
-              {t('appWidth')}:{fitOptions('width')}
+              <span>{t('appWidth')}:</span>
+              {fitOptions('width')}
             </label>
-            <label className="styles-row" data-tip={t('appHeight')}>
+            <label className="styles-row fit-row" data-tip={t('appHeight')}>
               <ToolSymbol symbol="↕" />
-              {t('appHeight')}:{fitOptions('height')}
+              <span>{t('appHeight')}:</span>
+              {fitOptions('height')}
             </label>
           </div>
         </RibbonGroup>
@@ -2502,7 +2509,7 @@ function Ribbon({
                 value: language,
                 label: language,
               }))}
-              onPick={(language) => onAiRun(t('appTranslatePrompt', { language }))}
+              onPick={(language) => onAiPreset(t('appTranslatePrompt', { language }))}
             />
           </div>
         </RibbonGroup>
@@ -2619,7 +2626,7 @@ function Ribbon({
           className="ribbon-tool as-button large ai-entry"
           disabled={!sheetHasContent}
           data-tip={t('aiCheckBtn')}
-          onClick={() => onAiRun(t('aiCheckPrompt'))}
+          onClick={() => onAiPreset(t('aiCheckPrompt'))}
         >
           <span className="tool-icon-row">
             <span className="ai-feature-icon" aria-hidden="true">
@@ -2648,7 +2655,7 @@ function Ribbon({
           className="ribbon-tool as-button large ai-entry"
           disabled={!sheetHasContent}
           data-tip={t('aiAnalyzeBtn')}
-          onClick={() => onAiRun(t('aiAnalyzePrompt'))}
+          onClick={() => onAiPreset(t('aiAnalyzePrompt'))}
         >
           <span className="tool-icon-row">
             <span className="ai-feature-icon" aria-hidden="true">

@@ -207,7 +207,7 @@ export function createDocumentTools(deps: DocToolDeps, host: SessionHost): McpTo
     },
     {
       name: 'open_in_vegaoffice',
-      description: 'Open an existing file in the running VegaOffice app, focusing its tab.',
+      description: 'Open an existing file in the running Office VEGA app, focusing its tab.',
       inputSchema: {
         path: z.string().describe('absolute path to the file to open'),
       },
@@ -223,11 +223,11 @@ export function createDocumentTools(deps: DocToolDeps, host: SessionHost): McpTo
     {
       name: 'get_app_info',
       description:
-        'Report VegaOffice version, the default save folder, the document formats this server can ' +
+        'Report Office VEGA version, the default save folder, the document formats this server can ' +
         "generate, and the editor's full open/save/export format matrix per family.",
       inputSchema: {},
       handler: () => ({
-        name: 'VegaOffice',
+        name: 'Office VEGA',
         version: deps.version,
         defaultSaveDir: deps.defaultSaveDir(),
         // Every format listed here is written by a headless create/read tool, and

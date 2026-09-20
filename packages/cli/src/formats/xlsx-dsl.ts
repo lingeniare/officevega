@@ -704,7 +704,7 @@ function normalizeOp(
   if (!(SUPPORTED_DSL_OPS as readonly string[]).includes(op.op)) {
     const reason = Object.hasOwn(REFUSED_DSL_OPS, op.op) ? REFUSED_DSL_OPS[op.op] : undefined
     const message = reason
-      ? `"${op.op}" is not available headless (${reason}); use the VegaOffice app`
+      ? `"${op.op}" is not available headless (${reason}); use the Office VEGA app`
       : `unknown op "${op.op}"`
     throw new CliError(
       EXIT.usage,
@@ -716,7 +716,7 @@ function normalizeOp(
       {
         reason: reason ? 'unsupported' : 'unknown_op',
         suggestion: reason
-          ? 'open the workbook in VegaOffice for this edit'
+          ? 'open the workbook in Office VEGA for this edit'
           : unknownOpSuggestion(op.op),
       },
     )

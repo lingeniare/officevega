@@ -63,12 +63,12 @@ export function assertNotOpenInGui(abs: string, env: NodeJS.ProcessEnv): void {
   if (!open.paths.some((p) => realizedPath(p) === target)) return
   throw new CliError(
     EXIT.file,
-    `VegaOffice has this file open: ${abs}`,
+    `Office VEGA has this file open: ${abs}`,
     { gui_pid: open.pid },
     {
       reason: 'file_open_in_gui',
       suggestion:
-        'close the tab in VegaOffice first, or pass --force to write anyway (the editor may overwrite your change on its next save)',
+        'close the tab in Office VEGA first, or pass --force to write anyway (the editor may overwrite your change on its next save)',
     },
   )
 }

@@ -57,7 +57,7 @@ function appTarget(from: string, to: string): AppExportTarget | null {
 
 export const convertCommand: CommandDef = {
   name: 'convert',
-  summary: 'Convert a document to another format using the VegaOffice engines.',
+  summary: 'Convert a document to another format using the Office VEGA engines.',
   usage: 'convert <file> --to <format> [--out <path>] [--force] [--password <pw>] [--sheet <name>]',
   options: [
     { name: 'to', value: 'format', description: 'target format: ' + describeRoutes() },

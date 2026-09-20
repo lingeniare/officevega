@@ -283,10 +283,10 @@ async function main() {
   log(`bridging stdio to ${baseUrl}`)
   try {
     const health = await httpRequest('GET', '/health')
-    if (health.status === 200) log('VegaOffice MCP server is reachable')
-    else log('warning: unexpected /health response; is VegaOffice running?')
+    if (health.status === 200) log('Office VEGA MCP server is reachable')
+    else log('warning: unexpected /health response; is Office VEGA running?')
   } catch {
-    log('warning: cannot reach VegaOffice. Start the app and enable Settings > MCP Settings.')
+    log('warning: cannot reach Office VEGA. Start the app and enable Settings > MCP Settings.')
   }
 
   try {

@@ -533,7 +533,7 @@ async function createStandaloneDocument(
   if (request.type === 'docx') {
     return {
       ok: false,
-      error: 'Creating DOCX files requires the VegaOffice shell or Docs app.',
+      error: 'Creating DOCX files requires the Office VEGA shell or Docs app.',
     }
   }
   const title = sanitizeGeneratedDocumentTitle(request.title)

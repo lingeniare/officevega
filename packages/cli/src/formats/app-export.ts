@@ -39,8 +39,8 @@ export async function exportViaApp(
   const env = opts.env ?? process.env
   const launch = appLaunch(env)
   if (!launch) {
-    throw new CliError(EXIT.app, 'VegaOffice app not found (needed for this conversion)', {
-      hint: 'install VegaOffice, or set VEGAOFFICE_APP_BIN to its executable',
+    throw new CliError(EXIT.app, 'Office VEGA app not found (needed for this conversion)', {
+      hint: 'install Office VEGA, or set VEGAOFFICE_APP_BIN to its executable',
     })
   }
   const args = [
@@ -55,7 +55,7 @@ export async function exportViaApp(
   ]
   const childEnv = { ...env }
   delete childEnv.ELECTRON_RUN_AS_NODE
-  opts.log?.(`starting VegaOffice for ${target} export`)
+  opts.log?.(`starting Office VEGA for ${target} export`)
   const spawn = opts.spawn ?? nodeSpawn
   const child = spawn(launch.command, args, { env: childEnv, stdio: ['ignore', 'pipe', 'pipe'] })
   const { code, stdout, stderr, timedOut } = await waitFor(
@@ -66,13 +66,13 @@ export async function exportViaApp(
   const envelope = parseEnvelope(stdout)
   const exported = envelope?.status === 'ok' && existsSync(outputPath)
   if (exported && (code === 0 || timedOut)) {
-    if (timedOut) opts.log?.('export finished but VegaOffice had to be terminated on quit')
+    if (timedOut) opts.log?.('export finished but Office VEGA had to be terminated on quit')
     return { outputPath, summary: envelope.summary ?? `exported to ${outputPath}` }
   }
   if (timedOut) {
     throw new CliError(
       EXIT.conversion,
-      `VegaOffice did not finish the export within ${Math.round((opts.timeoutMs ?? DEFAULT_TIMEOUT_MS) / 1000)}s`,
+      `Office VEGA did not finish the export within ${Math.round((opts.timeoutMs ?? DEFAULT_TIMEOUT_MS) / 1000)}s`,
       {
         app: launch.command,
       },
@@ -84,8 +84,8 @@ export async function exportViaApp(
     envelope?.summary ??
     (tail ||
       (code === 0
-        ? 'VegaOffice exited without writing the file; this VegaOffice version may not support --headless-export'
-        : `VegaOffice exited with code ${code}`))
+        ? 'Office VEGA exited without writing the file; this Office VEGA version may not support --headless-export'
+        : `Office VEGA exited with code ${code}`))
   throw new CliError(exitCodeFor(code), message, {
     app: launch.command,
     exit_code: code,

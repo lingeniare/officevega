@@ -77,7 +77,7 @@ export const sheetCommand: CommandDef = {
     {
       name: 'force',
       description:
-        'apply: overwrite an existing --out file, or write while VegaOffice has the file open',
+        'apply: overwrite an existing --out file, or write while Office VEGA has the file open',
     },
   ],
   async run(args, ctx) {

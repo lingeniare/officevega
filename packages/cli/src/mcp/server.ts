@@ -17,7 +17,7 @@ import {
 import { buildArgv, resolveTools, toolShape, type ResolvedTool } from './tools'
 
 const ABOUT =
-  'VegaOffice: create, read, convert, edit and render Office documents locally (docx, xlsx, pptx, pdf, md, html, csv). The app need not be running; render, convert-to-pdf and create_pdf start a hidden VegaOffice process for a few seconds.'
+  'Office VEGA: create, read, convert, edit and render Office documents locally (docx, xlsx, pptx, pdf, md, html, csv). The app need not be running; render, convert-to-pdf and create_pdf start a hidden Office VEGA process for a few seconds.'
 const WORKFLOW = [
   'Editing: read the file with the *_read tool, write the ops with the op reference from guide (or the vegaoffice://guide/* resources), then *_apply. A rejected op names its index and reason; fix that op and resend the whole batch.',
   'A new presentation for a person: deck_start (style sheet + outline), deck_page once per page in order, deck_build, then slides_render to look and slides_audit for geometry, deck_replace to fix a page. Edits to an existing deck: slides_read + slides_apply, keeping its design.',
@@ -26,9 +26,9 @@ const WORKFLOW = [
 /** What the client shows the model about this server before any tool is called. */
 export const INSTRUCTIONS = [
   ABOUT,
-  'Paths are absolute, or relative to the working directory the server was started in. Only search, image and media send data off the machine, to the provider configured in VegaOffice.',
+  'Paths are absolute, or relative to the working directory the server was started in. Only search, image and media send data off the machine, to the provider configured in Office VEGA.',
   ...WORKFLOW,
-  'A file open in a VegaOffice tab is not written unless force is set. Do not call open unless the user asks to see the file.',
+  'A file open in an Office VEGA tab is not written unless force is set. Do not call open unless the user asks to see the file.',
 ].join('\n')
 
 /** The http-mode variant: the client is on another machine, so files travel as URLs and result content. */
@@ -37,7 +37,7 @@ export function remoteInstructions(baseUrl: string): string {
   return [
     ABOUT,
     `This server runs on another machine: paths you know are not visible to it. To work on a file you have, upload it first (curl -T report.docx ${base}/files/ — the reply carries its url) and pass that url wherever a tool takes a file; any other http(s) URL the server can reach works too. Relative paths and deck folders live in a private scratch directory of this session.`,
-    'Omit out: the file a tool writes comes back in the result as output_url (download it with curl -o) and, when small, as an embedded resource with the bytes. Only search, image and media send data to the cloud provider configured in VegaOffice.',
+    'Omit out: the file a tool writes comes back in the result as output_url (download it with curl -o) and, when small, as an embedded resource with the bytes. Only search, image and media send data to the cloud provider configured in Office VEGA.',
     ...WORKFLOW,
   ].join('\n')
 }

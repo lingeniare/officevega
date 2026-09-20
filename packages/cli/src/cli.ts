@@ -224,7 +224,7 @@ function globalHelp(registry: CommandRegistry): string {
   const defs = registry.list()
   const width = Math.max(...defs.map((d) => d.name.length))
   return [
-    `vegaoffice ${VERSION} — VegaOffice command line`,
+    `vegaoffice ${VERSION} — Office VEGA command line`,
     '',
     'Usage: vegaoffice <command> [options]',
     '',

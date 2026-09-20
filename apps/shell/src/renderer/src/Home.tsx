@@ -2493,7 +2493,7 @@ export function Home() {
     <div className="home">
       <aside className="sidebar">
         <div className="sidebar-logo">
-          <img className="logo-lockup" src={logoLockup} alt="VegaOffice" />
+          <img className="logo-lockup" src={logoLockup} alt="Office VEGA" />
         </div>
         <nav className="sidebar-nav">
           <button

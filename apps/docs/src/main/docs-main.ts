@@ -267,7 +267,7 @@ const tMain = createI18n({
     menuWindow: '窗口',
     menuHelp: '帮助',
     menuShortcuts: '键盘快捷键',
-    menuDocsHelp: 'VegaOffice Docs 帮助',
+    menuDocsHelp: 'Office VEGA Docs 帮助',
   },
   en: {
     dlgOpenDoc: 'Open Document',
@@ -365,7 +365,7 @@ const tMain = createI18n({
     menuWindow: 'Window',
     menuHelp: 'Help',
     menuShortcuts: 'Keyboard Shortcuts',
-    menuDocsHelp: 'VegaOffice Docs Help',
+    menuDocsHelp: 'Office VEGA Docs Help',
   },
   ja: {
     dlgOpenDoc: '文書を開く',
@@ -464,7 +464,7 @@ const tMain = createI18n({
     menuWindow: 'ウィンドウ',
     menuHelp: 'ヘルプ',
     menuShortcuts: 'キーボードショートカット',
-    menuDocsHelp: 'VegaOffice Docs ヘルプ',
+    menuDocsHelp: 'Office VEGA Docs ヘルプ',
   },
   ko: {
     dlgOpenDoc: '문서 열기',
@@ -564,7 +564,7 @@ const tMain = createI18n({
     menuWindow: '창',
     menuHelp: '도움말',
     menuShortcuts: '키보드 바로 가기',
-    menuDocsHelp: 'VegaOffice Docs 도움말',
+    menuDocsHelp: 'Office VEGA Docs 도움말',
   },
   fr: {
     dlgOpenDoc: 'Ouvrir un document',
@@ -665,7 +665,7 @@ const tMain = createI18n({
     menuWindow: 'Fenêtre',
     menuHelp: 'Aide',
     menuShortcuts: 'Raccourcis clavier',
-    menuDocsHelp: 'Aide VegaOffice Docs',
+    menuDocsHelp: 'Aide Office VEGA Docs',
   },
   de: {
     dlgOpenDoc: 'Dokument öffnen',
@@ -766,7 +766,7 @@ const tMain = createI18n({
     menuWindow: 'Fenster',
     menuHelp: 'Hilfe',
     menuShortcuts: 'Tastenkombinationen',
-    menuDocsHelp: 'VegaOffice Docs-Hilfe',
+    menuDocsHelp: 'Office VEGA Docs-Hilfe',
   },
   es: {
     dlgOpenDoc: 'Abrir documento',
@@ -867,7 +867,7 @@ const tMain = createI18n({
     menuWindow: 'Ventana',
     menuHelp: 'Ayuda',
     menuShortcuts: 'Atajos de teclado',
-    menuDocsHelp: 'Ayuda de VegaOffice Docs',
+    menuDocsHelp: 'Ayuda de Office VEGA Docs',
   },
   th: {
     dlgOpenDoc: 'เปิดเอกสาร',
@@ -966,7 +966,7 @@ const tMain = createI18n({
     menuWindow: 'หน้าต่าง',
     menuHelp: 'วิธีใช้',
     menuShortcuts: 'แป้นพิมพ์ลัด',
-    menuDocsHelp: 'วิธีใช้ VegaOffice Docs',
+    menuDocsHelp: 'วิธีใช้ Office VEGA Docs',
   },
   id: {
     dlgOpenDoc: 'Buka Dokumen',
@@ -1065,7 +1065,7 @@ const tMain = createI18n({
     menuWindow: 'Jendela',
     menuHelp: 'Bantuan',
     menuShortcuts: 'Pintasan Papan Ketik',
-    menuDocsHelp: 'Bantuan VegaOffice Docs',
+    menuDocsHelp: 'Bantuan Office VEGA Docs',
   },
   ru: {
     dlgOpenDoc: 'Открыть документ',
@@ -1265,7 +1265,7 @@ const tMain = createI18n({
     menuWindow: 'نافذة',
     menuHelp: 'تعليمات',
     menuShortcuts: 'اختصارات لوحة المفاتيح',
-    menuDocsHelp: 'تعليمات VegaOffice Docs',
+    menuDocsHelp: 'تعليمات Office VEGA Docs',
   },
   pt: {
     dlgOpenDoc: 'Abrir Documento',
@@ -1365,7 +1365,7 @@ const tMain = createI18n({
     menuWindow: 'Janela',
     menuHelp: 'Ajuda',
     menuShortcuts: 'Atalhos de Teclado',
-    menuDocsHelp: 'Ajuda do VegaOffice Docs',
+    menuDocsHelp: 'Ajuda do Office VEGA Docs',
   },
   it: {
     dlgOpenDoc: 'Apri documento',
@@ -1465,7 +1465,7 @@ const tMain = createI18n({
     menuWindow: 'Finestra',
     menuHelp: 'Aiuto',
     menuShortcuts: 'Scelte rapide da tastiera',
-    menuDocsHelp: 'Guida di VegaOffice Docs',
+    menuDocsHelp: 'Guida di Office VEGA Docs',
   },
   pl: {
     dlgOpenDoc: 'Otwórz dokument',
@@ -1565,7 +1565,7 @@ const tMain = createI18n({
     menuWindow: 'Okno',
     menuHelp: 'Pomoc',
     menuShortcuts: 'Skróty klawiaturowe',
-    menuDocsHelp: 'Pomoc VegaOffice Docs',
+    menuDocsHelp: 'Pomoc Office VEGA Docs',
   },
   cs: {
     dlgOpenDoc: 'Otevřít dokument',
@@ -1665,7 +1665,7 @@ const tMain = createI18n({
     menuWindow: 'Okno',
     menuHelp: 'Nápověda',
     menuShortcuts: 'Klávesové zkratky',
-    menuDocsHelp: 'Nápověda VegaOffice Docs',
+    menuDocsHelp: 'Nápověda Office VEGA Docs',
   },
   nl: {
     dlgOpenDoc: 'Document openen',
@@ -1765,7 +1765,7 @@ const tMain = createI18n({
     menuWindow: 'Venster',
     menuHelp: 'Help',
     menuShortcuts: 'Sneltoetsen',
-    menuDocsHelp: 'VegaOffice Docs Help',
+    menuDocsHelp: 'Office VEGA Docs Help',
   },
   ms: {
     dlgOpenDoc: 'Buka Dokumen',
@@ -1865,7 +1865,7 @@ const tMain = createI18n({
     menuWindow: 'Tetingkap',
     menuHelp: 'Bantuan',
     menuShortcuts: 'Pintasan Papan Kekunci',
-    menuDocsHelp: 'Bantuan VegaOffice Docs',
+    menuDocsHelp: 'Bantuan Office VEGA Docs',
   },
   he: {
     dlgOpenDoc: 'פתיחת מסמך',
@@ -1963,7 +1963,7 @@ const tMain = createI18n({
     menuWindow: 'חלון',
     menuHelp: 'עזרה',
     menuShortcuts: 'קיצורי מקלדת',
-    menuDocsHelp: 'עזרה של VegaOffice Docs',
+    menuDocsHelp: 'עזרה של Office VEGA Docs',
   },
   hi: {
     dlgOpenDoc: 'दस्तावेज़ खोलें',
@@ -2063,7 +2063,7 @@ const tMain = createI18n({
     menuWindow: 'विंडो',
     menuHelp: 'सहायता',
     menuShortcuts: 'कीबोर्ड शॉर्टकट',
-    menuDocsHelp: 'VegaOffice Docs सहायता',
+    menuDocsHelp: 'Office VEGA Docs सहायता',
   },
   'zh-TW': {
     dlgOpenDoc: '開啟文件',
@@ -2160,7 +2160,7 @@ const tMain = createI18n({
     menuWindow: '視窗',
     menuHelp: '說明',
     menuShortcuts: '鍵盤快速鍵',
-    menuDocsHelp: 'VegaOffice Docs 說明',
+    menuDocsHelp: 'Office VEGA Docs 說明',
   },
 })
 const tm = (key: Parameters<typeof tMain>[1], params?: Parameters<typeof tMain>[2]) =>
@@ -4694,7 +4694,7 @@ export function createDocsWindow(openPath?: string): BrowserWindow {
     height: 900,
     minWidth: 720,
     minHeight: 550,
-    title: 'VegaOffice Docs',
+    title: 'Office VEGA Docs',
     // Word-like custom title bar (document name centered, quick-access buttons)
     ...(process.platform === 'darwin'
       ? { titleBarStyle: 'hiddenInset' as const }

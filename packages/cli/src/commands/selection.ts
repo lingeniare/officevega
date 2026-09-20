@@ -6,13 +6,13 @@ import { CliError, EXIT } from '../result'
 export const selectionCommand: CommandDef = {
   name: 'selection',
   summary:
-    "What the user has selected in the VegaOffice editor showing this file (the user's own pointer for 'this one', 'here').",
+    "What the user has selected in the Office VEGA editor showing this file (the user's own pointer for 'this one', 'here').",
   usage: 'selection <file> --json',
   async run(args, ctx) {
     const path = resolveInput(args.positionals[0], ctx)
     const endpoint = controlEndpoint(ctx.env)
     if (!endpoint) {
-      throw new CliError(EXIT.app, 'VegaOffice is not running', undefined, {
+      throw new CliError(EXIT.app, 'Office VEGA is not running', undefined, {
         reason: 'app_unavailable',
         suggestion: `run \`vegaoffice open ${path}\` and ask the user to select something`,
       })

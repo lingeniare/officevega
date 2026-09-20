@@ -1266,6 +1266,34 @@ html.vegaoffice-popover-open .ribbon-tabs {
   justify-items: start;
 }
 
+/* Scale-to-fit rows share a 3-track grid (icon / caption / dropdown): the
+   caption column sizes to the widest label and both dropdowns stretch across
+   the same track, so they line up edge-to-edge in any locale. Each label
+   spans the row and subgrids the parent's columns; its own gap would add to
+   the inherited gutters, so it is zeroed. */
+.row-stack.fit-grid {
+  grid-template-columns: auto auto 1fr;
+  column-gap: 6px;
+  justify-items: stretch;
+}
+
+.fit-grid > .fit-row {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  gap: 0;
+}
+
+.fit-grid .menu-select {
+  min-width: 0;
+  /* extra breathing room between the caption and the dropdown */
+  margin-left: 4px;
+}
+
+.fit-grid .menu-select > .select-like {
+  width: 100%;
+}
+
 /* Clickable rows keep the same small type as reserved ones (the generic
    .styles-row.as-button rule resets font to the page default). */
 .ribbon .styles-row.as-button {

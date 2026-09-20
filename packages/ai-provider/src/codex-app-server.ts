@@ -62,7 +62,7 @@ const MAX_NATIVE_SESSIONS = 64
 const MAX_MODEL_PAGES = 10
 const CODEX_TEMP_PREFIX = 'vegaoffice-codex-app-server-'
 const CODEX_BASE_INSTRUCTIONS =
-  'You are the language-model backend embedded in VegaOffice. Never inspect or modify local files, run shell commands, browse, call MCP, use apps, or invoke any built-in Codex tool. The caller supplies the complete relevant conversation and a JSON Schema. Return exactly one assistant response matching that schema; VegaOffice itself executes document tools.'
+  'You are the language-model backend embedded in Office VEGA. Never inspect or modify local files, run shell commands, browse, call MCP, use apps, or invoke any built-in Codex tool. The caller supplies the complete relevant conversation and a JSON Schema. Return exactly one assistant response matching that schema; Office VEGA itself executes document tools.'
 
 function cleanCliPath(value: string | undefined): string {
   const trimmed = (value ?? '').trim()
@@ -373,7 +373,7 @@ class CodexAppServerClient {
 
   private async initialize(): Promise<void> {
     await this.requestWire('initialize', {
-      clientInfo: { name: 'vegaoffice', title: 'VegaOffice', version: '0.1.0' },
+      clientInfo: { name: 'vegaoffice', title: 'Office VEGA', version: '0.1.0' },
       capabilities: { experimentalApi: false, requestAttestation: false },
     })
     this.notify('initialized')
@@ -590,9 +590,9 @@ export function buildCodexAppServerPrompt(
     })),
   }
   return [
-    'Treat the payload below as the new VegaOffice conversation events for this turn and follow its system instruction.',
-    'Do not use Codex tools. VegaOffice will execute only the tool calls returned in the required response schema.',
-    'Put user-visible prose in text. Put requested VegaOffice tool calls in toolCalls; inputJson must be a JSON-encoded object matching the listed inputSchema. Use only listed tool names. If no tool is needed, return an empty toolCalls array.',
+    'Treat the payload below as the new Office VEGA conversation events for this turn and follow its system instruction.',
+    'Do not use Codex tools. Office VEGA will execute only the tool calls returned in the required response schema.',
+    'Put user-visible prose in text. Put requested Office VEGA tool calls in toolCalls; inputJson must be a JSON-encoded object matching the listed inputSchema. Use only listed tool names. If no tool is needed, return an empty toolCalls array.',
     `Keep this one-turn response within roughly ${maxTokens} output tokens.`,
     '<vegaoffice_payload>',
     JSON.stringify(payload),

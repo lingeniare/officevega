@@ -236,6 +236,7 @@ export function AiChatPanel({
   scopeLocked,
   onScopeDismiss,
   onCitation,
+  focusNonce,
   onExpand,
   onCollapse,
 }: {
@@ -282,6 +283,8 @@ export function AiChatPanel({
   readonly onScopeDismiss: () => void
   /** citation link in an answer ([B12](sheetnav://B12)) */
   readonly onCitation: (href: string) => void
+  /** bumped by ribbon AI actions so the staged prompt lands with the caret in the composer */
+  readonly focusNonce?: number
   readonly onExpand: () => void
   readonly onCollapse: () => void
 }): React.JSX.Element {
@@ -389,6 +392,12 @@ export function AiChatPanel({
       chatRef.current?.scrollTo({ top: chatRef.current.scrollHeight })
     }
   }, [chat, preview])
+
+  // a ribbon AI action staged a prompt: put the caret in the composer — the
+  // textarea exists in the same commit even when the panel was just opened
+  useEffect(() => {
+    if (focusNonce) inputRef.current?.focus()
+  }, [focusNonce])
 
   const resizeCleanupRef = useRef<(() => void) | null>(null)
   useEffect(() => () => resizeCleanupRef.current?.(), [])

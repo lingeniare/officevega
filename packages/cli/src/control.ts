@@ -77,9 +77,9 @@ export function controlRequest(
     const unavailable = (why: string) =>
       settle(() =>
         reject(
-          new CliError(EXIT.app, `VegaOffice did not answer: ${why}`, undefined, {
+          new CliError(EXIT.app, `Office VEGA did not answer: ${why}`, undefined, {
             reason: 'app_unavailable',
-            suggestion: 'start VegaOffice (or `vegaoffice open <file>`) and retry',
+            suggestion: 'start Office VEGA (or `vegaoffice open <file>`) and retry',
           }),
         ),
       )
