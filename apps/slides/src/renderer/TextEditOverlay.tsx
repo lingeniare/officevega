@@ -737,6 +737,7 @@ export function TextEditOverlay({
         sel.addRange(range)
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- populate once per node/caret; box, insets, anchor and vertText reads must not reset the editor mid-edit
   }, [node, norm, caretPoint, replaceWith])
 
   const commit = () => {

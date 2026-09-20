@@ -1947,6 +1947,29 @@ export default function App() {
     clearLineHover()
   }, [doc])
 
+  /** Map a page font to its local look-alike via the PostScript name on the
+      pdf.js font object (loaded once the page has rendered). Cached per doc;
+      unresolved ids are retried on the next call. */
+  const resolveDocFont = useCallback(
+    async (origIdx: number, fontId: string): Promise<DocFontStyle | null> => {
+      const cached = docFontsRef.current.get(fontId)
+      if (cached) return cached
+      if (!doc) return null
+      try {
+        const page = await doc.getPage(origIdx + 1)
+        const f = page.commonObjs.get(fontId) as { name?: string } | null
+        if (!f?.name) return null
+        const style = mapDocFont(f.name)
+        setDocFonts((prev) => new Map(prev).set(fontId, style))
+        return style
+      } catch {
+        // Font object not resolved yet (page not rendered) — retried next call
+        return null
+      }
+    },
+    [doc],
+  )
+
   /** Cluster paragraph boxes for pages scrolled into view while edit-text mode is on.
       Reruns after its own setPageBlocks commit and finds nothing missing, so it settles */
   useEffect(() => {
@@ -1978,7 +2001,7 @@ export default function App() {
     return () => {
       stale = true
     }
-  }, [editTextMode, readOnly, doc, visibleRows, rows, pageBlocks, getSearchIndex])
+  }, [editTextMode, readOnly, doc, visibleRows, rows, pageBlocks, getSearchIndex, resolveDocFont])
 
   /** Saved markup/note annotations are keyed to the loaded doc; drop them on save-reload */
   useEffect(() => {
@@ -2438,26 +2461,6 @@ export default function App() {
       editId: inside[0]!.id,
       foldedIds: inside.slice(1).map((e) => e.id),
       charStyles: styles?.some((k) => k) ? styles : undefined,
-    }
-  }
-
-  /** Map a page font to its local look-alike via the PostScript name on the
-      pdf.js font object (loaded once the page has rendered). Cached per doc;
-      unresolved ids are retried on the next call. */
-  const resolveDocFont = async (origIdx: number, fontId: string): Promise<DocFontStyle | null> => {
-    const cached = docFontsRef.current.get(fontId)
-    if (cached) return cached
-    if (!doc) return null
-    try {
-      const page = await doc.getPage(origIdx + 1)
-      const f = page.commonObjs.get(fontId) as { name?: string } | null
-      if (!f?.name) return null
-      const style = mapDocFont(f.name)
-      setDocFonts((prev) => new Map(prev).set(fontId, style))
-      return style
-    } catch {
-      // Font object not resolved yet (page not rendered) — retried next call
-      return null
     }
   }
 
@@ -3286,6 +3289,7 @@ export default function App() {
     if (!formHasXfa || !filePath || warnedXfaPathRef.current === filePath) return
     warnedXfaPathRef.current = filePath
     showNotice(t('formXfaWarning'))
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- t is not referentially stable
   }, [filePath, formHasXfa])
 
   /** Localize known structured main-process errors; other messages pass through raw */

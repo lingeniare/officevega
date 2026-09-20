@@ -2102,6 +2102,7 @@ export function App() {
       })
     })
     return groups
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- lang stands in for the unstable t (localized group names)
   }, [sections, slides.length, lang])
 
   /** Canvas right-click: select the hit element first (replace the selection if it isn't in it), clear selection on blank */

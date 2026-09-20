@@ -418,7 +418,7 @@ export function ExcelShell({
   const [insertFunctionCat, setInsertFunctionCat] = useState<string | null>(null)
   const liveFunctions = useMemo(
     () => (insertFunctionCat === null ? [] : onListFunctions()),
-    [insertFunctionCat],
+    [insertFunctionCat, onListFunctions],
   )
   const [showSubtotalDialog, setShowSubtotalDialog] = useState(false)
   const [showGoalSeek, setShowGoalSeek] = useState(false)

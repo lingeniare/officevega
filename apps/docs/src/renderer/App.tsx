@@ -4342,6 +4342,9 @@ export function App() {
     revisionDisplay,
     delSectBreaks,
     pendingWatermarkImage,
+    colMode,
+    hasVertical,
+    watermarkDirty,
   ])
 
   // section at the cursor: the target the Layout tab acts on

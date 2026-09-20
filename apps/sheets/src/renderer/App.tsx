@@ -2896,7 +2896,9 @@ export function App(): React.JSX.Element {
       window.removeEventListener('blur', cancelSelectionPointer)
       if (selectionAskRaf !== null) cancelAnimationFrame(selectionAskRaf)
       if (selectionAskSettleRaf !== null) cancelAnimationFrame(selectionAskSettleRaf)
+      // eslint-disable-next-line react-hooks/exhaustive-deps -- latest timer id, set after mount
       if (visualInstallTimerRef.current) clearTimeout(visualInstallTimerRef.current)
+      // eslint-disable-next-line react-hooks/exhaustive-deps -- reinstall swaps the array; dispose the latest
       disposeVisuals(visualDisposablesRef.current)
       visualViewportKeyRef.current = ''
       const lazyState = lazyWorkbookRef.current
@@ -2908,6 +2910,7 @@ export function App(): React.JSX.Element {
       runtime.univer.dispose()
       univerRef.current = null
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- runs once per renderer; reads the latest state through refs
   }, [])
 
   // Canvas render state lives outside React; mirror the toggle into it.
@@ -3599,6 +3602,12 @@ export function App(): React.JSX.Element {
       return null
     }
   }
+
+  // Stable for ExcelShell's useMemo: the live registry is listed once per dialog opening
+  const listLiveFunctions = useCallback(() => {
+    const runtime = univerRef.current
+    return runtime ? readLiveFunctionInfos(runtime) : []
+  }, [])
 
   /// Moves the run's scope in the ref and in state together: the ref is read
   /// mid-run by getActiveSheetInfo, the state is what the chip renders, and a
@@ -4472,10 +4481,7 @@ export function App(): React.JSX.Element {
         onGoToReference={(ref) => goToReferenceImpl(dataToolsContext(), ref)}
         onListDefinedNames={() => listDefinedNamesImpl(dataToolsContext())}
         onApplyFormula={(formula) => handleApplyFormulaImpl(dataToolsContext(), formula)}
-        onListFunctions={() => {
-          const runtime = univerRef.current
-          return runtime ? readLiveFunctionInfos(runtime) : []
-        }}
+        onListFunctions={listLiveFunctions}
         onCreateSubtotal={(config) => handleCreateSubtotalImpl(dataToolsContext(), config)}
         onCreateConsolidate={(config) => handleCreateConsolidateImpl(dataToolsContext(), config)}
         onGetConsolidateDefault={() => consolidateDefaultReferenceImpl(dataToolsContext())}

@@ -338,6 +338,7 @@ export function InsertFunctionDialog({
           return { ...spec, abstract: description, description }
         }),
       ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- t is not referentially stable; lang re-lists on locale change
     [functions, lang],
   )
   const categories = useMemo(() => {
