@@ -178,4 +178,9 @@ export const ms = {
   aiStarterAnnouncementPrompt: 'Rangka pengumuman produk untuk saya. Produk dan perkara utama: ',
   aiStarterGuide: 'Tulis panduan cara',
   aiStarterGuidePrompt: 'Tulis panduan cara untuk saya. Proses yang perlu dijelaskan: ',
+  aiToolFillImages: 'Isi imej',
+  aiToolFillImagesDone: '{n} imej diisi',
+  aiFillImagesAsk: 'Jana {n} imej untuk halaman?',
+  aiFillImagesYes: 'Jana',
+  aiFillImagesNo: 'Bukan sekarang',
 } satisfies Record<keyof typeof zh, string>

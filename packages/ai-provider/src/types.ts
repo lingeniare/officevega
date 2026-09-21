@@ -31,6 +31,11 @@ export interface GenSparkAccountStatus {
 export interface AiProviderConfig {
   apiKey: string
   model: string
+  /**
+   * Optional cheaper/faster model id for background helper calls (suggested
+   * follow-up questions). Empty/absent = the main `model` serves those too.
+   */
+  fastModel?: string | undefined
   /** required for custom; for other direct providers it overrides the default endpoint (regional mirrors) */
   baseUrl?: string | undefined
   /** optional Codex CLI override; empty means auto-detect the current authenticated install */

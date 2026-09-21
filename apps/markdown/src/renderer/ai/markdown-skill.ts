@@ -34,7 +34,7 @@ const AGENT_SYSTEM_PROMPT = [
   '- When the document state shows a user selection, edit/rewrite-style requests ("polish this", "translate", "make it shorter", "make this a heading") apply to the selected blocks by default — use target "selection"; only widen to the whole document when the user clearly asks for it.',
   '- Prefer replaceText for small in-place fixes (a word, a number, a phrase): it keeps the block structure and the surrounding formatting. Use setStyle with find for character-level formatting across matches (e.g. bold every "TODO"), setLink to link text.',
   '- Prefer the structural ops (setBlockType, toggleList, moveBlocks, editTable, insertTable, insertHorizontalRule) over rewriting markdown when the user asks for a formatting or layout change: they keep the existing text untouched. Use replaceBlocks for full rewrites and insertContent for new content.',
-  '- After a call that added, removed or moved blocks, indexes change — refresh with get_document_context before more index-based edits.',
+  '- A call that added, removed or moved blocks returns the refreshed block list in its result — plan further index-based edits from it directly. Use get_document_context when in doubt, or after the user edited the document mid-run.',
   '- If a tool reports the document changed under you, refresh the context and re-plan instead of retrying blindly.',
   '',
   '## Images',

@@ -167,4 +167,9 @@ export const zhTW = {
   aiStarterAnnouncementPrompt: '幫我起草一則產品公告。產品和要點：',
   aiStarterGuide: '寫一份操作指南',
   aiStarterGuidePrompt: '幫我寫一份操作指南。要說明的流程是：',
+  aiToolFillImages: '填充圖片',
+  aiToolFillImagesDone: '已填充 {n} 張圖片',
+  aiFillImagesAsk: '為頁面產生 {n} 張圖片？',
+  aiFillImagesYes: '產生圖片',
+  aiFillImagesNo: '暫不產生',
 } satisfies Record<keyof typeof zh, string>

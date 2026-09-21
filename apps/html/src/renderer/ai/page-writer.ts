@@ -28,7 +28,7 @@ const OUTPUT_CONTRACT = [
   '## Output',
   'Reply with the HTML document only: start at <!doctype html> and end at </html>. No markdown fences, no commentary before or after, no placeholders.',
   'Include <html lang>, <head> with <meta charset="utf-8">, <meta name="viewport">, <title>, and exactly one <style> block; then a semantic body.',
-  'Do not add external scripts or CDNs. Images only from URLs given below or already in the document; otherwise compose visuals with typography, color blocks and inline <svg>.',
+  'Do not add external scripts or CDNs. A real <img> needs a URL given below or already in the document — never invent one. Where the design wants real imagery (the brief\'s image_queries and any other photo/illustration slot), emit <img class="img-slot" data-img="a concise English generation prompt" alt="…"> with NO src; the app fills these with generated or searched images after the page lands. Give .img-slot a rule in <style>: display block, var(--brief-surface) background, the shot\'s aspect-ratio, object-fit: cover, a subtle shimmer animation. No double quotes inside a data-img value. Every other visual stays typographic: color blocks and inline <svg>.',
   'Responsive by construction: CSS grid/flex with min() / clamp() widths, no fixed pixel page width, images with width/height and max-width: 100%.',
 ].join('\n')
 

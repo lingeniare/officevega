@@ -181,4 +181,9 @@ export const uz = {
   aiStarterAnnouncementPrompt: 'Men uchun mahsulot e’lonini yozing. Mahsulot va asosiy jihatlar: ',
   aiStarterGuide: 'Qo‘llanma yozish',
   aiStarterGuidePrompt: 'Men uchun qo‘llanma yozing. Tushuntiriladigan jarayon: ',
+  aiToolFillImages: 'Rasmlarni to‘ldirish',
+  aiToolFillImagesDone: '{n} ta rasm to‘ldirildi',
+  aiFillImagesAsk: 'Sahifa uchun {n} ta rasm yaratsinmi?',
+  aiFillImagesYes: 'Yaratish',
+  aiFillImagesNo: 'Hozir emas',
 } satisfies Record<keyof typeof zh, string>

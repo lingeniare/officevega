@@ -11,6 +11,7 @@ import {
   maxOutputTokensOf,
   requestProvider,
   resolveAiSettings,
+  withFastModel,
 } from '../src/providers'
 import { setIssuedVegaKeyGetter } from '../src/vega-key'
 import type { AiProviderId } from '../src/types'
@@ -454,5 +455,59 @@ describe('vegaToolsEnabled', () => {
     // legacy single-endpoint files migrate the flag too
     const slim = resolveAiSettings({ apiKey: 'k', gskToolsEnabled: false }, defaultAiSettings())
     expect(slim.vegaToolsEnabled).toBe(false)
+  })
+})
+
+describe('withFastModel', () => {
+  it('swaps fastModel into model on every provider that defines one', () => {
+    const settings = defaultAiSettings()
+    settings.providers.anthropic = {
+      ...settings.providers.anthropic,
+      apiKey: 'k',
+      fastModel: 'claude-haiku-4-5-20251001',
+    }
+    settings.provider = 'anthropic'
+    const fast = withFastModel(settings)
+    expect(fast.providers.anthropic.model).toBe('claude-haiku-4-5-20251001')
+    // untouched providers keep their own model — including the stored config
+    expect(settings.providers.anthropic.model).toBe('claude-sonnet-5')
+    expect(fast.providers.gemini.model).toBe('gemini-3.7-flash')
+  })
+
+  it('returns the same object when no provider configures a fast model', () => {
+    const settings = defaultAiSettings()
+    expect(withFastModel(settings)).toBe(settings)
+  })
+
+  it('ignores a blank fastModel', () => {
+    const settings = defaultAiSettings()
+    settings.providers.openai = { ...settings.providers.openai, fastModel: '   ' }
+    expect(withFastModel(settings).providers.openai.model).toBe('gpt-5.6-terra')
+  })
+})
+
+describe('fastModel settings plumbing', () => {
+  it('resolveAiSettings trims a stored fastModel and drops an empty one', () => {
+    const stored = defaultAiSettings()
+    stored.providers.anthropic = {
+      ...stored.providers.anthropic,
+      fastModel: '  claude-haiku-4-5-20251001  ',
+    }
+    stored.providers.openai = { ...stored.providers.openai, fastModel: '' }
+    const resolved = resolveAiSettings(stored, defaultAiSettings())
+    expect(resolved.providers.anthropic.fastModel).toBe('claude-haiku-4-5-20251001')
+    expect(resolved.providers.openai.fastModel).toBeUndefined()
+  })
+
+  it('migrateRetiredModels remaps a retired fastModel too', () => {
+    const stored = defaultAiSettings()
+    stored.providers.deepseek = {
+      ...stored.providers.deepseek,
+      model: 'deepseek-flash',
+      fastModel: 'deepseek-chat',
+    }
+    const resolved = resolveAiSettings(stored, defaultAiSettings())
+    expect(resolved.providers.deepseek.model).toBe('deepseek-flash')
+    expect(resolved.providers.deepseek.fastModel).toBe('deepseek-flash')
   })
 })

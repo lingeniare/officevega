@@ -3,12 +3,17 @@ import React, { useEffect, useRef, useState, useCallback } from 'react'
 import {
   AgentLoop,
   composeSkills,
+  generateSuggestedQuestions,
   IPC_STREAM_SILENCE_TIMEOUT_MS,
   type AgentImage,
   type ToolDisplay,
 } from '@genoffice/agent-core'
 import type { RenderSlide } from '@genoffice/pptx-render'
-import { imageGenerationAvailable, mediaAnalysisAvailable } from '@genoffice/ai-provider/browser'
+import {
+  imageGenerationAvailable,
+  mediaAnalysisAvailable,
+  withFastModel,
+} from '@genoffice/ai-provider/browser'
 import type { AiSettings, AttachmentAddResult, AttachmentMeta } from '../../shared/ipc'
 import { ATTACHMENT_IMAGE_EXTS } from '../../shared/ipc'
 import {
@@ -16,6 +21,8 @@ import {
   type DeckAccess,
   type ClarifyQuestion,
   type DeckProgressEvent,
+  type OutlineProposal,
+  type OutlineProposalResult,
   type PageProgressItem,
 } from './slides-skill'
 import { extractJsonObject, parseOutlineJson } from './outline-json'
@@ -42,11 +49,13 @@ import { useI18n, t as tGlobal, aiLangDirective, type TFunc } from '../i18n/loca
 import { localizedToolSummary, toolLabel } from './tool-labels'
 import {
   AiScopeQuote,
+  AiSuggestedQuestions,
   IconArrowUp,
   IconPlus,
   IconStop,
   Markdown,
   useAiPanelPrefs,
+  useSuggestedQuestions,
   type AiScopeQuoteData,
 } from '@genoffice/ui'
 import { VegaMark } from '../components/icons'
@@ -67,6 +76,8 @@ interface ToolActivity {
   summary: string
   /** still executing: rendered as a spinner chip, replaced in place when the tool finishes */
   running?: boolean
+  /** Correlates a running chip with its tool call — read-only calls run as a wave, so position alone cannot identify the placeholder */
+  callId?: string
   isError?: boolean
   /** Full tool output (truncated to 2000 chars) */
   output?: string
@@ -533,6 +544,24 @@ export function AiPanel({
   const settingsRef = useRef(settings)
   settingsRef.current = settings
 
+  // Suggested follow-ups ride a second transport whose settings swap in the
+  // user's "fast model" pick (withFastModel falls back to the main model).
+  const suggestTransportRef = useRef<ReturnType<typeof createElectronTransport> | null>(null)
+  if (!suggestTransportRef.current)
+    suggestTransportRef.current = createElectronTransport(() =>
+      withFastModel(settingsRef.current),
+    )
+  const suggested = useSuggestedQuestions((user, assistant, signal) =>
+    generateSuggestedQuestions({
+      transport: suggestTransportRef.current!,
+      app: 'slides',
+      user,
+      assistant,
+      langDirective: aiLangDirective(),
+      signal,
+    }),
+  )
+
   /** gsk login state for the cloud-tools gate (refreshed on mount, window focus and auth pushes) */
   const gskLoggedInRef = useRef(false)
   useEffect(() => {
@@ -731,6 +760,10 @@ export function AiPanel({
   const clarifyResolverRef = useRef<((r: { answers: string; cancelled?: boolean }) => void) | null>(
     null,
   )
+  // Staged deck flow: the outline confirmation card shown inside generate_deck
+  // (user approves/edits the structure before any page is generated).
+  const [activeOutline, setActiveOutline] = useState<OutlineProposal | null>(null)
+  const outlineResolverRef = useRef<((r: OutlineProposalResult) => void) | null>(null)
 
   /** Synchronous re-entry guard between runWith trigger and loop.run (see the comment inside runWith) */
   const runStartingRef = useRef(false)
@@ -1051,6 +1084,24 @@ export function AiPanel({
           setActiveClarify(questions)
         })
       },
+      // Staged flow: dock the outline card in the composer slot and wait for the
+      // user's verdict (approve / revise / cancel), like askClarification above.
+      proposeOutline: (proposal: OutlineProposal) => {
+        return new Promise<OutlineProposalResult>((resolve) => {
+          outlineResolverRef.current = resolve
+          setActiveOutline(proposal)
+          // If the run gets cancelled while the card is up, resolve as cancelled
+          proposal.signal?.addEventListener(
+            'abort',
+            () => {
+              outlineResolverRef.current?.({ status: 'cancelled' })
+              outlineResolverRef.current = null
+              setActiveOutline(null)
+            },
+            { once: true },
+          )
+        })
+      },
       isCloudPageGenEnabled: async () => {
         try {
           return !!(await window.slidesApi.cloudGenStatus())?.enabled
@@ -1132,6 +1183,84 @@ export function AiPanel({
           }
         }
         return { ok: false, error: lastErr || tGlobal('aiErrUnknown') }
+      },
+      // Draft (skeleton) batch generation — staged flow's fast first pass: ONE LLM
+      // request writes minimal specs for a whole batch of pages (plain layout, real
+      // text, labeled placeholder boxes for visual slots); each spec is then built
+      // into a one-slide pptx locally. No style design, no image resolution.
+      generateDraftPages: async (args) => {
+        const W = args.canvasW
+        const H = args.canvasH
+        const sys =
+          'You are a professional slide designer producing a QUICK DRAFT deck — structure and real text first, visual design later. ' +
+          `Output exactly ONE JSON object: {"pages":[<one page spec per requested page, same order>]} — no explanations/markdown/code fences.\n` +
+          '\n## Canvas\n' +
+          `${W}x${H} px, origin top-left; x/y/w/h are integers; nothing may cross the edges. Elements paint in array order: background/decor shapes first, text last.\n` +
+          '\n## Page spec format\n' +
+          '{"background":"#FFFFFF","elements":[...]}\n' +
+          '- Shape: {"type":"shape","shape":"rect|roundRect|ellipse|line","x":80,"y":120,"w":360,"h":200,"fill":"#RRGGBB or #RRGGBBAA","stroke":{"color":"#RRGGBB","widthPt":1},"valign":"middle","paragraphs":[...optional centered label...]}\n' +
+          '- Text: {"type":"text","x":80,"y":60,"w":800,"h":90,"valign":"top","paragraphs":[{"align":"left","lineSpacingPct":110,"spaceAfterPt":6,"bullet":false,"runs":[{"text":"...","sizePt":16,"bold":false,"color":"#1A1A2E","font":"Font Name"}]}]}\n' +
+          '\n## Draft design rules (strict)\n' +
+          '- Minimal neutral look only: background #FFFFFF, text #1A1A2E, ONE accent #2563EB used sparingly (a thin underline block or one key number). No gradients, no photos, no decorative artwork.\n' +
+          '- Cover page: large title (~36pt bold) + one subtitle line (~18pt). Content pages: title top-left (~26pt bold) + concise bulleted body (~14pt) or simple #F8FAFC roundRect column cards. Closing page: centered short line.\n' +
+          '- Every visual slot listed for a page → a placeholder box: {"type":"shape","shape":"roundRect","fill":"#F1F5F9","stroke":{"color":"#CBD5E1","widthPt":1},"valign":"middle","paragraphs":[{"align":"center","runs":[{"text":"IMAGE: <slot description>","sizePt":12,"color":"#64748B"}]}]} at the slot\'s planned position. For chart/data slots label it "CHART: <description>" instead. NEVER draw real charts, icons or images — placeholders only.\n' +
+          '- Text boxes have zero padding: a line is ~sizePt*1.8 px tall at lineSpacingPct 110, a Latin char ~sizePt*0.7 px wide, a CJK char ~sizePt*1.35 px. Size each box for its wrapped lines plus one spare; no text overflow, no text overlapping other elements.\n' +
+          "- Keep each page's real text from its brief — punchy title, concise bullets, no filler. Do not invent figures not in the brief/material.\n"
+        const userMsg =
+          `Deck topic: ${args.topic || args.coreHook || 'Presentation'}\nCore hook: ${args.coreHook}\n` +
+          (args.context
+            ? `Reference material (real facts come from here; do not invent):\n${args.context.slice(0, 4000)}\n`
+            : '') +
+          `\nWrite exactly ${args.pages.length} page spec(s):\n` +
+          args.pages
+            .map(
+              (p, i) =>
+                `${i + 1}. page ${p.pageIndex}/${p.totalPages}${p.type ? `, type=${p.type}` : ''} — title "${p.title}", layout ${p.layout}\n   brief: ${p.brief}` +
+                (p.imageSlots.length
+                  ? `\n   visual slots: ${p.imageSlots.map((s) => `"${s}"`).join(', ')}`
+                  : ''),
+            )
+            .join('\n') +
+          '\nOutput {"pages":[...]} only.'
+        // One repair round on malformed output (same tolerance as single-page specs)
+        let list: unknown[] | null = null
+        let lastErr = tGlobal('aiErrEmptyOutput')
+        for (let attempt = 0; attempt < 2 && !list; attempt++) {
+          if (args.signal?.aborted) return { ok: false, error: tGlobal('aiErrStopped') }
+          const msg =
+            attempt === 0
+              ? userMsg
+              : `${userMsg}\n\nYour previous output was rejected: ${lastErr}. Output the corrected {"pages":[...]} object only.`
+          const r = await runLlmOnce(sys, msg, 120000, true, args.signal, 16384)
+          if (!r.ok || !r.text) {
+            lastErr = r.error ?? tGlobal('aiErrEmptyOutput')
+            continue
+          }
+          try {
+            const obj = JSON.parse(extractJsonObject(r.text)) as { pages?: unknown }
+            if (Array.isArray(obj.pages) && obj.pages.length) list = obj.pages
+            else lastErr = 'no "pages" array in the output'
+          } catch (e) {
+            lastErr = `invalid JSON: ${e instanceof Error ? e.message : String(e)}`
+          }
+        }
+        if (!list) return { ok: false, error: lastErr }
+        // Build each spec into a one-slide pptx locally (parallel — pure local work)
+        const markers = await Promise.all(
+          args.pages.map(async (_p, i) => {
+            const spec = list![i]
+            if (!spec || typeof spec !== 'object') return null
+            try {
+              const res = await window.slidesApi.localGeneratePage({
+                specJson: JSON.stringify(spec),
+              })
+              return res?.ok && res.marker ? res.marker : null
+            } catch {
+              return null
+            }
+          }),
+        )
+        return { ok: true, markers }
       },
       // Cloud single-page generation (gsk slide_generate): the cloud service owns HTML writing +
       // pptx conversion; the deck-level style/outline stay local.
@@ -1429,6 +1558,7 @@ export function AiPanel({
             name: call.name,
             summary: toolLabel(call.name),
             running: true,
+            callId: call.id,
           }
           patchLastAssistant((last) => ({ tools: [...(last.tools ?? []), activity] }))
         },
@@ -1456,10 +1586,14 @@ export function AiPanel({
             })
           }
           patchLastAssistant((last) => {
-            // Swap out the running placeholder pushed by onToolStart (parse-fail calls have none)
+            // Swap out the running placeholder pushed by onToolStart (parse-fail
+            // calls have none). Read-only calls run as a concurrent wave, so the
+            // placeholder is matched by call id — not "the last chip".
             const tools = [...(last.tools ?? [])]
-            if (tools.at(-1)?.running) tools.pop()
-            return { tools: [...tools, activity] }
+            const at = tools.findIndex((tl) => tl.running && tl.callId === call.id)
+            if (at >= 0) tools[at] = activity
+            else tools.push(activity)
+            return { tools }
           })
         },
         onTurnEnd: () => {
@@ -1497,6 +1631,10 @@ export function AiPanel({
           })
           void finishHistoryBatch().finally(() => {
             setBusy(false)
+            // follow-up suggestions are generated off the fast model after the reply lands;
+            // a pending QC pass keeps `busy` set, which hides the strip until the deck settles
+            if (!cancelled && finalText)
+              suggested.refresh(lastInstructionRef.current, finalText)
             // Post-generation layout QC: only after a completed run that landed generated pages
             if (cancelled) qcPagesRef.current = []
             else if (qcPagesRef.current.length > 0) void runQcPassRef.current()
@@ -1671,6 +1809,7 @@ export function AiPanel({
     if (!instruction || !loop || loop.busy || runStartingRef.current || qcRunningRef.current) return
     runStartingRef.current = true
     setInput('')
+    suggested.clear()
     // The message consumes the composer attachments: they ride along (echoed on the
     // bubble, images multimodal, files via the files skill) and the composer clears.
     const sentAtts = opts?.attachments ?? attachmentsRef.current
@@ -1955,11 +2094,14 @@ export function AiPanel({
   }
   runQcPassRef.current = runQcPass
 
-  /** Finish pending survey cards as "skipped" (called on stop/new conversation, avoiding leftover cards and orphan promises) */
+  /** Finish pending survey/outline cards as "skipped" (called on stop/new conversation, avoiding leftover cards and orphan promises) */
   const dismissClarify = () => {
     clarifyResolverRef.current?.({ answers: '', cancelled: true })
     clarifyResolverRef.current = null
     setActiveClarify(null)
+    outlineResolverRef.current?.({ status: 'cancelled' })
+    outlineResolverRef.current = null
+    setActiveOutline(null)
   }
 
   const cancel = () => {
@@ -1981,6 +2123,7 @@ export function AiPanel({
     dismissClarify()
     qcAbortRef.current?.abort()
     loopRef.current?.reset()
+    suggested.clear()
     setBusy(false)
     setChat([])
     // Same as docs (#195): the restored transcript is painted above the live
@@ -2344,9 +2487,49 @@ export function AiPanel({
             </span>
           </div>
         )}
+        {activeOutline && (
+          <div className="ai-clarify-chip" role="status">
+            <span className="ai-clarify-chip-eyebrow">{t('aiOutlineTitle')}</span>
+            <span className="ai-clarify-chip-arrow" aria-hidden>
+              ↓
+            </span>
+          </div>
+        )}
       </div>
 
-      {activeClarify ? (
+      {!busy && !activeClarify && !activeOutline && (
+        <AiSuggestedQuestions
+          questions={suggested.questions}
+          onPick={(q) => {
+            suggested.clear()
+            runWith(q)
+          }}
+        />
+      )}
+
+      {activeOutline ? (
+        /* Docked in the composer slot — the run waits for the outline verdict */
+        <div className="ai-composer">
+          <OutlineCard
+            proposal={activeOutline}
+            onSubmit={(removed, titles) => {
+              outlineResolverRef.current?.({ status: 'approved', removed, titles })
+              outlineResolverRef.current = null
+              setActiveOutline(null)
+            }}
+            onRevise={(feedback) => {
+              outlineResolverRef.current?.({ status: 'revise', feedback })
+              outlineResolverRef.current = null
+              setActiveOutline(null)
+            }}
+            onCancel={() => {
+              outlineResolverRef.current?.({ status: 'cancelled' })
+              outlineResolverRef.current = null
+              setActiveOutline(null)
+            }}
+          />
+        </div>
+      ) : activeClarify ? (
         /* Docked in the composer slot with the composer's own outer spacing */
         <div className="ai-composer">
           <ClarifyCard
@@ -3152,6 +3335,145 @@ function ClarifyCard({
               </button>
             )
           )}
+        </span>
+      </div>
+    </div>
+  )
+}
+
+/**
+ * Outline confirmation card (staged deck generation): the planned structure shown
+ * before a single page is generated. The user can drop pages (checkbox), retitle
+ * them inline, or type a change request — which routes the plan back to the AI for
+ * re-planning instead of generating.
+ */
+function OutlineCard({
+  proposal,
+  onSubmit,
+  onRevise,
+  onCancel,
+}: {
+  proposal: OutlineProposal
+  onSubmit: (removed: number[], titles: string[]) => void
+  onRevise: (feedback: string) => void
+  onCancel: () => void
+}) {
+  const { t } = useI18n()
+  const [excluded, setExcluded] = useState<ReadonlySet<number>>(new Set())
+  const [titles, setTitles] = useState<string[]>(proposal.pages.map((p) => p.title))
+  const [feedback, setFeedback] = useState('')
+  const remaining = proposal.pages.length - excluded.size
+
+  const toggle = (i: number) =>
+    setExcluded((prev) => {
+      const next = new Set(prev)
+      if (next.has(i)) next.delete(i)
+      else next.add(i)
+      return next
+    })
+
+  const submit = () => {
+    const fb = feedback.trim()
+    if (fb) {
+      // Keep the user's page removals/retitles in the revision request —
+      // re-planning must see the same edits an approval would have applied.
+      const parts = [fb]
+      if (excluded.size)
+        parts.push(`Remove page(s): ${[...excluded].map((i) => i + 1).join(', ')}`)
+      const renamed = titles
+        .map((title, i) =>
+          title.trim() && title.trim() !== proposal.pages[i]?.title
+            ? `page ${i + 1} → "${title.trim()}"`
+            : '',
+        )
+        .filter(Boolean)
+      if (renamed.length) parts.push(`Rename: ${renamed.join('; ')}`)
+      onRevise(parts.join('\n'))
+      return
+    }
+    onSubmit(
+      [...excluded].sort((a, b) => a - b),
+      titles,
+    )
+  }
+
+  const revising = !!feedback.trim()
+
+  return (
+    <div className="ai-clarify-card ai-outline-card">
+      <div className="ai-clarify-head">
+        <span className="ai-clarify-head-label">{t('aiOutlineTitle')}</span>
+        <span className="ai-clarify-head-progress" aria-live="polite">
+          {t('aiOutlinePages', { n: remaining })}
+        </span>
+      </div>
+      {proposal.coreHook ? <div className="ai-outline-hook">{proposal.coreHook}</div> : null}
+      <div className="ai-outline-list">
+        {proposal.pages.map((p, i) => {
+          const off = excluded.has(i)
+          return (
+            <div key={i} className={`ai-outline-row${off ? ' off' : ''}`}>
+              <button
+                type="button"
+                className={`ai-outline-check${off ? '' : ' on'}`}
+                role="checkbox"
+                aria-checked={!off}
+                aria-label={t('aiOutlineKeep')}
+                onClick={() => toggle(i)}
+              >
+                <span className="ai-outline-check-box" aria-hidden />
+              </button>
+              <span className="ai-outline-num" aria-hidden>
+                {i + 1}
+              </span>
+              <div className="ai-outline-main">
+                <input
+                  className="ai-outline-title"
+                  value={titles[i] ?? ''}
+                  disabled={off}
+                  onChange={(e) =>
+                    setTitles((prev) => {
+                      const next = [...prev]
+                      next[i] = e.target.value
+                      return next
+                    })
+                  }
+                />
+                {p.brief ? <div className="ai-outline-brief">{p.brief}</div> : null}
+                <div className="ai-outline-meta">
+                  {p.layout ? <span className="ai-outline-layout">{p.layout}</span> : null}
+                  {p.visuals ? (
+                    <span className="ai-outline-visuals">
+                      {t('aiOutlineVisuals', { n: p.visuals })}
+                    </span>
+                  ) : null}
+                </div>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+      <input
+        className="ai-clarify-other ai-outline-feedback"
+        placeholder={t('aiOutlineFeedbackPh')}
+        value={feedback}
+        onChange={(e) => setFeedback(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') submit()
+        }}
+      />
+      <div className="ai-clarify-actions">
+        <span className="ai-clarify-actions-btns">
+          <button className="ai-clarify-skip" onClick={onCancel}>
+            {t('aiOutlineCancel')}
+          </button>
+          <button
+            className="ai-clarify-submit"
+            onClick={submit}
+            disabled={!revising && remaining === 0}
+          >
+            {revising ? t('aiOutlineRevise') : t('aiOutlineSubmit')}
+          </button>
         </span>
       </div>
     </div>

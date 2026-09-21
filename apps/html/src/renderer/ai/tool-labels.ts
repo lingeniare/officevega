@@ -12,6 +12,7 @@ const TOOL_LABEL_KEYS: Record<string, StringKey> = {
   plan_page: 'aiDraftingBrief',
   write_document: 'aiToolWritePage',
   web_search: 'aiToolWebSearch',
+  fill_images: 'aiToolFillImages',
   read_attachment: 'aiSumReadAttachment',
 }
 

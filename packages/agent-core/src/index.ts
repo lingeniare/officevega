@@ -30,4 +30,6 @@ export type {
 export { createIpcTransport, IPC_STREAM_SILENCE_TIMEOUT_MS } from './electron-transport'
 export { streamText } from './stream-text'
 export type { StreamTextOptions, StreamTextOutcome } from './stream-text'
+export { generateSuggestedQuestions, parseSuggestedQuestions } from './suggest'
+export type { SuggestAppKind, SuggestQuestionsInput } from './suggest'
 export type { IpcStreamChunk, IpcStreamStart, IpcTransportOptions } from './electron-transport'

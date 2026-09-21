@@ -1,4 +1,5 @@
 import type { AgentSkill, AgentToolCall, AgentToolDef, ToolExecution } from '@genoffice/agent-core'
+import type { WebSearchResult } from '../../shared/ipc'
 import { t } from '../i18n/locale'
 import type { ElementEntry, ParseMap } from '../document/parse-map'
 import type { HtmlOp, OpError } from '../document/ops'
@@ -54,6 +55,17 @@ export interface HtmlDocAccess {
   ): Promise<{ ok: true; src: string } | { ok: false; error: string }>
   /** names of the attachments the model can reference; lets refs to names with spaces or parentheses match whole */
   listAttachmentNames?(): string[]
+  /** web research run while a card waits on the user — the `search` queries of ask_clarification */
+  webSearch?(query: string, maxResults?: number): Promise<WebSearchResult>
+  /** one generated image for a `data-img` slot; the returned URL is https or a generated-store file:// */
+  generateImage?(op: {
+    prompt: string
+    aspectRatio?: string
+  }): Promise<{ url?: string; error?: string }>
+  /** real-photo fallback for an image slot → candidate image URLs */
+  searchImages?(query: string, maxResults?: number): Promise<string[]>
+  /** turn a resolved image URL into an authored src: an assets/ path, the remote URL itself, or a data: URL when nothing else works */
+  persistImage?(url: string): Promise<string | null>
 }
 
 export type PlanMode = 'new' | 'redesign' | 'restyle' | 'extract'
@@ -323,7 +335,7 @@ export const AGENT_TOOLS: AgentToolDef[] = [
   {
     name: 'ask_clarification',
     description:
-      '[Before creating a new page] Show a questionnaire card so the user makes the key choices (audience, scenario, tone, focus, length). Ask 2–4 questions that are real trade-offs for THIS topic, ≤5 options each; the card adds "decide for me" and a free-text option itself. Skip it when the request already answers these. Wait for the answers, then call plan_page. Do not repeat the questions in your reply.',
+      '[Before creating a new page] Show a questionnaire card so the user makes the key choices: for a new page the FIRST question offers 2–3 complete section structures as options (e.g. "Hero → Features → Pricing → Contacts" vs "Hero → Gallery → About → Contacts"); the card itself adds a free-text option for the user\'s own structure. Add further questions only for real trade-offs (audience, scenario, tone, focus, length), ≤5 options each; the card adds "decide for me". Skip the card when the request already answers these. When the topic needs current information, pass research queries in `search` — they run while the user answers and their findings come back with the answers. Wait for the answers, then call plan_page. Do not repeat the questions in your reply.',
     inputSchema: {
       type: 'object',
       required: ['questions'],
@@ -343,6 +355,13 @@ export const AGENT_TOOLS: AgentToolDef[] = [
               multi: { type: 'boolean' },
             },
           },
+        },
+        search: {
+          type: 'array',
+          items: { type: 'string' },
+          maxItems: 4,
+          description:
+            "Web research queries run in parallel while the user answers the card. The findings land in this tool's result and feed the brief — use instead of a separate web_search turn when a questionnaire is going out anyway.",
         },
       },
     },
@@ -368,6 +387,12 @@ export const AGENT_TOOLS: AgentToolDef[] = [
         },
       },
     },
+  },
+  {
+    name: 'fill_images',
+    description:
+      "[After a generated page landed with image slots] Offer to fill the page's <img data-img> placeholders with real imagery: the tool asks the user first, then resolves each slot (AI generation first, photo search as fallback) and writes the resolved src in one edit batch. Call it when the freshly written page contains data-img slots; never for a page without them, and not again after the user declined.",
+    inputSchema: { type: 'object', properties: {} },
   },
   {
     name: 'write_document',
@@ -570,11 +595,16 @@ export function createHtmlSkillCore(access: HtmlDocAccess): {
     markSeen()
     const lines = result.html.split('\n').length
     const sections = [...result.html.matchAll(/data-section="([^"]+)"/g)].map((m) => m[1])
+    const imgSlots = (result.html.match(/\bdata-img\s*=/g) ?? []).length
     const note = result.truncated
       ? ' The stream ended early, so the page is INCOMPLETE (the user chose to keep it): the tail is missing. Say so and offer to finish the missing sections with apply_ops.'
       : ''
+    const imgNote =
+      imgSlots > 0
+        ? ` The page has ${imgSlots} image slot(s) (styled <img data-img> placeholders): call fill_images — it asks the user whether to fill them with generated imagery.`
+        : ''
     return {
-      output: `${preface}\nPage written by the system (${result.html.length} chars, ${lines} lines${sections.length ? `; sections: ${sections.join(', ')}` : ''}). Version ${access.getVersion()}.${note}\nReply with one or two sentences describing the page; do not paste HTML.`,
+      output: `${preface}\nPage written by the system (${result.html.length} chars, ${lines} lines${sections.length ? `; sections: ${sections.join(', ')}` : ''}). Version ${access.getVersion()}.${note}${imgNote}\nReply with one or two sentences describing the page; do not paste HTML.`,
       mutated: true,
       summary: result.truncated ? t('aiToolWritePagePartial') : summary,
     }
@@ -796,18 +826,207 @@ export function createHtmlSkillCore(access: HtmlDocAccess): {
               isError: true,
               summary: t('aiToolClarify'),
             }
-          return access.askClarification(questions).then((r) =>
-            r.cancelled
+          const queries = (Array.isArray(call.input.search) ? call.input.search : [])
+            .map((q) => String(q).trim())
+            .filter(Boolean)
+            .slice(0, 4)
+          // research runs under the card's wait: a slow/hung search is dropped after 15 s,
+          // the card is never blocked on it
+          const searches =
+            access.webSearch && queries.length
+              ? Promise.all(
+                  queries.map((q) =>
+                    Promise.race([
+                      access.webSearch!(q, 6)
+                        .then((r) => ({ q, r }))
+                        .catch(() => null),
+                      new Promise<null>((res) => setTimeout(() => res(null), 15_000)),
+                    ]),
+                  ),
+                )
+              : Promise.resolve([])
+          return Promise.all([access.askClarification(questions), searches]).then(([r, found]) => {
+            const findings = found
+              .map((f) => {
+                if (!f || f.r.method === 'error') return ''
+                const lines = [
+                  f.r.answer ? `Direct answer: ${f.r.answer}` : '',
+                  ...f.r.results
+                    .slice(0, 4)
+                    .map((it) => `- ${it.title}\n  ${it.url}\n  ${it.snippet}`),
+                ].filter(Boolean)
+                return lines.length ? `### ${f.q}\n${lines.join('\n')}` : ''
+              })
+              .filter(Boolean)
+              .join('\n\n')
+            const findingsBlock = findings
+              ? `\n\nWeb findings gathered while the user answered (the brief writer reads this transcript — carry the facts and sources into the brief's context):\n${findings}`
+              : ''
+            return r.cancelled
               ? {
                   output:
-                    'The user skipped the questionnaire. Decide the core hook and style yourself, then call plan_page.',
+                    'The user skipped the questionnaire. Decide the core hook and style yourself, then call plan_page.' +
+                    findingsBlock,
                   summary: t('aiToolClarifySkipped'),
                 }
               : {
-                  output: `User answers:\n${r.answers}\nNow call plan_page with a brief that follows these choices.`,
+                  output: `User answers:\n${r.answers}${findingsBlock}\nNow call plan_page with a brief that follows these choices.`,
                   summary: t('aiToolClarify'),
+                }
+          })
+        }
+        case 'fill_images': {
+          const slots: { token: string; prompt: string; tag: string; srcToken?: string }[] = []
+          for (const e of map.elements) {
+            if (e.tag !== 'img') continue
+            const tag = text.slice(e.startTag[0], e.startTag[1])
+            const m = /\bdata-img\s*=\s*("[^"]*"|'[^']*')/i.exec(tag)
+            if (!m) continue
+            const prompt = m[1]!.slice(1, -1).trim()
+            if (!prompt) continue
+            // a stray src on the same tag would win over the one being written — it goes
+            const srcM = /\bsrc\s*=\s*("[^"]*"|'[^']*')/i.exec(tag)
+            slots.push({ token: m[0], prompt, tag, srcToken: srcM?.[0] })
+          }
+          if (!slots.length)
+            return {
+              output: 'The page has no <img data-img> slots — nothing to fill.',
+              isError: true,
+              summary: t('aiToolFillImages'),
+            }
+          if ((!access.generateImage && !access.searchImages) || !access.persistImage)
+            return {
+              output: 'image filling is not available here',
+              isError: true,
+              summary: t('aiToolFillImages'),
+            }
+          return (async (): Promise<ToolExecution> => {
+            if (access.askClarification) {
+              const noLabel = t('aiFillImagesNo')
+              const decision = await access.askClarification([
+                {
+                  id: 'images',
+                  label: t('aiFillImagesAsk', { n: slots.length }),
+                  options: [t('aiFillImagesYes'), noLabel],
                 },
-          )
+              ])
+              if (decision.cancelled || decision.answers.includes(noLabel))
+                return {
+                  output:
+                    'The user kept the styled image placeholders (no imagery generated). Say so briefly.',
+                  summary: t('aiToolFillImages'),
+                }
+            }
+            // resolve each unique prompt once; duplicate slots share one image
+            const unique = new Map<string, string>()
+            for (const s of slots) {
+              const key = s.prompt.toLowerCase().replace(/\s+/g, ' ')
+              if (!unique.has(key)) unique.set(key, s.prompt)
+            }
+            const prompts = [...unique.values()]
+            const srcByPrompt = new Map<string, string>()
+            let cursor = 0
+            // a dead provider fails fast; two consecutive errors = stop asking it
+            let genErrors = 0
+            const worker = async () => {
+              while (cursor < prompts.length) {
+                if (currentSignal?.aborted) return
+                const prompt = prompts[cursor++]!
+                let url: string | undefined
+                if (access.generateImage && genErrors < 2) {
+                  try {
+                    const r = await access.generateImage({ prompt, aspectRatio: '16:9' })
+                    url = r.url
+                    genErrors = r.error ? genErrors + 1 : 0
+                  } catch {
+                    genErrors += 1
+                  }
+                }
+                if (!url && access.searchImages) {
+                  try {
+                    url = (await access.searchImages(prompt, 5))[0]
+                  } catch {
+                    /* fail-open */
+                  }
+                }
+                if (!url) continue
+                try {
+                  const src = await access.persistImage!(url)
+                  if (src) srcByPrompt.set(prompt.toLowerCase().replace(/\s+/g, ' '), src)
+                } catch {
+                  /* slot stays a placeholder */
+                }
+              }
+            }
+            // image calls are slow, but flooding the provider trips rate limits — pool of 3
+            await Promise.all(Array.from({ length: Math.min(3, prompts.length) }, () => worker()))
+            if (!srcByPrompt.size)
+              return {
+                output: `None of the ${prompts.length} image slot(s) could be resolved (generation unavailable or failed, search found nothing). The styled placeholders stay — tell the user briefly.`,
+                isError: true,
+                summary: t('aiToolFillImages'),
+              }
+            // re-read the live document: the user may have edited while images were made
+            const live = access.getText()
+            const done = new Set<string>()
+            const stripped = new Set<string>()
+            const ops: HtmlOp[] = []
+            for (const s of slots) {
+              const key = s.prompt.toLowerCase().replace(/\s+/g, ' ')
+              const src = srcByPrompt.get(key)
+              if (!src || src.includes('"') || done.has(key) || !live.includes(s.token)) continue
+              done.add(key)
+              // Strip a stray src scoped to this slot's tag text — a doc-wide
+              // src="…" replace could hit an unrelated image sharing the URL.
+              if (s.srcToken && !stripped.has(s.tag)) {
+                stripped.add(s.tag)
+                const cleaned = s.tag.replace(s.srcToken, '')
+                if (cleaned !== s.tag && live.includes(s.tag))
+                  ops.push({ op: 'str_replace', old: s.tag, new: cleaned, replace_all: true })
+              }
+              ops.push({
+                op: 'str_replace',
+                old: s.token,
+                new: `src="${src}"`,
+                replace_all: true,
+              })
+            }
+            if (currentSignal?.aborted)
+              return {
+                output: 'stopped by the user; the images were not written into the page',
+                summary: t('aiToolFillImages'),
+              }
+            if (stale())
+              return {
+                output: STALE_MESSAGE,
+                isError: true,
+                summary: t('aiToolFillImages'),
+              }
+            if (!ops.length)
+              return {
+                output:
+                  'The image slots were edited or removed while the images were being made — nothing to fill. Re-check with get_outline.',
+                summary: t('aiToolFillImages'),
+              }
+            const r = access.applyOps(ops, t('aiToolFillImages'))
+            if (!r.ok)
+              return {
+                output: `Image fill failed to apply: ${r.errors.map((e) => e.message).join('; ')}`,
+                isError: true,
+                summary: t('aiToolFillImages'),
+              }
+            markSeen()
+            const filled = done.size
+            return {
+              output: `Filled ${filled} of ${slots.length} image slot(s) with real imagery. Version ${access.getVersion()}.${
+                filled < slots.length
+                  ? ' The rest stayed placeholders — say which ones are missing.'
+                  : ''
+              }`,
+              mutated: true,
+              summary: t('aiToolFillImagesDone', { n: filled }),
+            }
+          })()
         }
         case 'plan_page': {
           const { planBrief, confirmBrief } = access

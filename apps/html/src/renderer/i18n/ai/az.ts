@@ -177,4 +177,9 @@ export const az = {
   aiStarterAnnouncementPrompt: 'Mənim üçün məhsul elanı hazırla. Məhsul və əsas məqamlar: ',
   aiStarterGuide: 'Təlimat bələdçisi yaz',
   aiStarterGuidePrompt: 'Mənim üçün təlimat bələdçisi yaz. İzah ediləcək proses: ',
+  aiToolFillImages: 'Şəkilləri doldur',
+  aiToolFillImagesDone: '{n} şəkil dolduruldu',
+  aiFillImagesAsk: 'Səhifə üçün {n} şəkil yaradılsın?',
+  aiFillImagesYes: 'Yarat',
+  aiFillImagesNo: 'İndi yox',
 } satisfies Record<keyof typeof zh, string>

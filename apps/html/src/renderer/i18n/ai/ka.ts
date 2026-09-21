@@ -178,4 +178,9 @@ export const ka = {
   aiStarterAnnouncementPrompt: 'მომიმზადეთ პროდუქტის განცხადება. პროდუქტი და ძირითადი პუნქტები: ',
   aiStarterGuide: 'ინსტრუქციის დაწერა',
   aiStarterGuidePrompt: 'მომიმზადეთ ინსტრუქცია. ასახსნელი პროცესი: ',
+  aiToolFillImages: 'სურათების შევსება',
+  aiToolFillImagesDone: '{n} სურათი შეიქმნა',
+  aiFillImagesAsk: 'შეიქმნას {n} სურათი გვერდისთვის?',
+  aiFillImagesYes: 'შექმნა',
+  aiFillImagesNo: 'ახლა არა',
 } satisfies Record<keyof typeof zh, string>

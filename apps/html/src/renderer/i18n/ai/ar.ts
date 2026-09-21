@@ -174,4 +174,9 @@ export const ar = {
   aiStarterAnnouncementPrompt: 'صِغ لي إعلانًا عن منتج. المنتج والنقاط الرئيسية: ',
   aiStarterGuide: 'كتابة دليل إرشادي',
   aiStarterGuidePrompt: 'اكتب لي دليلًا إرشاديًا. العملية المطلوب شرحها: ',
+  aiToolFillImages: 'تعبئة الصور',
+  aiToolFillImagesDone: 'تمت تعبئة {n} صور',
+  aiFillImagesAsk: 'توليد {n} صور للصفحة؟',
+  aiFillImagesYes: 'ولّد',
+  aiFillImagesNo: 'ليس الآن',
 } satisfies Record<keyof typeof zh, string>

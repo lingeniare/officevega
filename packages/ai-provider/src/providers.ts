@@ -473,6 +473,9 @@ function trimConfigs(providers: AiSettings['providers']): AiSettings['providers'
       ...config,
       apiKey: config.apiKey?.trim() ?? '',
       model: config.model?.trim() ?? '',
+      ...(config.fastModel !== undefined
+        ? { fastModel: config.fastModel.trim() || undefined }
+        : {}),
       ...(config.baseUrl !== undefined ? { baseUrl: config.baseUrl.trim() } : {}),
       ...(config.cliPath !== undefined ? { cliPath: config.cliPath.trim() } : {}),
     }
@@ -484,10 +487,40 @@ function migrateRetiredModels(providers: AiSettings['providers']): AiSettings['p
   const migrated = { ...providers }
   for (const [id, replacements] of Object.entries(RETIRED_MODELS)) {
     const config = migrated[id as AiProviderId]
-    const replacement = config?.model ? replacements[config.model] : undefined
-    if (replacement) migrated[id as AiProviderId] = { ...config, model: replacement }
+    if (!config) continue
+    const replacement = config.model ? replacements[config.model] : undefined
+    const fastReplacement = config.fastModel ? replacements[config.fastModel] : undefined
+    if (replacement || fastReplacement) {
+      migrated[id as AiProviderId] = {
+        ...config,
+        ...(replacement ? { model: replacement } : {}),
+        ...(fastReplacement ? { fastModel: fastReplacement } : {}),
+      }
+    }
   }
   return migrated
+}
+
+/**
+ * Settings view for background helper calls (suggested follow-up questions):
+ * every provider config that names a `fastModel` serves it in place of `model`,
+ * so whichever slot the request layer resolves (including the genspark→vega
+ * upgrade) already carries the cheap model. No fast model configured = the
+ * main model runs the helper call too.
+ */
+export function withFastModel(settings: AiSettings): AiSettings {
+  let changed = false
+  const providers = {} as AiSettings['providers']
+  for (const [id, config] of Object.entries(settings.providers)) {
+    const fast = config.fastModel?.trim()
+    if (fast) {
+      providers[id as AiProviderId] = { ...config, model: fast }
+      changed = true
+    } else {
+      providers[id as AiProviderId] = config
+    }
+  }
+  return changed ? { ...settings, providers } : settings
 }
 
 /**

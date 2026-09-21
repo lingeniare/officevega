@@ -176,4 +176,9 @@ export const id = {
   aiStarterAnnouncementPrompt: 'Susun pengumuman produk untuk saya. Produk dan poin utama: ',
   aiStarterGuide: 'Tulis panduan cara',
   aiStarterGuidePrompt: 'Tuliskan panduan cara untuk saya. Proses yang perlu dijelaskan: ',
+  aiToolFillImages: 'Isi gambar',
+  aiToolFillImagesDone: '{n} gambar terisi',
+  aiFillImagesAsk: 'Buat {n} gambar untuk halaman?',
+  aiFillImagesYes: 'Buat',
+  aiFillImagesNo: 'Nanti',
 } satisfies Record<keyof typeof zh, string>

@@ -175,4 +175,9 @@ export const en = {
   aiStarterAnnouncementPrompt: 'Draft a product announcement for me. Product and key points: ',
   aiStarterGuide: 'Write a how-to guide',
   aiStarterGuidePrompt: 'Write a how-to guide for me. The process to explain: ',
+  aiToolFillImages: 'Fill images',
+  aiToolFillImagesDone: 'Filled {n} images',
+  aiFillImagesAsk: 'Generate {n} images for the page?',
+  aiFillImagesYes: 'Generate',
+  aiFillImagesNo: 'Not now',
 } satisfies Record<keyof typeof zh, string>

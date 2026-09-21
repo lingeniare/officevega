@@ -177,4 +177,9 @@ export const tt = {
     'Минем өчен продукт игъланының проектын ясагыз. Продукт һәм төп фикерләр: ',
   aiStarterGuide: 'Адымлап кулланма язу',
   aiStarterGuidePrompt: 'Минем өчен адымлап кулланма языгыз. Аңлатылырга тиешле процесс: ',
+  aiToolFillImages: 'Рәсемнәрне тутырга',
+  aiToolFillImagesDone: '{n} рәсем тутырылды',
+  aiFillImagesAsk: 'Бит өчен {n} рәсем ясаргамы?',
+  aiFillImagesYes: 'Ясарга',
+  aiFillImagesNo: 'Хәзер түгел',
 } satisfies Record<keyof typeof zh, string>

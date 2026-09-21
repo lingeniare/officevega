@@ -179,4 +179,9 @@ export const de = {
   aiStarterAnnouncementPrompt: 'Entwirf mir eine Produktankündigung. Produkt und Kernpunkte: ',
   aiStarterGuide: 'Eine Anleitung schreiben',
   aiStarterGuidePrompt: 'Schreib mir eine Anleitung. Der zu erklärende Ablauf: ',
+  aiToolFillImages: 'Bilder einfügen',
+  aiToolFillImagesDone: '{n} Bilder eingefügt',
+  aiFillImagesAsk: '{n} Bilder für die Seite generieren?',
+  aiFillImagesYes: 'Generieren',
+  aiFillImagesNo: 'Jetzt nicht',
 } satisfies Record<keyof typeof zh, string>

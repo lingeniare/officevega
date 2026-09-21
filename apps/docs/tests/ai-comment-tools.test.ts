@@ -357,7 +357,8 @@ describe('add_comment / delete_comment', () => {
     access.reply('1', 'another')
     const cascade = await call(editor, access, 'delete_comment', { id: '1', withReplies: true })
     expect(cascade.isError).toBeFalsy()
-    expect(cascade.output).toBe('Deleted comments 1, 2.')
+    // mutation outputs carry a fresh document context after the summary line
+    expect(cascade.output.startsWith('Deleted comments 1, 2.')).toBe(true)
     expect(comments).toHaveLength(0)
     expect(commentAnchors(editor).size).toBe(0)
 

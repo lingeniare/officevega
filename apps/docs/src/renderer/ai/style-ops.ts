@@ -134,6 +134,7 @@ export const DEFINE_STYLE_TOOL: AgentToolDef = {
 
 export const LIST_STYLES_TOOL: AgentToolDef = {
   name: 'list_styles',
+  readonly: true,
   description:
     'List the styles defined in the document (id, name, type, parent, heading level) for define_style / applyStyle.',
   inputSchema: { type: 'object', properties: {}, required: [] },

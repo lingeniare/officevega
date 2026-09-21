@@ -177,4 +177,9 @@ export const pl = {
     'Przygotuj dla mnie ogłoszenie o produkcie. Produkt i kluczowe punkty: ',
   aiStarterGuide: 'Napisz poradnik',
   aiStarterGuidePrompt: 'Napisz dla mnie poradnik. Proces do wyjaśnienia: ',
+  aiToolFillImages: 'Wstaw obrazy',
+  aiToolFillImagesDone: 'Wstawiono {n} obrazów',
+  aiFillImagesAsk: 'Wygenerować {n} obrazów dla strony?',
+  aiFillImagesYes: 'Generuj',
+  aiFillImagesNo: 'Nie teraz',
 } satisfies Record<keyof typeof zh, string>

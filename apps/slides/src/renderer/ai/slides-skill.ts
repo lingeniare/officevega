@@ -219,6 +219,39 @@ export interface DeckAccess {
     error?: string
   }>
   /**
+   * Outline confirmation card (staged generation): shows the internally planned outline
+   * to the user BEFORE any page is generated. The user may approve (optionally dropping
+   * pages / retitling them), ask for changes (feedback goes back for re-planning), or
+   * cancel. Runs inside generate_deck between planning and page generation — the tool
+   * call simply awaits the user's decision, same as askClarification.
+   */
+  proposeOutline?(args: OutlineProposal): Promise<OutlineProposalResult>
+  /**
+   * Draft (skeleton) page generation — the fast first pass of staged deck creation:
+   * ONE LLM request writes simple slide specs for a BATCH of pages (minimal neutral
+   * layout, real text, labeled placeholder boxes for every planned visual slot), and
+   * each spec is built locally into a one-slide pptx. markers[i] aligns with pages[i]
+   * (null = that page failed). No style design, no image resolution — upgrades come
+   * later via upgrade_deck.
+   */
+  generateDraftPages?(args: {
+    pages: {
+      pageIndex: number
+      totalPages: number
+      title: string
+      brief: string
+      layout: string
+      type?: string
+      imageSlots: string[]
+    }[]
+    coreHook: string
+    topic?: string
+    context?: string
+    canvasW: number
+    canvasH: number
+    signal?: AbortSignal
+  }): Promise<{ ok: boolean; markers?: (string | null)[]; error?: string }>
+  /**
    * Persist the current draft's Style Skill as a sidecar file (same directory and name as the draft, .styleskill.json).
    * fail-open: failure doesn't block the main path.
    */
@@ -269,6 +302,39 @@ export function attachmentRefName(url: string): string | null {
     return raw
   }
 }
+
+/** Fixed minimal style for draft-mode pages (staged generation): the skeleton is
+ *  deliberately plain — design comes later via upgrade_deck(stage:"style"). */
+const DRAFT_STYLE =
+  'Minimal draft layout: plain white background #FFFFFF, dark text #1A1A2E, a single accent #2563EB used sparingly, sans-serif fonts; every planned visual slot is a light-gray labeled placeholder box, not a real image'
+
+/** Prefix the draft generator writes on visual placeholder boxes; upgrade_deck scans
+ *  slide text for this prefix to recover the planned slots from the deck itself. */
+export const DRAFT_SLOT_RE = /^\s*(IMAGE|CHART|INFOGRAPHIC|VISUAL)\s*[:：]/i
+
+/** One row of the outline confirmation card. */
+export interface OutlineProposalPage {
+  title: string
+  brief: string
+  layout?: string
+  /** Number of visual slots (image_queries + image_prompts) planned on this page */
+  visuals?: number
+}
+
+/** Payload for the outline confirmation card shown before a new deck is generated. */
+export interface OutlineProposal {
+  coreHook: string
+  topic?: string
+  pages: OutlineProposalPage[]
+  signal?: AbortSignal
+}
+
+/** Card verdict: approved (with page removals/title edits), revise (feedback for
+ *  re-planning), or cancelled. */
+export type OutlineProposalResult =
+  | { status: 'approved'; removed?: number[]; titles?: string[] }
+  | { status: 'revise'; feedback: string }
+  | { status: 'cancelled' }
 
 /** Single survey question structure (with options). */
 export interface ClarifyQuestion {
@@ -656,6 +722,12 @@ const TOOLS: AgentToolDef[] = [
           description:
             'replace (default, new whole deck) = replace everything; append = append at the end',
         },
+        detail: {
+          type: 'string',
+          enum: ['draft', 'full'],
+          description:
+            'draft = FAST first pass for a new deck: minimal neutral layout, real text, labeled placeholder boxes for every planned visual (the outline card is shown to the user for confirmation first; images/style come later via upgrade_deck). full (default) = complete designed pages with imagery. Use draft for whole-new-deck creation; use full for appended pages so they match an already-designed deck.',
+        },
         style_template: {
           type: 'string',
           description:
@@ -668,6 +740,43 @@ const TOOLS: AgentToolDef[] = [
             "Required when topic/context/briefs carry specific figures (%, money, magnitudes): where they came from — 'user'/'document'/'search' (run web_search first)/'sample' (disclose to the user)",
         },
       },
+    },
+  },
+  {
+    name: 'upgrade_deck',
+    description:
+      '[Second step of staged generation — run only when the user asks after a draft landed] Upgrades pages IN PLACE, keeping every page\'s text verbatim.' +
+      ' stage:"visuals" fills the labeled placeholder boxes (IMAGE:/CHART:) with real imagery — each slot is AI-generated first, photo search as fallback — and renders data placeholders as real composed visuals;' +
+      ' stage:"style" applies one unified design system (a fresh Style Skill, or a saved template via style_template);' +
+      ' stage:"full" does both. Pages are regenerated in place in parallel batches (other pages untouched, each landing is undoable).' +
+      ' Typical flow: generate_deck(detail:"draft") → user likes the structure → upgrade_deck(stage:"visuals") → upgrade_deck(stage:"style").',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        stage: {
+          type: 'string',
+          enum: ['visuals', 'style', 'full'],
+          description:
+            'visuals = fill image/chart slots; style = apply a unified design system; full = both',
+        },
+        pages: {
+          type: 'array',
+          items: { type: 'integer' },
+          description:
+            'Optional: 1-based page numbers to upgrade (default: all pages of the deck)',
+        },
+        style_hint: {
+          type: 'string',
+          description:
+            'Optional style direction for stage style/full (e.g. "dark navy + gold, corporate"); without it the system picks a professional style fitting the topic',
+        },
+        style_template: {
+          type: 'string',
+          description:
+            'Optional: name of a saved style template (list_style_templates) — skips style generation',
+        },
+      },
+      required: ['stage'],
     },
   },
   {
@@ -1119,7 +1228,10 @@ export function createSlidesSkill(access: DeckAccess): AgentSkill {
     buildContext: () => {
       const outline = `<deck outline>\n${buildDeckOutline(access.getSlides(), access.getCurrent(), access.getSelectedIds())}\n</deck outline>`
       const progress = buildProgressNote(state)
-      return progress ? `${outline}\n${progress}` : outline
+      const draft = state.draftDeck
+        ? '<deck-status>This deck is a DRAFT (staged generation): plain layout, labeled placeholder boxes where visuals go. When the user asks for imagery/infographics → upgrade_deck(stage:"visuals"); for a unified design → upgrade_deck(stage:"style"); for both → stage:"full".</deck-status>'
+        : ''
+      return [outline, progress, draft].filter(Boolean).join('\n')
     },
     executeTool: (call, signal) => executeTool(access, call, state, signal),
   }
@@ -1139,6 +1251,10 @@ interface SkillState {
   lastStyleSkill?: string
   /** Topic of the most recent generate_deck (used by save_style_template) */
   lastTopic?: string
+  /** The deck on canvas is a staged-flow draft (plain layout + labeled visual slots awaiting upgrade_deck) */
+  draftDeck?: boolean
+  /** Per-page visual slot descriptions captured at draft generation (aligned with plannedTitles) */
+  draftImageSlots?: string[][]
 }
 
 /**
@@ -1821,9 +1937,18 @@ async function executeTool(
       //   2) Generate: batched concurrent page generation (one retry per page), **each batch lands immediately → frontend shows pages one by one**.
       //      Cloud (gsk slide_generate) when available; otherwise fully local — the LLM (app AI
       //      transport, works with BYOK) writes a slide spec that is built directly into a pptx.
+      // detail:'draft' = staged fast path: no style/image stages, pages are simple
+      // spec skeletons built locally in multi-page batches — the user gets a complete
+      // text deck in seconds and upgrades visuals/style afterwards via upgrade_deck.
+      const draftMode = call.input.detail === 'draft'
       const useCloud =
-        !!access.generatePageCloud && !!(await access.isCloudPageGenEnabled?.().catch(() => false))
-      if (!useCloud && !access.generatePageLocal)
+        !draftMode &&
+        !!access.generatePageCloud &&
+        !!(await access.isCloudPageGenEnabled?.().catch(() => false))
+      const canGenerate = draftMode
+        ? !!(access.generateDraftPages || access.generatePageLocal)
+        : useCloud || !!access.generatePageLocal
+      if (!canGenerate)
         return fail(
           t('aiFailGenDeck'),
           'No page generation pipeline is available in this environment',
@@ -1958,9 +2083,12 @@ async function executeTool(
       })()
 
       const needStyleGen =
-        !styleSkill && access.generateStyleSkill && (topic || pages.length === 0 || !style)
+        !draftMode && !styleSkill && access.generateStyleSkill && (topic || pages.length === 0 || !style)
       // Style track: resolves to the final Style Skill (or the user-passed style / '').
-      const styleP: Promise<string> = (async () => {
+      // Draft mode skips it entirely — the skeleton uses one fixed minimal style.
+      const styleP: Promise<string> = draftMode
+        ? Promise.resolve(DRAFT_STYLE)
+        : (async () => {
         if (!needStyleGen) return styleSkill || style
         access.onProgress?.({
           stage: 'style',
@@ -1992,6 +2120,7 @@ async function executeTool(
         1,
         parseInt(String(call.input.approx_pages ?? '0'), 10) || pages.length || 1,
       )
+      let plannedInternally = false // true when the outline was planned inside this call (topic mode) → eligible for the confirmation card
       const planP: Promise<{ error?: string }> = (async () => {
         if (pages.length > 0) return {}
         const approx = approxForProgress
@@ -2046,6 +2175,7 @@ async function executeTool(
         // First batch — also yields the Core Hook the later batches continue from
         const count1 = Math.min(PLAN_BATCH, approx)
         if (cancelled()) return {}
+        plannedInternally = true
         const r1 = await planBatch(count1, 1, false)
         if (!batchOk(r1)) return planFailed(r1?.error)
         coreHook = String(r1!.outline!.core_hook ?? coreHook).trim()
@@ -2105,16 +2235,98 @@ async function executeTool(
           ? mergedContext.slice(0, PAGE_CONTEXT_MAX)
           : mergedContext
 
+      // ── Step 1.2: outline confirmation card (staged flow). When this call planned
+      //   the outline internally for a NEW deck, pause and let the user review it:
+      //   approve (optionally dropping/retitling pages), send back for revision, or
+      //   cancel — before a single page is generated. Skipped for append mode and for
+      //   explicitly-passed pages (those were already visible via plan_deck's echo).
+      if (
+        plannedInternally &&
+        insertMode === 'replace' &&
+        access.proposeOutline &&
+        !cancelled()
+      ) {
+        const proposal = await access.proposeOutline({
+          coreHook: coreHook || topic,
+          ...(topic ? { topic } : {}),
+          pages: pages.map((p) => ({
+            title: String(p.title ?? '').trim() || 'Untitled',
+            brief: String(p.brief ?? ''),
+            ...(p.layout ? { layout: String(p.layout) } : {}),
+            visuals:
+              (Array.isArray(p.image_queries) ? p.image_queries.length : 0) +
+              (Array.isArray(p.image_prompts) ? p.image_prompts.length : 0),
+          })),
+          ...(signal ? { signal } : {}),
+        })
+        if (proposal.status === 'cancelled') {
+          access.onProgress?.({
+            stage: 'plan',
+            label: t('aiStagePlan'),
+            done: pages.length,
+            total: pages.length,
+            status: 'done',
+            summary: t('aiSumOutlineCancelled'),
+          })
+          return {
+            output:
+              'The user cancelled at the outline review — nothing was generated. Ask what they would like to change, then call generate_deck again with the adjusted input.',
+            mutated: false,
+            summary: t('aiSumOutlineCancelled'),
+          }
+        }
+        if (proposal.status === 'revise') {
+          const planLines = pages
+            .map(
+              (p, i) =>
+                `${i + 1}. [${String(p.layout ?? '')}] ${String(p.title ?? '')} — ${String(p.brief ?? '').slice(0, 120)}`,
+            )
+            .join('\n')
+          return {
+            output:
+              `The user reviewed the outline and wants changes: "${proposal.feedback}".\n` +
+              `Current plan (core hook: ${coreHook}):\n${planLines}\n` +
+              'Re-plan with the feedback applied, then call generate_deck again (topic + approx_pages, or explicit pages). Nothing was generated yet.',
+            mutated: false,
+            summary: t('aiSumOutlineRevise'),
+          }
+        }
+        // approved: apply page removals and title edits
+        if (proposal.status === 'approved') {
+          const removed = new Set(
+            (proposal.removed ?? []).filter((i) => Number.isInteger(i) && i >= 0),
+          )
+          for (const i of [...removed].sort((a, b) => b - a)) {
+            if (i < pages.length) pages.splice(i, 1)
+          }
+          if (Array.isArray(proposal.titles)) {
+            proposal.titles.forEach((title, i) => {
+              if (pages[i] && typeof title === 'string' && title.trim())
+                pages[i]!.title = title.trim()
+            })
+          }
+          if (pages.length === 0) {
+            return {
+              output:
+                'The user removed every page from the outline — nothing to generate. Ask what structure they want, then call generate_deck again.',
+              mutated: false,
+              summary: t('aiSumOutlineCancelled'),
+            }
+          }
+        }
+      }
+
       // ── Step 1.5: in-tool imagery. AI generation is the PRIMARY resolver for every
       //   visual slot — the image model renders each slot's description (image_queries
       //   and image_prompts alike), a real-photo search runs only as fallback: for the
       //   slots the generator missed, or for all of them when generation is unavailable.
       //   Entries that are already URLs (http(s), or file:// for BYOK-generated images)
       //   are respected, not re-resolved; unresolvable slots stay empty (fail-open).
+      //   Draft mode skips this stage entirely — slots become labeled placeholder boxes.
       const isUrl = (s: string) => /^(https?|file):\/\//i.test(s)
       const normKw = (s: string) => s.toLowerCase().replace(/\s+/g, ' ')
       const unresolvedImageSlots: { page: number; slot: string }[] = []
-      if (access.searchImages || access.generateImage) {
+      if (!draftMode && (access.searchImages || access.generateImage)) {
         const uniqueSlots: string[] = []
         const seenSlot = new Set<string>()
         for (const p of pages) {
@@ -2278,6 +2490,17 @@ async function executeTool(
         state.pageDone = new Array(total).fill(false)
         state.lastStyleSkill = styleSkill
         state.lastTopic = topic || coreHook || ''
+        // Staged flow: remember the per-page visual slots of a draft deck so
+        // upgrade_deck(stage:'visuals') can resolve them later (placeholder labels
+        // on the canvas carry the same text as a backup source of truth).
+        state.draftDeck = draftMode
+        state.draftImageSlots = draftMode
+          ? pages.map((p) =>
+              (['image_queries', 'image_prompts'] as const).flatMap((f) =>
+                (Array.isArray(p[f]) ? (p[f] as unknown[]) : []).map((x) => String(x).trim()).filter(Boolean),
+              ),
+            )
+          : undefined
       }
 
       // Presentation name: prefer the cover (page 1) title, then the user-entered topic / coreHook.
@@ -2318,6 +2541,36 @@ async function executeTool(
         pages: [...pageProgressItems],
       })
 
+      // Draft mode: visual slots stay descriptions (no resolution ran) — they are passed
+      // to the draft generator as placeholder labels, and kept for upgrade_deck.
+      const slotDescsOf = (p: Record<string, unknown>) =>
+        (['image_queries', 'image_prompts'] as const).flatMap((f) =>
+          (Array.isArray(p[f]) ? (p[f] as unknown[]) : [])
+            .map((x) => String(x).trim())
+            .filter(Boolean),
+        )
+      const markPageError = (idx: number, err?: string) => {
+        markerByIndex[idx] = '' // Empty-string placeholder; doesn't block subsequent landings
+        genFailed.push(idx)
+        // Keep the concrete error genOne already recorded (e.g. the generator's own
+        // message); only fall back to the generic label when nothing was captured.
+        pageErrors[idx] = err ?? pageErrors[idx] ?? t('aiErrUnknown')
+        pageProgressItems[idx] = {
+          ...pageProgressItems[idx]!,
+          status: 'error',
+          error: pageErrors[idx],
+        }
+      }
+      const draftPageInput = (p: Record<string, unknown>, pageIndex: number) => ({
+        pageIndex,
+        totalPages: total,
+        title: String(p.title ?? ''),
+        brief: String(p.brief ?? ''),
+        layout: String(p.layout ?? ''),
+        ...(p.type ? { type: String(p.type) } : {}),
+        imageSlots: slotDescsOf(p),
+      })
+
       const genOne = async (p: Record<string, unknown>, pageIndex: number) => {
         // Mark as running
         pageProgressItems[pageIndex - 1] = {
@@ -2326,7 +2579,7 @@ async function executeTool(
         }
         access.onProgress?.({
           stage: 'pages',
-          label: t('aiStagePages'),
+          label: draftMode ? t('aiStageDraft') : t('aiStagePages'),
           done: landedPages,
           total,
           status: 'running',
@@ -2336,15 +2589,18 @@ async function executeTool(
         // Resolved image slots: generated URLs (primary) + searched URLs (fallback) +
         // explicit URLs passed through. file:// (BYOK-generated) only works on the local
         // build path — the cloud service cannot reach the local image store.
-        const images = (['image_queries', 'image_prompts'] as const).flatMap((field) =>
-          Array.isArray(p[field])
-            ? (p[field] as unknown[])
-                .map((x) => String(x))
-                .filter((x) =>
-                  useCloud ? /^https?:\/\//.test(x) : /^(https?|file):\/\//.test(x),
-                )
-            : [],
-        )
+        // Draft mode resolves nothing: slots go to the draft page as placeholder labels.
+        const images = draftMode
+          ? []
+          : (['image_queries', 'image_prompts'] as const).flatMap((field) =>
+              Array.isArray(p[field])
+                ? (p[field] as unknown[])
+                    .map((x) => String(x))
+                    .filter((x) =>
+                      useCloud ? /^https?:\/\//.test(x) : /^(https?|file):\/\//.test(x),
+                    )
+                : [],
+            )
         let lastErr = ''
         const pageArgs = {
           pageIndex,
@@ -2364,7 +2620,34 @@ async function executeTool(
         // Both paths return a marker pointing at a one-slide pptx temp file. One retry, then the
         // page is skipped for now (locally-failed pages get one more chance in the retry round)
         // and the rest of the deck keeps generating.
-        const gen = useCloud ? access.generatePageCloud! : access.generatePageLocal!
+        const gen = draftMode
+          ? // Single-page draft call — the retry-round path (the main loop uses multi-page
+            // batches). Without the batch capability fall back to the regular local page
+            // builder fed the draft style + placeholder instructions.
+            async (args: typeof pageArgs) => {
+              if (access.generateDraftPages) {
+                const r = await access.generateDraftPages({
+                  pages: [draftPageInput(p, pageIndex)],
+                  coreHook,
+                  ...(topic ? { topic } : {}),
+                  ...(pageContext ? { context: pageContext } : {}),
+                  canvasW,
+                  canvasH,
+                  ...(signal ? { signal } : {}),
+                })
+                const m = r.markers?.[0]
+                return r.ok && m
+                  ? { ok: true, marker: m }
+                  : { ok: false, error: r.error ?? t('aiErrUnknown') }
+              }
+              const slotHint = slotDescsOf(p).length
+                ? `\nDraft page: render each visual slot as a light-gray labeled placeholder box — ${slotDescsOf(p).map((s) => `"IMAGE: ${s}"`).join(', ')}.`
+                : ''
+              return access.generatePageLocal!({ ...args, brief: args.brief + slotHint })
+            }
+          : useCloud
+            ? access.generatePageCloud!
+            : access.generatePageLocal!
         for (let attempt = 0; attempt < 2; attempt++) {
           if (cancelled()) return null
           if (attempt > 0 && BACKOFF_MS > 0) await new Promise((r) => setTimeout(r, BACKOFF_MS))
@@ -2426,29 +2709,76 @@ async function executeTool(
         }
       }
 
-      for (let start = 0; start < total; start += GEN_BATCH) {
-        if (cancelled()) break
-        const batchIdxs = []
-        for (let k = start; k < Math.min(start + GEN_BATCH, total); k++) batchIdxs.push(k)
-        const results = await Promise.all(
-          batchIdxs.map(async (idx) => ({ idx, marker: await genOne(pages[idx], idx + 1) })),
+      if (draftMode && access.generateDraftPages) {
+        // ── Draft fast path: ONE LLM call writes DRAFT_BATCH simple page specs;
+        //    DRAFT_WAVES batch calls run concurrently. Ordered landing is unchanged.
+        const DRAFT_BATCH = 5
+        const DRAFT_WAVES = 2
+        const chunks: number[][] = []
+        for (let s = 0; s < total; s += DRAFT_BATCH) {
+          chunks.push(
+            Array.from({ length: Math.min(DRAFT_BATCH, total - s) }, (_, k) => s + k),
+          )
+        }
+        let cursor = 0
+        await Promise.all(
+          Array.from({ length: Math.min(DRAFT_WAVES, chunks.length) }, async () => {
+            while (cursor < chunks.length && !cancelled()) {
+              const chunk = chunks[cursor++]!
+              for (const idx of chunk) {
+                pageProgressItems[idx] = { ...pageProgressItems[idx]!, status: 'running' }
+              }
+              access.onProgress?.({
+                stage: 'pages',
+                label: t('aiStageDraft'),
+                done: landedPages,
+                total,
+                status: 'running',
+                summary: t('aiStagePageRunning', { n: chunk[0]! + 1, total }),
+                pages: [...pageProgressItems],
+              })
+              let res: Awaited<ReturnType<NonNullable<typeof access.generateDraftPages>>>
+              try {
+                res = await access.generateDraftPages!({
+                  pages: chunk.map((i) => draftPageInput(pages[i]!, i + 1)),
+                  coreHook,
+                  ...(topic ? { topic } : {}),
+                  ...(pageContext ? { context: pageContext } : {}),
+                  canvasW,
+                  canvasH,
+                  ...(signal ? { signal } : {}),
+                })
+              } catch (e) {
+                res = { ok: false, error: e instanceof Error ? e.message : String(e) }
+              }
+              chunk.forEach((idx, k) => {
+                const m = res.ok ? (res.markers?.[k] ?? null) : null
+                if (m) markerByIndex[idx] = m
+                else markPageError(idx, res.ok ? undefined : res.error)
+              })
+              await flushLanded()
+            }
+          }),
         )
-        if (cancelled()) break
-        for (const { idx, marker } of results) {
-          if (marker && marker.length > 0) {
-            markerByIndex[idx] = marker
-          } else {
-            markerByIndex[idx] = '' // Empty-string placeholder; doesn't block subsequent landings
-            genFailed.push(idx)
-            pageProgressItems[idx] = {
-              ...pageProgressItems[idx]!,
-              status: 'error',
-              error: pageErrors[idx],
+      } else {
+        for (let start = 0; start < total; start += GEN_BATCH) {
+          if (cancelled()) break
+          const batchIdxs = []
+          for (let k = start; k < Math.min(start + GEN_BATCH, total); k++) batchIdxs.push(k)
+          const results = await Promise.all(
+            batchIdxs.map(async (idx) => ({ idx, marker: await genOne(pages[idx], idx + 1) })),
+          )
+          if (cancelled()) break
+          for (const { idx, marker } of results) {
+            if (marker && marker.length > 0) {
+              markerByIndex[idx] = marker
+            } else {
+              markPageError(idx)
             }
           }
+          // Batch generated → immediately land everything that can land (frontend shows pages one by one)
+          await flushLanded()
         }
-        // Batch generated → immediately land everything that can land (frontend shows pages one by one)
-        await flushLanded()
       }
       if (!cancelled()) await flushLanded() // Finalize
 
@@ -2545,6 +2875,7 @@ async function executeTool(
       }
 
       if (landedPages === 0) {
+        if (state) state.draftDeck = false
         access.onProgress?.({
           stage: 'done',
           total: 0,
@@ -2569,7 +2900,12 @@ async function executeTool(
       const stillFailed: number[] = []
       for (let i = 0; i < total; i++) if (!doneFlags[i]) stillFailed.push(i + 1)
       const briefErr = (s?: string) => (s ? (s.length > 80 ? `${s.slice(0, 80)}…` : s) : '')
-      const okMsg = `Self-driven generation produced ${landedPages}/${total} pages (HTML written page by page, displayed as generated; failed pages were auto-retried).`
+      const okMsg = draftMode
+        ? `Draft deck landed: ${landedPages}/${total} pages — plain layout, real text, labeled placeholder boxes where visuals go. ` +
+          `Tell the user the draft is ready for review, and OFFER the next steps (do NOT run them unprompted): ` +
+          `upgrade_deck(stage:"visuals") fills the placeholders with generated images/infographics; ` +
+          `upgrade_deck(stage:"style") applies a unified design; upgrade_deck(stage:"full") does both.`
+        : `Self-driven generation produced ${landedPages}/${total} pages (HTML written page by page, displayed as generated; failed pages were auto-retried).`
       const failDetail = stillFailed
         .map((n) => `page ${n}${pageErrors[n - 1] ? ` (${briefErr(pageErrors[n - 1])})` : ''}`)
         .join(', ')
@@ -2600,6 +2936,349 @@ async function executeTool(
           okMsg + failMsg + degradedMsg + imageFailNote(deckImageFails) + imageMissMsg + progressTail,
         mutated: true,
         summary: t('aiSumDeckGenerated', { done: landedPages, total }),
+      }
+    }
+
+    case 'upgrade_deck': {
+      // ── Staged flow, second step: upgrade the pages of a landed draft IN PLACE.
+      //   Every target page is regenerated (cloud or local path) with a brief that
+      //   carries its current text verbatim plus the resolved imagery / the new
+      //   Style Skill — the text the user already approved is preserved.
+      const stage = String(call.input.stage ?? '')
+      if (stage !== 'visuals' && stage !== 'style' && stage !== 'full')
+        return fail(t('aiFailUpgrade'), 'upgrade_deck requires stage: "visuals" | "style" | "full"')
+      if (!access.regenerateSlide)
+        return fail(
+          t('aiFailUpgrade'),
+          'The current environment does not support in-place page landing',
+        )
+      const upCloud =
+        !!access.generatePageCloud &&
+        !!(await access.isCloudPageGenEnabled?.().catch(() => false))
+      if (!upCloud && !access.generatePageLocal)
+        return fail(
+          t('aiFailUpgrade'),
+          'No page generation pipeline is available in this environment',
+        )
+      const slidesNow = access.getSlides()
+      if (!slidesNow.length)
+        return fail(t('aiFailUpgrade'), 'The deck is empty — nothing to upgrade.')
+
+      const wantVisuals = stage !== 'style'
+      const wantStyle = stage !== 'visuals'
+      const rawPages = Array.isArray(call.input.pages) ? call.input.pages : null
+      const targetSet = new Set<number>()
+      if (rawPages) {
+        for (const n of rawPages) {
+          const i = Number(n) - 1
+          if (Number.isInteger(i) && i >= 0 && i < slidesNow.length) targetSet.add(i)
+        }
+      }
+      const targets = (
+        targetSet.size ? [...targetSet] : slidesNow.map((_, i) => i)
+      ).sort((a, b) => a - b)
+      if (!targets.length)
+        return fail(t('aiFailUpgrade'), 'No valid target pages (pages are 1-based).')
+
+      const cancelled = () => signal?.aborted === true
+      if (cancelled()) return { output: 'Stopped.', mutated: false, summary: t('aiErrStopped') }
+
+      // ── Style resolution (style/full): saved template > fresh Style Skill > hint.
+      let styleSkill = ''
+      if (wantStyle) {
+        const tmpl = String(call.input.style_template ?? '').trim()
+        if (tmpl && access.loadStyleTemplate) {
+          try {
+            const tr = await access.loadStyleTemplate(tmpl)
+            if (tr.ok && tr.styleSkill) styleSkill = tr.styleSkill
+          } catch {
+            /* fail-open */
+          }
+        }
+        if (!styleSkill && access.generateStyleSkill) {
+          access.onProgress?.({
+            stage: 'style',
+            label: t('aiStageStyle'),
+            status: 'running',
+            summary: t('aiStageStyleRunning'),
+          })
+          const sr = await access.generateStyleSkill({
+            topic: state?.lastTopic || 'Presentation',
+            ...(String(call.input.style_hint ?? '').trim()
+              ? { styleHint: String(call.input.style_hint).trim() }
+              : {}),
+            ...(signal ? { signal } : {}),
+          })
+          access.onProgress?.({
+            stage: 'style',
+            label: t('aiStageStyle'),
+            status: sr.ok ? 'done' : 'error',
+            summary: sr.ok ? t('aiStageStyleDone') : (sr.error ?? t('aiErrUnknown')),
+          })
+          if (sr.ok && sr.styleSkill) styleSkill = sr.styleSkill
+        }
+        if (!styleSkill)
+          styleSkill =
+            String(call.input.style_hint ?? '').trim() ||
+            state?.lastStyleSkill ||
+            'Unified clean modern style: light background, dark text, one primary accent color, sans-serif fonts, generous whitespace'
+      }
+      const styleForPages = wantStyle
+        ? styleSkill
+        : 'Keep the page\'s current minimal neutral look (white background, dark text, single blue accent) — this stage only fills the visual slots.'
+
+      // ── Visual slots per page: the draft plan captured at generation + the labeled
+      //    placeholder boxes still on the canvas (the labels ARE the slot descriptions —
+      //    works even when the deck was edited or the session state was lost).
+      const pageTexts: string[] = []
+      const pageSlots: string[][] = []
+      for (const slide of slidesNow) {
+        const infos = collectNodeInfos(slide.nodes)
+        pageTexts.push(
+          infos
+            .filter((n) => n.text && n.text.trim())
+            .map((n) => n.text!.trim())
+            .join('\n'),
+        )
+        const found = infos
+          .flatMap((n) => (n.text ?? '').split('\n'))
+          .map((line) => line.trim())
+          .filter((line) => DRAFT_SLOT_RE.test(line))
+          .map((line) => line.replace(DRAFT_SLOT_RE, '').trim())
+          .filter(Boolean)
+        pageSlots.push(found)
+      }
+      // Merge in the draft-time plan (covers slots whose placeholder was edited/renamed)
+      if (state?.draftImageSlots) {
+        state.draftImageSlots.forEach((slots, i) => {
+          if (i < pageSlots.length) pageSlots[i] = [...new Set([...pageSlots[i]!, ...slots])]
+        })
+      }
+
+      // ── Resolve the slots to real image URLs (visuals/full): AI generation first,
+      //    photo search as fallback; entries already carrying a URL pass through.
+      const isUrlStr = (s: string) => /^(https?|file):\/\//i.test(s)
+      const normKey = (s: string) => s.toLowerCase().replace(/\s+/g, ' ')
+      const resolvedByKey = new Map<string, string>()
+      const unresolvedSlots: { page: number; slot: string }[] = []
+      if (wantVisuals && (access.generateImage || access.searchImages)) {
+        const uniqueSlots = [
+          ...new Set(targets.flatMap((i) => pageSlots[i] ?? []).map(normKey)),
+        ].filter(Boolean)
+        const original = new Map<string, string>() // normKey → original text
+        for (const i of targets)
+          for (const s of pageSlots[i] ?? []) if (!original.has(normKey(s))) original.set(normKey(s), s)
+        const pending = uniqueSlots.filter((k) => !isUrlStr(original.get(k) ?? ''))
+        for (const k of uniqueSlots) {
+          const o = original.get(k) ?? k
+          if (isUrlStr(o)) resolvedByKey.set(k, o)
+        }
+        const canGenerate = !!access.generateImage && access.imageGenAvailable?.() !== false
+        if (pending.length) {
+          access.onProgress?.({
+            stage: 'images',
+            label: t('aiStageImages'),
+            done: 0,
+            total: pending.length,
+            status: 'running',
+            summary: t('aiStageImagesRunning', { done: 0, total: pending.length }),
+          })
+          let done = 0
+          const tick = () => {
+            done++
+            access.onProgress?.({
+              stage: 'images',
+              label: t('aiStageImages'),
+              done,
+              total: pending.length,
+              status: 'running',
+              summary: t('aiStageImagesRunning', { done, total: pending.length }),
+            })
+          }
+          const missed: string[] = []
+          if (canGenerate) {
+            let cur = 0
+            await Promise.all(
+              Array.from({ length: Math.min(3, pending.length) }, async () => {
+                while (cur < pending.length && !cancelled()) {
+                  const k = pending[cur++]!
+                  try {
+                    const r = await access.generateImage!({
+                      prompt: original.get(k) ?? k,
+                      aspectRatio: '16:9',
+                    })
+                    if (r.ok && r.url) resolvedByKey.set(k, r.url)
+                    else missed.push(k)
+                  } catch {
+                    missed.push(k)
+                  }
+                  tick()
+                }
+              }),
+            )
+          }
+          const toSearch = canGenerate ? missed : pending
+          if (toSearch.length && access.searchImages) {
+            await Promise.all(
+              toSearch.map(async (k) => {
+                if (cancelled()) return
+                try {
+                  const urls = await access.searchImages!(original.get(k) ?? k, 3)
+                  if (urls.length) resolvedByKey.set(k, urls[0]!)
+                } catch {
+                  /* fail-open */
+                }
+              }),
+            )
+          }
+          access.onProgress?.({
+            stage: 'images',
+            label: t('aiStageImages'),
+            done: pending.length,
+            total: pending.length,
+            status: 'done',
+            summary: t('aiStageImagesDone', { n: pending.length }),
+          })
+        }
+      }
+
+      // ── Regenerate the target pages in place (batched, ordered by index).
+      const GEN_BATCH = upCloud ? 4 : 2
+      const upTotal = targets.length
+      const upItems: PageProgressItem[] = targets.map((i) => ({
+        title: pageTexts[i]?.split('\n')[0]?.slice(0, 40) || t('aiPageN', { n: i + 1 }),
+        status: 'pending',
+      }))
+      access.onProgress?.({
+        stage: 'pages',
+        label: t('aiStageUpgrade'),
+        done: 0,
+        total: upTotal,
+        status: 'running',
+        summary: t('aiStagePageRunning', { n: 1, total: upTotal }),
+        pages: [...upItems],
+      })
+      const upgraded: number[] = []
+      const upFailed: number[] = []
+      const upErrors: Record<number, string> = {}
+      for (let s = 0; s < targets.length; s += GEN_BATCH) {
+        if (cancelled()) break
+        const batch = targets.slice(s, s + GEN_BATCH)
+        await Promise.all(
+          batch.map(async (idx) => {
+            const pos = targets.indexOf(idx)
+            upItems[pos] = { ...upItems[pos]!, status: 'running' }
+            const slotList = (pageSlots[idx] ?? []).filter(Boolean)
+            const imageUrls = slotList
+              .map((s) => resolvedByKey.get(normKey(s)) ?? (isUrlStr(s) ? s : ''))
+              .filter((u) => (upCloud ? /^https?:\/\//.test(u) : isUrlStr(u)))
+            for (const s2 of slotList) {
+              if (!resolvedByKey.has(normKey(s2)) && !isUrlStr(s2))
+                unresolvedSlots.push({ page: idx + 1, slot: s2 })
+            }
+            const keepPlaceholders =
+              !wantVisuals && slotList.length
+                ? '\nBoxes labeled "IMAGE:"/"CHART:" are intentional visual placeholders — recreate them as light-gray labeled boxes in the new style (same labels).'
+                : ''
+            const fillSlots =
+              wantVisuals && slotList.length
+                ? imageUrls.length
+                  ? `\nThis page has labeled visual placeholders ("IMAGE:"/"CHART:" boxes). Replace each with a real visual: use these resolved images where they fit — ${imageUrls.join(', ')} — and render "CHART:"/"INFOGRAPHIC:" slots as real composed visuals (bars/timeline/diagram shapes from the described data). Remove the placeholder boxes and labels.`
+                  : '\nThis page has labeled visual placeholders ("IMAGE:"/"CHART:" boxes). No images resolved — render each slot as a real composed visual from shapes (bars/timeline/diagram matching the described content), or as a clean styled box without the "IMAGE:"/"CHART:" label. Remove the placeholder labels.'
+                : ''
+            const brief =
+              `Rewrite this page${wantStyle ? " applying the deck's new unified style" : ''}. ` +
+              `Keep ALL existing text content verbatim — do not shorten, drop or translate any of it.\n` +
+              `Current page content:\n${pageTexts[idx] || '(empty page)'}` +
+              fillSlots +
+              keepPlaceholders +
+              '\nKeep the same general layout structure and page role (cover/content/closing).'
+            const genArgs = {
+              pageIndex: idx + 1,
+              totalPages: slidesNow.length,
+              coreHook: '',
+              style: styleForPages,
+              title: pageTexts[idx]?.split('\n')[0]?.slice(0, 80) ?? '',
+              brief,
+              layout: '',
+              images: imageUrls,
+              canvasW: 1280,
+              canvasH: 720,
+              ...(signal ? { signal } : {}),
+            }
+            const gen = upCloud ? access.generatePageCloud! : access.generatePageLocal!
+            let marker: string | null = null
+            let lastErr = ''
+            for (let attempt = 0; attempt < 2 && !marker; attempt++) {
+              if (cancelled()) return
+              if (attempt > 0) await new Promise((r) => setTimeout(r, access.retryBackoffMs ?? 2000))
+              const res = await gen(genArgs)
+              if (res.ok && res.marker) marker = res.marker
+              else lastErr = res.error ?? t('aiErrUnknown')
+            }
+            if (!marker) {
+              upFailed.push(idx)
+              upErrors[idx] = lastErr
+              upItems[pos] = { ...upItems[pos]!, status: 'error', error: lastErr }
+              return
+            }
+            const r = await access.regenerateSlide!(idx, marker)
+            if (r.ok) {
+              upgraded.push(idx)
+              upItems[pos] = { ...upItems[pos]!, status: 'done' }
+            } else {
+              upFailed.push(idx)
+              upErrors[idx] = r.error ?? t('aiErrUnknown')
+              upItems[pos] = { ...upItems[pos]!, status: 'error', error: upErrors[idx] }
+            }
+            access.onProgress?.({
+              stage: 'pages',
+              label: t('aiStageUpgrade'),
+              done: upgraded.length,
+              total: upTotal,
+              status: 'running',
+              summary: t('aiStagePageRunning', { n: Math.min(upgraded.length + 1, upTotal), total: upTotal }),
+              pages: [...upItems],
+            })
+          }),
+        )
+      }
+      if (upgraded.length && wantStyle && state) {
+        state.draftDeck = false
+        state.draftImageSlots = undefined
+        if (styleSkill) state.lastStyleSkill = styleSkill
+      }
+      access.onProgress?.({
+        stage: 'done',
+        total: upgraded.length,
+        summary: t('aiSumUpgrade', { done: upgraded.length, total: upTotal }),
+      })
+      if (!upgraded.length) {
+        return fail(
+          t('aiFailUpgrade'),
+          `Upgrade failed for all ${upTotal} page(s)${upFailed.length ? ` — first error: ${upErrors[upFailed[0]!]}` : ''}. The deck was not modified; retry or tell the user to try again in a few minutes.`,
+        )
+      }
+      const stageLabel =
+        stage === 'visuals' ? 'visuals' : stage === 'style' ? 'style' : 'visuals + style'
+      const failNote = upFailed.length
+        ? ` ⚠️ ${upFailed.map((i) => `page ${i + 1}`).join(', ')} failed (${upErrors[upFailed[0]!] ?? 'error'}) — those pages keep their previous content; retry them with upgrade_deck(pages:[${upFailed.map((i) => i + 1).join(',')}]).`
+        : ''
+      const slotNote = unresolvedSlots.length
+        ? ` Unresolved visual slots: ${unresolvedSlots.map((u) => `page ${u.page} "${u.slot.slice(0, 40)}"`).join(', ')} — fill them with generate_image/image_search + insert_web_image.`
+        : ''
+      const nextNote =
+        state?.draftDeck && stage === 'visuals'
+          ? ' The deck still has the draft look — offer upgrade_deck(stage:"style") as the next step.'
+          : ''
+      return {
+        output:
+          `Upgraded ${upgraded.length}/${upTotal} page(s) in place (${stageLabel}); each landing is undoable.` +
+          failNote +
+          slotNote +
+          nextNote,
+        mutated: true,
+        summary: t('aiSumUpgrade', { done: upgraded.length, total: upTotal }),
       }
     }
 

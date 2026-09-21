@@ -166,4 +166,9 @@ export const zh = {
   aiStarterAnnouncementPrompt: '帮我起草一则产品公告。产品和要点：',
   aiStarterGuide: '写一份操作指南',
   aiStarterGuidePrompt: '帮我写一份操作指南。要讲清的流程是：',
+  aiToolFillImages: '填充图片',
+  aiToolFillImagesDone: '已填充 {n} 张图片',
+  aiFillImagesAsk: '为页面生成 {n} 张图片？',
+  aiFillImagesYes: '生成图片',
+  aiFillImagesNo: '暂不生成',
 }

@@ -37,3 +37,24 @@ not pnpm). Run the binaries directly from the root `node_modules` instead:
   only promotes opaque solids; the render layer marks it background-like instead.
 - `apps/*/src/main` changes compile into the **shell** build — rebuild the shell
   or they silently do not run.
+
+## HTML AI pipeline notes
+
+- New-page flow: `ask_clarification` (its optional `search` queries run through
+  `HtmlDocAccess.webSearch` while the card waits, findings land in the tool
+  result for the brief writer) → `plan_page` (brief card) → streamed
+  `writePage` into DraftPreview → `fill_images`.
+- Image contract: the page writer emits `<img class="img-slot"
+  data-img="English generation prompt">` with NO src and a shimmer `.img-slot`
+  rule; `fill_images` asks the user via the same ClarifyCard, resolves each
+  unique prompt (AI generation `html:ai-generate-image` first, pool of 3,
+  `ai:image-search` fallback), then rewrites `data-img="…"` → `src="…"` in one
+  `apply_ops` str_replace batch. Resolved URLs go through
+  `persistImage`: `file:` (BYOK generated store) is always materialized to
+  `assets/` (or `data:` for untitled docs — it never renders in the preview);
+  `https:` lands in `assets/` for saved documents and stays remote for
+  untitled ones.
+- `html:fetch-image` accepts `https?` and `file:`; `file:` resolves strictly
+  inside the generated-image store via `fetchRemoteImage`.
+- Never pass image base64 through tool arguments — only URLs; the main
+  process downloads.

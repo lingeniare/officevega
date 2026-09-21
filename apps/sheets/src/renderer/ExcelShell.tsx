@@ -188,6 +188,10 @@ interface ExcelShellProps {
     attachments?: readonly AttachmentMeta[],
     retryIndex?: number,
   ) => void
+  /// follow-up questions generated after the last completed agent reply
+  readonly suggestedQuestions?: readonly string[]
+  /// a picked suggestion is sent through the regular send path (its own instruction)
+  readonly onSuggestionPick?: (question: string) => void
   readonly onStop: () => void
   readonly onNewChat: () => void
   readonly onUndo: (steps?: number) => void
@@ -357,6 +361,8 @@ export function ExcelShell({
   onApplyHeaderFooter,
   onPromptChange,
   onSend,
+  suggestedQuestions,
+  onSuggestionPick,
   onStop,
   onNewChat,
   onUndo,
@@ -803,6 +809,8 @@ export function ExcelShell({
           aiBusy={aiBusy}
           onPromptChange={onPromptChange}
           onSend={onSend}
+          {...(suggestedQuestions !== undefined ? { suggestedQuestions } : {})}
+          {...(onSuggestionPick !== undefined ? { onSuggestionPick } : {})}
           onStop={onStop}
           onNewChat={onNewChat}
           onUndo={onUndo}

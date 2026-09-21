@@ -12,6 +12,7 @@ export {
   MAX_MAX_OUTPUT_TOKENS,
   MIN_MAX_OUTPUT_TOKENS,
   clampMaxOutputTokens,
+  withFastModel,
 } from './providers'
 export { getProviderAdapter, modelLacksVision } from './registry'
 export {

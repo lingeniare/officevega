@@ -58,7 +58,7 @@ import {
 import { isNumericIdentifierText } from './cell-warning'
 import { consumePendingUndoCarry, undoStackDepth } from './undo-carry'
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react'
-import { useAutoSavePref, type AiScopeQuoteData } from '@genoffice/ui'
+import { useAutoSavePref, useSuggestedQuestions, type AiScopeQuoteData } from '@genoffice/ui'
 
 import {
   CellValueType,
@@ -112,9 +112,14 @@ import {
   AgentLoop,
   COMPLETED_VIA_TOOLS_TEXT,
   composeSkills,
+  generateSuggestedQuestions,
   type AgentImage,
 } from '@genoffice/agent-core'
-import { imageGenerationAvailable, type AiSettings } from '@genoffice/ai-provider/browser'
+import {
+  imageGenerationAvailable,
+  withFastModel,
+  type AiSettings,
+} from '@genoffice/ai-provider/browser'
 import { type WorkbookOperation } from '@genoffice/xlsx-gateway/domain/workbook-dsl'
 import {
   columnLabel,
@@ -448,6 +453,10 @@ function dateTextKind(value: string): 'date-like' | 'text' {
   dateTextKinds.set(value, kind)
   return kind
 }
+
+/** Streamed reply text coalesces into ~50ms repaints — a setState per IPC
+ *  token delta would re-render the whole chat list on every chunk. */
+const AI_STREAM_TICK_MS = 50
 
 export function App(): React.JSX.Element {
   const adapterRef = useRef(new InMemoryWorkbookAdapter(initialSnapshot))
@@ -1143,11 +1152,60 @@ export function App(): React.JSX.Element {
   /** true once any tool of the run mutated the workbook */
   const runMutatedRef = useRef(false)
 
+  /** user instruction of the latest agent run — the suggestion generator's "question" side */
+  const lastAiInstructionRef = useRef('')
+  // Suggested follow-ups ride a second transport whose settings swap in the
+  // user's "fast model" pick (withFastModel falls back to the main model).
+  const suggestTransportRef = useRef<ReturnType<typeof createElectronTransport> | null>(null)
+  if (!suggestTransportRef.current)
+    suggestTransportRef.current = createElectronTransport(() =>
+      withFastModel(aiSettingsRef.current!),
+    )
+  const suggested = useSuggestedQuestions((user, assistant, signal) => {
+    if (!aiSettingsRef.current) return Promise.resolve([])
+    return generateSuggestedQuestions({
+      transport: suggestTransportRef.current!,
+      app: 'sheets',
+      user,
+      assistant,
+      langDirective: aiLangDirective(),
+      signal,
+    })
+  })
+
+  /** latest cumulative turn text; flushed to state on a throttle tick, not per token */
+  const aiStreamTextRef = useRef<string | null>(null)
+  const aiStreamTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  /// Apply the buffered stream text immediately and stop the throttle timer.
+  function flushAiStreamText(): void {
+    if (aiStreamTimerRef.current !== null) {
+      clearTimeout(aiStreamTimerRef.current)
+      aiStreamTimerRef.current = null
+    }
+    if (aiStreamTextRef.current === null) return
+    const text = aiStreamTextRef.current
+    aiStreamTextRef.current = null
+    // Status bar (and the ribbon-row status span) show a short state only;
+    // the full streamed prose lives in the chat panel.
+    setMessage(t('appAiThinking'))
+    // When the model retries successfully and keeps streaming after a
+    // mid-run failure (e.g. one apply error), clear the error flag —
+    // otherwise the whole successful message stays rendered in red.
+    patchLastAssistant((entry) => ({ ...entry, text, isError: false }))
+  }
+
   const agentLoopRef = useRef<AgentLoop | null>(null)
   if (!agentLoopRef.current) {
     agentLoopRef.current = new AgentLoop({
       transport: createElectronTransport(() => aiSettingsRef.current!),
       systemSuffix: aiLangDirective,
+      // The per-run workbook snapshot rides inside <workbook-context> markers
+      // so the loop can strip stale snapshots from older user messages — each
+      // turn otherwise re-sends every snapshot the session ever attached.
+      formatUserMessage: (instruction, context) =>
+        context ? `${instruction}\n\n<workbook-context>\n${context}\n</workbook-context>` : instruction,
+      staleContextPattern: /\n\n<workbook-context>\n[\s\S]*?<\/workbook-context>/g,
       skill: composeSkills('sheets+files', '', [
         createWorkbookSkill(sheetsSkillDeps()),
         createFilesSkill(availableAttachments),
@@ -1167,13 +1225,12 @@ export function App(): React.JSX.Element {
       events: {
         onText: (text) => {
           if (text) runLastTextRef.current = text
-          // Status bar (and the ribbon-row status span) show a short state only;
-          // the full streamed prose lives in the chat panel.
-          setMessage(t('appAiThinking'))
-          // When the model retries successfully and keeps streaming after a
-          // mid-run failure (e.g. one apply error), clear the error flag —
-          // otherwise the whole successful message stays rendered in red.
-          patchLastAssistant((entry) => ({ ...entry, text, isError: false }))
+          // Token-per-token deltas coalesce into ~50ms repaints; the status
+          // line follows the same tick instead of re-rendering per chunk.
+          aiStreamTextRef.current = text
+          if (aiStreamTimerRef.current === null) {
+            aiStreamTimerRef.current = setTimeout(flushAiStreamText, AI_STREAM_TICK_MS)
+          }
         },
         onToolStart: (call) => {
           // Live "running" chip: replaced in place by onToolExecuted
@@ -1186,6 +1243,7 @@ export function App(): React.JSX.Element {
                 isError: false,
                 name: call.name,
                 running: true,
+                callId: call.id,
               },
             ],
           }))
@@ -1206,24 +1264,25 @@ export function App(): React.JSX.Element {
             ...(output !== undefined ? { output } : {}),
           })
           patchLastAssistant((entry) => {
-            // Swap out the running placeholder pushed by onToolStart (parse-fail calls have none)
+            // Swap out the running placeholder pushed by onToolStart (parse-fail
+            // calls have none). Read-only calls run as a concurrent wave, so the
+            // placeholder is matched by call id — not "the last chip".
             const tools = [...entry.tools]
-            if (tools.at(-1)?.running) tools.pop()
-            return {
-              ...entry,
-              tools: [
-                ...tools,
-                {
-                  summary,
-                  isError: !!execution.isError,
-                  name: call.name,
-                  ...(execution.output ? { output: execution.output.slice(0, 2000) } : {}),
-                },
-              ],
+            const chip = {
+              summary,
+              isError: !!execution.isError,
+              name: call.name,
+              ...(execution.output ? { output: execution.output.slice(0, 2000) } : {}),
             }
+            const at = tools.findIndex((tl) => tl.running && tl.callId === call.id)
+            if (at >= 0) tools[at] = chip
+            else tools.push(chip)
+            return { ...entry, tools }
           })
         },
         onDone: ({ text, cancelled, turnLimit, truncated }) => {
+          // the last buffered delta must land before the final text replaces it
+          flushAiStreamText()
           // Prefer tool summaries when the model finished via tools with no prose
           // (agent-core fills history with COMPLETED_VIA_TOOLS_TEXT so follow-ups
           // stay provider-safe; the UI can show the real work that ran).
@@ -1274,9 +1333,13 @@ export function App(): React.JSX.Element {
             persistChatMessage('assistant', finalText, runToolsRef.current)
           }
           setAiRunScope(undefined)
+          // follow-up suggestions are generated off the fast model after the reply lands
+          if (!cancelled && finalText)
+            suggested.refresh(lastAiInstructionRef.current, finalText)
           void autoSaveCompletedAiRun().finally(() => setAiBusy(false))
         },
         onError: (error) => {
+          flushAiStreamText()
           setMessage(error)
           setChat((previous) => {
             const next = [...previous]
@@ -1364,6 +1427,7 @@ export function App(): React.JSX.Element {
     const loop = agentLoopRef.current
     if (!instruction.trim() || !loop || loop.busy || runStartingRef.current) return
     runStartingRef.current = true
+    lastAiInstructionRef.current = instruction
     // Freeze the selection scope for the whole run: users go on clicking around
     // while the AI works, so a live read would retarget "this column" mid-run.
     // Released in onDone/onError, which own the rest of the run teardown.
@@ -1431,6 +1495,7 @@ export function App(): React.JSX.Element {
 
   function handleNewChat(): void {
     agentLoopRef.current?.reset()
+    suggested.clear()
     setAiRunScope(undefined)
     setAiBusy(false)
     setChat([])
@@ -2928,6 +2993,7 @@ export function App(): React.JSX.Element {
   ): void {
     const instruction = (overrideInstruction ?? prompt).trim()
     if (!instruction || aiBusy) return
+    suggested.clear()
     runToolsRef.current = []
     // The message consumes the composer attachments: they ride along (echoed on the
     // bubble, images multimodal, files via the files skill) and the composer clears.
@@ -4435,6 +4501,11 @@ export function App(): React.JSX.Element {
         onRemoveAttachment={handleRemoveAttachment}
         onPromptChange={setPrompt}
         onSend={handleSend}
+        suggestedQuestions={suggested.questions}
+        onSuggestionPick={(q) => {
+          suggested.clear()
+          handleSend(q)
+        }}
         onStop={handleStopAgent}
         onNewChat={handleNewChat}
         onUndo={handleUndo}

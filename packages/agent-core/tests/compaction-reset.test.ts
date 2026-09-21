@@ -56,29 +56,41 @@ async function startCompaction() {
   onDone.mockClear()
   loop.run('Continue the old conversation')
   await flush()
-  expect(calls).toHaveLength(3)
+  // Folding is non-blocking: the background summary request (calls[2]) and the
+  // run's first turn (calls[3], carrying the mechanical digest) are both live.
+  expect(calls).toHaveLength(4)
   expect(calls[2]!.request.tools).toEqual([])
   expect(calls[2]!.request.messages).toContainEqual({
     role: 'user',
     text: 'Old conversation instruction',
   })
+  expect(calls[3]!.request.messages[0]).toEqual({
+    role: 'user',
+    text: expect.stringContaining('[Summary of earlier conversation'),
+  })
+  expect(calls[3]!.request.messages.slice(2)).toEqual([
+    { role: 'user', text: 'Recent question' },
+    { role: 'assistant', text: 'Recent answer' },
+    { role: 'user', text: 'Continue the old conversation' },
+  ])
   expect(loop.busy).toBe(true)
-  return { loop, calls, onDone, summary: calls[2]! }
+  return { loop, calls, onDone, summary: calls[2]!, turn: calls[3]! }
 }
 
 describe('AgentLoop reset during compaction', () => {
   it('keeps history empty when reset cancels a pending summary', async () => {
-    const { loop, calls, onDone, summary } = await startCompaction()
+    const { loop, calls, onDone, summary, turn } = await startCompaction()
 
     loop.reset()
     expect(summary.cancel).toHaveBeenCalledOnce()
+    expect(turn.cancel).toHaveBeenCalledOnce()
     expect(loop.messages).toEqual([])
     await flush()
 
     // Cancellation without summary text must not reintroduce a mechanical digest.
     expect(loop.messages).toEqual([])
     expect(loop.busy).toBe(false)
-    expect(calls).toHaveLength(3)
+    expect(calls).toHaveLength(4)
     expect(onDone).not.toHaveBeenCalled()
   })
 
@@ -89,8 +101,8 @@ describe('AgentLoop reset during compaction', () => {
     loop.reset()
     loop.run('Fresh conversation instruction')
     await flush()
-    expect(calls).toHaveLength(4)
-    const freshTurn = calls[3]!
+    expect(calls).toHaveLength(5)
+    const freshTurn = calls[4]!
     freshTurn.callbacks.onDelta('Fresh conversation answer')
     freshTurn.callbacks.onDone()
 
@@ -110,24 +122,21 @@ describe('AgentLoop reset during compaction', () => {
   })
 
   it('retains the summary and recent messages when the conversation is not reset', async () => {
-    const { loop, calls, summary } = await startCompaction()
+    const { loop, calls, summary, turn } = await startCompaction()
+    // The in-flight turn already left with the mechanical digest; the LLM
+    // summary lands in history mid-turn and subsequent turns pick it up.
     summary.callbacks.onDelta('Old conversation summary')
     summary.callbacks.onDone()
     await flush()
 
     expect(calls).toHaveLength(4)
-    const continuation = calls[3]!
-    expect(continuation.request.messages[0]).toEqual({
+    expect(loop.messages[0]).toEqual({
       role: 'user',
       text: expect.stringContaining('Old conversation summary'),
     })
-    expect(continuation.request.messages.slice(2)).toEqual([
-      { role: 'user', text: 'Recent question' },
-      { role: 'assistant', text: 'Recent answer' },
-      { role: 'user', text: 'Continue the old conversation' },
-    ])
-    continuation.callbacks.onDelta('Continued answer')
-    continuation.callbacks.onDone()
+    turn.callbacks.onDelta('Continued answer')
+    turn.callbacks.onDone()
+    await flush()
     expect(loop.messages.at(-1)).toEqual({ role: 'assistant', text: 'Continued answer' })
     expect(loop.busy).toBe(false)
   })

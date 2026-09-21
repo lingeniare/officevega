@@ -54,6 +54,21 @@ function isBlockPage(response: Response): boolean {
   )
 }
 
+/**
+ * Reuse TLS connections between agent turns. undici's default pool drops idle
+ * sockets after ~4s and model turns are spaced further apart, so every request
+ * otherwise re-dials TCP+TLS before the first byte. Best-effort: where undici
+ * is not resolvable (browser bundle, packaged app shipping only declared deps)
+ * pooling stays at the default and nothing breaks.
+ */
+export function warmAiConnections(): void {
+  void import(/* @vite-ignore */ 'undici')
+    .then(({ Agent, setGlobalDispatcher }) => {
+      setGlobalDispatcher(new Agent({ keepAliveTimeout: 60_000, keepAliveMaxTimeout: 600_000 }))
+    })
+    .catch(() => {})
+}
+
 export async function aiFetch(url: string, rawInit: RequestInit): Promise<Response> {
   const init = withUserAgent(rawInit)
   const signal = init.signal as AbortSignal | null | undefined

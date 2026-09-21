@@ -174,4 +174,9 @@ export const th = {
   aiStarterAnnouncementPrompt: 'ช่วยร่างประกาศผลิตภัณฑ์ให้ฉัน ผลิตภัณฑ์และประเด็นสำคัญ: ',
   aiStarterGuide: 'เขียนคู่มือการใช้งาน',
   aiStarterGuidePrompt: 'ช่วยเขียนคู่มือการใช้งานให้ฉัน ขั้นตอนที่ต้องอธิบาย: ',
+  aiToolFillImages: 'เติมรูปภาพ',
+  aiToolFillImagesDone: 'เติม {n} รูปแล้ว',
+  aiFillImagesAsk: 'สร้าง {n} รูปสำหรับหน้านี้?',
+  aiFillImagesYes: 'สร้าง',
+  aiFillImagesNo: 'ยังก่อน',
 } satisfies Record<keyof typeof zh, string>

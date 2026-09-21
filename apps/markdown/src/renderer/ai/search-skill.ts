@@ -23,6 +23,7 @@ export function createSearchSkill(): AgentSkill {
           },
           required: ['query'],
         },
+        readonly: true,
       },
     ],
     executeTool: async (call) => {

@@ -586,6 +586,49 @@ function AiModelPane({
           />
         )}
       </div>
+      <div className="set-field">
+        <div className="set-field-text">
+          <div className="set-field-stack">
+            <label className="set-field-label">{t('setAiFastModelId')}</label>
+            <div className="set-field-desc">{t('setAiFastModelDesc')}</div>
+          </div>
+        </div>
+        {meta?.liveCatalog ? (
+          // same editable combobox as the main model; empty keeps the main model
+          // for background calls — the placeholder shows what will actually run
+          <ComboBox
+            id="set-ai-fast-model"
+            className="set-combo"
+            ariaLabel={t('setAiFastModelId')}
+            value={config.fastModel ?? ''}
+            options={meta.modelOptions ?? meta.models}
+            placeholder={config.model || meta.defaultModel || 'model-id'}
+            searchPlaceholder={t('setAiModelSearch')}
+            onChange={(m) => updateConfig({ fastModel: m })}
+          />
+        ) : meta && meta.models.length > 0 ? (
+          <Dropdown
+            className="set-dd"
+            value={config.fastModel ?? ''}
+            ariaLabel={t('setAiFastModelId')}
+            options={[
+              { value: '', label: t('setAiFastModelSame') },
+              ...meta.models.map((m) => ({ value: m, label: m })),
+            ]}
+            onPick={(m) => updateConfig({ fastModel: m || undefined })}
+          />
+        ) : (
+          <input
+            id="set-ai-fast-model"
+            className="set-input"
+            type="text"
+            value={config.fastModel ?? ''}
+            placeholder={config.model || 'model-id'}
+            spellCheck={false}
+            onChange={(e) => updateConfig({ fastModel: e.target.value || undefined })}
+          />
+        )}
+      </div>
       {isCodex ? (
         <div className="set-field">
           <div className="set-field-text">

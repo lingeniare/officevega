@@ -176,4 +176,9 @@ export const cs = {
   aiStarterAnnouncementPrompt: 'Sepiš mi oznámení o produktu. Produkt a klíčové body: ',
   aiStarterGuide: 'Napsat návod',
   aiStarterGuidePrompt: 'Napiš mi návod krok za krokem. Postup, který má vysvětlit: ',
+  aiToolFillImages: 'Vložit obrázky',
+  aiToolFillImagesDone: 'Vloženo {n} obrázků',
+  aiFillImagesAsk: 'Vygenerovat {n} obrázků pro stránku?',
+  aiFillImagesYes: 'Vygenerovat',
+  aiFillImagesNo: 'Teď ne',
 } satisfies Record<keyof typeof zh, string>

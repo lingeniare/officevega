@@ -44,6 +44,8 @@ describe('anthropic user message with images', () => {
         {
           type: 'image',
           source: { type: 'base64', media_type: 'image/png', data: 'aGVsbG8=' },
+          // the tail block carries the ephemeral prompt-cache breakpoint
+          cache_control: { type: 'ephemeral' },
         },
       ],
     })
@@ -55,9 +57,18 @@ describe('anthropic user message with images', () => {
     expect(body.messages[0].content[0].type).toBe('image')
   })
 
-  it('keeps plain string content when no images (existing behavior)', async () => {
-    const body = await requestBodyFor('anthropic', [{ role: 'user', text: 'hi' }])
+  it('keeps plain string content for non-tail messages with no images', async () => {
+    const body = await requestBodyFor('anthropic', [
+      { role: 'user', text: 'hi' },
+      { role: 'assistant', text: 'hello' },
+      { role: 'user', text: 'next' },
+    ])
     expect(body.messages[0]).toEqual({ role: 'user', content: 'hi' })
+    // the tail message upgrades to a block array carrying the cache breakpoint
+    expect(body.messages[2]).toEqual({
+      role: 'user',
+      content: [{ type: 'text', text: 'next', cache_control: { type: 'ephemeral' } }],
+    })
   })
 })
 

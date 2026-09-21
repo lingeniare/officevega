@@ -32,6 +32,7 @@ export function createFilesSkill(getAttachments: () => readonly AttachmentMeta[]
     tools: [
       {
         name: 'read_attachment',
+        readonly: true,
         description:
           "Read an attachment's text content (parsed locally). Long files are paged: read offset=0 first, then decide whether to continue based on the returned total character count.",
         inputSchema: {

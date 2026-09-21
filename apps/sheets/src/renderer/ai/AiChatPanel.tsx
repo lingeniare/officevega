@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import {
   AiComposer,
   AiScopeQuote,
+  AiSuggestedQuestions,
   AiTypingIndicator,
   IconPlus,
   type AiScopeQuoteData,
@@ -186,6 +187,8 @@ export interface AiToolChip {
   readonly isError: boolean
   /** still executing: rendered as a spinner chip, replaced in place when the tool finishes */
   readonly running?: boolean
+  /** Correlates a running chip with its tool call — read-only calls run as a wave, so position alone cannot identify the placeholder */
+  readonly callId?: string
   /** Tool name (title tooltip) */
   readonly name?: string
   /** Tool output (truncated UI-side); when present the row expands to details */
@@ -228,6 +231,8 @@ export function AiChatPanel({
   aiBusy,
   onPromptChange,
   onSend,
+  suggestedQuestions = [],
+  onSuggestionPick,
   onStop,
   onNewChat,
   onUndo,
@@ -267,6 +272,10 @@ export function AiChatPanel({
     attachments?: readonly AttachmentMeta[],
     retryIndex?: number,
   ) => void
+  /// follow-up questions generated after the last completed agent reply
+  readonly suggestedQuestions?: readonly string[]
+  /// a picked suggestion goes through the regular send path (its own instruction)
+  readonly onSuggestionPick?: (question: string) => void
   readonly onStop: () => void
   readonly onNewChat: () => void
   readonly onUndo: (steps: number) => void
@@ -701,6 +710,13 @@ export function AiChatPanel({
           </section>
         )}
       </div>
+
+      {!aiBusy && onSuggestionPick && (
+        <AiSuggestedQuestions
+          questions={suggestedQuestions}
+          onPick={onSuggestionPick}
+        />
+      )}
 
       <div className="ai-composer">
         {attachNotice && <div className="ai-attach-notice">{attachNotice}</div>}

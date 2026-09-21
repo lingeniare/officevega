@@ -171,4 +171,9 @@ export const he = {
   aiStarterAnnouncementPrompt: 'נסח לי הודעה על מוצר. המוצר והנקודות העיקריות: ',
   aiStarterGuide: 'לכתוב מדריך',
   aiStarterGuidePrompt: 'כתוב לי מדריך. התהליך שיש להסביר: ',
+  aiToolFillImages: 'מילוי תמונות',
+  aiToolFillImagesDone: '{n} תמונות מולאו',
+  aiFillImagesAsk: 'ליצור {n} תמונות לעמוד?',
+  aiFillImagesYes: 'צור',
+  aiFillImagesNo: 'לא עכשיו',
 } satisfies Record<keyof typeof zh, string>

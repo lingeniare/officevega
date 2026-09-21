@@ -176,4 +176,9 @@ export const hi = {
   aiStarterAnnouncementPrompt: 'मेरे लिए उत्पाद घोषणा का मसौदा लिखें। उत्पाद और मुख्य बातें: ',
   aiStarterGuide: 'एक हाउ-टू गाइड लिखें',
   aiStarterGuidePrompt: 'मेरे लिए एक हाउ-टू गाइड लिखें। समझाने वाली प्रक्रिया: ',
+  aiToolFillImages: 'चित्र भरें',
+  aiToolFillImagesDone: '{n} चित्र भरे गए',
+  aiFillImagesAsk: 'पेज के लिए {n} चित्र बनाएं?',
+  aiFillImagesYes: 'बनाएं',
+  aiFillImagesNo: 'अभी नहीं',
 } satisfies Record<keyof typeof zh, string>

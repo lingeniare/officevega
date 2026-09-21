@@ -178,4 +178,9 @@ export const nl = {
   aiStarterAnnouncementPrompt: 'Stel een productaankondiging voor mij op. Product en kernpunten: ',
   aiStarterGuide: 'Een handleiding schrijven',
   aiStarterGuidePrompt: 'Schrijf een handleiding voor mij. Het proces dat uitgelegd moet worden: ',
+  aiToolFillImages: 'Afbeeldingen invullen',
+  aiToolFillImagesDone: '{n} afbeeldingen ingevuld',
+  aiFillImagesAsk: '{n} afbeeldingen voor de pagina genereren?',
+  aiFillImagesYes: 'Genereren',
+  aiFillImagesNo: 'Niet nu',
 } satisfies Record<keyof typeof zh, string>

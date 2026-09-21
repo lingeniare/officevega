@@ -1,14 +1,25 @@
 import { aiPanelWidthAtPointer } from '@genoffice/ui'
 import { useEffect, useRef, useState } from 'react'
 import type { PointerEvent as ReactPointerEvent, ReactElement } from 'react'
-import { AgentLoop, composeSkills, streamText } from '@genoffice/agent-core'
-import { imageGenerationAvailable, type AiSettings } from '@genoffice/ai-provider/browser'
+import {
+  AgentLoop,
+  composeSkills,
+  generateSuggestedQuestions,
+  streamText,
+} from '@genoffice/agent-core'
+import {
+  imageGenerationAvailable,
+  withFastModel,
+  type AiSettings,
+} from '@genoffice/ai-provider/browser'
 import {
   AiComposer,
   AiScopeQuote,
+  AiSuggestedQuestions,
   AiTypingIndicator,
   IconPlus,
   Markdown,
+  useSuggestedQuestions,
   type AiScopeQuoteData,
 } from '@genoffice/ui'
 import type { Editor } from '@tiptap/core'
@@ -53,6 +64,10 @@ const MAX_SNAPSHOTS = 20
 const TOOL_OUTPUT_MAX_CHARS = 2000
 /** progress chip refresh while a write streams */
 const CHIP_UPDATE_MS = 400
+/** reply re-render cadence: a setState per token re-parses the whole bubble's markdown */
+const STREAM_TEXT_TICK_MS = 50
+/** tools that can mutate the document — read/search calls skip the pre-tool snapshot */
+const SNAPSHOT_TOOLS = new Set(['apply_ops', 'write_document', 'insert_image', 'generate_image'])
 
 function clampPanelWidth(w: number): number {
   // The viewport can be transiently tiny (a WebContentsView is 0×0 until the
@@ -75,6 +90,8 @@ interface ToolActivity {
   summary: string
   /** still executing: rendered as a spinner chip, replaced in place when the tool finishes */
   running?: boolean
+  /** Correlates a running chip with its tool call — read-only calls run as a wave, so position alone cannot identify the placeholder */
+  callId?: string
   isError?: boolean
   output?: string
 }
@@ -197,6 +214,13 @@ export function AiPanel({
           if (alive) gskLoggedInRef.current = !!s?.loggedIn
         })
         .catch(() => {})
+      // keep the cached settings warm so send() never waits on the IPC read
+      void window.markdownApi
+        .getAiSettings?.()
+        .then((s) => {
+          if (alive) settingsRef.current = s
+        })
+        .catch(() => {})
     }
     refresh()
     window.addEventListener('focus', refresh)
@@ -223,6 +247,9 @@ export function AiPanel({
   const runMutatedRef = useRef(false)
   /** tool activity of the whole run, for transcript persistence */
   const runToolsRef = useRef<ToolActivity[]>([])
+  /** latest cumulative turn text; flushed to state on a throttle tick, not per token */
+  const textBufRef = useRef('')
+  const textTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const chatIdsRef = useRef<{ projectId: string; chatId: string } | null>(null)
   /** messages sent before resolveChat returned, flushed once the chat id is known */
   const pendingPersistRef = useRef<
@@ -270,9 +297,36 @@ export function AiPanel({
       })
   }
 
+  /** apply the buffered stream text immediately and stop the throttle timer */
+  const flushStreamedText = () => {
+    if (textTimerRef.current === null) return
+    clearTimeout(textTimerRef.current)
+    textTimerRef.current = null
+    patchLast({ text: textBufRef.current })
+  }
+
   const transportRef = useRef<ReturnType<typeof createElectronTransport> | null>(null)
   if (!transportRef.current)
     transportRef.current = createElectronTransport(() => settingsRef.current!)
+
+  // Suggested follow-ups ride a second transport whose settings swap in the
+  // user's "fast model" pick (withFastModel falls back to the main model).
+  const suggestTransportRef = useRef<ReturnType<typeof createElectronTransport> | null>(null)
+  if (!suggestTransportRef.current)
+    suggestTransportRef.current = createElectronTransport(() =>
+      withFastModel(settingsRef.current!),
+    )
+  const suggested = useSuggestedQuestions((user, assistant, signal) => {
+    if (!settingsRef.current) return Promise.resolve([])
+    return generateSuggestedQuestions({
+      transport: suggestTransportRef.current!,
+      app: 'markdown',
+      user,
+      assistant,
+      langDirective: aiLangDirective(langRef.current),
+      signal,
+    })
+  })
 
   /**
    * Long-form writing: one tool-less request whose reply is the markdown, streamed
@@ -376,16 +430,27 @@ export function AiPanel({
         ),
         createSearchSkill(),
       ]),
-      captureSnapshot: () => depsRef.current.getSnapshot(),
+      // Read/search calls can't mutate — skip the whole-document serialize
+      // they would otherwise pay for before every read turn.
+      captureSnapshot: (call) =>
+        SNAPSHOT_TOOLS.has(call.name) ? depsRef.current.getSnapshot() : undefined,
       systemSuffix: () => aiLangDirective(langRef.current),
       events: {
-        onText: (text) => patchLast({ text }),
+        onText: (text) => {
+          textBufRef.current = text
+          if (textTimerRef.current === null) {
+            textTimerRef.current = setTimeout(() => {
+              textTimerRef.current = null
+              patchLast({ text: textBufRef.current })
+            }, STREAM_TEXT_TICK_MS)
+          }
+        },
         onToolStart: (call) => {
           // Live "running" chip: replaced in place by onToolExecuted
           patchLast((last) => ({
             tools: [
               ...(last.tools ?? []),
-              { name: call.name, summary: toolLabel(call.name), running: true },
+              { name: call.name, summary: toolLabel(call.name), running: true, callId: call.id },
             ],
           }))
         },
@@ -410,17 +475,25 @@ export function AiPanel({
           }
           runToolsRef.current.push(activity)
           patchLast((last) => {
-            // Swap out the running placeholder pushed by onToolStart (parse-fail calls have none)
+            // Swap out the running placeholder pushed by onToolStart (parse-fail
+            // calls have none). Read-only calls run as a concurrent wave, so the
+            // placeholder is matched by call id — not "the last chip".
             const tools = [...(last.tools ?? [])]
-            if (tools.at(-1)?.running) tools.pop()
-            return { tools: [...tools, activity] }
+            const at = tools.findIndex((tl) => tl.running && tl.callId === call.id)
+            if (at >= 0) tools[at] = activity
+            else tools.push(activity)
+            return { tools }
           })
         },
         onTurnEnd: () => {
+          // the turn's buffered text must land on its own bubble before a new
+          // assistant entry becomes "last"
+          flushStreamedText()
           patchLast({ streaming: false })
           setChat((prev) => [...prev, { role: 'assistant', text: '', streaming: true }])
         },
         onDone: ({ text, cancelled, turnLimit, truncated }) => {
+          flushStreamedText()
           const base = turnLimit
             ? [text, tGlobal('aiTurnLimit')].filter(Boolean).join('\n\n')
             : text || (cancelled ? tGlobal('aiStopped') : '')
@@ -441,8 +514,12 @@ export function AiPanel({
           if (editor) clearAiHighlights(editor)
           depsRef.current.onRunDone(runMutatedRef.current)
           setBusy(false)
+          // follow-up suggestions are generated off the fast model after the reply lands
+          if (!cancelled && final)
+            suggested.refresh(runInstructionRef.current, final)
         },
         onError: (error) => {
+          flushStreamedText()
           setChat((prev) => {
             const next = [...prev]
             for (let i = next.length - 1; i >= 0; i--) {
@@ -475,6 +552,7 @@ export function AiPanel({
     return () => {
       mountedRef.current = false
       partialResolverRef.current?.(false)
+      if (textTimerRef.current !== null) clearTimeout(textTimerRef.current)
       loopRef.current?.cancel()
       const editor = depsRef.current.getEditor()
       if (editor) clearAiHighlights(editor)
@@ -557,6 +635,7 @@ export function AiPanel({
     const loop = loopRef.current
     if (!instruction || !loop || loop.busy) return
     stickToBottomRef.current = true
+    suggested.clear()
     runInstructionRef.current = instruction
     runDisplayRef.current = displayText ?? instruction
     runMutatedRef.current = false
@@ -581,9 +660,20 @@ export function AiPanel({
     // persist what the user saw — a restored transcript must not surface the
     // internal batch protocol text behind a queue submission
     persistMessage('user', displayText ?? instruction, undefined, scope)
+    textBufRef.current = ''
     void (async () => {
       try {
-        settingsRef.current = await window.markdownApi.getAiSettings()
+        if (!settingsRef.current) {
+          settingsRef.current = await window.markdownApi.getAiSettings()
+        } else {
+          // refresh for the next run without delaying this one's first request
+          void window.markdownApi.getAiSettings().then(
+            (s) => {
+              settingsRef.current = s
+            },
+            () => {},
+          )
+        }
         if (!mountedRef.current) return
         await loop.run(instruction)
       } catch (err) {
@@ -778,6 +868,7 @@ export function AiPanel({
                 stop()
                 abandonWriter()
                 loopRef.current?.reset()
+                suggested.clear()
                 setBusy(false)
                 setChat([])
               }}
@@ -950,6 +1041,16 @@ export function AiPanel({
             </div>
           ))}
         </div>
+      )}
+
+      {!busy && (
+        <AiSuggestedQuestions
+          questions={suggested.questions}
+          onPick={(q) => {
+            suggested.clear()
+            send(q)
+          }}
+        />
       )}
 
       <div className="ai-composer">

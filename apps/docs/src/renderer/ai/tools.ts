@@ -86,12 +86,14 @@ const READ_MAX_CHARS = 24_000
 export const AGENT_TOOLS: AgentToolDef[] = [
   {
     name: 'get_document_context',
+    readonly: true,
     description:
       'Get the latest state of the current document: block list (index|type|content preview), full-text stats (word/character counts) and the current selection. Block indexes change after modifications; call this when you need up-to-date indexes.',
     inputSchema: { type: 'object', properties: {}, required: [] },
   },
   {
     name: 'read_blocks',
+    readonly: true,
     description:
       'Read the full content of a block range (restricted HTML). Previews in the block list are truncated; you must read the full original text with this tool before rewriting. ' +
       'Long ranges are paged: a truncated result says which offset to continue from; concatenate the slices in order to get the full HTML.',
@@ -211,6 +213,7 @@ export const AGENT_TOOLS: AgentToolDef[] = [
   },
   {
     name: 'read_revisions',
+    readonly: true,
     description:
       'List every pending tracked revision (insertions, deletions, formatting/move/table changes) with its id, type, author, date, block index, the affected text and, for formatting changes, what changed. Ids are positional (r1 = first in document order) and renumber after every edit, so read again before accept_changes / reject_changes.',
     inputSchema: { type: 'object', properties: {}, required: [] },
@@ -283,6 +286,7 @@ export const AGENT_TOOLS: AgentToolDef[] = [
   },
   {
     name: 'read_comments',
+    readonly: true,
     description:
       'List all comment threads (including resolved ones) with ids, authors, anchored block indexes and anchor text. Unresolved threads already ride along in the message context; use this for the full picture.',
     inputSchema: { type: 'object', properties: {}, required: [] },
@@ -361,6 +365,7 @@ export const AGENT_TOOLS: AgentToolDef[] = [
   },
   {
     name: 'read_notes',
+    readonly: true,
     description:
       'List every footnote and endnote with its id, number, the block holding its reference mark and its text.',
     inputSchema: { type: 'object', properties: {}, required: [] },
@@ -407,6 +412,7 @@ export const AGENT_TOOLS: AgentToolDef[] = [
   },
   {
     name: 'web_search',
+    readonly: true,
     description:
       'Search the web for textual information (references/data/facts). Use when you need up-to-date information or are unsure about a fact. Returns titles/links/snippets.',
     inputSchema: {
@@ -420,6 +426,7 @@ export const AGENT_TOOLS: AgentToolDef[] = [
   },
   {
     name: 'image_search',
+    readonly: true,
     description:
       'Search for images. Returns a list of image imageUrl entries; after picking one, insert it into the document with insert_image.',
     inputSchema: {
@@ -691,10 +698,13 @@ function toolEchoError(html: string): string | null {
   }
 }
 
-/** <sel> only marks the user's selection in the context; a model echoing it would write the marker into the document */
+/** <sel> only marks the user's selection in the context and <doc-context> wraps the per-run snapshot; a model echoing either would write the marker into the document */
 function contextMarkerError(html: string): string | null {
-  return /<\/?sel\s*>/i.test(html)
-    ? 'html contains <sel>: that marker only delimits the selection in the context and is not document content; retry without it'
+  if (/<\/?sel\s*>/i.test(html)) {
+    return 'html contains <sel>: that marker only delimits the selection in the context and is not document content; retry without it'
+  }
+  return /<\/?doc-context\s*>/i.test(html)
+    ? 'html contains <doc-context>: that marker wraps the per-turn context block and is not document content; retry without it'
     : null
 }
 
@@ -1106,15 +1116,26 @@ export function executeTool(
   const scope = frozen && frozen.doc === editor.state.doc ? frozen.scope : null
   const staleSummary = staleSummaryOf(call)
   if (staleSummary && editedExternally(editor)) return fail(staleSummary(), STALE_DOC_ERROR)
+  // A successful mutation hands the refreshed block list back inside its own
+  // result, so chained edits don't spend a get_document_context round-trip
+  // just to learn the new indexes.
+  const withFreshContext = (exec: ToolExecution): ToolExecution =>
+    exec.mutated && !exec.isError
+      ? {
+          ...exec,
+          output: `${exec.output}\n\nUpdated document block list:\n${buildDocumentContext(editor, undefined, hf?.read())}`,
+        }
+      : exec
   const settle = (exec: ToolExecution): ToolExecution => {
     const readsDoc = call.name === 'get_document_context' || call.name === 'read_blocks'
     if (exec.mutated || (readsDoc && !exec.isError)) markDocSeen(editor)
-    return exec
+    return withFreshContext(exec)
   }
   // Async tools take a separate Promise branch; the other sync tools keep returning
   // synchronously (doesn't break existing tests). No settle here: marking the doc
   // seen after the long download would baptize user edits made meanwhile —
   // insert_image maintains the baseline itself right at its synchronous write.
+  // withFreshContext only reads the current state, so it is safe to append.
   if (
     call.name === 'web_search' ||
     call.name === 'image_search' ||
@@ -1123,12 +1144,12 @@ export function executeTool(
     call.name === 'generate_image' ||
     call.name === 'create_document'
   ) {
-    return executeAsyncTool(editor, call, signal)
+    return executeAsyncTool(editor, call, signal).then(withFreshContext)
   }
   if (call.name === 'write_document')
-    return writeDocument(editor, call, numIds, track, signal, writer)
+    return writeDocument(editor, call, numIds, track, signal, writer).then(withFreshContext)
   if (call.name === 'set_watermark' && typeof call.input.image === 'string')
-    return setPictureWatermark(call, signal, extras)
+    return setPictureWatermark(call, signal, extras).then(withFreshContext)
   return settle(
     executeSyncTool(editor, call, numIds, track, scope, comments, hf, pageSetup, extras, notes),
   )

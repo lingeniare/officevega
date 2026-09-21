@@ -160,6 +160,77 @@
   color: var(--accent-dark);
 }
 
+/* ---------- suggested follow-ups: 3 quiet rows under the last reply ----------
+   same grammar as the empty-state starters but subtler — surface chip, accent
+   only on hover — so they read as a convenience, not a second call to action */
+.ai-suggest {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 8px 0 10px;
+}
+
+.ai-suggest-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-30);
+  background: var(--surface);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.ai-suggest-item-text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: start;
+}
+
+.ai-suggest-item::after {
+  content: '→';
+  display: inline-block;
+  flex-shrink: 0;
+  max-width: 0;
+  margin-inline-start: 0;
+  color: var(--accent);
+  opacity: 0;
+  transition:
+    opacity var(--transition-fast),
+    max-width var(--transition-fast),
+    margin-inline-start var(--transition-fast);
+}
+
+.ai-suggest-item:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.ai-suggest-item:hover::after {
+  max-width: 1em;
+  margin-inline-start: 6px;
+  opacity: 1;
+}
+
+.ai-suggest-item:active {
+  transform: none;
+  filter: none;
+  color: var(--accent-dark);
+}
+
 /* ---------- message bubbles: 12px radius with a 6px tail corner ---------- */
 .ai-msg {
   animation: ai-msg-appear 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -400,6 +471,8 @@
   .ai-starter::after,
   .ai-quick-btn,
   .ai-quick-btn::after,
+  .ai-suggest-item,
+  .ai-suggest-item::after,
   .ai-send-btn {
     transition: none;
   }

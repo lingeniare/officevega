@@ -17,8 +17,15 @@ import {
 
 export const ANTHROPIC_BASE_URL = 'https://api.anthropic.com'
 
-function anthropicMessages(messages: AgentMessage[]): unknown[] {
-  return messages.map((m) => {
+/** Anthropic prompt-cache breakpoint marker (ephemeral TTL): placed on the
+ * system block and the last tool def so every turn after the first reuses the
+ * cached static prefix instead of a full re-prefill. */
+const EPHEMERAL_CACHE = { type: 'ephemeral' as const }
+
+function anthropicMessages(
+  messages: AgentMessage[],
+): Array<{ role: string; content: string | Array<Record<string, unknown>> }> {
+  const out = messages.map((m): { role: string; content: string | Array<Record<string, unknown>> } => {
     if (m.role === 'user') {
       // Keep plain-text content as a string; only upgrade to a content block array when images are present
       if (!m.images?.length) return { role: 'user', content: m.text }
@@ -34,7 +41,7 @@ function anthropicMessages(messages: AgentMessage[]): unknown[] {
       }
     }
     if (m.role === 'assistant') {
-      const content: unknown[] = []
+      const content: Record<string, unknown>[] = []
       if (m.text) content.push({ type: 'text', text: m.text })
       for (const call of m.toolCalls ?? []) {
         content.push({ type: 'tool_use', id: call.id, name: call.name, input: call.input })
@@ -55,6 +62,19 @@ function anthropicMessages(messages: AgentMessage[]): unknown[] {
       })),
     }
   })
+  // Prompt caching: a breakpoint on the tail message caches the entire
+  // conversation prefix; the next tool-loop turn (and the next run) reads it
+  // back instead of re-prefilling the whole history.
+  const last = out.at(-1)
+  if (last) {
+    if (typeof last.content === 'string') {
+      last.content = [{ type: 'text', text: last.content, cache_control: EPHEMERAL_CACHE }]
+    } else if (Array.isArray(last.content) && last.content.length > 0) {
+      const tail = last.content.at(-1) as Record<string, unknown>
+      tail.cache_control = EPHEMERAL_CACHE
+    }
+  }
+  return out
 }
 
 /** Emits a complete (non-streamed) Anthropic message delivered as a plain JSON body. */
@@ -145,14 +165,18 @@ async function anthropicTurn(
       body: JSON.stringify({
         model: config.model,
         max_tokens: maxTokens,
-        system,
+        // breakpoints: system prompt + tool list are static per session, so
+        // every turn after the first reads them from cache (~90% cheaper and
+        // much faster than a full prefill)
+        system: [{ type: 'text', text: system, cache_control: EPHEMERAL_CACHE }],
         messages: anthropicMessages(messages),
         ...(tools.length > 0
           ? {
-              tools: tools.map((t) => ({
+              tools: tools.map((t, i) => ({
                 name: t.name,
                 description: t.description,
                 input_schema: t.inputSchema,
+                ...(i === tools.length - 1 ? { cache_control: EPHEMERAL_CACHE } : {}),
               })),
             }
           : {}),
@@ -223,7 +247,19 @@ async function anthropicTurn(
       if (pending) {
         pendingTools.delete(event.index ?? 0)
         const { input, error } = parseToolInput(pending.json)
-        completedTools.push({ id: pending.id, name: pending.name, input, inputError: error })
+        // Emit as soon as the call's arguments are complete: read-only tools
+        // start executing while the model is still streaming later blocks.
+        // The object is shared with the loop, so a trailing max_tokens stop
+        // can still flag the last emitted call as truncated below.
+        const call: AgentToolCall = {
+          id: pending.id,
+          name: pending.name,
+          input,
+          inputError: error,
+        }
+        completedTools.push(call)
+        emitted = true
+        cb.onToolCall(call)
       }
     } else if (event.type === 'message_delta') {
       if (event.delta?.stop_reason) stopReason = event.delta.stop_reason
@@ -241,9 +277,24 @@ async function anthropicTurn(
         'If this recurs on a large request (e.g. generating a whole document), ask for the output in several smaller parts.',
     )
   }
+  // A tool block left open when the stream ended with a stop reason (a
+  // max_tokens cut mid-arguments) is flushed as a truncated call so the loop
+  // tells the model to split it instead of silently dropping it.
+  for (const pending of pendingTools.values()) {
+    const { input, error } = parseToolInput(pending.json)
+    const call: AgentToolCall = {
+      id: pending.id,
+      name: pending.name,
+      input,
+      inputError: error,
+      truncated: true,
+    }
+    completedTools.push(call)
+    emitted = true
+    cb.onToolCall(call)
+  }
   const lastTool = completedTools.at(-1)
   if (stopReason === 'max_tokens' && lastTool) lastTool.truncated = true
-  for (const call of completedTools) cb.onToolCall(call)
   // A stream with no content AND no message framing (no stop_reason ever seen)
   // is a gateway soft-failure, not a model turn — surface it instead of letting
   // it dissolve into an empty "successful" turn with no diagnostics. A genuine
@@ -278,7 +329,7 @@ export async function chatAnthropic(
     body: JSON.stringify({
       model: config.model,
       max_tokens: 8192,
-      system,
+      system: [{ type: 'text', text: system, cache_control: EPHEMERAL_CACHE }],
       messages: [{ role: 'user', content: user }],
     }),
   })

@@ -1732,9 +1732,10 @@ function registerHtmlIpc(): void {
   })
 
   // remote pictures (AI-generated or hot-linked) are downloaded here: the frame's fetch is
-  // CORS-bound, and fetchRemoteImage refuses private/link-local targets
+  // CORS-bound, and fetchRemoteImage refuses private/link-local targets. file: is allowed —
+  // it resolves strictly inside the generated-image store (BYOK image output)
   ipcMain.handle(HTML_CHANNELS.fetchImage, async (_e, url: unknown): Promise<ImageData | null> => {
-    if (typeof url !== 'string' || !/^https?:/i.test(url)) return null
+    if (typeof url !== 'string' || !/^(https?|file):/i.test(url)) return null
     try {
       const resp = await fetchRemoteImage(url)
       if (!resp?.ok) return null

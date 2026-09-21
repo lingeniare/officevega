@@ -177,4 +177,9 @@ export const ja = {
   aiStarterAnnouncementPrompt: '製品のお知らせを起草してください。製品と要点：',
   aiStarterGuide: '手順ガイドを書く',
   aiStarterGuidePrompt: '手順ガイドを書いてください。説明する手順：',
+  aiToolFillImages: '画像を配置',
+  aiToolFillImagesDone: '{n} 件の画像を配置',
+  aiFillImagesAsk: 'ページ用に {n} 枚の画像を生成しますか？',
+  aiFillImagesYes: '生成する',
+  aiFillImagesNo: 'あとで',
 } satisfies Record<keyof typeof zh, string>

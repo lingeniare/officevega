@@ -180,4 +180,9 @@ export const kk = {
     'Маған өнім туралы хабарландыру жобасын жасаңыз. Өнім және негізгі тармақтар: ',
   aiStarterGuide: 'Қадамдық нұсқаулық жазу',
   aiStarterGuidePrompt: 'Маған қадамдық нұсқаулық жазыңыз. Түсіндірілетін процесс: ',
+  aiToolFillImages: 'Суреттерді толтыру',
+  aiToolFillImagesDone: '{n} сурет толтырылды',
+  aiFillImagesAsk: 'Бетке {n} сурет жасайын ба?',
+  aiFillImagesYes: 'Жасау',
+  aiFillImagesNo: 'Қазір емес',
 } satisfies Record<keyof typeof zh, string>

@@ -83,6 +83,35 @@ export function countMarkdownBlocks(markdown: string): number {
   return markdown.split(/\n{2,}/).filter((chunk) => chunk.trim()).length
 }
 
+/**
+ * Last position where the streamed markdown is known to hold only complete
+ * blocks: the line start right after a blank line that sits outside fenced
+ * code and $$ math. The prefix before it is final and never re-parses, so a
+ * long write doesn't pay O(length) parsing per tick.
+ */
+function completeBlockBoundary(markdown: string, from: number): number {
+  let inFence = false
+  let inMath = false
+  let boundary = from
+  let pos = from
+  const n = markdown.length
+  while (pos < n) {
+    const nl = markdown.indexOf('\n', pos)
+    const lineEnd = nl === -1 ? n : nl
+    const line = markdown.slice(pos, lineEnd)
+    if (line.trim() === '') {
+      if (!inFence && !inMath && nl !== -1) boundary = nl + 1
+    } else if (!inMath && /^\s{0,3}(?:`{3,}|~{3,})/.test(line)) {
+      inFence = !inFence
+    } else if (!inFence) {
+      const dollars = line.match(/\$\$/g)
+      if (dollars && dollars.length % 2 === 1) inMath = !inMath
+    }
+    pos = lineEnd + 1
+  }
+  return boundary
+}
+
 export type WritePosition = { kind: 'whole' } | { kind: 'after'; index: number }
 
 /** meta on every draft transaction: not an edit of its own, not history */
@@ -101,6 +130,9 @@ export class DraftLanding {
   private to: number
   /** the text of the last tick that parsed and rendered */
   private rendered: string | null = null
+  /** markdown prefix known to hold only complete blocks; parsed once, never re-parsed */
+  private committedLen = 0
+  private committedNodes: PmNode[] = []
   private pending: string | null = null
   private timer: ReturnType<typeof setTimeout> | null = null
   private closed = false
@@ -179,12 +211,28 @@ export class DraftLanding {
     if (this.closed || this.pending === null || this.editor.isDestroyed) return
     const markdown = this.pending
     this.pending = null
-    let next: PmNode[]
+    // Commit the complete-block prefix once (streamed markdown only grows), so
+    // each tick re-parses just the open tail instead of the whole document.
+    const boundary = completeBlockBoundary(markdown, this.committedLen)
+    if (boundary > this.committedLen) {
+      try {
+        // the boundary sits after a blank line — trim it so the parser doesn't
+        // turn the trailing break into an empty paragraph between blocks
+        this.committedNodes.push(
+          ...parseMarkdownToNodes(this.editor, markdown.slice(this.committedLen, boundary).trimEnd()),
+        )
+        this.committedLen = boundary
+      } catch {
+        return // retried on the next tick
+      }
+    }
+    let tail: PmNode[]
     try {
-      next = parseMarkdownToNodes(this.editor, markdown)
+      tail = parseMarkdownToNodes(this.editor, markdown.slice(this.committedLen))
     } catch {
       return // a half-received block is retried on the next tick
     }
+    const next = [...this.committedNodes, ...tail]
     this.rendered = markdown
     // compare against the live document: a user edit inside the draft changes sizes and drops that block from the kept prefix
     const live = this.liveNodes()

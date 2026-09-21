@@ -180,4 +180,9 @@ export const ky = {
   aiStarterGuide: 'Кантип жасоо боюнча колдонмо жазуу',
   aiStarterGuidePrompt:
     'Мен үчүн кантип жасоо боюнча колдонмо жазыңыз. Түшүндүрүлө турган процесс: ',
+  aiToolFillImages: 'Сүрөттөрдү толтуру',
+  aiToolFillImagesDone: '{n} сүрөт толтурулду',
+  aiFillImagesAsk: 'Бет үчүн {n} сүрөт түзөйүнбү?',
+  aiFillImagesYes: 'Түз',
+  aiFillImagesNo: 'Азыр эмес',
 } satisfies Record<keyof typeof zh, string>

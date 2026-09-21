@@ -385,8 +385,12 @@ export function serializeRangeToHtml(
   endIndex: number,
   sel?: { from: number; to: number } | null,
 ): string {
-  const json = editor.getJSON() as PmNode
-  const children = (json.content ?? []).slice(startIndex, endIndex + 1)
+  // serialize only the requested top-level blocks — getJSON() would walk the
+  // whole document on every call (read_blocks pages through this per slice)
+  const children: PmNode[] = []
+  editor.state.doc.forEach((node, _offset, index) => {
+    if (index >= startIndex && index <= endIndex) children.push(node.toJSON() as PmNode)
+  })
   const parts: string[] = []
   let listBuffer: { kind: string; items: string[] } | null = null
 

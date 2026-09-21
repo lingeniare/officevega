@@ -2,8 +2,14 @@ import { aiPanelWidthAtPointer } from '@genoffice/ui'
 import { useEffect, useRef, useState } from 'react'
 import type { Editor } from '@tiptap/core'
 import type { Block } from '@genoffice/docx-engine'
-import { AgentLoop, composeSkills, streamText, type AgentImage } from '@genoffice/agent-core'
-import { imageGenerationAvailable } from '@genoffice/ai-provider/browser'
+import {
+  AgentLoop,
+  composeSkills,
+  generateSuggestedQuestions,
+  streamText,
+  type AgentImage,
+} from '@genoffice/agent-core'
+import { imageGenerationAvailable, withFastModel } from '@genoffice/ai-provider/browser'
 import type { AiSettings, AttachmentAddResult, AttachmentMeta } from '../../shared/ipc'
 import { ATTACHMENT_IMAGE_EXTS } from '../../shared/ipc'
 import type { PmNode } from '../editor/convert'
@@ -48,8 +54,10 @@ import { Markdown } from '@genoffice/ui'
 import {
   AiComposer,
   AiScopeQuote,
+  AiSuggestedQuestions,
   AiTypingIndicator,
   IconPlus,
+  useSuggestedQuestions,
   type AiScopeQuoteData,
 } from '@genoffice/ui'
 import { VegaMark } from '../components/icons'
@@ -70,6 +78,8 @@ interface ToolActivity {
   summary: string
   /** still executing: rendered as a spinner chip, replaced in place when the tool finishes */
   running?: boolean
+  /** Correlates a running chip with its tool call — read-only calls run as a wave, so position alone cannot identify the placeholder */
+  callId?: string
   isError?: boolean
   /** Tool output (truncated on the UI side); when set, the row can be expanded for details */
   output?: string
@@ -685,6 +695,24 @@ export function AiPanel({
   if (!transportRef.current)
     transportRef.current = createElectronTransport(() => settingsRef.current)
 
+  // Suggested follow-ups ride a second transport whose settings swap in the
+  // user's "fast model" pick (withFastModel falls back to the main model).
+  const suggestTransportRef = useRef<ReturnType<typeof createElectronTransport> | null>(null)
+  if (!suggestTransportRef.current)
+    suggestTransportRef.current = createElectronTransport(() =>
+      withFastModel(settingsRef.current),
+    )
+  const suggested = useSuggestedQuestions((user, assistant, signal) =>
+    generateSuggestedQuestions({
+      transport: suggestTransportRef.current!,
+      app: 'docs',
+      user,
+      assistant,
+      langDirective: aiLangDirective(),
+      signal,
+    }),
+  )
+
   /**
    * Long-form writing: one tool-less request whose reply is the fragment, streamed
    * into the document as a draft by the tool. A stream that stops early leaves the
@@ -758,6 +786,22 @@ export function AiPanel({
     decidePartial(false)
   }
 
+  // Text deltas arrive per IPC chunk; coalesce them into ~60ms repaints so a
+  // fast stream doesn't re-render the chat on every token.
+  const pendingTextRef = useRef<string | null>(null)
+  const textTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const flushPendingText = () => {
+    if (textTimerRef.current !== null) {
+      clearTimeout(textTimerRef.current)
+      textTimerRef.current = null
+    }
+    if (pendingTextRef.current !== null) {
+      const text = pendingTextRef.current
+      pendingTextRef.current = null
+      patchLastAssistant({ text })
+    }
+  }
+
   const loopRef = useRef<AgentLoop<PmNode> | null>(null)
   if (!loopRef.current) {
     const numIds = (): NumIds => ({
@@ -767,6 +811,12 @@ export function AiPanel({
     loopRef.current = new AgentLoop<PmNode>({
       transport: transportRef.current,
       systemSuffix: aiLangDirective,
+      // The per-run document snapshot rides inside <doc-context> markers so the
+      // loop can strip stale snapshots from older user messages — each turn
+      // otherwise re-sends every snapshot the session ever attached.
+      formatUserMessage: (instruction, context) =>
+        context ? `${instruction}\n\n<doc-context>\n${context}\n</doc-context>` : instruction,
+      staleContextPattern: /\n\n<doc-context>\n[\s\S]*?<\/doc-context>/g,
       skill: composeSkills('docs+files', '', [
         createDocsSkill(
           () => editorRef.current,
@@ -786,13 +836,18 @@ export function AiPanel({
       ]),
       captureSnapshot: () => editorRef.current.getJSON() as PmNode,
       events: {
-        onText: (text) => patchLastAssistant({ text }),
+        onText: (text) => {
+          pendingTextRef.current = text
+          if (textTimerRef.current === null) {
+            textTimerRef.current = setTimeout(flushPendingText, 60)
+          }
+        },
         onToolStart: (call) => {
           // Live "running" chip: replaced in place by onToolExecuted
           patchLastAssistant((last) => ({
             tools: [
               ...(last.tools ?? []),
-              { name: call.name, summary: toolLabel(call.name), running: true },
+              { name: call.name, summary: toolLabel(call.name), running: true, callId: call.id },
             ],
           }))
         },
@@ -816,29 +871,31 @@ export function AiPanel({
               : undefined,
           })
           patchLastAssistant((last) => {
-            // Swap out the running placeholder pushed by onToolStart (parse-fail calls have none)
+            // Swap out the running placeholder pushed by onToolStart (parse-fail
+            // calls have none). Read-only calls run as a concurrent wave, so the
+            // placeholder is matched by call id — not "the last chip".
             const tools = [...(last.tools ?? [])]
-            if (tools.at(-1)?.running) tools.pop()
-            return {
-              tools: [
-                ...tools,
-                {
-                  name: call.name,
-                  summary,
-                  isError: execution.isError,
-                  output: execution.output
-                    ? execution.output.slice(0, TOOL_OUTPUT_MAX_CHARS)
-                    : undefined,
-                },
-              ],
+            const chip: ToolActivity = {
+              name: call.name,
+              summary,
+              isError: execution.isError,
+              output: execution.output
+                ? execution.output.slice(0, TOOL_OUTPUT_MAX_CHARS)
+                : undefined,
             }
+            const at = tools.findIndex((tl) => tl.running && tl.callId === call.id)
+            if (at >= 0) tools[at] = chip
+            else tools.push(chip)
+            return { tools }
           })
         },
         onTurnEnd: () => {
+          flushPendingText()
           patchLastAssistant({ streaming: false })
           setChat((prev) => [...prev, { role: 'assistant', text: '', streaming: true }])
         },
         onDone: ({ text, cancelled, turnLimit, truncated }) => {
+          flushPendingText()
           // module-level t: the loop instance is created only once; the component's t goes stale with the first-render closure
           const baseText = turnLimit
             ? [text, tModule('aiTurnLimit')].filter(Boolean).join('\n\n')
@@ -855,6 +912,9 @@ export function AiPanel({
             snapshot: runSnapshotRef.current ?? undefined,
           }))
           setBusy(false)
+          // follow-up suggestions are generated off the fast model after the reply lands
+          if (!cancelled && finalText)
+            suggested.refresh(lastInstructionRef.current, finalText)
           // App listens: a run that generated content into a never-saved document
           // triggers a silent first save with a content-derived file name
           window.dispatchEvent(new Event('ai-docs-run-done'))
@@ -865,6 +925,7 @@ export function AiPanel({
           }
         },
         onError: (error) => {
+          flushPendingText()
           setChat((prev) => {
             const next = [...prev]
             const last = next.at(-1)
@@ -1019,6 +1080,7 @@ export function AiPanel({
     const loop = loopRef.current
     if (!instruction || !loop || loop.busy || pendingSendRef.current) return
     setInput('')
+    suggested.clear()
     // The message consumes the composer attachments: they ride along (echoed on the
     // bubble, images multimodal, files via the files skill) and the composer clears.
     const sentAtts = attachmentsOverride ?? attachmentsRef.current
@@ -1130,6 +1192,7 @@ export function AiPanel({
     }
     abandonWriter()
     loopRef.current?.reset()
+    suggested.clear()
     setBusy(false)
     setChat([])
     // Restored history is painted above the live turn: without this the
@@ -1501,6 +1564,16 @@ export function AiPanel({
           )
         })}
       </div>
+
+      {!busy && (
+        <AiSuggestedQuestions
+          questions={suggested.questions}
+          onPick={(q) => {
+            suggested.clear()
+            runWith(q)
+          }}
+        />
+      )}
 
       <div className="ai-composer">
         {attachNotice && <div className="ai-attach-notice">{attachNotice}</div>}

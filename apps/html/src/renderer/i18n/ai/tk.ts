@@ -178,4 +178,9 @@ export const tk = {
   aiStarterAnnouncementPrompt: 'Maňa önüm bildirişini taýýarla. Önüm we esasy nokatlar: ',
   aiStarterGuide: 'Nähili edilýändigini görkezýän gollanma ýaz',
   aiStarterGuidePrompt: 'Maňa nähili edilýändigini görkezýän gollanma ýaz. Düşündirilmeli proses: ',
+  aiToolFillImages: 'Suratlary doldur',
+  aiToolFillImagesDone: '{n} surat dolduryldy',
+  aiFillImagesAsk: 'Sahypa üçin {n} surat döredeýinmi?',
+  aiFillImagesYes: 'Döret',
+  aiFillImagesNo: 'Häzir däl',
 } satisfies Record<keyof typeof zh, string>

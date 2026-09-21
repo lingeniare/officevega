@@ -29,8 +29,14 @@ const PREVIEW_CHARS = 60
 const READ_PAGE_CHARS = 24000
 const SELECTION_MAX_CHARS = 4000
 
-const INDEX_CHANGE_NOTICE =
-  'Block indexes may have changed; call get_document_context before further index-based edits.'
+/**
+ * Mutating ops shift block indexes. The refreshed skeleton rides along in the
+ * result so follow-up edits don't spend a whole model turn on
+ * get_document_context.
+ */
+function indexChangeNotice(editor: Editor): string {
+  return `Block indexes may have changed — refreshed document state:\n\n${buildDocContext(editor)}`
+}
 const STALE_DOC_ERROR =
   'The document changed since you last saw it (the user edited it). Call get_document_context to refresh before editing.'
 
@@ -117,6 +123,7 @@ export const AGENT_TOOLS: AgentToolDef[] = [
     description:
       'Refresh the document overview: a numbered list of top-level blocks (index | type | preview) plus the current selection. Call this before index-based edits when in doubt.',
     inputSchema: { type: 'object', properties: {}, required: [] },
+    readonly: true,
   },
   {
     name: 'read_blocks',
@@ -134,6 +141,7 @@ export const AGENT_TOOLS: AgentToolDef[] = [
       },
       required: ['startIndex', 'endIndex'],
     },
+    readonly: true,
   },
   {
     name: 'apply_ops',
@@ -193,6 +201,7 @@ export const AGENT_TOOLS: AgentToolDef[] = [
       },
       required: ['query'],
     },
+    readonly: true,
   },
   {
     name: 'insert_image',
@@ -242,6 +251,7 @@ export const AGENT_TOOLS: AgentToolDef[] = [
     description:
       'Read the document properties: the raw YAML frontmatter block at the top of the file (title, tags, date, …), without the --- fences. Write it back with the setFrontmatter op.',
     inputSchema: { type: 'object', properties: {}, required: [] },
+    readonly: true,
   },
 ]
 
@@ -276,7 +286,7 @@ function applyOps(editor: Editor, input: unknown, fm?: FrontmatterAccess): ToolE
   )
   const skipped = parsed.ops.length - r.results.length
   if (skipped > 0) lines.push(`${skipped} later op(s) were not executed.`)
-  if (r.blocksChanged) lines.push(INDEX_CHANGE_NOTICE)
+  if (r.blocksChanged) lines.push(indexChangeNotice(editor))
   if (r.applied > 0) markDocSeen(editor)
   const failed = r.applied < parsed.ops.length
   return {
@@ -348,7 +358,7 @@ async function insertImageFromUrl(
   if (!res.ok) return fail(res.error, labels.fail)
   if (!userEditedDuringFetch) markDocSeen(editor)
   return {
-    output: `Inserted the image (saved as ${rel}). ${INDEX_CHANGE_NOTICE}`,
+    output: `Inserted the image (saved as ${rel}).\n\n${indexChangeNotice(editor)}`,
     mutated: true,
     summary: labels.done,
   }
@@ -428,7 +438,7 @@ async function writeDocument(
     ? ' The stream ended early, so the content is INCOMPLETE (the user chose to keep it): the tail is missing. Say so and offer to finish the missing sections with write_document (afterIndex at the end) or apply_ops insertContent.'
     : ''
   return {
-    output: `Content written by the system (${result.markdown.length} chars). ${res.message} ${INDEX_CHANGE_NOTICE}${note}\nReply with one or two sentences describing what was written; do not paste the content.`,
+    output: `Content written by the system (${result.markdown.length} chars). ${res.message}\n\n${indexChangeNotice(editor)}${note}\nReply with one or two sentences describing what was written; do not paste the content.`,
     mutated: true,
     summary: result.truncated ? t('aiToolWriteDocPartial') : label,
   }

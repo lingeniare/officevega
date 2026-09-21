@@ -1,17 +1,20 @@
 import { aiPanelWidthAtPointer } from '@genoffice/ui'
 import { useEffect, useRef, useState } from 'react'
 import type { PointerEvent as ReactPointerEvent, ReactElement } from 'react'
-import { AgentLoop, composeSkills } from '@genoffice/agent-core'
+import { AgentLoop, composeSkills, generateSuggestedQuestions } from '@genoffice/agent-core'
 import type { AgentImage } from '@genoffice/agent-core'
 import type { AiSettings } from '@genoffice/ai-provider'
+import { withFastModel } from '@genoffice/ai-provider/browser'
 import { ATTACHMENT_IMAGE_EXTS } from '../../shared/ipc'
 import type { AttachmentAddResult, AttachmentMeta } from '../../shared/ipc'
 import {
   AiComposer,
   AiScopeQuote,
+  AiSuggestedQuestions,
   AiTypingIndicator,
   IconPlus,
   Markdown,
+  useSuggestedQuestions,
   type AiScopeQuoteData,
 } from '@genoffice/ui'
 import { aiLangDirective, t as tGlobal, useI18n } from '../i18n/locale'
@@ -192,6 +195,8 @@ interface ToolActivity {
   summary: string
   /** still executing: rendered as a spinner chip, replaced in place when the tool finishes */
   running?: boolean
+  /** Correlates a running chip with its tool call — read-only calls run as a wave, so position alone cannot identify the placeholder */
+  callId?: string
   isError?: boolean
   output?: string
 }
@@ -458,6 +463,29 @@ export function AiPanel({
     const rel = ext === 'webp' ? null : await window.htmlApi.saveImage({ base64: img.base64, ext })
     return { ok: true, src: rel ?? `data:${img.mime};base64,${img.base64}` }
   }
+  /**
+   * fill_images resolver: turn a generated/found image URL into a src the page can
+   * keep. file:// store URLs never render in the preview iframe and are not portable,
+   * so they are always materialized; remote URLs land in assets/ for a saved
+   * document and stay remote for an untitled one (a data: URL would bloat the file).
+   */
+  const persistImage = async (url: string): Promise<string | null> => {
+    const u = String(url ?? '')
+    const mustMaterialize = /^file:/i.test(u)
+    if (!mustMaterialize && !/^https?:/i.test(u)) return null
+    if (mustMaterialize || depsRef.current.access.getFilePath()) {
+      const img = await window.htmlApi.fetchImage(u).catch(() => null)
+      if (img?.base64) {
+        const ext = img.mime === 'image/png' ? 'png' : img.mime === 'image/gif' ? 'gif' : 'jpg'
+        const rel = await window.htmlApi.saveImage({ base64: img.base64, ext }).catch(() => null)
+        if (rel) return rel
+        // untitled document: a generated-store file can only be inlined
+        if (mustMaterialize) return `data:${img.mime};base64,${img.base64}`
+      }
+      if (mustMaterialize) return null
+    }
+    return u
+  }
   // preferred = the user's chosen width (the only value persisted); panelWidth =
   // what fits the current window. Deriving the display width from the preference
   // means a transiently small window never permanently shrinks the panel.
@@ -546,6 +574,23 @@ export function AiPanel({
   if (!transportRef.current) {
     transportRef.current = createElectronTransport(() => settingsRef.current!)
   }
+
+  // Suggested follow-ups ride a second transport whose settings swap in the
+  // user's "fast model" pick (withFastModel falls back to the main model).
+  const suggestTransportRef = useRef<ReturnType<typeof createElectronTransport> | null>(null)
+  if (!suggestTransportRef.current)
+    suggestTransportRef.current = createElectronTransport(() => withFastModel(settingsRef.current!))
+  const suggested = useSuggestedQuestions((user, assistant, signal) => {
+    if (!settingsRef.current) return Promise.resolve([])
+    return generateSuggestedQuestions({
+      transport: suggestTransportRef.current!,
+      app: 'html',
+      user,
+      assistant,
+      langDirective: aiLangDirective(langRef.current),
+      signal,
+    })
+  })
 
   /**
    * Whole-page generation: one tool-less request whose reply is the HTML, streamed
@@ -668,6 +713,14 @@ export function AiPanel({
           getInstruction: () => runInstructionRef.current,
           resolveAttachmentSrc: (ref) => resolveAttachmentSrc(ref),
           listAttachmentNames: () => availableAttachments().map((a) => a.name),
+          // research runs while the questionnaire card waits on the user
+          webSearch: (query, maxResults) => window.htmlApi.webSearch(query, maxResults),
+          generateImage: (op) => window.htmlApi.aiGenerateImage(op),
+          searchImages: async (query, maxResults) => {
+            const r = await window.htmlApi.imageSearch(query, maxResults)
+            return (r.images ?? []).map((i) => i.imageUrl).filter((u) => /^https?:/i.test(u))
+          },
+          persistImage: (url) => persistImage(url),
         }),
         createSearchSkill(),
         createFilesSkill(availableAttachments),
@@ -685,7 +738,7 @@ export function AiPanel({
           patchLast((last) => ({
             tools: [
               ...(last.tools ?? []),
-              { name: call.name, summary: toolLabel(call.name), running: true },
+              { name: call.name, summary: toolLabel(call.name), running: true, callId: call.id },
             ],
           }))
         },
@@ -710,10 +763,14 @@ export function AiPanel({
           }
           runToolsRef.current.push(activity)
           patchLast((last) => {
-            // Swap out the running placeholder pushed by onToolStart (parse-fail calls have none)
+            // Swap out the running placeholder pushed by onToolStart (parse-fail
+            // calls have none). Read-only calls run as a concurrent wave, so the
+            // placeholder is matched by call id — not "the last chip".
             const tools = [...(last.tools ?? [])]
-            if (tools.at(-1)?.running) tools.pop()
-            return { tools: [...tools, activity] }
+            const at = tools.findIndex((tl) => tl.running && tl.callId === call.id)
+            if (at >= 0) tools[at] = activity
+            else tools.push(activity)
+            return { tools }
           })
         },
         onTurnEnd: () => {
@@ -741,6 +798,8 @@ export function AiPanel({
           depsRef.current.onRunDone(runMutatedRef.current)
           queueRunRef.current = false
           setBusy(false)
+          // follow-up suggestions are generated off the fast model after the reply lands
+          if (!cancelled && final) suggested.refresh(runInstructionRef.current, final)
         },
         onError: (error) => {
           // once a tool ran the message was delivered; a later turn failing is not a send failure
@@ -884,6 +943,7 @@ export function AiPanel({
     const instruction = text.trim()
     const loop = loopRef.current
     if (!instruction || !loop || loop.busy) return false
+    suggested.clear()
     // the message consumes the composer attachments: echoed on the bubble, images multimodal, files via the skill
     const sentAtts = attachmentsOverride ?? attachmentsRef.current
     if (sentAtts.length > 0) {
@@ -1130,6 +1190,7 @@ export function AiPanel({
               onClick={() => {
                 stop()
                 loopRef.current?.reset()
+                suggested.clear()
                 setBusy(false)
                 setChat([])
                 setReceipts([])
@@ -1412,6 +1473,15 @@ export function AiPanel({
             </div>
           </div>
         </div>
+      )}
+      {!busy && !activeClarify && !activeBrief && !activePartial && (
+        <AiSuggestedQuestions
+          questions={suggested.questions}
+          onPick={(q) => {
+            suggested.clear()
+            send(q)
+          }}
+        />
       )}
       <div
         className="ai-composer"

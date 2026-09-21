@@ -4,6 +4,7 @@ import type {
   AgentMessage,
   AgentStreamHandle,
   AgentToolCall,
+  AgentToolDef,
   AgentToolResult,
   AgentTransport,
   ToolExecution,
@@ -61,10 +62,22 @@ export interface AgentLoopOptions<TSnapshot = unknown> {
   maxHistory?: number
   /** Context compaction; false disables it (enabled by default with default thresholds) */
   compaction?: CompactionOptions | false
-  /** capture rollback state; invoked right before tools run (see snapshotBefore) */
-  captureSnapshot?(): TSnapshot
+  /**
+   * capture rollback state; invoked right before tools run (see snapshotBefore).
+   * Receives the call about to execute: return undefined to skip capturing for
+   * calls that cannot mutate (e.g. read/search tools), so read turns don't pay
+   * for serializing the artifact.
+   */
+  captureSnapshot?(call: AgentToolCall): TSnapshot | undefined
   /** wrap instruction + skill context into the user message text */
   formatUserMessage?(instruction: string, context: string): string
+  /**
+   * Matches the per-run context block embedded by formatUserMessage. Before a
+   * new run the block is stripped from all previous user messages — the
+   * freshest snapshot is the only one the model needs, and stale snapshots
+   * otherwise get re-sent (and re-billed) on every later turn.
+   */
+  staleContextPattern?: RegExp
   /** appended to the system prompt each turn (e.g. reply-language directive following the UI language) */
   systemSuffix?(): string
 }
@@ -156,6 +169,10 @@ const COMPACT_SUMMARY_PREFIX = '[Summary of earlier conversation'
 const COMPACT_SUMMARY_HEADER = '[Summary of earlier conversation (auto-compacted)]'
 const COMPACT_SUMMARY_ACK = 'Understood, continuing from the progress so far.'
 
+/** Replaces a stripped per-run context block inside an old user message (see staleContextPattern) */
+const STALE_CONTEXT_NOTE =
+  '\n\n[snapshot superseded — the latest message carries the current state]'
+
 /** Approximate UTF-8 byte count (ASCII 1 byte, CJK etc. 3; surrogate pairs count as 6 — slight overestimate is harmless) */
 function utf8Size(s: string): number {
   let n = 0
@@ -230,6 +247,12 @@ export class AgentLoop<TSnapshot = unknown> {
   private turnText = ''
   private turnReasoning = ''
   private toolCalls: AgentToolCall[] = []
+  /** read-only tool calls started while the model was still streaming (keyed by the call object); awaited in call order at turn end */
+  private earlyRuns = new Map<AgentToolCall, Promise<ToolExecution>>()
+  /** once a mutating call arrives, later read-only calls in the same turn must run after it — no early start */
+  private mutatingCallSeen = false
+  /** background LLM compaction request — kept off `handle` so a running turn's cancel() stays independent */
+  private summaryHandle: AgentStreamHandle | null = null
   /** tools actually executed during this run, fed to skill.verifyResponse */
   private executedCalls: ExecutedToolCall[] = []
   /** verifyResponse may force one extra corrective turn per run — never more */
@@ -320,14 +343,14 @@ export class AgentLoop<TSnapshot = unknown> {
       text: format(instruction, context),
       ...(images?.length ? { images } : {}),
     }
-    void this.beginRun(userMsg)
+    this.beginRun(userMsg)
   }
 
   /** Compact (if needed), push the user message, then start the turn. Compaction failure doesn't block the run. */
-  private async beginRun(userMsg: AgentMessage): Promise<void> {
+  private beginRun(userMsg: AgentMessage): void {
     const generation = this.generation
     try {
-      await this.maybeCompact()
+      this.maybeCompact()
     } catch {
       // Proceed with the run even if compaction fails (an over-budget history only costs more, it's still correct)
     }
@@ -346,12 +369,43 @@ export class AgentLoop<TSnapshot = unknown> {
     this.history = this.history.map((m) =>
       m.role === 'assistant' && m.reasoning ? { ...m, reasoning: undefined } : m,
     )
+    this.stripStaleContext(userMsg)
     if (userMsg.role === 'user') {
       userMsg = { ...userMsg, text: sanitizeAgentPayload(userMsg.text) }
     }
     this.runUserMsg = userMsg
     this.history.push(userMsg)
     this.startTurn()
+  }
+
+  /**
+   * Per-run context (document snapshot, attachment list) is embedded in the
+   * user message; older snapshots are dead weight re-sent on every later turn,
+   * so a new run strips them down to a marker. Image attachments are multi-MB
+   * base64 re-encoded into every request body — only the newest image-bearing
+   * message keeps its pictures.
+   */
+  private stripStaleContext(userMsg: AgentMessage): void {
+    const re = this.options.staleContextPattern
+    if (re) {
+      this.history = this.history.map((m) => {
+        if (m.role !== 'user') return m
+        const text = m.text.replace(re, STALE_CONTEXT_NOTE)
+        return text === m.text ? m : { ...m, text }
+      })
+    }
+    let lastImageIdx = -1
+    this.history.forEach((m, i) => {
+      if (m.role === 'user' && m.images?.length) lastImageIdx = i
+    })
+    const newHasImages = userMsg.role === 'user' && !!userMsg.images?.length
+    if (newHasImages) lastImageIdx = -1 // the new message supersedes all earlier pictures
+    if (lastImageIdx < 0 && !newHasImages) return
+    this.history = this.history.map((m, i) =>
+      m.role === 'user' && m.images?.length && i !== lastImageIdx
+        ? { role: 'user' as const, text: m.text }
+        : m,
+    )
   }
 
   /**
@@ -401,26 +455,42 @@ export class AgentLoop<TSnapshot = unknown> {
     return cut
   }
 
-  private async maybeCompact(): Promise<void> {
+  /**
+   * Folding is synchronous — the mechanical digest lands instantly so a run
+   * never waits on a summary request before its first turn; the LLM summary
+   * then refines the digest in the background and later turns pick it up.
+   */
+  private maybeCompact(): void {
     if (!this.compactionEnabled()) return
     const { maxBytes, keepRecentBytes } = this.compactBudget()
     if (historySize(this.history) <= maxBytes) return
     const cut = this.findCompactCut(keepRecentBytes)
     if (cut <= 0) return // no foldable prefix
-    const generation = this.generation
     const dropped = this.history.slice(0, cut)
-    const opt = this.options.compaction === false ? undefined : this.options.compaction
-    let summary: string | null = null
-    if (!opt?.disableLlmSummary) summary = await this.summarizeViaLlm(dropped)
-    // A reset may have cleared history or started a new conversation while
-    // the summary was pending. Discard its result before touching that history.
-    if (generation !== this.generation) return
-    if (!summary) summary = mechanicalDigest(dropped)
+    const folded: AgentMessage = {
+      role: 'user',
+      text: `${COMPACT_SUMMARY_HEADER}\n${mechanicalDigest(dropped)}`,
+    }
     this.history = [
-      { role: 'user', text: `${COMPACT_SUMMARY_HEADER}\n${summary}` },
+      folded,
       { role: 'assistant', text: COMPACT_SUMMARY_ACK },
       ...this.history.slice(cut),
     ]
+    const opt = this.options.compaction === false ? undefined : this.options.compaction
+    if (!opt?.disableLlmSummary) void this.refineSummary(folded, dropped)
+  }
+
+  /** Swap the mechanical digest for the LLM summary when it arrives; on failure or reset the digest simply stays. */
+  private async refineSummary(folded: AgentMessage, dropped: readonly AgentMessage[]): Promise<void> {
+    const generation = this.generation
+    const summary = await this.summarizeViaLlm(dropped)
+    // A reset may have cleared history or started a new conversation while
+    // the summary was pending. Discard its result before touching that history.
+    if (generation !== this.generation || summary === null) return
+    const i = this.history.indexOf(folded)
+    if (i >= 0) {
+      this.history[i] = { role: 'user', text: `${COMPACT_SUMMARY_HEADER}\n${summary}` }
+    }
   }
 
   /** Hand the folded conversation to the model for a summary; returns null on failure/timeout (falls back to the mechanical digest). */
@@ -446,12 +516,15 @@ export class AgentLoop<TSnapshot = unknown> {
         if (settled) return
         settled = true
         clearTimeout(timer)
+        this.summaryHandle = null
         resolve(v)
       }
       const timer = setTimeout(() => finish(null), SUMMARIZE_TIMEOUT_MS)
       try {
-        // Attach to this.handle so cancel() can abort the summary request when the user clicks stop
-        this.handle = this.options.transport.stream(
+        // Tracked on summaryHandle, not this.handle: the summary refines in the
+        // background while a real turn may be streaming, and cancel()/reset()
+        // aborts it without clobbering the turn's own stream.
+        this.summaryHandle = this.options.transport.stream(
           {
             system: SUMMARIZE_SYSTEM,
             messages: [
@@ -508,6 +581,7 @@ export class AgentLoop<TSnapshot = unknown> {
     this.cancelled = true
     // abort lets long tools mid-execution (internal LLM loops etc.) stop promptly
     this.abortController?.abort()
+    this.summaryHandle?.cancel()
     // the transport emits onDone after aborting, which finalizes the run
     this.handle?.cancel()
   }
@@ -516,6 +590,8 @@ export class AgentLoop<TSnapshot = unknown> {
   reset(): void {
     this.generation++
     this.abortController?.abort()
+    this.summaryHandle?.cancel()
+    this.summaryHandle = null
     this.handle?.cancel()
     this.handle = null
     this.running = false
@@ -537,11 +613,46 @@ export class AgentLoop<TSnapshot = unknown> {
     this.history = next
   }
 
+  /**
+   * A read-only call whose arguments finished streaming starts immediately —
+   * its execution overlaps the model still generating the rest of the turn,
+   * and its result is awaited in call order at turn end. Mutating calls (and
+   * reads issued after one) wait for the serial executor so document state
+   * stays ordered.
+   */
+  private maybeStartEarly(call: AgentToolCall): void {
+    if (this.toolDef(call.name)?.readonly !== true) {
+      this.mutatingCallSeen = true
+      return
+    }
+    if (this.mutatingCallSeen || this.cancelled || call.inputError || call.truncated) return
+    this.options.events?.onToolStart?.(call)
+    this.earlyRuns.set(call, this.runTool(call))
+  }
+
+  /** The tool definition as advertised to the model (drives the readonly flag) */
+  private toolDef(name: string): AgentToolDef | undefined {
+    return this.options.skill.tools.find((t) => t.name === name)
+  }
+
+  /** One tool execution as a promise: skill errors become error results instead of rejections */
+  private runTool(call: AgentToolCall): Promise<ToolExecution> {
+    return Promise.resolve()
+      .then(() => this.options.skill.executeTool(call, this.abortController?.signal))
+      .catch((e: unknown) => ({
+        output: e instanceof Error ? e.message : String(e),
+        isError: true,
+        summary: call.name,
+      }))
+  }
+
   private startTurn(retriesUsed = 0): void {
     const generation = this.generation
     this.turnText = ''
     this.turnReasoning = ''
     this.toolCalls = []
+    this.earlyRuns.clear()
+    this.mutatingCallSeen = false
     this.turnStopReason = null
     // Some transports emit an extra onDone after cancel — this turn may finalize only once
     let settled = false
@@ -567,6 +678,7 @@ export class AgentLoop<TSnapshot = unknown> {
         onToolCall: (call) => {
           if (generation !== this.generation || settled) return
           this.toolCalls.push(call)
+          this.maybeStartEarly(call)
         },
         onStopReason: (reason) => {
           if (generation !== this.generation || settled) return
@@ -704,7 +816,31 @@ export class AgentLoop<TSnapshot = unknown> {
     const generation = this.generation
     const results: AgentToolResult[] = []
     let turnMutated = false
-    for (const call of toolCalls) {
+    const recordExecution = (
+      call: AgentToolCall,
+      execution: ToolExecution,
+      snapshot: TSnapshot | undefined,
+    ): void => {
+      this.executedCalls.push({ name: call.name, ok: !execution.isError })
+      const firstMutation = !!execution.mutated && !this.mutationSeen
+      if (execution.mutated) {
+        this.mutationSeen = true
+        turnMutated = true
+      }
+      results.push({
+        id: call.id,
+        name: call.name,
+        output: execution.output,
+        isError: execution.isError,
+      })
+      events?.onToolExecuted?.({
+        call,
+        execution,
+        snapshotBefore: firstMutation ? snapshot : undefined,
+      })
+    }
+    for (let i = 0; i < toolCalls.length; i++) {
+      const call = toolCalls[i]!
       // The user hit stop while an earlier tool was running: skip remaining tools,
       // but fill in paired error results to keep tool_use/tool_result pairs valid for the next request
       if (this.cancelled) {
@@ -731,36 +867,35 @@ export class AgentLoop<TSnapshot = unknown> {
         continue
       }
       this.inputParseFails = 0
-      events?.onToolStart?.(call)
-      const snapshot = !this.mutationSeen ? captureSnapshot?.() : undefined
-      let execution: ToolExecution
-      try {
-        execution = await skill.executeTool(call, this.abortController?.signal)
-      } catch (e) {
-        execution = {
-          output: e instanceof Error ? e.message : String(e),
-          isError: true,
-          summary: call.name,
+      // Consecutive read-only calls are independent — run them as one wave:
+      // early starters are already in flight, the rest launch together. The
+      // wave's results are awaited in call order before any mutating call
+      // runs, so call order semantics match serial execution.
+      if (this.toolDef(call.name)?.readonly === true) {
+        const wave: AgentToolCall[] = [call]
+        while (
+          i + 1 < toolCalls.length &&
+          this.toolDef(toolCalls[i + 1]!.name)?.readonly === true &&
+          !toolCalls[i + 1]!.truncated &&
+          !toolCalls[i + 1]!.inputError
+        ) {
+          wave.push(toolCalls[++i]!)
         }
+        for (const c of wave) if (!this.earlyRuns.has(c)) events?.onToolStart?.(c)
+        // Read-only calls never mutate — a pre-edit snapshot can never be used
+        // here, and capturing one costs a full document serialization per wave
+        const execs = await Promise.all(
+          wave.map((c) => this.earlyRuns.get(c) ?? this.runTool(c)),
+        )
+        if (generation !== this.generation) return // reset while tools were running
+        for (let k = 0; k < wave.length; k++) recordExecution(wave[k]!, execs[k]!, undefined)
+        continue
       }
+      events?.onToolStart?.(call)
+      const snapshot = !this.mutationSeen ? captureSnapshot?.(call) : undefined
+      const execution = await this.runTool(call)
       if (generation !== this.generation) return // reset while a tool was running
-      this.executedCalls.push({ name: call.name, ok: !execution.isError })
-      const firstMutation = !!execution.mutated && !this.mutationSeen
-      if (execution.mutated) {
-        this.mutationSeen = true
-        turnMutated = true
-      }
-      results.push({
-        id: call.id,
-        name: call.name,
-        output: execution.output,
-        isError: execution.isError,
-      })
-      events?.onToolExecuted?.({
-        call,
-        execution,
-        snapshotBefore: firstMutation ? snapshot : undefined,
-      })
+      recordExecution(call, execution, snapshot)
     }
     this.history.push({ role: 'tool', results })
 

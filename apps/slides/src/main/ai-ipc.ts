@@ -28,6 +28,7 @@ import {
   resolveAiSettings,
   setAiUserAgent,
   setRescueFetch,
+  warmAiConnections,
   streamForProvider,
   type AiSettings,
   type AiStreamChunk,
@@ -118,6 +119,8 @@ export function registerAiIpc(): void {
   // Node fetch (undici) direct connections get reset under VPN/tun setups; retry over Chromium's stack
   setRescueFetch((url, init) => net.fetch(url, init))
   setAiUserAgent(`VegaOffice/${app.getVersion()}`)
+  // keep TLS sockets warm between agent turns (default pool drops them after ~4s idle)
+  warmAiConnections()
 
   ipcMain.handle('ai:get-settings', (): AiSettings => {
     const stored = readJson<Partial<AiSettings> & LegacyAiSettings>(AI_SETTINGS_PATH(), {})

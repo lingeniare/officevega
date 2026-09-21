@@ -1,13 +1,19 @@
 import { aiPanelWidthAtPointer } from '@genoffice/ui'
 import { useEffect, useRef, useState } from 'react'
 import type { PointerEvent as ReactPointerEvent, ReactElement } from 'react'
-import { AgentLoop } from '@genoffice/agent-core'
-import { imageGenerationAvailable, type AiSettings } from '@genoffice/ai-provider/browser'
+import { AgentLoop, generateSuggestedQuestions } from '@genoffice/agent-core'
+import {
+  imageGenerationAvailable,
+  withFastModel,
+  type AiSettings,
+} from '@genoffice/ai-provider/browser'
 import {
   AiComposer,
   AiScopeQuote,
+  AiSuggestedQuestions,
   AiTypingIndicator,
   IconPlus,
+  useSuggestedQuestions,
   type AiScopeQuoteData,
 } from '@genoffice/ui'
 import { aiLangDirective, t as tGlobal, useI18n } from '../i18n/locale'
@@ -275,6 +281,26 @@ export function AiPanel({
   }, [])
   const langRef = useRef(lang)
   langRef.current = lang
+  /** user instruction of the latest run — the suggestion generator's "question" side */
+  const lastInstructionRef = useRef('')
+  // Suggested follow-ups ride a second transport whose settings swap in the
+  // user's "fast model" pick (withFastModel falls back to the main model).
+  const suggestTransportRef = useRef<ReturnType<typeof createElectronTransport> | null>(null)
+  if (!suggestTransportRef.current)
+    suggestTransportRef.current = createElectronTransport(() =>
+      withFastModel(settingsRef.current!),
+    )
+  const suggested = useSuggestedQuestions((user, assistant, signal) => {
+    if (!settingsRef.current) return Promise.resolve([])
+    return generateSuggestedQuestions({
+      transport: suggestTransportRef.current!,
+      app: 'pdf',
+      user,
+      assistant,
+      langDirective: aiLangDirective(langRef.current),
+      signal,
+    })
+  })
   const apiRef = useRef(api)
   apiRef.current = api
   const onRunDoneRef = useRef(onRunDone)
@@ -445,6 +471,9 @@ export function AiPanel({
             text: final || (last.tools?.length ? last.text : tGlobal('aiNoReply')),
           }))
           setBusy(false)
+          // follow-up suggestions are generated off the fast model after the reply lands
+          if (!cancelled && final)
+            suggested.refresh(lastInstructionRef.current, final)
           if (runMutatedRef.current) {
             runMutatedRef.current = false
             onRunDoneRef.current?.()
@@ -491,6 +520,8 @@ export function AiPanel({
     const loop = loopRef.current
     if (!instruction || !loop || loop.busy) return
     stickToBottomRef.current = true
+    suggested.clear()
+    lastInstructionRef.current = instruction
     const scope = retryScope !== undefined ? (retryScope ?? undefined) : selectionScopeQuote()
     persistMessage('user', instruction, undefined, scope)
     segTextRef.current = ''
@@ -634,6 +665,7 @@ export function AiPanel({
               onClick={() => {
                 stop()
                 loopRef.current?.reset()
+                suggested.clear()
                 setBusy(false)
                 setChat([])
               }}
@@ -748,6 +780,16 @@ export function AiPanel({
         {/* In-progress state: a standalone three-dot row at the end of the stream, kept until done */}
         {busy && <AiTypingIndicator label={typingLabel} />}
       </div>
+
+      {!busy && (
+        <AiSuggestedQuestions
+          questions={suggested.questions}
+          onPick={(q) => {
+            suggested.clear()
+            send(q)
+          }}
+        />
+      )}
 
       <div className="ai-composer">
         <AiComposer

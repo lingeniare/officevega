@@ -91,6 +91,18 @@ export interface ActiveSheetInfo {
   /** header names of the columns the selection covers, when it covers whole
    * ones — what the user means by "this column" */
   readonly selectionColumns?: readonly string[] | undefined
+  /** send-time snapshot of the selection's values (preview-bounded); absent
+   *  when the selection is missing or its cells are not loaded — in lazy mode
+   *  a preview of not-yet-streamed cells would read back as fake blanks */
+  readonly selectionPreview?:
+    | {
+        /** the cells actually read (clamped to the preview caps) */
+        readonly bounds: RangeBounds
+        /** the selection extends beyond the preview bounds */
+        readonly truncated: boolean
+        readonly cells: Record<string, { value: CellScalar; formula?: string | undefined }>
+      }
+    | undefined
   /** merged ranges on the active sheet (A1 notation) */
   readonly merges?: readonly string[] | undefined
   /** charts in the workbook (imported files only) */
@@ -265,6 +277,7 @@ const DEFAULT_FIND_RESULTS = 50
 export const WORKBOOK_TOOLS: AgentToolDef[] = [
   {
     name: 'get_workbook_context',
+    readonly: true,
     description:
       'Get a workbook overview: all sheets (id/name/data-extent rows-columns), active sheet, current selection, known non-empty cell addresses. ' +
       'For data-size questions (how many rows / how much data), answer from the data extent here instead of reading block by block; use read_range or read_cells when concrete values are needed.',
@@ -294,6 +307,7 @@ export const WORKBOOK_TOOLS: AgentToolDef[] = [
   },
   {
     name: 'aggregate_range',
+    readonly: true,
     description:
       'Compute statistics for a range without reading or modifying it cell by cell: non-empty count, distinct-value count, ' +
       'numeric sum/average/min/max, and the most frequent values. Handles very large ranges (up to 1,000,000 cells) efficiently. ' +
@@ -321,6 +335,7 @@ export const WORKBOOK_TOOLS: AgentToolDef[] = [
   },
   {
     name: 'load_guide',
+    readonly: true,
     description:
       'Load operation guide documents into context (field definitions, conventions, common mistakes). Except for the most basic single-cell reads/writes, load the relevant guides before generating propose_operations; several can be loaded at once. ' +
       `Available guides: ${guideCatalogSummary()}`,
@@ -394,6 +409,7 @@ export const WORKBOOK_TOOLS: AgentToolDef[] = [
   },
   {
     name: 'find_cells',
+    readonly: true,
     description:
       'Search the whole workbook (or one sheet) for cells whose value or formula matches a query; returns Sheet!Address with the cell content. ' +
       'Plain text matches as a case-insensitive substring; regex=true treats the query as a case-insensitive JavaScript regex; ' +
@@ -452,6 +468,7 @@ export const WORKBOOK_TOOLS: AgentToolDef[] = [
   },
   {
     name: 'trace_precedents',
+    readonly: true,
     description:
       'List the cells/ranges a formula reads (its precedents) with their current values, flagging any precedent that itself holds an error value — ' +
       'the first step when diagnosing a broken formula ("why is C10 #DIV/0!?"). Depth 1; call again on a suspect precedent to walk further up the chain. ' +
@@ -470,6 +487,7 @@ export const WORKBOOK_TOOLS: AgentToolDef[] = [
   },
   {
     name: 'trace_dependents',
+    readonly: true,
     description:
       'Find every formula in the workbook (all sheets) that reads a given cell — its dependents. ' +
       'Use before changing or deleting a cell to see what would break, or to follow how an error value propagates downstream. ' +
@@ -701,6 +719,36 @@ export function buildWorkbookContext(deps: SheetsSkillDeps): string {
             'whole run even if the user clicks elsewhere while you work.'
         : `Current selection: ${info.selection}${columns}`,
     )
+    const preview = info.selectionPreview
+    if (preview) {
+      const { bounds, truncated, cells } = preview
+      lines.push(
+        `Selection values${truncated ? ` (preview of ${info.selection})` : ''} — snapshot at send time:`,
+      )
+      lines.push(
+        [
+          '',
+          ...Array.from(
+            { length: bounds.endColumn - bounds.startColumn + 1 },
+            (_, offset) => columnLabel(bounds.startColumn + offset),
+          ),
+        ].join('\t'),
+      )
+      for (let row = bounds.startRow; row <= bounds.endRow; row++) {
+        const cellsInRow: string[] = [String(row + 1)]
+        for (let column = bounds.startColumn; column <= bounds.endColumn; column++) {
+          const cell = cells[formatAddress(row, column)]
+          cellsInRow.push(
+            cell
+              ? cell.value === null
+                ? escapeCellText(cell.formula ?? '')
+                : formatCellScalar(cell)
+              : '',
+          )
+        }
+        lines.push(cellsInRow.join('\t'))
+      }
+    }
   }
   if (info.loadedRange) {
     lines.push(`Currently loaded viewport: ${info.loadedRange} (not the worksheet data extent)`)

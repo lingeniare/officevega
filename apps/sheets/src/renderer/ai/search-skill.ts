@@ -18,6 +18,7 @@ export function createSearchSkill(): AgentSkill {
     tools: [
       {
         name: 'web_search',
+        readonly: true,
         description:
           'Search the web for textual information (references/data/facts). Use when you need up-to-date information or are unsure about a fact. Returns titles/links/snippets.',
         inputSchema: {

@@ -180,4 +180,9 @@ export const pt = {
     'Redija um comunicado de produto para mim. Produto e pontos principais: ',
   aiStarterGuide: 'Escrever um guia prático',
   aiStarterGuidePrompt: 'Escreva um guia prático para mim. O processo a explicar: ',
+  aiToolFillImages: 'Inserir imagens',
+  aiToolFillImagesDone: '{n} imagens inseridas',
+  aiFillImagesAsk: 'Gerar {n} imagens para a página?',
+  aiFillImagesYes: 'Gerar',
+  aiFillImagesNo: 'Agora não',
 } satisfies Record<keyof typeof zh, string>

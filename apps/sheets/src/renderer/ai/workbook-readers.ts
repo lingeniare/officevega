@@ -5,7 +5,13 @@
  * WorkbookReadContext closing over its refs.
  */
 import type { IRange } from '@univerjs/core'
-import { columnLabel, parseAddress } from '@genoffice/xlsx-gateway/domain/cell-address'
+import {
+  columnLabel,
+  formatAddress,
+  parseAddress,
+  parseRange,
+  type RangeBounds,
+} from '@genoffice/xlsx-gateway/domain/cell-address'
 import { MAX_PATCH_ENTRY_BYTES } from '../../shared/desktop-api'
 import type { InMemoryWorkbookAdapter } from '@genoffice/xlsx-gateway/domain/in-memory-workbook'
 import type { CellFormatState, CellScalar } from '@genoffice/xlsx-gateway/domain/workbook.types'
@@ -281,6 +287,60 @@ export function readFormats(
   return result
 }
 
+/** Caps for the send-time selection preview embedded in the run context:
+ *  bigger selections still go through read_range, but the common "work on
+ *  what I selected" case stops costing a tool round-trip. */
+const SELECTION_PREVIEW_MAX_ROWS = 20
+const SELECTION_PREVIEW_MAX_COLS = 8
+
+/**
+ * Values of the scoped selection, so the context can show them without a
+ * tool call. Built only when every previewed cell is actually present: in
+ * lazy mode a range outside the loaded rectangle would read back as fake
+ * blanks, which is worse than no preview at all.
+ */
+function selectionPreviewCells(
+  ctx: WorkbookReadContext,
+  a1: string | undefined,
+  sheetId: string,
+  state: LazyWorkbookState | null,
+): ActiveSheetInfo['selectionPreview'] {
+  if (!a1) return undefined
+  let bounds: RangeBounds
+  try {
+    bounds = parseRange(a1)
+  } catch {
+    return undefined
+  }
+  const clipped: RangeBounds = {
+    startRow: bounds.startRow,
+    startColumn: bounds.startColumn,
+    endRow: Math.min(bounds.endRow, bounds.startRow + SELECTION_PREVIEW_MAX_ROWS - 1),
+    endColumn: Math.min(bounds.endColumn, bounds.startColumn + SELECTION_PREVIEW_MAX_COLS - 1),
+  }
+  const truncated = clipped.endRow !== bounds.endRow || clipped.endColumn !== bounds.endColumn
+  if (state) {
+    const loaded = state.loadedRanges.get(sheetId)
+    const covered =
+      // formulaMode workbooks are fully live in the grid — nothing streams
+      state.formulaMode ||
+      state.flags.preloadComplete ||
+      (loaded !== undefined &&
+        clipped.startRow >= loaded.startRow &&
+        clipped.endRow <= loaded.endRow &&
+        clipped.startColumn >= loaded.startColumn &&
+        clipped.endColumn <= loaded.endColumn)
+    if (!covered) return undefined
+  }
+  const addresses: string[] = []
+  for (let row = clipped.startRow; row <= clipped.endRow; row++) {
+    for (let column = clipped.startColumn; column <= clipped.endColumn; column++) {
+      addresses.push(formatAddress(row, column))
+    }
+  }
+  return { bounds: clipped, truncated, cells: readCells(ctx, addresses, sheetId) }
+}
+
 /**
  * `frozen` is the selection scope of the run in flight: `undefined` when no run
  * owns one (report the live grid selection), `null` when the user dropped the
@@ -317,6 +377,12 @@ export function getActiveSheetInfo(
       ? `${columnLabel(loaded.startColumn)}${loaded.startRow + 1}:` +
         `${columnLabel(loaded.endColumn)}${loaded.endRow + 1}`
       : undefined
+    const selectionPreview = selectionPreviewCells(
+      ctx,
+      frozen === undefined ? live : frozen?.a1,
+      frozen?.sheetId ?? sheetId,
+      state,
+    )
     return {
       mode: 'lazy',
       streaming: !state.formulaMode,
@@ -337,6 +403,7 @@ export function getActiveSheetInfo(
       }),
       selection,
       ...frozenFields,
+      ...(selectionPreview ? { selectionPreview } : {}),
       merges: worksheet.getMergedRanges().map((range) => range.getA1Notation()),
       // Session-added charts have no chart part yet; their visual id
       // doubles as the edit_chart path.
@@ -356,6 +423,12 @@ export function getActiveSheetInfo(
   const activeId = workbook?.getActiveSheet()?.getSheetId()
   const sheet = snapshot.sheets.find((entry) => entry.id === activeId) ?? snapshot.sheets[0]
   if (!sheet) return { mode: 'none', sheetId: '', sheetName: '', knownAddresses: [], sheets: [] }
+  const selectionPreview = selectionPreviewCells(
+    ctx,
+    frozen === undefined ? live : frozen?.a1,
+    frozen?.sheetId ?? sheet.id,
+    null,
+  )
   return {
     mode: 'demo',
     sheetId: sheet.id,
@@ -378,6 +451,7 @@ export function getActiveSheetInfo(
     }),
     selection,
     ...frozenFields,
+    ...(selectionPreview ? { selectionPreview } : {}),
     merges: sheet.merges ?? [],
     charts: snapshot.sheets.flatMap((entry) =>
       (entry.visuals ?? []).map((visual) => ({

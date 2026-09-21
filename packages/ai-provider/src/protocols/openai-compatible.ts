@@ -16,12 +16,43 @@ import {
   type StreamCallbacks,
 } from './shared'
 
+/**
+ * Anthropic-family models behind OpenAI-compatible gateways (OpenRouter, the
+ * VEGA proxy, LiteLLM) honor `cache_control` markers passed through on message
+ * parts: the system block plus the tail message pin the whole prefix in cache,
+ * so tool-loop turns re-read it instead of re-prefilling. Other providers
+ * auto-cache (OpenAI, DeepSeek) or ignore the field, so it stays gated.
+ */
+function wantsPromptCache(model: string): boolean {
+  return /(^|\/)(anthropic\/)?claude[-\w.]*$/i.test(model) || /^claude[-\w.]*$/i.test(model)
+}
+
+const EPHEMERAL_CACHE = { type: 'ephemeral' } as const
+
+function cacheableContent(content: unknown): unknown {
+  if (typeof content === 'string') {
+    return [{ type: 'text', text: content, cache_control: EPHEMERAL_CACHE }]
+  }
+  if (Array.isArray(content) && content.length > 0) {
+    const tail = content.at(-1)
+    if (tail && typeof tail === 'object') {
+      return [...content.slice(0, -1), { ...tail, cache_control: EPHEMERAL_CACHE }]
+    }
+  }
+  return content
+}
+
 function openAiMessages(
   system: string,
   messages: AgentMessage[],
   echoReasoning: boolean,
+  promptCache: boolean,
 ): unknown[] {
-  const out: unknown[] = [{ role: 'system', content: system }]
+  const out: Array<Record<string, unknown>> = [
+    promptCache
+      ? { role: 'system', content: cacheableContent(system) }
+      : { role: 'system', content: system },
+  ]
   for (const m of messages) {
     if (m.role === 'user') {
       if (!m.images?.length) {
@@ -61,6 +92,11 @@ function openAiMessages(
         out.push({ role: 'tool', tool_call_id: r.id, content: r.output })
       }
     }
+  }
+  // breakpoint on the tail message: the whole conversation prefix is cached
+  if (promptCache && out.length > 1) {
+    const last = out.at(-1)!
+    last.content = cacheableContent(last.content)
   }
   return out
 }
@@ -165,7 +201,12 @@ async function openAiCompatibleTurn(
       ...(options.useMaxCompletionTokens
         ? { max_completion_tokens: maxTokens }
         : { max_tokens: maxTokens }),
-      messages: openAiMessages(system, messages, modelEchoesReasoning(config.model)),
+      messages: openAiMessages(
+        system,
+        messages,
+        modelEchoesReasoning(config.model),
+        wantsPromptCache(config.model),
+      ),
       ...(tools.length > 0
         ? {
             tools: tools.map((t) => ({
@@ -259,6 +300,16 @@ async function openAiCompatibleTurn(
       cb.onDelta(choice.delta.content)
     }
     for (const tc of choice.delta?.tool_calls ?? []) {
+      // A call's arguments end when the stream moves on to a higher index —
+      // emit it right away so read-only tools start while later calls stream.
+      for (const [index, pending] of pendingTools) {
+        if (index < tc.index && pending.name) {
+          pendingTools.delete(index)
+          const { input, error } = parseToolInput(pending.json)
+          emitted = true
+          cb.onToolCall({ id: pending.id, name: pending.name, input, inputError: error })
+        }
+      }
       const pending = pendingTools.get(tc.index) ?? {
         id: tc.id ?? crypto.randomUUID(),
         name: '',

@@ -4,6 +4,7 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vite
 
 const agentHarness = vi.hoisted(() => ({
   events: null as null | {
+    onToolStart?: (call: { id: string; name: string; input: unknown }) => void
     onToolExecuted?: (event: {
       call: { id: string; name: string; input: unknown }
       execution: { summary: string; output?: string; isError?: boolean; mutated?: boolean }
@@ -193,6 +194,49 @@ describe('AiPanel agent run lifecycle (slides)', () => {
         ],
       }),
     )
+  })
+
+  it('replaces the running chip of the call that finished — not the last one in a read-only wave', async () => {
+    const { container } = mount(
+      createElement(
+        AiPanel,
+        panelProps({ preset: { text: 'Summarize the deck', nonce: 1, autoRun: true } }),
+      ),
+    )
+    await flushEffects()
+    expect(agentHarness.events).not.toBeNull()
+
+    // a read-only wave: both calls show a live chip before either resolves
+    act(() => {
+      agentHarness.events!.onToolStart?.({ id: 'call-a', name: 'read_slide', input: {} })
+      agentHarness.events!.onToolStart?.({ id: 'call-b', name: 'web_search', input: {} })
+    })
+    act(() => {
+      agentHarness.events!.onToolExecuted?.({
+        call: { id: 'call-a', name: 'read_slide', input: {} },
+        execution: { summary: 'Read page 1', output: 'ok' },
+      })
+    })
+
+    const rows = container.querySelectorAll('.ai-step-row')
+    expect(rows.length).toBe(2)
+    // call A's own chip turned into its result; call B still spins
+    expect(rows[0]!.querySelector('.ai-step-title')?.getAttribute('data-tip')).toBe('read_slide')
+    expect(rows[0]!.querySelector('.ai-step-icon.running')).toBeNull()
+    expect(rows[1]!.querySelector('.ai-step-title')?.getAttribute('data-tip')).toBe('web_search')
+    expect(rows[1]!.querySelector('.ai-step-icon.running')).not.toBeNull()
+
+    // a parse-fail execution has no placeholder — it must append, not steal B's chip
+    act(() => {
+      agentHarness.events!.onToolExecuted?.({
+        call: { id: 'call-c', name: 'apply_ops', input: {} },
+        execution: { summary: 'apply_ops', output: 'bad json', isError: true },
+      })
+    })
+    const after = container.querySelectorAll('.ai-step-row')
+    expect(after.length).toBe(3)
+    expect(after[1]!.querySelector('.ai-step-icon.running')).not.toBeNull()
+    expect(after[2]!.querySelector('.ai-step-title')?.getAttribute('data-tip')).toBe('apply_ops')
   })
 
   it('keeps readable images and continues the run when another attachment read rejects', async () => {

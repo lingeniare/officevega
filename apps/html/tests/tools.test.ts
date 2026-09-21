@@ -9,6 +9,7 @@ import {
   findTruncatedDataUrl,
   type HtmlDocAccess,
 } from '../src/renderer/ai/tools'
+import { t } from '../src/renderer/i18n/locale'
 import type { Brief } from '../src/renderer/document/brief'
 import type { PageWriteSpec } from '../src/renderer/ai/page-writer'
 import type { BriefPlanSpec } from '../src/renderer/ai/brief-writer'
@@ -92,27 +93,29 @@ describe('html skill tools', () => {
     expect(outline).toContain('div.card  "Revenue"')
   })
 
-  it('read_source addresses by sid and by lines with line numbers', () => {
+  it('read_source addresses by sid and by lines with line numbers', async () => {
     const doc = fakeAccess(DOC)
     const core = createHtmlSkillCore(doc.access)
     const sid = doc.access.getMap().elements.find((e) => e.tag === 'p')!.sid
-    const bySid = core.executeTool(call('read_source', { sid }))
+    const bySid = await core.executeTool(call('read_source', { sid }))
     expect(bySid.output).toBe('   10| <p>Closing note.</p>')
-    const byLines = core.executeTool(call('read_source', { start_line: 5, end_line: 6 }))
+    const byLines = await core.executeTool(
+      call('read_source', { start_line: 5, end_line: 6 }),
+    )
     expect(byLines.output.split('\n')).toEqual([
       '    5| <h1 id="t">Quarterly</h1>',
       '    6| <section class="kpis">',
     ])
   })
 
-  it('apply_ops applies a mixed batch atomically and reports locations', () => {
+  it('apply_ops applies a mixed batch atomically and reports locations', async () => {
     const doc = fakeAccess(DOC)
     const core = createHtmlSkillCore(doc.access)
     core.buildContext()
     const map = doc.access.getMap()
     const h1 = map.elements.find((e) => e.tag === 'h1')!.sid
     const cards = map.elements.filter((e) => e.tag === 'div')
-    const r = core.executeTool(
+    const r = await core.executeTool(
       call('apply_ops', {
         ops: [
           { op: 'set_text', sid: h1, text: 'Q3 Results' },
@@ -130,12 +133,12 @@ describe('html skill tools', () => {
     expect(doc.text).toContain('Closing remarks.')
   })
 
-  it('a failing op rejects the whole batch with per-op reasons', () => {
+  it('a failing op rejects the whole batch with per-op reasons', async () => {
     const doc = fakeAccess(DOC)
     const core = createHtmlSkillCore(doc.access)
     core.buildContext()
     const before = doc.text
-    const r = core.executeTool(
+    const r = await core.executeTool(
       call('apply_ops', {
         ops: [
           { op: 'str_replace', old: 'Closing note.', new: 'x' },
@@ -151,19 +154,19 @@ describe('html skill tools', () => {
     expect(doc.text).toBe(before)
   })
 
-  it('refuses to edit after the user typed since the model last looked', () => {
+  it('refuses to edit after the user typed since the model last looked', async () => {
     const doc = fakeAccess(DOC)
     const core = createHtmlSkillCore(doc.access)
     core.buildContext()
     doc.userTypes(DOC.replace('Closing note.', 'Closing NOTE.'))
-    const r = core.executeTool(
+    const r = await core.executeTool(
       call('apply_ops', { ops: [{ op: 'str_replace', old: 'Quarterly', new: 'Q' }] }),
     )
     expect(r.isError).toBe(true)
     expect(r.output).toMatch(/changed since you last looked/)
     // re-reading clears the staleness
-    core.executeTool(call('get_outline', {}))
-    const ok = core.executeTool(
+    await core.executeTool(call('get_outline', {}))
+    const ok = await core.executeTool(
       call('apply_ops', { ops: [{ op: 'str_replace', old: 'Quarterly', new: 'Q' }] }),
     )
     expect(ok.isError).toBeFalsy()
@@ -205,6 +208,46 @@ describe('generation flow tools', () => {
       call('ask_clarification', { questions: [{ id: 'a', label: 'x', options: ['1'] }] }),
     )
     expect(skipped.output).toMatch(/skipped/)
+  })
+
+  it('ask_clarification runs its search queries in parallel and appends the findings', async () => {
+    const doc = fakeAccess('')
+    const searched: string[] = []
+    doc.access.webSearch = async (q) => {
+      searched.push(q)
+      return q === 'acme history'
+        ? {
+            method: 'serper',
+            answer: 'Acme was founded in 1999',
+            results: [{ title: 'Acme Inc', url: 'https://acme.test', snippet: 'widgets' }],
+          }
+        : { method: 'error', error: 'boom', results: [] }
+    }
+    doc.access.askClarification = async () => ({ answers: 'Structure: hero → pricing' })
+    const r = await createHtmlSkillCore(doc.access).executeTool(
+      call('ask_clarification', {
+        questions: [{ id: 's', label: 'Structure?', options: ['a', 'b'] }],
+        search: ['acme history', '   ', 'acme funding'],
+      }),
+    )
+    // blank queries are dropped; the errored one contributes nothing
+    expect(searched).toEqual(['acme history', 'acme funding'])
+    expect(r.isError).toBeFalsy()
+    expect(r.output).toContain('Structure: hero → pricing')
+    expect(r.output).toContain('### acme history')
+    expect(r.output).toContain('Acme was founded in 1999')
+    expect(r.output).toContain('https://acme.test')
+    expect(r.output).not.toContain('### acme funding')
+    // no webSearch wiring → same flow, just without findings
+    const doc2 = fakeAccess('')
+    doc2.access.askClarification = async () => ({ answers: 'a: b' })
+    const plain = await createHtmlSkillCore(doc2.access).executeTool(
+      call('ask_clarification', {
+        questions: [{ id: 's', label: 'x', options: ['a'] }],
+        search: ['q'],
+      }),
+    )
+    expect(plain.output).not.toContain('Web findings')
   })
 
   it('plan_page drafts the brief through the writer and relays confirm / redo / dismiss decisions', async () => {
@@ -435,7 +478,7 @@ describe('generation flow tools', () => {
     const realApply = doc.access.applyOps
     // the app wrapper lands pending live edits before compiling; simulate that landing plus a failed op
     doc.access.applyOps = (ops) => {
-      realApply([{ op: 'str_replace', old: 'Quarterly', new: 'Quarterly (live)' }])
+      realApply([{ op: 'str_replace', old: 'Quarterly', new: 'Quarterly (live)' }], 'live edit')
       return {
         ok: false,
         errors: [{ index: 0, kind: 'not_found', message: `gone: ${ops.length} op` }],
@@ -484,6 +527,115 @@ describe('generation flow tools', () => {
     expect(ctx).toContain('## Brief')
     expect(ctx).toContain('core hook: Ship faster')
     expect(ctx).toContain('sections: Why')
+  })
+})
+
+describe('fill_images', () => {
+  const SLOTS_DOC = `<!doctype html>
+<html><head><style>.img-slot{background:var(--brief-surface)}</style></head>
+<body>
+<img class="img-slot" data-img="hero shot of a rooftop solar array" alt="hero">
+<img class="img-slot" data-img="team photo in a bright office" alt="team">
+</body></html>`
+
+  it('asks the user, generates each unique prompt once and fills the slots in one batch', async () => {
+    const doc = fakeAccess(SLOTS_DOC)
+    let asked = 0
+    const generated: string[] = []
+    doc.access.askClarification = async () => {
+      asked++
+      return { answers: 'x: Generate' }
+    }
+    doc.access.generateImage = async ({ prompt }) => {
+      generated.push(prompt)
+      return { url: `https://img.test/${generated.length}.png` }
+    }
+    doc.access.persistImage = async (u) => u
+    const core = createHtmlSkillCore(doc.access)
+    core.buildContext()
+    const r = await core.executeTool(call('fill_images', {}))
+    expect(asked).toBe(1)
+    expect(r.isError).toBeFalsy()
+    expect(r.mutated).toBe(true)
+    expect(generated).toEqual([
+      'hero shot of a rooftop solar array',
+      'team photo in a bright office',
+    ])
+    expect(doc.text).not.toContain('data-img')
+    expect(doc.text).toContain('src="https://img.test/1.png"')
+    expect(doc.text).toContain('src="https://img.test/2.png"')
+    // a repeated prompt shares the resolved image instead of generating twice
+    const dup = fakeAccess(
+      SLOTS_DOC.replace('team photo in a bright office', 'hero shot of a rooftop solar array'),
+    )
+    dup.access.askClarification = async () => ({ answers: 'yes' })
+    const dupGen: string[] = []
+    dup.access.generateImage = async ({ prompt }) => {
+      dupGen.push(prompt)
+      return { url: 'https://img.test/shared.png' }
+    }
+    dup.access.persistImage = async (u) => u
+    const dupCore = createHtmlSkillCore(dup.access)
+    dupCore.buildContext()
+    await dupCore.executeTool(call('fill_images', {}))
+    expect(dupGen).toEqual(['hero shot of a rooftop solar array'])
+    expect(dup.text.match(/src="https:\/\/img\.test\/shared\.png"/g)).toHaveLength(2)
+  })
+
+  it('keeps the placeholders untouched when the user declines or skips', async () => {
+    for (const decision of [
+      { answers: 'x: no', cancelled: true },
+      { answers: `x: ${t('aiFillImagesNo')}` },
+    ]) {
+      const doc = fakeAccess(SLOTS_DOC)
+      doc.access.askClarification = async () => decision
+      let calls = 0
+      doc.access.generateImage = async () => {
+        calls++
+        return { url: 'https://img.test/x.png' }
+      }
+      doc.access.persistImage = async (u) => u
+      const r = await createHtmlSkillCore(doc.access).executeTool(call('fill_images', {}))
+      expect(r.isError).toBeFalsy()
+      expect(calls).toBe(0)
+      expect(doc.text).toBe(SLOTS_DOC)
+    }
+  })
+
+  it('falls back to image search when generation fails, and reports unresolvable slots', async () => {
+    const doc = fakeAccess(SLOTS_DOC)
+    doc.access.askClarification = async () => ({ answers: 'yes' })
+    doc.access.generateImage = async () => ({ error: 'not signed in' })
+    doc.access.searchImages = async (q) => (q.includes('hero') ? ['https://cdn.test/hero.jpg'] : [])
+    doc.access.persistImage = async (u) => u
+    const core = createHtmlSkillCore(doc.access)
+    core.buildContext()
+    const r = await core.executeTool(call('fill_images', {}))
+    expect(r.mutated).toBe(true)
+    expect(doc.text).toContain('src="https://cdn.test/hero.jpg"')
+    // the unresolved slot stays a styled placeholder
+    expect(doc.text).toContain('data-img="team photo in a bright office"')
+    // nothing resolvable anywhere → error, no mutation
+    const dead = fakeAccess(SLOTS_DOC)
+    dead.access.generateImage = async () => ({ error: 'nope' })
+    dead.access.searchImages = async () => []
+    dead.access.persistImage = async (u) => u
+    const gone = await createHtmlSkillCore(dead.access).executeTool(call('fill_images', {}))
+    expect(gone.isError).toBe(true)
+    expect(dead.text).toBe(SLOTS_DOC)
+  })
+
+  it('refuses pages without image slots and environments without resolvers', async () => {
+    const doc = fakeAccess(DOC)
+    const core = createHtmlSkillCore(doc.access)
+    const noSlots = await core.executeTool(call('fill_images', {}))
+    expect(noSlots.isError).toBe(true)
+    expect(noSlots.output).toContain('no <img data-img> slots')
+    const bare = fakeAccess(SLOTS_DOC)
+    const noResolvers = await createHtmlSkillCore(bare.access).executeTool(call('fill_images', {}))
+    expect(noResolvers.isError).toBe(true)
+    expect(noResolvers.output).toContain('not available')
+    expect(bare.text).toBe(SLOTS_DOC)
   })
 })
 
@@ -545,16 +697,16 @@ describe('attachment:// references in apply_ops', () => {
     expect(doc.text).toContain('Quarterly')
   })
 
-  it('without a resolver the reference stays literal text (no crash)', () => {
+  it('without a resolver the reference stays literal text (no crash)', async () => {
     const doc = fakeAccess(DOC)
     const core = createHtmlSkillCore(doc.access)
     core.buildContext()
     const h1 = doc.access.getMap().elements.find((e) => e.tag === 'h1')!.sid
-    const r = core.executeTool(
+    const r = await core.executeTool(
       call('apply_ops', {
         ops: [{ op: 'set_attr', sid: h1, name: 'data-x', value: 'attachment://logo.png' }],
       }),
-    ) as { isError?: boolean }
+    )
     expect(r.isError).toBeFalsy()
     expect(doc.text).toContain('data-x="attachment://logo.png"')
   })
@@ -687,13 +839,13 @@ describe('expandAttachmentRefs', () => {
 })
 
 describe('truncated data: URL guard in apply_ops', () => {
-  it('rejects the batch when an op re-types an ellipsized data: src', () => {
+  it('rejects the batch when an op re-types an ellipsized data: src', async () => {
     const doc = fakeAccess(DOC)
     const core = createHtmlSkillCore(doc.access)
     core.buildContext()
     const h1 = doc.access.getMap().elements.find((e) => e.tag === 'h1')!.sid
     const before = doc.text
-    const r = core.executeTool(
+    const r = await core.executeTool(
       call('apply_ops', {
         ops: [
           { op: 'set_text', sid: h1, text: 'New title' },
@@ -705,7 +857,7 @@ describe('truncated data: URL guard in apply_ops', () => {
           },
         ],
       }),
-    ) as { output: string; isError?: boolean }
+    )
     expect(r.isError).toBe(true)
     expect(r.output).toContain('op 2')
     expect(r.output).toContain('truncated data: URL')
@@ -727,12 +879,12 @@ describe('truncated data: URL guard in apply_ops', () => {
     expect(findTruncatedDataUrl(styled)).toBe(0)
   })
 
-  it('leaves complete data: URLs and prose ellipses alone', () => {
+  it('leaves complete data: URLs and prose ellipses alone', async () => {
     const doc = fakeAccess(DOC)
     const core = createHtmlSkillCore(doc.access)
     core.buildContext()
     const h1 = doc.access.getMap().elements.find((e) => e.tag === 'h1')!.sid
-    const r = core.executeTool(
+    const r = await core.executeTool(
       call('apply_ops', {
         ops: [
           {
@@ -744,7 +896,7 @@ describe('truncated data: URL guard in apply_ops', () => {
           { op: 'set_text', sid: h1, text: 'To be continued\u2026 (data: not a url)' },
         ],
       }),
-    ) as { output: string; isError?: boolean; mutated?: boolean }
+    )
     expect(r.isError).toBeFalsy()
     expect(r.mutated).toBe(true)
     expect(doc.text).toContain('R0lGODlhAQABAAAAACw=')

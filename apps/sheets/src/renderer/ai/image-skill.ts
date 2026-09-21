@@ -28,6 +28,7 @@ export function createImageSkill(imageGen: () => boolean = () => true): AgentSki
   const allTools = [
     {
       name: 'image_search',
+      readonly: true,
       description:
         'Search the web for images. Returns a numbered list of direct imageUrl entries with pixel sizes; ' +
         'pick one and insert it with propose_operations add_image (path = the URL).',
@@ -42,6 +43,7 @@ export function createImageSkill(imageGen: () => boolean = () => true): AgentSki
     },
     {
       name: 'generate_image',
+      readonly: true,
       description:
         'Generate an image with AI from a text prompt. Returns a URL to insert ' +
         'with propose_operations add_image. Use for illustrations/decorative art; prefer image_search for real-world subjects.',

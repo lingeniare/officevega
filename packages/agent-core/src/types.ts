@@ -4,6 +4,14 @@ export interface AgentToolDef {
   description: string
   /** JSON Schema (object) describing the tool input */
   inputSchema: Record<string, unknown>
+  /**
+   * Marks a side-effect-free tool: the loop may run it concurrently with other
+   * read-only calls and start it as soon as its arguments finish streaming,
+   * while the model is still generating the rest of the turn. Never set on
+   * tools that mutate the artifact — mutating calls always run serially, in
+   * issue order, after the turn's stream completes.
+   */
+  readonly?: boolean
 }
 
 export interface AgentToolCall {
