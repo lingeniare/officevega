@@ -48,3 +48,7 @@ _scratch-*
 
 # Local LLM-translation cache for scripts/add-locales.mjs — regenerable, do not commit
 /scripts/.add-locales-cache.json
+
+# Ad-hoc API response dumps left over from curl/translate debugging
+/resp.json
+/r[0-9]*.json
