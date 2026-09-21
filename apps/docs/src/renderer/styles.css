@@ -600,6 +600,9 @@ html.vegaoffice-popover-open .ribbon-tabs {
 .ribbon-body {
   display: flex;
   align-items: stretch;
+  /* single weight for the whole band: labels/icons default to 400; glyphs
+     that deliberately deviate keep their own declaration */
+  font-weight: 400;
   /* band metrics shared with the slides ribbon; the 5px scrollbar lane below
      is carved out of the bottom padding so the 80px band stays unchanged */
   padding: 6px 12px 1px;
@@ -7449,10 +7452,10 @@ body.docs-crop-active
   border: 1px solid var(--border);
   border-radius: 999px;
   background: var(--surface);
-  color: var(--color-ai-action);
+  color: var(--text);
+  font-family: var(--gs-font-sans);
   font-size: 14px;
-  font-weight: 500;
-  box-shadow: var(--docs-shadow-menu);
+  font-weight: 400;
   cursor: pointer;
 }
 
@@ -7586,12 +7589,12 @@ body.docs-crop-active
 
 .ai-ask-confirm {
   border: 1px solid transparent;
-  background: var(--color-ai-action);
-  color: var(--color-ai-action-text);
+  background: var(--accent);
+  color: var(--color-bg-page);
 }
 
 .ai-ask-confirm:hover:not(:disabled) {
-  background: var(--color-ai-action-hover);
+  background: var(--accent-dark);
 }
 
 .ai-ask-confirm:disabled {

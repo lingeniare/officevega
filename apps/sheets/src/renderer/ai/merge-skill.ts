@@ -9,6 +9,7 @@
 import type { AgentSkill } from '@genoffice/agent-core'
 import type { AttachmentMeta } from '../../shared/desktop-api'
 import type { MergeSourcesResult } from '../merge-workbooks'
+import { t } from '../i18n/locale'
 
 export const SPREADSHEET_ATTACHMENT_EXTS = new Set(['xlsx', 'xlsm', 'xls', 'csv'])
 
@@ -85,7 +86,7 @@ export function createMergeSkill(deps: MergeSkillDeps): AgentSkill {
           output:
             'No spreadsheet attachments to merge. Ask the user to attach xlsx/xlsm/xls/csv files first.',
           isError: true,
-          summary: 'merge: no sources',
+          summary: t('aiToolMergeNoSources'),
         }
       }
       try {
@@ -98,13 +99,13 @@ export function createMergeSkill(deps: MergeSkillDeps): AgentSkill {
         if (skipped.length > 0) lines.push(`Skipped: ${skipped.join('; ')}`)
         return {
           output: lines.join('\n'),
-          summary: `merged ${result.importedSheets} sheets`,
+          summary: t('aiToolMergeDone', { count: result.importedSheets }),
         }
       } catch (error: unknown) {
         return {
           output: `Merge failed: ${error instanceof Error ? error.message : String(error)}`,
           isError: true,
-          summary: 'merge failed',
+          summary: t('aiToolMergeFailed'),
         }
       }
     },

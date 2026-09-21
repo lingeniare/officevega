@@ -152,6 +152,7 @@ export const he = {
   aiSumEditedChart: 'נערכו נתוני התרשים (בלוק {index})',
   aiSumSetHeader: 'הכותרת העליונה עודכנה',
   aiSumSetFooter: 'הכותרת התחתונה עודכנה',
+  aiSumSetHeaderFooter: 'עדכון כותרת עליונה/תחתונה',
   aiSumSetPageSetup: 'הגדרת העמוד עודכנה',
   aiSumInsertSectionBreak: 'מעבר מקטע הוסף',
   aiSumApplyCommands: 'החלת פקודות עיצוב',

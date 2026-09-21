@@ -159,6 +159,7 @@ export const pl = {
   aiSumEditedChart: 'Edytowano dane wykresu (blok {index})',
   aiSumSetHeader: 'Zaktualizowano nagłówek',
   aiSumSetFooter: 'Zaktualizowano stopkę',
+  aiSumSetHeaderFooter: 'Aktualizuj nagłówek/stopkę',
   aiSumSetPageSetup: 'Zaktualizowano ustawienia strony',
   aiSumInsertSectionBreak: 'Wstawiono podział sekcji',
   aiSumApplyCommands: 'Zastosuj polecenia formatowania',

@@ -15,6 +15,7 @@ import {
   type AiScopeQuoteData,
 } from '@genoffice/ui'
 import { aiLangDirective, t as tGlobal, useI18n } from '../i18n/locale'
+import { localizedToolSummary, toolLabel } from './tool-labels'
 import attachIcon from '../assets/attach-icon.png'
 import fileDocumentIcon from '../assets/file-document.png'
 import fileExcelIcon from '../assets/file-excel.png'
@@ -684,7 +685,7 @@ export function AiPanel({
           patchLast((last) => ({
             tools: [
               ...(last.tools ?? []),
-              { name: call.name, summary: call.name.replace(/[_-]+/g, ' '), running: true },
+              { name: call.name, summary: toolLabel(call.name), running: true },
             ],
           }))
         },
@@ -702,7 +703,8 @@ export function AiPanel({
           }
           const activity: ToolActivity = {
             name: call.name,
-            summary: execution.summary,
+            // agent-core error paths carry the raw tool name — localize it
+            summary: localizedToolSummary(call.name, execution.summary),
             isError: execution.isError,
             output: execution.output?.slice(0, TOOL_OUTPUT_MAX_CHARS),
           }
@@ -820,7 +822,7 @@ export function AiPanel({
             text: m.text,
             tools: m.tools?.map((tool) => ({
               name: tool.name,
-              summary: tool.summary,
+              summary: localizedToolSummary(tool.name, tool.summary),
               isError: tool.isError,
               output: tool.output ? tool.output.slice(0, TOOL_OUTPUT_MAX_CHARS) : undefined,
             })),

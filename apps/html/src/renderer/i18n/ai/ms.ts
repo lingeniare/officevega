@@ -60,6 +60,7 @@ export const ms = {
   aiToolReadSource: 'Membaca sumber',
   aiToolApplyOps: '{n} suntingan digunakan',
   aiToolApplyOpsFailed: 'Suntingan tidak digunakan',
+  aiToolApplyOpsRunning: 'Menerapkan perubahan',
   aiClarifyDecide: 'Putuskan untuk saya',
   aiClarifyDecideAnswer: '(putuskan untuk saya)',
   aiClarifyMulti: 'Pilihan berbilang',

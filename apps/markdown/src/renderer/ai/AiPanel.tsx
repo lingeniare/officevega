@@ -13,6 +13,7 @@ import {
 } from '@genoffice/ui'
 import type { Editor } from '@tiptap/core'
 import { aiLangDirective, t as tGlobal, useI18n } from '../i18n/locale'
+import { localizedToolSummary, toolLabel } from './tool-labels'
 import { clearAiHighlights } from '../editor/aiHighlight'
 import { setInactiveSelectionShown } from '../editor/inactiveSelection'
 import { createMarkdownSkill, MARKDOWN_RULES } from './markdown-skill'
@@ -384,7 +385,7 @@ export function AiPanel({
           patchLast((last) => ({
             tools: [
               ...(last.tools ?? []),
-              { name: call.name, summary: call.name.replace(/[_-]+/g, ' '), running: true },
+              { name: call.name, summary: toolLabel(call.name), running: true },
             ],
           }))
         },
@@ -402,7 +403,8 @@ export function AiPanel({
           }
           const activity: ToolActivity = {
             name: call.name,
-            summary: execution.summary,
+            // agent-core error paths carry the raw tool name — localize it
+            summary: localizedToolSummary(call.name, execution.summary),
             isError: execution.isError,
             output: execution.output?.slice(0, TOOL_OUTPUT_MAX_CHARS),
           }
@@ -506,7 +508,7 @@ export function AiPanel({
             text: m.text,
             tools: m.tools?.map((tool) => ({
               name: tool.name,
-              summary: tool.summary,
+              summary: localizedToolSummary(tool.name, tool.summary),
               isError: tool.isError,
               output: tool.output ? tool.output.slice(0, TOOL_OUTPUT_MAX_CHARS) : undefined,
             })),
@@ -764,10 +766,10 @@ export function AiPanel({
         onPointerDown={startResize}
         role="separator"
         aria-orientation="vertical"
-        aria-label={lang === 'ru' ? 'ВЕГА' : 'VEGA'}
+        aria-label={lang === 'ru' ? 'ВЕГА ИИ' : 'VEGA'}
       />
       <header className="ai-panel-header">
-        <span className="ai-panel-title">{lang === 'ru' ? 'ВЕГА' : 'VEGA'}</span>
+        <span className="ai-panel-title">{lang === 'ru' ? 'ВЕГА ИИ' : 'VEGA'}</span>
         <div className="ai-panel-header-actions">
           {chat.length > 0 && (
             <button

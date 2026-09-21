@@ -160,6 +160,7 @@ export const nl = {
   aiSumEditedChart: 'Grafiekgegevens bewerkt (blok {index})',
   aiSumSetHeader: 'Koptekst bijgewerkt',
   aiSumSetFooter: 'Voettekst bijgewerkt',
+  aiSumSetHeaderFooter: 'Koptekst/voettekst bijwerken',
   aiSumSetPageSetup: 'Pagina-instelling bijgewerkt',
   aiSumInsertSectionBreak: 'Sectie-einde ingevoegd',
   aiSumApplyCommands: 'Opmaakopdrachten toepassen',

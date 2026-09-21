@@ -111,8 +111,7 @@ export const ar = {
   aiOverloadedError: 'خدمة الذكاء الاصطناعي مشغولة حاليًا — يرجى المحاولة مرة أخرى بعد قليل',
   aiNetworkError:
     'مشكلة في الشبكة: تعذّر الوصول إلى خدمة الذكاء الاصطناعي. تحقق من الاتصال وحاول مجددًا',
-  aiCreditsExhausted:
-    'نفدت أرصدة VEGA لديك. يرجى إعادة الشحن عبر api.vega.chat ثم المحاولة مجددًا',
+  aiCreditsExhausted: 'نفدت أرصدة VEGA لديك. يرجى إعادة الشحن عبر api.vega.chat ثم المحاولة مجددًا',
   aiSumReadAttachment: 'قراءة المرفق',
   aiSumImageAttachment: 'مرفق صورة {name}',
   aiSumRead: 'قراءة {name}',
@@ -155,6 +154,7 @@ export const ar = {
   aiSumEditedChart: 'تم تحرير بيانات المخطط (الكتلة {index})',
   aiSumSetHeader: 'تم تحديث رأس الصفحة',
   aiSumSetFooter: 'تم تحديث تذييل الصفحة',
+  aiSumSetHeaderFooter: 'تحديث الرأس/التذييل',
   aiSumSetPageSetup: 'تم تحديث إعداد الصفحة',
   aiSumInsertSectionBreak: 'تم إدراج فاصل مقطعي',
   aiSumApplyCommands: 'تنفيذ أوامر التنسيق',

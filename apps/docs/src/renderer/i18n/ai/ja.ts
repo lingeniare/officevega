@@ -158,6 +158,7 @@ export const ja = {
   aiSumEditedChart: 'グラフデータを編集(ブロック {index})',
   aiSumSetHeader: 'ヘッダーを更新',
   aiSumSetFooter: 'フッターを更新',
+  aiSumSetHeaderFooter: 'ヘッダー/フッターを更新',
   aiSumSetPageSetup: 'ページ設定を更新',
   aiSumInsertSectionBreak: 'セクション区切りを挿入',
   aiSumApplyCommands: '書式コマンドを実行',

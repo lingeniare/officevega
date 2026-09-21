@@ -161,6 +161,7 @@ export const it = {
   aiSumEditedChart: 'Dati del grafico modificati (blocco {index})',
   aiSumSetHeader: 'Intestazione aggiornata',
   aiSumSetFooter: 'Piè di pagina aggiornato',
+  aiSumSetHeaderFooter: 'Aggiorna intestazione/piè di pagina',
   aiSumSetPageSetup: 'Impostazioni pagina aggiornate',
   aiSumInsertSectionBreak: 'Interruzione di sezione inserita',
   aiSumApplyCommands: 'Applica comandi di formattazione',

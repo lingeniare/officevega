@@ -61,6 +61,7 @@ export const de = {
   aiToolReadSource: 'Quelltext lesen',
   aiToolApplyOps: '{n} Änderung(en) angewendet',
   aiToolApplyOpsFailed: 'Änderungen nicht angewendet',
+  aiToolApplyOpsRunning: 'Änderungen anwenden',
   aiClarifyDecide: 'Entscheide für mich',
   aiClarifyDecideAnswer: '(entscheide für mich)',
   aiClarifyMulti: 'Mehrfachauswahl',

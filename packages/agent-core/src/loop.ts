@@ -114,6 +114,17 @@ const TURN_LIMIT_NOTE =
   'Answer directly from the information already gathered; if the task is unfinished, briefly state what is done and what remains.'
 
 /**
+ * One warning shot before the identical-turn guard aborts the run: a model
+ * nudged while it can still change course usually breaks the loop (different
+ * tool, different arguments, or a direct answer from what it already has).
+ * A tool that keeps failing gets told to report the failure instead of
+ * retrying it forever.
+ */
+const REPEAT_NOTE =
+  '[System] The last turns repeated the exact same tool call and produced identical results — the run is looping, not progressing. ' +
+  'Do not issue that call again: if the tool keeps failing, briefly report the failure to the user; otherwise change the arguments or the approach, or answer directly from the information already gathered.'
+
+/**
  * Terminal assistant text when tools mutated the artifact (or an edits-only
  * turn was restored) and the model returned no prose. Must be non-empty so
  * provider message converters never emit empty assistant content, which breaks
@@ -212,6 +223,8 @@ export class AgentLoop<TSnapshot = unknown> {
   /** signature (text + tool calls) of the previous turn, for the identical-turn guard */
   private lastTurnSig = ''
   private identicalTurns = 0
+  /** the loop-warning note may fire once per run — never more */
+  private repeatWarned = false
   private allErrorTurns = 0
   private turnStopReason: string | null = null
   private turnText = ''
@@ -251,10 +264,10 @@ export class AgentLoop<TSnapshot = unknown> {
     if (this.running || this.history.length > 0 || messages.length === 0) return
     // Edits-only runs persist an assistant message with no text; give it a placeholder
     // so the turn stays paired and providers never see an empty assistant content block.
-    // Turn-limit notes persisted by older builds are stripped: they are stale
-    // directives ("no more tools may be called") that poison every later run.
+    // Turn-limit and repeat-loop notes persisted by older builds are stripped:
+    // they are stale directives that poison every later run.
     const normalized = messages
-      .filter((m) => !(m.role === 'user' && m.text === TURN_LIMIT_NOTE))
+      .filter((m) => !(m.role === 'user' && (m.text === TURN_LIMIT_NOTE || m.text === REPEAT_NOTE)))
       .map((m) =>
         m.role === 'assistant' && !m.text ? { ...m, text: COMPLETED_VIA_TOOLS_TEXT } : m,
       )
@@ -293,6 +306,7 @@ export class AgentLoop<TSnapshot = unknown> {
     this.inputParseFails = 0
     this.lastTurnSig = ''
     this.identicalTurns = 0
+    this.repeatWarned = false
     this.allErrorTurns = 0
     this.executedCalls = []
     this.verifyRetryUsed = false
@@ -645,6 +659,12 @@ export class AgentLoop<TSnapshot = unknown> {
           }
         }
       }
+      // Same cleanup for repeat-loop warnings: a mid-run nudge that stays in
+      // history reads as a stale "you are looping" directive on later turns.
+      for (let i = this.history.length - 1; i >= 0; i--) {
+        const m = this.history[i]!
+        if (m.role === 'user' && m.text === REPEAT_NOTE) this.history.splice(i, 1)
+      }
       // Models often end a tool-using run with an empty text turn ("I'm done").
       // Leaving assistant text empty in history then poisons the next user
       // prompt: Anthropic rejects empty content arrays, Gemini rejects empty
@@ -786,13 +806,28 @@ export class AgentLoop<TSnapshot = unknown> {
       results.map((r) => r.output),
     ])
     if (turnSig === this.lastTurnSig && !turnMutated) {
-      if (++this.identicalTurns >= MAX_IDENTICAL_TURNS) {
+      this.identicalTurns++
+      if (this.identicalTurns >= MAX_IDENTICAL_TURNS) {
         this.running = false
         this.rollbackFailedRun()
+        // When the repeated turn was a failing tool call, the loop's "same
+        // turn" wording hides the real cause — surface the tool error so the
+        // user sees what actually broke (a resend hits the same wall anyway).
+        const names = [...new Set(toolCalls.map((c) => c.name))].join(', ')
+        const toolError = results.find((r) => r.isError)?.output.trim()
         events?.onError?.(
-          'The model kept repeating the exact same turn without making progress; the run was stopped. Please send the request again',
+          toolError
+            ? `The tool ${names} kept failing the same way; the run was stopped. Last error: ${toolError.slice(0, 300)}`
+            : 'The model kept repeating the exact same turn without making progress; the run was stopped. Please send the request again',
         )
         return
+      }
+      // One turn before the abort, warn the model it is looping: a capable
+      // model changes course or answers directly; a degenerate one hits the
+      // limit next turn anyway.
+      if (!this.repeatWarned && this.identicalTurns === MAX_IDENTICAL_TURNS - 1) {
+        this.repeatWarned = true
+        this.history.push({ role: 'user', text: REPEAT_NOTE })
       }
     } else {
       this.lastTurnSig = turnSig

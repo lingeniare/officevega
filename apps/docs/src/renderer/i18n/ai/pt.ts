@@ -116,8 +116,7 @@ export const pt = {
     'O serviço de IA está sobrecarregado no momento — tente novamente em instantes',
   aiNetworkError:
     'Problema de rede: não foi possível conectar ao serviço de IA. Verifique sua conexão e tente novamente',
-  aiCreditsExhausted:
-    'Seus créditos VEGA acabaram. Recarregue em api.vega.chat e tente novamente',
+  aiCreditsExhausted: 'Seus créditos VEGA acabaram. Recarregue em api.vega.chat e tente novamente',
   aiSumReadAttachment: 'Ler anexo',
   aiSumImageAttachment: 'Imagem anexada {name}',
   aiSumRead: 'Ler {name}',
@@ -161,6 +160,7 @@ export const pt = {
   aiSumEditedChart: 'Dados do gráfico editados (bloco {index})',
   aiSumSetHeader: 'Cabeçalho atualizado',
   aiSumSetFooter: 'Rodapé atualizado',
+  aiSumSetHeaderFooter: 'Atualizar cabeçalho/rodapé',
   aiSumSetPageSetup: 'Configuração de página atualizada',
   aiSumInsertSectionBreak: 'Quebra de seção inserida',
   aiSumApplyCommands: 'Aplicar comandos de formatação',

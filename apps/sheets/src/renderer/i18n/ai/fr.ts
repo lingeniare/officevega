@@ -66,8 +66,7 @@ export const fr = {
   aiOverloadedError: "Le service d'IA est actuellement surchargé — réessayez dans un instant",
   aiNetworkError:
     'Problème réseau : impossible de joindre le service IA. Vérifiez votre connexion et réessayez',
-  aiCreditsExhausted:
-    'Vos crédits VEGA sont épuisés. Rechargez sur api.vega.chat puis réessayez',
+  aiCreditsExhausted: 'Vos crédits VEGA sont épuisés. Rechargez sur api.vega.chat puis réessayez',
   aiToolWorkbookContext: 'Lire les informations du classeur',
   aiToolReadRange: 'Lire la plage',
   aiToolReadRangeOf: 'Lire la plage {range}',
@@ -98,6 +97,10 @@ export const fr = {
   aiToolImageSearchDone: 'Recherche d’images « {query} » ({count})',
   aiToolGenImage: 'Générer une image',
   aiToolGenImageDone: 'Image générée',
+  aiToolMerge: 'Fusionner les classeurs',
+  aiToolMergeNoSources: 'Aucune pièce jointe de feuille de calcul à fusionner',
+  aiToolMergeDone: '{count} feuilles fusionnées',
+  aiToolMergeFailed: 'Échec de la fusion',
   aiToolTracePrecedents: 'Repérer les antécédents',
   aiToolTracePrecedentsOf: 'Antécédents de {address}',
   aiToolTraceDependents: 'Repérer les dépendants',

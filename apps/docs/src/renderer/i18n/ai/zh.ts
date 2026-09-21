@@ -148,6 +148,7 @@ export const zh = {
   aiSumEditedChart: '编辑图表数据(块 {index})',
   aiSumSetHeader: '更新页眉',
   aiSumSetFooter: '更新页脚',
+  aiSumSetHeaderFooter: '更新页眉/页脚',
   aiSumSetPageSetup: '更新页面设置',
   aiSumInsertSectionBreak: '插入分节符',
   aiSumApplyCommands: '执行格式命令',

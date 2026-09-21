@@ -155,6 +155,7 @@ export const ko = {
   aiSumEditedChart: '차트 데이터 편집(블록 {index})',
   aiSumSetHeader: '머리글 업데이트',
   aiSumSetFooter: '바닥글 업데이트',
+  aiSumSetHeaderFooter: '머리글/바닥글 업데이트',
   aiSumSetPageSetup: '페이지 설정 업데이트',
   aiSumInsertSectionBreak: '구역 나누기 삽입',
   aiSumApplyCommands: '서식 명령 실행',

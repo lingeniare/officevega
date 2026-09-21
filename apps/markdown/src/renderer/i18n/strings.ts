@@ -368,7 +368,7 @@ export const strings = {
     aiSummarizePrompt: 'Summarize the main content and key points of this document',
     aiPolishBtn: 'AI Polish',
     aiPolishPrompt: 'Polish the whole document to make the writing clearer and more fluent',
-    aiTidyBtn: 'AI Format',
+    aiTidyBtn: 'Format',
     aiTidyPrompt:
       'Tidy up the document formatting — fix heading levels, unify list formatting, remove unnecessary bold and italics, and clean up extra blank lines. Adjust formatting only — do not change any text content',
     aiNewChat: 'New chat',
@@ -2071,11 +2071,11 @@ export const strings = {
       'Проблема с сетью: не удалось подключиться к сервису ИИ. Проверьте подключение и повторите попытку',
     aiCreditsExhausted: 'Кредиты закончились — пополните на api.vega.chat',
     aiOpenAssistant: 'Открыть ИИ-ассистента',
-    aiSummarizeBtn: 'ИИ-резюме',
+    aiSummarizeBtn: 'Коротко',
     aiSummarizePrompt: 'Кратко изложите основное содержание и ключевые моменты этого документа',
-    aiPolishBtn: 'ИИ-редактура',
+    aiPolishBtn: 'Улучшить',
     aiPolishPrompt: 'Отредактируйте весь документ, чтобы текст стал яснее и плавнее',
-    aiTidyBtn: 'ИИ-форматирование',
+    aiTidyBtn: 'Форматирование',
     aiTidyPrompt:
       'Приведите в порядок форматирование документа: исправьте уровни заголовков, унифицируйте оформление списков, уберите лишние жирный шрифт и курсив, удалите лишние пустые строки. Меняйте только форматирование, не изменяя текст',
     aiNewChat: 'Новый чат',

@@ -39,6 +39,7 @@ import {
   settingsSupportVision,
 } from './slide-qc'
 import { useI18n, t as tGlobal, aiLangDirective, type TFunc } from '../i18n/locale'
+import { localizedToolSummary, toolLabel } from './tool-labels'
 import {
   AiScopeQuote,
   IconArrowUp,
@@ -616,7 +617,7 @@ export function AiPanel({
             text: m.text,
             tools: m.tools?.map((t) => ({
               name: t.name,
-              summary: t.summary,
+              summary: localizedToolSummary(t.name, t.summary),
               isError: t.isError,
               output: t.output ? t.output.slice(0, TOOL_OUTPUT_MAX_CHARS) : undefined,
             })),
@@ -1076,7 +1077,7 @@ export function AiPanel({
           '  Allowed shape values: rect, roundRect, ellipse, triangle, rightArrow, leftArrow, upArrow, downArrow, chevron, diamond, parallelogram, trapezoid, hexagon, pentagon, pie, donut, star5, heart, cloud, line, lineArrow. line/lineArrow draw the diagonal of their box from top-left to bottom-right and need a stroke (a horizontal rule = a box with h:1).\n' +
           '- Text: {"type":"text","x":80,"y":60,"w":800,"h":90,"valign":"top","paragraphs":[{"align":"left","lineSpacingPct":110,"spaceAfterPt":6,"bullet":false,"runs":[{"text":"...","sizePt":18,"bold":true,"italic":false,"color":"#RRGGBB","font":"Font Name"}]}]}\n' +
           '  A paragraph may mix runs of different weight/color/size (e.g. a big number run + a small unit run in one line).\n' +
-          '- Image: {"type":"image","url":"https://...","x":660,"y":80,"w":540,"h":560} — center-cropped to fill its box (object-fit: cover).\n' +
+          '- Image: {"type":"image","url":"<one of the available image URLs>","x":660,"y":80,"w":540,"h":560} — center-cropped to fill its box (object-fit: cover).\n' +
           '\n' +
           '## Hard layout rules\n' +
           '- Text boxes have ZERO inner padding: the box top-left is exactly where the first glyph starts. Size every box from its content: one line is about sizePt*1.8 px tall at lineSpacingPct 110; a CJK character is about sizePt*1.35 px wide, a Latin character about sizePt*0.7 px. Text wraps at the box width — count the wrapped lines and make the box tall enough, plus one spare line.\n' +
@@ -1088,7 +1089,7 @@ export function AiPanel({
           '- Photos may only use URLs from the "available images" list, at most as many image elements as URLs. With no available images, fill with typography/color blocks/shapes — never fake photos.\n' +
           '- Icon-like decoration uses the allowed shapes only (at most 4-5 per page, strongly content-related). **Never use emoji**.\n' +
           '- Data visuals: compose bars/rings/timelines from rect/donut/line shapes with sizes proportional to the real values from the brief.\n' +
-          '- Solid colors only (alpha allowed) — no gradients. **No placeholders of any kind**: all copy comes from the brief’s real content.\n' +
+          '- Fills: solid "#RRGGBB(AA)", or a linear gradient object {"gradient":{"stops":[{"pos":0,"color":"#A"},{"pos":100,"color":"#B"}],"angle":45}} — pos is 0-100, angle in degrees (0=left→right, 90=top→bottom). Use gradients for large cover/background blocks, not small elements; "background" accepts the same gradient object. **No placeholders of any kind**: all copy comes from the brief’s real content.\n' +
           '\n' +
           '## Anti-AI design rules (violation = unacceptable)\n' +
           '- No thin vertical accent bar on the left of cards, no colored bar on top of cards, no small bar left of titles — express hierarchy with background color/font weight/size contrast.\n' +
@@ -1197,7 +1198,7 @@ export function AiPanel({
         // style is already produced independently by generateStyleSkill; this function only outputs core_hook + per-page outlines (layout chosen per the Style Skill).
         const sys =
           'You are a professional deck planner. Given the confirmed design style, plan the content page by page. Output only one JSON object, no explanations/markdown/code fences.\n' +
-          'Format: {"core_hook":"...","pages":[{"title":"","type":"cover|content|data|closing","brief":"","layout":"","image_queries":[]}]}\n' +
+          'Format: {"core_hook":"...","pages":[{"title":"","type":"cover|content|data|closing","brief":"","layout":"","image_queries":[],"image_prompts":[]}]}\n' +
           '\n' +
           '## core_hook\n' +
           "The deck's narrative anchor: one sentence, with tension, containing a number or counter-intuitive contrast, at most 20 characters.\n" +
@@ -1213,7 +1214,10 @@ export function AiPanel({
           'Describe in detail what goes in each region of the layout; prefer real data/facts from the reference material, no "XX%" placeholders; cover gives main/sub titles and mood; data gives metric names + concrete values + changes.\n' +
           '\n' +
           '## image_queries\n' +
-          'Array: one entry per photo slot on the page. If the reference material contains ready image URLs (starting with http), use them directly; otherwise put English image-search keywords (describing a concrete scene, e.g. "summer palace kunming lake", not generic words like "park") — the system auto-searches and fills real URLs back. Travel/product/people/brand pages get images by default; give [] only when the page truly needs no photos (fill with typography/icons; never count on CSS-drawn fake images).'
+          'Array: one entry per real-world visual slot on the page. If the reference material contains ready image URLs (starting with http), use them directly; otherwise write an English visual description of a concrete scene (e.g. "summer palace kunming lake at sunset, lakeside view", not generic words like "park") — every slot is rendered by an AI image-generation model internally and the real URL is filled back, so write each entry the way an image model wants it (subject + environment + lighting). A stock photo search runs only as a fallback when generation is unavailable or fails. Travel/product/people/brand pages get images by default; give [] only when the page truly needs no visuals (fill with typography/icons; never count on CSS-drawn fake images).\n' +
+          '\n' +
+          '## image_prompts\n' +
+          'Array: English prompts for AI-GENERATED bespoke visuals, one per generated slot — same internal image-generation mechanism as image_queries (search only as fallback). Split the fields by intent: image_queries for real-world subjects (actual places, products, people, brands), image_prompts where a bespoke visual beats a real-world subject: cover/hero art, conceptual illustrations, abstract or thematic backgrounds, metaphor visuals matching the deck style. Write prompts the way an image model wants them: subject + environment + lighting + style + mood, one flowing sentence. A page may use both fields; total visual slots per page ≤ 2.'
         const styleBlock = a.styleSkill
           ? `\n[Confirmed design style Style Skill; choose layout accordingly while planning]:\n${a.styleSkill}`
           : ''
@@ -1306,12 +1310,39 @@ export function AiPanel({
           return prev
         })
       },
+      // In-tool photo search — the deck pipeline's FALLBACK resolver: it runs only for
+      // slots AI generation missed, or for all slots when generation is unavailable.
       searchImages: async (query: string, maxResults: number) => {
         try {
           const r = await window.slidesApi.imageSearch(query, maxResults)
           return r.images.map((im) => im.imageUrl).filter(Boolean)
         } catch {
           return []
+        }
+      },
+      // In-tool web research: generate_deck fires the queries in parallel with style
+      // generation + outline planning, so the facts reach the briefs without a separate turn.
+      searchWeb: async (query: string, maxResults: number) => {
+        try {
+          const r = await window.slidesApi.webSearch(query, maxResults)
+          if (r.method === 'error') return { ok: false, error: r.error ?? 'search failed' }
+          return { ok: true, results: r.results, answer: r.answer }
+        } catch (e) {
+          return { ok: false, error: e instanceof Error ? e.message : String(e) }
+        }
+      },
+      // In-tool AI image generation — the deck pipeline's primary resolver for every visual slot.
+      // The returned URL is https (account route) or file:// (BYOK local store — only
+      // the local page builder resolves it; the cloud path filters those out upstream).
+      generateImage: async ({ prompt, aspectRatio }) => {
+        try {
+          const r = await window.slidesApi.generateImage({
+            prompt,
+            ...(aspectRatio ? { aspectRatio } : {}),
+          })
+          return r.url ? { ok: true, url: r.url } : { ok: false, error: r.error }
+        } catch (e) {
+          return { ok: false, error: e instanceof Error ? e.message : String(e) }
         }
       },
       saveSidecar: async (data) => {
@@ -1396,15 +1427,17 @@ export function AiPanel({
           // Live "running" chip: replaced in place by onToolExecuted
           const activity: ToolActivity = {
             name: call.name,
-            summary: call.name.replace(/[_-]+/g, ' '),
+            summary: toolLabel(call.name),
             running: true,
           }
           patchLastAssistant((last) => ({ tools: [...(last.tools ?? []), activity] }))
         },
         onToolExecuted: ({ call, execution }) => {
+          // agent-core error paths carry the raw tool name — localize it
+          const summary = localizedToolSummary(call.name, execution.summary)
           const activity: ToolActivity = {
             name: call.name,
-            summary: execution.summary,
+            summary,
             isError: execution.isError,
             output: execution.output ? execution.output.slice(0, TOOL_OUTPUT_MAX_CHARS) : undefined,
             // Side channel: display comes from tools, not into LLM context, UI only
@@ -1414,7 +1447,7 @@ export function AiPanel({
           if (!execution.display) {
             runToolsRef.current.push({
               name: call.name,
-              summary: execution.summary,
+              summary,
               isError: execution.isError,
               input: safeJsonInput(call.input),
               output: execution.output

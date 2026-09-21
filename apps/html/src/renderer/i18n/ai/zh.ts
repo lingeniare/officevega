@@ -53,6 +53,7 @@ export const zh = {
   aiToolReadSource: '读取源码',
   aiToolApplyOps: '应用了 {n} 处修改',
   aiToolApplyOpsFailed: '修改未应用',
+  aiToolApplyOpsRunning: '应用修改',
   aiClarifyDecide: '帮我决定',
   aiClarifyDecideAnswer: '（帮我决定）',
   aiClarifyMulti: '可多选',

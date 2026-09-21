@@ -60,6 +60,7 @@ export const ko = {
   aiToolReadSource: '소스 읽기',
   aiToolApplyOps: '{n}개 수정 적용',
   aiToolApplyOpsFailed: '수정이 적용되지 않음',
+  aiToolApplyOpsRunning: '변경 사항 적용 중',
   aiClarifyDecide: '알아서 결정',
   aiClarifyDecideAnswer: '(알아서 결정)',
   aiClarifyMulti: '복수 선택',

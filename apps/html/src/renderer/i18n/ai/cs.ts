@@ -60,6 +60,7 @@ export const cs = {
   aiToolReadSource: 'Čtení zdroje',
   aiToolApplyOps: 'Použito úprav: {n}',
   aiToolApplyOpsFailed: 'Úpravy nebyly použity',
+  aiToolApplyOpsRunning: 'Používání změn',
   aiClarifyDecide: 'Rozhodni za mě',
   aiClarifyDecideAnswer: '(rozhodni za mě)',
   aiClarifyMulti: 'Více možností',

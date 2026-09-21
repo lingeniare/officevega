@@ -150,6 +150,7 @@ export const zhTW = {
   aiSumEditedChart: '編輯圖表資料(區塊 {index})',
   aiSumSetHeader: '更新頁首',
   aiSumSetFooter: '更新頁尾',
+  aiSumSetHeaderFooter: '更新頁首/頁尾',
   aiSumSetPageSetup: '更新頁面設定',
   aiSumInsertSectionBreak: '插入分節符',
   aiSumApplyCommands: '執行格式命令',

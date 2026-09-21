@@ -60,6 +60,7 @@ export const ja = {
   aiToolReadSource: 'ソースを読み取り',
   aiToolApplyOps: '{n} 件の編集を適用',
   aiToolApplyOpsFailed: '編集は適用されませんでした',
+  aiToolApplyOpsRunning: '変更を適用中',
   aiClarifyDecide: 'おまかせ',
   aiClarifyDecideAnswer: '（おまかせ）',
   aiClarifyMulti: '複数選択',

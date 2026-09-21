@@ -643,6 +643,8 @@ button {
   /* groups stretch to the full ribbon height, buttons fill it:
    * the icon area grows (hover paints edge to edge), labels sit at the bottom */
   align-items: stretch;
+  /* single weight for the whole band, same as the other apps' ribbons */
+  font-weight: 400;
   padding: 6px 12px 6px;
   /* HARD-fixed height, not min-height: constant ribbon height across tabs,
      so switching/auto-jumping to contextual tabs never pushes the canvas
@@ -825,7 +827,7 @@ button {
 /* AI button: brand logo only — no gray plate behind the icon, label stays black */
 .rb-big.rb-ai {
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .rb-big.rb-ai > span:not(.rb-big-icon) {
@@ -2907,12 +2909,12 @@ body.vib .slide-list {
 
 .ai-ask-confirm {
   border: 1px solid transparent;
-  background: var(--color-ai-action);
-  color: var(--color-ai-action-text);
+  background: var(--accent);
+  color: var(--color-bg-page);
 }
 
 .ai-ask-confirm:hover:not(:disabled) {
-  background: var(--color-ai-action-hover);
+  background: var(--accent-dark);
 }
 
 .ai-ask-confirm:disabled {

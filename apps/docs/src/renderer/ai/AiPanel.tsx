@@ -43,6 +43,7 @@ import { currentDocGeneration } from '../file-actions'
 import { createFilesSkill } from './files-skill'
 import { createElectronTransport } from './transport'
 import { useI18n, t as tModule, aiLangDirective, type StringKey } from '../i18n/locale'
+import { localizedToolSummary, toolLabel } from './tool-labels'
 import { Markdown } from '@genoffice/ui'
 import {
   AiComposer,
@@ -588,7 +589,7 @@ export function AiPanel({
             text: m.text,
             tools: m.tools?.map((t) => ({
               name: t.name,
-              summary: t.summary,
+              summary: localizedToolSummary(t.name, t.summary),
               isError: t.isError,
               output: t.output ? t.output.slice(0, TOOL_OUTPUT_MAX_CHARS) : undefined,
             })),
@@ -791,7 +792,7 @@ export function AiPanel({
           patchLastAssistant((last) => ({
             tools: [
               ...(last.tools ?? []),
-              { name: call.name, summary: call.name.replace(/[_-]+/g, ' '), running: true },
+              { name: call.name, summary: toolLabel(call.name), running: true },
             ],
           }))
         },
@@ -803,9 +804,11 @@ export function AiPanel({
             // tracking on: revisions stay pending, handled in the Review tab
             if (!trackChangesRef.current) clearAiHighlights(true)
           }
+          // agent-core error paths carry the raw tool name — localize it
+          const summary = localizedToolSummary(call.name, execution.summary)
           runToolsRef.current.push({
             name: call.name,
-            summary: execution.summary,
+            summary,
             isError: execution.isError,
             input: safeJsonInput(call.input),
             output: execution.output
@@ -821,7 +824,7 @@ export function AiPanel({
                 ...tools,
                 {
                   name: call.name,
-                  summary: execution.summary,
+                  summary,
                   isError: execution.isError,
                   output: execution.output
                     ? execution.output.slice(0, TOOL_OUTPUT_MAX_CHARS)

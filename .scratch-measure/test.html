@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+<head>
+<style>
+:root {
+  --accent: #ef4444;
+  --accent-dark: #dc2626;
+  --text: #222;
+  --text-primary: #222;
+  --text-dim: #666;
+  --chrome-bg: #f6f6f6;
+  --border-strong: #ccc;
+  --surface: #fff;
+  --hover: #eee;
+  --pdf-on-accent: #fff;
+}
+html, body, #root { height: 100%; margin: 0; }
+body {
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 13px;
+  color: var(--text);
+  background: var(--chrome-bg);
+  -webkit-font-smoothing: antialiased;
+}
+button { font-family: inherit; }
+.ribbon {
+  flex-shrink: 0;
+  background: var(--chrome-bg);
+  border-bottom: 1px solid var(--border-strong);
+  user-select: none;
+}
+.ribbon-tabs {
+  display: flex;
+  align-items: center;
+  padding: 5px 10px 0;
+  min-height: 35px;
+  gap: 2px;
+}
+.ribbon-tabs-spacer { flex: 1; }
+.ribbon-tab {
+  position: relative;
+  border: none;
+  background: none;
+  padding: 7px 9px 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: inherit;
+  cursor: pointer;
+  border-bottom: 2.5px solid transparent;
+}
+.ribbon-tab:hover { color: var(--accent); }
+.ribbon-tab.active { color: var(--accent); }
+.ribbon-tab.active::after {
+  content: '';
+  position: absolute;
+  left: 13px; right: 13px; bottom: -2.5px;
+  height: 2.5px; border-radius: 1px;
+  background: var(--accent);
+}
+.file-tab-wrap { position: relative; }
+.ribbon-tab-file {
+  border: none;
+  border-radius: 4px;
+  padding: 6px 16px;
+  margin-right: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--pdf-on-accent);
+  background: var(--accent);
+}
+.ribbon-tab-file:hover, .ribbon-tab-file.open {
+  color: var(--pdf-on-accent);
+  background: var(--accent-dark);
+}
+</style>
+</head>
+<body>
+<div class="app"><div class="ribbon"><div class="ribbon-tabs">
+  <div class="file-tab-wrap">
+    <button class="ribbon-tab ribbon-tab-file " id="fileBtn">File</button>
+  </div>
+  <button class="ribbon-tab active">Home</button>
+  <button class="ribbon-tab">Insert</button>
+  <div class="ribbon-tabs-spacer"></div>
+</div></div></div>
+</body>
+</html>

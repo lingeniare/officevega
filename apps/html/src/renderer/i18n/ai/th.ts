@@ -60,6 +60,7 @@ export const th = {
   aiToolReadSource: 'อ่านซอร์ส',
   aiToolApplyOps: 'ใช้การแก้ไข {n} รายการ',
   aiToolApplyOpsFailed: 'ไม่ได้ใช้การแก้ไข',
+  aiToolApplyOpsRunning: 'กำลังใช้การแก้ไข',
   aiClarifyDecide: 'ตัดสินใจให้ฉัน',
   aiClarifyDecideAnswer: '(ตัดสินใจให้ฉัน)',
   aiClarifyMulti: 'เลือกได้หลายข้อ',

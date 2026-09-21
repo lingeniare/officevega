@@ -6,7 +6,13 @@
 import { describe, it, expect } from 'vitest'
 import { openPptx, type TextElement, type PictureElement } from '@genoffice/pptx-engine'
 import { HeuristicMetrics } from '@genoffice/pptx-render'
-import { parsePageSpec, buildPagePptx, type PageSpec } from '../src/slides/page-spec'
+import {
+  parsePageSpec,
+  buildPagePptx,
+  type PageSpec,
+  type SpecGradient,
+  type SpecShape,
+} from '../src/slides/page-spec'
 
 // 1x1 red PNG
 const PNG_1PX = Uint8Array.from(
@@ -81,6 +87,88 @@ describe('parsePageSpec', () => {
     if (!r.ok) return
     expect(r.spec.elements).toHaveLength(2)
     expect((r.spec.elements[0] as { shape: string }).shape).toBe('rect')
+  })
+
+  it('accepts file:// image URLs only when localImages is on', () => {
+    const img = { type: 'image', url: 'file:///gen-store/a.png', x: 0, y: 0, w: 10, h: 10 }
+    const spec = () => JSON.stringify({ elements: [img, textSpec('t')] })
+    const strict = parsePageSpec(spec())
+    expect(strict.ok).toBe(true)
+    if (!strict.ok) return
+    expect(strict.spec.elements).toHaveLength(1) // image dropped: http(s) only
+    const local = parsePageSpec(spec(), undefined, undefined, { localImages: true })
+    expect(local.ok).toBe(true)
+    if (!local.ok) return
+    expect(local.spec.elements[0]).toMatchObject({ type: 'image', url: 'file:///gen-store/a.png' })
+  })
+})
+
+describe('parsePageSpec gradient fills', () => {
+  it('parses background and shape gradients, normalizing stops to 0..1', () => {
+    const r = parsePageSpec(
+      JSON.stringify({
+        background: { gradient: { from: '#0E1A2B', to: '#3B82F6', angle: 135 } },
+        elements: [
+          {
+            type: 'shape',
+            shape: 'rect',
+            x: 0,
+            y: 0,
+            w: 100,
+            h: 100,
+            fill: {
+              gradient: {
+                stops: [
+                  { pos: 0, color: '#111111' },
+                  { pos: 50, color: '#888888' },
+                  { pos: 100, color: '#FF0088' },
+                ],
+                angle: 90,
+              },
+            },
+          },
+          textSpec('t'),
+        ],
+      }),
+    )
+    expect(r.ok).toBe(true)
+    if (!r.ok) return
+    const bg = r.spec.background as { gradient: SpecGradient }
+    expect(bg.gradient.stops).toEqual([
+      { pos: 0, color: '#0E1A2B' },
+      { pos: 1, color: '#3B82F6' },
+    ])
+    expect(bg.gradient.angle).toBe(135)
+    const fill = (r.spec.elements[0] as SpecShape).fill as { gradient: SpecGradient }
+    expect(fill.gradient.stops.map((s) => s.pos)).toEqual([0, 0.5, 1])
+    expect(fill.gradient.angle).toBe(90)
+  })
+
+  it('ignores unusable fills with warnings instead of failing the page', () => {
+    const r = parsePageSpec(
+      JSON.stringify({
+        background: { gradient: { stops: [] } },
+        elements: [
+          {
+            type: 'shape',
+            shape: 'rect',
+            x: 0,
+            y: 0,
+            w: 10,
+            h: 10,
+            fill: { gradient: { stops: [{ pos: 0 }] } }, // no color → no usable stops
+          },
+          textSpec('t'),
+        ],
+      }),
+    )
+    expect(r.ok).toBe(true)
+    if (!r.ok) return
+    expect(r.spec.background).toBeUndefined()
+    expect(r.spec.elements).toHaveLength(1) // shape dropped: no usable fill or stroke
+    const joined = r.warnings.join(' ')
+    expect(joined).toContain('unsupported fill')
+    expect(joined).toContain('unsupported background')
   })
 })
 
@@ -222,6 +310,80 @@ describe('buildPagePptx', () => {
     expect(pics).toHaveLength(1)
     // 200x100 source into a 640x720 portrait frame → horizontal crop applied
     expect(pics[0]!.srcRect?.l ?? 0).toBeGreaterThan(0)
+  })
+
+  it('writes a real gradFill for gradient shapes and keeps solid fills solid', async () => {
+    const spec: PageSpec = {
+      elements: [
+        {
+          type: 'shape',
+          shape: 'rect',
+          x: 0,
+          y: 0,
+          w: 200,
+          h: 200,
+          fill: {
+            gradient: {
+              stops: [
+                { pos: 0, color: '#112233' },
+                { pos: 1, color: '#445566' },
+              ],
+              angle: 90,
+            },
+          },
+        },
+        { type: 'shape', shape: 'rect', x: 300, y: 0, w: 100, h: 100, fill: '#FF0000' },
+      ],
+    }
+    const { bytes } = await buildPagePptx(spec, noImages)
+    const opened = await openPptx(bytes)
+    const shapes = opened.deck.slides[0]!.elements.filter(
+      (e): e is TextElement => e.type === 'shape',
+    )
+    expect(shapes).toHaveLength(2)
+    expect(shapes[0]!.fill?.type).toBe('gradient')
+    const g = shapes[0]!.fill as {
+      stops: { pos: number; color: string }[]
+      angle?: number
+    }
+    expect(g.stops).toEqual([
+      { pos: 0, color: '#112233' },
+      { pos: 1, color: '#445566' },
+    ])
+    expect(g.angle).toBe(90 * 60000) // model angle is 1/60000 degree
+    expect(shapes[1]!.fill).toEqual({ type: 'solid', color: '#FF0000' })
+  })
+
+  it('keeps a gradient page background as a full-bleed rect (promotion is solid-only)', async () => {
+    const spec: PageSpec = {
+      background: {
+        gradient: {
+          stops: [
+            { pos: 0, color: '#0E1A2B' },
+            { pos: 1, color: '#3B82F6' },
+          ],
+          angle: 45,
+        },
+      },
+      elements: [
+        {
+          type: 'text',
+          x: 80,
+          y: 60,
+          w: 800,
+          h: 90,
+          paragraphs: [{ runs: [{ text: 't', sizePt: 32 }] }],
+        },
+      ],
+    }
+    const { bytes } = await buildPagePptx(spec, noImages)
+    const opened = await openPptx(bytes)
+    const slide = opened.deck.slides[0]!
+    expect(slide.background?.type).not.toBe('solid')
+    const bg = slide.elements[0] as TextElement
+    expect(bg.type).toBe('shape')
+    expect(bg.fill?.type).toBe('gradient')
+    expect(bg.transform.offset.cx).toBe(opened.deck.size.cx)
   })
 })
 

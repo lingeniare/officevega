@@ -105,9 +105,38 @@ export interface DeckAccess {
   /**
    * In-tool image search (embedded in the tool):
    * given English keywords, returns an array of real image URLs (at most N).
+   * In the deck pipeline this is the FALLBACK resolver — it runs for slots AI image
+   * generation missed, or for all slots when generation is unavailable.
    * On search failure returns an empty array (fail-open; doesn't block the main generation path).
    */
   searchImages?(query: string, maxResults: number): Promise<string[]>
+  /**
+   * In-tool web research (embedded in the tool): one search query → results + optional
+   * direct answer. generate_deck fires the research queries IN PARALLEL with style
+   * generation and planning and folds the digest into the planning/per-page context —
+   * the facts reach the pages without a separate agent turn.
+   */
+  searchWeb?(
+    query: string,
+    maxResults: number,
+  ): Promise<{
+    ok: boolean
+    results?: { title: string; url: string; snippet: string }[]
+    answer?: string
+    error?: string
+  }>
+  /**
+   * In-tool AI image generation (embedded in the tool): a visual prompt → a real
+   * image URL (https for the account route, file:// for BYOK — the local page
+   * builder resolves the latter). PRIMARY resolver of generate_deck's image stage —
+   * every planned visual slot (image_queries and image_prompts alike) is generated
+   * first; image search only covers misses. Availability is gated by
+   * imageGenAvailable — callers must not invoke it when that returns false.
+   */
+  generateImage?(args: {
+    prompt: string
+    aspectRatio?: string
+  }): Promise<{ ok: boolean; url?: string; error?: string }>
   /** Whether cloud single-page generation is available (kill switch + gsk login state) */
   isCloudPageGenEnabled?(): Promise<boolean>
   /** live predicate (gsk login && cloud-tools toggle, or a BYOK media key); false hides generate_image */
@@ -324,7 +353,7 @@ const TOOLS: AgentToolDef[] = [
   {
     name: 'image_search',
     description:
-      'Search image assets (for slide imagery). Returns a list of imageUrl; after choosing, insert with insert_web_image.',
+      'Search image assets (for slide imagery). Returns a list of imageUrl; after choosing, insert with insert_web_image. This is the FALLBACK source — prefer generate_image for new imagery and reach for image_search only when generation is unavailable/failed or the slot strictly needs a real-world photo (an actual place/product/person).',
     inputSchema: {
       type: 'object',
       properties: {
@@ -461,7 +490,7 @@ const TOOLS: AgentToolDef[] = [
   {
     name: 'plan_deck',
     description:
-      "[When creating a whole new deck, call after researching material/images and before generate_deck] Outputs a structured plan: the Core Hook + unified style scheme + each page's title/content brief/layout/image keywords. Think the whole deck through first, to avoid starting strong and fizzling out. The plan is echoed to the user.",
+      "[When creating a whole new deck, call after researching material/images and before generate_deck] Outputs a structured plan: the Core Hook + unified style scheme + each page's title/content brief/layout/image intent (image_queries for real-world visual slots, image_prompts for bespoke visuals — both are AI-generated at execution time, photo search only as fallback). Think the whole deck through first, to avoid starting strong and fizzling out. The plan is echoed to the user.",
     inputSchema: {
       type: 'object',
       properties: {
@@ -497,7 +526,13 @@ const TOOLS: AgentToolDef[] = [
                 type: 'array',
                 items: { type: 'string' },
                 description:
-                  "English image-search keywords for this page's image slots (one per slot; [] for no images)",
+                  "English description of each real-world visual slot on this page (one per slot; AI-generated at execution time, photo search only as fallback; [] for no images)",
+              },
+              image_prompts: {
+                type: 'array',
+                items: { type: 'string' },
+                description:
+                  'Optional: English prompts for AI-GENERATED bespoke visuals (hero art, illustrations, abstract backgrounds), one per generated slot; the system generates them internally when the plan is executed',
               },
             },
             required: ['title', 'brief', 'layout'],
@@ -514,7 +549,7 @@ const TOOLS: AgentToolDef[] = [
       ' Use when the user says "redo this page / redesign it / try another layout / make it prettier"; don\'t dismantle the page element by element with native tools.' +
       " Flow: first read_slide to get the page's current content, then check neighboring pages in the deck outline to grasp the deck's style;" +
       ' write a detailed brief — what to keep (copy real text/data into the brief verbatim), what to change, and the target layout; the deck style is applied automatically.' +
-      ' If the page needs images, image_search first and pass real URLs in image_urls.' +
+      ' If the page needs images, generate them first with generate_image (image_search only when generation is unavailable or a real-world photo is strictly required) and pass real URLs in image_urls.' +
       ' If generation fails, it is usually a temporary error: do NOT loop retrying — make the concrete changes in place with execute_slide_script instead (or tell the user to try again in a few minutes).',
     inputSchema: {
       type: 'object',
@@ -530,7 +565,8 @@ const TOOLS: AgentToolDef[] = [
         image_urls: {
           type: 'array',
           items: { type: 'string' },
-          description: 'Real http(s) image URLs for this page (image_search first; [] for none)',
+          description:
+            'Real http(s) image URLs for this page (generate_image first, image_search only as fallback; [] for none)',
         },
         dataSource: {
           type: 'string',
@@ -545,10 +581,11 @@ const TOOLS: AgentToolDef[] = [
   {
     name: 'generate_deck',
     description:
-      '[First choice for creating a whole new deck — self-driven pipeline: auto image search, page-by-page generation with live display, no missing pages]' +
-      ' Recommended usage (especially with many pages): pass only topic + approx_pages (+ optional style/context); the system plans the outline internally (auto-batched beyond 12 pages), **auto-searches images** (no advance image_search — the system searches from the planned image_queries keywords internally and fills real URLs back before writing HTML), writes HTML page by page, and lands pages onto the canvas one by one.' +
+      '[First choice for creating a whole new deck — self-driven parallel pipeline: style + research + planning run concurrently, AI image generation for every planned visual (real-photo search only as fallback), page-by-page generation with live display, no missing pages]' +
+      ' Recommended usage (especially with many pages): pass only topic + approx_pages (+ optional style/research/context); the system plans the outline internally (auto-batched beyond 12 pages), **auto-generates all planned imagery** (no advance image_search/generate_image — the system resolves the planned image_queries and image_prompts internally: every visual slot is rendered by the image model, a stock photo search runs only when generation is unavailable or misses a slot; real URLs are filled back), writes HTML page by page, and lands pages onto the canvas one by one.' +
       ' You don\'t hand-write dozens of pages, and neither "only page 1 got generated" nor "arguments were truncated" can happen — the page count is guaranteed by the system loop.' +
-      ' (If you already know each page you may pass core_hook+style+pages directly; pages[].image_queries takes English image-search keywords, searched internally; if you already know real http(s) URLs pass them directly — the system respects existing URLs and does not re-search.)' +
+      ' When the topic needs facts/data, prefer passing research queries (run internally, in parallel with styling + planning) over a separate web_search turn — it removes a full round trip.' +
+      ' (If you already know each page you may pass core_hook+style+pages directly; pages[].image_queries describes each real-world visual slot, pages[].image_prompts each bespoke visual — both are AI-GENERATED internally; if you already know real http(s) URLs pass them in image_queries — the system respects existing URLs and does not re-resolve them.)' +
       ' To add a few pages to an existing deck, pass pages (briefs for just the new pages) + insert_mode:"append".',
     inputSchema: {
       type: 'object',
@@ -566,6 +603,12 @@ const TOOLS: AgentToolDef[] = [
           type: 'string',
           description:
             'Optional: real material/data/questionnaire answers from web_search, so internal planning uses real content',
+        },
+        research: {
+          type: 'array',
+          items: { type: 'string' },
+          description:
+            'Optional: web-search queries the system runs INTERNALLY, in parallel with style generation and outline planning (the digest feeds the page briefs). Prefer this over a separate web_search turn when creating a deck — it removes a full round trip. If you already searched, pass the material in context instead.',
         },
         core_hook: {
           type: 'string',
@@ -595,7 +638,13 @@ const TOOLS: AgentToolDef[] = [
                 type: 'array',
                 items: { type: 'string' },
                 description:
-                  "English image-search keywords for this page's image slots (the system searches internally and fills real URLs back); if you already know real http(s) URLs pass them directly (respected, not re-searched); [] for no images",
+                  "English description of each real-world visual slot on this page (actual places, products, people, brands) — the system AI-GENERATES each internally and fills real URLs back (a stock photo search runs only as fallback when generation is unavailable or misses); if you already know real http(s) URLs pass them directly (respected, not re-resolved); [] for no images",
+              },
+              image_prompts: {
+                type: 'array',
+                items: { type: 'string' },
+                description:
+                  'Optional: English prompts for AI-GENERATED bespoke visuals (hero/cover art, conceptual illustrations, abstract backgrounds) — the system generates each one internally and fills real URLs back (search only as fallback). Same mechanism as image_queries; split them only by intent — real-world subjects in image_queries, bespoke art here.',
               },
             },
             required: ['title', 'brief', 'layout'],
@@ -1214,7 +1263,7 @@ const SAMPLE_DATA_NOTE =
 function imageFailNote(fails?: { page: number; url: string }[]): string {
   if (!fails?.length) return ''
   const detail = fails.map((f) => `page ${f.page} (${f.url})`).join(', ')
-  return `\n⚠️ Missing images: ${detail} failed to download/convert; those image slots are blank on the page. Re-run image_search with more generic English keywords, pick a working image, patch it onto the page with insert_web_image (slideIndex = page number - 1), then reply to the user.`
+  return `\n⚠️ Missing images: ${detail} failed to download/convert; those image slots are blank on the page. Produce a working image (generate_image first, or image_search with more generic English keywords), patch it onto the page with insert_web_image (slideIndex = page number - 1), then reply to the user.`
 }
 
 /**
@@ -1671,10 +1720,10 @@ async function executeTool(
       }
       // Planning summary echoed back to the user
       const lines = pages.map((p: Record<string, unknown>, i: number) => {
-        const q =
-          Array.isArray(p.image_queries) && p.image_queries.length
-            ? ` [images: ${p.image_queries.length}]`
-            : ''
+        const imgCount =
+          (Array.isArray(p.image_queries) ? p.image_queries.length : 0) +
+          (Array.isArray(p.image_prompts) ? p.image_prompts.length : 0)
+        const q = imgCount ? ` [images: ${imgCount}]` : ''
         return `Page ${i + 1} [${String(p.layout ?? '')}] ${String(p.title ?? '')} — ${String(p.brief ?? '').slice(0, 40)}${q}`
       })
       if (state) {
@@ -1803,7 +1852,10 @@ async function executeTool(
       const insertMode: 'replace' | 'append' =
         call.input.insert_mode === 'append' ? 'append' : 'replace'
       const PLAN_BATCH = 12 // Per-batch planning cap (kept slightly conservative against truncation)
-      const GEN_BATCH = 2 // Per-page generation concurrency (opus large output + proxy concurrent streams time out easily; lowered to 2, stability first)
+      // Cloud generation is a server-side call (gsk slide_generate) — higher concurrency is
+      // safe there. The local path streams through the user's AI proxy (opus large output +
+      // concurrent streams time out easily) — keep it at 2, stability first.
+      const GEN_BATCH = useCloud ? 4 : 2
       const BACKOFF_MS = access.retryBackoffMs ?? 2000 // Retry backoff base (rate limits/overload are mostly transient; immediate retries would hit them again)
 
       let coreHook = String(call.input.core_hook ?? '').trim()
@@ -1815,11 +1867,23 @@ async function executeTool(
       const context = String(call.input.context ?? '').trim() || undefined
       // Every per-page request re-sends the context; cap it so N pages don't multiply a huge attachment
       const PAGE_CONTEXT_MAX = 8000
-      const pageContext =
-        context && context.length > PAGE_CONTEXT_MAX ? context.slice(0, PAGE_CONTEXT_MAX) : context
       const styleTemplateName = String(call.input.style_template ?? '').trim() || undefined
 
-      // Figure-provenance gate: a data-dense request must say where its numbers came from
+      // Explicit research queries first; otherwise one auto-query when the model handed
+      // us a bare topic (no material, no earlier search this conversation) — the facts
+      // still reach the briefs without a separate agent turn.
+      const researchQueries: string[] = (() => {
+        const raw = call.input.research
+        const list = Array.isArray(raw) ? raw : typeof raw === 'string' ? [raw] : []
+        const qs = list.map((q) => String(q).trim()).filter(Boolean)
+        if (qs.length) return qs.slice(0, 4)
+        if (topic && !context && access.searchWeb && !state?.webSearched) return [topic]
+        return []
+      })()
+
+      // Figure-provenance gate: a data-dense request must say where its numbers came from.
+      // dataSource:'search' is satisfied by the internal research that is about to run —
+      // its digest feeds the briefs, so no separate web_search turn is required first.
       {
         const briefText = [
           topic,
@@ -1827,15 +1891,17 @@ async function executeTool(
           ...pages.map((p) => `${String(p.title ?? '')} ${String(p.brief ?? '')}`),
         ].join('\n')
         if (countSpecificFigures(briefText) >= 2) {
-          const gateErr = dataSourceGateError(call, state)
+          const gateState =
+            researchQueries.length && access.searchWeb
+              ? { ...(state ?? { htmlGenerated: false }), webSearched: true }
+              : state
+          const gateErr = dataSourceGateError(call, gateState)
           if (gateErr) return fail(t('aiFailGenDeck'), gateErr)
         }
       }
 
-      // ── Step 0: generate the Style Skill independently — one focused LLM call thinking only about the design system, less AI-looking.
-      // Prefer the user-passed style as the style preference; without pages, generate a full Style Skill from topic.
-      // When full pages+style are passed, respect the user's style (don't regenerate).
-      // When style_template is passed, load the template directly and skip Step 0 (no LLM style generation).
+      // ── Step 0: style template (preferred) or independent Style Skill generation.
+      // A loaded template skips the LLM style call entirely.
       let styleSkill = ''
       if (styleTemplateName && access.loadStyleTemplate) {
         // Preferred: load from a saved template (fail-open: on load failure continue normal generation)
@@ -1855,9 +1921,47 @@ async function executeTool(
       })
       if (cancelled()) return cancelResult(0, 0)
 
+      // ── Steps 0+1 run CONCURRENTLY: style generation, web research and outline
+      //   planning overlap in wall-clock time instead of stacking up.
+      //   * research: `research` queries → internal web searches (fail-open)
+      //   * planning: waits only for the research digest (real data for the briefs),
+      //     not for the Style Skill — the skill lands before per-page generation anyway
+      //   * style: a fully parallel track
+      const researchP: Promise<string> = (async () => {
+        if (!researchQueries.length || !access.searchWeb) return ''
+        const parts = await Promise.all(
+          researchQueries.map(async (q) => {
+            try {
+              const r = await access.searchWeb!(q, 6)
+              if (!r.ok) return ''
+              if (state) state.webSearched = true
+              const lines = [`Research: ${q}`]
+              if (r.answer) lines.push(`Direct answer: ${r.answer.slice(0, 300)}`)
+              for (const it of (r.results ?? []).slice(0, 5)) {
+                lines.push(`- ${it.title}: ${it.snippet.slice(0, 160)} (${it.url})`)
+              }
+              return lines.join('\n')
+            } catch {
+              return ''
+            }
+          }),
+        )
+        return parts.filter(Boolean).join('\n\n')
+      })()
+
+      // Planning context = user-supplied material + the research digest (resolved once
+      // researchP settles — planning and per-page context both consume it).
+      const mergedContextP: Promise<string | undefined> = (async () => {
+        const digest = await researchP
+        const merged = [context, digest].filter(Boolean).join('\n\n')
+        return merged || undefined
+      })()
+
       const needStyleGen =
         !styleSkill && access.generateStyleSkill && (topic || pages.length === 0 || !style)
-      if (needStyleGen) {
+      // Style track: resolves to the final Style Skill (or the user-passed style / '').
+      const styleP: Promise<string> = (async () => {
+        if (!needStyleGen) return styleSkill || style
         access.onProgress?.({
           stage: 'style',
           label: t('aiStageStyle'),
@@ -1872,34 +1976,39 @@ async function executeTool(
           ...(context ? { questionnaire: context } : {}),
           ...(signal ? { signal } : {}),
         })
-        if (sr.ok && sr.styleSkill) styleSkill = sr.styleSkill
         access.onProgress?.({
           stage: 'style',
           label: t('aiStageStyle'),
           status: 'done',
           summary: t('aiStageStyleDone'),
         })
-      }
-      if (!styleSkill) styleSkill = style // Fallback: use the user-passed style, or empty
+        return (sr.ok && sr.styleSkill) || style || ''
+      })()
 
-      // ── Step 1: plan the outline — without pages, plan in-tool from topic (batched recursion over PLAN_BATCH; layouts chosen per the Style Skill).
+      // ── Step 1: plan the outline — without pages, plan in-tool from topic.
+      //   The first batch yields the Core Hook; the remaining batches then run in
+      //   PARALLEL (each only needs coreHook + context, not each other's output).
       const approxForProgress = Math.max(
         1,
         parseInt(String(call.input.approx_pages ?? '0'), 10) || pages.length || 1,
       )
-      if (pages.length === 0) {
+      const planP: Promise<{ error?: string }> = (async () => {
+        if (pages.length > 0) return {}
         const approx = approxForProgress
         if (!topic || !approx) {
-          return fail(
-            t('aiFailGenDeck'),
-            'generate_deck requires [topic + approx_pages] (system plans internally), or pass [core_hook + style + pages] directly.',
-          )
+          return {
+            error:
+              'generate_deck requires [topic + approx_pages] (system plans internally), or pass [core_hook + style + pages] directly.',
+          }
         }
-        if (!access.planDeckOutline)
-          return fail(
-            t('aiFailGenDeck'),
-            'The current environment does not support internal planning; pass pages directly.',
-          )
+        if (!access.planDeckOutline) {
+          return {
+            error:
+              'The current environment does not support internal planning; pass pages directly.',
+          }
+        }
+        const mergedContext = await mergedContextP
+        const styleHint = styleSkill || style || undefined // styleP may still be running; the variant catalog is inline anyway
         access.onProgress?.({
           stage: 'plan',
           label: t('aiStagePlan'),
@@ -1908,53 +2017,72 @@ async function executeTool(
           status: 'running',
           summary: t('aiStagePlanRunning'),
         })
-        let planned = 0
-        while (planned < approx) {
-          if (cancelled()) return cancelResult(0, approx)
-          const count = Math.min(PLAN_BATCH, approx - planned)
-          const r = await access.planDeckOutline({
-            topic,
-            count,
-            startPage: planned + 1,
-            ...(context ? { context } : {}),
-            ...(styleSkill ? { styleSkill } : {}),
-            ...(planned > 0 && coreHook ? { continueFrom: { coreHook } } : {}),
-            ...(signal ? { signal } : {}),
-          })
-          if (
-            !r.ok ||
-            !r.outline ||
-            !Array.isArray(r.outline.pages) ||
-            r.outline.pages.length === 0
-          ) {
-            if (pages.length === 0) {
-              // On failure the progress must be finalized, otherwise the UI spins forever at "Planning outline…"
-              access.onProgress?.({
-                stage: 'plan',
-                label: t('aiStagePlan'),
-                done: 0,
-                total: approx,
-                status: 'error',
-                summary: t('aiStagePlanFailed'),
-              })
-              return fail(t('aiFailGenDeck'), `Planning failed: ${r.error || 'outline is empty'}`)
-            }
-            break // A later planning batch failed; at least generate what was already planned
-          }
-          if (planned === 0) {
-            coreHook = String(r.outline.core_hook ?? coreHook).trim()
-          }
-          pages.push(...r.outline.pages)
-          planned += r.outline.pages.length
+        const planFailed = (err?: string) => {
           access.onProgress?.({
             stage: 'plan',
             label: t('aiStagePlan'),
-            done: planned,
+            done: 0,
             total: approx,
-            status: 'running',
-            summary: t('aiStagePlanProgress', { done: planned, total: approx }),
+            status: 'error',
+            summary: t('aiStagePlanFailed'),
           })
-          if (r.outline.pages.length < count) break // The model returned fewer than requested; stop
+          return { error: `Planning failed: ${err || 'outline is empty'}` }
+        }
+        const planBatch = (count: number, startPage: number, withHook: boolean) =>
+          access.planDeckOutline!({
+            topic,
+            count,
+            startPage,
+            ...(mergedContext ? { context: mergedContext } : {}),
+            ...(styleHint ? { styleSkill: styleHint } : {}),
+            ...(withHook && coreHook ? { continueFrom: { coreHook } } : {}),
+            ...(signal ? { signal } : {}),
+          })
+        type PlanResult = Awaited<ReturnType<NonNullable<typeof access.planDeckOutline>>>
+        const batchOk = (
+          r?: PlanResult | null,
+        ): r is PlanResult & { outline: { core_hook?: unknown; pages: unknown[] } } =>
+          !!(r?.ok && r.outline && Array.isArray(r.outline.pages) && r.outline.pages.length)
+        // First batch — also yields the Core Hook the later batches continue from
+        const count1 = Math.min(PLAN_BATCH, approx)
+        if (cancelled()) return {}
+        const r1 = await planBatch(count1, 1, false)
+        if (!batchOk(r1)) return planFailed(r1?.error)
+        coreHook = String(r1!.outline!.core_hook ?? coreHook).trim()
+        pages.push(...(r1!.outline!.pages as Record<string, unknown>[]))
+        let planned = r1!.outline!.pages.length
+        access.onProgress?.({
+          stage: 'plan',
+          label: t('aiStagePlan'),
+          done: planned,
+          total: approx,
+          status: 'running',
+          summary: t('aiStagePlanProgress', { done: planned, total: approx }),
+        })
+        // Remaining batches in parallel — they continue from coreHook, not from each other
+        if (planned < approx && r1!.outline!.pages.length >= count1) {
+          const starts: number[] = []
+          for (let s = planned; s < approx; s += PLAN_BATCH) starts.push(s)
+          const rs = await Promise.all(
+            starts.map(async (startPage) => {
+              if (cancelled()) return null
+              const count = Math.min(PLAN_BATCH, approx - startPage)
+              return { count, r: await planBatch(count, startPage + 1, true) }
+            }),
+          )
+          for (const item of rs) {
+            if (!item || !batchOk(item.r)) continue
+            pages.push(...(item.r!.outline!.pages as Record<string, unknown>[]))
+            planned += item.r!.outline!.pages.length
+            access.onProgress?.({
+              stage: 'plan',
+              label: t('aiStagePlan'),
+              done: planned,
+              total: approx,
+              status: 'running',
+              summary: t('aiStagePlanProgress', { done: planned, total: approx }),
+            })
+          }
         }
         access.onProgress?.({
           stage: 'plan',
@@ -1964,33 +2092,48 @@ async function executeTool(
           status: 'done',
           summary: t('aiStagePlanDone', { n: pages.length }),
         })
-      }
+        return {}
+      })()
 
-      // ── Step 1.5: in-tool image search —
-      // walk every page's image_queries and replace "English keywords (non-URL)" with real image URLs.
-      // Entries that are already http(s) URLs are respected upstream, not re-searched; pages whose search failed keep an empty array (fail-open).
-      // The same keyword is searched once per deck (fetching several candidates at once); allocation skips already-used URLs to avoid duplicate images across pages.
-      if (access.searchImages) {
-        const isUrl = (s: string) => /^https?:\/\//i.test(s)
-        const normKw = (s: string) => s.toLowerCase().replace(/\s+/g, ' ')
-        // Collect deduplicated search keywords across the deck
-        const uniqueKeywords: string[] = []
-        const seenKw = new Set<string>()
+      const [styleOut, planOut, mergedContext] = await Promise.all([styleP, planP, mergedContextP])
+      if (styleOut) styleSkill = styleOut
+      else if (!styleSkill) styleSkill = style // Fallback: the user-passed style, or empty
+      if (planOut.error) return fail(t('aiFailGenDeck'), planOut.error)
+      if (cancelled()) return cancelResult(0, approxForProgress)
+      const pageContext =
+        mergedContext && mergedContext.length > PAGE_CONTEXT_MAX
+          ? mergedContext.slice(0, PAGE_CONTEXT_MAX)
+          : mergedContext
+
+      // ── Step 1.5: in-tool imagery. AI generation is the PRIMARY resolver for every
+      //   visual slot — the image model renders each slot's description (image_queries
+      //   and image_prompts alike), a real-photo search runs only as fallback: for the
+      //   slots the generator missed, or for all of them when generation is unavailable.
+      //   Entries that are already URLs (http(s), or file:// for BYOK-generated images)
+      //   are respected, not re-resolved; unresolvable slots stay empty (fail-open).
+      const isUrl = (s: string) => /^(https?|file):\/\//i.test(s)
+      const normKw = (s: string) => s.toLowerCase().replace(/\s+/g, ' ')
+      const unresolvedImageSlots: { page: number; slot: string }[] = []
+      if (access.searchImages || access.generateImage) {
+        const uniqueSlots: string[] = []
+        const seenSlot = new Set<string>()
         for (const p of pages) {
-          if (!Array.isArray(p.image_queries)) continue
-          for (const q of p.image_queries as unknown[]) {
-            const s = String(q).trim()
-            if (!s || isUrl(s)) continue
-            const k = normKw(s)
-            if (!seenKw.has(k)) {
-              seenKw.add(k)
-              uniqueKeywords.push(s)
+          for (const field of ['image_queries', 'image_prompts'] as const) {
+            for (const q of (Array.isArray(p[field]) ? p[field] : []) as unknown[]) {
+              const s = String(q).trim()
+              if (!s || isUrl(s)) continue
+              const k = normKw(s)
+              if (!seenSlot.has(k)) {
+                seenSlot.add(k)
+                uniqueSlots.push(s)
+              }
             }
           }
         }
-        // Each keyword is searched only once, fetching several candidates so cross-page dedup can pick unused images
         const candidatesByKw = new Map<string, string[]>()
-        const totalSearches = uniqueKeywords.length
+        const genByPrompt = new Map<string, string>()
+        const canGenerate = !!access.generateImage && access.imageGenAvailable?.() !== false
+        const totalSearches = uniqueSlots.length
         if (totalSearches > 0) {
           access.onProgress?.({
             stage: 'images',
@@ -2001,55 +2144,112 @@ async function executeTool(
             summary: t('aiStageImagesRunning', { done: 0, total: totalSearches }),
           })
           let imagesDone = 0
-          await Promise.all(
-            uniqueKeywords.map(async (kw) => {
-              if (cancelled()) return
-              try {
-                const urls = await access.searchImages!(kw, 5)
-                candidatesByKw.set(normKw(kw), urls)
-              } catch {
-                /* fail-open */
-              }
-              imagesDone++
-              access.onProgress?.({
-                stage: 'images',
-                label: t('aiStageImages'),
-                done: imagesDone,
-                total: totalSearches,
-                status: 'running',
-                summary: t('aiStageImagesRunning', { done: imagesDone, total: totalSearches }),
-              })
-            }),
-          )
+          const tick = () => {
+            imagesDone++
+            const shown = Math.min(imagesDone, totalSearches)
+            access.onProgress?.({
+              stage: 'images',
+              label: t('aiStageImages'),
+              done: shown,
+              total: totalSearches,
+              status: 'running',
+              summary: t('aiStageImagesRunning', { done: shown, total: totalSearches }),
+            })
+          }
+          const missedPrompts: string[] = []
+          const jobs: Promise<void>[] = []
+          if (canGenerate) {
+            // Pool of 3 concurrent generations — image calls are slow, but flooding the
+            // provider trips rate limits; a missed slot falls back to an image search.
+            let cursor = 0
+            jobs.push(
+              ...Array.from({ length: Math.min(3, uniqueSlots.length) }, async () => {
+                while (cursor < uniqueSlots.length && !cancelled()) {
+                  const pr = uniqueSlots[cursor++]!
+                  try {
+                    const r = await access.generateImage!({ prompt: pr, aspectRatio: '16:9' })
+                    if (r.ok && r.url) genByPrompt.set(normKw(pr), r.url)
+                    else missedPrompts.push(pr)
+                  } catch {
+                    missedPrompts.push(pr)
+                  }
+                  tick()
+                }
+              }),
+            )
+          } else if (access.searchImages) {
+            // Generation unavailable: every slot resolves through image search
+            // (each searched once, several candidates so cross-page dedup can pick unused images)
+            jobs.push(
+              ...uniqueSlots.map(async (kw) => {
+                if (cancelled()) return
+                try {
+                  candidatesByKw.set(normKw(kw), await access.searchImages!(kw, 5))
+                } catch {
+                  /* fail-open */
+                }
+                tick()
+              }),
+            )
+          }
+          await Promise.all(jobs)
+          // Fallback: slots the generator missed → a real-photo search on the slot text
+          if (missedPrompts.length && access.searchImages) {
+            await Promise.all(
+              missedPrompts.map(async (pr) => {
+                if (cancelled()) return
+                try {
+                  const urls = await access.searchImages!(pr, 5)
+                  if (urls.length) candidatesByKw.set(normKw(pr), urls)
+                } catch {
+                  /* fail-open */
+                }
+              }),
+            )
+          }
         }
-        // Allocate page by page in order: explicit URLs are kept as-is (and counted as used); keywords pick from candidates, preferring images the deck hasn't used yet
+        // Allocate page by page in order: explicit URLs are kept as-is (and counted as used);
+        // keywords/prompts pick from candidates preferring images the deck hasn't used yet.
+        // Slots that resolve to nothing are reported in the tool output (a blank image
+        // slot must never go unmentioned).
         const usedUrls = new Set<string>()
         for (const p of pages) {
-          if (!Array.isArray(p.image_queries)) continue
-          for (const q of p.image_queries as unknown[]) {
-            const s = String(q).trim()
-            if (isUrl(s)) usedUrls.add(s)
+          for (const field of ['image_queries', 'image_prompts'] as const) {
+            const arr = p[field]
+            if (!Array.isArray(arr)) continue
+            for (const q of arr as unknown[]) {
+              const s = String(q).trim()
+              if (isUrl(s)) usedUrls.add(s)
+            }
           }
         }
-        for (const p of pages) {
-          if (!Array.isArray(p.image_queries) || p.image_queries.length === 0) continue
-          const resolvedUrls: string[] = []
-          for (const q of p.image_queries as unknown[]) {
-            const s = String(q).trim()
-            if (!s) continue
-            if (isUrl(s)) {
-              resolvedUrls.push(s)
-              continue
+        for (const [pi, p] of pages.entries()) {
+          for (const field of ['image_queries', 'image_prompts'] as const) {
+            const arr = p[field]
+            if (!Array.isArray(arr) || arr.length === 0) continue
+            const resolvedUrls: string[] = []
+            for (const q of arr as unknown[]) {
+              const s = String(q).trim()
+              if (!s) continue
+              if (isUrl(s)) {
+                resolvedUrls.push(s)
+                continue
+              }
+              const k = normKw(s)
+              // Generated URL first (the primary resolver), searched candidates after
+              const gen = genByPrompt.get(k)
+              const candidates = candidatesByKw.get(k) ?? []
+              // If all candidates are used, fall back to reusing the first one (an image beats no image)
+              const pick = gen ?? candidates.find((u) => !usedUrls.has(u)) ?? candidates[0]
+              if (pick) {
+                usedUrls.add(pick)
+                resolvedUrls.push(pick)
+              } else {
+                unresolvedImageSlots.push({ page: pi + 1, slot: s })
+              }
             }
-            const candidates = candidatesByKw.get(normKw(s)) ?? []
-            // If all candidates are used, fall back to reusing the first one (an image beats no image)
-            const pick = candidates.find((u) => !usedUrls.has(u)) ?? candidates[0]
-            if (pick) {
-              usedUrls.add(pick)
-              resolvedUrls.push(pick)
-            }
+            p[field] = resolvedUrls
           }
-          p.image_queries = resolvedUrls
         }
         if (totalSearches > 0) {
           access.onProgress?.({
@@ -2133,11 +2333,18 @@ async function executeTool(
           summary: t('aiStagePageRunning', { n: pageIndex, total }),
           pages: [...pageProgressItems],
         })
-        const images = Array.isArray(p.image_queries)
-          ? (p.image_queries as unknown[])
-              .map((x) => String(x))
-              .filter((x) => /^https?:\/\//.test(x))
-          : []
+        // Resolved image slots: generated URLs (primary) + searched URLs (fallback) +
+        // explicit URLs passed through. file:// (BYOK-generated) only works on the local
+        // build path — the cloud service cannot reach the local image store.
+        const images = (['image_queries', 'image_prompts'] as const).flatMap((field) =>
+          Array.isArray(p[field])
+            ? (p[field] as unknown[])
+                .map((x) => String(x))
+                .filter((x) =>
+                  useCloud ? /^https?:\/\//.test(x) : /^(https?|file):\/\//.test(x),
+                )
+            : [],
+        )
         let lastErr = ''
         const pageArgs = {
           pageIndex,
@@ -2381,8 +2588,16 @@ async function executeTool(
               ', ',
             )} degraded to a plain-text fallback page after conversion failure (all layout and styling lost): immediately redo these pages in place with regenerate_slide following the original brief, then reply to the user.`
         : ''
+      const imageMissMsg = unresolvedImageSlots.length
+        ? `\n⚠️ Unresolved image slots: ${unresolvedImageSlots
+            .map((m) => `page ${m.page} ("${m.slot.slice(0, 60)}")`)
+            .join(
+              ', ',
+            )} — neither a searched nor a generated image was produced; those slots are blank. Fill them with insert_web_image after image_search or generate_image (slideIndex = page number - 1).`
+        : ''
       return {
-        output: okMsg + failMsg + degradedMsg + imageFailNote(deckImageFails) + progressTail,
+        output:
+          okMsg + failMsg + degradedMsg + imageFailNote(deckImageFails) + imageMissMsg + progressTail,
         mutated: true,
         summary: t('aiSumDeckGenerated', { done: landedPages, total }),
       }

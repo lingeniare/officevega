@@ -62,6 +62,7 @@ export const es = {
   aiToolReadSource: 'Leer código fuente',
   aiToolApplyOps: '{n} cambio(s) aplicado(s)',
   aiToolApplyOpsFailed: 'Cambios no aplicados',
+  aiToolApplyOpsRunning: 'Aplicando cambios',
   aiClarifyDecide: 'Decide por mí',
   aiClarifyDecideAnswer: '(decide por mí)',
   aiClarifyMulti: 'Selección múltiple',

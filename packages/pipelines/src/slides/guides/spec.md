@@ -38,7 +38,7 @@ deck/pages/02.json   { "title": "Where the margin went", "type": "content", "lay
 }
 ```
 
-`type` is `cover`, `content`, `data` or `closing`; `layout` is one of that type's variants from the design guide's layout library. `image_queries` holds an English scene query per photo slot or a ready `http(s)` URL; `[]` for a page without photos. Errors from the check: unknown type or layout, missing title, brief, core hook or image_queries entries, placeholder copy (`XX%`, `lorem`, `TBD`), a content or data layout repeated on consecutive pages. Warnings: a thin brief, a non-English query, fewer than three layout variants across the body pages, a first page that is not a cover, a last page that is not a closing page.
+`type` is `cover`, `content`, `data` or `closing`; `layout` is one of that type's variants from the design guide's layout library. `image_queries` holds an English scene description per visual slot (resolve it with AI image generation first — a photo search is only the fallback when generation is unavailable or fails) or a ready `http(s)` URL; `[]` for a page without photos. Errors from the check: unknown type or layout, missing title, brief, core hook or image_queries entries, placeholder copy (`XX%`, `lorem`, `TBD`), a content or data layout repeated on consecutive pages. Warnings: a thin brief, a non-English query, fewer than three layout variants across the body pages, a first page that is not a cover, a last page that is not a closing page.
 
 ## Element types
 
@@ -62,6 +62,14 @@ deck/pages/02.json   { "title": "Where the margin went", "type": "content", "lay
 ```
 
 `shape` is one of `rect`, `roundRect`, `ellipse`, `triangle`, `rightArrow`, `leftArrow`, `upArrow`, `downArrow`, `chevron`, `diamond`, `parallelogram`, `trapezoid`, `hexagon`, `pentagon`, `pie`, `donut`, `star5`, `heart`, `cloud`, `line`, `lineArrow`. `line` and `lineArrow` draw the diagonal of their box from top-left to bottom-right and need a `stroke`; a horizontal rule is a box with `h: 1`. A shape needs a `fill` or a `stroke` (or both). `paragraphs` is optional label text, vertically centered unless `valign` says otherwise.
+
+`fill` (and the page-level `background`) takes `"#RRGGBB(AA)"` or a linear gradient object:
+
+```json
+{ "gradient": { "stops": [{ "pos": 0, "color": "#0E1A2B" }, { "pos": 100, "color": "#3B82F6" }], "angle": 45 } }
+```
+
+`pos` is 0–100, `angle` in degrees (0 = left→right, 90 = top→bottom); `{"gradient":{"from":"#A","to":"#B","angle":45}}` is the two-stop shorthand. Gradients suit large cover/background blocks, not small elements.
 
 **Text**
 

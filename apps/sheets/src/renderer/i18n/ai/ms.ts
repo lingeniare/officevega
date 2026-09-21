@@ -65,8 +65,7 @@ export const ms = {
   aiOverloadedError: 'Perkhidmatan AI sedang sibuk — sila cuba lagi sebentar lagi',
   aiNetworkError:
     'Masalah rangkaian: tidak dapat menghubungi perkhidmatan AI. Semak sambungan anda dan cuba lagi',
-  aiCreditsExhausted:
-    'Kredit VEGA anda telah habis. Tambah nilai di api.vega.chat dan cuba lagi',
+  aiCreditsExhausted: 'Kredit VEGA anda telah habis. Tambah nilai di api.vega.chat dan cuba lagi',
   aiToolWorkbookContext: 'Baca maklumat buku kerja',
   aiToolReadRange: 'Baca julat',
   aiToolReadRangeOf: 'Baca julat {range}',
@@ -97,6 +96,10 @@ export const ms = {
   aiToolImageSearchDone: 'Mencari imej "{query}" ({count} hasil)',
   aiToolGenImage: 'Jana imej',
   aiToolGenImageDone: 'Imej dijana',
+  aiToolMerge: 'Gabungkan buku kerja',
+  aiToolMergeNoSources: 'Tiada lampiran hamparan untuk digabungkan',
+  aiToolMergeDone: '{count} helai digabungkan',
+  aiToolMergeFailed: 'Penggabungan gagal',
   aiToolTracePrecedents: 'Jejak presedens',
   aiToolTracePrecedentsOf: 'Presedens {address}',
   aiToolTraceDependents: 'Jejak dependen',

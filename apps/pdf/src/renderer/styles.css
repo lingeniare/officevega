@@ -361,6 +361,8 @@ button {
 .ribbon-body {
   display: flex;
   align-items: stretch;
+  /* single weight for the whole band, same as the other apps' ribbons */
+  font-weight: 400;
   /* band metrics shared with the docs/slides ribbons (PowerPoint parity) */
   padding: 6px 12px;
   /* HARD-fixed height like docs/slides: the ribbon height stays constant, and a
@@ -464,7 +466,7 @@ button {
 /* AI button: brand logo only — no accent plate behind the icon, label stays black (same as docs) */
 .rb-big.rb-ai {
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .rb-big.rb-ai > span:not(.rb-big-icon) {
@@ -3773,14 +3775,14 @@ button {
   padding: 5px 12px;
   border: 1px solid transparent;
   border-radius: var(--radius-6);
-  background: var(--color-ai-action);
-  color: var(--color-ai-action-text);
+  background: var(--accent);
+  color: var(--color-bg-page);
   font-size: 12px;
   cursor: pointer;
 }
 
 .ai-ask-confirm:hover:not(:disabled) {
-  background: var(--color-ai-action-hover);
+  background: var(--accent-dark);
 }
 
 .ai-ask-confirm:disabled {

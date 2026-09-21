@@ -11,9 +11,9 @@ export const en = {
   aiGskLoginBtn: 'Sign in to VEGA',
   aiPanelTitle: 'VEGA',
   aiOpenAssistant: 'Open AI assistant',
-  aiSummarizeBtn: 'AI Summarize',
+  aiSummarizeBtn: 'Summarize',
   aiSummarizePrompt: 'Summarize the main content and key points of this document',
-  aiPolishBtn: 'AI Polish',
+  aiPolishBtn: 'Polish',
   aiPolishPrompt: 'Polish the whole document to make the writing clearer and more fluent',
   aiPolishSelectionPrompt:
     'Polish the selected content to make the writing clearer and more fluent',
@@ -58,7 +58,7 @@ export const en = {
   aiSumReadNotes: 'Read notes',
   aiSumAddComment: 'Added comment',
   aiSumDeleteComment: 'Deleted comment',
-  aiTidyBtn: 'AI Format',
+  aiTidyBtn: 'Format',
   aiTidyPrompt:
     'Tidy up the document formatting — for example fix heading levels, unify list formatting, remove unnecessary bold and italics, and make paragraph indentation consistent. Adjust formatting only — do not change any text content',
   aiSwitchModelTitle: 'Switch AI model',
@@ -157,6 +157,7 @@ export const en = {
   aiSumEditedChart: 'Edited chart data (block {index})',
   aiSumSetHeader: 'Updated header',
   aiSumSetFooter: 'Updated footer',
+  aiSumSetHeaderFooter: 'Update header/footer',
   aiSumSetPageSetup: 'Updated page setup',
   aiSumInsertSectionBreak: 'Inserted section break',
   aiSumApplyCommands: 'Apply formatting commands',

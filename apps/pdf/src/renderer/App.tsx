@@ -6194,7 +6194,7 @@ export default function App() {
                     <span className="rb-big-icon">
                       <VegaMark size={26} />
                     </span>
-                    <span>{lang === 'ru' ? 'ВЕГА' : 'VEGA'}</span>
+                    <span>{lang === 'ru' ? 'ВЕГА ИИ' : 'VEGA'}</span>
                   </button>
                   <button
                     className="rb-big ai-entry"

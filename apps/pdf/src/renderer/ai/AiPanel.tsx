@@ -11,6 +11,7 @@ import {
   type AiScopeQuoteData,
 } from '@genoffice/ui'
 import { aiLangDirective, t as tGlobal, useI18n } from '../i18n/locale'
+import { localizedToolSummary } from './tool-labels'
 import { Markdown } from '@genoffice/ui'
 import { createPdfSkill } from './pdf-skill'
 import { createElectronTransport } from './transport'
@@ -207,7 +208,7 @@ export function AiPanel({
             text: m.text,
             tools: m.tools?.map((tool) => ({
               name: tool.name,
-              summary: tool.summary,
+              summary: localizedToolSummary(tool.name, tool.summary),
               isError: tool.isError,
               output: tool.output,
             })),
@@ -394,9 +395,11 @@ export function AiPanel({
         onToolExecuted: ({ call, execution }) => {
           setPhase('working')
           if (execution.mutated) runMutatedRef.current = true
+          // agent-core error paths carry the raw tool name — localize it
+          const summary = localizedToolSummary(call.name, execution.summary)
           runToolsRef.current.push({
             name: call.name,
-            summary: execution.summary,
+            summary,
             isError: execution.isError,
             output: execution.output?.slice(0, 2000),
           })
@@ -405,7 +408,7 @@ export function AiPanel({
               ...(last.tools ?? []),
               {
                 name: call.name,
-                summary: execution.summary,
+                summary,
                 isError: execution.isError,
                 output: execution.output?.slice(0, 2000),
               },

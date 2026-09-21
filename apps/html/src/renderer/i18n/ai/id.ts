@@ -60,6 +60,7 @@ export const id = {
   aiToolReadSource: 'Membaca sumber',
   aiToolApplyOps: '{n} perubahan diterapkan',
   aiToolApplyOpsFailed: 'Perubahan tidak diterapkan',
+  aiToolApplyOpsRunning: 'Menerapkan perubahan',
   aiClarifyDecide: 'Putuskan untuk saya',
   aiClarifyDecideAnswer: '(putuskan untuk saya)',
   aiClarifyMulti: 'Pilih beberapa',

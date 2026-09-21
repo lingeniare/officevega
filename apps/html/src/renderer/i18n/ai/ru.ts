@@ -60,6 +60,7 @@ export const ru = {
   aiToolReadSource: 'Чтение исходного кода',
   aiToolApplyOps: 'Применено правок: {n}',
   aiToolApplyOpsFailed: 'Правки не применены',
+  aiToolApplyOpsRunning: 'Применение изменений',
   aiClarifyDecide: 'Решите за меня',
   aiClarifyDecideAnswer: '(решите за меня)',
   aiClarifyMulti: 'Несколько вариантов',

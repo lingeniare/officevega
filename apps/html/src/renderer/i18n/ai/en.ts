@@ -60,6 +60,7 @@ export const en = {
   aiToolReadSource: 'Read source',
   aiToolApplyOps: 'Applied {n} edit(s)',
   aiToolApplyOpsFailed: 'Edits not applied',
+  aiToolApplyOpsRunning: 'Applying changes',
   aiClarifyDecide: 'Decide for me',
   aiClarifyDecideAnswer: '(decide for me)',
   aiClarifyMulti: 'Multiple choice',

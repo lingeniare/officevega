@@ -54,6 +54,7 @@ export const zhTW = {
   aiToolReadSource: '讀取原始碼',
   aiToolApplyOps: '套用了 {n} 處修改',
   aiToolApplyOpsFailed: '修改未套用',
+  aiToolApplyOpsRunning: '套用修改',
   aiClarifyDecide: '幫我決定',
   aiClarifyDecideAnswer: '（幫我決定）',
   aiClarifyMulti: '可複選',

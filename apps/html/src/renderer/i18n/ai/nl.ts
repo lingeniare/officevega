@@ -60,6 +60,7 @@ export const nl = {
   aiToolReadSource: 'Broncode lezen',
   aiToolApplyOps: '{n} bewerking(en) toegepast',
   aiToolApplyOpsFailed: 'Bewerkingen niet toegepast',
+  aiToolApplyOpsRunning: 'Wijzigingen toepassen',
   aiClarifyDecide: 'Beslis voor mij',
   aiClarifyDecideAnswer: '(beslis voor mij)',
   aiClarifyMulti: 'Meerdere keuzes',

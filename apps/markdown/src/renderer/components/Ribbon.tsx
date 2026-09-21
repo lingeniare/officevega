@@ -443,7 +443,7 @@ export function Ribbon({
               <span className="rb-big-icon">
                 <VegaMark size={26} />
               </span>
-              <span>{lang === 'ru' ? 'ВЕГА' : 'VEGA'}</span>
+              <span>{lang === 'ru' ? 'ВЕГА ИИ' : 'VEGA'}</span>
             </button>
             {aiPresets.map(({ kind, btn, prompt }) => (
               <button

@@ -82,10 +82,19 @@ interface SpecBase {
   h: number
 }
 
+/** A two-or-more-stop linear gradient. pos is 0..1 (the spec writes percents 0-100). */
+export interface SpecGradient {
+  stops: { pos: number; color: string }[]
+  /** degrees: 0 = left→right, 90 = top→bottom */
+  angle?: number
+}
+
+export type SpecFill = string | { gradient: SpecGradient }
+
 export interface SpecShape extends SpecBase {
   type: 'shape'
   shape: string
-  fill?: string
+  fill?: SpecFill
   stroke?: { color: string; widthPt: number }
   paragraphs?: SpecParagraph[]
   valign?: 'top' | 'middle' | 'bottom'
@@ -105,7 +114,7 @@ export interface SpecImage extends SpecBase {
 export type SpecElement = SpecShape | SpecText | SpecImage
 
 export interface PageSpec {
-  background?: string
+  background?: SpecFill
   elements: SpecElement[]
 }
 
@@ -121,6 +130,38 @@ function normColor(v: unknown): string | undefined {
   let hex = v.trim().replace(/^#/, '').toUpperCase()
   if (/^[0-9A-F]{3}$/.test(hex)) hex = [...hex].map((c) => c + c).join('')
   return /^[0-9A-F]{6}([0-9A-F]{2})?$/.test(hex) ? `#${hex}` : undefined
+}
+
+/**
+ * Spec fill: "#RRGGBB" or {"gradient":{"stops":[{"pos":0..100,"color":"#A"}...],"angle":deg}}.
+ * The convenience {"gradient":{"from":"#A","to":"#B","angle":45}} form normalizes to two stops.
+ */
+function normFill(v: unknown): SpecFill | undefined {
+  const solid = normColor(v)
+  if (solid) return solid
+  const grad = asRecord(asRecord(v).gradient)
+  if (!Object.keys(grad).length) return undefined
+  const stops: { pos: number; color: string }[] = []
+  if (Array.isArray(grad.stops)) {
+    for (const s of grad.stops) {
+      const sr = asRecord(s)
+      const pos = num(sr.pos)
+      const color = normColor(sr.color)
+      if (pos === undefined || !color) continue
+      stops.push({ pos: Math.min(Math.max(pos / 100, 0), 1), color })
+    }
+  }
+  const from = normColor(grad.from)
+  const to = normColor(grad.to)
+  if (!stops.length && from && to) stops.push({ pos: 0, color: from }, { pos: 1, color: to })
+  if (stops.length < 2) return undefined
+  const angle = num(grad.angle)
+  return {
+    gradient: {
+      stops,
+      ...(angle !== undefined ? { angle: Math.min(Math.max(angle, 0), 360) } : {}),
+    },
+  }
 }
 
 function num(v: unknown): number | undefined {
@@ -285,7 +326,10 @@ export function parsePageSpecObject(
         warnings.push(`element ${i}: unknown shape "${shape}", using rect`)
         shape = 'rect'
       }
-      const fill = normColor(el.fill)
+      const fill = normFill(el.fill)
+      if (el.fill != null && !fill) {
+        warnings.push(`element ${i}: unsupported fill (use #RRGGBB or a gradient), ignored`)
+      }
       const strokeRec = asRecord(el.stroke)
       const strokeColor = normColor(strokeRec.color)
       const strokeWidth = num(strokeRec.widthPt)
@@ -321,10 +365,14 @@ export function parsePageSpecObject(
     }
   }
   warnings.push(...nearDuplicateTextWarnings(rawEls))
+  const background = normFill(root.background)
+  if (root.background != null && !background) {
+    warnings.push('unsupported background fill (use #RRGGBB or a gradient), ignored')
+  }
   return {
     ok: true,
     spec: {
-      ...(normColor(root.background) ? { background: normColor(root.background) } : {}),
+      ...(background ? { background } : {}),
       elements,
     },
     warnings,
@@ -493,12 +541,29 @@ export async function buildPagePptx(
     }),
   )
 
+  // A spec gradient rides on the element's dirtyFill patch: the element is created with
+  // a solid base (its first stop color) and the save-time patch swaps in <a:gradFill>.
+  const applySpecFill = (added: TextElement, f: SpecFill | undefined) => {
+    if (!f || typeof f === 'string') return // solid — already written via fillColor
+    added.fill = {
+      type: 'gradient',
+      stops: f.gradient.stops.map((s) => ({ pos: s.pos, color: s.color })),
+      angle: Math.round((f.gradient.angle ?? 0) * 60000),
+    }
+    added.dirtyFill = true
+  }
+  const solidBase = (f: SpecFill | undefined) =>
+    typeof f === 'string' ? f : f ? f.gradient.stops[0]!.color : undefined
+
   if (spec.background) {
-    addElement(slide, {
-      kind: 'rect',
-      offset: { x: 0, y: 0, cx: opened.deck.size.cx, cy: opened.deck.size.cy },
-      fillColor: spec.background,
-    })
+    applySpecFill(
+      addElement(slide, {
+        kind: 'rect',
+        offset: { x: 0, y: 0, cx: opened.deck.size.cx, cy: opened.deck.size.cy },
+        fillColor: solidBase(spec.background),
+      }),
+      spec.background,
+    )
   }
 
   for (const el of spec.elements) {
@@ -539,23 +604,32 @@ export async function buildPagePptx(
       })
       continue
     }
-    addElement(slide, {
-      kind: el.shape,
-      offset,
-      ...(el.fill ? { fillColor: el.fill } : {}),
-      ...(el.stroke
-        ? {
-            stroke: {
-              color: el.stroke.color,
-              widthEmu: Math.round(el.stroke.widthPt * EMU_PER_PT),
-            },
-          }
-        : {}),
-      ...(el.paragraphs ? { paragraphs: toEngineParagraphs(el.paragraphs) } : {}),
-      ...(el.paragraphs
-        ? { bodyPr: { wrap: 'square', anchor: anchorOf(el.valign, 'ctr'), insetsEmu: zeroInsets } }
-        : {}),
-    })
+    applySpecFill(
+      addElement(slide, {
+        kind: el.shape,
+        offset,
+        ...(el.fill ? { fillColor: solidBase(el.fill) } : {}),
+        ...(el.stroke
+          ? {
+              stroke: {
+                color: el.stroke.color,
+                widthEmu: Math.round(el.stroke.widthPt * EMU_PER_PT),
+              },
+            }
+          : {}),
+        ...(el.paragraphs ? { paragraphs: toEngineParagraphs(el.paragraphs) } : {}),
+        ...(el.paragraphs
+          ? {
+              bodyPr: {
+                wrap: 'square',
+                anchor: anchorOf(el.valign, 'ctr'),
+                insetsEmu: zeroInsets,
+              },
+            }
+          : {}),
+      }),
+      el.fill,
+    )
   }
 
   promoteSlideBackground(slide, opened.deck.size)

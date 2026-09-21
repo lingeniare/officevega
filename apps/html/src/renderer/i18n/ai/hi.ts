@@ -60,6 +60,7 @@ export const hi = {
   aiToolReadSource: 'स्रोत पढ़ा',
   aiToolApplyOps: '{n} संपादन लागू',
   aiToolApplyOpsFailed: 'संपादन लागू नहीं हुए',
+  aiToolApplyOpsRunning: 'परिवर्तन लागू कर रहा है',
   aiClarifyDecide: 'मेरे लिए तय करें',
   aiClarifyDecideAnswer: '(मेरे लिए तय करें)',
   aiClarifyMulti: 'एकाधिक चयन',

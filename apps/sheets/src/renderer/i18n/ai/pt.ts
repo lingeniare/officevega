@@ -66,8 +66,7 @@ export const pt = {
     'O serviço de IA está sobrecarregado no momento — tente novamente em instantes',
   aiNetworkError:
     'Problema de rede: não foi possível conectar ao serviço de IA. Verifique sua conexão e tente novamente',
-  aiCreditsExhausted:
-    'Seus créditos VEGA acabaram. Recarregue em api.vega.chat e tente novamente',
+  aiCreditsExhausted: 'Seus créditos VEGA acabaram. Recarregue em api.vega.chat e tente novamente',
   aiToolWorkbookContext: 'Ler informações da pasta de trabalho',
   aiToolReadRange: 'Ler intervalo',
   aiToolReadRangeOf: 'Ler intervalo {range}',
@@ -98,6 +97,10 @@ export const pt = {
   aiToolImageSearchDone: 'Pesquisou imagens de "{query}" ({count})',
   aiToolGenImage: 'Gerar imagem',
   aiToolGenImageDone: 'Imagem gerada',
+  aiToolMerge: 'Mesclar pastas de trabalho',
+  aiToolMergeNoSources: 'Nenhum anexo de planilha para mesclar',
+  aiToolMergeDone: '{count} planilhas mescladas',
+  aiToolMergeFailed: 'Falha na mesclagem',
   aiToolTracePrecedents: 'Rastrear precedentes',
   aiToolTracePrecedentsOf: 'Precedentes de {address}',
   aiToolTraceDependents: 'Rastrear dependentes',

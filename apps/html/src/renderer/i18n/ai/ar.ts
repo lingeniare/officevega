@@ -60,6 +60,7 @@ export const ar = {
   aiToolReadSource: 'قراءة المصدر',
   aiToolApplyOps: 'تم تطبيق {n} تعديل',
   aiToolApplyOpsFailed: 'لم يتم تطبيق التعديلات',
+  aiToolApplyOpsRunning: 'تطبيق التعديلات',
   aiClarifyDecide: 'قرِّر بالنيابة عني',
   aiClarifyDecideAnswer: '(قرِّر بالنيابة عني)',
   aiClarifyMulti: 'اختيار متعدد',

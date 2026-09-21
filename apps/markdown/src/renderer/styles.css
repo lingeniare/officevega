@@ -399,6 +399,8 @@ html.vegaoffice-popover-open .ribbon-tabs {
   /* stretch like the docs ribbon: groups fill the band and the tall AI
      buttons top-align at the same size/position as docs */
   align-items: stretch;
+  /* single weight for the whole band, same as the other apps' ribbons */
+  font-weight: 400;
   /* band metrics shared with the docs/slides/pdf ribbons; no row gap — groups
      own their spacing (2px 4px padding) exactly like the docs/slides ribbons */
   padding: 6px 12px;
@@ -1003,22 +1005,26 @@ html.vegaoffice-popover-open .ribbon-tabs {
   color: var(--color-text-primary);
 }
 
-/* AI chat accent: markdown violet — the .md file-type color from the shell
-   icons (overrides the app accent only inside the chat panel) */
-.copilot {
+/* AI accent: markdown violet — the .md file-type color from the shell
+   icons (overrides the app accent inside the chat panel and the Ask-AI
+   popover, which mounts at the app root outside .copilot) */
+.copilot,
+.ai-ask-pop {
   --accent: #8b5cf6;
   --accent-dark: #7c4ddb;
   --accent-soft: #f1eafe;
 }
 
-[data-theme='dark'] .copilot {
+[data-theme='dark'] .copilot,
+[data-theme='dark'] .ai-ask-pop {
   --accent: #a78bfa;
   --accent-dark: #c4b5fd;
   --accent-soft: #2d2645;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']):not([data-theme='dark']) .copilot {
+  :root:not([data-theme='light']):not([data-theme='dark']) .copilot,
+  :root:not([data-theme='light']):not([data-theme='dark']) .ai-ask-pop {
     --accent: #a78bfa;
     --accent-dark: #c4b5fd;
     --accent-soft: #2d2645;
@@ -2744,12 +2750,12 @@ div.tiptap-mathematics-render {
 
 .ai-ask-confirm {
   border: 1px solid transparent;
-  background: var(--color-ai-action);
-  color: var(--color-ai-action-text);
+  background: var(--accent);
+  color: var(--color-bg-page);
 }
 
 .ai-ask-confirm:hover:not(:disabled) {
-  background: var(--color-ai-action-hover);
+  background: var(--accent-dark);
 }
 
 .ai-ask-confirm:disabled {

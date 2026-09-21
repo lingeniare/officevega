@@ -157,6 +157,7 @@ export const hi = {
   aiSumEditedChart: 'चार्ट डेटा संपादित किया गया (ब्लॉक {index})',
   aiSumSetHeader: 'हेडर अपडेट किया गया',
   aiSumSetFooter: 'फुटर अपडेट किया गया',
+  aiSumSetHeaderFooter: 'शीर्षक/पादलेख अपडेट करें',
   aiSumSetPageSetup: 'पृष्ठ सेटअप अपडेट किया गया',
   aiSumInsertSectionBreak: 'अनुभाग विराम डाला गया',
   aiSumApplyCommands: 'स्वरूपण आदेश लागू करें',

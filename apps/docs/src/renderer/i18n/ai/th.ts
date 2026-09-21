@@ -154,6 +154,7 @@ export const th = {
   aiSumEditedChart: 'แก้ไขข้อมูลแผนภูมิ (บล็อก {index})',
   aiSumSetHeader: 'อัปเดตหัวกระดาษ',
   aiSumSetFooter: 'อัปเดตท้ายกระดาษ',
+  aiSumSetHeaderFooter: 'อัปเดตส่วนหัว/ส่วนท้าย',
   aiSumSetPageSetup: 'อัปเดตการตั้งค่าหน้าแล้ว',
   aiSumInsertSectionBreak: 'แทรกตัวแบ่งส่วนแล้ว',
   aiSumApplyCommands: 'ใช้คำสั่งการจัดรูปแบบ',

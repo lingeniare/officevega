@@ -650,7 +650,8 @@ async function openBundledText(fileName: string): Promise<void> {
         join(app.getAppPath(), 'build', fileName),
         join(app.getAppPath(), '..', 'shell', 'build', fileName),
       ]
-  void shell.openPath(candidates.find((p) => existsSync(p)) ?? candidates[0])
+  const target = candidates.find((p) => existsSync(p)) ?? candidates[0]
+  if (target) void shell.openPath(target)
 }
 
 /** Help > License: opens the bundled EULA. */

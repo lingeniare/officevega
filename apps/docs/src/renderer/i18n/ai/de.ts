@@ -162,6 +162,7 @@ export const de = {
   aiSumEditedChart: 'Diagrammdaten bearbeitet (Block {index})',
   aiSumSetHeader: 'Kopfzeile aktualisiert',
   aiSumSetFooter: 'Fußzeile aktualisiert',
+  aiSumSetHeaderFooter: 'Kopf-/Fußzeile aktualisieren',
   aiSumSetPageSetup: 'Seiteneinrichtung aktualisiert',
   aiSumInsertSectionBreak: 'Abschnittsumbruch eingefügt',
   aiSumApplyCommands: 'Formatierungsbefehle anwenden',

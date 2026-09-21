@@ -159,6 +159,7 @@ export const cs = {
   aiSumEditedChart: 'Upravena data grafu (blok {index})',
   aiSumSetHeader: 'Záhlaví aktualizováno',
   aiSumSetFooter: 'Zápatí aktualizováno',
+  aiSumSetHeaderFooter: 'Aktualizovat záhlaví/zápatí',
   aiSumSetPageSetup: 'Nastavení stránky aktualizováno',
   aiSumInsertSectionBreak: 'Vložen konec oddílu',
   aiSumApplyCommands: 'Použít příkazy formátování',

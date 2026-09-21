@@ -6,7 +6,7 @@
  */
 import type { OutlineIssue, OutlinePage } from './outline'
 import { PLACEHOLDER } from './outline'
-import type { PageSpec } from './page-spec'
+import type { PageSpec, SpecFill } from './page-spec'
 
 export function pageText(spec: PageSpec): string {
   const parts: string[] = []
@@ -20,8 +20,9 @@ export function pageText(spec: PageSpec): string {
 /** Every color a page paints with, as #RRGGBB (alpha dropped), in first-use order. */
 export function pageColors(spec: PageSpec): string[] {
   const seen = new Set<string>()
-  const add = (c: string | undefined) => {
-    if (c) seen.add(rgb(c))
+  const add = (c: SpecFill | undefined) => {
+    if (typeof c === 'string') seen.add(rgb(c))
+    else if (c) for (const s of c.gradient.stops) seen.add(rgb(s.color))
   }
   add(spec.background)
   for (const el of spec.elements) {

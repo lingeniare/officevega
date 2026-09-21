@@ -113,8 +113,7 @@ export const ms = {
   aiOverloadedError: 'Perkhidmatan AI sedang sibuk — sila cuba lagi sebentar lagi',
   aiNetworkError:
     'Masalah rangkaian: tidak dapat menghubungi perkhidmatan AI. Semak sambungan anda dan cuba lagi',
-  aiCreditsExhausted:
-    'Kredit VEGA anda telah habis. Tambah nilai di api.vega.chat dan cuba lagi',
+  aiCreditsExhausted: 'Kredit VEGA anda telah habis. Tambah nilai di api.vega.chat dan cuba lagi',
   aiSumReadAttachment: 'Baca lampiran',
   aiSumImageAttachment: 'Lampiran imej {name}',
   aiSumRead: 'Baca {name}',
@@ -158,6 +157,7 @@ export const ms = {
   aiSumEditedChart: 'Data carta diedit (blok {index})',
   aiSumSetHeader: 'Pengepala dikemas kini',
   aiSumSetFooter: 'Pengaki dikemas kini',
+  aiSumSetHeaderFooter: 'Kemas kini pengepala/pengaki',
   aiSumSetPageSetup: 'Persediaan halaman dikemas kini',
   aiSumInsertSectionBreak: 'Pemisah seksyen disisipkan',
   aiSumApplyCommands: 'Guna perintah pemformatan',

@@ -372,6 +372,7 @@ import {
 } from './edit-journal'
 import { shiftPinnedCells } from './formula-closure'
 import { getLang, t, aiLangDirective } from './i18n/locale'
+import { localizedToolSummary, toolLabel } from './ai/tool-labels'
 import { planStillMatches } from './lazy-plan'
 import { lastSurvivingScreenLine, netAxisDelta, screenToFile } from './view-transform'
 import { selectionFormatEquals, toSelectionFormat, type SelectionFormat } from './selection-format'
@@ -1038,7 +1039,7 @@ export function App(): React.JSX.Element {
             text: m.text,
             tools:
               m.tools?.map((t) => ({
-                summary: t.summary,
+                summary: localizedToolSummary(t.name ?? '', t.summary),
                 isError: !!t.isError,
                 ...(t.name ? { name: t.name } : {}),
                 ...(t.output ? { output: t.output.slice(0, 2000) } : {}),
@@ -1181,7 +1182,7 @@ export function App(): React.JSX.Element {
             tools: [
               ...entry.tools,
               {
-                summary: call.name.replace(/[_-]+/g, ' '),
+                summary: toolLabel(call.name),
                 isError: false,
                 name: call.name,
                 running: true,
@@ -1191,13 +1192,15 @@ export function App(): React.JSX.Element {
         },
         onToolExecuted: ({ call, execution }) => {
           if (execution.mutated) runMutatedRef.current = true
+          // agent-core error paths carry the raw tool name — localize it
+          const summary = localizedToolSummary(call.name, execution.summary)
           const input = safeJsonInput(call.input)
           const output = execution.output
             ? execution.output.slice(0, PERSIST_TOOL_FIELD_MAX)
             : undefined
           runToolsRef.current.push({
             name: call.name,
-            summary: execution.summary,
+            summary,
             isError: !!execution.isError,
             ...(input !== undefined ? { input } : {}),
             ...(output !== undefined ? { output } : {}),
@@ -1211,7 +1214,7 @@ export function App(): React.JSX.Element {
               tools: [
                 ...tools,
                 {
-                  summary: execution.summary,
+                  summary,
                   isError: !!execution.isError,
                   name: call.name,
                   ...(execution.output ? { output: execution.output.slice(0, 2000) } : {}),

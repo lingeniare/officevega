@@ -64,8 +64,7 @@ export const ar = {
   aiOverloadedError: 'خدمة الذكاء الاصطناعي مشغولة حاليًا — يرجى المحاولة مرة أخرى بعد قليل',
   aiNetworkError:
     'مشكلة في الشبكة: تعذّر الوصول إلى خدمة الذكاء الاصطناعي. تحقق من الاتصال وحاول مجددًا',
-  aiCreditsExhausted:
-    'نفدت أرصدة VEGA لديك. يرجى إعادة الشحن عبر api.vega.chat ثم المحاولة مجددًا',
+  aiCreditsExhausted: 'نفدت أرصدة VEGA لديك. يرجى إعادة الشحن عبر api.vega.chat ثم المحاولة مجددًا',
   aiToolWorkbookContext: 'قراءة معلومات المصنف',
   aiToolReadRange: 'قراءة النطاق',
   aiToolReadRangeOf: 'قراءة النطاق {range}',
@@ -96,6 +95,10 @@ export const ar = {
   aiToolImageSearchDone: 'تم البحث عن صور "{query}" ({count})',
   aiToolGenImage: 'إنشاء صورة',
   aiToolGenImageDone: 'تم إنشاء الصورة',
+  aiToolMerge: 'دمج المصنفات',
+  aiToolMergeNoSources: 'لا توجد مرفقات جداول بيانات للدمج',
+  aiToolMergeDone: 'تم دمج {count} أوراق',
+  aiToolMergeFailed: 'فشل الدمج',
   aiToolTracePrecedents: 'تتبع الخلايا المؤثرة',
   aiToolTracePrecedentsOf: 'الخلايا المؤثرة في {address}',
   aiToolTraceDependents: 'تتبع الخلايا التابعة',

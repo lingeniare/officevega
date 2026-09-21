@@ -1704,7 +1704,12 @@ export function registerSlidesIpc(): void {
       _e,
       op: { specJson: string },
     ): Promise<{ ok: boolean; marker?: string; error?: string; imageFailures?: string[] }> => {
-      const parsed = parsePageSpec(String(op?.specJson ?? ''))
+      // localImages: BYOK-generated images arrive as file:// URLs (the generated-image
+      // store); fetchRemoteImage only ever resolves that store, so non-store refs just
+      // fail the download instead of reading local files.
+      const parsed = parsePageSpec(String(op?.specJson ?? ''), undefined, undefined, {
+        localImages: true,
+      })
       if (!parsed.ok) return { ok: false, error: parsed.error }
       try {
         const started = Date.now()

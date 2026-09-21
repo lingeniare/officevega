@@ -2899,7 +2899,7 @@ function RibbonInner({
                   <span className="rb-big-icon">
                     <VegaMark size={26} />
                   </span>
-                  <span>{lang === 'ru' ? 'ВЕГА' : 'VEGA'}</span>
+                  <span>{lang === 'ru' ? 'ИИ' : 'AI'}</span>
                 </button>
                 <button
                   className="rb-big ai-entry"

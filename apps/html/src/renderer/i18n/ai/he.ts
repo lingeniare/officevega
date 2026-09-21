@@ -58,6 +58,7 @@ export const he = {
   aiToolReadSource: 'קריאת מקור',
   aiToolApplyOps: 'הוחלו {n} עריכות',
   aiToolApplyOpsFailed: 'העריכות לא הוחלו',
+  aiToolApplyOpsRunning: 'מחיל שינויים',
   aiClarifyDecide: 'החלט בשבילי',
   aiClarifyDecideAnswer: '(החלט בשבילי)',
   aiClarifyMulti: 'בחירה מרובה',

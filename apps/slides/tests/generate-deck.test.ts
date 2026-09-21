@@ -398,7 +398,7 @@ describe('generate_deck lands pages while generating + retries', () => {
 })
 
 describe('generate_deck in-tool image search', () => {
-  it('image_queries are keywords → tool searches images → real URLs passed to generatePageCloud', async () => {
+  it('image_queries → searched images → real URLs passed to generatePageCloud (fallback path: no generator)', async () => {
     const { access, imageSearchCalls, imagesSeen } = makeAccess()
     const skill = createSlidesSkill(access)
     const call: AgentToolCall = {
@@ -689,5 +689,413 @@ describe('generate_deck attachment gate', () => {
     const res = (await skill.executeTool(topicCall)) as { isError?: boolean }
     expect(res.isError).toBeFalsy()
     expect(getPages()).toBe(3)
+  })
+})
+
+describe('generate_deck internal research', () => {
+  it('research queries run internally in parallel with style; the digest reaches planning and per-page context', async () => {
+    const { access, getPages } = makeAccess()
+    const order: string[] = []
+    access.generateStyleSkill = async (a) => {
+      order.push('style:start')
+      await new Promise((r) => setTimeout(r, 30))
+      order.push('style:end')
+      return { ok: true, styleSkill: 'STYLE:' + a.topic }
+    }
+    access.searchWeb = async (q) => {
+      order.push('research:start')
+      await new Promise((r) => setTimeout(r, 10))
+      order.push('research:end')
+      return {
+        ok: true,
+        results: [{ title: 'T', url: 'https://x.example', snippet: 'REALFACT42 data' }],
+        answer: 'ans',
+      }
+    }
+    const planContexts: (string | undefined)[] = []
+    const pageContexts: (string | undefined)[] = []
+    const origPlan = access.planDeckOutline!
+    access.planDeckOutline = async (a) => {
+      planContexts.push(a.context)
+      return origPlan(a)
+    }
+    const origCloud = access.generatePageCloud!
+    access.generatePageCloud = async (a) => {
+      pageContexts.push(a.context)
+      return origCloud(a)
+    }
+    const skill = createSlidesSkill(access)
+    await skill.executeTool({
+      id: 'c-research',
+      name: 'generate_deck',
+      input: {
+        topic: 'Space Tourism',
+        approx_pages: 2,
+        research: ['space tourism market size'],
+      },
+    } as AgentToolCall)
+    expect(getPages()).toBe(2)
+    // Style and research overlapped in wall-clock time: both started before either ended
+    const si = order.indexOf('style:start')
+    const ri = order.indexOf('research:start')
+    const se = order.indexOf('style:end')
+    const re = order.indexOf('research:end')
+    expect(si).toBeGreaterThanOrEqual(0)
+    expect(ri).toBeGreaterThanOrEqual(0)
+    expect(Math.max(si, ri)).toBeLessThan(Math.min(se, re))
+    // The digest reached both the planner and every page request
+    expect(planContexts).toHaveLength(1)
+    expect(planContexts[0]).toContain('REALFACT42')
+    expect(pageContexts).toHaveLength(2)
+    expect(pageContexts.every((c) => c?.includes('REALFACT42'))).toBe(true)
+  })
+
+  it('bare topic without context triggers one auto-research query (the topic itself), once per conversation', async () => {
+    const { access } = makeAccess()
+    const queries: string[] = []
+    access.searchWeb = async (q) => {
+      queries.push(q)
+      return { ok: true, results: [] }
+    }
+    const skill = createSlidesSkill(access)
+    await skill.executeTool({
+      id: 'c-auto',
+      name: 'generate_deck',
+      input: { topic: 'Tibet Travel', approx_pages: 2 },
+    } as AgentToolCall)
+    expect(queries).toEqual(['Tibet Travel'])
+    // A second deck in the same conversation does not re-search (webSearched latched)
+    await skill.executeTool({
+      id: 'c-auto2',
+      name: 'generate_deck',
+      input: { topic: 'Nepal Trekking', approx_pages: 2 },
+    } as AgentToolCall)
+    expect(queries).toEqual(['Tibet Travel'])
+  })
+
+  it('no auto-research when context material is supplied, and research failures are fail-open', async () => {
+    const { access, getPages } = makeAccess()
+    let called = 0
+    access.searchWeb = async () => {
+      called++
+      return { ok: false, error: 'search down' }
+    }
+    const skill = createSlidesSkill(access)
+    const res = (await skill.executeTool({
+      id: 'c-ctx',
+      name: 'generate_deck',
+      input: { topic: 'X', approx_pages: 2, context: 'real material' },
+    } as AgentToolCall)) as { isError?: boolean }
+    expect(res.isError).toBeFalsy()
+    expect(getPages()).toBe(2)
+    expect(called).toBe(0) // context present → no auto-query
+    // Explicit research that fails still lets the deck generate
+    const res2 = (await skill.executeTool({
+      id: 'c-rfail',
+      name: 'generate_deck',
+      input: { topic: 'Y', approx_pages: 2, research: ['anything'] },
+    } as AgentToolCall)) as { isError?: boolean }
+    expect(res2.isError).toBeFalsy()
+    expect(getPages()).toBe(2) // replace mode: the second deck's 2 pages
+    expect(called).toBe(1)
+  })
+
+  it('dataSource:"search" is satisfied by internal research; without any search it is still blocked', async () => {
+    const figured = (extra: Record<string, unknown>): AgentToolCall => ({
+      id: 'c-gate',
+      name: 'generate_deck',
+      input: {
+        core_hook: 'h',
+        style: 's',
+        dataSource: 'search',
+        pages: [
+          { title: 'T1', brief: 'Sales grew 45% to $1.2B', layout: 'data', image_queries: [] },
+          { title: 'T2', brief: 'Share rose 12.5% in one year', layout: 'data', image_queries: [] },
+        ],
+        ...extra,
+      },
+    })
+    // With research queries provided the gate passes and the deck generates
+    const { access, getPages } = makeAccess()
+    access.searchWeb = async () => ({
+      ok: true,
+      results: [{ title: 'T', url: 'https://x', snippet: 'real figures' }],
+    })
+    const skill = createSlidesSkill(access)
+    const ok = (await skill.executeTool(figured({ research: ['ev market statistics'] }))) as {
+      isError?: boolean
+    }
+    expect(ok.isError).toBeFalsy()
+    expect(getPages()).toBe(2)
+    // No research, no prior web_search → the gate still blocks invented numbers
+    const { access: access2, getPages: pages2 } = makeAccess()
+    const skill2 = createSlidesSkill(access2)
+    const blocked = (await skill2.executeTool(figured({}))) as {
+      isError?: boolean
+      output: string
+    }
+    expect(blocked.isError).toBe(true)
+    expect(blocked.output).toContain('web_search')
+    expect(pages2()).toBe(0)
+  })
+})
+
+describe('generate_deck AI image generation (generation-first imagery)', () => {
+  const promptsCall = (prompts: string[], extra: Record<string, unknown> = {}): AgentToolCall => ({
+    id: 'c-prompts',
+    name: 'generate_deck',
+    input: {
+      core_hook: 'h',
+      style: 's',
+      pages: [
+        { title: 'Cover', brief: 'b', layout: 'cover', image_prompts: prompts },
+        { title: 'Body', brief: 'b', layout: 'content', image_queries: [] },
+      ],
+      ...extra,
+    },
+  })
+
+  it('image_prompts are generated internally; the real URL reaches the page request', async () => {
+    const { access, imagesSeen, imageSearchCalls } = makeAccess()
+    const prompts: string[] = []
+    access.imageGenAvailable = () => true
+    access.generateImage = async ({ prompt }) => {
+      prompts.push(prompt)
+      return { ok: true, url: `https://gen.img/${encodeURIComponent(prompt)}.png` }
+    }
+    const skill = createSlidesSkill(access)
+    await skill.executeTool(promptsCall(['neon city skyline hero']))
+    expect(prompts).toEqual(['neon city skyline hero'])
+    expect(imageSearchCalls).toEqual([]) // no search needed for a generated slot
+    expect(imagesSeen[0]).toEqual(['https://gen.img/neon%20city%20skyline%20hero.png'])
+    expect(imagesSeen[1]).toEqual([])
+  })
+
+  it('a failed generation falls back to searching the prompt text', async () => {
+    const { access, imageSearchCalls, imagesSeen } = makeAccess()
+    access.imageGenAvailable = () => true
+    access.generateImage = async () => ({ ok: false, error: 'quota exhausted' })
+    const skill = createSlidesSkill(access)
+    await skill.executeTool(promptsCall(['aurora borealis hero']))
+    expect(imageSearchCalls).toEqual(['aurora borealis hero'])
+    expect(imagesSeen[0][0]).toContain('https://mock.img/')
+  })
+
+  it('generation unavailable → prompts degrade to plain image searches', async () => {
+    const { access, imageSearchCalls, imagesSeen } = makeAccess()
+    access.imageGenAvailable = () => false
+    access.generateImage = async () => ({ ok: true, url: 'https://must-not-be-used/x.png' })
+    const skill = createSlidesSkill(access)
+    await skill.executeTool(promptsCall(['abstract gradient bg']))
+    expect(imageSearchCalls).toEqual(['abstract gradient bg'])
+    expect(imagesSeen[0][0]).toContain('https://mock.img/')
+  })
+
+  it('image generation runs concurrently (pool of 3) across prompts', async () => {
+    const { access } = makeAccess()
+    let concurrent = 0
+    let maxConcurrent = 0
+    access.imageGenAvailable = () => true
+    access.generateImage = async ({ prompt }) => {
+      concurrent++
+      maxConcurrent = Math.max(maxConcurrent, concurrent)
+      await new Promise((r) => setTimeout(r, 15))
+      concurrent--
+      return { ok: true, url: `https://gen.img/${prompt}.png` }
+    }
+    const skill = createSlidesSkill(access)
+    await skill.executeTool(
+      promptsCall(['p1', 'p2', 'p3', 'p4', 'p5'], {}),
+    )
+    expect(maxConcurrent).toBe(3)
+  })
+
+  it('an unresolved image slot is reported in the tool output (never silently blank)', async () => {
+    const { access } = makeAccess({ searchImagesFail: true })
+    access.imageGenAvailable = () => true
+    access.generateImage = async () => ({ ok: false, error: 'down' })
+    const skill = createSlidesSkill(access)
+    const res = (await skill.executeTool(promptsCall(['unfindable thing']))) as {
+      output: string
+    }
+    expect(res.output).toContain('Unresolved image slots')
+    expect(res.output).toContain('unfindable thing')
+  })
+
+  it('file:// image URLs reach the local page builder but are filtered out of cloud requests', async () => {
+    const page = {
+      title: 'P1',
+      brief: 'b',
+      layout: 'content',
+      image_queries: ['file:///gen-store/a.png'],
+    }
+    // Local path (BYOK): file:// URLs are kept — the generated-image store resolves them
+    const local = makeAccess({ cloudEnabled: false })
+    const skillLocal = createSlidesSkill(local.access)
+    await skillLocal.executeTool({
+      id: 'c-local',
+      name: 'generate_deck',
+      input: { core_hook: 'h', style: 's', pages: [page] },
+    } as AgentToolCall)
+    expect(local.imagesSeen[0]).toEqual(['file:///gen-store/a.png'])
+    // Cloud path: the remote service cannot reach the local store → filtered out
+    const cloud = makeAccess()
+    const skillCloud = createSlidesSkill(cloud.access)
+    await skillCloud.executeTool({
+      id: 'c-cloud',
+      name: 'generate_deck',
+      input: { core_hook: 'h', style: 's', pages: [page] },
+    } as AgentToolCall)
+    expect(cloud.imagesSeen[0]).toEqual([])
+  })
+
+  it('image_queries slots are AI-generated first when generation is available (search untouched)', async () => {
+    const { access, imageSearchCalls, imagesSeen } = makeAccess()
+    const prompts: string[] = []
+    access.imageGenAvailable = () => true
+    access.generateImage = async ({ prompt }) => {
+      prompts.push(prompt)
+      return { ok: true, url: `https://gen.img/${encodeURIComponent(prompt)}.png` }
+    }
+    const skill = createSlidesSkill(access)
+    await skill.executeTool({
+      id: 'c-genq',
+      name: 'generate_deck',
+      input: {
+        core_hook: 'h',
+        style: 's',
+        pages: [
+          {
+            title: 'P1',
+            brief: 'b',
+            layout: 'content',
+            image_queries: ['summer palace kunming lake'],
+          },
+        ],
+      },
+    } as AgentToolCall)
+    expect(prompts).toEqual(['summer palace kunming lake'])
+    expect(imageSearchCalls).toEqual([]) // search is only a fallback — never called here
+    expect(imagesSeen[0]).toEqual(['https://gen.img/summer%20palace%20kunming%20lake.png'])
+  })
+
+  it('an image_queries slot falls back to image search only when its generation fails', async () => {
+    const { access, imageSearchCalls, imagesSeen } = makeAccess()
+    access.imageGenAvailable = () => true
+    access.generateImage = async () => ({ ok: false, error: 'quota exhausted' })
+    const skill = createSlidesSkill(access)
+    await skill.executeTool({
+      id: 'c-genq2',
+      name: 'generate_deck',
+      input: {
+        core_hook: 'h',
+        style: 's',
+        pages: [
+          { title: 'P1', brief: 'b', layout: 'content', image_queries: ['great wall sunrise'] },
+        ],
+      },
+    } as AgentToolCall)
+    expect(imageSearchCalls).toEqual(['great wall sunrise'])
+    expect(imagesSeen[0][0]).toContain('https://mock.img/')
+  })
+
+  it('the same slot text in image_queries and image_prompts is generated once and shared', async () => {
+    const { access, imagesSeen } = makeAccess()
+    const prompts: string[] = []
+    access.imageGenAvailable = () => true
+    access.generateImage = async ({ prompt }) => {
+      prompts.push(prompt)
+      return { ok: true, url: 'https://gen.img/shared.png' }
+    }
+    const skill = createSlidesSkill(access)
+    await skill.executeTool({
+      id: 'c-dup',
+      name: 'generate_deck',
+      input: {
+        core_hook: 'h',
+        style: 's',
+        pages: [
+          {
+            title: 'P1',
+            brief: 'b',
+            layout: 'content',
+            image_queries: ['mountain lake'],
+            image_prompts: ['Mountain  Lake'], // normalized → same slot
+          },
+        ],
+      },
+    } as AgentToolCall)
+    expect(prompts).toEqual(['mountain lake']) // one generation for both fields
+    expect(imagesSeen[0]).toEqual(['https://gen.img/shared.png', 'https://gen.img/shared.png'])
+  })
+})
+
+describe('generate_deck parallelism', () => {
+  const topicCall = (n: number): AgentToolCall => ({
+    id: 'c-par',
+    name: 'generate_deck',
+    input: { topic: 'Big Deck', approx_pages: n },
+  })
+
+  it('plan batches beyond the first run in parallel, applied in page order', async () => {
+    const { access, landOrder } = makeAccess()
+    let concurrent = 0
+    let maxConcurrent = 0
+    const calls: Array<{ startPage: number; continueFrom?: { coreHook: string } }> = []
+    const orig = access.planDeckOutline!
+    access.planDeckOutline = async (a) => {
+      calls.push({ startPage: a.startPage, continueFrom: a.continueFrom })
+      concurrent++
+      maxConcurrent = Math.max(maxConcurrent, concurrent)
+      // The later batch resolves FIRST — application order must still be by startPage
+      await new Promise((r) => setTimeout(r, a.startPage === 13 ? 30 : 0))
+      concurrent--
+      return orig(a)
+    }
+    const skill = createSlidesSkill(access)
+    // 25 pages → 12 + 12 + 1 → batches at startPage 1, 13, 25; the last two overlap
+    await skill.executeTool(topicCall(25))
+    expect(calls.map((c) => c.startPage)).toEqual([1, 13, 25])
+    expect(maxConcurrent).toBe(2)
+    // Later batches continue from the first batch's Core Hook
+    expect(calls[1]!.continueFrom?.coreHook).toBe('CH:Big Deck')
+    expect(calls[2]!.continueFrom?.coreHook).toBe('CH:Big Deck')
+    // Despite batch-13 finishing after batch-25, page order stayed: "Planned page 25" is page 25
+    expect(landOrder.some((l) => l.includes('PAGE25:Planned page 25'))).toBe(true)
+    expect(landOrder.some((l) => l.includes('PAGE13:Planned page 25'))).toBe(false)
+  })
+
+  it('cloud page generation runs 4 pages concurrently per batch', async () => {
+    const { access } = makeAccess()
+    let concurrent = 0
+    let maxConcurrent = 0
+    const orig = access.generatePageCloud!
+    access.generatePageCloud = async (a) => {
+      concurrent++
+      maxConcurrent = Math.max(maxConcurrent, concurrent)
+      await new Promise((r) => setTimeout(r, 15))
+      concurrent--
+      return orig(a)
+    }
+    const skill = createSlidesSkill(access)
+    await skill.executeTool(topicCall(6))
+    expect(maxConcurrent).toBe(4)
+  })
+
+  it('local page generation keeps concurrency at 2 (proxy stability)', async () => {
+    const { access } = makeAccess({ cloudEnabled: false })
+    let concurrent = 0
+    let maxConcurrent = 0
+    const orig = access.generatePageLocal!
+    access.generatePageLocal = async (a) => {
+      concurrent++
+      maxConcurrent = Math.max(maxConcurrent, concurrent)
+      await new Promise((r) => setTimeout(r, 15))
+      concurrent--
+      return orig(a)
+    }
+    const skill = createSlidesSkill(access)
+    await skill.executeTool(topicCall(5))
+    expect(maxConcurrent).toBe(2)
   })
 })

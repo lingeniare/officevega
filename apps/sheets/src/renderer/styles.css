@@ -677,6 +677,9 @@ html.vegaoffice-popover-open .ribbon-tabs {
   display: flex;
   align-items: stretch;
   gap: 2px;
+  /* single weight for the whole band, same as the other apps' ribbons;
+     letterform glyphs (.tool-symbol/.swatch-letter) keep their own weight */
+  font-weight: 400;
   /* ribbon text ink, a touch off the app's --text — same shade
      as the .inline-tools glyphs */
   color: var(--text-primary);
@@ -1837,12 +1840,12 @@ button.check-item:hover {
 
 .ai-ask-confirm {
   border: 1px solid transparent;
-  background: var(--color-ai-action);
-  color: var(--color-ai-action-text);
+  background: var(--accent);
+  color: var(--color-bg-page);
 }
 
 .ai-ask-confirm:hover:not(:disabled) {
-  background: var(--color-ai-action-hover);
+  background: var(--accent-dark);
 }
 
 .ai-ask-confirm:disabled {
