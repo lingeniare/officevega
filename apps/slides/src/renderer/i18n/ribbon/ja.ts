@@ -761,4 +761,13 @@ export const ja = {
   ribbonEqStdDev: '標準偏差',
   ribbonEqFourier: 'フーリエ変換',
   ribbonEqNormalDist: '正規分布',
+  ribbonCollapsedGroupTip: 'このグループの非表示コマンドを表示',
+  ribbonGroupParagraphTip: '段落の設定',
+  ribbonBulletPictureTip: '画像を箇条書き記号として使用',
+  ribbonNoneTip: '箇条書きを解除',
+  ribbonMoreColorsTip: 'ユーザー設定の色を選択',
+  ribbonChangeChartTypeTip: 'グラフの種類を変更',
+  ribbonReplacePictureTip: '書式を維持して画像を置換',
+  ribbonTransparencyTip: '画像の透明度を設定',
+  ribbonChangeShapeTip: '選択した図形を変更',
 } satisfies Record<keyof typeof zh, string>

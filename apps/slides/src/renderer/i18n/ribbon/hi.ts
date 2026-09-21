@@ -746,4 +746,13 @@ export const hi = {
   ribbonEqStdDev: 'मानक विचलन',
   ribbonEqFourier: 'फ़ूरियर रूपांतरण',
   ribbonEqNormalDist: 'सामान्य बंटन',
+  ribbonCollapsedGroupTip: 'इस समूह के छिपे हुए कमांड दिखाएँ',
+  ribbonGroupParagraphTip: 'पैराग्राफ सेटिंग्स',
+  ribbonBulletPictureTip: 'बुलेट के रूप में चित्र का उपयोग करें',
+  ribbonNoneTip: 'बुलेट हटाएँ',
+  ribbonMoreColorsTip: 'कस्टम रंग चुनें',
+  ribbonChangeChartTypeTip: 'चार्ट प्रकार बदलें',
+  ribbonReplacePictureTip: 'फ़ॉर्मैटिंग बनाए रखते हुए चित्र बदलें',
+  ribbonTransparencyTip: 'चित्र की पारदर्शिता सेट करें',
+  ribbonChangeShapeTip: 'चयनित आकृति बदलें',
 } satisfies Record<keyof typeof zh, string>

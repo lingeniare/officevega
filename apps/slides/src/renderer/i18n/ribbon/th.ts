@@ -731,4 +731,13 @@ export const th = {
   ribbonEqStdDev: 'ส่วนเบี่ยงเบนมาตรฐาน',
   ribbonEqFourier: 'การแปลงฟูรีเย',
   ribbonEqNormalDist: 'การแจกแจงปกติ',
+  ribbonCollapsedGroupTip: 'แสดงคำสั่งที่ซ่อนอยู่ของกลุ่มนี้',
+  ribbonGroupParagraphTip: 'การตั้งค่าย่อหน้า',
+  ribbonBulletPictureTip: 'ใช้รูปภาพเป็นสัญลักษณ์หัวข้อ',
+  ribbonNoneTip: 'เอาสัญลักษณ์หัวข้อออก',
+  ribbonMoreColorsTip: 'เลือกสีแบบกำหนดเอง',
+  ribbonChangeChartTypeTip: 'เปลี่ยนชนิดแผนภูมิ',
+  ribbonReplacePictureTip: 'แทนที่รูปภาพโดยคงการจัดรูปแบบไว้',
+  ribbonTransparencyTip: 'ตั้งค่าความโปร่งใสของรูปภาพ',
+  ribbonChangeShapeTip: 'เปลี่ยนรูปร่างที่เลือก',
 } satisfies Record<keyof typeof zh, string>

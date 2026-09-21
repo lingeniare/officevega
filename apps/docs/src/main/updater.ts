@@ -176,6 +176,62 @@ const tUpd = createI18n({
     updInstall: '立即重新啟動安裝',
     updLater: '稍後再說',
   },
+  uz: {
+    updTitle: 'Dasturiy ta’minotni yangilash',
+    updHeadline: 'Yangi versiya mavjud',
+    updDesc:
+      'Bu yangilanish unumdorlik yaxshilanishlari va xatolar tuzatishlarini o‘z ichiga oladi. Hozir yangilashni tavsiya qilamiz.',
+    updInstall: 'Qayta ishga tushirish va o‘rnatish',
+    updLater: 'Keyinroq eslatish',
+  },
+  kk: {
+    updTitle: 'Бағдарламалық жасақтаманы жаңарту',
+    updHeadline: 'Жаңа нұсқа қолжетімді',
+    updDesc:
+      'Бұл жаңартуға өнімділікті жақсарту және қателерді түзету кіреді. Қазір жаңартуды ұсынамыз.',
+    updInstall: 'Қайта іске қосу және орнату',
+    updLater: 'Кейінірек еске салу',
+  },
+  az: {
+    updTitle: 'Proqram yeniləməsi',
+    updHeadline: 'Yeni versiya əlçatandır',
+    updDesc:
+      'Bu yeniləməyə məhsuldarlıq təkmilləşdirmələri və xətaların düzəldilməsi daxildir. İndi yeniləməyi tövsiyə edirik.',
+    updInstall: 'Yenidən başlat və quraşdır',
+    updLater: 'Sonra xatırlat',
+  },
+  tk: {
+    updTitle: 'Programma üpjünçiligini täzelemek',
+    updHeadline: 'Täze wersiýa elýeterli',
+    updDesc:
+      'Bu täzelenme öndürijilik gowulandyrmalaryny we näsazlyk düzedişlerini öz içine alýar. Häzir täzelemegi maslahat berýäris.',
+    updInstall: 'Gaýtadan işledip gur',
+    updLater: 'Soňra ýatlat',
+  },
+  ky: {
+    updTitle: 'Программаны жаңыртуу',
+    updHeadline: 'Жаңы версия жеткиликтүү',
+    updDesc:
+      'Бул жаңыртуу иштөө ылдамдыгын жакшыртууларды жана мүчүлүштүктөрдү оңдоолорду камтыйт. Азыр жаңыртууну сунуштайбыз.',
+    updInstall: 'Кайра иштетип, орнотуу',
+    updLater: 'Кийин эскерт',
+  },
+  tt: {
+    updTitle: 'Программаны яңарту',
+    updHeadline: 'Яңа версия бар',
+    updDesc:
+      'Бу яңарту җитештерүчәнлекне яхшырта һәм хаталарны төзәтә. Хәзер яңартырга киңәш итәбез.',
+    updInstall: 'Кабат эшләтү һәм урнаштыру',
+    updLater: 'Соңрак искә төшер',
+  },
+  ka: {
+    updTitle: 'პროგრამული უზრუნველყოფის განახლება',
+    updHeadline: 'ხელმისაწვდომია ახალი ვერსია',
+    updDesc:
+      'ეს განახლება მოიცავს წარმადობის გაუმჯობესებებსა და შეცდომების გამოსწორებებს. გირჩევთ, ახლავე განაახლოთ.',
+    updInstall: 'გადატვირთვა და ინსტალაცია',
+    updLater: 'მოგვიანებით შემახსენე',
+  },
 })
 
 const FIRST_CHECK_DELAY_MS = 15_000

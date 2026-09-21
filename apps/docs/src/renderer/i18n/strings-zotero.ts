@@ -354,4 +354,136 @@ export const zoteroStrings = defineStrings({
       '此文件的註腳或章節附註中含有 Zotero 引文，Office VEGA 目前還無法更新它們。為保持參考文獻完整，已停用此文件的 Zotero 命令。',
     zoteroGroup: 'Zotero',
   },
+  uz: {
+    zoteroCitation: 'Zotero iqtibosi',
+    zoteroCitationTip:
+      'Zotero yordamida iqtibos qo‘shing; tahrirlash uchun kursorni iqtibos ichiga joylashtiring',
+    zoteroBibliography: 'Zotero bibliografiyasi',
+    zoteroBibliographyTip: 'Zotero yordamida bibliografiyani qo‘shing yoki tahrirlang',
+    zoteroRefresh: 'Yangilash',
+    zoteroRefreshTip: 'Barcha Zotero iqtiboslari va bibliografiyalarini yangilash',
+    zoteroDocumentSettings: 'Hujjat sozlamalari',
+    zoteroDocumentSettingsTip: 'Zotero hujjat sozlamalari',
+    zoteroDocumentPreferences: 'Hujjat parametrlari',
+    zoteroRemoveCodes: 'Maydon kodlarini olib tashlash',
+    zoteroConnectionError:
+      'Zotero bilan ulanib bo‘lmadi. Zotero’ni ishga tushiring va uni ishlayotgan holda qoldiring.',
+    zoteroOperationError: 'Zotero amaliyoti bajarilmadi.',
+    zoteroNoteFieldsUnsupported:
+      'Bu hujjat izohlar yoki yakuniy izohlarda Zotero iqtiboslarini o‘z ichiga oladi, ularni Office VEGA hozircha yangilay olmaydi. Bibliografiya buzilmasligi uchun bu yerda Zotero buyruqlari o‘chirib qo‘yilgan.',
+    zoteroGroup: 'Zotero',
+  },
+  kk: {
+    zoteroCitation: 'Zotero дәйексөзі',
+    zoteroCitationTip:
+      'Zotero көмегімен дәйексөз қосыңыз; өңдеу үшін меңзерді дәйексөздің ішіне қойыңыз',
+    zoteroBibliography: 'Zotero библиографиясы',
+    zoteroBibliographyTip: 'Zotero көмегімен библиографияны қосыңыз немесе өңдеңіз',
+    zoteroRefresh: 'Жаңарту',
+    zoteroRefreshTip: 'Барлық Zotero дәйексөздері мен библиографияларын жаңарту',
+    zoteroDocumentSettings: 'Құжат параметрлері',
+    zoteroDocumentSettingsTip: 'Zotero құжат параметрлері',
+    zoteroDocumentPreferences: 'Құжат теңшелімдері',
+    zoteroRemoveCodes: 'Өріс кодтарын жою',
+    zoteroConnectionError:
+      'Zotero-ға қосылу мүмкін болмады. Zotero-ны іске қосып, жұмыс істеп тұрған күйде қалдырыңыз.',
+    zoteroOperationError: 'Zotero операциясы сәтсіз аяқталды.',
+    zoteroNoteFieldsUnsupported:
+      'Бұл құжатта түсіндірмелерде немесе соңғы ескертпелерде Zotero дәйексөздері бар, оларды Office VEGA әзірше жаңарта алмайды. Библиография өзгеріссіз қалуы үшін мұнда Zotero пәрмендері өшірілді.',
+    zoteroGroup: 'Zotero',
+  },
+  az: {
+    zoteroCitation: 'Zotero sitatı',
+    zoteroCitationTip:
+      'Zotero ilə sitat əlavə edin; redaktə etmək üçün kursoru sitatın içərisinə yerləşdirin',
+    zoteroBibliography: 'Zotero biblioqrafiyası',
+    zoteroBibliographyTip: 'Zotero ilə biblioqrafiya əlavə edin və ya redaktə edin',
+    zoteroRefresh: 'Yenilə',
+    zoteroRefreshTip: 'Bütün Zotero sitatlarını və biblioqrafiyalarını yeniləyin',
+    zoteroDocumentSettings: 'Sənəd parametrləri',
+    zoteroDocumentSettingsTip: 'Zotero sənəd parametrləri',
+    zoteroDocumentPreferences: 'Sənəd seçimləri',
+    zoteroRemoveCodes: 'Sahə kodlarını sil',
+    zoteroConnectionError:
+      'Zotero-ya qoşulmaq mümkün olmadı. Zotero-nu başladın və işlək vəziyyətdə saxlayın.',
+    zoteroOperationError: 'Zotero əməliyyatı uğursuz oldu.',
+    zoteroNoteFieldsUnsupported:
+      'Bu sənəddə haşiyələrdə və ya son qeydlərdə Zotero sitatları var və Office VEGA onları hələ yeniləyə bilmir. Biblioqrafiyanın bütövlüyünü qorumaq üçün Zotero əmrləri burada deaktiv edilib.',
+    zoteroGroup: 'Zotero',
+  },
+  tk: {
+    zoteroCitation: 'Zotero salgylanmasy',
+    zoteroCitationTip:
+      'Zotero bilen salgylanma goşuň; redaktirlemek üçin kursory salgylanmada ýerleşdiriň',
+    zoteroBibliography: 'Zotero bibliografiýasy',
+    zoteroBibliographyTip: 'Zotero bilen bibliografiýany goşuň ýa-da redaktirläň',
+    zoteroRefresh: 'Täzele',
+    zoteroRefreshTip: 'Ähli Zotero salgylanmalaryny we bibliografiýalaryny täzeläň',
+    zoteroDocumentSettings: 'Resminama sazlamalary',
+    zoteroDocumentSettingsTip: 'Zotero resminama sazlamalary',
+    zoteroDocumentPreferences: 'Resminama ileri tutmalary',
+    zoteroRemoveCodes: 'Meýdan kodlaryny aýyr',
+    zoteroConnectionError:
+      'Zotero-a birigip bolmady. Zotero-ny başladyň we işleýän ýagdaýda saklaň.',
+    zoteroOperationError: 'Zotero amaly şowsuz tamamlandy.',
+    zoteroNoteFieldsUnsupported:
+      'Bu resminamada aşakky ýa-da soňky belliklerde Zotero salgylanmalary bar, Office VEGA olary häzirlikçe täzeläp bilmeýär. Bibliografiýanyň bitewiligini saklamak üçin Zotero buýruklary şu ýerde öçürildi.',
+    zoteroGroup: 'Zotero',
+  },
+  ky: {
+    zoteroCitation: 'Zotero шилтемеси',
+    zoteroCitationTip: 'Zotero менен шилтеме кошуңуз; оңдоо үчүн курсорду шилтеменин ичине коюңуз',
+    zoteroBibliography: 'Zotero библиографиясы',
+    zoteroBibliographyTip: 'Zotero менен библиографияны кошуңуз же түзөтүңүз',
+    zoteroRefresh: 'Жаңылоо',
+    zoteroRefreshTip: 'Бардык Zotero шилтемелерин жана библиографияларды жаңыртуу',
+    zoteroDocumentSettings: 'Документ жөндөөлөрү',
+    zoteroDocumentSettingsTip: 'Zotero документ жөндөөлөрү',
+    zoteroDocumentPreferences: 'Документтин артыкчылыктары',
+    zoteroRemoveCodes: 'Талаа коддорун алып салуу',
+    zoteroConnectionError:
+      "Zotero'го туташуу мүмкүн эмес. Zotero'ну иштетип, аны иштеп турган абалда калтырыңыз.",
+    zoteroOperationError: 'Zotero операциясы ишке ашкан жок.',
+    zoteroNoteFieldsUnsupported:
+      'Бул документте шилтемелерде же аяккы шилтемелерде Zotero шилтемелери бар, аларды Office VEGA азырынча жаңырта албайт. Библиография өзгөрүүсүз калышы үчүн бул жерде Zotero буйруктары өчүрүлдү.',
+    zoteroGroup: 'Zotero',
+  },
+  tt: {
+    zoteroCitation: 'Zotero цитатасы',
+    zoteroCitationTip:
+      'Zotero ярдәмендә цитата өстәгез; аны үзгәртү өчен курсорны цитата эченә урнаштырыгыз',
+    zoteroBibliography: 'Zotero библиографиясе',
+    zoteroBibliographyTip: 'Zotero ярдәмендә библиографияне өстәгез яки үзгәртегез',
+    zoteroRefresh: 'Яңарту',
+    zoteroRefreshTip: 'Барлык Zotero цитаталарын һәм библиографияләрен яңарту',
+    zoteroDocumentSettings: 'Документ көйләүләре',
+    zoteroDocumentSettingsTip: 'Zotero документ көйләүләре',
+    zoteroDocumentPreferences: 'Документ өстенлекләре',
+    zoteroRemoveCodes: 'Кыр кодларын бетерү',
+    zoteroConnectionError:
+      'Zotero белән тоташа алмадык. Zotero-ны эшләтеп, аны эшләгән килеш калдырыгыз.',
+    zoteroOperationError: 'Zotero операциясе уңышсыз тәмамланды.',
+    zoteroNoteFieldsUnsupported:
+      'Бу документта аскы яки ахыргы искәрмәләрдә Zotero цитаталары бар, ә Office VEGA аларны әлегә яңарта алмый. Библиография үзгәрешсез калсын өчен, монда Zotero боерыклары сүндерелгән.',
+    zoteroGroup: 'Zotero',
+  },
+  ka: {
+    zoteroCitation: 'Zotero-ს ციტატა',
+    zoteroCitationTip:
+      'დაამატეთ ციტატა Zotero-თი; მის დასარედაქტირებლად კურსორი ციტატაში მოათავსეთ',
+    zoteroBibliography: 'Zotero-ს ბიბლიოგრაფია',
+    zoteroBibliographyTip: 'დაამატეთ ან დაარედაქტირეთ ბიბლიოგრაფია Zotero-თი',
+    zoteroRefresh: 'განახლება',
+    zoteroRefreshTip: 'განაახლეთ ყველა Zotero-ს ციტატა და ბიბლიოგრაფია',
+    zoteroDocumentSettings: 'დოკუმენტის პარამეტრები',
+    zoteroDocumentSettingsTip: 'Zotero-ს დოკუმენტის პარამეტრები',
+    zoteroDocumentPreferences: 'დოკუმენტის პარამეტრები',
+    zoteroRemoveCodes: 'ველის კოდების წაშლა',
+    zoteroConnectionError:
+      'Zotero-სთან დაკავშირება ვერ მოხერხდა. გაუშვით Zotero და დატოვეთ გაშვებული.',
+    zoteroOperationError: 'Zotero-ს ოპერაცია ვერ შესრულდა.',
+    zoteroNoteFieldsUnsupported:
+      'ამ დოკუმენტში სქოლიოებში ან ბოლო შენიშვნებში Zotero-ს ციტატებია, რომელთა განახლებაც Office VEGA-ს ჯერ არ შეუძლია. აქ Zotero-ს ბრძანებები გამორთულია, რათა ბიბლიოგრაფია უცვლელი დარჩეს.',
+    zoteroGroup: 'Zotero',
+  },
 })

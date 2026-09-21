@@ -45,3 +45,6 @@ _scratch-*
 # Windows reserved device name: bash redirects like `> nul` create a real file
 # that git cannot index on Windows ("short read while indexing nul").
 /nul
+
+# Local LLM-translation cache for scripts/add-locales.mjs — regenerable, do not commit
+/scripts/.add-locales-cache.json

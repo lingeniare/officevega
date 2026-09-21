@@ -276,4 +276,6 @@ export const ru = {
   paneShowEnded: 'Показ завершен.',
   paneShowRehearseTip: 'Настройка времени: время на этом слайде / общее время',
   paneShowRehearseTotal: 'Всего {time}',
+  paneFormatFillTip: 'Параметры заливки для выделения',
+  paneFormatOutlineTip: 'Параметры контура для выделения',
 } satisfies Record<keyof typeof zh, string>

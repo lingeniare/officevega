@@ -274,4 +274,6 @@ export const zhTW = {
   paneShowEnded: '放映結束。',
   paneShowRehearseTip: '排練計時：目前頁停留 / 總時長',
   paneShowRehearseTotal: '總時長 {time}',
+  paneFormatFillTip: '選取範圍的填滿選項',
+  paneFormatOutlineTip: '選取範圍的外框選項',
 } satisfies Record<keyof typeof zh, string>

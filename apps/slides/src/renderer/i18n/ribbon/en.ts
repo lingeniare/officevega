@@ -735,4 +735,13 @@ export const en = {
   ribbonEqStdDev: 'Standard Deviation',
   ribbonEqFourier: 'Fourier Transform',
   ribbonEqNormalDist: 'Normal Distribution',
+  ribbonCollapsedGroupTip: 'Show the hidden commands of this group',
+  ribbonGroupParagraphTip: 'Paragraph settings',
+  ribbonBulletPictureTip: 'Use a picture as the bullet',
+  ribbonNoneTip: 'Remove bullets',
+  ribbonMoreColorsTip: 'Pick a custom color',
+  ribbonChangeChartTypeTip: 'Change the chart type',
+  ribbonReplacePictureTip: 'Replace the picture, keeping its formatting',
+  ribbonTransparencyTip: 'Set the picture transparency',
+  ribbonChangeShapeTip: 'Change the selected shape',
 } satisfies Record<keyof typeof zh, string>

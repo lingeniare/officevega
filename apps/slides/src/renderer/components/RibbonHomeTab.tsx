@@ -233,6 +233,7 @@ export function RibbonHomeTab({ rb }: { rb: RibbonTabCtx }) {
           className="rb-big ai-entry"
           disabled={!hasDoc || deckEmpty}
           data-tip={t('aiBeautifyBtn')}
+          data-tip-detail={t('aiBeautifyPrompt')}
           onClick={() => onAiPreset(t('aiBeautifyPrompt'), { slideShot: true })}
         >
           <span className="rb-big-icon">
@@ -246,6 +247,7 @@ export function RibbonHomeTab({ rb }: { rb: RibbonTabCtx }) {
           className="rb-big ai-entry"
           disabled={!hasDoc || deckEmpty}
           data-tip={t('aiFactCheckBtn')}
+          data-tip-detail={t('aiFactCheckPrompt')}
           onClick={() => onAiPreset(t('aiFactCheckPrompt'))}
         >
           <span className="rb-big-icon">
@@ -259,6 +261,7 @@ export function RibbonHomeTab({ rb }: { rb: RibbonTabCtx }) {
           className="rb-big ai-entry"
           disabled={!hasDoc || deckEmpty}
           data-tip={t('aiImageBtn')}
+          data-tip-detail={t('aiImagePrompt')}
           onClick={() => onAiPreset(t('aiImagePrompt'))}
         >
           <span className="rb-big-icon">
@@ -895,6 +898,7 @@ export function RibbonHomeTab({ rb }: { rb: RibbonTabCtx }) {
             className={`rb-big ${paraOpen ? 'active' : ''}`}
             disabled={!hasDoc}
             data-tip={t('ribbonGroupParagraph')}
+            data-tip-detail={t('ribbonGroupParagraphTip')}
             data-keep-edit=""
             onMouseDown={(e) => {
               e.stopPropagation()
@@ -972,6 +976,7 @@ export function RibbonHomeTab({ rb }: { rb: RibbonTabCtx }) {
                     className={`rb-bullet-tile rb-bullet-tile-none ${curBulletChar === '' ? 'on' : ''}`}
                     disabled={!hasSelection}
                     data-tip={t('ribbonNone')}
+                    data-tip-detail={t('ribbonNoneTip')}
                     onMouseDown={(e) => {
                       e.preventDefault()
                       if (hasSelection) onParagraphFormat({ bullet: 'none' })
@@ -1033,6 +1038,7 @@ export function RibbonHomeTab({ rb }: { rb: RibbonTabCtx }) {
                     className={`rb-bullet-hang ${curBulletChar === '#img' ? 'on' : ''}`}
                     disabled={!hasSelection}
                     data-tip={t('ribbonBulletPicture')}
+                    data-tip-detail={t('ribbonBulletPictureTip')}
                     onMouseDown={(e) => {
                       e.preventDefault()
                       if (hasSelection) void pickBulletPicture()
@@ -1147,6 +1153,7 @@ export function RibbonHomeTab({ rb }: { rb: RibbonTabCtx }) {
                   <label
                     className="rb-color-more rb-bullet-color-more"
                     data-tip={t('ribbonMoreColors')}
+                    data-tip-detail={t('ribbonMoreColorsTip')}
                     onMouseDown={(e) => e.stopPropagation()}
                   >
                     <input

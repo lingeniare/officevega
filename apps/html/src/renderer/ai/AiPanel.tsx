@@ -1119,7 +1119,7 @@ export function AiPanel({
         onPointerDown={startResize}
         role="separator"
         aria-orientation="vertical"
-        aria-label={lang === 'ru' ? 'ВЕГА' : 'VEGA'}
+        aria-label={lang === 'ru' ? 'ИИ' : 'AI'}
       />
       <header className="ai-panel-header">
         <span className="ai-panel-title">{lang === 'ru' ? 'ВЕГА' : 'VEGA'}</span>

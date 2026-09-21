@@ -276,4 +276,6 @@ export const ko = {
   paneShowEnded: '슬라이드 쇼가 끝났습니다.',
   paneShowRehearseTip: '예행 연습: 현재 슬라이드 시간 / 전체 시간',
   paneShowRehearseTotal: '전체 {time}',
+  paneFormatFillTip: '선택 영역 채우기 옵션',
+  paneFormatOutlineTip: '선택 영역 윤곽선 옵션',
 } satisfies Record<keyof typeof zh, string>

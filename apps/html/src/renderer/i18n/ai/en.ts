@@ -144,6 +144,7 @@ export const en = {
   aiRestylePrompt:
     'Refine the whole page: read every <style> first, then unify spacing, alignment, the type scale, colors and responsive breakpoints in one apply_ops batch. Do not change any text or add/remove elements; if the page structure has to change, propose it with plan_page first.',
   aiThemeBtn: 'Theme',
+  aiThemeTip: 'Pick a look; AI restyles the page',
   aiThemePrompt:
     'Give the whole page a "{direction}" look: propose the new style with plan_page first (keep the existing sections); after confirmation update only the --brief-* variables and related CSS rules, leaving content and section order untouched.',
   aiThemeMinimal: 'Minimal',

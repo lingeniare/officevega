@@ -19,6 +19,13 @@ import { ms } from './app/ms'
 import { he } from './app/he'
 import { hi } from './app/hi'
 import { zhTW } from './app/zh-TW'
+import { uz } from './app/uz'
+import { kk } from './app/kk'
+import { az } from './app/az'
+import { tk } from './app/tk'
+import { ky } from './app/ky'
+import { tt } from './app/tt'
+import { ka } from './app/ka'
 
 /** User-visible strings for the app shell (status, errors) */
 export const appStrings = defineStrings({
@@ -42,4 +49,11 @@ export const appStrings = defineStrings({
   he,
   hi,
   'zh-TW': zhTW,
+  uz,
+  kk,
+  az,
+  tk,
+  ky,
+  tt,
+  ka,
 })

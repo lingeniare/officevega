@@ -266,11 +266,21 @@ import {
 GlobalWorkerOptions.workerSrc = workerUrl
 
 const DRAW_TOOLS = [
-  { tool: 'ink' as const, icon: IconInk, key: 'drawInk' as const },
-  { tool: 'rect' as const, icon: IconRect, key: 'drawRect' as const },
-  { tool: 'ellipse' as const, icon: IconEllipse, key: 'drawEllipse' as const },
-  { tool: 'arrow' as const, icon: IconArrow, key: 'drawArrow' as const },
-  { tool: 'note' as const, icon: IconNote, key: 'drawNote' as const },
+  { tool: 'ink' as const, icon: IconInk, key: 'drawInk' as const, tipKey: 'drawInkTip' as const },
+  { tool: 'rect' as const, icon: IconRect, key: 'drawRect' as const, tipKey: 'drawRectTip' as const },
+  {
+    tool: 'ellipse' as const,
+    icon: IconEllipse,
+    key: 'drawEllipse' as const,
+    tipKey: 'drawEllipseTip' as const,
+  },
+  {
+    tool: 'arrow' as const,
+    icon: IconArrow,
+    key: 'drawArrow' as const,
+    tipKey: 'drawArrowTip' as const,
+  },
+  { tool: 'note' as const, icon: IconNote, key: 'drawNote' as const, tipKey: 'drawNoteTip' as const },
 ]
 
 // ── ribbon tabs (docs-style tab strip over a fixed 80px band) ──
@@ -5760,6 +5770,7 @@ export default function App() {
             className="rb-big rb-highlight-main"
             disabled={readOnly}
             data-tip={t('highlight')}
+            data-tip-detail={t('highlightTip')}
             onClick={() => applyMarkup('highlight')}
           >
             <span className="rb-big-icon">
@@ -5792,6 +5803,7 @@ export default function App() {
           className="rb-big"
           disabled={readOnly}
           data-tip={t('underline')}
+          data-tip-detail={t('underlineTip')}
           onClick={() => applyMarkup('underline')}
         >
           <span className="rb-big-icon">
@@ -5803,6 +5815,7 @@ export default function App() {
           className="rb-big"
           disabled={readOnly}
           data-tip={t('strikeout')}
+          data-tip-detail={t('strikeoutTip')}
           onClick={() => applyMarkup('strikeout')}
         >
           <span className="rb-big-icon">
@@ -6008,6 +6021,7 @@ export default function App() {
         <button
           className={`rb-big${nightMode ? ' active' : ''}`}
           data-tip={t('nightMode')}
+          data-tip-detail={t('nightModeTip')}
           onClick={() => setNightMode((v) => !v)}
         >
           <span className="rb-big-icon">
@@ -6194,11 +6208,14 @@ export default function App() {
                     <span className="rb-big-icon">
                       <VegaMark size={26} />
                     </span>
-                    <span>{lang === 'ru' ? 'ВЕГА ИИ' : 'VEGA'}</span>
+                    <span>{lang === 'ru' ? 'ИИ' : 'AI'}</span>
                   </button>
                   <button
                     className="rb-big ai-entry"
                     data-tip={t('aiSummarizeBtn')}
+                    data-tip-detail={t(
+                      aiSelection ? 'aiQuickSummarySelPrompt' : 'aiQuickSummaryPrompt',
+                    )}
                     onClick={() =>
                       runAiPreset(
                         t(aiSelection ? 'aiQuickSummarySelPrompt' : 'aiQuickSummaryPrompt'),
@@ -6215,6 +6232,9 @@ export default function App() {
                   <button
                     className="rb-big ai-entry"
                     data-tip={t('aiKeyPointsBtn')}
+                    data-tip-detail={t(
+                      aiSelection ? 'aiQuickKeyPointsSelPrompt' : 'aiQuickKeyPointsPrompt',
+                    )}
                     onClick={() =>
                       runAiPreset(
                         t(aiSelection ? 'aiQuickKeyPointsSelPrompt' : 'aiQuickKeyPointsPrompt'),
@@ -6317,6 +6337,7 @@ export default function App() {
                   <button
                     className="rb-big ai-entry"
                     data-tip={t('aiReviewSummaryBtn')}
+                    data-tip-detail={t('aiReviewSummaryPrompt')}
                     onClick={() => runAiPreset(t('aiReviewSummaryPrompt'))}
                   >
                     <span className="rb-big-icon">
@@ -6330,6 +6351,7 @@ export default function App() {
                     className="rb-big ai-entry"
                     disabled={readOnly}
                     data-tip={t('aiProcessNotesBtn')}
+                    data-tip-detail={t('aiProcessNotesPrompt')}
                     onClick={() => runAiPreset(t('aiProcessNotesPrompt'))}
                   >
                     <span className="rb-big-icon">
@@ -6346,12 +6368,13 @@ export default function App() {
               <div className="ribbon-sep" />
               <div className="ribbon-group">
                 <div className="ribbon-group-items">
-                  {DRAW_TOOLS.map(({ tool, icon: DrawIcon, key }) => (
+                  {DRAW_TOOLS.map(({ tool, icon: DrawIcon, key, tipKey }) => (
                     <button
                       key={tool}
                       className={`rb-big${drawTool === tool ? ' active' : ''}`}
                       disabled={readOnly}
                       data-tip={t(key)}
+                      data-tip-detail={t(tipKey)}
                       onClick={() => {
                         setEditTextMode(false)
                         setTextDraft(null)
@@ -6388,6 +6411,7 @@ export default function App() {
                       <button
                         className="rb-big"
                         data-tip={t('redactClear')}
+                        data-tip-detail={t('redactClearTip')}
                         onClick={() => setRedactions([])}
                       >
                         {t('redactClear')}
@@ -6395,6 +6419,7 @@ export default function App() {
                       <button
                         className="rb-big"
                         data-tip={t('redactApply')}
+                        data-tip-detail={t('redactApplyTip')}
                         onClick={requestRedactionSaveAs}
                       >
                         {t('redactApply')}
@@ -6420,6 +6445,7 @@ export default function App() {
                       className={`rb-big${colorOpen ? ' active' : ''}`}
                       disabled={readOnly}
                       data-tip={t('drawColor')}
+                      data-tip-detail={t('drawColorTip')}
                       onClick={() => setColorOpen((v) => !v)}
                     >
                       <span className="rb-big-icon">
@@ -6511,6 +6537,7 @@ export default function App() {
                     className="rb-big ai-entry"
                     disabled={readOnly}
                     data-tip={t('aiFillFormBtn')}
+                    data-tip-detail={t('aiFillFormPrompt')}
                     onClick={() => runAiPreset(t('aiFillFormPrompt'))}
                   >
                     <span className="rb-big-icon">
@@ -6570,6 +6597,7 @@ export default function App() {
                       <button
                         className="rb-big"
                         data-tip={t('formPreviousField')}
+                        data-tip-detail={t('formPreviousFieldTip')}
                         onClick={() => stepFormWidget(-1)}
                       >
                         <span className="rb-big-icon">
@@ -6580,6 +6608,7 @@ export default function App() {
                       <button
                         className="rb-big"
                         data-tip={t('formNextField')}
+                        data-tip-detail={t('formNextFieldTip')}
                         onClick={() => stepFormWidget(1)}
                       >
                         <span className="rb-big-icon">

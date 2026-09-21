@@ -277,4 +277,6 @@ export const en = {
   paneShowEnded: 'End of slide show.',
   paneShowRehearseTip: 'Rehearse Timings: time on this slide / total time',
   paneShowRehearseTotal: 'Total {time}',
+  paneFormatFillTip: 'Fill options for the selection',
+  paneFormatOutlineTip: 'Outline options for the selection',
 } satisfies Record<keyof typeof zh, string>

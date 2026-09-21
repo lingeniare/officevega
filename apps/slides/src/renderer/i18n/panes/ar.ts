@@ -275,4 +275,6 @@ export const ar = {
   paneShowEnded: 'انتهى عرض الشرائح.',
   paneShowRehearseTip: 'التمرن على التوقيت: الوقت على هذه الشريحة / الوقت الإجمالي',
   paneShowRehearseTotal: 'الإجمالي {time}',
+  paneFormatFillTip: 'خيارات التعبئة للتحديد',
+  paneFormatOutlineTip: 'خيارات المخطط التفصيلي للتحديد',
 } satisfies Record<keyof typeof zh, string>

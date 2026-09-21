@@ -750,4 +750,13 @@ export const pl = {
   ribbonEqStdDev: 'Odchylenie standardowe',
   ribbonEqFourier: 'Transformata Fouriera',
   ribbonEqNormalDist: 'Rozkład normalny',
+  ribbonCollapsedGroupTip: 'Pokaż ukryte polecenia tej grupy',
+  ribbonGroupParagraphTip: 'Ustawienia akapitu',
+  ribbonBulletPictureTip: 'Użyj obrazu jako punktora',
+  ribbonNoneTip: 'Usuń punktory',
+  ribbonMoreColorsTip: 'Wybierz niestandardowy kolor',
+  ribbonChangeChartTypeTip: 'Zmień typ wykresu',
+  ribbonReplacePictureTip: 'Zamień obraz, zachowując jego formatowanie',
+  ribbonTransparencyTip: 'Ustaw przezroczystość obrazu',
+  ribbonChangeShapeTip: 'Zmień zaznaczony kształt',
 } satisfies Record<keyof typeof zh, string>

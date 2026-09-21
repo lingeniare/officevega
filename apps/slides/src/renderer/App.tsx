@@ -3642,6 +3642,7 @@ export function App() {
                                 <button
                                   className="stage-ai-btn"
                                   data-tip={t('aiBeautifyBtn')}
+                                  data-tip-detail={t('aiBeautifyPrompt')}
                                   onClick={() =>
                                     pushAiPreset(
                                       t('aiBeautifyPrompt'),
@@ -3658,6 +3659,7 @@ export function App() {
                                 <button
                                   className="stage-ai-btn"
                                   data-tip={t('aiFactCheckBtn')}
+                                  data-tip-detail={t('aiFactCheckPrompt')}
                                   onClick={() => pushAiPreset(t('aiFactCheckPrompt'))}
                                 >
                                   <IconAiFactCheck size={14} />
@@ -3666,6 +3668,7 @@ export function App() {
                                 <button
                                   className="stage-ai-btn"
                                   data-tip={t('aiImageBtn')}
+                                  data-tip-detail={t('aiImagePrompt')}
                                   onClick={() => pushAiPreset(t('aiImagePrompt'))}
                                 >
                                   <IconAiImage size={14} />

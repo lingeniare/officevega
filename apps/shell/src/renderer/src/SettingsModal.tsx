@@ -41,6 +41,7 @@ import './settings.css'
 // shared alphabet, so the code is the ordering key
 const LANG_OPTIONS = [
   { value: 'ar', label: 'العربية' },
+  { value: 'az', label: 'Azərbaycanca' },
   { value: 'cs', label: 'Čeština' },
   { value: 'de', label: 'Deutsch' },
   { value: 'en', label: 'English' },
@@ -51,13 +52,19 @@ const LANG_OPTIONS = [
   { value: 'id', label: 'Bahasa Indonesia' },
   { value: 'it', label: 'Italiano' },
   { value: 'ja', label: '日本語' },
+  { value: 'ka', label: 'ქართული' },
+  { value: 'kk', label: 'Қазақша' },
   { value: 'ko', label: '한국어' },
+  { value: 'ky', label: 'Кыргызча' },
   { value: 'ms', label: 'Bahasa Melayu' },
   { value: 'nl', label: 'Nederlands' },
   { value: 'pl', label: 'Polski' },
   { value: 'pt', label: 'Português' },
   { value: 'ru', label: 'Русский' },
   { value: 'th', label: 'ไทย' },
+  { value: 'tk', label: 'Türkmençe' },
+  { value: 'tt', label: 'Татарча' },
+  { value: 'uz', label: 'Oʻzbekcha' },
   { value: 'zh', label: '简体中文' },
   { value: 'zh-TW', label: '繁體中文' },
 ] as const
@@ -521,15 +528,15 @@ function AiModelPane({
           options={catalog
             .filter((c) => c.id !== 'genspark' || c.id === provider)
             .map((c) => ({
-            value: c.id,
-            label: c.label,
-            render: (
-              <>
-                <ProviderLogo id={c.id} />
-                {c.label}
-              </>
-            ),
-          }))}
+              value: c.id,
+              label: c.label,
+              render: (
+                <>
+                  <ProviderLogo id={c.id} />
+                  {c.label}
+                </>
+              ),
+            }))}
           onPick={(v) => selectProvider(v as AiSettings['provider'])}
         />
       </div>
@@ -899,15 +906,15 @@ function AiMediaPane({ t }: { t: TFunc }) {
         options={options
           .filter((c) => c.id !== 'genspark' || c.id === value)
           .map((c) => ({
-          value: c.id,
-          label: c.label,
-          render: (
-            <>
-              <ProviderLogo id={c.id} />
-              {c.label}
-            </>
-          ),
-        }))}
+            value: c.id,
+            label: c.label,
+            render: (
+              <>
+                <ProviderLogo id={c.id} />
+                {c.label}
+              </>
+            ),
+          }))}
         onPick={onPick}
       />
     </div>
@@ -1408,9 +1415,7 @@ export function SettingsModal({
                 </div>
               </>
             )}
-            {section === 'aiModel' && (
-              <AiModelPane t={t} account={{ loggedIn, email }} />
-            )}
+            {section === 'aiModel' && <AiModelPane t={t} account={{ loggedIn, email }} />}
             {section === 'aiMedia' && <AiMediaPane t={t} />}
             {section === 'general' && (
               <>

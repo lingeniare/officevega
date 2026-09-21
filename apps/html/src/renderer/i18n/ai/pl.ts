@@ -145,6 +145,7 @@ export const pl = {
   aiRestylePrompt:
     'Dopracuj całą stronę: najpierw przeczytaj wszystkie <style>, potem ujednolić odstępy, wyrównanie, skalę typograficzną, kolory i punkty przełamania responsywne w jednej partii apply_ops. Nie zmieniaj tekstu ani nie dodawaj/usuwaj elementów; jeśli struktura musi się zmienić, najpierw zaproponuj to przez plan_page.',
   aiThemeBtn: 'Zmień styl',
+  aiThemeTip: 'Wybierz styl — AI przeprojektuje stronę',
   aiThemePrompt:
     'Nadaj całej stronie styl „{direction}”: najpierw zaproponuj nowy styl przez plan_page (zachowując istniejące sekcje); po potwierdzeniu aktualizuj tylko zmienne --brief-* i powiązane reguły CSS, nie zmieniając treści ani kolejności sekcji.',
   aiThemeMinimal: 'Minimalistyczny',

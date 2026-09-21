@@ -5,11 +5,11 @@ import { test, expect } from '@playwright/test'
 import { launchShell, closeAndSaveVideo, waitForPageWithUrl, screenshotPath } from './helpers'
 
 test.describe('markdown editor', () => {
-  test('AI Markdown quick card opens a markdown editor tab', async () => {
+  test('Markdown quick card opens a markdown editor tab', async () => {
     const launched = await launchShell({ onboardingSeen: true, videoDir: 'new-markdown-tab' })
     const { app, page } = launched
     try {
-      const card = page.locator('.quick-card', { hasText: 'AI Markdown' })
+      const card = page.locator('.quick-card', { hasText: 'Markdown' })
       await expect(card).toHaveCount(1)
       await card.click()
 

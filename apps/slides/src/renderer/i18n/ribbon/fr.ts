@@ -763,4 +763,13 @@ export const fr = {
   ribbonEqStdDev: 'Écart type',
   ribbonEqFourier: 'Transformée de Fourier',
   ribbonEqNormalDist: 'Loi normale',
+  ribbonCollapsedGroupTip: 'Afficher les commandes masquées de ce groupe',
+  ribbonGroupParagraphTip: 'Paramètres de paragraphe',
+  ribbonBulletPictureTip: 'Utiliser une image comme puce',
+  ribbonNoneTip: 'Supprimer les puces',
+  ribbonMoreColorsTip: 'Choisir une couleur personnalisée',
+  ribbonChangeChartTypeTip: 'Modifier le type de graphique',
+  ribbonReplacePictureTip: 'Remplacer l’image en conservant sa mise en forme',
+  ribbonTransparencyTip: 'Définir la transparence de l’image',
+  ribbonChangeShapeTip: 'Modifier la forme sélectionnée',
 } satisfies Record<keyof typeof zh, string>

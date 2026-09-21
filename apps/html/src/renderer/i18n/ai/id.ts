@@ -144,6 +144,7 @@ export const id = {
   aiRestylePrompt:
     'Rapikan seluruh halaman: baca dulu semua <style>, lalu samakan spasi, perataan, skala ukuran huruf, warna, dan breakpoint responsif dalam satu batch apply_ops. Jangan ubah teks dan jangan tambah/hapus elemen; jika struktur halaman harus berubah, usulkan dulu dengan plan_page.',
   aiThemeBtn: 'Ganti gaya',
+  aiThemeTip: 'Pilih gaya; AI mendesain ulang halaman',
   aiThemePrompt:
     'Beri seluruh halaman gaya "{direction}": usulkan dulu gaya baru dengan plan_page (pertahankan bagian yang ada); setelah dikonfirmasi, perbarui hanya variabel --brief-* dan aturan CSS terkait, tanpa mengubah konten dan urutan bagian.',
   aiThemeMinimal: 'Minimalis',

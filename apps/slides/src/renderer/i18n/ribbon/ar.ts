@@ -733,4 +733,13 @@ export const ar = {
   ribbonEqStdDev: 'الانحراف المعياري',
   ribbonEqFourier: 'تحويل فورييه',
   ribbonEqNormalDist: 'التوزيع الطبيعي',
+  ribbonCollapsedGroupTip: 'إظهار الأوامر المخفية لهذه المجموعة',
+  ribbonGroupParagraphTip: 'إعدادات الفقرة',
+  ribbonBulletPictureTip: 'استخدام صورة كعلامة تعداد',
+  ribbonNoneTip: 'إزالة التعداد النقطي',
+  ribbonMoreColorsTip: 'اختيار لون مخصص',
+  ribbonChangeChartTypeTip: 'تغيير نوع المخطط',
+  ribbonReplacePictureTip: 'استبدال الصورة مع الاحتفاظ بتنسيقها',
+  ribbonTransparencyTip: 'تعيين شفافية الصورة',
+  ribbonChangeShapeTip: 'تغيير الشكل المحدد',
 } satisfies Record<keyof typeof zh, string>

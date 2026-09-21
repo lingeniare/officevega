@@ -278,4 +278,6 @@ export const id = {
   paneShowEnded: 'Peragaan slide berakhir.',
   paneShowRehearseTip: 'Latih Pengaturan Waktu: waktu pada slide ini / total waktu',
   paneShowRehearseTotal: 'Total {time}',
+  paneFormatFillTip: 'Opsi isian untuk pilihan',
+  paneFormatOutlineTip: 'Opsi kerangka untuk pilihan',
 } satisfies Record<keyof typeof zh, string>

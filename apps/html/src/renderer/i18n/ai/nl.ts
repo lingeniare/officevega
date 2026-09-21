@@ -145,6 +145,7 @@ export const nl = {
   aiRestylePrompt:
     'Verfijn de hele pagina: lees eerst alle <style>-blokken en maak daarna witruimte, uitlijning, letterschaal, kleuren en responsive breakpoints uniform in één apply_ops-batch. Verander geen tekst en voeg geen elementen toe of verwijder ze; als de structuur moet veranderen, stel dat eerst voor met plan_page.',
   aiThemeBtn: 'Stijl wisselen',
+  aiThemeTip: 'Kies een stijl; de AI ontwerpt de pagina opnieuw',
   aiThemePrompt:
     'Geef de hele pagina een "{direction}"-stijl: stel de nieuwe stijl eerst voor met plan_page (bestaande secties behouden); werk na bevestiging alleen de --brief-*-variabelen en bijbehorende CSS-regels bij, zonder inhoud of sectievolgorde te wijzigen.',
   aiThemeMinimal: 'Minimaal',

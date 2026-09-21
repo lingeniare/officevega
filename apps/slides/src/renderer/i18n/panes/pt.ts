@@ -280,4 +280,6 @@ export const pt = {
   paneShowEnded: 'Fim da apresentação de slides.',
   paneShowRehearseTip: 'Testar Intervalos: tempo neste slide / tempo total',
   paneShowRehearseTotal: 'Total {time}',
+  paneFormatFillTip: 'Opções de preenchimento para a seleção',
+  paneFormatOutlineTip: 'Opções de contorno para a seleção',
 } satisfies Record<keyof typeof zh, string>

@@ -277,4 +277,6 @@ export const hi = {
   paneShowEnded: 'स्लाइड शो समाप्त।',
   paneShowRehearseTip: 'समय का पूर्वाभ्यास: इस स्लाइड पर समय / कुल समय',
   paneShowRehearseTotal: 'कुल {time}',
+  paneFormatFillTip: 'चयन के लिए भरण विकल्प',
+  paneFormatOutlineTip: 'चयन के लिए आउटलाइन विकल्प',
 } satisfies Record<keyof typeof zh, string>

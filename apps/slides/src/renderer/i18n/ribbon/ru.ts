@@ -747,4 +747,13 @@ export const ru = {
   ribbonEqStdDev: 'Стандартное отклонение',
   ribbonEqFourier: 'Преобразование Фурье',
   ribbonEqNormalDist: 'Нормальное распределение',
+  ribbonCollapsedGroupTip: 'Показать скрытые команды этой группы',
+  ribbonGroupParagraphTip: 'Параметры абзаца',
+  ribbonBulletPictureTip: 'Использовать изображение в качестве маркера',
+  ribbonNoneTip: 'Удалить маркеры',
+  ribbonMoreColorsTip: 'Выбрать пользовательский цвет',
+  ribbonChangeChartTypeTip: 'Изменить тип диаграммы',
+  ribbonReplacePictureTip: 'Заменить изображение, сохранив его форматирование',
+  ribbonTransparencyTip: 'Настроить прозрачность изображения',
+  ribbonChangeShapeTip: 'Изменить выбранную фигуру',
 } satisfies Record<keyof typeof zh, string>

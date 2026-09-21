@@ -741,4 +741,13 @@ export const cs = {
   ribbonEqStdDev: 'Směrodatná odchylka',
   ribbonEqFourier: 'Fourierova transformace',
   ribbonEqNormalDist: 'Normální rozdělení',
+  ribbonCollapsedGroupTip: 'Zobrazit skryté příkazy této skupiny',
+  ribbonGroupParagraphTip: 'Nastavení odstavce',
+  ribbonBulletPictureTip: 'Použít obrázek jako odrážku',
+  ribbonNoneTip: 'Odebrat odrážky',
+  ribbonMoreColorsTip: 'Vybrat vlastní barvu',
+  ribbonChangeChartTypeTip: 'Změnit typ grafu',
+  ribbonReplacePictureTip: 'Nahradit obrázek se zachováním jeho formátování',
+  ribbonTransparencyTip: 'Nastavit průhlednost obrázku',
+  ribbonChangeShapeTip: 'Změnit vybraný obrazec',
 } satisfies Record<keyof typeof zh, string>

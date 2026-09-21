@@ -19,6 +19,13 @@ import { ms } from './dialogs/ms'
 import { he } from './dialogs/he'
 import { hi } from './dialogs/hi'
 import { zhTW } from './dialogs/zh-TW'
+import { uz } from './dialogs/uz'
+import { kk } from './dialogs/kk'
+import { az } from './dialogs/az'
+import { tk } from './dialogs/tk'
+import { ky } from './dialogs/ky'
+import { tt } from './dialogs/tt'
+import { ka } from './dialogs/ka'
 
 /** Copy for the dialogs (advanced filter, cell format, pivot table, header/footer, symbols, slicer…) */
 export const dialogStrings = defineStrings({
@@ -42,4 +49,11 @@ export const dialogStrings = defineStrings({
   he,
   hi,
   'zh-TW': zhTW,
+  uz,
+  kk,
+  az,
+  tk,
+  ky,
+  tt,
+  ka,
 })

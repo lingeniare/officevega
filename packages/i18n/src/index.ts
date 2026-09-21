@@ -19,6 +19,13 @@ export type Lang =
   | 'he'
   | 'hi'
   | 'zh-TW'
+  | 'uz'
+  | 'kk'
+  | 'az'
+  | 'tk'
+  | 'ky'
+  | 'tt'
+  | 'ka'
 
 export const LANGS: readonly Lang[] = [
   'zh',
@@ -41,6 +48,13 @@ export const LANGS: readonly Lang[] = [
   'he',
   'hi',
   'zh-TW',
+  'uz',
+  'kk',
+  'az',
+  'tk',
+  'ky',
+  'tt',
+  'ka',
 ]
 
 export function isLang(value: unknown): value is Lang {
@@ -85,6 +99,13 @@ const HTML_LANGS: Record<Lang, string> = {
   he: 'he-IL',
   hi: 'hi-IN',
   'zh-TW': 'zh-TW',
+  uz: 'uz-UZ',
+  kk: 'kk-KZ',
+  az: 'az-AZ',
+  tk: 'tk-TM',
+  ky: 'ky-KG',
+  tt: 'tt-RU',
+  ka: 'ka-GE',
 }
 
 /** BCP-47 tag for document.documentElement.lang (drives CSS :lang() and Chromium's per-language font fallback) */

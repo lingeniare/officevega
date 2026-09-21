@@ -54,6 +54,12 @@ const VIEW_LABEL: Record<ViewMode, StringKey> = {
   source: 'viewSource',
 }
 
+const VIEW_TIP: Record<ViewMode, StringKey> = {
+  preview: 'viewPreviewTip',
+  split: 'viewSplitTip',
+  source: 'viewSourceTip',
+}
+
 const VIEW_ICON: Record<ViewMode, (p: { size?: number }) => React.JSX.Element> = {
   preview: IconPreview,
   split: IconSplitView,
@@ -314,6 +320,7 @@ export function Ribbon(p: Props) {
           type="button"
           className="qa-btn qa-save-as"
           data-tip={t('saveAs')}
+          data-tip-detail={t('saveAsTip')}
           aria-label={t('saveAs')}
           disabled={off}
           onMouseDown={(e) => e.preventDefault()}
@@ -381,12 +388,13 @@ export function Ribbon(p: Props) {
               <span className="rb-big-icon">
                 <VegaMark size={26} />
               </span>
-              <span>{lang === 'ru' ? 'ВЕГА' : 'VEGA'}</span>
+              <span>{lang === 'ru' ? 'ИИ' : 'AI'}</span>
             </button>
             <button
               type="button"
               className="rb-big ai-entry"
               data-tip={t('aiRestyleBtn')}
+              data-tip-detail={t('aiRestylePrompt')}
               disabled={off}
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => p.onAiPreset(t('aiRestylePrompt'))}
@@ -403,6 +411,7 @@ export function Ribbon(p: Props) {
                 type="button"
                 className={`rb-big ai-entry${themeOpen ? ' active' : ''}`}
                 data-tip={t('aiThemeBtn')}
+                data-tip-detail={t('aiThemeTip')}
                 aria-haspopup="menu"
                 aria-expanded={themeOpen}
                 disabled={off}
@@ -439,6 +448,7 @@ export function Ribbon(p: Props) {
               type="button"
               className="rb-big ai-entry"
               data-tip={t('aiSummarizeBtn')}
+              data-tip-detail={t('aiSummarizePrompt')}
               disabled={off}
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => p.onAiPreset(t('aiSummarizePrompt'))}
@@ -465,6 +475,7 @@ export function Ribbon(p: Props) {
               type="button"
               className="rb-btn rb-view"
               data-tip={t('insertHeading')}
+              data-tip-detail={t('insertHeadingTip')}
               disabled={insertOff}
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => insert('heading')}
@@ -476,6 +487,7 @@ export function Ribbon(p: Props) {
               type="button"
               className="rb-btn rb-view"
               data-tip={t('insertParagraph')}
+              data-tip-detail={t('insertParagraphTip')}
               disabled={insertOff}
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => insert('paragraph')}
@@ -488,6 +500,7 @@ export function Ribbon(p: Props) {
                 type="button"
                 className="rb-btn rb-view rb-split-main"
                 data-tip={t('insertImage')}
+                data-tip-detail={t('insertImageTip')}
                 disabled={insertOff}
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => insert('image')}
@@ -534,6 +547,7 @@ export function Ribbon(p: Props) {
                 type="button"
                 className={`rb-btn rb-view${insertPop === 'table' ? ' active' : ''}`}
                 data-tip={t('insertTable')}
+                data-tip-detail={t('insertTableTip')}
                 aria-haspopup="dialog"
                 aria-expanded={insertPop === 'table'}
                 disabled={insertOff}
@@ -579,6 +593,7 @@ export function Ribbon(p: Props) {
                 type="button"
                 className={`rb-btn rb-view${insertPop === 'more' ? ' active' : ''}`}
                 data-tip={t('insertMore')}
+                data-tip-detail={t('insertMoreTip')}
                 aria-haspopup="menu"
                 aria-expanded={insertPop === 'more'}
                 disabled={insertOff}
@@ -623,6 +638,7 @@ export function Ribbon(p: Props) {
                   className={`rb-btn rb-view${p.view === mode ? ' active' : ''}`}
                   aria-selected={p.view === mode}
                   data-tip={t(VIEW_LABEL[mode])}
+                  data-tip-detail={t(VIEW_TIP[mode])}
                   onMouseDown={(e) => e.preventDefault()}
                   onClick={() => p.onView(mode)}
                 >
@@ -643,6 +659,7 @@ export function Ribbon(p: Props) {
                 type="button"
                 className={`rb-btn rb-view${p.canvasMode === 'present' ? ' active' : ''}`}
                 data-tip={t('modePresent')}
+                data-tip-detail={t('modePresentTip')}
                 aria-haspopup="menu"
                 aria-expanded={presentOpen}
                 disabled={off}

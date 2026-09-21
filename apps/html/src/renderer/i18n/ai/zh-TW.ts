@@ -137,6 +137,7 @@ export const zhTW = {
   aiRestylePrompt:
     '優化整體介面：先讀全部 <style>，再用一次 apply_ops 統一間距、對齊、字級階梯、配色和響應式斷點。不改文字內容，不增刪元素；若需改變頁面結構，先用 plan_page 出簡報讓我確認。',
   aiThemeBtn: '換風格',
+  aiThemeTip: '選擇風格，AI 為頁面換膚',
   aiThemePrompt:
     '把整頁換成「{direction}」風格：先用 plan_page 提出新的 style（保留現有區塊），確認後只更新 --brief-* 變數和相關 CSS 規則，內容與區塊順序不變。',
   aiThemeMinimal: '極簡',

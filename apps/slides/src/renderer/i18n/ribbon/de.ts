@@ -755,4 +755,13 @@ export const de = {
   ribbonEqStdDev: 'Standardabweichung',
   ribbonEqFourier: 'Fourier-Transformation',
   ribbonEqNormalDist: 'Normalverteilung',
+  ribbonCollapsedGroupTip: 'Ausgeblendete Befehle dieser Gruppe anzeigen',
+  ribbonGroupParagraphTip: 'Absatzeinstellungen',
+  ribbonBulletPictureTip: 'Bild als Aufzählungszeichen verwenden',
+  ribbonNoneTip: 'Aufzählungszeichen entfernen',
+  ribbonMoreColorsTip: 'Benutzerdefinierte Farbe auswählen',
+  ribbonChangeChartTypeTip: 'Diagrammtyp ändern',
+  ribbonReplacePictureTip: 'Bild ersetzen und Formatierung beibehalten',
+  ribbonTransparencyTip: 'Bildtransparenz festlegen',
+  ribbonChangeShapeTip: 'Ausgewählte Form ändern',
 } satisfies Record<keyof typeof zh, string>

@@ -749,4 +749,13 @@ export const pt = {
   ribbonEqStdDev: 'Desvio Padrão',
   ribbonEqFourier: 'Transformada de Fourier',
   ribbonEqNormalDist: 'Distribuição Normal',
+  ribbonCollapsedGroupTip: 'Mostrar os comandos ocultos deste grupo',
+  ribbonGroupParagraphTip: 'Configurações de parágrafo',
+  ribbonBulletPictureTip: 'Usar uma imagem como marcador',
+  ribbonNoneTip: 'Remover marcadores',
+  ribbonMoreColorsTip: 'Escolher uma cor personalizada',
+  ribbonChangeChartTypeTip: 'Alterar o tipo de gráfico',
+  ribbonReplacePictureTip: 'Substituir a imagem, mantendo sua formatação',
+  ribbonTransparencyTip: 'Definir a transparência da imagem',
+  ribbonChangeShapeTip: 'Alterar a forma selecionada',
 } satisfies Record<keyof typeof zh, string>

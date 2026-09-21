@@ -276,4 +276,6 @@ export const ja = {
   paneShowEnded: 'スライドショーの最後です。',
   paneShowRehearseTip: 'リハーサル：現在のスライドの時間 / 合計時間',
   paneShowRehearseTotal: '合計 {time}',
+  paneFormatFillTip: '選択範囲の塗りつぶしオプション',
+  paneFormatOutlineTip: '選択範囲の枠線オプション',
 } satisfies Record<keyof typeof zh, string>

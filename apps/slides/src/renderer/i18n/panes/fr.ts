@@ -280,4 +280,6 @@ export const fr = {
   paneShowEnded: 'Fin du diaporama.',
   paneShowRehearseTip: 'Vérification du minutage : temps sur cette diapositive / temps total',
   paneShowRehearseTotal: 'Total {time}',
+  paneFormatFillTip: 'Options de remplissage pour la sélection',
+  paneFormatOutlineTip: 'Options de contour pour la sélection',
 } satisfies Record<keyof typeof zh, string>

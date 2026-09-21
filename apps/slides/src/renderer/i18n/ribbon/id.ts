@@ -747,4 +747,13 @@ export const id = {
   ribbonEqStdDev: 'Simpangan Baku',
   ribbonEqFourier: 'Transformasi Fourier',
   ribbonEqNormalDist: 'Distribusi Normal',
+  ribbonCollapsedGroupTip: 'Tampilkan perintah tersembunyi dari grup ini',
+  ribbonGroupParagraphTip: 'Pengaturan paragraf',
+  ribbonBulletPictureTip: 'Gunakan gambar sebagai poin',
+  ribbonNoneTip: 'Hapus poin',
+  ribbonMoreColorsTip: 'Pilih warna kustom',
+  ribbonChangeChartTypeTip: 'Ubah tipe bagan',
+  ribbonReplacePictureTip: 'Ganti gambar dengan mempertahankan pemformatannya',
+  ribbonTransparencyTip: 'Atur transparansi gambar',
+  ribbonChangeShapeTip: 'Ubah bentuk yang dipilih',
 } satisfies Record<keyof typeof zh, string>

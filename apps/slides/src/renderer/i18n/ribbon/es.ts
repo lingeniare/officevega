@@ -760,4 +760,13 @@ export const es = {
   ribbonEqStdDev: 'Desviación estándar',
   ribbonEqFourier: 'Transformada de Fourier',
   ribbonEqNormalDist: 'Distribución normal',
+  ribbonCollapsedGroupTip: 'Mostrar los comandos ocultos de este grupo',
+  ribbonGroupParagraphTip: 'Configuración de párrafo',
+  ribbonBulletPictureTip: 'Usar una imagen como viñeta',
+  ribbonNoneTip: 'Quitar viñetas',
+  ribbonMoreColorsTip: 'Elegir un color personalizado',
+  ribbonChangeChartTypeTip: 'Cambiar el tipo de gráfico',
+  ribbonReplacePictureTip: 'Reemplazar la imagen y conservar su formato',
+  ribbonTransparencyTip: 'Establecer la transparencia de la imagen',
+  ribbonChangeShapeTip: 'Cambiar la forma seleccionada',
 } satisfies Record<keyof typeof zh, string>

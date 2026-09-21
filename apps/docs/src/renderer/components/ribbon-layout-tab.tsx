@@ -195,7 +195,7 @@ export function LayoutTab({
    *  into the margin, r116/r131) while spacing stays non-negative. Commit on
    *  Enter/blur (not per keystroke): a controlled input resets the transient
    *  "-" while a negative number is being typed, eating the minus sign. */
-  const ptInput = (attr: string, title: string, min = 0) => {
+  const ptInput = (attr: string, title: string, detail: string, min = 0) => {
     const twips = Number(paraAttrs[attr]) || 0
     const shown = Math.round(twips * PT_PER_TWIP)
     // selection identity in the key: a commit that leaves the LIVE
@@ -203,7 +203,7 @@ export function LayoutTab({
     // showing the number just applied to a different paragraph
     const selFrom = editor.state.selection.from
     return (
-      <label className="layout-num" data-tip={title}>
+      <label className="layout-num" data-tip={title} data-tip-detail={detail}>
         <span>{title}</span>
         <input
           type="number"
@@ -258,6 +258,7 @@ export function LayoutTab({
               className="rb-big"
               disabled={!enabled}
               data-tip={t('ribbonMargins')}
+              data-tip-detail={t('ribbonMarginsTip')}
               onClick={() => toggleDropdown(setDropdown, 'margins')}
             >
               <span className="rb-big-icon">
@@ -327,6 +328,7 @@ export function LayoutTab({
               className="rb-big"
               disabled={!enabled}
               data-tip={t('ribbonOrientation')}
+              data-tip-detail={t('ribbonOrientationTip')}
               onClick={() => toggleDropdown(setDropdown, 'orient')}
             >
               <span className="rb-big-icon">
@@ -357,6 +359,7 @@ export function LayoutTab({
               className="rb-big"
               disabled={!enabled}
               data-tip={t('ribbonPaperSize')}
+              data-tip-detail={t('ribbonPaperSizeTip')}
               onClick={() => toggleDropdown(setDropdown, 'paper')}
             >
               <span className="rb-big-icon">
@@ -388,6 +391,7 @@ export function LayoutTab({
               className={`rb-big ${section && section.columns > 1 ? 'active' : ''}`}
               disabled={!enabled}
               data-tip={t('ribbonColumns')}
+              data-tip-detail={t('ribbonColumnsTip')}
               onClick={() => toggleDropdown(setDropdown, 'columns')}
             >
               <span className="rb-big-icon">
@@ -484,12 +488,12 @@ export function LayoutTab({
       <div className="ribbon-group">
         <div className="ribbon-group-items layout-para">
           <div className="layout-col">
-            {ptInput('indentLeft', t('ribbonIndentLeft'), -400)}
-            {ptInput('indentRight', t('ribbonIndentRight'), -400)}
+            {ptInput('indentLeft', t('ribbonIndentLeft'), t('ribbonIndentLeftTip'), -400)}
+            {ptInput('indentRight', t('ribbonIndentRight'), t('ribbonIndentRightTip'), -400)}
           </div>
           <div className="layout-col">
-            {ptInput('spaceBefore', t('ribbonSpaceBefore'))}
-            {ptInput('spaceAfter', t('ribbonSpaceAfter'))}
+            {ptInput('spaceBefore', t('ribbonSpaceBefore'), t('ribbonSpaceBeforeTip'))}
+            {ptInput('spaceAfter', t('ribbonSpaceAfter'), t('ribbonSpaceAfterTip'))}
           </div>
         </div>
         <div className="ribbon-group-label">{t('ribbonGroupParagraphSelected')}</div>
@@ -504,6 +508,7 @@ export function LayoutTab({
               className="rb-big"
               disabled={!canPosition}
               data-tip={t('ribbonPosition')}
+              data-tip-detail={t('ribbonPositionTip')}
               onClick={() => toggleDropdown(setDropdown, 'arrange-pos')}
             >
               <span className="rb-big-icon">
@@ -545,6 +550,7 @@ export function LayoutTab({
               className="rb-big"
               disabled={!canWrap}
               data-tip={t('ribbonWrapText')}
+              data-tip-detail={t('ribbonWrapTextTip')}
               onClick={() => toggleDropdown(setDropdown, 'arrange-wrap')}
             >
               <span className="rb-big-icon">

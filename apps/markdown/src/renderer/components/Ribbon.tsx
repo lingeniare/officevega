@@ -377,6 +377,7 @@ export function Ribbon({
           type="button"
           className="qa-btn qa-save-as"
           data-tip={t('saveAs')}
+          data-tip-detail={t('saveAsTip')}
           aria-label={t('saveAs')}
           disabled={off}
           onMouseDown={(e) => e.preventDefault()}
@@ -443,7 +444,7 @@ export function Ribbon({
               <span className="rb-big-icon">
                 <VegaMark size={26} />
               </span>
-              <span>{lang === 'ru' ? 'ВЕГА ИИ' : 'VEGA'}</span>
+              <span>{lang === 'ru' ? 'ИИ' : 'AI'}</span>
             </button>
             {aiPresets.map(({ kind, btn, prompt }) => (
               <button
@@ -451,6 +452,7 @@ export function Ribbon({
                 type="button"
                 className="rb-big ai-entry"
                 data-tip={t(btn)}
+                data-tip-detail={prompt()}
                 disabled={off || state?.empty}
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => onAiPreset(prompt())}

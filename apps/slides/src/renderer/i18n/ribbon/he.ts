@@ -725,4 +725,13 @@ export const he = {
   ribbonEqStdDev: 'סטיית תקן',
   ribbonEqFourier: 'התמרת פורייה',
   ribbonEqNormalDist: 'התפלגות נורמלית',
+  ribbonCollapsedGroupTip: 'הצגת הפקודות המוסתרות בקבוצה זו',
+  ribbonGroupParagraphTip: 'הגדרות פסקה',
+  ribbonBulletPictureTip: 'שימוש בתמונה כתבליט',
+  ribbonNoneTip: 'הסרת תבליטים',
+  ribbonMoreColorsTip: 'בחירת צבע מותאם אישית',
+  ribbonChangeChartTypeTip: 'שינוי סוג התרשים',
+  ribbonReplacePictureTip: 'החלפת התמונה תוך שמירה על העיצוב שלה',
+  ribbonTransparencyTip: 'הגדרת השקיפות של התמונה',
+  ribbonChangeShapeTip: 'שינוי הצורה שנבחרה',
 } satisfies Record<keyof typeof zh, string>

@@ -145,6 +145,7 @@ export const ms = {
   aiRestylePrompt:
     'Kemaskan seluruh halaman: baca dahulu semua <style>, kemudian seragamkan jarak, penjajaran, skala saiz fon, warna dan breakpoint responsif dalam satu kelompok apply_ops. Jangan ubah teks dan jangan tambah/buang elemen; jika struktur halaman perlu berubah, cadangkan dahulu dengan plan_page.',
   aiThemeBtn: 'Tukar gaya',
+  aiThemeTip: 'Pilih gaya; AI menggayakan semula halaman',
   aiThemePrompt:
     'Beri seluruh halaman gaya "{direction}": cadangkan gaya baharu dengan plan_page dahulu (kekalkan bahagian sedia ada); selepas pengesahan, kemas kini hanya pembolehubah --brief-* dan peraturan CSS berkaitan, tanpa mengubah kandungan dan susunan bahagian.',
   aiThemeMinimal: 'Minimalis',

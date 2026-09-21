@@ -36,6 +36,13 @@ export type UiLanguage =
   | 'he'
   | 'hi'
   | 'zh-TW'
+  | 'uz'
+  | 'kk'
+  | 'az'
+  | 'tk'
+  | 'ky'
+  | 'tt'
+  | 'ka'
 
 /** UI theme preference */
 export type UiTheme = 'light' | 'dark' | 'system'

@@ -990,6 +990,7 @@ export function InsertTab({
               className="rb-big"
               disabled={!hasDoc}
               data-tip={t('ribbonDropCap')}
+              data-tip-detail={t('ribbonDropCapTip')}
               onClick={() => toggleDropdown(setDropdown, 'dropCap')}
             >
               <span
@@ -1189,6 +1190,7 @@ export function InsertTab({
               className={`rb-big ${footer?.pageNumber ? 'active' : ''}`}
               disabled={!hasDoc}
               data-tip={t('ribbonPageNumber')}
+              data-tip-detail={t('ribbonPageNumberTip')}
               onClick={() => toggleDropdown(setDropdown, 'pagenum')}
             >
               <span className="rb-big-icon">

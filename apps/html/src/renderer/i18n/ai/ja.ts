@@ -145,6 +145,7 @@ export const ja = {
   aiRestylePrompt:
     'ページ全体を整えてください。まず全ての <style> を読み、余白・揃え・文字サイズの階層・配色・レスポンシブのブレークポイントを apply_ops 一回で統一します。文字内容は変えず、要素の追加・削除もしないこと。構造を変える必要があれば先に plan_page で提案してください。',
   aiThemeBtn: 'スタイル変更',
+  aiThemeTip: 'スタイルを選ぶと AI がページをリスタイルします',
   aiThemePrompt:
     'ページ全体を「{direction}」スタイルにしてください。まず plan_page で新しい style を提案し（既存セクションは維持）、確認後は --brief-* 変数と関連 CSS ルールだけを更新し、内容とセクション順は変えないこと。',
   aiThemeMinimal: 'ミニマル',

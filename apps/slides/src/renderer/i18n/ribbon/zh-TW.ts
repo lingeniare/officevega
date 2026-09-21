@@ -717,4 +717,13 @@ export const zhTW = {
   ribbonEqStdDev: '標準差',
   ribbonEqFourier: '傅立葉轉換',
   ribbonEqNormalDist: '常態分佈',
+  ribbonCollapsedGroupTip: '顯示或隱藏此群組的隱藏命令',
+  ribbonGroupParagraphTip: '段落設定',
+  ribbonBulletPictureTip: '使用圖片作為項目符號',
+  ribbonNoneTip: '移除項目符號',
+  ribbonMoreColorsTip: '選擇自訂色彩',
+  ribbonChangeChartTypeTip: '變更圖表類型',
+  ribbonReplacePictureTip: '取代圖片並保留其格式',
+  ribbonTransparencyTip: '設定圖片透明度',
+  ribbonChangeShapeTip: '變更選取的圖案',
 } satisfies Record<keyof typeof zh, string>

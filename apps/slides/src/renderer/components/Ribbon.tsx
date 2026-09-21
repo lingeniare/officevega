@@ -3012,6 +3012,7 @@ export function Ribbon({
                 className="rb-big"
                 disabled={!onEditChart}
                 data-tip={t('ribbonChangeChartType')}
+                data-tip-detail={t('ribbonChangeChartTypeTip')}
                 onClick={() => setChartTypeDlgOpen(true)}
               >
                 <span className="rb-big-icon">
@@ -3056,6 +3057,7 @@ export function Ribbon({
               <button
                 className="rb-big"
                 data-tip={t('ribbonReplacePicture')}
+                data-tip-detail={t('ribbonReplacePictureTip')}
                 disabled={!onPictureReplace || contextElementType !== 'picture'}
                 onClick={onPictureReplace}
               >
@@ -3074,6 +3076,7 @@ export function Ribbon({
                   }}
                   onClick={() => setTransparencyOpen((v) => !v)}
                   data-tip={t('ribbonTransparency')}
+                  data-tip-detail={t('ribbonTransparencyTip')}
                 >
                   <span className="rb-big-icon">
                     {/* 28px box around the 22px art so the icon row matches the SVG glyphs' height */}
@@ -3116,6 +3119,7 @@ export function Ribbon({
                     setPictureBorderOpen((v) => !v)
                   }}
                   data-tip={t('paneFormatOutline')}
+                  data-tip-detail={t('paneFormatOutlineTip')}
                 >
                   <span className="rb-big-icon">
                     <IconPageBorders size={BIG} />
@@ -3232,6 +3236,7 @@ export function Ribbon({
                   className={`rb-big ${changeShapeOpen ? 'active' : ''}`}
                   disabled={!onChangeShape}
                   data-tip={t('ribbonChangeShape')}
+                  data-tip-detail={t('ribbonChangeShapeTip')}
                   onMouseDown={(e) => {
                     e.stopPropagation()
                     closeSiblingPanels(e, closePanels, 'changeShape')
@@ -3307,6 +3312,7 @@ export function Ribbon({
                   className={`rb-big ${shapeFillOpen ? 'active' : ''}`}
                   disabled={!onShapeFill}
                   data-tip={t('paneFormatFill')}
+                  data-tip-detail={t('paneFormatFillTip')}
                   onMouseDown={(e) => {
                     e.stopPropagation()
                     closeSiblingPanels(e, closePanels, 'shapeFill')
@@ -3347,6 +3353,7 @@ export function Ribbon({
                     setPictureBorderOpen((v) => !v)
                   }}
                   data-tip={t('paneFormatOutline')}
+                  data-tip-detail={t('paneFormatOutlineTip')}
                 >
                   <span className="rb-big-icon">
                     <IconPageBorders size={BIG} />

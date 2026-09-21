@@ -739,4 +739,13 @@ export const zh = {
   ribbonEqStdDev: '标准差',
   ribbonEqFourier: '傅里叶变换',
   ribbonEqNormalDist: '正态分布',
+  ribbonCollapsedGroupTip: '显示该组隐藏的命令',
+  ribbonGroupParagraphTip: '段落设置',
+  ribbonBulletPictureTip: '用图片作为项目符号',
+  ribbonNoneTip: '取消项目符号',
+  ribbonMoreColorsTip: '选择自定义颜色',
+  ribbonChangeChartTypeTip: '更改图表类型',
+  ribbonReplacePictureTip: '替换图片，保留其格式',
+  ribbonTransparencyTip: '设置图片透明度',
+  ribbonChangeShapeTip: '更改所选形状',
 }

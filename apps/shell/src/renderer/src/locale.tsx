@@ -61,6 +61,13 @@ const DATE_LOCALES: Record<Lang, string> = {
   he: 'he-IL',
   hi: 'hi-IN',
   'zh-TW': 'zh-TW',
+  uz: 'uz-UZ',
+  kk: 'kk-KZ',
+  az: 'az-AZ',
+  tk: 'tk-TM',
+  ky: 'ky-KG',
+  tt: 'tt-RU',
+  ka: 'ka-GE',
 }
 
 export function useI18n(): I18n {

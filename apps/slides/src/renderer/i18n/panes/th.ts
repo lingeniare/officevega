@@ -275,4 +275,6 @@ export const th = {
   paneShowEnded: 'จบการนำเสนอแล้ว',
   paneShowRehearseTip: 'ซ้อมการกำหนดเวลา: เวลาบนสไลด์นี้ / เวลารวม',
   paneShowRehearseTotal: 'รวม {time}',
+  paneFormatFillTip: 'ตัวเลือกการเติมสำหรับส่วนที่เลือก',
+  paneFormatOutlineTip: 'ตัวเลือกเส้นกรอบสำหรับส่วนที่เลือก',
 } satisfies Record<keyof typeof zh, string>

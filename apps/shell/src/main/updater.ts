@@ -376,6 +376,131 @@ const tUpd = createI18n({
     updCheckFailed: '無法檢查更新，請檢查網路後重試。',
     updOpenDownload: '前往下載頁面',
   },
+  uz: {
+    updTitle: 'Dasturiy ta’minotni yangilash',
+    updHeadline: 'Yangi versiya mavjud',
+    updDesc:
+      'Bu yangilanish unumdorlik yaxshilanishlari va xatolar tuzatishlarini o‘z ichiga oladi. Hozir yangilashni tavsiya qilamiz.',
+    updDownload: 'Hozir yangilash',
+    updLater: 'Keyinroq eslatish',
+    updInstall: 'Qayta ishga tushirish va o‘rnatish',
+    updDownloading: 'Yangilanish yuklab olinmoqda…',
+    updFailed:
+      'Yangilanishni yuklab olish muvaffaqiyatsiz tugadi. Tarmoqni tekshirib, qaytadan urinib ko‘ring.',
+    updRetry: 'Qayta urinish',
+    updManual:
+      'Avtomatik yangilash muvaffaqiyatsiz tugadi. Yuklab olish sahifasidan eng so‘nggi versiyani olib, uni qo‘lda o‘rnating.',
+    updUpToDate: 'Sizda eng so‘nggi versiya mavjud ({version}).',
+    updCheckFailed:
+      'Yangilanishlarni tekshirib bo‘lmadi. Tarmoqni tekshirib, qaytadan urinib ko‘ring.',
+    updOpenDownload: 'Yuklab olish sahifasini ochish',
+  },
+  kk: {
+    updTitle: 'Бағдарламалық жасақтаманы жаңарту',
+    updHeadline: 'Жаңа нұсқа қолжетімді',
+    updDesc:
+      'Бұл жаңартуға өнімділікті жақсарту және қателерді түзету кіреді. Қазір жаңартуды ұсынамыз.',
+    updDownload: 'Қазір жаңарту',
+    updLater: 'Кейінірек еске салу',
+    updInstall: 'Қайта іске қосу және орнату',
+    updDownloading: 'Жаңарту жүктеп алынуда…',
+    updFailed:
+      'Жаңартуды жүктеп алу сәтсіз аяқталды. Желі қосылымын тексеріп, әрекетті қайталаңыз.',
+    updRetry: 'Қайталау',
+    updManual:
+      'Автоматты жаңарту сәтсіз аяқталды. Жүктеп алу бетінен соңғы нұсқаны жүктеп алып, оны қолмен орнатыңыз.',
+    updUpToDate: 'Сізде соңғы нұсқа орнатылған (нұсқасы: {version}).',
+    updCheckFailed:
+      'Жаңартуларды тексеру мүмкін болмады. Желі қосылымын тексеріп, әрекетті қайталаңыз.',
+    updOpenDownload: 'Жүктеп алу бетін ашу',
+  },
+  az: {
+    updTitle: 'Proqram yeniləməsi',
+    updHeadline: 'Yeni versiya əlçatandır',
+    updDesc:
+      'Bu yeniləməyə məhsuldarlıq təkmilləşdirmələri və xətaların düzəldilməsi daxildir. İndi yeniləməyi tövsiyə edirik.',
+    updDownload: 'İndi yenilə',
+    updLater: 'Sonra xatırlat',
+    updInstall: 'Yenidən başlat və quraşdır',
+    updDownloading: 'Yeniləmə endirilir…',
+    updFailed: 'Yeniləməni endirmək alınmadı. Şəbəkənizi yoxlayın və yenidən cəhd edin.',
+    updRetry: 'Yenidən sına',
+    updManual:
+      'Avtomatik yeniləmə alınmadı. Ən son versiyanı yükləmə səhifəsindən əldə edin və əl ilə quraşdırın.',
+    updUpToDate: 'Ən son versiyadan istifadə edirsiniz (versiya {version}).',
+    updCheckFailed: 'Yeniləmələri yoxlamaq alınmadı. Şəbəkənizi yoxlayın və yenidən cəhd edin.',
+    updOpenDownload: 'Yükləmə səhifəsini aç',
+  },
+  tk: {
+    updTitle: 'Programma üpjünçiligini täzelemek',
+    updHeadline: 'Täze wersiýa elýeterli',
+    updDesc:
+      'Bu täzelenme öndürijilik gowulandyrmalaryny we näsazlyk düzedişlerini öz içine alýar. Häzir täzelemegi maslahat berýäris.',
+    updDownload: 'Häzir täzele',
+    updLater: 'Soňra ýatlat',
+    updInstall: 'Gaýtadan işledip gur',
+    updDownloading: 'Täzelenme göçürilýär…',
+    updFailed: 'Täzelenmäni göçürip almak başartmady. Toruňyzy barlaň we täzeden synanyşyň.',
+    updRetry: 'Gaýtadan syna',
+    updManual:
+      'Awtomatiki täzeleme başartmady. Iň soňky wersiýany göçürip alma sahypasyndan alyň we ony el bilen guruň.',
+    updUpToDate: 'Sizde iň soňky wersiýa bar (wersiýa {version}).',
+    updCheckFailed: 'Täzelenmeleri barlamak başartmady. Toruňyzy barlaň we täzeden synanyşyň.',
+    updOpenDownload: 'Göçürip alma sahypasyny aç',
+  },
+  ky: {
+    updTitle: 'Программаны жаңыртуу',
+    updHeadline: 'Жаңы версия жеткиликтүү',
+    updDesc:
+      'Бул жаңыртуу иштөө ылдамдыгын жакшыртууларды жана мүчүлүштүктөрдү оңдоолорду камтыйт. Азыр жаңыртууну сунуштайбыз.',
+    updDownload: 'Азыр жаңыртуу',
+    updLater: 'Кийин эскерт',
+    updInstall: 'Кайра иштетип, орнотуу',
+    updDownloading: 'Жаңыртуу жүктөлүүдө…',
+    updFailed:
+      'Жаңыртууну жүктөп алуу ишке ашкан жок. Тармагыңызды текшерип, кайра аракет кылыңыз.',
+    updRetry: 'Кайра аракет кылуу',
+    updManual:
+      'Автоматтык жаңыртуу ишке ашкан жок. Жүктөп алуу барагынан акыркы версияны алып, аны кол менен орнотуңуз.',
+    updUpToDate: 'Сизде эң акыркы версия бар (версия {version}).',
+    updCheckFailed:
+      'Жаңыртууларды текшерүү мүмкүн болгон жок. Тармагыңызды текшерип, кайра аракет кылыңыз.',
+    updOpenDownload: 'Жүктөп алуу барагын ачуу',
+  },
+  tt: {
+    updTitle: 'Программаны яңарту',
+    updHeadline: 'Яңа версия бар',
+    updDesc:
+      'Бу яңарту җитештерүчәнлекне яхшырта һәм хаталарны төзәтә. Хәзер яңартырга киңәш итәбез.',
+    updDownload: 'Хәзер яңарту',
+    updLater: 'Соңрак искә төшер',
+    updInstall: 'Кабат эшләтү һәм урнаштыру',
+    updDownloading: 'Яңарту йөкләнә…',
+    updFailed: 'Яңартуны йөкләп булмады. Челтәрегезне тикшереп, кабатлап карагыз.',
+    updRetry: 'Кабатлап карау',
+    updManual:
+      'Автоматик яңарту уңышсыз булды. Соңгы версияне йөкләү битеннән алып, кулдан урнаштырыгыз.',
+    updUpToDate: 'Сезнең версиягез иң соңгысы ({version}).',
+    updCheckFailed: 'Яңартуларны тикшереп булмады. Челтәрегезне тикшереп, кабатлап карагыз.',
+    updOpenDownload: 'Йөкләү битен ачу',
+  },
+  ka: {
+    updTitle: 'პროგრამული უზრუნველყოფის განახლება',
+    updHeadline: 'ხელმისაწვდომია ახალი ვერსია',
+    updDesc:
+      'ეს განახლება მოიცავს წარმადობის გაუმჯობესებებსა და შეცდომების გამოსწორებებს. გირჩევთ, ახლავე განაახლოთ.',
+    updDownload: 'განახლება ახლა',
+    updLater: 'მოგვიანებით შემახსენე',
+    updInstall: 'გადატვირთვა და ინსტალაცია',
+    updDownloading: 'განახლება იტვირთება…',
+    updFailed: 'განახლების ჩამოტვირთვა ვერ მოხერხდა. შეამოწმეთ ქსელი და ხელახლა სცადეთ.',
+    updRetry: 'ხელახლა ცდა',
+    updManual:
+      'ავტომატური განახლება ვერ მოხერხდა. ჩამოტვირთვის გვერდიდან მიიღეთ უახლესი ვერსია და ხელით დააინსტალირეთ.',
+    updUpToDate: 'თქვენი ვერსია განახლებულია (ვერსია {version}).',
+    updCheckFailed: 'განახლებების შემოწმება ვერ მოხერხდა. შეამოწმეთ ქსელი და ხელახლა სცადეთ.',
+    updOpenDownload: 'ჩამოტვირთვის გვერდის გახსნა',
+  },
 })
 
 const FIRST_CHECK_DELAY_MS = 15_000

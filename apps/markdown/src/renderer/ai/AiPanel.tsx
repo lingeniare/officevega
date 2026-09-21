@@ -766,10 +766,10 @@ export function AiPanel({
         onPointerDown={startResize}
         role="separator"
         aria-orientation="vertical"
-        aria-label={lang === 'ru' ? 'ВЕГА ИИ' : 'VEGA'}
+        aria-label={lang === 'ru' ? 'ИИ' : 'AI'}
       />
       <header className="ai-panel-header">
-        <span className="ai-panel-title">{lang === 'ru' ? 'ВЕГА ИИ' : 'VEGA'}</span>
+        <span className="ai-panel-title">{lang === 'ru' ? 'ВЕГА' : 'VEGA'}</span>
         <div className="ai-panel-header-actions">
           {chat.length > 0 && (
             <button

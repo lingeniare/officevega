@@ -30,6 +30,13 @@ const AI_LANG_DIRECTIVES: Record<Lang, string> = {
   he: '\n\nהשב באותה שפה של הודעת המשתמש; אם לא ניתן לקבוע אותה, השב בעברית.',
   hi: '\n\nउपयोगकर्ता के संदेश की भाषा में ही उत्तर दें; यदि भाषा निर्धारित न हो सके, तो हिंदी में उत्तर दें।',
   'zh-TW': '\n\n用與使用者訊息相同的語言回覆；無法判斷使用者訊息的語言時，用繁體中文回覆。',
+  uz: '\n\nFoydalanuvchi xabari bilan bir xil tilda javob bering; tilni aniqlab boʻlmassa, oʻzbek tilida javob bering.',
+  kk: '\n\nПайдаланушы хабарламасымен бір тілде жауап беріңіз; тілді анықтау мүмкін болмаса, қазақша жауап беріңіз.',
+  az: '\n\nİstifadəçinin mesajı ilə eyni dildə cavab verin; dil müəyyən edilə bilmirsə, azərbaycan dilində cavab verin.',
+  tk: '\n\nUlanyjynyň habaryndaky dilde jogap beriň; dilni anyklap bolmasa, türkmen dilinde jogap beriň.',
+  ky: '\n\nКолдонучунун билдирүүсүндөгү тилде жооп бериңиз; тилди аныктоо мүмкүн болбосо, кыргызча жооп бериңиз.',
+  tt: '\n\nКулланучы хәбәренең телендә җавап бирегез; телне билгеләү мөмкин булмаса, татарча җавап бирегез.',
+  ka: '\n\nუპასუხეთ მომხმარებლის შეტყობინების ენაზე; თუ ენის დადგენა შეუძლებელია, უპასუხეთ ქართულად.',
 }
 
 export function aiLangDirective(lang: Lang): string {

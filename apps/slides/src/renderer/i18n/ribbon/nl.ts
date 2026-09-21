@@ -754,4 +754,13 @@ export const nl = {
   ribbonEqStdDev: 'Standaardafwijking',
   ribbonEqFourier: 'Fouriertransformatie',
   ribbonEqNormalDist: 'Normale verdeling',
+  ribbonCollapsedGroupTip: 'Verborgen opdrachten van deze groep tonen',
+  ribbonGroupParagraphTip: 'Alinea-instellingen',
+  ribbonBulletPictureTip: 'Afbeelding als opsommingsteken gebruiken',
+  ribbonNoneTip: 'Opsommingstekens verwijderen',
+  ribbonMoreColorsTip: 'Aangepaste kleur kiezen',
+  ribbonChangeChartTypeTip: 'Grafiektype wijzigen',
+  ribbonReplacePictureTip: 'Afbeelding vervangen met behoud van de opmaak',
+  ribbonTransparencyTip: 'Transparantie van de afbeelding instellen',
+  ribbonChangeShapeTip: 'Geselecteerde vorm wijzigen',
 } satisfies Record<keyof typeof zh, string>

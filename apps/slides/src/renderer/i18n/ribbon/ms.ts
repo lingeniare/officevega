@@ -753,4 +753,13 @@ export const ms = {
   ribbonEqStdDev: 'Sisihan Piawai',
   ribbonEqFourier: 'Jelmaan Fourier',
   ribbonEqNormalDist: 'Taburan Normal',
+  ribbonCollapsedGroupTip: 'Tunjukkan perintah tersembunyi dalam kumpulan ini',
+  ribbonGroupParagraphTip: 'Tetapan perenggan',
+  ribbonBulletPictureTip: 'Gunakan gambar sebagai bulet',
+  ribbonNoneTip: 'Alih keluar bulet',
+  ribbonMoreColorsTip: 'Pilih warna tersuai',
+  ribbonChangeChartTypeTip: 'Tukar jenis carta',
+  ribbonReplacePictureTip: 'Ganti gambar sambil mengekalkan pemformatannya',
+  ribbonTransparencyTip: 'Tetapkan ketelusan gambar',
+  ribbonChangeShapeTip: 'Tukar bentuk yang dipilih',
 } satisfies Record<keyof typeof zh, string>

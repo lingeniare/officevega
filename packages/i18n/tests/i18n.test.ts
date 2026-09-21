@@ -52,6 +52,15 @@ describe('normalizeLang', () => {
     expect(normalizeLang('he-IL')).toBe('he')
     expect(normalizeLang('iw-IL')).toBe('he')
     expect(normalizeLang('hi-IN')).toBe('hi')
+    expect(normalizeLang('uz-UZ')).toBe('uz')
+    expect(normalizeLang('uz-Latn-UZ')).toBe('uz')
+    expect(normalizeLang('kk-KZ')).toBe('kk')
+    expect(normalizeLang('az-AZ')).toBe('az')
+    expect(normalizeLang('az-Cyrl')).toBe('az')
+    expect(normalizeLang('tk-TM')).toBe('tk')
+    expect(normalizeLang('ky-KG')).toBe('ky')
+    expect(normalizeLang('tt-RU')).toBe('tt')
+    expect(normalizeLang('ka-GE')).toBe('ka')
   })
 
   it('maps everything else (and missing) to en', () => {
@@ -98,6 +107,13 @@ describe('isLang', () => {
     expect(isLang('he')).toBe(true)
     expect(isLang('hi')).toBe(true)
     expect(isLang('zh-TW')).toBe(true)
+    expect(isLang('uz')).toBe(true)
+    expect(isLang('kk')).toBe(true)
+    expect(isLang('az')).toBe(true)
+    expect(isLang('tk')).toBe(true)
+    expect(isLang('ky')).toBe(true)
+    expect(isLang('tt')).toBe(true)
+    expect(isLang('ka')).toBe(true)
     expect(isLang('zh-CN')).toBe(false)
     expect(isLang(42)).toBe(false)
   })
@@ -200,6 +216,13 @@ describe('createI18n', () => {
     he: { hello: 'שלום {name}', plain: 'קבצים' },
     hi: { hello: 'नमस्ते {name}', plain: 'फ़ाइलें' },
     'zh-TW': { hello: '你好 {name}', plain: '檔案' },
+    uz: { hello: 'Salom {name}', plain: 'Fayllar' },
+    kk: { hello: 'Сәлем {name}', plain: 'Файлдар' },
+    az: { hello: 'Salam {name}', plain: 'Fayllar' },
+    tk: { hello: 'Salam {name}', plain: 'Faýllar' },
+    ky: { hello: 'Салам {name}', plain: 'Файлдар' },
+    tt: { hello: 'Сәлам {name}', plain: 'Файллар' },
+    ka: { hello: 'გამარჯობა {name}', plain: 'ფაილები' },
   })
 
   it('translates per language with interpolation', () => {

@@ -277,4 +277,6 @@ export const pl = {
   paneShowEnded: 'Koniec pokazu slajdów.',
   paneShowRehearseTip: 'Próba tempa: czas na tym slajdzie / czas łączny',
   paneShowRehearseTotal: 'Łącznie {time}',
+  paneFormatFillTip: 'Opcje wypełnienia zaznaczenia',
+  paneFormatOutlineTip: 'Opcje konturu zaznaczenia',
 } satisfies Record<keyof typeof zh, string>

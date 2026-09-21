@@ -1657,6 +1657,7 @@ function Ribbon({
             <button
               className="styles-row as-button"
               data-tip={t('appIcons')}
+              data-tip-detail={t('appIconsTip')}
               onClick={() => onCommand('insert-icons')}
             >
               <ToolSymbol symbol="✧" />
@@ -1665,6 +1666,7 @@ function Ribbon({
             <button
               className="styles-row as-button"
               data-tip={t('appScreenshot')}
+              data-tip-detail={t('appScreenshotTip')}
               onClick={() => onCommand('insert-screenshot')}
             >
               <ToolSymbol symbol="⧉" />
@@ -1834,6 +1836,7 @@ function Ribbon({
             <button
               className="styles-row as-button"
               data-tip={t('appEquation')}
+              data-tip-detail={t('appEquationTip')}
               onClick={() => onCommand('insert-equation')}
             >
               <ToolSymbol symbol="π" />
@@ -1842,6 +1845,7 @@ function Ribbon({
             <button
               className="styles-row as-button"
               data-tip={t('appSymbol')}
+              data-tip-detail={t('appSymbolTip')}
               onClick={() => onCommand('insert-symbol')}
             >
               <ToolSymbol symbol="Ω" />
@@ -2009,6 +2013,7 @@ function Ribbon({
             <button
               className="check-item"
               data-tip={t('appGridlines')}
+              data-tip-detail={t('appGridlinesTip')}
               onClick={() => onCommand('toggle-gridlines')}
             >
               <i className="check-box">{pageLayout.showGridlines ? '✓' : ''}</i>
@@ -2030,6 +2035,7 @@ function Ribbon({
             <button
               className="check-item"
               data-tip={t('appHeadings')}
+              data-tip-detail={t('appHeadingsTip')}
               onClick={() => onCommand('toggle-headings')}
             >
               <i className="check-box">{pageLayout.showHeadings ? '✓' : ''}</i>
@@ -2113,6 +2119,7 @@ function Ribbon({
             <button
               className="styles-row as-button"
               data-tip={t('appDefineName')}
+              data-tip-detail={t('appDefineNameTip')}
               onClick={() => onCommand('name-manager-open')}
             >
               <ToolSymbol symbol="🏷" />
@@ -2414,6 +2421,7 @@ function Ribbon({
             <button
               className="check-item"
               data-tip={t('appGridlines')}
+              data-tip-detail={t('appGridlinesTip')}
               onClick={() => onCommand('toggle-gridlines')}
             >
               <i className="check-box">{pageLayout.showGridlines ? '✓' : ''}</i>
@@ -2422,6 +2430,7 @@ function Ribbon({
             <button
               className="check-item"
               data-tip={t('appFormulaBar')}
+              data-tip-detail={t('appFormulaBarTip')}
               onClick={() => onCommand('toggle-formula-bar')}
             >
               <i className="check-box">{formulaBarVisible ? '✓' : ''}</i>
@@ -2430,6 +2439,7 @@ function Ribbon({
             <button
               className="check-item"
               data-tip={t('appHeadings')}
+              data-tip-detail={t('appHeadingsTip')}
               onClick={() => onCommand('toggle-headings')}
             >
               <i className="check-box">{pageLayout.showHeadings ? '✓' : ''}</i>
@@ -2438,6 +2448,7 @@ function Ribbon({
             <button
               className="check-item"
               data-tip={t('appCrossHighlight')}
+              data-tip-detail={t('appCrossHighlightTip')}
               onClick={() => onCommand('toggle-cross-highlight')}
             >
               <i className="check-box">{crossHighlightVisible ? '✓' : ''}</i>
@@ -2619,13 +2630,14 @@ function Ribbon({
             <VegaMark size={26} />
           </span>
           <span>
-            <strong>{lang === 'ru' ? 'ВЕГА' : 'VEGA'}</strong>
+            <strong>{lang === 'ru' ? 'ИИ' : 'AI'}</strong>
           </span>
         </button>
         <button
           className="ribbon-tool as-button large ai-entry"
           disabled={!sheetHasContent}
           data-tip={t('aiCheckBtn')}
+          data-tip-detail={t('aiCheckPrompt')}
           onClick={() => onAiPreset(t('aiCheckPrompt'))}
         >
           <span className="tool-icon-row">
@@ -2655,6 +2667,7 @@ function Ribbon({
           className="ribbon-tool as-button large ai-entry"
           disabled={!sheetHasContent}
           data-tip={t('aiAnalyzeBtn')}
+          data-tip-detail={t('aiAnalyzePrompt')}
           onClick={() => onAiPreset(t('aiAnalyzePrompt'))}
         >
           <span className="tool-icon-row">
@@ -3013,6 +3026,7 @@ function Ribbon({
           <button
             className="styles-row as-button"
             data-tip={t('appConditionalFormatting')}
+            data-tip-detail={t('appConditionalFormattingTip')}
             onClick={() => onCommand('cf-open')}
           >
             <ToolSymbol symbol="▤" />
@@ -3203,6 +3217,7 @@ function Ribbon({
             <button
               className="labeled"
               data-tip={t('appReplace')}
+              data-tip-detail={t('appReplaceTip')}
               onClick={() => onCommand('replace')}
             >
               <ToolSymbol symbol="⇄" /> {t('appReplace')}

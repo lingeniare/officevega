@@ -146,6 +146,7 @@ export const de = {
   aiRestylePrompt:
     'Verfeinere die ganze Seite: Lies zuerst alle <style>-Blöcke und vereinheitliche dann Abstände, Ausrichtung, Schriftgrößenstufen, Farben und responsive Breakpoints in einem apply_ops-Batch. Ändere keinen Text und füge keine Elemente hinzu oder entferne welche; falls sich die Seitenstruktur ändern muss, schlage das zuerst mit plan_page vor.',
   aiThemeBtn: 'Stil wechseln',
+  aiThemeTip: 'Stil wählen; die KI gestaltet die Seite neu',
   aiThemePrompt:
     'Gib der ganzen Seite einen „{direction}“-Look: Schlage den neuen Stil zuerst mit plan_page vor (bestehende Abschnitte beibehalten); nach Bestätigung nur die --brief-*-Variablen und zugehörigen CSS-Regeln ändern, Inhalt und Reihenfolge bleiben unverändert.',
   aiThemeMinimal: 'Minimal',

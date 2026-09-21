@@ -145,6 +145,7 @@ export const cs = {
   aiRestylePrompt:
     'Vylaď celou stránku: nejprve přečti každý <style>, poté v jedné dávce apply_ops sjednoť mezery, zarovnání, typografickou škálu, barvy a responzivní breakpointy. Neměň žádný text a nepřidávej ani neodebírej prvky; pokud se musí změnit struktura stránky, navrhni to nejprve pomocí plan_page.',
   aiThemeBtn: 'Motiv',
+  aiThemeTip: 'Vyberte styl; AI stránku přestylová',
   aiThemePrompt:
     'Dej celé stránce vzhled „{direction}“: nový styl nejprve navrhni pomocí plan_page (zachovej stávající sekce); po potvrzení aktualizuj pouze proměnné --brief-* a související pravidla CSS, obsah a pořadí sekcí ponech beze změny.',
   aiThemeMinimal: 'Minimalistický',

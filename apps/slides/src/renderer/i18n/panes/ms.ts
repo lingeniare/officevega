@@ -279,4 +279,6 @@ export const ms = {
   paneShowEnded: 'Persembahan slaid tamat.',
   paneShowRehearseTip: 'Raptai Pemasaan: masa pada slaid ini / jumlah masa',
   paneShowRehearseTotal: 'Jumlah {time}',
+  paneFormatFillTip: 'Pilihan isian untuk pilihan',
+  paneFormatOutlineTip: 'Pilihan garis luar untuk pilihan',
 } satisfies Record<keyof typeof zh, string>

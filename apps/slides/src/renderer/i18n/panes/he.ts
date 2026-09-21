@@ -274,4 +274,6 @@ export const he = {
   paneShowEnded: 'סוף הצגת השקופיות.',
   paneShowRehearseTip: 'חזרה על תזמונים: זמן בשקופית זו / זמן כולל',
   paneShowRehearseTotal: 'סה״כ {time}',
+  paneFormatFillTip: 'אפשרויות מילוי עבור הבחירה',
+  paneFormatOutlineTip: 'אפשרויות קווי מתאר עבור הבחירה',
 } satisfies Record<keyof typeof zh, string>

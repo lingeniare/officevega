@@ -136,6 +136,7 @@ export const zh = {
   aiRestylePrompt:
     '优化整体界面：先读全部 <style>，再用一次 apply_ops 统一间距、对齐、字号阶梯、配色和响应式断点。不改文字内容，不增删元素；如果需要改变页面结构，先用 plan_page 出简报让我确认。',
   aiThemeBtn: '换风格',
+  aiThemeTip: '选择风格，AI 为页面换肤',
   aiThemePrompt:
     '把整页换成「{direction}」风格：先用 plan_page 提出新的 style（保留现有区块），确认后只更新 --brief-* 变量和相关 CSS 规则，内容与区块顺序不变。',
   aiThemeMinimal: '极简',

@@ -273,4 +273,6 @@ export const zh = {
   paneShowEnded: '放映结束。',
   paneShowRehearseTip: '排练计时：当前页停留 / 总时长',
   paneShowRehearseTotal: '总时长 {time}',
+  paneFormatFillTip: '所选对象的填充选项',
+  paneFormatOutlineTip: '所选对象的轮廓选项',
 }

@@ -280,4 +280,6 @@ export const nl = {
   paneShowEnded: 'Einde van de diavoorstelling.',
   paneShowRehearseTip: 'Try-out: tijd op deze dia / totale tijd',
   paneShowRehearseTotal: 'Totaal {time}',
+  paneFormatFillTip: 'Opvulopties voor de selectie',
+  paneFormatOutlineTip: 'Omtrekopties voor de selectie',
 } satisfies Record<keyof typeof zh, string>

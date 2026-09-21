@@ -752,4 +752,13 @@ export const ko = {
   ribbonEqStdDev: '표준 편차',
   ribbonEqFourier: '푸리에 변환',
   ribbonEqNormalDist: '정규 분포',
+  ribbonCollapsedGroupTip: '이 그룹의 숨겨진 명령 표시',
+  ribbonGroupParagraphTip: '단락 설정',
+  ribbonBulletPictureTip: '그림을 글머리 기호로 사용',
+  ribbonNoneTip: '글머리 기호 제거',
+  ribbonMoreColorsTip: '사용자 지정 색 선택',
+  ribbonChangeChartTypeTip: '차트 종류 변경',
+  ribbonReplacePictureTip: '서식을 유지한 채 그림 바꾸기',
+  ribbonTransparencyTip: '그림 투명도 설정',
+  ribbonChangeShapeTip: '선택한 도형 변경',
 } satisfies Record<keyof typeof zh, string>

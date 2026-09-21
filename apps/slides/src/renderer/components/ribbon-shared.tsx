@@ -278,6 +278,7 @@ export function Group({
   /** present on collapsible groups; `collapsed` switches to the dropdown form */
   collapse?: { collapsed: boolean; open: boolean; onToggle: () => void; icon: ReactNode }
 }) {
+  const { t } = useI18n()
   if (collapse?.collapsed) {
     return (
       <div className="ribbon-group" data-rbgroup={groupId}>
@@ -286,6 +287,7 @@ export function Group({
             <button
               className={`rb-big ${collapse.open ? 'active' : ''}`}
               data-tip={label}
+              data-tip-detail={t('ribbonCollapsedGroupTip')}
               onMouseDown={(e) => e.stopPropagation()}
               onClick={collapse.onToggle}
             >

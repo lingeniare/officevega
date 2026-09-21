@@ -276,4 +276,6 @@ export const cs = {
   paneShowEnded: 'Konec prezentace.',
   paneShowRehearseTip: 'Vyzkoušet časování: čas na tomto snímku / celkový čas',
   paneShowRehearseTotal: 'Celkem {time}',
+  paneFormatFillTip: 'Možnosti výplně výběru',
+  paneFormatOutlineTip: 'Možnosti obrysu výběru',
 } satisfies Record<keyof typeof zh, string>

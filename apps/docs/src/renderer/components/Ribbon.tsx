@@ -2822,6 +2822,7 @@ function RibbonInner({
                   <button
                     className={`table-command-button${dropdown === 'tableAutoFit' ? ' active' : ''}`}
                     data-tip={t('ribbonAutoFit')}
+                    data-tip-detail={t('ribbonAutoFitTip')}
                     aria-expanded={dropdown === 'tableAutoFit'}
                     onClick={() =>
                       setDropdown((current) => (current === 'tableAutoFit' ? null : 'tableAutoFit'))
@@ -2905,6 +2906,7 @@ function RibbonInner({
                   className="rb-big ai-entry"
                   disabled={docEmpty}
                   data-tip={t('aiSummarizeBtn')}
+                  data-tip-detail={t('aiSummarizePrompt')}
                   onClick={() => onAiPreset(t('aiSummarizePrompt'))}
                 >
                   <span className="rb-big-icon">
@@ -2937,6 +2939,9 @@ function RibbonInner({
                   className="rb-big ai-entry"
                   disabled={docEmpty}
                   data-tip={t('aiPolishBtn')}
+                  data-tip-detail={t(
+                    editor.state.selection.empty ? 'aiPolishPrompt' : 'aiPolishSelectionPrompt',
+                  )}
                   onClick={() =>
                     onAiPreset(
                       t(
@@ -2973,6 +2978,7 @@ function RibbonInner({
                   className="rb-big ai-entry"
                   disabled={docEmpty}
                   data-tip={t('aiTidyBtn')}
+                  data-tip-detail={t('aiTidyPrompt')}
                   onClick={() => onAiPreset(t('aiTidyPrompt'))}
                 >
                   <span className="rb-big-icon">
@@ -2999,7 +3005,7 @@ function RibbonInner({
                   <span>{t('aiTidyBtn')}</span>
                 </button>
               </div>
-              <div className="ribbon-group-label">{lang === 'ru' ? 'ВЕГА' : 'VEGA'}</div>
+              <div className="ribbon-group-label">{lang === 'ru' ? 'ИИ' : 'AI'}</div>
             </div>
 
             <div className="ribbon-sep" />

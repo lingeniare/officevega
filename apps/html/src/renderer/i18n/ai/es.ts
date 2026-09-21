@@ -147,6 +147,7 @@ export const es = {
   aiRestylePrompt:
     'Refina toda la página: lee primero todos los <style> y unifica espaciados, alineación, escala tipográfica, colores y puntos de ruptura responsive en un solo lote apply_ops. No cambies texto ni añadas o elimines elementos; si hay que cambiar la estructura, propónlo antes con plan_page.',
   aiThemeBtn: 'Cambiar estilo',
+  aiThemeTip: 'Elige un estilo; la IA rediseña la página',
   aiThemePrompt:
     'Dale a toda la página un estilo "{direction}": propón primero el nuevo estilo con plan_page (manteniendo las secciones existentes); tras la confirmación, actualiza solo las variables --brief-* y las reglas CSS relacionadas, sin tocar el contenido ni el orden de las secciones.',
   aiThemeMinimal: 'Minimalista',

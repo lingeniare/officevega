@@ -1200,6 +1200,7 @@ export function ViewTab({
             className="rb-big"
             disabled={!hasDoc}
             data-tip={t('ribbonZoomOut')}
+            data-tip-detail={t('ribbonZoomOutTip')}
             onClick={() => onZoom(Math.max(50, zoom - 10))}
           >
             <span className="rb-big-icon">
@@ -1211,6 +1212,7 @@ export function ViewTab({
             className="rb-big"
             disabled={!hasDoc}
             data-tip={t('ribbonZoomIn')}
+            data-tip-detail={t('ribbonZoomInTip')}
             onClick={() => onZoom(Math.min(200, zoom + 10))}
           >
             <span className="rb-big-icon">

@@ -761,4 +761,13 @@ export const it = {
   ribbonEqStdDev: 'Deviazione Standard',
   ribbonEqFourier: 'Trasformata di Fourier',
   ribbonEqNormalDist: 'Distribuzione Normale',
+  ribbonCollapsedGroupTip: 'Mostra i comandi nascosti di questo gruppo',
+  ribbonGroupParagraphTip: 'Impostazioni del paragrafo',
+  ribbonBulletPictureTip: "Usa un'immagine come punto elenco",
+  ribbonNoneTip: 'Rimuovi i punti elenco',
+  ribbonMoreColorsTip: 'Scegli un colore personalizzato',
+  ribbonChangeChartTypeTip: 'Cambia il tipo di grafico',
+  ribbonReplacePictureTip: "Sostituisci l'immagine mantenendone la formattazione",
+  ribbonTransparencyTip: "Imposta la trasparenza dell'immagine",
+  ribbonChangeShapeTip: 'Cambia la forma selezionata',
 } satisfies Record<keyof typeof zh, string>

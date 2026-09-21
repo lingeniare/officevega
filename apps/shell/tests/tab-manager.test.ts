@@ -210,7 +210,7 @@ describe('opening tabs', () => {
   it('uses module default titles for pathless tabs', () => {
     manager.openSheetsTab()
     manager.openSlidesTab()
-    expect(manager.list().map((t) => t.title)).toEqual(['Office VEGA', 'AI Sheets', 'AI Slides'])
+    expect(manager.list().map((t) => t.title)).toEqual(['Office VEGA', 'Sheets', 'Slides'])
   })
 
   it('assigns unique, monotonic tab ids', () => {

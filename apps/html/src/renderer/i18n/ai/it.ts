@@ -146,6 +146,7 @@ export const it = {
   aiRestylePrompt:
     "Rifinisci l'intera pagina: leggi prima tutti gli <style>, poi unifica spaziature, allineamenti, scala tipografica, colori e breakpoint responsive in un unico batch apply_ops. Non modificare il testo e non aggiungere o rimuovere elementi; se la struttura deve cambiare, proponilo prima con plan_page.",
   aiThemeBtn: 'Cambia stile',
+  aiThemeTip: 'Scegli uno stile; l\'IA ridisegna la pagina',
   aiThemePrompt:
     'Dai all\'intera pagina uno stile "{direction}": proponi prima il nuovo stile con plan_page (mantenendo le sezioni esistenti); dopo la conferma aggiorna solo le variabili --brief-* e le regole CSS correlate, senza toccare contenuto e ordine delle sezioni.',
   aiThemeMinimal: 'Minimale',
