@@ -114,6 +114,7 @@ export function createIpcTransport<S>(options: IpcTransportOptions<S>): AgentTra
           cb.onDone()
         } else {
           settle()
+          console.warn('[agent-core] AI stream error:', chunk.errorCode ?? 'uncoded', chunk.error)
           cb.onError(
             chunk.errorCode === 'timeout'
               ? timeoutText()

@@ -403,18 +403,20 @@ function AiModelPane({
       })
       setCatalog((current) =>
         current.map((entry) => {
-          if (entry.id !== id || live.models.length === 0) return entry
+          if (entry.id !== id) return entry
+          // a failed or fully-filtered catalog leaves live.models empty —
+          // fall back to the provider's static ids so the pickers (main and
+          // fast) never open an empty popover
+          const listed = live.models.length
+            ? live.models.map((m) => ({ value: m.id, label: m.name }))
+            : entry.models.map((m) => ({ value: m, label: m }))
           // the default and stored ids stay pickable even when the catalog
           // filter hides them (openrouter/auto predates the created cutoff)
           const pinned = [...new Set([entry.defaultModel, selectedModel])]
             .filter((m): m is string => !!m)
-            .filter((m) => !live.models.some((lm) => lm.id === m))
+            .filter((m) => !listed.some((o) => o.value === m))
             .map((m) => ({ value: m, label: m }))
-          const modelOptions = [
-            ...pinned,
-            ...live.models.map((m) => ({ value: m.id, label: m.name })),
-          ]
-          return { ...entry, modelOptions }
+          return { ...entry, modelOptions: [...pinned, ...listed] }
         }),
       )
     },
@@ -462,6 +464,19 @@ function AiModelPane({
   const isAccountSignIn = provider === 'genspark'
   const isCodex = provider === 'codex'
   const isVega = provider === 'vega'
+
+  // the fast-model list opens with an explicit "same as main" row (picking it
+  // clears fastModel — the pick is never one-way) and pins the stored fast id
+  // when the catalog filter hides it
+  const modelChoices = meta?.modelOptions ?? meta?.models ?? []
+  const fastModelOptions: (string | { value: string; label: string })[] = [
+    { value: '', label: t('setAiFastModelSame') },
+    ...(config.fastModel &&
+    !modelChoices.some((o) => (typeof o === 'string' ? o : o.value) === config.fastModel)
+      ? [{ value: config.fastModel, label: config.fastModel }]
+      : []),
+    ...modelChoices,
+  ]
 
   const touch = () => {
     clearFeedback()
@@ -594,17 +609,18 @@ function AiModelPane({
           </div>
         </div>
         {meta?.liveCatalog ? (
-          // same editable combobox as the main model; empty keeps the main model
-          // for background calls — the placeholder shows what will actually run
+          // same editable combobox as the main model; the first row reverts to
+          // "same as main" (empty fastModel) so the pick is never one-way, and
+          // an unset field reads that state instead of a bare id
           <ComboBox
             id="set-ai-fast-model"
             className="set-combo"
             ariaLabel={t('setAiFastModelId')}
             value={config.fastModel ?? ''}
-            options={meta.modelOptions ?? meta.models}
+            options={fastModelOptions}
             placeholder={config.model || meta.defaultModel || 'model-id'}
             searchPlaceholder={t('setAiModelSearch')}
-            onChange={(m) => updateConfig({ fastModel: m })}
+            onChange={(m) => updateConfig({ fastModel: m || undefined })}
           />
         ) : meta && meta.models.length > 0 ? (
           <Dropdown

@@ -1043,6 +1043,29 @@ html.vegaoffice-popover-open .ribbon-tabs {
   background: transparent;
 }
 
+/* visible grip: a centered pill in the muted-icon tone — the bare strip is
+ * invisible on a white surface; accent on hover and while dragging */
+.ai-panel-resizer::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 3px;
+  height: 34px;
+  border-radius: 2px;
+  background: var(--icon-muted);
+  transform: translate(-50%, -50%);
+  transition:
+    height var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.ai-panel-resizer:hover::after,
+.ai-panel-resizing .ai-panel-resizer::after {
+  height: 52px;
+  background: var(--accent);
+}
+
 /* while dragging: keep the col-resize cursor everywhere, no text selection */
 .ai-panel-resizing {
   cursor: col-resize;

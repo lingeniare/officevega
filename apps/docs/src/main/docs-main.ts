@@ -3749,10 +3749,12 @@ export function registerAiIpc(): void {
       if (controller.signal.aborted) {
         send({ requestId, type: 'done' })
       } else {
+        const msg = err instanceof Error ? err.message : String(err)
+        console.error(`[ai-stream] ${requestId} (${provider}/${config.model}) failed:`, msg)
         send({
           requestId,
           type: 'error',
-          error: err instanceof Error ? err.message : String(err),
+          error: msg,
           ...(err instanceof AiTimeoutError
             ? { errorCode: 'timeout' as const }
             : err instanceof AiCreditsError
