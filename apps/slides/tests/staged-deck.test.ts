@@ -80,6 +80,7 @@ function makeAccess(opts?: {
   const localPageCalls: { pageIndex: number; brief: string; style: string }[] = []
   const regenCalls: number[] = []
   const landed: string[] = []
+  const upgradeOffers: { visuals: boolean; style: boolean }[] = []
   let draftInFlight = 0
   let draftMaxInFlight = 0
   // Resolvers the test flips to drive the outline card verdict
@@ -161,6 +162,9 @@ function makeAccess(opts?: {
       imageSearchCalls.push(query)
       return [`https://stock.img/${encodeURIComponent(query)}.jpg`]
     },
+    onUpgradeOffer: (pending) => {
+      upgradeOffers.push(pending)
+    },
   }
   return {
     access,
@@ -172,6 +176,7 @@ function makeAccess(opts?: {
     localPageCalls,
     regenCalls,
     landed,
+    upgradeOffers,
     setOutlineVerdict: (v: OutlineProposalResult) => (outlineVerdict = v),
     armManualOutline: () => (manualOutline = () => {}),
     resolveOutline: (r: OutlineProposalResult) => manualOutline?.(r),
@@ -183,6 +188,12 @@ const draftCall = (topic: string, approx: number): AgentToolCall => ({
   id: 'c-draft',
   name: 'generate_deck',
   input: { topic, approx_pages: approx, detail: 'draft', context: 'real material' },
+})
+
+const upgradeCall = (stage: string, extra?: Record<string, unknown>): AgentToolCall => ({
+  id: 'c-up',
+  name: 'upgrade_deck',
+  input: { stage, ...extra },
 })
 
 describe('staged flow: outline confirmation card', () => {
@@ -250,6 +261,83 @@ describe('staged flow: outline confirmation card', () => {
   })
 })
 
+describe('staged flow: draft is the default for a new deck', () => {
+  it('omitting detail → draft path (no style, no images) with the outline card', async () => {
+    const { access, outlineCalls, styleCalls, imageGenCalls, draftCalls } = makeAccess({
+      planImageQueries: ['city skyline'],
+    })
+    const skill = createSlidesSkill(access)
+    const res = (await skill.executeTool({
+      id: 'c-omit',
+      name: 'generate_deck',
+      input: { topic: 'City Guide', approx_pages: 3, context: 'real material' },
+    } as AgentToolCall)) as { output: string }
+    expect(outlineCalls.length).toBe(1)
+    expect(styleCalls.length).toBe(0)
+    expect(imageGenCalls.length).toBe(0)
+    expect(draftCalls.length).toBeGreaterThan(0)
+    expect(res.output).toContain('upgrade_deck')
+  })
+
+  it('explicit detail:"full" → the complete designed pipeline (style + imagery)', async () => {
+    const { access, styleCalls, imageGenCalls, localPageCalls } = makeAccess({
+      planImageQueries: ['city skyline'],
+      cloudEnabled: false,
+    })
+    const skill = createSlidesSkill(access)
+    await skill.executeTool({
+      id: 'c-full',
+      name: 'generate_deck',
+      input: { topic: 'City Guide', approx_pages: 3, context: 'real material', detail: 'full' },
+    } as AgentToolCall)
+    expect(styleCalls.length).toBe(1)
+    expect(imageGenCalls.length).toBeGreaterThan(0)
+    expect(localPageCalls.length).toBe(3)
+  })
+
+  it('explicit pages for a new deck still go through the outline card and the draft path', async () => {
+    const { access, outlineCalls, styleCalls, draftCalls } = makeAccess()
+    const skill = createSlidesSkill(access)
+    const res = (await skill.executeTool({
+      id: 'c-explicit',
+      name: 'generate_deck',
+      input: {
+        core_hook: 'h',
+        style: 's',
+        pages: [
+          { title: 'P1', brief: 'b1', layout: 'data', image_queries: [] },
+          { title: 'P2', brief: 'b2', layout: 'content', image_queries: [] },
+        ],
+      },
+    } as AgentToolCall)) as { output: string }
+    // The model hand-wrote pages — the user still confirms the structure first
+    expect(outlineCalls.length).toBe(1)
+    expect(outlineCalls[0]!.pages.map((p) => p.title)).toEqual(['P1', 'P2'])
+    // And the deck is a draft, not a designed full run
+    expect(styleCalls.length).toBe(0)
+    expect(draftCalls.length).toBe(1)
+    expect(res.output).toContain('upgrade_deck')
+  })
+
+  it('append mode stays on the full path even without detail (new pages match the deck)', async () => {
+    const { access, styleCalls, outlineCalls } = makeAccess({ cloudEnabled: false })
+    const skill = createSlidesSkill(access)
+    await skill.executeTool({
+      id: 'c-append',
+      name: 'generate_deck',
+      input: {
+        insert_mode: 'append',
+        core_hook: 'h',
+        style: 's',
+        pages: [{ title: 'Extra', brief: 'b', layout: 'data', image_queries: [] }],
+      },
+    } as AgentToolCall)
+    // Explicit pages were passed — no internal planning, so no outline card
+    expect(outlineCalls.length).toBe(0)
+    expect(styleCalls.length).toBe(0) // style was passed explicitly
+  })
+})
+
 describe('staged flow: draft generation', () => {
   it('skips style + image stages entirely and hands visual slots to the draft generator', async () => {
     const { access, styleCalls, imageGenCalls, imageSearchCalls, draftCalls, localPageCalls } =
@@ -269,8 +357,8 @@ describe('staged flow: draft generation', () => {
   it('runs two batch waves concurrently', async () => {
     const { access, getDraftMaxInFlight, draftCalls } = makeAccess({ draftPageDelayMs: 10 })
     const skill = createSlidesSkill(access)
-    await skill.executeTool(draftCall('Big Deck', 10)) // 10 pages → 2 chunks of 5
-    expect(draftCalls.length).toBe(2)
+    await skill.executeTool(draftCall('Big Deck', 10)) // 10 pages → 4 chunks of 3
+    expect(draftCalls.length).toBe(4)
     expect(getDraftMaxInFlight()).toBe(2)
   })
 
@@ -291,6 +379,23 @@ describe('staged flow: draft generation', () => {
     expect(landed.length).toBe(2)
     expect(res.output).toContain('2/3')
     expect(res.output).toContain('page 2')
+  })
+
+  it('a whole batch coming back empty is retried per page and still lands', async () => {
+    const { access, landed, draftCalls } = makeAccess()
+    const orig = access.generateDraftPages!
+    let batchAttempts = 0
+    // The multi-page call returns the empty-stream failure the user hit; the
+    // single-page retries must recover every page of that batch.
+    access.generateDraftPages = async (args) => {
+      if (args.pages.length > 1 && batchAttempts++ === 0) return { ok: false, error: 'Empty output' }
+      return orig(args)
+    }
+    const skill = createSlidesSkill(access)
+    const res = (await skill.executeTool(draftCall('City Guide', 3))) as { output: string }
+    expect(landed.length).toBe(3)
+    expect(res.output).toContain('3/3')
+    expect(draftCalls.filter((c) => c.pages.length === 1).length).toBe(3)
   })
 
   it('a page that fails in the batch gets one single-page retry and lands', async () => {
@@ -341,12 +446,6 @@ describe('upgrade_deck', () => {
     slideWith(['City Guide', 'IMAGE: city skyline aerial photo']),
     slideWith(['Food', 'CHART: prices by district']),
   ]
-
-  const upgradeCall = (stage: string, extra?: Record<string, unknown>): AgentToolCall => ({
-    id: 'c-up',
-    name: 'upgrade_deck',
-    input: { stage, ...extra },
-  })
 
   it('stage:"visuals" resolves labeled slots via image generation and regenerates pages in place', async () => {
     const { access, imageGenCalls, regenCalls, localPageCalls } = makeAccess({
@@ -437,5 +536,42 @@ describe('upgrade_deck', () => {
     }
     expect(r2.isError).toBe(true)
     expect(r2.output).toContain('empty')
+  })
+})
+
+describe('staged flow: upgrade offer callback', () => {
+  it('fires after the draft lands (both stages pending), then re-fires with only style pending', async () => {
+    const { access, upgradeOffers, outlineCalls } = makeAccess()
+    const skill = createSlidesSkill(access)
+    const res = (await skill.executeTool(draftCall('City Guide', 3))) as { mutated?: boolean }
+    expect(res.mutated).toBe(true)
+    expect(outlineCalls.length).toBe(1)
+    // Draft landed → the UI card offers visuals + style
+    expect(upgradeOffers).toEqual([{ visuals: true, style: true }])
+
+    // Upgrading a deck that was never a draft does not fire the offer at all
+    const up = makeAccess({ slides: [slideWith(['Title', 'IMAGE: x'])] })
+    await createSlidesSkill(up.access).executeTool(upgradeCall('visuals'))
+    expect(up.upgradeOffers.length).toBe(0)
+  })
+
+  it('after upgrade_deck(visuals) on a draft deck the card offers only style', async () => {
+    // getSlides serves the draft deck (with the placeholder labels still on it)
+    const slides = [
+      slideWith(['Title 1', 'IMAGE: skyline']),
+      slideWith(['Title 2', 'CHART: growth']),
+    ]
+    const { access, upgradeOffers } = makeAccess({ slides })
+    const skill = createSlidesSkill(access)
+    // generate_deck lands the draft and sets state.draftDeck
+    await skill.executeTool(draftCall('X', 2))
+    upgradeOffers.length = 0
+    const res = (await skill.executeTool(upgradeCall('visuals'))) as { output: string }
+    expect(res.output).toContain('2/2')
+    expect(upgradeOffers[upgradeOffers.length - 1]).toEqual({ visuals: false, style: true })
+    // And once the style stage lands, the card is hidden ({false,false})
+    const res2 = (await skill.executeTool(upgradeCall('style'))) as { output: string }
+    expect(res2.output).toContain('2/2')
+    expect(upgradeOffers[upgradeOffers.length - 1]).toEqual({ visuals: false, style: false })
   })
 })

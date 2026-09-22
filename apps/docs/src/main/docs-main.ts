@@ -64,6 +64,7 @@ import {
   registerRendererScheme,
   rendererUrl,
   themedSurfaceColor,
+  forwardRendererConsole,
 } from '@genoffice/electron-utils'
 import { configureMetricsCache, familyVerticalMetrics } from '@genoffice/font-metrics'
 import { createI18n, getUiLang, normalizeLang, setUiLang } from '@genoffice/i18n'
@@ -3660,7 +3661,6 @@ export function registerAiIpc(): void {
       output?: string
       excludePrefixes?: unknown
       excludeSuffixes?: unknown
-      createdAfter?: unknown
     }
     if (!req.provider) return { models: [], defaultModel: '' }
     const strings = (v: unknown) =>
@@ -3679,9 +3679,6 @@ export function registerAiIpc(): void {
         ...(typeof req.output === 'string' && req.output ? { output: req.output } : {}),
         ...(strings(req.excludePrefixes) ? { excludePrefixes: strings(req.excludePrefixes) } : {}),
         ...(strings(req.excludeSuffixes) ? { excludeSuffixes: strings(req.excludeSuffixes) } : {}),
-        ...(typeof req.createdAfter === 'number' && Number.isFinite(req.createdAfter)
-          ? { createdAfter: req.createdAfter }
-          : {}),
       },
     )
   })
@@ -5410,6 +5407,7 @@ export async function exportDocsHeadless(
   pendingWindowOpens.set(wcId, input)
   headlessExportTargets.set(wcId, { outPath, format })
   allowPdfWrite(wcId, outPath)
+  forwardRendererConsole(win.webContents, 'docs')
   let timer: ReturnType<typeof setTimeout> | undefined
   try {
     const report = await new Promise<HeadlessExportReport>((resolve) => {
@@ -5471,6 +5469,7 @@ export function createDocsWindow(openPath?: string): BrowserWindow {
   }
   // captured up front: webContents is already destroyed inside the 'closed' handler
   const webContentsId = win.webContents.id
+  forwardRendererConsole(win.webContents, 'docs')
   if (openPath) pendingWindowOpens.set(webContentsId, openPath)
 
   win.webContents.setWindowOpenHandler(({ url }) => {
@@ -5688,6 +5687,7 @@ export function createDocsView(openPath?: string): WebContentsView {
     },
   })
 
+  forwardRendererConsole(view.webContents, 'docs')
   if (openPath) pendingWindowOpens.set(view.webContents.id, openPath)
 
   view.webContents.setWindowOpenHandler(({ url }) => {

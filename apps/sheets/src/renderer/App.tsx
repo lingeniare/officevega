@@ -57,6 +57,7 @@ import {
 } from './plan-operations'
 import { isNumericIdentifierText } from './cell-warning'
 import { consumePendingUndoCarry, undoStackDepth } from './undo-carry'
+import { planPrompt } from '../ai/deterministic-planner'
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { useAutoSavePref, useSuggestedQuestions, type AiScopeQuoteData } from '@genoffice/ui'
 
@@ -3040,6 +3041,23 @@ export function App(): React.JSX.Element {
     // otherwise fall back to the local, deterministic regex planner
     // (kept for offline use and for the fixed micro-DSL it still supports).
     if (agentConfigured) {
+      // The planner's fixed micro-DSL ("set A1 to 5", "formula B1 = …",
+      // "rename sheet to X") answers instantly through the same plan/apply
+      // path — no LLM round-trips for the most basic edits, which on a slow
+      // model each cost minutes. Anything else falls through to the agent.
+      if (sentAtts.length === 0) {
+        try {
+          planPrompt(instruction, { revision: 0, sheetId: '' })
+          const outcome = runDeterministicPlan(instruction)
+          setMessage(outcome.text)
+          appendChat({ role: 'assistant', text: outcome.text, tools: [], isError: outcome.isError })
+          persistChatMessage('assistant', outcome.text)
+          return
+        } catch {
+          // not a micro-DSL command (or an unexpected parse shape) — the
+          // agent takes it below
+        }
+      }
       runAgent(instruction, sentAtts)
       return
     }

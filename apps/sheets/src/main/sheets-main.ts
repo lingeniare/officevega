@@ -54,6 +54,7 @@ import {
   installRendererProtocol,
   registerRendererScheme,
   rendererUrl,
+  forwardRendererConsole,
 } from '@genoffice/electron-utils'
 import { createI18n, getUiLang, type Lang, normalizeLang, setUiLang } from '@genoffice/i18n'
 import { ProjectStore } from '@genoffice/project-store'
@@ -2395,11 +2396,7 @@ export async function createSheetsWindow(
   registerSheetsSession(window.webContents, client)
   window.webContents.setWindowOpenHandler(() => ({ action: 'deny' }))
   window.webContents.on('will-navigate', (event) => event.preventDefault())
-  if (!app.isPackaged) {
-    window.webContents.on('console-message', (details) => {
-      process.stderr.write(`[renderer:${details.level}] ${details.message}\n`)
-    })
-  }
+  forwardRendererConsole(window.webContents, 'sheets')
   window.once('ready-to-show', () => window.show())
   window.on('close', (event) => {
     if (sheetsPendingEditCount(window.webContents.id) === 0) return
@@ -2469,6 +2466,7 @@ export async function exportSheetsPdfHeadless(
   const wcId = win.webContents.id
   queueWorkbookForView(win.webContents, input)
   headlessExportTargets.set(wcId, outPath)
+  forwardRendererConsole(win.webContents, 'sheets')
   let timer: ReturnType<typeof setTimeout> | undefined
   try {
     const report = await new Promise<HeadlessSheetsReport>((resolve) => {
@@ -2510,11 +2508,7 @@ export function createSheetsView(options: { includeAiHandlers?: boolean } = {}):
   registerSheetsSession(view.webContents, client)
   view.webContents.setWindowOpenHandler(() => ({ action: 'deny' }))
   view.webContents.on('will-navigate', (event) => event.preventDefault())
-  if (!app.isPackaged) {
-    view.webContents.on('console-message', (details) => {
-      process.stderr.write(`[renderer:${details.level}] ${details.message}\n`)
-    })
-  }
+  forwardRendererConsole(view.webContents, 'sheets')
   // mode=tab: the shell's tab strip owns the traffic lights / caption buttons,
   // so the ribbon must not reserve space for them
   void view.webContents.loadURL(rendererUrl(runtime.rendererUrl, 'sheets', { mode: 'tab' }))

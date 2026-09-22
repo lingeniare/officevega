@@ -332,15 +332,14 @@ function useAiSettingsAutosave(settings: AiSettings | null) {
 
 /**
  * Chat-model picker filter for the live catalog (VEGA, OpenRouter): text-out
- * models released since August 2026, minus free and batch duplicates
- * (`:free`/`:batch`), `-latest` aliases (`~`-prefixed on VEGA) and `*-meta`
- * ids. The default/stored ids are pinned back on top when the filter hides them.
+ * models, minus free and batch duplicates (`:free`/`:batch`), `-latest`
+ * aliases (`~`-prefixed on VEGA) and `*-meta` ids. The default/stored ids are
+ * pinned back on top when the filter hides them.
  */
 const CHAT_MODEL_FILTER = {
   output: 'text',
   excludePrefixes: ['~'],
   excludeSuffixes: [':free', 'latest', 'meta', ':batch'],
-  createdAfter: Date.UTC(2026, 7, 1) / 1000,
 } as const
 
 /**
@@ -411,7 +410,7 @@ function AiModelPane({
             ? live.models.map((m) => ({ value: m.id, label: m.name }))
             : entry.models.map((m) => ({ value: m, label: m }))
           // the default and stored ids stay pickable even when the catalog
-          // filter hides them (openrouter/auto predates the created cutoff)
+          // filter hides them (e.g. openrouter/auto fails the modality check)
           const pinned = [...new Set([entry.defaultModel, selectedModel])]
             .filter((m): m is string => !!m)
             .filter((m) => !listed.some((o) => o.value === m))

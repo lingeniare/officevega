@@ -142,6 +142,7 @@ describe('anti hand-building from scratch', () => {
       input: {
         core_hook: 'h',
         style: 's',
+        detail: 'full',
         pages: [{ title: 'T', brief: 'b', layout: 'data', image_queries: [] }],
       },
     })

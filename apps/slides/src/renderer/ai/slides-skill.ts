@@ -36,6 +36,7 @@ export interface PageProgressItem {
 /** Progress event union type (all stages share one callback; the UI dispatches by stage) */
 export type DeckProgressEvent =
   | { stage: 'style'; label: string; status: 'running' | 'done' | 'error'; summary: string }
+  | { stage: 'research'; label: string; status: 'running' | 'done' | 'error'; summary: string }
   | {
       stage: 'plan'
       label: string
@@ -226,6 +227,14 @@ export interface DeckAccess {
    * call simply awaits the user's decision, same as askClarification.
    */
   proposeOutline?(args: OutlineProposal): Promise<OutlineProposalResult>
+  /**
+   * Next-step offer (staged generation): fired by the skill when a draft deck has
+   * just landed and again after each upgrade_deck run — pending lists the stages
+   * still available (visuals = images/infographics, style = unified design). The
+   * UI renders the choice as buttons; the model must NOT enumerate tool names or
+   * JSON syntax in its reply. A {false,false} pending hides the card.
+   */
+  onUpgradeOffer?(pending: { visuals: boolean; style: boolean }): void
   /**
    * Draft (skeleton) page generation — the fast first pass of staged deck creation:
    * ONE LLM request writes simple slide specs for a BATCH of pages (minimal neutral
@@ -554,61 +563,6 @@ const TOOLS: AgentToolDef[] = [
     },
   },
   {
-    name: 'plan_deck',
-    description:
-      "[When creating a whole new deck, call after researching material/images and before generate_deck] Outputs a structured plan: the Core Hook + unified style scheme + each page's title/content brief/layout/image intent (image_queries for real-world visual slots, image_prompts for bespoke visuals — both are AI-generated at execution time, photo search only as fallback). Think the whole deck through first, to avoid starting strong and fizzling out. The plan is echoed to the user.",
-    inputSchema: {
-      type: 'object',
-      properties: {
-        core_hook: {
-          type: 'string',
-          description:
-            "The deck's narrative anchor (one sentence, with tension, ideally containing a number or counter-intuitive contrast)",
-        },
-        style: {
-          type: 'string',
-          description:
-            'Unified design system: primary/secondary colors, font tone, content margins, card/corner style (e.g. "dark blue primary + gold accents, data-dashboard look"); every page follows it',
-        },
-        pages: {
-          type: 'array',
-          description: 'Per-page plan',
-          items: {
-            type: 'object',
-            properties: {
-              title: { type: 'string', description: 'Page title' },
-              type: { type: 'string', description: 'cover|content|data|closing' },
-              brief: {
-                type: 'string',
-                description:
-                  'Page content description (use real data/facts; say what goes in each region)',
-              },
-              layout: {
-                type: 'string',
-                description:
-                  'Layout (e.g. three_column_cards/hero_big_number/two_column/timeline/left_text_right_image); content pages must not repeat',
-              },
-              image_queries: {
-                type: 'array',
-                items: { type: 'string' },
-                description:
-                  "English description of each real-world visual slot on this page (one per slot; AI-generated at execution time, photo search only as fallback; [] for no images)",
-              },
-              image_prompts: {
-                type: 'array',
-                items: { type: 'string' },
-                description:
-                  'Optional: English prompts for AI-GENERATED bespoke visuals (hero art, illustrations, abstract backgrounds), one per generated slot; the system generates them internally when the plan is executed',
-              },
-            },
-            required: ['title', 'brief', 'layout'],
-          },
-        },
-      },
-      required: ['core_hook', 'style', 'pages'],
-    },
-  },
-  {
     name: 'regenerate_slide',
     description:
       '[Redo/redesign an existing page] Regenerates the page from your brief and replaces it in place (other pages untouched, undoable).' +
@@ -647,12 +601,12 @@ const TOOLS: AgentToolDef[] = [
   {
     name: 'generate_deck',
     description:
-      '[First choice for creating a whole new deck — self-driven parallel pipeline: style + research + planning run concurrently, AI image generation for every planned visual (real-photo search only as fallback), page-by-page generation with live display, no missing pages]' +
-      ' Recommended usage (especially with many pages): pass only topic + approx_pages (+ optional style/research/context); the system plans the outline internally (auto-batched beyond 12 pages), **auto-generates all planned imagery** (no advance image_search/generate_image — the system resolves the planned image_queries and image_prompts internally: every visual slot is rendered by the image model, a stock photo search runs only when generation is unavailable or misses a slot; real URLs are filled back), writes HTML page by page, and lands pages onto the canvas one by one.' +
+      '[First choice for creating a whole new deck — staged, so the user reviews before the slow work runs]' +
+      ' Pass topic + approx_pages (+ optional style hint/research/context) and OMIT detail. For a new deck the system defaults to the staged flow itself — even when you pass explicit pages: web research and outline planning run concurrently, the user CONFIRMS the outline in a card (they can drop/rename pages or send it back), then a text draft lands page by page as each page finishes. **Do not pass detail:"full" for a new deck — imagery and the design system are separate steps afterwards, only when the user asks, via upgrade_deck.** detail:"full" is for insert_mode:"append" pages or when the user explicitly demands the finished designed deck in one shot.' +
       ' You don\'t hand-write dozens of pages, and neither "only page 1 got generated" nor "arguments were truncated" can happen — the page count is guaranteed by the system loop.' +
-      ' When the topic needs facts/data, prefer passing research queries (run internally, in parallel with styling + planning) over a separate web_search turn — it removes a full round trip.' +
-      ' (If you already know each page you may pass core_hook+style+pages directly; pages[].image_queries describes each real-world visual slot, pages[].image_prompts each bespoke visual — both are AI-GENERATED internally; if you already know real http(s) URLs pass them in image_queries — the system respects existing URLs and does not re-resolve them.)' +
-      ' To add a few pages to an existing deck, pass pages (briefs for just the new pages) + insert_mode:"append".',
+      ' When the topic needs facts/data, prefer passing research queries (run internally, in parallel with planning) over a separate web_search turn — it removes a full round trip.' +
+      ' (If you already know each page you may pass core_hook+style+pages directly; pages[].image_queries describes each real-world visual slot, pages[].image_prompts each bespoke visual — in a full run both are AI-GENERATED internally; if you already know real http(s) URLs pass them in image_queries — the system respects existing URLs and does not re-resolve them.)' +
+      ' To add a few pages to an existing deck, pass pages (briefs for just the new pages) + insert_mode:"append" + detail:"full".',
     inputSchema: {
       type: 'object',
       properties: {
@@ -726,7 +680,7 @@ const TOOLS: AgentToolDef[] = [
           type: 'string',
           enum: ['draft', 'full'],
           description:
-            'draft = FAST first pass for a new deck: minimal neutral layout, real text, labeled placeholder boxes for every planned visual (the outline card is shown to the user for confirmation first; images/style come later via upgrade_deck). full (default) = complete designed pages with imagery. Use draft for whole-new-deck creation; use full for appended pages so they match an already-designed deck.',
+            'Omit it when creating a new deck from a topic — the system defaults to the staged fast pass (outline confirmation card, then a text draft with labeled visual placeholders; imagery/design come later via upgrade_deck). "full" = complete designed pages with imagery in one shot — use when passing explicit pages, with insert_mode:"append", or when the user explicitly demands the finished deck immediately.',
         },
         style_template: {
           type: 'string',
@@ -1253,6 +1207,8 @@ interface SkillState {
   lastTopic?: string
   /** The deck on canvas is a staged-flow draft (plain layout + labeled visual slots awaiting upgrade_deck) */
   draftDeck?: boolean
+  /** The draft's visual slots were already filled by upgrade_deck(visuals|full) — only the design stage may still be pending */
+  draftVisualsDone?: boolean
   /** Per-page visual slot descriptions captured at draft generation (aligned with plannedTitles) */
   draftImageSlots?: string[][]
 }
@@ -1940,7 +1896,14 @@ async function executeTool(
       // detail:'draft' = staged fast path: no style/image stages, pages are simple
       // spec skeletons built locally in multi-page batches — the user gets a complete
       // text deck in seconds and upgrades visuals/style afterwards via upgrade_deck.
-      const draftMode = call.input.detail === 'draft'
+      const insertMode: 'replace' | 'append' =
+        call.input.insert_mode === 'append' ? 'append' : 'replace'
+      // Staged flow is the DEFAULT for a new deck: the model omitting `detail` (or
+      // passing "draft") gets the fast text-first path, even when it passes explicit
+      // pages — the outline card still shows them for user confirmation. "full" runs
+      // only when asked for explicitly, or for appended pages (they must match the
+      // designed deck).
+      const draftMode = call.input.detail !== 'full' && insertMode !== 'append'
       const useCloud =
         !draftMode &&
         !!access.generatePageCloud &&
@@ -1974,8 +1937,6 @@ async function executeTool(
 
       const canvasW = 1280
       const canvasH = 720
-      const insertMode: 'replace' | 'append' =
-        call.input.insert_mode === 'append' ? 'append' : 'replace'
       const PLAN_BATCH = 12 // Per-batch planning cap (kept slightly conservative against truncation)
       // Cloud generation is a server-side call (gsk slide_generate) — higher concurrency is
       // safe there. The local path streams through the user's AI proxy (opus large output +
@@ -2054,6 +2015,12 @@ async function executeTool(
       //   * style: a fully parallel track
       const researchP: Promise<string> = (async () => {
         if (!researchQueries.length || !access.searchWeb) return ''
+        access.onProgress?.({
+          stage: 'research',
+          label: t('aiStageResearch'),
+          status: 'running',
+          summary: t('aiStageResearchRunning', { n: researchQueries.length }),
+        })
         const parts = await Promise.all(
           researchQueries.map(async (q) => {
             try {
@@ -2071,7 +2038,16 @@ async function executeTool(
             }
           }),
         )
-        return parts.filter(Boolean).join('\n\n')
+        const digest = parts.filter(Boolean).join('\n\n')
+        access.onProgress?.({
+          stage: 'research',
+          label: t('aiStageResearch'),
+          status: 'done',
+          summary: digest
+            ? t('aiStageResearchDone', { n: parts.filter(Boolean).length })
+            : t('aiStageResearchEmpty'),
+        })
+        return digest
       })()
 
       // Planning context = user-supplied material + the research digest (resolved once
@@ -2120,7 +2096,6 @@ async function executeTool(
         1,
         parseInt(String(call.input.approx_pages ?? '0'), 10) || pages.length || 1,
       )
-      let plannedInternally = false // true when the outline was planned inside this call (topic mode) → eligible for the confirmation card
       const planP: Promise<{ error?: string }> = (async () => {
         if (pages.length > 0) return {}
         const approx = approxForProgress
@@ -2175,7 +2150,6 @@ async function executeTool(
         // First batch — also yields the Core Hook the later batches continue from
         const count1 = Math.min(PLAN_BATCH, approx)
         if (cancelled()) return {}
-        plannedInternally = true
         const r1 = await planBatch(count1, 1, false)
         if (!batchOk(r1)) return planFailed(r1?.error)
         coreHook = String(r1!.outline!.core_hook ?? coreHook).trim()
@@ -2235,17 +2209,12 @@ async function executeTool(
           ? mergedContext.slice(0, PAGE_CONTEXT_MAX)
           : mergedContext
 
-      // ── Step 1.2: outline confirmation card (staged flow). When this call planned
-      //   the outline internally for a NEW deck, pause and let the user review it:
-      //   approve (optionally dropping/retitling pages), send back for revision, or
-      //   cancel — before a single page is generated. Skipped for append mode and for
-      //   explicitly-passed pages (those were already visible via plan_deck's echo).
-      if (
-        plannedInternally &&
-        insertMode === 'replace' &&
-        access.proposeOutline &&
-        !cancelled()
-      ) {
+      // ── Step 1.2: outline confirmation card. For a NEW deck (replace mode) — whether
+      //   the outline was planned internally or passed as explicit pages — pause and
+      //   let the user review it: approve (optionally dropping/retitling pages), send
+      //   back for revision, or cancel, before a single page is generated. Skipped
+      //   only for append mode (added pages extend an already-reviewed deck).
+      if (insertMode === 'replace' && access.proposeOutline && !cancelled()) {
         const proposal = await access.proposeOutline({
           coreHook: coreHook || topic,
           ...(topic ? { topic } : {}),
@@ -2494,6 +2463,7 @@ async function executeTool(
         // upgrade_deck(stage:'visuals') can resolve them later (placeholder labels
         // on the canvas carry the same text as a backup source of truth).
         state.draftDeck = draftMode
+        state.draftVisualsDone = false
         state.draftImageSlots = draftMode
           ? pages.map((p) =>
               (['image_queries', 'image_prompts'] as const).flatMap((f) =>
@@ -2712,7 +2682,10 @@ async function executeTool(
       if (draftMode && access.generateDraftPages) {
         // ── Draft fast path: ONE LLM call writes DRAFT_BATCH simple page specs;
         //    DRAFT_WAVES batch calls run concurrently. Ordered landing is unchanged.
-        const DRAFT_BATCH = 5
+        // 3, not 5: one LLM call writes the whole batch's JSON, and a 5-page spec
+        // regularly came back as an empty stream ("Empty output") — losing the whole
+        // batch at once. Smaller batches also land sooner, so pages appear faster.
+        const DRAFT_BATCH = 3
         const DRAFT_WAVES = 2
         const chunks: number[][] = []
         for (let s = 0; s < total; s += DRAFT_BATCH) {
@@ -2782,13 +2755,14 @@ async function executeTool(
       }
       if (!cancelled()) await flushLanded() // Finalize
 
-      // ── One retry round for failed pages, re-inserted at their original page position with
-      //   insert_at (target position = existing-page offset + pages completed before this one).
-      //   Landing-failed pages re-land (cheap: the one-slide pptx already exists). Cloud
-      //   generation-failed pages already spent their single retry and stay skipped; local
-      //   generation-failed pages get one more generation attempt here (LLM calls are the
-      //   user's own quota, and a JSON spec retry is cheap).
-      if (!cancelled()) {
+      // ── Two retry rounds for failed pages, re-inserted at their original page position
+      //   with insert_at (target position = existing-page offset + pages completed before
+      //   this one). Landing-failed pages re-land (cheap: the one-slide pptx already
+      //   exists). Cloud generation-failed pages already spent their single retry and stay
+      //   skipped; local generation-failed pages get two more single-page attempts here —
+      //   draft batches fail as a whole on an empty LLM stream, so one round leaves the
+      //   whole batch missing when that failure was transient.
+      for (let round = 0; round < 2 && !cancelled(); round++) {
         const retryIdxs = [...new Set([...(useCloud ? [] : genFailed), ...landFailed])].sort(
           (a, b) => a - b,
         )
@@ -2820,6 +2794,9 @@ async function executeTool(
             }
             landedPages += 1
             doneFlags[idx] = true
+            markerByIndex[idx] = '' // marker spent — a later retry round must not re-land it
+            genFailed.splice(0, genFailed.length, ...genFailed.filter((i) => i !== idx))
+            landFailed.splice(0, landFailed.length, ...landFailed.filter((i) => i !== idx))
             pageErrors[idx] = r.fallbackReason
             if (r.fallbackReason) degraded.push(idx)
             if (r.imageFailures) deckImageFails.push(...r.imageFailures)
@@ -2900,11 +2877,17 @@ async function executeTool(
       const stillFailed: number[] = []
       for (let i = 0; i < total; i++) if (!doneFlags[i]) stillFailed.push(i + 1)
       const briefErr = (s?: string) => (s ? (s.length > 80 ? `${s.slice(0, 80)}…` : s) : '')
+      if (draftMode) {
+        // The draft is on the canvas — hand the next-step choice to the UI's
+        // upgrade card (visuals + style pending) instead of making the model
+        // spell out tool syntax in its reply.
+        access.onUpgradeOffer?.({ visuals: true, style: true })
+      }
       const okMsg = draftMode
         ? `Draft deck landed: ${landedPages}/${total} pages — plain layout, real text, labeled placeholder boxes where visuals go. ` +
-          `Tell the user the draft is ready for review, and OFFER the next steps (do NOT run them unprompted): ` +
-          `upgrade_deck(stage:"visuals") fills the placeholders with generated images/infographics; ` +
-          `upgrade_deck(stage:"style") applies a unified design; upgrade_deck(stage:"full") does both.`
+          `Reply to the user with ONE short sentence in their language: the draft is on the canvas for review — structure and texts are editable now. ` +
+          `The next-step buttons (images/infographics first, then the unified design) are rendered by the UI itself — do NOT name tools, stages or JSON syntax in your reply. ` +
+          `When the user asks for imagery/infographics → upgrade_deck(stage:"visuals"); for a unified design → upgrade_deck(stage:"style") (the slowest stage — always last); for both → stage:"full". Never run an upgrade unprompted.`
         : `Self-driven generation produced ${landedPages}/${total} pages (HTML written page by page, displayed as generated; failed pages were auto-retried).`
       const failDetail = stillFailed
         .map((n) => `page ${n}${pageErrors[n - 1] ? ` (${briefErr(pageErrors[n - 1])})` : ''}`)
@@ -2966,6 +2949,7 @@ async function executeTool(
 
       const wantVisuals = stage !== 'style'
       const wantStyle = stage !== 'visuals'
+      const wasDraft = !!state?.draftDeck
       const rawPages = Array.isArray(call.input.pages) ? call.input.pages : null
       const targetSet = new Set<number>()
       if (rawPages) {
@@ -3243,10 +3227,19 @@ async function executeTool(
           }),
         )
       }
+      if (upgraded.length && wantVisuals && state) state.draftVisualsDone = true
       if (upgraded.length && wantStyle && state) {
         state.draftDeck = false
         state.draftImageSlots = undefined
         if (styleSkill) state.lastStyleSkill = styleSkill
+      }
+      // Offer the remaining stages as UI buttons (a draft that just got visuals
+      // still needs its design pass, and vice versa).
+      if (wasDraft && upgraded.length) {
+        access.onUpgradeOffer?.({
+          visuals: !state?.draftVisualsDone,
+          style: !!state?.draftDeck,
+        })
       }
       access.onProgress?.({
         stage: 'done',
@@ -3268,9 +3261,13 @@ async function executeTool(
         ? ` Unresolved visual slots: ${unresolvedSlots.map((u) => `page ${u.page} "${u.slot.slice(0, 40)}"`).join(', ')} — fill them with generate_image/image_search + insert_web_image.`
         : ''
       const nextNote =
-        state?.draftDeck && stage === 'visuals'
-          ? ' The deck still has the draft look — offer upgrade_deck(stage:"style") as the next step.'
-          : ''
+        wasDraft && state?.draftDeck && !state?.draftVisualsDone
+          ? ' The deck still needs visuals and design — the UI is showing the corresponding buttons; mention them in plain words only.'
+          : wasDraft && state?.draftDeck
+            ? ' The deck still has the draft look — the UI is showing a "design" button; mention it in plain words only (do not name tools or syntax).'
+            : wasDraft && !state?.draftVisualsDone
+              ? ' The design is applied but visual placeholders may remain — the UI shows the visuals button; mention it in plain words only.'
+              : ''
       return {
         output:
           `Upgraded ${upgraded.length}/${upTotal} page(s) in place (${stageLabel}); each landing is undoable.` +

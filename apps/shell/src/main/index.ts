@@ -71,6 +71,7 @@ import {
   setUpdateCheckInvoker,
   installRendererProtocol,
   themedSurfaceColor,
+  forwardRendererConsole,
 } from '@genoffice/electron-utils'
 import { readAppSettings, writeAppSetting, writeAppSettings } from './app-settings'
 import { OPEN_DOCUMENTS_FILE, clearOpenDocuments, publishOpenDocuments } from './open-documents'
@@ -3150,6 +3151,7 @@ function createShellWindow(): void {
     },
   })
   shellWindow = win
+  forwardRendererConsole(win.webContents, 'shell')
   nativeTheme.on('updated', refreshTitleBarOverlay)
   win.once('closed', () => nativeTheme.off('updated', refreshTitleBarOverlay))
   // dragging the window by the tab strip's blank (draggable) area produces no

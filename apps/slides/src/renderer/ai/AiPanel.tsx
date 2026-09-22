@@ -232,6 +232,7 @@ function safeJsonInput(input: unknown): string | undefined {
 
 /** Generation progress snapshot in the chat stream (same card updated in real time) */
 interface DeckProgressSnapshot {
+  research?: { label: string; status: 'running' | 'done' | 'error'; summary: string }
   style?: { label: string; status: 'running' | 'done' | 'error'; summary: string }
   plan?: {
     label: string
@@ -764,6 +765,12 @@ export function AiPanel({
   // (user approves/edits the structure before any page is generated).
   const [activeOutline, setActiveOutline] = useState<OutlineProposal | null>(null)
   const outlineResolverRef = useRef<((r: OutlineProposalResult) => void) | null>(null)
+  // Staged flow: after a draft lands (and after each upgrade stage) the skill
+  // offers the remaining stages here — rendered as buttons, not tool syntax in text.
+  const [upgradeOffer, setUpgradeOffer] = useState<{
+    visuals: boolean
+    style: boolean
+  } | null>(null)
 
   /** Synchronous re-entry guard between runWith trigger and loop.run (see the comment inside runWith) */
   const runStartingRef = useRef(false)
@@ -1102,6 +1109,12 @@ export function AiPanel({
           )
         })
       },
+      // Staged flow: the skill reports which upgrade stages are still pending;
+      // the composer slot renders them as buttons (UpgradeCard) so the model's
+      // reply never has to spell out tool names.
+      onUpgradeOffer: (pending) => {
+        setUpgradeOffer(pending.visuals || pending.style ? pending : null)
+      },
       isCloudPageGenEnabled: async () => {
         try {
           return !!(await window.slidesApi.cloudGenStatus())?.enabled
@@ -1222,10 +1235,12 @@ export function AiPanel({
             )
             .join('\n') +
           '\nOutput {"pages":[...]} only.'
-        // One repair round on malformed output (same tolerance as single-page specs)
+        // Two repair rounds on malformed/empty output: an empty stream is the common
+        // transient failure here (one call writes several page specs), and losing it
+        // loses the whole batch.
         let list: unknown[] | null = null
         let lastErr = tGlobal('aiErrEmptyOutput')
-        for (let attempt = 0; attempt < 2 && !list; attempt++) {
+        for (let attempt = 0; attempt < 3 && !list; attempt++) {
           if (args.signal?.aborted) return { ok: false, error: tGlobal('aiErrStopped') }
           const msg =
             attempt === 0
@@ -1390,6 +1405,12 @@ export function AiPanel({
         onDeckProgressRef.current?.(event)
         // Update the progress card in the chat stream (replaced in place, no new message)
         patchProgressInLastAssistant((prev) => {
+          if (event.stage === 'research') {
+            return {
+              ...prev,
+              research: { label: event.label, status: event.status, summary: event.summary },
+            }
+          }
           if (event.stage === 'style') {
             return {
               ...prev,
@@ -2497,7 +2518,25 @@ export function AiPanel({
         )}
       </div>
 
-      {!busy && !activeClarify && !activeOutline && (
+      {!busy && !activeClarify && !activeOutline && upgradeOffer && (
+        <UpgradeCard
+          pending={upgradeOffer}
+          onPick={(stage) => {
+            setUpgradeOffer(null)
+            runWith(
+              t(
+                stage === 'visuals'
+                  ? 'aiUpgradeAskVisuals'
+                  : stage === 'style'
+                    ? 'aiUpgradeAskStyle'
+                    : 'aiUpgradeAskFull',
+              ),
+            )
+          }}
+          onDismiss={() => setUpgradeOffer(null)}
+        />
+      )}
+      {!busy && !activeClarify && !activeOutline && !upgradeOffer && (
         <AiSuggestedQuestions
           questions={suggested.questions}
           onPick={(q) => {
@@ -2993,13 +3032,13 @@ function ToolChipList({ tools }: { tools: ToolActivity[] }) {
   )
 }
 
-/** Generation progress card: structured step archive (style → plan → images → pages → done) */
+/** Generation progress card: structured step archive (research → plan → style → images → pages → done) */
 function DeckProgressCard({ progress }: { progress: DeckProgressSnapshot }) {
   const { t } = useI18n()
   // Collapsed by default: while generating only the one-line head shows (fewer concurrent loaders);
   // expanding is a view-only toggle
   const [open, setOpen] = useState(false)
-  const { style, plan, images, pages, isDone, finalTotal } = progress
+  const { research, style, plan, images, pages, isDone, finalTotal } = progress
 
   type StepStatus = 'done' | 'error' | 'running'
 
@@ -3018,6 +3057,9 @@ function DeckProgressCard({ progress }: { progress: DeckProgressSnapshot }) {
     stepStatus: status === 'done' ? 'done' : status === 'error' ? 'error' : 'running',
   })
 
+  if (research) {
+    steps.push({ key: 'research', ...stepView(research.status, research.label, research.summary) })
+  }
   if (style) {
     steps.push({ key: 'style', ...stepView(style.status, style.label, style.summary) })
   }
@@ -3475,6 +3517,61 @@ function OutlineCard({
             {revising ? t('aiOutlineRevise') : t('aiOutlineSubmit')}
           </button>
         </span>
+      </div>
+    </div>
+  )
+}
+
+/**
+ * Next-step card for the staged deck flow: shown right after a draft lands and
+ * again after each upgrade stage while any stage is still pending. The buttons
+ * send a plain-language request into the agent loop — the model maps it to
+ * upgrade_deck — so the user never sees tool names or JSON syntax.
+ */
+function UpgradeCard({
+  pending,
+  onPick,
+  onDismiss,
+}: {
+  pending: { visuals: boolean; style: boolean }
+  onPick: (stage: 'visuals' | 'style' | 'full') => void
+  onDismiss: () => void
+}) {
+  const { t } = useI18n()
+  const both = pending.visuals && pending.style
+  return (
+    <div className="ai-upgrade-card" role="group" aria-label={t('aiUpgradeTitle')}>
+      <div className="ai-upgrade-head">
+        <span className="ai-upgrade-title">{t('aiUpgradeTitle')}</span>
+        <button className="ai-upgrade-dismiss" onClick={onDismiss}>
+          {t('aiUpgradeLater')}
+        </button>
+      </div>
+      <div className="ai-upgrade-sub">{t('aiUpgradeSub')}</div>
+      <div className="ai-upgrade-actions">
+        {pending.visuals && (
+          <button
+            className={both ? 'ai-upgrade-btn ai-upgrade-btn-primary' : 'ai-upgrade-btn'}
+            onClick={() => onPick('visuals')}
+          >
+            {t('aiUpgradeVisuals')}
+          </button>
+        )}
+        {pending.style && (
+          <button
+            className={
+              !pending.visuals ? 'ai-upgrade-btn ai-upgrade-btn-primary' : 'ai-upgrade-btn'
+            }
+            onClick={() => onPick('style')}
+          >
+            {t('aiUpgradeStyle')}
+          </button>
+        )}
+        {both && (
+          <button className="ai-upgrade-btn" onClick={() => onPick('full')}>
+            {t('aiUpgradeFull')}
+          </button>
+        )}
       </div>
     </div>
   )

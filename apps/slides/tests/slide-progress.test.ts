@@ -71,6 +71,7 @@ const deckCall = (n: number, insertMode?: 'replace' | 'append'): AgentToolCall =
   input: {
     core_hook: 'Economic data doubled in a decade',
     style: 'Deep navy + gold data visualization',
+    detail: 'full',
     ...(insertMode ? { insert_mode: insertMode } : {}),
     pages: Array.from({ length: n }, (_, i) => ({
       title: `Page ${i + 1} Title`,

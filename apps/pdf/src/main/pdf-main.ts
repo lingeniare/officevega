@@ -29,6 +29,7 @@ import {
   rendererUrl,
   themedSurfaceColor,
   OPEN_FILE_DIALOG_CHANNEL,
+  forwardRendererConsole,
 } from '@genoffice/electron-utils'
 import { createI18n, getUiLang } from '@genoffice/i18n'
 import { generateImageTool } from '@genoffice/ai-search'
@@ -1713,6 +1714,7 @@ export function createPdfView(openPath?: string | null): WebContentsView {
     },
   })
   grantAndTrack(view.webContents, openPath)
+  forwardRendererConsole(view.webContents, 'pdf')
   void view.webContents.loadURL(rendererUrl(runtime.rendererUrl, 'pdf'))
   return view
 }
@@ -1730,6 +1732,7 @@ function createStandaloneWindow(openPath?: string | null): BrowserWindow {
     },
   })
   grantAndTrack(win.webContents, openPath)
+  forwardRendererConsole(win.webContents, 'pdf')
   void win.loadURL(rendererUrl(runtime.rendererUrl, 'pdf'))
   return win
 }

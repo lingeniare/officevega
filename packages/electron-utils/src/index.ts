@@ -42,6 +42,7 @@ export {
   type PathProvider,
 } from './default-save-dir'
 export { installNavigationGuard } from './navigation-guard'
+export { forwardRendererConsole } from './dev-console'
 export {
   DROP_OPEN_CHANNEL,
   droppableFilePaths,

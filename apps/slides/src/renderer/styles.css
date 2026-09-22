@@ -7986,11 +7986,109 @@ body.show-curtain::after {
   margin-bottom: 4px;
 }
 
+/* ===== Upgrade card (staged flow: next-step buttons after a draft) ===== */
+.ai-upgrade-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-sizing: border-box;
+  width: 100%;
+  margin-bottom: 8px;
+  padding: 10px 14px 12px;
+  font-size: 13px;
+  color: var(--color-text-primary);
+  background: var(--color-bg-page);
+  border: 1px solid var(--color-border-default);
+  border-radius: 12px;
+  animation: ai-clarify-rise 220ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ai-upgrade-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ai-upgrade-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.ai-upgrade-dismiss {
+  flex-shrink: 0;
+  padding: 0;
+  font-family: inherit;
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ai-upgrade-dismiss:hover {
+  color: var(--color-text-secondary);
+}
+
+.ai-upgrade-sub {
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--color-text-secondary);
+}
+
+.ai-upgrade-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.ai-upgrade-btn {
+  padding: 6px 14px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  background: var(--color-bg-page);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 8px;
+  cursor: pointer;
+  transition:
+    border-color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+    color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+    background 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ai-upgrade-btn:hover {
+  border-color: var(--color-btn-primary);
+  color: var(--color-btn-primary);
+}
+
+.ai-upgrade-btn-primary {
+  color: var(--color-bg-page);
+  background: var(--color-btn-primary);
+  border-color: var(--color-btn-primary);
+}
+
+.ai-upgrade-btn-primary:hover {
+  color: var(--color-bg-page);
+  filter: brightness(1.08);
+}
+
+.ai-upgrade-btn:focus-visible,
+.ai-upgrade-dismiss:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--slides-focus-ring);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ai-clarify-card,
   .ai-clarify-chip-arrow,
   .ai-clarify-q.slide-next,
-  .ai-clarify-q.slide-prev {
+  .ai-clarify-q.slide-prev,
+  .ai-upgrade-card {
     animation: none;
   }
 }

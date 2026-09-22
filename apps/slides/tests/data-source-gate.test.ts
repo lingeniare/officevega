@@ -193,6 +193,7 @@ describe('brief provenance gate (regenerate_slide / generate_deck)', () => {
       input: {
         core_hook: 'h',
         style: 's',
+        detail: 'full',
         pages: [{ title: 'Key metrics', brief: 'Revenue ¥4.8bn, growth 12.5%, ARPU $21.8' }],
       },
     })

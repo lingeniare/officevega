@@ -31,8 +31,6 @@ export interface ModelFilter {
   excludePrefixes?: readonly string[]
   /** drop ids ending with any of these (':free' duplicates, '-latest' aliases, 'meta') */
   excludeSuffixes?: readonly string[]
-  /** keep only entries created on/after this unix-seconds timestamp (missing `created` is kept) */
-  createdAfter?: number
 }
 
 const PAGE_LIMIT = 200
@@ -92,12 +90,6 @@ export async function listGatewayModels(
       if (!id || seen.has(id)) continue
       if (excludePrefixes.some((p) => id.startsWith(p))) continue
       if (excludeSuffixes.some((s) => id.endsWith(s))) continue
-      if (
-        filter.createdAfter !== undefined &&
-        typeof entry.created === 'number' &&
-        entry.created < filter.createdAfter
-      )
-        continue
       if (filter.input && !modalities(raw, 'input_modalities').includes(filter.input)) continue
       if (filter.output && !modalities(raw, 'output_modalities').includes(filter.output)) continue
       seen.add(id)

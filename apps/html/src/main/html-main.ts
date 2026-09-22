@@ -39,6 +39,7 @@ import {
   rendererUrl,
   themedSurfaceColor,
   OPEN_FILE_DIALOG_CHANNEL,
+  forwardRendererConsole,
 } from '@genoffice/electron-utils'
 import { createI18n, getUiLang } from '@genoffice/i18n'
 import { generateImageTool } from '@genoffice/ai-search'
@@ -2016,6 +2017,7 @@ export function createHtmlPresentView(owner: WebContents, title: string): WebCon
       sandbox: true,
     },
   })
+  forwardRendererConsole(view.webContents, 'html')
   bindPresentView(view.webContents, owner.id, title)
   return view
 }
@@ -2057,6 +2059,7 @@ export async function exportHtmlHeadless(
   const wcId = win.webContents.id
   grantAndTrack(win.webContents, input)
   headlessExportTargets.set(wcId, { outPath, format })
+  forwardRendererConsole(win.webContents, 'html')
   let timer: ReturnType<typeof setTimeout> | undefined
   try {
     const report = await new Promise<HeadlessHtmlReport>((resolve) => {
@@ -2090,6 +2093,7 @@ export function createHtmlView(openPath?: string | null): WebContentsView {
     },
   })
   grantAndTrack(view.webContents, openPath)
+  forwardRendererConsole(view.webContents, 'html')
   void view.webContents.loadURL(rendererUrl(runtime.rendererUrl, 'html'))
   return view
 }
@@ -2107,6 +2111,7 @@ function createStandaloneWindow(openPath?: string | null): BrowserWindow {
     },
   })
   grantAndTrack(win.webContents, openPath)
+  forwardRendererConsole(win.webContents, 'html')
   void win.loadURL(rendererUrl(runtime.rendererUrl, 'html'))
   return win
 }

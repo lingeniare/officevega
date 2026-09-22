@@ -22,9 +22,19 @@ import {
  * parts: the system block plus the tail message pin the whole prefix in cache,
  * so tool-loop turns re-read it instead of re-prefilling. Other providers
  * auto-cache (OpenAI, DeepSeek) or ignore the field, so it stays gated.
+ *
+ * A router id (`openrouter/auto`) is also worth marking on OpenRouter-family
+ * hosts only: OpenRouter translates block-level markers for every
+ * caching-capable model it routes to (Anthropic/Google natively, OpenAI as
+ * `prompt_cache_breakpoint`) and drops them for the rest, so the breakpoints
+ * ride along and only ever help. Direct non-OpenRouter endpoints keep the
+ * Claude-only gate — a strict server may reject unknown content-part fields.
  */
-function wantsPromptCache(model: string): boolean {
-  return /(^|\/)(anthropic\/)?claude[-\w.]*$/i.test(model) || /^claude[-\w.]*$/i.test(model)
+function wantsPromptCache(model: string, baseUrl: string): boolean {
+  if (/(^|\/)(anthropic\/)?claude[-\w.]*$/i.test(model) || /^claude[-\w.]*$/i.test(model)) {
+    return true
+  }
+  return /(^|\/)auto$/i.test(model) && /(vega\.chat|openrouter\.ai)/i.test(baseUrl)
 }
 
 const EPHEMERAL_CACHE = { type: 'ephemeral' } as const
@@ -205,7 +215,7 @@ async function openAiCompatibleTurn(
         system,
         messages,
         modelEchoesReasoning(config.model),
-        wantsPromptCache(config.model),
+        wantsPromptCache(config.model, baseUrl),
       ),
       ...(tools.length > 0
         ? {

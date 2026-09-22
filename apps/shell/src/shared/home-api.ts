@@ -251,8 +251,6 @@ export interface HomeApi {
     excludePrefixes?: readonly string[]
     /** drop catalog ids ending with any of these suffixes (':free', '-latest', 'meta') */
     excludeSuffixes?: readonly string[]
-    /** keep only catalog entries created on/after this unix-seconds timestamp */
-    createdAfter?: number
   }): Promise<ProviderModelCatalog>
   /** one-shot round trip against the given (possibly unsaved) settings — the settings-UI connection test */
   testAiSettings(settings: AiSettings): Promise<AiChatResponse>

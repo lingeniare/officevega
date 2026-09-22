@@ -172,6 +172,7 @@ const deckCall = (n: number, insertMode?: 'replace' | 'append'): AgentToolCall =
   input: {
     core_hook: 'Doubled in a decade',
     style: 'Deep navy + gold',
+    detail: 'full',
     ...(insertMode ? { insert_mode: insertMode } : {}),
     pages: Array.from({ length: n }, (_, i) => ({
       title: `Page ${i + 1} Title`,
@@ -290,7 +291,7 @@ describe('generate_deck batched planning (topic mode)', () => {
   const topicCall = (topic: string, approx: number): AgentToolCall => ({
     id: 'c-topic',
     name: 'generate_deck',
-    input: { topic, approx_pages: approx, context: 'real source material' },
+    input: { topic, approx_pages: approx, context: 'real source material', detail: 'full' },
   })
 
   it('topic+approx_pages only → plans the outline internally → generates every page one by one', async () => {
@@ -331,6 +332,7 @@ describe('generate_deck lands pages while generating + retries', () => {
     input: {
       core_hook: 'h',
       style: 's',
+      detail: 'full',
       pages: Array.from({ length: n }, (_, i) => ({
         title: `T${i + 1}`,
         brief: 'b',
@@ -407,6 +409,7 @@ describe('generate_deck in-tool image search', () => {
       input: {
         core_hook: 'h',
         style: 's',
+        detail: 'full',
         pages: [
           {
             title: 'Cover',
@@ -437,6 +440,7 @@ describe('generate_deck in-tool image search', () => {
       input: {
         core_hook: 'h',
         style: 's',
+        detail: 'full',
         pages: [{ title: 'P1', brief: 'b', layout: 'content', image_queries: [existingUrl] }],
       },
     }
@@ -456,6 +460,7 @@ describe('generate_deck in-tool image search', () => {
       input: {
         core_hook: 'h',
         style: 's',
+        detail: 'full',
         pages: [
           { title: 'P1', brief: 'b', layout: 'content', image_queries: ['beijing hutong'] },
           { title: 'P2', brief: 'b', layout: 'content', image_queries: ['Beijing  Hutong'] }, // case/whitespace differences count as the same keyword
@@ -481,6 +486,7 @@ describe('generate_deck in-tool image search', () => {
       input: {
         core_hook: 'h',
         style: 's',
+        detail: 'full',
         pages: [
           { title: 'P1', brief: 'b', layout: 'content', image_queries: ['great wall'] },
           { title: 'P2', brief: 'b', layout: 'content', image_queries: ['great wall'] },
@@ -501,7 +507,7 @@ describe('generate_deck in-tool image search', () => {
     const call: AgentToolCall = {
       id: 'c-topic-img',
       name: 'generate_deck',
-      input: { topic: 'City Nightscape', approx_pages: 3, context: 'real source material' },
+      input: { topic: 'City Nightscape', approx_pages: 3, context: 'real source material', detail: 'full' },
     }
     await skill.executeTool(call)
     // Three pages planned with the same keyword -> searched only once
@@ -522,6 +528,7 @@ describe('generate_deck in-tool image search', () => {
       input: {
         core_hook: 'h',
         style: 's',
+        detail: 'full',
         pages: [{ title: 'P1', brief: 'b', layout: 'content', image_queries: ['beijing hutong'] }],
       },
     }
@@ -545,7 +552,7 @@ describe('generate_deck in-tool image search', () => {
     const res = (await skill.executeTool({
       id: 'c-plan-fail',
       name: 'generate_deck',
-      input: { topic: 'Test Topic', approx_pages: 10 },
+      input: { topic: 'Test Topic', approx_pages: 10, detail: 'full' },
     })) as { output: string; isError?: boolean }
     expect(res.isError).toBeTruthy()
     expect(res.output).toContain('Planning failed')
@@ -563,6 +570,7 @@ describe('generate_deck Style Skill template persistence', () => {
     input: {
       topic,
       approx_pages: 2,
+      detail: 'full',
       ...(opts?.style_template ? { style_template: opts.style_template } : {}),
     },
   })
@@ -667,7 +675,7 @@ describe('generate_deck attachment gate', () => {
   const topicCall: AgentToolCall = {
     id: 'c-gate',
     name: 'generate_deck',
-    input: { topic: 'Weekly Sales Report', approx_pages: 3, context: 'real source material' },
+    input: { topic: 'Weekly Sales Report', approx_pages: 3, context: 'real source material', detail: 'full' },
   }
 
   it('unread text attachments present → generate_deck refuses and names them', async () => {
@@ -731,6 +739,7 @@ describe('generate_deck internal research', () => {
       input: {
         topic: 'Space Tourism',
         approx_pages: 2,
+        detail: 'full',
         research: ['space tourism market size'],
       },
     } as AgentToolCall)
@@ -761,14 +770,14 @@ describe('generate_deck internal research', () => {
     await skill.executeTool({
       id: 'c-auto',
       name: 'generate_deck',
-      input: { topic: 'Tibet Travel', approx_pages: 2 },
+      input: { topic: 'Tibet Travel', approx_pages: 2, detail: 'full' },
     } as AgentToolCall)
     expect(queries).toEqual(['Tibet Travel'])
     // A second deck in the same conversation does not re-search (webSearched latched)
     await skill.executeTool({
       id: 'c-auto2',
       name: 'generate_deck',
-      input: { topic: 'Nepal Trekking', approx_pages: 2 },
+      input: { topic: 'Nepal Trekking', approx_pages: 2, detail: 'full' },
     } as AgentToolCall)
     expect(queries).toEqual(['Tibet Travel'])
   })
@@ -784,7 +793,7 @@ describe('generate_deck internal research', () => {
     const res = (await skill.executeTool({
       id: 'c-ctx',
       name: 'generate_deck',
-      input: { topic: 'X', approx_pages: 2, context: 'real material' },
+      input: { topic: 'X', approx_pages: 2, context: 'real material', detail: 'full' },
     } as AgentToolCall)) as { isError?: boolean }
     expect(res.isError).toBeFalsy()
     expect(getPages()).toBe(2)
@@ -793,7 +802,7 @@ describe('generate_deck internal research', () => {
     const res2 = (await skill.executeTool({
       id: 'c-rfail',
       name: 'generate_deck',
-      input: { topic: 'Y', approx_pages: 2, research: ['anything'] },
+      input: { topic: 'Y', approx_pages: 2, research: ['anything'], detail: 'full' },
     } as AgentToolCall)) as { isError?: boolean }
     expect(res2.isError).toBeFalsy()
     expect(getPages()).toBe(2) // replace mode: the second deck's 2 pages
@@ -807,6 +816,7 @@ describe('generate_deck internal research', () => {
       input: {
         core_hook: 'h',
         style: 's',
+        detail: 'full',
         dataSource: 'search',
         pages: [
           { title: 'T1', brief: 'Sales grew 45% to $1.2B', layout: 'data', image_queries: [] },
@@ -847,6 +857,7 @@ describe('generate_deck AI image generation (generation-first imagery)', () => {
     input: {
       core_hook: 'h',
       style: 's',
+      detail: 'full',
       pages: [
         { title: 'Cover', brief: 'b', layout: 'cover', image_prompts: prompts },
         { title: 'Body', brief: 'b', layout: 'content', image_queries: [] },
@@ -935,7 +946,7 @@ describe('generate_deck AI image generation (generation-first imagery)', () => {
     await skillLocal.executeTool({
       id: 'c-local',
       name: 'generate_deck',
-      input: { core_hook: 'h', style: 's', pages: [page] },
+      input: { core_hook: 'h', style: 's', detail: 'full', pages: [page] },
     } as AgentToolCall)
     expect(local.imagesSeen[0]).toEqual(['file:///gen-store/a.png'])
     // Cloud path: the remote service cannot reach the local store → filtered out
@@ -944,7 +955,7 @@ describe('generate_deck AI image generation (generation-first imagery)', () => {
     await skillCloud.executeTool({
       id: 'c-cloud',
       name: 'generate_deck',
-      input: { core_hook: 'h', style: 's', pages: [page] },
+      input: { core_hook: 'h', style: 's', detail: 'full', pages: [page] },
     } as AgentToolCall)
     expect(cloud.imagesSeen[0]).toEqual([])
   })
@@ -964,6 +975,7 @@ describe('generate_deck AI image generation (generation-first imagery)', () => {
       input: {
         core_hook: 'h',
         style: 's',
+        detail: 'full',
         pages: [
           {
             title: 'P1',
@@ -990,6 +1002,7 @@ describe('generate_deck AI image generation (generation-first imagery)', () => {
       input: {
         core_hook: 'h',
         style: 's',
+        detail: 'full',
         pages: [
           { title: 'P1', brief: 'b', layout: 'content', image_queries: ['great wall sunrise'] },
         ],
@@ -1014,6 +1027,7 @@ describe('generate_deck AI image generation (generation-first imagery)', () => {
       input: {
         core_hook: 'h',
         style: 's',
+        detail: 'full',
         pages: [
           {
             title: 'P1',
@@ -1034,7 +1048,7 @@ describe('generate_deck parallelism', () => {
   const topicCall = (n: number): AgentToolCall => ({
     id: 'c-par',
     name: 'generate_deck',
-    input: { topic: 'Big Deck', approx_pages: n },
+    input: { topic: 'Big Deck', approx_pages: n, detail: 'full' },
   })
 
   it('plan batches beyond the first run in parallel, applied in page order', async () => {

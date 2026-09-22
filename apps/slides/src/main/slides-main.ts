@@ -47,6 +47,7 @@ import {
   registerRendererScheme,
   rendererUrl,
   themedSurfaceColor,
+  forwardRendererConsole,
 } from '@genoffice/electron-utils'
 import {
   resolveGroupChildId,
@@ -4459,6 +4460,7 @@ export async function exportSlidesPdfHeadless(
   })
   const wcId = win.webContents.id
   trackSlidesWebContents(win.webContents)
+  forwardRendererConsole(win.webContents, 'slides')
   pendingByWc.set(wcId, input)
   headlessExportTargets.set(wcId, outPath)
   let timer: ReturnType<typeof setTimeout> | undefined
@@ -4506,6 +4508,7 @@ export function createSlidesWindow(openPath?: string | null): BrowserWindow {
     },
   })
   trackSlidesWebContents(win.webContents)
+  forwardRendererConsole(win.webContents, 'slides')
   standaloneWindows.set(win.webContents.id, win)
   const standaloneWcId = win.webContents.id
   win.on('closed', () => standaloneWindows.delete(standaloneWcId))
@@ -4572,6 +4575,7 @@ export function createSlidesView(openPath?: string | null): WebContentsView {
   })
   registerSlidesIpc()
   trackSlidesWebContents(view.webContents)
+  forwardRendererConsole(view.webContents, 'slides')
   armVibrancy(view)
   // The renderer calls consumePendingOpen on mount; use that to avoid a did-finish-load timing race
   if (openPath && existsSync(openPath)) pendingByWc.set(view.webContents.id, openPath)
