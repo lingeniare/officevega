@@ -35,6 +35,16 @@ not pnpm). Run the binaries directly from the root `node_modules` instead:
   file reads).
 - A gradient page background stays a full-bleed rect element — `promoteSlideBackground`
   only promotes opaque solids; the render layer marks it background-like instead.
+- Staged flow state (`SkillState`): `draftImageSlots` keeps each page's visual
+  slot descriptions (for a `detail:"full"` run it stores the resolved URLs);
+  `draftResolvedSlots` maps normKey(slot text) → resolved image URL so a later
+  `upgrade_deck(stage:"style")` re-feeds the same imagery instead of losing it
+  or resurrecting placeholder boxes; `draftPageImages` records the URLs last
+  fed into each regenerated page (covers non-draft decks too).
+- `ai:store-image-data` persists a picture's embedded `data:` URL into the
+  generated-image store and returns its `file://` URL — used by upgrade passes
+  to re-feed canvas pictures whose original URL was lost at landing (local
+  path only; the cloud service can't reach local bytes).
 - `apps/*/src/main` changes compile into the **shell** build — rebuild the shell
   or they silently do not run.
 

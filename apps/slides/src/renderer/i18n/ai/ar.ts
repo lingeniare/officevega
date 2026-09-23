@@ -247,4 +247,17 @@ export const ar = {
   aiUpgradeAskVisuals: 'املأ العناصر المرئية البديلة في الشرائح: ولّد الصور والرسوم البيانية',
   aiUpgradeAskStyle: 'طبّق نمط تصميم موحداً على العرض كله',
   aiUpgradeAskFull: 'املأ العناصر البديلة وطبّق التصميم الموحد',
+  aiOutlineBriefPh: 'محتوى هذه الصفحة — قابل للتعديل',
+  aiStylePresetLabel: 'النمط',
+  aiStylePresetAuto: 'تلقائي',
+  aiStylePresetEditorial: 'تحريري',
+  aiStylePresetSwiss: 'الشبكة السويسرية',
+  aiStylePresetDark: 'داكن',
+  aiStylePresetMinimal: 'بسيط',
+  aiUpgradeAskStyleHint: 'اتجاه النمط: {hint}',
+  aiStylePresetEditorialHint: 'طابع مجلة تحريرية — عناوين كبيرة بخط مذيّل، درجات ورقية دافئة، مساحات بيضاء واسعة',
+  aiStylePresetSwissHint: 'الأسلوب السويسري الدولي — شبكة صارمة، لون تمييز واحد، تباين قوي في أحجام الخط، خطوط فاصلة رفيعة، بدون بطاقات مدورة أو ظلال',
+  aiStylePresetDarkHint: 'أجواء داكنة — خلفية فحمية أو كحلية عميقة، لون مضيء واحد، طباعة ضخمة، صور سينمائية',
+  aiStylePresetMinimalHint: 'بساطة فاتحة — مساحات بيضاء هوائية، لوحة شبه أحادية مع لون تمييز واحد هادئ، طباعة دقيقة',
+
 } satisfies Record<keyof typeof zh, string>

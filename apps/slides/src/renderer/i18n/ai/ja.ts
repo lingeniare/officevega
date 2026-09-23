@@ -248,4 +248,17 @@ export const ja = {
   aiUpgradeAskVisuals: 'スライドのビジュアル用プレースホルダーを埋めて：画像とインフォグラフィックを生成してください',
   aiUpgradeAskStyle: 'デッキ全体に統一デザインを適用してください',
   aiUpgradeAskFull: 'ビジュアルのプレースホルダーを埋め、統一デザインを適用してください',
+  aiOutlineBriefPh: 'このページの内容——自由に編集できます',
+  aiStylePresetLabel: 'スタイル',
+  aiStylePresetAuto: '自動',
+  aiStylePresetEditorial: 'エディトリアル',
+  aiStylePresetSwiss: 'スイスグリッド',
+  aiStylePresetDark: 'ダーク',
+  aiStylePresetMinimal: 'ミニマル',
+  aiUpgradeAskStyleHint: 'スタイルの方向性：{hint}',
+  aiStylePresetEditorialHint: '雑誌エディトリアル風——セリフの大見出し、温かみのある紙のトーン、ゆとりある余白',
+  aiStylePresetSwissHint: 'スイス国際主義スタイル——厳密なグリッド、単一のアンカーアクセントカラー、強い文字サイズ対比、ヘアライン罫線、角丸カードや影なし',
+  aiStylePresetDarkHint: 'ダークな雰囲気——深いチャコールやネイビーの背景、一つの発光アクセント、特大タイポグラフィ、シネマティックな画像',
+  aiStylePresetMinimalHint: '明るいミニマル——開放的な余白、ほぼモノクロの配色に控えめなアクセント一色、静かで精確なタイポグラフィ',
+
 } satisfies Record<keyof typeof zh, string>

@@ -250,4 +250,17 @@ export const kk = {
   aiUpgradeAskVisuals: 'Слайдтардағы визуалды орындарды толтыр: суреттер мен инфографика жаса',
   aiUpgradeAskStyle: 'Бүкіл презентацияға бірыңғай дизайн стилін қолдан',
   aiUpgradeAskFull: 'Визуалды орындарды толтырып, бірыңғай стильді қолдан',
+  aiOutlineBriefPh: 'Бұл беттің мазмұны — өңдеуге болады',
+  aiStylePresetLabel: 'Стиль',
+  aiStylePresetAuto: 'Авто',
+  aiStylePresetEditorial: 'Журналды',
+  aiStylePresetSwiss: 'Швейцария торы',
+  aiStylePresetDark: 'Қараңғы',
+  aiStylePresetMinimal: 'Минималды',
+  aiUpgradeAskStyleHint: 'Стиль бағыты: {hint}',
+  aiStylePresetEditorialHint: 'журналды-редакциялық стиль — ірі засечкалы тақырыптар, жылы қағаз реңктері, мол бос кеңістік',
+  aiStylePresetSwissHint: 'швейцариялық халықаралық стиль — қатаң тор, бір акцент түс, күшті қаріп өлшемі контрасты, жұқа сызықтар, доғал карталар мен көлеңкелерсіз',
+  aiStylePresetDarkHint: 'қараңғы атмосфера — терең көмір не зәңгәр фон, бір жарқыраған акцент, үлкен типографика, кинематографиялық бейнелер',
+  aiStylePresetMinimalHint: 'жарық минимализм — ауадай бос кеңістік, бір ұстамды акценті бар дерлік монохром палитра, тыныш дәл типографика',
+
 } satisfies Record<keyof typeof zh, string>

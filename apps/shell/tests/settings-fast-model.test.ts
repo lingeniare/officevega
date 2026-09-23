@@ -103,7 +103,7 @@ function installAiOffice(
     getAiSearchProviders: () => [
       { id: 'vega', label: 'VEGA', keyPlaceholder: '', imageSearch: true },
     ],
-    getProviderModels: async () => ({ models: liveModels, defaultModel: 'main-model' }),
+    getProviderModels: vi.fn(async () => ({ models: liveModels, defaultModel: 'main-model' })),
   } as unknown as HomeApi
 }
 
@@ -244,6 +244,23 @@ describe('fast model picker', () => {
     expect(fastCombo().input.value).toBe('custom-fast')
     const values = (await openFastList()).map((o) => o.dataset.value)
     expect(values).toContain('custom-fast')
+  })
+
+  it('requests the chat catalog with image generators excluded', async () => {
+    const setAiSettings = vi.fn<HomeApi['setAiSettings']>(async () => {})
+    installAiOffice(setAiSettings, [{ id: 'main-model', name: 'Main Model' }])
+    await renderModal()
+    await click(navItem('AI Model'))
+    await act(async () => {
+      await Promise.resolve()
+      await Promise.resolve()
+    })
+
+    // text+image generators (gemini-*-image, gpt-*-image) carry 'text' in
+    // output_modalities — output:'text' alone would let them into the pickers
+    expect(window.aiOffice.getProviderModels).toHaveBeenCalledWith(
+      expect.objectContaining({ provider: 'vega', output: 'text', excludeOutput: ['image'] }),
+    )
   })
 
   it('static-list providers pick a fast model through the dropdown', async () => {

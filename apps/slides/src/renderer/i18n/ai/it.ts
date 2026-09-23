@@ -250,4 +250,17 @@ export const it = {
   aiUpgradeAskVisuals: 'Riempi i segnaposto visivi delle slide: genera immagini e infografiche',
   aiUpgradeAskStyle: 'Applica uno stile di design unificato a tutto il deck',
   aiUpgradeAskFull: 'Riempi i segnaposto visivi e applica lo stile unificato',
+  aiOutlineBriefPh: 'Contenuto della pagina — modificabile',
+  aiStylePresetLabel: 'Stile',
+  aiStylePresetAuto: 'Auto',
+  aiStylePresetEditorial: 'Editoriale',
+  aiStylePresetSwiss: 'Griglia svizzera',
+  aiStylePresetDark: 'Scuro',
+  aiStylePresetMinimal: 'Minimale',
+  aiUpgradeAskStyleHint: 'Direzione dello stile: {hint}',
+  aiStylePresetEditorialHint: 'stile editoriale da magazine — titoli serif grandi, toni carta caldi, ampi spazi bianchi',
+  aiStylePresetSwissHint: 'stile internazionale svizzero — griglia rigorosa, un solo colore d’accento, forte contrasto tipografico, filetti sottili, niente schede arrotondate o ombre',
+  aiStylePresetDarkHint: 'atmosfera scura — sfondo antracite o blu navy profondo, un accento luminoso, tipografia oversize, immagini cinematografiche',
+  aiStylePresetMinimalHint: 'minimal chiaro — ampi spazi bianchi, palette quasi monocromatica con un accento sobrio, tipografia quieta e precisa',
+
 } satisfies Record<keyof typeof zh, string>

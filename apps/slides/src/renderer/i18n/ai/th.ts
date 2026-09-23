@@ -246,4 +246,17 @@ export const th = {
   aiUpgradeAskVisuals: 'เติมช่องภาพในสไลด์: สร้างภาพและอินโฟกราฟิก',
   aiUpgradeAskStyle: 'ใช้สไตล์ดีไซน์เดียวกันกับทั้งเด็ค',
   aiUpgradeAskFull: 'เติมช่องภาพและใช้สไตล์เดียวกัน',
+  aiOutlineBriefPh: 'เนื้อหาของหน้านี้ — แก้ไขได้',
+  aiStylePresetLabel: 'สไตล์',
+  aiStylePresetAuto: 'อัตโนมัติ',
+  aiStylePresetEditorial: 'บรรณาธิการ',
+  aiStylePresetSwiss: 'กริดสวิส',
+  aiStylePresetDark: 'มืด',
+  aiStylePresetMinimal: 'มินิมอล',
+  aiUpgradeAskStyleHint: 'แนวทางสไตล์: {hint}',
+  aiStylePresetEditorialHint: 'สไตล์นิตยสาร — หัวข้อเซริฟขนาดใหญ่ โทนกระดาษอบอุ่น พื้นที่ว่างกว้าง',
+  aiStylePresetSwissHint: 'สไตล์สวิส — กริดเคร่งครัด สีเน้นหลักเดียว คอนทราสต์ขนาดตัวอักษรชัดเจน เส้นบาง ไม่มีการ์ดมนหรือเงา',
+  aiStylePresetDarkHint: 'บรรยากาศมืด — พื้นหลังชาร์โคลหรือเนวีเข้ม สีเน้นเรืองแสงเดียว ตัวอักษรขนาดยักษ์ ภาพแบบภาพยนตร์',
+  aiStylePresetMinimalHint: 'มินิมอลสว่าง — พื้นที่ว่างโปร่ง โทนใกล้สีเดียวพร้อมสีเน้นสุภาพหนึ่งสี ตัวอักษรเรียบและแม่นยำ',
+
 } satisfies Record<keyof typeof zh, string>

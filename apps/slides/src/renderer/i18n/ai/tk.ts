@@ -250,4 +250,17 @@ export const tk = {
   aiUpgradeAskVisuals: 'Slaýdlardaky wizual orunlary doldur: suratlary we infografikany döret',
   aiUpgradeAskStyle: 'Doly prezentasiýa ýeke-täk dizaýn stilini ulan',
   aiUpgradeAskFull: 'Wizual orunlary doldur we ýeke-täk stili ulan',
+  aiOutlineBriefPh: 'Bu sahypanyň mazmuny — redaktirläp bolýar',
+  aiStylePresetLabel: 'Stil',
+  aiStylePresetAuto: 'Awtomatiki',
+  aiStylePresetEditorial: 'Žurnal',
+  aiStylePresetSwiss: 'Şweýsar tor',
+  aiStylePresetDark: 'Garaňky',
+  aiStylePresetMinimal: 'Minimal',
+  aiUpgradeAskStyleHint: 'Stil ugry: {hint}',
+  aiStylePresetEditorialHint: 'žurnal redaksiýa stili — uly serifli sözbaşylar, yly kagyç tonlary, giň boş ýerler',
+  aiStylePresetSwissHint: 'Şweýsariýa halkara stili — berk tor, bir anker aýratyn reňk, güýçli şrift kontrasty, inçe çyzyklar, tegelik kartlar we kölgeler ýok',
+  aiStylePresetDarkHint: 'garaňky atmosfera — çuň kömür ýa-da gök fon, bir ýalply akýsent, uly tipografiýa, kinematografik suratlar',
+  aiStylePresetMinimalHint: 'ýagty minimal — giň boş ýerler, bir çäklendiriji akýsentli ýakyn monoxrom palitra, ýumşak takyk tipografiýa',
+
 } satisfies Record<keyof typeof zh, string>

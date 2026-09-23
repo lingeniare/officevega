@@ -241,4 +241,17 @@ export const zh = {
   aiUpgradeAskVisuals: '填充每页的视觉占位框：为幻灯片生成配图和信息图',
   aiUpgradeAskStyle: '为整套幻灯片套用统一的设计样式',
   aiUpgradeAskFull: '填充视觉占位框并套用统一设计样式',
+  aiOutlineBriefPh: '本页要点——可直接修改',
+  aiStylePresetLabel: '风格',
+  aiStylePresetAuto: '自动',
+  aiStylePresetEditorial: '杂志风',
+  aiStylePresetSwiss: '瑞士网格',
+  aiStylePresetDark: '深色',
+  aiStylePresetMinimal: '极简',
+  aiUpgradeAskStyleHint: '风格方向：{hint}',
+  aiStylePresetEditorialHint: '杂志编辑风——衬线大标题、暖纸色调、大量留白',
+  aiStylePresetSwissHint: '瑞士国际主义——严格网格、单一锚点强调色、强烈字号对比、细线分割、无圆角卡片和阴影',
+  aiStylePresetDarkHint: '深色氛围——深炭灰或藏青背景、一个发光强调色、超大字体、电影感画面',
+  aiStylePresetMinimalHint: '浅色极简——通透留白、近单色配色加一抹克制的强调色、安静精准的字体排印',
+
 }

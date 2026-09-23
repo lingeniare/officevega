@@ -27,6 +27,8 @@ export interface ModelFilter {
   input?: string
   /** each model's output_modalities must include this ('text', 'image') */
   output?: string
+  /** drop models whose output_modalities include any of these ('image' keeps image generators out of text pickers — `output` alone only requires text to be present) */
+  excludeOutput?: readonly string[]
   /** drop ids starting with any of these ('~' marks alias rows on the VEGA catalog) */
   excludePrefixes?: readonly string[]
   /** drop ids ending with any of these (':free' duplicates, '-latest' aliases, 'meta') */
@@ -92,6 +94,8 @@ export async function listGatewayModels(
       if (excludeSuffixes.some((s) => id.endsWith(s))) continue
       if (filter.input && !modalities(raw, 'input_modalities').includes(filter.input)) continue
       if (filter.output && !modalities(raw, 'output_modalities').includes(filter.output)) continue
+      if (filter.excludeOutput?.some((m) => modalities(raw, 'output_modalities').includes(m)))
+        continue
       seen.add(id)
       models.push({ id, name: displayName(id, entry.name) })
     }

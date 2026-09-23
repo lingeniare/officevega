@@ -299,6 +299,13 @@ export interface DeckAccess {
   resolveAttachmentImage?(
     name: string,
   ): Promise<{ ok: true; base64: string; ext: string } | { ok: false; error: string }>
+  /**
+   * Materialize a rendered picture's `data:` URL into the local generated-image store and
+   * return its file:// URL — the only file URL shape the page builders accept. Lets an
+   * upgrade/regenerate pass re-feed imagery already sitting on the canvas (local path only;
+   * the cloud service cannot reach local bytes).
+   */
+  storeImageData?(dataUrl: string): Promise<{ ok: boolean; url?: string; error?: string }>
 }
 
 /** `attachment://<file name>` → decoded file name, or null when not an attachment reference. */
@@ -338,10 +345,10 @@ export interface OutlineProposal {
   signal?: AbortSignal
 }
 
-/** Card verdict: approved (with page removals/title edits), revise (feedback for
+/** Card verdict: approved (with page removals/title+brief edits), revise (feedback for
  *  re-planning), or cancelled. */
 export type OutlineProposalResult =
-  | { status: 'approved'; removed?: number[]; titles?: string[] }
+  | { status: 'approved'; removed?: number[]; titles?: string[]; briefs?: string[] }
   | { status: 'revise'; feedback: string }
   | { status: 'cancelled' }
 
@@ -1069,6 +1076,27 @@ function preview(text: string, max = 50): string {
   return flat.length > max ? `${flat.slice(0, max)}…` : flat
 }
 
+/**
+ * data: URLs of the pictures on a slide (groups included), largest first. Render nodes
+ * keep only the embedded bytes — the original image URL is gone once a page lands — so
+ * re-feeding existing imagery through an upgrade means materializing these bytes back
+ * into the generated-image store (see DeckAccess.storeImageData).
+ */
+function pictureDataUrls(nodes: RenderNode[] | undefined): string[] {
+  const pics: { area: number; url: string }[] = []
+  const walk = (list: RenderNode[]) => {
+    for (const n of list) {
+      if (n.type === 'picture') {
+        const d = (n as PictureRenderNode).dataUrl
+        if (d) pics.push({ area: n.box.w * n.box.h, url: d })
+      } else if (n.type === 'group') walk((n as GroupRenderNode).children)
+    }
+  }
+  if (nodes) walk(nodes)
+  pics.sort((a, b) => b.area - a.area)
+  return pics.map((p) => p.url)
+}
+
 function buildDeckOutline(slides: RenderSlide[], current: number, selectedIds: string[]): string {
   const canvas = slides[0] ? `Canvas ${slides[0].widthPx}×${slides[0].heightPx}px.` : ''
   const lines: string[] = [
@@ -1209,8 +1237,21 @@ interface SkillState {
   draftDeck?: boolean
   /** The draft's visual slots were already filled by upgrade_deck(visuals|full) — only the design stage may still be pending */
   draftVisualsDone?: boolean
-  /** Per-page visual slot descriptions captured at draft generation (aligned with plannedTitles) */
+  /** Per-page visual slot descriptions captured at generation (aligned with plannedTitles);
+   *  for a full (non-draft) run the entries are the resolved image URLs instead of keywords */
   draftImageSlots?: string[][]
+  /** normKey(slot text) → image URL resolved by an earlier visuals pass. Persisted across
+   *  upgrade_deck calls so a later style/design restyle re-feeds the same generated images
+   *  instead of dropping them or resurrecting placeholder boxes. */
+  draftResolvedSlots?: Record<string, string>
+  /** Per-page image URLs last fed into a page (re)generation — covers decks that never
+   *  had draft slots (imports, manual decks) and canvas pictures materialized to file://
+   *  by a previous upgrade, so a re-restyle doesn't rematerialize or lose them. */
+  draftPageImages?: string[][]
+  /** Canvas-index offset of draftImageSlots: planned pages align with the deck 1:1 for
+   *  replace/full runs, but for insert_mode:"append" slots[0] is the first APPENDED
+   *  page — it lands at canvas index = number of pre-existing slides. */
+  draftSlotsOffset?: number
 }
 
 /**
@@ -2274,6 +2315,13 @@ async function executeTool(
                 pages[i]!.title = title.trim()
             })
           }
+          if (Array.isArray(proposal.briefs)) {
+            // Brief edits apply verbatim — including clearing to empty (the page
+            // then generates from its title alone).
+            proposal.briefs.forEach((brief, i) => {
+              if (pages[i] && typeof brief === 'string') pages[i]!.brief = brief.trim()
+            })
+          }
           if (pages.length === 0) {
             return {
               output:
@@ -2459,18 +2507,26 @@ async function executeTool(
         state.pageDone = new Array(total).fill(false)
         state.lastStyleSkill = styleSkill
         state.lastTopic = topic || coreHook || ''
-        // Staged flow: remember the per-page visual slots of a draft deck so
-        // upgrade_deck(stage:'visuals') can resolve them later (placeholder labels
-        // on the canvas carry the same text as a backup source of truth).
+        // Staged flow: remember the per-page visual slots so upgrade_deck can resolve
+        // them later. For a draft these are the keyword/prompt descriptions (placeholder
+        // labels on the canvas carry the same text as a backup source of truth); for a
+        // full run the slots were already resolved above, so this stores the image URLs —
+        // enough for a later style restyle to keep the same imagery.
         state.draftDeck = draftMode
         state.draftVisualsDone = false
-        state.draftImageSlots = draftMode
-          ? pages.map((p) =>
-              (['image_queries', 'image_prompts'] as const).flatMap((f) =>
-                (Array.isArray(p[f]) ? (p[f] as unknown[]) : []).map((x) => String(x).trim()).filter(Boolean),
-              ),
-            )
-          : undefined
+        // Append keeps the pre-existing pages' remembered imagery (their canvas
+        // indexes don't shift); a fresh deck invalidates it along with the slots
+        // resolved for the previous deck's pages.
+        if (insertMode !== 'append') {
+          state.draftResolvedSlots = undefined
+          state.draftPageImages = undefined
+        }
+        state.draftSlotsOffset = insertMode === 'append' ? slides.length : 0
+        state.draftImageSlots = pages.map((p) =>
+          (['image_queries', 'image_prompts'] as const).flatMap((f) =>
+            (Array.isArray(p[f]) ? (p[f] as unknown[]) : []).map((x) => String(x).trim()).filter(Boolean),
+          ),
+        )
       }
 
       // Presentation name: prefer the cover (page 1) title, then the user-entered topic / coreHook.
@@ -3032,8 +3088,12 @@ async function executeTool(
           .filter(Boolean)
         pageSlots.push(found)
       }
-      // Merge in the draft-time plan (covers slots whose placeholder was edited/renamed)
-      if (state?.draftImageSlots) {
+      // Merge in the draft-time plan — but ONLY while the draft's labeled placeholders
+      // may still be on the canvas (a draft deck that never ran a visuals pass; covers
+      // slots whose placeholder was edited/renamed). Once a visuals pass regenerated a
+      // page, its labels were consumed by real visuals — merging the remembered
+      // descriptions back would resurrect the very placeholder boxes they replaced.
+      if (state?.draftImageSlots && state.draftDeck && !state.draftVisualsDone) {
         state.draftImageSlots.forEach((slots, i) => {
           if (i < pageSlots.length) pageSlots[i] = [...new Set([...pageSlots[i]!, ...slots])]
         })
@@ -3125,6 +3185,14 @@ async function executeTool(
           })
         }
       }
+      // Persist slot→URL resolutions across upgrade calls: the "IMAGE:"/"CHART:" labels
+      // disappear from the canvas once a page regenerates, and without this map a later
+      // style/design restyle would lose the imagery the user already paid to generate.
+      if (state && resolvedByKey.size) {
+        const merged = { ...(state.draftResolvedSlots ?? {}) }
+        for (const [k, u] of resolvedByKey) merged[k] = u
+        state.draftResolvedSlots = merged
+      }
 
       // ── Regenerate the target pages in place (batched, ordered by index).
       const GEN_BATCH = upCloud ? 4 : 2
@@ -3153,11 +3221,57 @@ async function executeTool(
             const pos = targets.indexOf(idx)
             upItems[pos] = { ...upItems[pos]!, status: 'running' }
             const slotList = (pageSlots[idx] ?? []).filter(Boolean)
-            const imageUrls = slotList
-              .map((s) => resolvedByKey.get(normKey(s)) ?? (isUrlStr(s) ? s : ''))
-              .filter((u) => (upCloud ? /^https?:\/\//.test(u) : isUrlStr(u)))
+            // Every visual this page already carries: slots resolved in this run
+            // (resolvedByKey), slots resolved by an earlier visuals pass — the labels
+            // are gone from the canvas but the generated image must survive a design
+            // restyle (state.draftResolvedSlots via the remembered slot descriptions) —
+            // plus explicit URLs that were passed through.
+            const slotDescs = [
+              ...new Set([
+                ...slotList,
+                // draftImageSlots indexes the pages THIS state generated — for an
+                // append run that's only the appended tail, so shift by the offset;
+                // earlier canvas pages must not inherit the appended pages' slots.
+                ...(idx >= (state?.draftSlotsOffset ?? 0)
+                  ? (state?.draftImageSlots?.[idx - (state?.draftSlotsOffset ?? 0)] ?? [])
+                  : []),
+              ]),
+            ]
+            const preserved = slotDescs
+              .map(
+                (s) =>
+                  resolvedByKey.get(normKey(s)) ??
+                  state?.draftResolvedSlots?.[normKey(s)] ??
+                  (isUrlStr(s) ? s : ''),
+              )
+              .filter(Boolean) as string[]
+            // Images recorded for this page by an earlier upgrade pass (covers decks
+            // with no draft slots at all).
+            const remembered = [...new Set([...preserved, ...(state?.draftPageImages?.[idx] ?? [])])]
+            // No recoverable URL at all (imported deck, manual inserts, lost session):
+            // re-feed the pictures themselves — the renderer materializes the embedded
+            // data: bytes into the generated-image store. Local path only; the cloud
+            // service cannot reach local bytes, so those pages keep today's behavior.
+            let canvasImgs: string[] = []
+            if (!remembered.length && !upCloud && access.storeImageData) {
+              for (const d of pictureDataUrls(slidesNow[idx]?.nodes).slice(0, 4)) {
+                try {
+                  const r = await access.storeImageData(d)
+                  if (r.ok && r.url) canvasImgs.push(r.url)
+                } catch {
+                  /* fail-open */
+                }
+              }
+            }
+            const imageUrls = [...new Set([...remembered, ...canvasImgs])].filter((u) =>
+              upCloud ? /^https?:\/\//.test(u) : isUrlStr(u),
+            )
             for (const s2 of slotList) {
-              if (!resolvedByKey.has(normKey(s2)) && !isUrlStr(s2))
+              if (
+                !resolvedByKey.has(normKey(s2)) &&
+                !isUrlStr(s2) &&
+                !state?.draftResolvedSlots?.[normKey(s2)]
+              )
                 unresolvedSlots.push({ page: idx + 1, slot: s2 })
             }
             const keepPlaceholders =
@@ -3167,14 +3281,19 @@ async function executeTool(
             const fillSlots =
               wantVisuals && slotList.length
                 ? imageUrls.length
-                  ? `\nThis page has labeled visual placeholders ("IMAGE:"/"CHART:" boxes). Replace each with a real visual: use these resolved images where they fit — ${imageUrls.join(', ')} — and render "CHART:"/"INFOGRAPHIC:" slots as real composed visuals (bars/timeline/diagram shapes from the described data). Remove the placeholder boxes and labels.`
+                  ? `\nThis page has labeled visual placeholders ("IMAGE:"/"CHART:" boxes). Replace each with a real visual: use these images where they fit — ${imageUrls.join(', ')} — and render "CHART:"/"INFOGRAPHIC:" slots as real composed visuals (bars/timeline/diagram shapes from the described data). Remove the placeholder boxes and labels.`
                   : '\nThis page has labeled visual placeholders ("IMAGE:"/"CHART:" boxes). No images resolved — render each slot as a real composed visual from shapes (bars/timeline/diagram matching the described content), or as a clean styled box without the "IMAGE:"/"CHART:" label. Remove the placeholder labels.'
+                : ''
+            const keepImages =
+              !fillSlots && imageUrls.length
+                ? `\nThis page already has imagery — reuse these exact images as its real visuals: ${imageUrls.join(', ')}. Do not swap them for placeholder boxes or different pictures.`
                 : ''
             const brief =
               `Rewrite this page${wantStyle ? " applying the deck's new unified style" : ''}. ` +
               `Keep ALL existing text content verbatim — do not shorten, drop or translate any of it.\n` +
               `Current page content:\n${pageTexts[idx] || '(empty page)'}` +
               fillSlots +
+              keepImages +
               keepPlaceholders +
               '\nKeep the same general layout structure and page role (cover/content/closing).'
             const genArgs = {
@@ -3209,6 +3328,10 @@ async function executeTool(
             const r = await access.regenerateSlide!(idx, marker)
             if (r.ok) {
               upgraded.push(idx)
+              if (state) {
+                state.draftPageImages ??= new Array(slidesNow.length).fill([])
+                state.draftPageImages[idx] = imageUrls
+              }
               upItems[pos] = { ...upItems[pos]!, status: 'done' }
             } else {
               upFailed.push(idx)
@@ -3230,7 +3353,10 @@ async function executeTool(
       if (upgraded.length && wantVisuals && state) state.draftVisualsDone = true
       if (upgraded.length && wantStyle && state) {
         state.draftDeck = false
-        state.draftImageSlots = undefined
+        // draftImageSlots / draftResolvedSlots / draftPageImages stay: the slot
+        // descriptions are what let a LATER restyle (e.g. another style preset) find
+        // the resolved image URLs again — clearing them would lose imagery under the
+        // cloud path, where canvas data: bytes can't be re-fed.
         if (styleSkill) state.lastStyleSkill = styleSkill
       }
       // Offer the remaining stages as UI buttons (a draft that just got visuals

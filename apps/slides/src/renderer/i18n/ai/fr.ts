@@ -251,4 +251,17 @@ export const fr = {
   aiUpgradeAskVisuals: 'Remplis les emplacements visuels des diapositives : génère images et infographies',
   aiUpgradeAskStyle: 'Applique un style de design unifié à tout le deck',
   aiUpgradeAskFull: 'Remplis les emplacements visuels et applique le style unifié',
+  aiOutlineBriefPh: 'Contenu de la page — modifiable',
+  aiStylePresetLabel: 'Style',
+  aiStylePresetAuto: 'Auto',
+  aiStylePresetEditorial: 'Éditorial',
+  aiStylePresetSwiss: 'Grille suisse',
+  aiStylePresetDark: 'Sombre',
+  aiStylePresetMinimal: 'Minimal',
+  aiUpgradeAskStyleHint: 'Direction du style : {hint}',
+  aiStylePresetEditorialHint: 'style magazine éditorial — grands titres serif, tons papier chauds, généreux espaces blancs',
+  aiStylePresetSwissHint: 'style international suisse — grille stricte, une seule couleur d’accent, fort contraste de tailles typographiques, filets fins, ni cartes arrondies ni ombres',
+  aiStylePresetDarkHint: 'atmosphère sombre — fond anthracite ou marine profond, un accent lumineux, typographie surdimensionnée, imagerie cinématographique',
+  aiStylePresetMinimalHint: 'minimal clair — espaces aérés, palette quasi monochrome avec un accent discret, typographie calme et précise',
+
 } satisfies Record<keyof typeof zh, string>

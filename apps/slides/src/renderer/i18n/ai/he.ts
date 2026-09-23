@@ -244,4 +244,17 @@ export const he = {
   aiUpgradeAskVisuals: 'מלא את מקומות הוויזואל בשקפים: צור תמונות ואינפוגרפיקה',
   aiUpgradeAskStyle: 'החל סגנון עיצוב מאוחד על כל המצגת',
   aiUpgradeAskFull: 'מלא את הוויזואלים והחל את העיצוב המאוחד',
+  aiOutlineBriefPh: 'תוכן העמוד — ניתן לערוך',
+  aiStylePresetLabel: 'סגנון',
+  aiStylePresetAuto: 'אוטומטי',
+  aiStylePresetEditorial: 'מערכתי',
+  aiStylePresetSwiss: 'גריד שווייצרי',
+  aiStylePresetDark: 'כהה',
+  aiStylePresetMinimal: 'מינימלי',
+  aiUpgradeAskStyleHint: 'כיוון הסגנון: {hint}',
+  aiStylePresetEditorialHint: 'מראה מגזין עריכתי — כותרות סריף גדולות, גווני נייר חמים, מרווחים נדיבים',
+  aiStylePresetSwissHint: 'סגנון שווייצרי בינלאומי — גריד נוקשה, צבע מבטא אחד, ניגודיות חזקה בגדלי גופן, קווי שיער, בלי כרטיסים מעוגלים או צללים',
+  aiStylePresetDarkHint: 'אווירה כהה — רקע פחם או נייבי עמוק, מבטא זוהר אחד, טיפוגרפיה ענקית, תמונות קולנועיות',
+  aiStylePresetMinimalHint: 'מינימל בהיר — רווחים אווריריים, פלטה כמעט מונוכרומטית עם מבטא מרוסן אחד, טיפוגרפיה שקטה ומדויקת',
+
 } satisfies Record<keyof typeof zh, string>

@@ -13,7 +13,12 @@ import {
   type OutlineProposal,
   type OutlineProposalResult,
 } from '../src/renderer/ai/slides-skill'
-import type { RenderNode, RenderSlide, ShapeRenderNode } from '@genoffice/pptx-render'
+import type {
+  PictureRenderNode,
+  RenderNode,
+  RenderSlide,
+  ShapeRenderNode,
+} from '@genoffice/pptx-render'
 import type { AgentToolCall } from '../src/shared/ipc'
 
 /** Minimal text node carrying `text` lines (the slot scan reads node text). */
@@ -184,10 +189,10 @@ function makeAccess(opts?: {
   }
 }
 
-const draftCall = (topic: string, approx: number): AgentToolCall => ({
+const draftCall = (topic: string, approx: number, extra?: Record<string, unknown>): AgentToolCall => ({
   id: 'c-draft',
   name: 'generate_deck',
-  input: { topic, approx_pages: approx, detail: 'draft', context: 'real material' },
+  input: { topic, approx_pages: approx, detail: 'draft', context: 'real material', ...extra },
 })
 
 const upgradeCall = (stage: string, extra?: Record<string, unknown>): AgentToolCall => ({
@@ -258,6 +263,32 @@ describe('staged flow: outline confirmation card', () => {
     expect(generated.length).toBe(3)
     expect(generated).toContain('Cover Retitled')
     expect(generated).not.toContain('Planned page 2')
+  })
+
+  it('approved with brief edits → edited briefs reach page generation aligned to kept pages', async () => {
+    const { access, outlineCalls, draftCalls, armManualOutline, resolveOutline } = makeAccess()
+    armManualOutline()
+    const skill = createSlidesSkill(access)
+    const pending = skill.executeTool(draftCall('City Guide', 4))
+    await vi.waitFor(() => expect(outlineCalls.length).toBe(1))
+    // The card sends titles/briefs already filtered to the KEPT rows (unchanged
+    // rows included verbatim) — they apply to the post-splice page list, so
+    // indexes stay aligned after removals.
+    resolveOutline({
+      status: 'approved',
+      removed: [1],
+      titles: ['Cover Retitled', 'Planned page 3', 'Fourth Retitled'],
+      briefs: ['custom brief for the cover', 'b3', 'edited fourth brief'],
+    })
+    await pending
+    const generated = draftCalls.flatMap((c) => c.pages)
+    expect(generated.length).toBe(3)
+    expect(generated[0]!.title).toBe('Cover Retitled')
+    expect(generated[0]!.brief).toBe('custom brief for the cover')
+    expect(generated[1]!.title).toBe('Planned page 3')
+    expect(generated[1]!.brief).toBe('b3')
+    expect(generated[2]!.title).toBe('Fourth Retitled')
+    expect(generated[2]!.brief).toBe('edited fourth brief')
   })
 })
 
@@ -572,6 +603,283 @@ describe('staged flow: upgrade offer callback', () => {
     // And once the style stage lands, the card is hidden ({false,false})
     const res2 = (await skill.executeTool(upgradeCall('style'))) as { output: string }
     expect(res2.output).toContain('2/2')
+    expect(upgradeOffers[upgradeOffers.length - 1]).toEqual({ visuals: false, style: false })
+  })
+})
+
+describe('upgrade_deck: imagery survives the style stage', () => {
+  const pictureNode = (id: string, dataUrl: string): PictureRenderNode => ({
+    id,
+    sourceId: id,
+    type: 'picture',
+    dataUrl,
+    box: {
+      x: 400,
+      y: 100,
+      w: 600,
+      h: 400,
+      rotationDeg: 0,
+      flipH: false,
+      flipV: false,
+      centerX: 700,
+      centerY: 300,
+    },
+  })
+
+  it('visuals→style re-feeds the generated image URLs instead of resurrecting placeholder boxes', async () => {
+    // A draft deck mid-flow: labeled placeholder still on the canvas, matching
+    // the planned slot descriptions.
+    const slides = [
+      slideWith(['City Guide', 'IMAGE: skyline aerial']),
+      slideWith(['Food', 'CHART: prices by district']),
+    ]
+    const { access, localPageCalls, imageGenCalls } = makeAccess({
+      slides,
+      planImageQueries: ['skyline aerial', 'prices by district'],
+    })
+    const skill = createSlidesSkill(access)
+    // The draft run sets state.draftDeck + draftImageSlots
+    await skill.executeTool(draftCall('X', 2))
+    // Visuals pass: both slots resolve to generated URLs and pages regenerate
+    await skill.executeTool(upgradeCall('visuals'))
+    expect(imageGenCalls.length).toBeGreaterThan(0)
+    // The canvas now shows the upgraded pages: real visuals, labels consumed
+    ;(access as { getSlides: () => RenderSlide[] }).getSlides = () => [
+      slideWith(['City Guide']),
+      slideWith(['Food']),
+    ]
+    localPageCalls.length = 0
+    const res = (await skill.executeTool(upgradeCall('style'))) as { output: string }
+    expect(res.output).toContain('2/2')
+    // The style brief reuses the exact generated URLs…
+    expect(localPageCalls[0]!.brief).toContain('https://gen.img/1.png')
+    expect(localPageCalls[0]!.brief).toContain('reuse these exact images')
+    // …and does NOT tell the model to bring the placeholder boxes back
+    expect(localPageCalls[0]!.brief).not.toContain('intentional visual placeholders')
+    expect(localPageCalls[0]!.brief).not.toContain('IMAGE:')
+  })
+
+  it('no remembered URLs: canvas pictures are materialized to the image store and re-fed (local path)', async () => {
+    const dataUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUg='
+    const slide: RenderSlide = {
+      ...slideWith(['Report']),
+      nodes: [textNode('t', 'Report'), pictureNode('p', dataUrl)] as RenderNode[],
+    }
+    const { access, localPageCalls } = makeAccess({ slides: [slide] })
+    const stored: string[] = []
+    access.storeImageData = async (d: string) => {
+      stored.push(d)
+      return { ok: true, url: 'file:///vegaoffice-ai-images/x.png' }
+    }
+    const skill = createSlidesSkill(access)
+    // No draft state — a foreign/imported deck; stage:'style' must keep its imagery
+    await skill.executeTool(upgradeCall('style'))
+    expect(stored).toEqual([dataUrl])
+    expect(localPageCalls[0]!.brief).toContain('file:///vegaoffice-ai-images/x.png')
+    expect(localPageCalls[0]!.brief).toContain('reuse these exact images')
+  })
+
+  it('materialized URLs are remembered per page and reused on the next restyle', async () => {
+    const dataUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUg='
+    const slide: RenderSlide = {
+      ...slideWith(['Report']),
+      nodes: [textNode('t', 'Report'), pictureNode('p', dataUrl)] as RenderNode[],
+    }
+    const { access, localPageCalls } = makeAccess({ slides: [slide] })
+    let calls = 0
+    access.storeImageData = async () => {
+      calls++
+      return { ok: true, url: 'file:///vegaoffice-ai-images/x.png' }
+    }
+    const skill = createSlidesSkill(access)
+    await skill.executeTool(upgradeCall('style'))
+    expect(calls).toBe(1)
+    localPageCalls.length = 0
+    // Second restyle: the remembered file:// URL is fed again — no rematerialization
+    await skill.executeTool(upgradeCall('style'))
+    expect(calls).toBe(1)
+    expect(localPageCalls[0]!.brief).toContain('file:///vegaoffice-ai-images/x.png')
+  })
+
+  it('append mode: appended pages keep their own slots; earlier pages keep their own imagery', async () => {
+    // An existing page with an already-placed picture, then generate_deck
+    // (insert_mode:"append") adds a page whose visual slot resolves during the
+    // full run. draftImageSlots indexes only the APPENDED pages — a later style
+    // upgrade must not wire the appended page's imagery onto the earlier page.
+    const dataUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUg='
+    const oldPage: RenderSlide = {
+      ...slideWith(['Intro']),
+      nodes: [textNode('t', 'Intro'), pictureNode('p', dataUrl)] as RenderNode[],
+    }
+    const { access, localPageCalls } = makeAccess({
+      slides: [oldPage],
+      planImageQueries: ['appended visual'],
+    })
+    const stored: string[] = []
+    access.storeImageData = async (d: string) => {
+      stored.push(d)
+      return { ok: true, url: 'file:///vegaoffice-ai-images/old.png' }
+    }
+    const skill = createSlidesSkill(access)
+    await skill.executeTool(
+      draftCall('Deck', 1, { detail: 'full', insert_mode: 'append' }),
+    )
+    // The appended page has landed; the deck is now old page + appended page.
+    ;(access as { getSlides: () => RenderSlide[] }).getSlides = () => [
+      oldPage,
+      slideWith(['New chapter']),
+    ]
+    localPageCalls.length = 0
+    const res = (await skill.executeTool(upgradeCall('style'))) as { output: string }
+    expect(res.output).toContain('2/2')
+    // Calls land in completion order — address them by pageIndex.
+    const briefFor = (page: number) =>
+      localPageCalls.find((c) => c.pageIndex === page)!.brief
+    // Page 1 (pre-existing): no slot of its own — its own picture is materialized
+    // and re-fed; it must NOT inherit the appended page's image.
+    expect(stored).toEqual([dataUrl])
+    expect(briefFor(1)).toContain('file:///vegaoffice-ai-images/old.png')
+    expect(briefFor(1)).not.toContain('https://gen.img/')
+    // Page 2 (appended): keeps the exact image its own generation resolved.
+    expect(briefFor(2)).toContain('https://gen.img/')
+    expect(briefFor(2)).toContain('reuse these exact images')
+  })
+
+  it("a new deck in the same session does not inherit the previous deck's imagery", async () => {
+    // Deck A goes through the staged journey — its visuals resolve and are
+    // recorded in state.draftResolvedSlots/draftPageImages.
+    const { access, localPageCalls } = makeAccess({
+      slides: [slideWith(['Alpha cover', 'IMAGE: skyline aerial'])],
+      planImageQueries: ['skyline aerial'],
+    })
+    const skill = createSlidesSkill(access)
+    await skill.executeTool(draftCall('Alpha', 1))
+    await skill.executeTool(upgradeCall('visuals'))
+    // Deck B replaces it. Same slot wording — but the remembered imagery belongs
+    // to deck A and must not leak into deck B's restyle briefs.
+    ;(access as { getSlides: () => RenderSlide[] }).getSlides = () => [
+      slideWith(['Beta cover']),
+    ]
+    await skill.executeTool(draftCall('Beta', 1))
+    localPageCalls.length = 0
+    await skill.executeTool(upgradeCall('style'))
+    const brief = localPageCalls.find((c) => c.pageIndex === 1)!.brief
+    expect(brief).not.toContain('https://gen.img/')
+  })
+
+  it('cloud restyle never ships local file:// imagery (or raw bytes) to the remote generator', async () => {
+    const dataUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUg='
+    const slide: RenderSlide = {
+      ...slideWith(['Report']),
+      nodes: [textNode('t', 'Report'), pictureNode('p', dataUrl)] as RenderNode[],
+    }
+    const { access } = makeAccess({ slides: [slide], cloudEnabled: false })
+    access.storeImageData = async () => ({ ok: true, url: 'file:///store/x.png' })
+    const cloudArgs: { brief: string; images: string[] }[] = []
+    const origCloud = access.generatePageCloud!
+    access.generatePageCloud = async (a) => {
+      cloudArgs.push({ brief: a.brief, images: [...(a.images ?? [])] })
+      return origCloud(a)
+    }
+    const skill = createSlidesSkill(access)
+    // Local restyle first: the canvas picture materializes to a file:// URL that
+    // the session remembers for this page.
+    await skill.executeTool(upgradeCall('style'))
+    // Cloud becomes available for the second restyle: the remote generator cannot
+    // reach the local store — the URL must be filtered out, not shipped, and no
+    // materialization may run for it.
+    access.isCloudPageGenEnabled = async () => true
+    let extraStores = 0
+    access.storeImageData = async () => {
+      extraStores++
+      return { ok: true, url: 'file:///store/y.png' }
+    }
+    await skill.executeTool(upgradeCall('style'))
+    expect(cloudArgs.length).toBe(1)
+    expect(extraStores).toBe(0)
+    expect(cloudArgs[0]!.images).toEqual([])
+    expect(cloudArgs[0]!.brief).not.toContain('file://')
+  })
+})
+
+describe('use case: the full staged journey end-to-end', () => {
+  it('user reviews/edits the outline → draft → visuals → styled restyle keeps imagery and text', async () => {
+    // Canvas after the draft lands: labeled placeholders where visuals go.
+    const draft = [
+      slideWith(['City Guide 2025', 'IMAGE: skyline aerial']),
+      slideWith(['Food', 'CHART: prices by district']),
+      slideWith(['Closing']),
+    ]
+    const {
+      access,
+      outlineCalls,
+      draftCalls,
+      upgradeOffers,
+      localPageCalls,
+      imageGenCalls,
+      armManualOutline,
+      resolveOutline,
+    } = makeAccess({ slides: draft, planImageQueries: ['skyline aerial'] })
+    const styleSkills: { topic: string; styleHint?: string }[] = []
+    const origStyle = access.generateStyleSkill!
+    access.generateStyleSkill = async (a) => {
+      styleSkills.push({ topic: a.topic, styleHint: a.styleHint })
+      return origStyle(a)
+    }
+    const skill = createSlidesSkill(access)
+
+    // ── 1. User asks for a deck → the outline card opens BEFORE any page generates
+    armManualOutline()
+    const pending = skill.executeTool(draftCall('City Guide', 4))
+    await vi.waitFor(() => expect(outlineCalls.length).toBe(1))
+    expect(outlineCalls[0]!.pages.length).toBe(4)
+    expect(draftCalls.length).toBe(0) // nothing generated while the card is up
+
+    // ── 2. User drops page 2, retitles the cover, edits the closing page's brief
+    resolveOutline({
+      status: 'approved',
+      removed: [1],
+      titles: ['City Guide 2025', 'Planned page 3', 'Planned page 4'],
+      briefs: ['cover brief edited by user', 'b3', 'closing brief edited by user'],
+    })
+    const res = (await pending) as { output: string; mutated?: boolean }
+    expect(res.mutated).toBe(true)
+    const genPages = draftCalls.flatMap((c) => c.pages)
+    expect(genPages.length).toBe(3)
+    expect(genPages[0]!.title).toBe('City Guide 2025')
+    expect(genPages[0]!.brief).toBe('cover brief edited by user')
+    expect(genPages[1]!.brief).toBe('b3')
+    expect(genPages[2]!.brief).toBe('closing brief edited by user')
+    // The UI now offers the two remaining stages
+    expect(upgradeOffers[upgradeOffers.length - 1]).toEqual({ visuals: true, style: true })
+
+    // ── 3. User asks for imagery: every labeled slot resolves via generation first
+    const vres = (await skill.executeTool(upgradeCall('visuals'))) as { output: string }
+    expect(vres.output).toContain('3/3')
+    expect(imageGenCalls.length).toBeGreaterThan(0)
+
+    // ── 4. Canvas now shows upgraded pages (labels consumed by real visuals);
+    //       user applies a design with a chosen preset direction
+    ;(access as { getSlides: () => RenderSlide[] }).getSlides = () => [
+      slideWith(['City Guide 2025']),
+      slideWith(['Food']),
+      slideWith(['Closing']),
+    ]
+    localPageCalls.length = 0
+    const sres = (await skill.executeTool(
+      upgradeCall('style', { style_hint: 'swiss international style — strict grid, one accent' }),
+    )) as { output: string }
+    expect(sres.output).toContain('3/3')
+    // The preset direction reached the Style Skill generator
+    expect(styleSkills[0]!.styleHint).toContain('swiss')
+    // Every page kept its approved text verbatim…
+    expect(localPageCalls[0]!.brief).toContain('City Guide 2025')
+    expect(localPageCalls[0]!.brief).toContain('Keep ALL existing text')
+    // …and re-fed the imagery the user already paid to generate — no placeholder boxes
+    expect(localPageCalls[0]!.brief).toContain('https://gen.img/1.png')
+    expect(localPageCalls[0]!.brief).toContain('reuse these exact images')
+    expect(localPageCalls[0]!.brief).not.toContain('intentional visual placeholders')
+    // Journey complete: no upgrade stages left to offer
     expect(upgradeOffers[upgradeOffers.length - 1]).toEqual({ visuals: false, style: false })
   })
 })

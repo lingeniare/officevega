@@ -250,4 +250,17 @@ export const pt = {
   aiUpgradeAskVisuals: 'Preenche os espaços visuais dos slides: gera imagens e infográficos',
   aiUpgradeAskStyle: 'Aplica um estilo de design unificado a todo o deck',
   aiUpgradeAskFull: 'Preenche os espaços visuais e aplica o estilo unificado',
+  aiOutlineBriefPh: 'Conteúdo da página — editável',
+  aiStylePresetLabel: 'Estilo',
+  aiStylePresetAuto: 'Auto',
+  aiStylePresetEditorial: 'Editorial',
+  aiStylePresetSwiss: 'Grelha suíça',
+  aiStylePresetDark: 'Escuro',
+  aiStylePresetMinimal: 'Minimal',
+  aiUpgradeAskStyleHint: 'Direção de estilo: {hint}',
+  aiStylePresetEditorialHint: 'estilo editorial de revista — títulos serif grandes, tons de papel quentes, amplo espaço em branco',
+  aiStylePresetSwissHint: 'estilo internacional suíço — grelha rigorosa, uma única cor de destaque, forte contraste tipográfico, filetes finos, sem cartões arredondados nem sombras',
+  aiStylePresetDarkHint: 'atmosfera escura — fundo carvão ou azul-marinho profundo, um acento luminoso, tipografia gigante, imagens cinematográficas',
+  aiStylePresetMinimalHint: 'minimal claro — espaços arejados, paleta quase monocromática com um acento contido, tipografia serena e precisa',
+
 } satisfies Record<keyof typeof zh, string>

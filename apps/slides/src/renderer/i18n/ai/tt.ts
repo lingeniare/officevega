@@ -251,4 +251,17 @@ export const tt = {
   aiUpgradeAskVisuals: 'Слайдлардагы визуаль урыннарны тутыр: рәсемнәр һәм инфографика яса',
   aiUpgradeAskStyle: 'Бөтен презентациягә бертөрле дизайн стилен куллан',
   aiUpgradeAskFull: 'Визуаль урыннарны тутыр һәм бертөрле стильне куллан',
+  aiOutlineBriefPh: 'Бу битнең эчтәлеге — үзгәртеп була',
+  aiStylePresetLabel: 'Стиль',
+  aiStylePresetAuto: 'Авто',
+  aiStylePresetEditorial: 'Журнал',
+  aiStylePresetSwiss: 'Швейцария челтәре',
+  aiStylePresetDark: 'Караңгы',
+  aiStylePresetMinimal: 'Минимал',
+  aiUpgradeAskStyleHint: 'Стиль юнәлеше: {hint}',
+  aiStylePresetEditorialHint: 'журнал-редколлегия стиле — зур серифлы башламалар, җылы кәгазь тоннары, киң буш урыннар',
+  aiStylePresetSwissHint: 'швейцария халыкара стиле — каты селтәр, бер акцент төсе, көчле шрифт контрасты, нечкә сызыклар, түгәрәк карталар һәм күләгәләрсез',
+  aiStylePresetDarkHint: 'караңгы атмосфера — тирән күмер яки кочкыл зәңгәр фон, бер якты акцент, зур типография, кинематографик сурәтләр',
+  aiStylePresetMinimalHint: 'якты минимализм — киң буш урыннар, бер тыйнак акцентлы диярлек монохром палитра, тынч төгәл типография',
+
 } satisfies Record<keyof typeof zh, string>

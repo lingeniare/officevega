@@ -250,4 +250,17 @@ export const cs = {
   aiUpgradeAskVisuals: 'Vyplň vizuální placeholdery na snímcích: vygeneruj obrázky a infografiku',
   aiUpgradeAskStyle: 'Použij jednotný designový styl na celou prezentaci',
   aiUpgradeAskFull: 'Vyplň vizuální placeholdery a použij jednotný styl',
+  aiOutlineBriefPh: 'Obsah stránky — lze upravit',
+  aiStylePresetLabel: 'Styl',
+  aiStylePresetAuto: 'Auto',
+  aiStylePresetEditorial: 'Editorial',
+  aiStylePresetSwiss: 'Švýcarská mřížka',
+  aiStylePresetDark: 'Tmavý',
+  aiStylePresetMinimal: 'Minimální',
+  aiUpgradeAskStyleHint: 'Směr stylu: {hint}',
+  aiStylePresetEditorialHint: 'redakční magazínový vzhled — velké serifové titulky, teplé papírové tóny, štědré bílé plochy',
+  aiStylePresetSwissHint: 'švýcarský internacionální styl — přísná mřížka, jedna akcentní barva, silný typografický kontrast velikostí, tenké linky, žádné zaoblené karty ani stíny',
+  aiStylePresetDarkHint: 'temná atmosféra — hluboký antracit nebo námořnická modř, jeden zářivý akcent, nadměrná typografie, filmové obrazy',
+  aiStylePresetMinimalHint: 'světlý minimalismus — vzdušné bílé plochy, téměř monochromní paleta s jedním zdrženlivým akcentem, klidná přesná typografie',
+
 } satisfies Record<keyof typeof zh, string>

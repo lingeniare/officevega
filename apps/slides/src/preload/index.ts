@@ -402,6 +402,7 @@ const api: SlidesApi = {
     ext?: string
     keepSrcRect?: boolean
   }) => ipcRenderer.invoke('ai:replace-picture-url', op),
+  storeImageData: (op: { dataUrl: string }) => ipcRenderer.invoke('ai:store-image-data', op),
   generateImage: (op: {
     prompt: string
     model?: string

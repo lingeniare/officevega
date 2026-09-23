@@ -333,11 +333,14 @@ function useAiSettingsAutosave(settings: AiSettings | null) {
 /**
  * Chat-model picker filter for the live catalog (VEGA, OpenRouter): text-out
  * models, minus free and batch duplicates (`:free`/`:batch`), `-latest`
- * aliases (`~`-prefixed on VEGA) and `*-meta` ids. The default/stored ids are
- * pinned back on top when the filter hides them.
+ * aliases (`~`-prefixed on VEGA), `*-meta` ids and image generators — their
+ * `output_modalities` carry `text` alongside `image` (gemini-*-image,
+ * gpt-*-image, openrouter/auto), so `output:'text'` alone lets them in.
+ * The default/stored ids are pinned back on top when the filter hides them.
  */
 const CHAT_MODEL_FILTER = {
   output: 'text',
+  excludeOutput: ['image'],
   excludePrefixes: ['~'],
   excludeSuffixes: [':free', 'latest', 'meta', ':batch'],
 } as const

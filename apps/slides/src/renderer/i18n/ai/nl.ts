@@ -251,4 +251,17 @@ export const nl = {
   aiUpgradeAskVisuals: 'Vul de visuele placeholders op de dia’s: genereer afbeeldingen en infographics',
   aiUpgradeAskStyle: 'Pas een uniforme ontwerpstijl toe op het hele deck',
   aiUpgradeAskFull: 'Vul de visuele placeholders en pas de uniforme stijl toe',
+  aiOutlineBriefPh: 'Inhoud van deze pagina — bewerkbaar',
+  aiStylePresetLabel: 'Stijl',
+  aiStylePresetAuto: 'Auto',
+  aiStylePresetEditorial: 'Editorial',
+  aiStylePresetSwiss: 'Zwitsers raster',
+  aiStylePresetDark: 'Donker',
+  aiStylePresetMinimal: 'Minimaal',
+  aiUpgradeAskStyleHint: 'Stijlrichting: {hint}',
+  aiStylePresetEditorialHint: 'redactionele magazine-look — grote serif-titels, warme papier-tonen, royale witruimte',
+  aiStylePresetSwissHint: 'Zwitserse internationale stijl — strikt raster, één anker-accentkleur, sterk typografisch contrast, haarlijnen, geen afgeronde kaarten of schaduwen',
+  aiStylePresetDarkHint: 'donkere sfeer — diep antraciet of navy, één lichtend accent, oversized typografie, filmische beelden',
+  aiStylePresetMinimalHint: 'licht minimal — luchtige witruimte, bijna monochroom palet met één ingetogen accent, rustige precieze typografie',
+
 } satisfies Record<keyof typeof zh, string>

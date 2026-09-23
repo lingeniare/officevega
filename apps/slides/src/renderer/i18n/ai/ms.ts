@@ -249,4 +249,17 @@ export const ms = {
   aiUpgradeAskVisuals: 'Isi ruang letak visual pada slaid: jana imej dan infografik',
   aiUpgradeAskStyle: 'Gunakan gaya reka bentuk seragam pada keseluruhan dek',
   aiUpgradeAskFull: 'Isi ruang letak visual dan gunakan gaya seragam',
+  aiOutlineBriefPh: 'Kandungan halaman ini — boleh disunting',
+  aiStylePresetLabel: 'Gaya',
+  aiStylePresetAuto: 'Auto',
+  aiStylePresetEditorial: 'Editorial',
+  aiStylePresetSwiss: 'Grid Swiss',
+  aiStylePresetDark: 'Gelap',
+  aiStylePresetMinimal: 'Minimal',
+  aiUpgradeAskStyleHint: 'Hala tuju gaya: {hint}',
+  aiStylePresetEditorialHint: 'gaya majalah editorial — tajuk serif besar, warna kertas hangat, ruang kosong luas',
+  aiStylePresetSwissHint: 'gaya Swiss antarabangsa — grid ketat, satu warna aksen, kontras saiz tipografi kuat, garis nipis, tiada kad bulat atau bayang',
+  aiStylePresetDarkHint: 'suasana gelap — latar arang atau navy gelap, satu aksen bercahaya, tipografi besar, imej sinematik',
+  aiStylePresetMinimalHint: 'minimal cerah — ruang kosong lapang, palet hampir monokrom dengan satu aksen terkawal, tipografi tenang tepat',
+
 } satisfies Record<keyof typeof zh, string>

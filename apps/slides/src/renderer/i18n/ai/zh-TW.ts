@@ -242,4 +242,17 @@ export const zhTW = {
   aiUpgradeAskVisuals: '填滿每頁的視覺占位框：為投影片生成圖片與資訊圖表',
   aiUpgradeAskStyle: '為整份簡報套用統一的設計樣式',
   aiUpgradeAskFull: '填滿視覺占位框並套用統一設計樣式',
+  aiOutlineBriefPh: '本頁重點——可直接修改',
+  aiStylePresetLabel: '風格',
+  aiStylePresetAuto: '自動',
+  aiStylePresetEditorial: '雜誌風',
+  aiStylePresetSwiss: '瑞士網格',
+  aiStylePresetDark: '深色',
+  aiStylePresetMinimal: '極簡',
+  aiUpgradeAskStyleHint: '風格方向：{hint}',
+  aiStylePresetEditorialHint: '雜誌編輯風——襯線大標題、暖紙色調、大量留白',
+  aiStylePresetSwissHint: '瑞士國際主義——嚴格網格、單一錨點強調色、強烈字號對比、細線分割、無圓角卡片和陰影',
+  aiStylePresetDarkHint: '深色氛圍——深炭灰或藏青背景、一個發光強調色、超大字體、電影感畫面',
+  aiStylePresetMinimalHint: '淺色極簡——通透留白、近單色配色加一抹克制的強調色、安靜精準的字體排印',
+
 } satisfies Record<keyof typeof zh, string>

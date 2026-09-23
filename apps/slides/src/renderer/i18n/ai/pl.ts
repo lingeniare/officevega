@@ -249,4 +249,17 @@ export const pl = {
   aiUpgradeAskVisuals: 'Wypełnij wizualne placeholdery na slajdach: wygeneruj obrazy i infografiki',
   aiUpgradeAskStyle: 'Zastosuj jednolity styl do całej prezentacji',
   aiUpgradeAskFull: 'Wypełnij placeholdery i zastosuj jednolity styl',
+  aiOutlineBriefPh: 'Treść strony — można edytować',
+  aiStylePresetLabel: 'Styl',
+  aiStylePresetAuto: 'Auto',
+  aiStylePresetEditorial: 'Edytorski',
+  aiStylePresetSwiss: 'Siatka szwajcarska',
+  aiStylePresetDark: 'Ciemny',
+  aiStylePresetMinimal: 'Minimalny',
+  aiUpgradeAskStyleHint: 'Kierunek stylu: {hint}',
+  aiStylePresetEditorialHint: 'redakcyjny styl magazynowy — duże tytuły szeryfowe, ciepłe papierowe tony, dużo białej przestrzeni',
+  aiStylePresetSwissHint: 'szwajcarski styl międzynarodowy — rygorystyczna siatka, jeden kolor akcentowy, mocny kontrast wielkości typografii, cienkie linie, bez zaokrąglonych kart i cieni',
+  aiStylePresetDarkHint: 'mroczna atmosfera — głęboki grafit lub granat, jeden świetlisty akcent, przesadnie duża typografia, kinowe kadry',
+  aiStylePresetMinimalHint: 'jasny minimalizm — przewiewne białe przestrzenie, niemal monochromatyczna paleta z jednym stonowanym akcentem, spokojna precyzyjna typografia',
+
 } satisfies Record<keyof typeof zh, string>

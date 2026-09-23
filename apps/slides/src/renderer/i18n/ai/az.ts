@@ -249,4 +249,17 @@ export const az = {
   aiUpgradeAskVisuals: 'Slaydlardakı vizual yer tutucuları doldur: şəkillər və infoqrafika yarat',
   aiUpgradeAskStyle: 'Bütün prezentasiyaya vahid dizayn stili tətbiq et',
   aiUpgradeAskFull: 'Vizual yer tutucuları doldur və vahid dizaynı tətbiq et',
+  aiOutlineBriefPh: 'Bu səhifənin məzmunu — redaktə olunur',
+  aiStylePresetLabel: 'Stil',
+  aiStylePresetAuto: 'Avto',
+  aiStylePresetEditorial: 'Jurnal',
+  aiStylePresetSwiss: 'İsveçrə toru',
+  aiStylePresetDark: 'Tünd',
+  aiStylePresetMinimal: 'Minimal',
+  aiUpgradeAskStyleHint: 'Üslub istiqaməti: {hint}',
+  aiStylePresetEditorialHint: 'jurnal redaksiya üslubu — böyük serifli başlıqlar, isti kağız tonları, geniş boş sahələr',
+  aiStylePresetSwissHint: 'İsveçrə beynəlxalq üslubu — ciddi tor, bir anker vurğu rəngi, güclü şrift kontrastı, incə xətlər, yumru kartlar və kölgələr olmadan',
+  aiStylePresetDarkHint: 'tünd atmosfera — dərin kömür və ya tünd mavi fon, bir işıqlı vurğu, nəhəng tipoqrafiya, kinematik görüntülər',
+  aiStylePresetMinimalHint: 'işıqlı minimal — geniş boş sahələr, bir təmkinli vurğu ilə demək olar ki, monoxrom palitra, sakit dəqiq tipoqrafiya',
+
 } satisfies Record<keyof typeof zh, string>

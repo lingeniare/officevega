@@ -249,4 +249,17 @@ export const hi = {
   aiUpgradeAskVisuals: 'स्लाइडों के विज़ुअल प्लेसहोल्डर भरें: इमेज और इन्फोग्राफ़िक बनाएँ',
   aiUpgradeAskStyle: 'पूरी डेक पर एकीकृत डिज़ाइन स्टाइल लागू करें',
   aiUpgradeAskFull: 'विज़ुअल प्लेसहोल्डर भरें और एकीकृत डिज़ाइन लागू करें',
+  aiOutlineBriefPh: 'इस पेज की सामग्री — संपादन योग्य',
+  aiStylePresetLabel: 'शैली',
+  aiStylePresetAuto: 'स्वतः',
+  aiStylePresetEditorial: 'संपादकीय',
+  aiStylePresetSwiss: 'स्विस ग्रिड',
+  aiStylePresetDark: 'डार्क',
+  aiStylePresetMinimal: 'मिनिमल',
+  aiUpgradeAskStyleHint: 'शैली की दिशा: {hint}',
+  aiStylePresetEditorialHint: 'संपादकीय पत्रिका शैली — सेरिफ़ डिस्प्ले शीर्षक, गर्म पेपर टोन, उदार व्हाइटस्पेस',
+  aiStylePresetSwissHint: 'स्विस इंटरनेशनल स्टाइल — सख्त ग्रिड, एक एंकर एक्सेंट रंग, मजबूत आकार कंट्रास्ट, हेयरलाइन रूल्स, कोई गोल कार्ड या शैडो नहीं',
+  aiStylePresetDarkHint: 'डार्क माहौल — गहरा चारकोल या नेवी बैकग्राउंड, एक चमकीला एक्सेंट, विशाल टाइपोग्राफी, सिनेमैटिक इमेजरी',
+  aiStylePresetMinimalHint: 'हल्का मिनिमल — हवादार व्हाइटस्पेस, एक संयत एक्सेंट के साथ लगभग मोनोक्रोम पैलेट, शांत सटीक टाइपोग्राफी',
+
 } satisfies Record<keyof typeof zh, string>

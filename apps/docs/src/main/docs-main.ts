@@ -3659,6 +3659,7 @@ export function registerAiIpc(): void {
       baseUrl?: string
       input?: string
       output?: string
+      excludeOutput?: unknown
       excludePrefixes?: unknown
       excludeSuffixes?: unknown
     }
@@ -3677,6 +3678,7 @@ export function registerAiIpc(): void {
       {
         ...(typeof req.input === 'string' && req.input ? { input: req.input } : {}),
         ...(typeof req.output === 'string' && req.output ? { output: req.output } : {}),
+        ...(strings(req.excludeOutput) ? { excludeOutput: strings(req.excludeOutput) } : {}),
         ...(strings(req.excludePrefixes) ? { excludePrefixes: strings(req.excludePrefixes) } : {}),
         ...(strings(req.excludeSuffixes) ? { excludeSuffixes: strings(req.excludeSuffixes) } : {}),
       },

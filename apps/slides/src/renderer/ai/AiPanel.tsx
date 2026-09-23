@@ -45,7 +45,7 @@ import {
   QC_MAX_PAGES,
   settingsSupportVision,
 } from './slide-qc'
-import { useI18n, t as tGlobal, aiLangDirective, type TFunc } from '../i18n/locale'
+import { useI18n, t as tGlobal, aiLangDirective, type TFunc, type StringKey } from '../i18n/locale'
 import { localizedToolSummary, toolLabel } from './tool-labels'
 import {
   AiScopeQuote,
@@ -1155,6 +1155,12 @@ export function AiPanel({
           '- Data visuals: compose bars/rings/timelines from rect/donut/line shapes with sizes proportional to the real values from the brief.\n' +
           '- Fills: solid "#RRGGBB(AA)", or a linear gradient object {"gradient":{"stops":[{"pos":0,"color":"#A"},{"pos":100,"color":"#B"}],"angle":45}} — pos is 0-100, angle in degrees (0=left→right, 90=top→bottom). Use gradients for large cover/background blocks, not small elements; "background" accepts the same gradient object. **No placeholders of any kind**: all copy comes from the brief’s real content.\n' +
           '\n' +
+          '## Composition (this is what separates designed pages from assembled ones)\n' +
+          '- Exactly ONE dominant focal element per page — a hero number, a statement, or a hero image; everything else is subordinate. A page with three equal-weight elements reads as a form, not a slide.\n' +
+          '- Asymmetric placement is encouraged; avoid centered-everything. Align elements to an invisible grid (shared left edges, consistent ~60px margins).\n' +
+          '- Whitespace is a design element: leave deliberate breathing room; never fill every corner.\n' +
+          '- Title runs 2-3x the body size; when the Style Skill names a display face, titles use it and body text uses the body face.\n' +
+          '\n' +
           '## Anti-AI design rules (violation = unacceptable)\n' +
           '- No thin vertical accent bar on the left of cards, no colored bar on top of cards, no small bar left of titles — express hierarchy with background color/font weight/size contrast.\n' +
           '- One primary + one secondary accent color for the whole page; even when comparing multiple entities, do not give each a different color (no rainbow cards).\n' +
@@ -1218,7 +1224,7 @@ export function AiPanel({
           '- Cover page: large title (~36pt bold) + one subtitle line (~18pt). Content pages: title top-left (~26pt bold) + concise bulleted body (~14pt) or simple #F8FAFC roundRect column cards. Closing page: centered short line.\n' +
           '- Every visual slot listed for a page → a placeholder box: {"type":"shape","shape":"roundRect","fill":"#F1F5F9","stroke":{"color":"#CBD5E1","widthPt":1},"valign":"middle","paragraphs":[{"align":"center","runs":[{"text":"IMAGE: <slot description>","sizePt":12,"color":"#64748B"}]}]} at the slot\'s planned position. For chart/data slots label it "CHART: <description>" instead. NEVER draw real charts, icons or images — placeholders only.\n' +
           '- Text boxes have zero padding: a line is ~sizePt*1.8 px tall at lineSpacingPct 110, a Latin char ~sizePt*0.7 px wide, a CJK char ~sizePt*1.35 px. Size each box for its wrapped lines plus one spare; no text overflow, no text overlapping other elements.\n' +
-          "- Keep each page's real text from its brief — punchy title, concise bullets, no filler. Do not invent figures not in the brief/material.\n"
+          "- Keep each page's real text from its brief. Titles make a claim, not a topic label (\"Costs fell 18%\", not \"Cost overview\"). One idea per page; bullets ≤8 words each with parallel grammar; no filler (\"In conclusion\", \"As we all know\"). Do not invent figures not in the brief/material.\n"
         const userMsg =
           `Deck topic: ${args.topic || args.coreHook || 'Presentation'}\nCore hook: ${args.coreHook}\n` +
           (args.context
@@ -1283,6 +1289,9 @@ export function AiPanel({
         try {
           const briefParts = [args.brief]
           if (args.layout) briefParts.push(`Layout intent: ${args.layout}`)
+          briefParts.push(
+            'Composition: exactly one dominant focal element (hero number, statement, or hero image) — everything else subordinate; asymmetric grid placement encouraged; whitespace is a design element; title runs 2-3x body size; follow the Style Skill strictly.',
+          )
           if (args.context)
             briefParts.push(
               `Reference material (all real names/figures/facts come from here; do not invent):\n${args.context.slice(0, 4000)}`,
@@ -1311,24 +1320,36 @@ export function AiPanel({
       // In-tool independent Style Skill generation: one focused LLM call thinking only about the design system.
       generateStyleSkill: async (a) => {
         const sys =
-          'You are a professional deck visual designer. Given the presentation topic and style preferences, produce a complete Style Skill (visual style guide). Output strictly in the structure below, only the Style Skill content, no explanations/markdown/code fences.\n\n' +
+          'You are an award-winning presentation art director. Given the presentation topic and style preferences, author a complete Style Skill — the visual system every page will follow. Output strictly in the structure below, only the Style Skill content, no explanations/markdown/code fences.\n\n' +
+          'Design concept (required, comes first)\n' +
+          '  Concept: [a named, intentional aesthetic — e.g. "editorial magazine", "Swiss international", "dark cinematic", "neo-brutalist", "minimal museum" — chosen because it fits THIS topic. One sentence: what makes this deck unmistakably designed.]\n' +
+          '  Anti-default rule: if the concept could belong to any interchangeable business deck, it is wrong — commit to a distinctive background tone, deliberate typography, one recurring composition motif.\n\n' +
           'Color rules (must use concrete hex values)\n' +
           '  Main background: #hex\n' +
           '  Per-page-type backgrounds:\n    cover: #hex\n    content: #hex\n    data: #hex\n    closing: #hex\n' +
           '  (Background selection principles, highest priority first):\n' +
           '   1) Style preference first: when a tone is explicit (dark theme, a brand color family, a certain texture), the background must honor it — do not fall back to a safe light color.\n' +
-          "   2) Then topic mood: serve the content's emotion and tone (serious/playful/artistic/tech/traditional); different topics should have clearly different backgrounds. Dark colors, brand colors, and saturated light colors are all legitimate choices.\n" +
+          "   2) Then topic mood: serve the content's emotion and tone (serious/playful/artistic/tech/traditional); different topics should have clearly different backgrounds. Deep colors, brand colors, and saturated tones are all legitimate — a memorable deck rarely has a plain white cover.\n" +
           '   3) Light neutral backgrounds are only a fallback: use only when the topic is neutral and the style expresses no clear preference.\n' +
-          '   Constraints: content pages share one background within a deck; the main background and main text color must have sufficient contrast (light text on dark, dark text on light).\n' +
-          '  Main text color: #hex\n  Primary accent: #hex\n  Secondary accent: #hex\n' +
+          '   Constraints: content pages share one background within a deck; the main background and main text color must have sufficient contrast. A background may be a solid or a subtle gradient/atmospheric effect — say which.\n' +
+          '  Main text color: #hex\n  Primary accent (the ONE anchor color of the deck): #hex\n  Secondary accent (muted support; tints/shades of the primary family preferred): #hex\n' +
           '  (Iron rule: one accent color system across the whole deck — even when comparing multiple companies/products/options, do not assign each entity a different color; distinguish entities by name and typography. Never exceed the primary + secondary accents)\n' +
-          '  Card background: #hex\n  Border color: #hex\n\n' +
-          'Fonts\n  CJK title font: [font name]\n  Latin title font: [font name]\n  Body font: [font name]\n  Title size: [range]px\n  Body size: [range]px\n\n' +
+          '  Card/surface color: #hex\n  Hairline/border color: #hex\n\n' +
+          'Typography (a deliberate pairing with character — never "generic sans for everything")\n' +
+          '  CJK display font: [font name]\n  Latin display font: [font name — prefer a face with personality for titles: a serif display, a tight grotesque, or an expressive geometric; system-safe names only]\n  Body font: [font name]\n  Meta/accent font (optional — e.g. monospace for labels, page numbers, KPI units): [font name]\n' +
+          '  Title size: [range]px — display titles run 2-3x body size; cover titles may go huge (80px+)\n  Body size: [range]px\n\n' +
+          'Composition rules\n' +
+          '  Grid: [e.g. 12-column, ~60px margins; asymmetric placements encouraged]\n' +
+          '  Visual rhythm: alternate loud pages (full-bleed image, oversized type, one dominant element) with quiet pages (structured grids, generous whitespace) — never two loud pages in a row.\n' +
+          '  Focal point: every page gets exactly ONE dominant element (a hero number, a statement, a hero image) — everything else is subordinate to it.\n' +
+          '  Image treatment: [how images live in this system: full-bleed hero / side panel / framed block / duotone — images are first-class design elements, never decorative sprinkles]\n' +
+          '  Decoration budget: at most ONE recurring motif (hairline rules | oversized page numeral | contour line | corner crop mark), consistent in position and style across all pages. No card-grid-everything, no rainbow per entity, no corner ornaments, no decorative accent bars.\n\n' +
           'Layout variants per page type (list at least 2 variants each, format: variant name: description)\n' +
-          '  cover variants:\n    cover_full_image_overlay: full-bleed photo background + dark overlay, centered white title, bottom metadata bar\n    cover_split_color: two color blocks side by side (60/40)\n    cover_typography_hero: pure typography, no photo, huge title (100px+)\n    cover_dark_minimal: dark background, centered large title + a little accent color\n    cover_magazine: magazine-style title taking 60% + partial imagery\n    cover_split_image: title on the left half + hero image on the right half\n' +
-          '  content variants:\n    left_text_right_image | three_column_cards | hero_big_number | two_column_comparison | timeline_horizontal | full_image_text_overlay (give each a one-line description)\n' +
-          '  data variants:\n    kpi_cards_row: horizontal KPI cards\n    chart_with_insight: chart left + insight right\n    two_by_two_grid: 2x2 quadrants\n' +
-          '  closing variants:\n    closing_cta: centered title + contact info\n    closing_thank_you: full-bleed thank-you page\n\n' +
+          '  cover variants:\n    cover_typography_hero: pure typography, huge title (100px+), no photo\n    cover_full_image_overlay: full-bleed photo background + dark overlay, centered white title\n    cover_split_image: title block left + hero image right\n    cover_editorial: magazine-style oversized title filling 60% of the page, small metadata block, partial imagery\n    cover_dark_minimal: dark background, centered large title + one accent detail\n    cover_split_color: two color blocks side by side (60/40)\n' +
+          '  content variants:\n    left_text_right_image | three_column_cards | hero_big_number | two_column_comparison | timeline_horizontal | full_image_text_overlay | editorial_pullquote: one big statement + small supporting text | asymmetric_feature: one dominant element + quiet side column (give each a one-line description)\n' +
+          '  data variants:\n    kpi_cards_row: horizontal KPI cards\n    chart_with_insight: chart left + insight right\n    two_by_two_grid: 2x2 quadrants\n    hero_metric: one enormous number + short annotation\n' +
+          '  closing variants:\n    closing_cta: centered title + contact info\n    closing_thank_you: full-bleed thank-you page\n    closing_statement: one bold closing line, lots of air\n\n' +
+          'Density: [low = presenter-led: few words, very large type | high = reading-first: structured grids, concise detail — pick what fits the topic]\n' +
           'Overall style: [one sentence describing the overall design language]'
         const q = a.questionnaire ? `\nUser questionnaire answers: ${a.questionnaire}` : ''
         const hint = a.styleHint ? `\nStyle preference: ${a.styleHint}` : ''
@@ -1347,15 +1368,23 @@ export function AiPanel({
           '## core_hook\n' +
           "The deck's narrative anchor: one sentence, with tension, containing a number or counter-intuitive contrast, at most 20 characters.\n" +
           '\n' +
-          "## layout (choose from the Style Skill's per-page-type variant library; content pages within one deck must not repeat the same variant)\n" +
-          'cover: cover_typography_hero (huge pure typography) | cover_dark_minimal (dark background, centered large title) | cover_split_color (side-by-side color blocks) | cover_full_image_overlay (full-bleed photo + dark overlay) | cover_magazine (magazine-style large title + partial imagery) | cover_split_image (text left, image right)\n' +
-          'content: left_text_right_image | three_column_cards | hero_big_number | two_column_comparison | timeline_horizontal | full_image_text_overlay\n' +
-          'data: kpi_cards_row | chart_with_insight | two_by_two_grid\n' +
-          'closing: closing_cta | closing_thank_you\n' +
-          'Selection criteria: 3 parallel points → three_column_cards; a key number → hero_big_number; comparison/categories → two_column_comparison/two_by_two_grid; sequence → timeline_horizontal; image+text → left_text_right_image/full_image_text_overlay; metrics → kpi_cards_row.\n' +
+          '## Narrative arc (structure the deck like a story, not a list of topics)\n' +
+          '  hook (cover): state the surprising truth or tension the deck argues — a claim, not a topic label.\n' +
+          '  context (early pages): the stakes and background the audience needs before the argument.\n' +
+          '  core (middle pages): the argument itself — each page carries exactly ONE idea.\n' +
+          '  shift (one page near the end): the turn — a contrast, reveal or "but" that reframes what came before.\n' +
+          '  takeaway (closing): what to remember or do — a statement, not a summary list.\n' +
+          'Every page maps to one arc role; its brief says what the page must achieve in the story. Alternate loud pages (hero number / full-bleed visual / oversized statement) with quiet pages (structured detail) — never two loud pages in a row.\n' +
+          '\n' +
+          "## layout (choose from the Style Skill's per-page-type variant library; within one deck the same variant never repeats)\n" +
+          'cover: cover_typography_hero (huge pure typography) | cover_dark_minimal (dark background, centered large title) | cover_split_color (side-by-side color blocks) | cover_full_image_overlay (full-bleed photo + dark overlay) | cover_editorial (magazine oversized title + small metadata + partial imagery) | cover_split_image (text left, image right)\n' +
+          'content: left_text_right_image | three_column_cards | hero_big_number | two_column_comparison | timeline_horizontal | full_image_text_overlay | editorial_pullquote (one big statement + small support text) | asymmetric_feature (dominant element + quiet side column)\n' +
+          'data: kpi_cards_row | chart_with_insight | two_by_two_grid | hero_metric (one enormous number + annotation)\n' +
+          'closing: closing_cta | closing_thank_you | closing_statement\n' +
+          'Selection criteria: 3 parallel points → three_column_cards; a key number → hero_big_number/hero_metric; comparison/categories → two_column_comparison/two_by_two_grid; sequence → timeline_horizontal; image+text → left_text_right_image/full_image_text_overlay; metrics → kpi_cards_row. Use three_column_cards at most once per deck — it is the most over-used AI layout.\n' +
           '\n' +
           '## brief\n' +
-          'Describe in detail what goes in each region of the layout; prefer real data/facts from the reference material, no "XX%" placeholders; cover gives main/sub titles and mood; data gives metric names + concrete values + changes.\n' +
+          'One compact paragraph per page, three beats: (1) PURPOSE — what this page must achieve in the arc; (2) CONTENT — exactly what the audience sees, region by region, with real data/facts from the material (never "XX%" placeholders); (3) VISUAL CONCEPT — what the visual does (anchor the page / prove a point / let it breathe). The cover gives main/sub titles and mood; data pages give metric names + concrete values + direction of change.\n' +
           '\n' +
           '## image_queries\n' +
           'Array: one entry per real-world visual slot on the page. If the reference material contains ready image URLs (starting with http), use them directly; otherwise write an English visual description of a concrete scene (e.g. "summer palace kunming lake at sunset, lakeside view", not generic words like "park") — every slot is rendered by an AI image-generation model internally and the real URL is filled back, so write each entry the way an image model wants it (subject + environment + lighting). A stock photo search runs only as a fallback when generation is unavailable or fails. Travel/product/people/brand pages get images by default; give [] only when the page truly needs no visuals (fill with typography/icons; never count on CSS-drawn fake images).\n' +
@@ -1490,6 +1519,17 @@ export function AiPanel({
             prompt,
             ...(aspectRatio ? { aspectRatio } : {}),
           })
+          return r.url ? { ok: true, url: r.url } : { ok: false, error: r.error }
+        } catch (e) {
+          return { ok: false, error: e instanceof Error ? e.message : String(e) }
+        }
+      },
+      // Persist a picture's embedded data: bytes into the main-process
+      // generated-image store so a later page (re)generation can re-feed them as
+      // a stable file:// URL instead of losing the imagery on a style restyle.
+      storeImageData: async (dataUrl) => {
+        try {
+          const r = await window.slidesApi.storeImageData({ dataUrl })
           return r.url ? { ok: true, url: r.url } : { ok: false, error: r.error }
         } catch (e) {
           return { ok: false, error: e instanceof Error ? e.message : String(e) }
@@ -2521,17 +2561,20 @@ export function AiPanel({
       {!busy && !activeClarify && !activeOutline && upgradeOffer && (
         <UpgradeCard
           pending={upgradeOffer}
-          onPick={(stage) => {
+          onPick={(stage, preset) => {
             setUpgradeOffer(null)
-            runWith(
-              t(
-                stage === 'visuals'
-                  ? 'aiUpgradeAskVisuals'
-                  : stage === 'style'
-                    ? 'aiUpgradeAskStyle'
-                    : 'aiUpgradeAskFull',
-              ),
+            const base = t(
+              stage === 'visuals'
+                ? 'aiUpgradeAskVisuals'
+                : stage === 'style'
+                  ? 'aiUpgradeAskStyle'
+                  : 'aiUpgradeAskFull',
             )
+            const hint =
+              preset !== 'auto' && stage !== 'visuals'
+                ? ` ${t('aiUpgradeAskStyleHint', { hint: t(STYLE_PRESET_HINT_KEY[preset]) })}`
+                : ''
+            runWith(base + hint)
           }}
           onDismiss={() => setUpgradeOffer(null)}
         />
@@ -2551,8 +2594,8 @@ export function AiPanel({
         <div className="ai-composer">
           <OutlineCard
             proposal={activeOutline}
-            onSubmit={(removed, titles) => {
-              outlineResolverRef.current?.({ status: 'approved', removed, titles })
+            onSubmit={(removed, titles, briefs) => {
+              outlineResolverRef.current?.({ status: 'approved', removed, titles, briefs })
               outlineResolverRef.current = null
               setActiveOutline(null)
             }}
@@ -3396,13 +3439,14 @@ function OutlineCard({
   onCancel,
 }: {
   proposal: OutlineProposal
-  onSubmit: (removed: number[], titles: string[]) => void
+  onSubmit: (removed: number[], titles: string[], briefs: string[]) => void
   onRevise: (feedback: string) => void
   onCancel: () => void
 }) {
   const { t } = useI18n()
   const [excluded, setExcluded] = useState<ReadonlySet<number>>(new Set())
   const [titles, setTitles] = useState<string[]>(proposal.pages.map((p) => p.title))
+  const [briefs, setBriefs] = useState<string[]>(proposal.pages.map((p) => p.brief))
   const [feedback, setFeedback] = useState('')
   const remaining = proposal.pages.length - excluded.size
 
@@ -3414,10 +3458,16 @@ function OutlineCard({
       return next
     })
 
+  const autoGrow = (el: HTMLTextAreaElement | null) => {
+    if (!el) return
+    el.style.height = 'auto'
+    el.style.height = `${el.scrollHeight}px`
+  }
+
   const submit = () => {
     const fb = feedback.trim()
     if (fb) {
-      // Keep the user's page removals/retitles in the revision request —
+      // Keep the user's page removals/retitles/brief edits in the revision request —
       // re-planning must see the same edits an approval would have applied.
       const parts = [fb]
       if (excluded.size)
@@ -3430,12 +3480,24 @@ function OutlineCard({
         )
         .filter(Boolean)
       if (renamed.length) parts.push(`Rename: ${renamed.join('; ')}`)
+      const rebriefed = briefs
+        .map((brief, i) =>
+          brief.trim() !== (proposal.pages[i]?.brief ?? '').trim()
+            ? `page ${i + 1} brief → "${brief.trim()}"`
+            : '',
+        )
+        .filter(Boolean)
+      if (rebriefed.length) parts.push(`Brief edits: ${rebriefed.join('; ')}`)
       onRevise(parts.join('\n'))
       return
     }
+    // titles/briefs apply AFTER removals splice the page list — send them already
+    // filtered to the kept rows so indexes stay aligned.
+    const kept = (arr: string[]) => arr.filter((_, i) => !excluded.has(i))
     onSubmit(
       [...excluded].sort((a, b) => a - b),
-      titles,
+      kept(titles),
+      kept(briefs),
     )
   }
 
@@ -3481,7 +3543,22 @@ function OutlineCard({
                     })
                   }
                 />
-                {p.brief ? <div className="ai-outline-brief">{p.brief}</div> : null}
+                <textarea
+                  className="ai-outline-brief ai-outline-brief-input"
+                  value={briefs[i] ?? ''}
+                  rows={1}
+                  disabled={off}
+                  placeholder={t('aiOutlineBriefPh')}
+                  ref={autoGrow}
+                  onChange={(e) => {
+                    autoGrow(e.target)
+                    setBriefs((prev) => {
+                      const next = [...prev]
+                      next[i] = e.target.value
+                      return next
+                    })
+                  }}
+                />
                 <div className="ai-outline-meta">
                   {p.layout ? <span className="ai-outline-layout">{p.layout}</span> : null}
                   {p.visuals ? (
@@ -3528,16 +3605,40 @@ function OutlineCard({
  * send a plain-language request into the agent loop — the model maps it to
  * upgrade_deck — so the user never sees tool names or JSON syntax.
  */
+export type StylePreset = 'auto' | 'editorial' | 'swiss' | 'dark' | 'minimal'
+
+const STYLE_PRESETS: Exclude<StylePreset, 'auto'>[] = [
+  'editorial',
+  'swiss',
+  'dark',
+  'minimal',
+]
+
+const STYLE_PRESET_KEY: Record<Exclude<StylePreset, 'auto'>, StringKey> = {
+  editorial: 'aiStylePresetEditorial',
+  swiss: 'aiStylePresetSwiss',
+  dark: 'aiStylePresetDark',
+  minimal: 'aiStylePresetMinimal',
+}
+
+const STYLE_PRESET_HINT_KEY: Record<Exclude<StylePreset, 'auto'>, StringKey> = {
+  editorial: 'aiStylePresetEditorialHint',
+  swiss: 'aiStylePresetSwissHint',
+  dark: 'aiStylePresetDarkHint',
+  minimal: 'aiStylePresetMinimalHint',
+}
+
 function UpgradeCard({
   pending,
   onPick,
   onDismiss,
 }: {
   pending: { visuals: boolean; style: boolean }
-  onPick: (stage: 'visuals' | 'style' | 'full') => void
+  onPick: (stage: 'visuals' | 'style' | 'full', preset: StylePreset) => void
   onDismiss: () => void
 }) {
   const { t } = useI18n()
+  const [preset, setPreset] = useState<StylePreset>('auto')
   const both = pending.visuals && pending.style
   return (
     <div className="ai-upgrade-card" role="group" aria-label={t('aiUpgradeTitle')}>
@@ -3548,11 +3649,37 @@ function UpgradeCard({
         </button>
       </div>
       <div className="ai-upgrade-sub">{t('aiUpgradeSub')}</div>
+      {pending.style && (
+        <div className="ai-upgrade-presets" role="radiogroup" aria-label={t('aiStylePresetLabel')}>
+          <span className="ai-upgrade-presets-label">{t('aiStylePresetLabel')}</span>
+          <button
+            type="button"
+            role="radio"
+            aria-checked={preset === 'auto'}
+            className={`ai-upgrade-preset${preset === 'auto' ? ' on' : ''}`}
+            onClick={() => setPreset('auto')}
+          >
+            {t('aiStylePresetAuto')}
+          </button>
+          {STYLE_PRESETS.map((p) => (
+            <button
+              key={p}
+              type="button"
+              role="radio"
+              aria-checked={preset === p}
+              className={`ai-upgrade-preset${preset === p ? ' on' : ''}`}
+              onClick={() => setPreset(p)}
+            >
+              {t(STYLE_PRESET_KEY[p])}
+            </button>
+          ))}
+        </div>
+      )}
       <div className="ai-upgrade-actions">
         {pending.visuals && (
           <button
             className={both ? 'ai-upgrade-btn ai-upgrade-btn-primary' : 'ai-upgrade-btn'}
-            onClick={() => onPick('visuals')}
+            onClick={() => onPick('visuals', preset)}
           >
             {t('aiUpgradeVisuals')}
           </button>
@@ -3562,13 +3689,13 @@ function UpgradeCard({
             className={
               !pending.visuals ? 'ai-upgrade-btn ai-upgrade-btn-primary' : 'ai-upgrade-btn'
             }
-            onClick={() => onPick('style')}
+            onClick={() => onPick('style', preset)}
           >
             {t('aiUpgradeStyle')}
           </button>
         )}
         {both && (
-          <button className="ai-upgrade-btn" onClick={() => onPick('full')}>
+          <button className="ai-upgrade-btn" onClick={() => onPick('full', preset)}>
             {t('aiUpgradeFull')}
           </button>
         )}

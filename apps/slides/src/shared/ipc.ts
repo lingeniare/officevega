@@ -1600,6 +1600,10 @@ export interface SlidesApi {
     ext?: string
     keepSrcRect?: boolean
   }) => Promise<RenderSlide | null>
+  /** Persist a picture's embedded data: URL into the generated-image store; returns
+   *  a file:// URL the AI pipeline can re-feed into page (re)generation so style
+   *  restyles keep existing imagery (file: resolves strictly inside the store) */
+  storeImageData: (op: { dataUrl: string }) => Promise<{ url?: string; error?: string }>
   /** AI image generation/editing via the configured media provider (default VEGA, gsk fallback), returns the image URL (error prompts login when logged out) */
   generateImage: (op: {
     prompt: string

@@ -519,6 +519,11 @@ export function populateEditorDom(
         if (!run.rtl && !vertical && !natural) {
           fragment.style.display = 'inline-block'
           fragment.style.width = `${run.widthPx}px`
+          // The UA sheet gives contentEditable overflow-wrap: break-word, and a fixed-width
+          // cell is its own wrapping container: a token the browser draws 1px wider than the
+          // engine measured ("APP" in a variable-weight CJK face) folded inside its cell into
+          // stacked letters. Cells never wrap; overflow spills right like the canvas.
+          fragment.style.whiteSpace = 'pre'
         }
         // Keep the browser editor visually aligned with the canvas renderer. This is display-only:
         // extraction intentionally preserves the source run's PPT letter spacing through srcRun.
@@ -553,6 +558,7 @@ export function releaseEditorLayoutConstraints(root: HTMLElement): void {
   root.querySelectorAll<HTMLElement>('[data-layout-fragment]').forEach((fragment) => {
     fragment.style.display = ''
     fragment.style.width = ''
+    fragment.style.whiteSpace = ''
   })
 }
 
@@ -561,6 +567,7 @@ function releaseFragment(el: Element | null | undefined): void {
   if (!(el instanceof HTMLElement) || el.dataset.layoutFragment !== 'true') return
   el.style.display = ''
   el.style.width = ''
+  el.style.whiteSpace = ''
 }
 
 /** Nearest enclosing layout fragment of a DOM point (bounded by the editor root). */
@@ -665,6 +672,10 @@ export function TextEditOverlay({
   // visual height, so the edit box isn't inflated; on commit extractParagraphs divides by norm back to model pt
   const norm = scale * (node.text?.fontScale ?? 1) || 1
   const wrap = node.text?.wrap !== false
+  // spAutoFit boxes follow their content live (the commit writes the same size back into the
+  // model): a nowrap body grows in width, a wrapping one in height — PowerPoint's click-to-type box
+  const growH = node.text?.autofit === 'resize'
+  const growW = growH && !wrap
   // bodyPr vert: edit in a CSS vertical writing mode matching the canvas engine —
   // eaVert: vertical-rl/mixed (CJK upright, Latin rotated, columns right→left);
   // wordArtVert: vertical-lr/upright (every glyph upright, stacked, columns left→right);
@@ -789,7 +800,7 @@ export function TextEditOverlay({
   return (
     // Outer layer = the whole text box (the edit-frame border is drawn here);
     // inner contentEditable edits in place with a transparent background (the canvas already hides this node's text), flex implements the vertical anchor.
-    // Height fixed to the shape box: overflowing content shows past it, the edit box doesn't grow with content;
+    // Height fixed to the shape box (unless spAutoFit grows it): overflowing content shows past it;
     // border uses outline (takes no layout space) so the inner usable size matches canvas layout exactly
     <div
       ref={frameRef}
@@ -797,8 +808,10 @@ export function TextEditOverlay({
         position: 'absolute',
         left: box.x,
         top: box.y,
-        width: box.w,
-        height: box.h,
+        width: growW && !vertText ? 'max-content' : box.w,
+        minWidth: growW && !vertText ? box.w : undefined,
+        height: growH && !vertText ? 'auto' : box.h,
+        minHeight: growH && !vertText ? box.h : undefined,
         // Rotation only — the canvas counter-flips text in flipped shapes (NodeBody), so the editor must not mirror
         transform: `rotate(${box.rotationDeg ?? 0}deg)`,
         transformOrigin: 'center center',
@@ -915,8 +928,10 @@ export function TextEditOverlay({
           width: wrap ? Math.max(box.w, 40 + insets.l + insets.r) : 'max-content',
           // nowrap keeps max-content growth for overflow, but never below the box width:
           // a narrower block would defeat per-paragraph text-align (centered titles would
-          // visually snap left on entering edit) — the canvas centers within the box
-          minWidth: wrap ? undefined : Math.max(box.w, 40 + insets.l + insets.r),
+          // visually snap left on entering edit) — the canvas centers within the box.
+          // A growing box takes the box width alone: the 40px floor would inflate the
+          // 19px click-to-type box and snap back on commit
+          minWidth: wrap ? undefined : growW ? box.w : Math.max(box.w, 40 + insets.l + insets.r),
           // Only an empty body needs a synthetic height (so typing matches the canvas line
           // height); inflating a laid-out body distorts the flex vertical anchor — a
           // middle-anchored single line with tight spacing sat a few px too high in edit

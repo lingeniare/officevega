@@ -252,4 +252,17 @@ export const ka = {
   aiUpgradeAskVisuals: 'შეავსე სლაიდების ვიზუალური ადგილები: დააგენერირე სურათები და ინფოგრაფიკა',
   aiUpgradeAskStyle: 'გამოიყენე ერთიანი დიზაინის სტილი მთელ დეკზე',
   aiUpgradeAskFull: 'შეავსე ვიზუალური ადგილები და გამოიყენე ერთიანი სტილი',
+  aiOutlineBriefPh: 'ამ გვერდის შინაარსი — რედაქტირებადია',
+  aiStylePresetLabel: 'სტილი',
+  aiStylePresetAuto: 'ავტო',
+  aiStylePresetEditorial: 'სარედაქციო',
+  aiStylePresetSwiss: 'შვეიცარიული ბადე',
+  aiStylePresetDark: 'მუქი',
+  aiStylePresetMinimal: 'მინიმალური',
+  aiUpgradeAskStyleHint: 'სტილის მიმართულება: {hint}',
+  aiStylePresetEditorialHint: 'სარედაქციო ჟურნალის სტილი — დიდი serif სათაურები, თბილი ქაღალდის ტონები, ფართო თეთრი სივრცე',
+  aiStylePresetSwissHint: 'შვეიცარიული საერთაშორისო სტილი — მკაცრი ბადე, ერთი აქცენტის ფერი, ძლიერი ტიპოგრაფიული კონტრასტი, თხელი ხაზები, მრგვალი ბარათებისა და ჩრდილების გარეშე',
+  aiStylePresetDarkHint: 'მუქი ატმოსფერო — ღრმა ნახშირბადის ან საზღვაო ფონი, ერთი ნათელი აქცენტი, გიგანტური ტიპოგრაფია, კინემატოგრაფიული გამოსახულებები',
+  aiStylePresetMinimalHint: 'ღია მინიმალიზმი — ჰაეროვანი თეთრი სივრცეები, თითქმის მონოქრომული პალიტრა ერთი თავშეკავებული აქცენტით, მშვიდი ზუსტი ტიპოგრაფია',
+
 } satisfies Record<keyof typeof zh, string>

@@ -247,6 +247,8 @@ export interface HomeApi {
     baseUrl?: string
     input?: string
     output?: string
+    /** drop models whose output modalities include any of these ('image' keeps image generators out of text pickers) */
+    excludeOutput?: readonly string[]
     /** drop catalog ids starting with any of these prefixes */
     excludePrefixes?: readonly string[]
     /** drop catalog ids ending with any of these suffixes (':free', '-latest', 'meta') */

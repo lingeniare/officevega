@@ -250,4 +250,17 @@ export const id = {
   aiUpgradeAskVisuals: 'Isi placeholder visual di slide: buat gambar dan infografis',
   aiUpgradeAskStyle: 'Terapkan gaya desain terpadu ke seluruh deck',
   aiUpgradeAskFull: 'Isi placeholder visual dan terapkan gaya terpadu',
+  aiOutlineBriefPh: 'Isi halaman ini — bisa diedit',
+  aiStylePresetLabel: 'Gaya',
+  aiStylePresetAuto: 'Auto',
+  aiStylePresetEditorial: 'Editorial',
+  aiStylePresetSwiss: 'Grid Swiss',
+  aiStylePresetDark: 'Gelap',
+  aiStylePresetMinimal: 'Minimal',
+  aiUpgradeAskStyleHint: 'Arah gaya: {hint}',
+  aiStylePresetEditorialHint: 'gaya majalah editorial — judul serif besar, warna kertas hangat, ruang kosong lega',
+  aiStylePresetSwissHint: 'gaya Swiss internasional — grid ketat, satu warna aksen jangkar, kontras ukuran tipografi kuat, garis tipis, tanpa kartu membulat atau bayangan',
+  aiStylePresetDarkHint: 'nuansa gelap — latar arang atau navy pekat, satu aksen bercahaya, tipografi super besar, citra sinematik',
+  aiStylePresetMinimalHint: 'minimal terang — ruang kosong lapang, palet nyaris monokrom dengan satu aksen menahan diri, tipografi tenang presisi',
+
 } satisfies Record<keyof typeof zh, string>

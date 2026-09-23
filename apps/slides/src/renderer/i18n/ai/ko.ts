@@ -249,4 +249,17 @@ export const ko = {
   aiUpgradeAskVisuals: '슬라이드의 비주얼 플레이스홀더를 채워 주세요: 이미지와 인포그래픽을 생성하세요',
   aiUpgradeAskStyle: '전체 덱에 통일된 디자인 스타일을 적용해 주세요',
   aiUpgradeAskFull: '비주얼 플레이스홀더를 채우고 통일된 디자인을 적용해 주세요',
+  aiOutlineBriefPh: '이 페이지의 내용 — 자유롭게 편집',
+  aiStylePresetLabel: '스타일',
+  aiStylePresetAuto: '자동',
+  aiStylePresetEditorial: '에디토리얼',
+  aiStylePresetSwiss: '스위스 그리드',
+  aiStylePresetDark: '다크',
+  aiStylePresetMinimal: '미니멀',
+  aiUpgradeAskStyleHint: '스타일 방향: {hint}',
+  aiStylePresetEditorialHint: '에디토리얼 매거진 스타일 — 세리프 대형 타이틀, 따뜻한 종이 톤, 넉넉한 여백',
+  aiStylePresetSwissHint: '스위스 인터내셔널 스타일 — 엄격한 그리드, 단일 앵커 강조색, 강한 타이포 크기 대비, 가는 선, 둥근 카드나 그림자 없음',
+  aiStylePresetDarkHint: '다크 무드 — 깊은 차콜/네이비 배경, 하나의 발광 액센트, 초대형 타이포그래피, 시네마틱 이미지',
+  aiStylePresetMinimalHint: '밝은 미니멀 — 여유로운 여백, 절제된 단일 강조색의 모노크롬 팔레트, 차분하고 정확한 타이포그래피',
+
 } satisfies Record<keyof typeof zh, string>

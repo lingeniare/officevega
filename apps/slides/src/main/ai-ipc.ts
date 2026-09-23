@@ -37,7 +37,7 @@ import {
   type LegacyAiSettings,
 } from '@genoffice/ai-provider'
 import { shutdownCodexAppServers } from '@genoffice/ai-provider/codex-app-server'
-import { fetchRemoteImage } from '@genoffice/electron-utils'
+import { fetchRemoteImage, storeGeneratedImage } from '@genoffice/electron-utils'
 import {
   webSearchTool,
   imageSearchTool,
@@ -331,6 +331,30 @@ export function registerSlidesOnlyAiIpc(): void {
       )
     },
   )
+
+  // Persist renderer-side image bytes (a picture's embedded data: URL) into the
+  // generated-image store and return its file:// URL — a stable handle the AI
+  // pipeline can re-feed into page (re)generation so a style restyle keeps the
+  // imagery instead of losing it. fetchRemoteImage resolves file: strictly
+  // inside the store, so this is the only safe way back in.
+  ipcMain.handle('ai:store-image-data', async (_e, op: { dataUrl?: string }) => {
+    try {
+      const m = /^data:(image\/[a-z0-9.+-]+);base64,([a-z0-9+/=\s]+)$/i.exec(
+        String(op?.dataUrl ?? ''),
+      )
+      if (!m) return { error: 'not an image data URL' }
+      // The store only names files png/jpg/gif/webp — anything else (svg+xml…)
+      // would be written under a wrong extension.
+      const mime = m[1]!.toLowerCase()
+      if (!['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp'].includes(mime))
+        return { error: `unsupported image type ${mime}` }
+      const buf = Buffer.from(m[2]!.replace(/\s/g, ''), 'base64')
+      if (!buf.length) return { error: 'empty image data' }
+      return { url: storeGeneratedImage(new Uint8Array(buf), mime) }
+    } catch (err) {
+      return { error: err instanceof Error ? err.message : String(err) }
+    }
+  })
 
   /** Bytes of a user attachment the renderer resolved (attachment://): keep
    *  pptx-native formats as-is, convert anything else (webp/bmp/…) to PNG. */

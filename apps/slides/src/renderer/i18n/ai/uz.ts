@@ -252,4 +252,17 @@ export const uz = {
   aiUpgradeAskVisuals: 'Slaydlardagi vizual o‘rinlarni to‘ldir: rasmlar va infografikani yarat',
   aiUpgradeAskStyle: 'Butun prezentatsiyaga yagona dizayn uslubini qo‘lla',
   aiUpgradeAskFull: 'Vizual o‘rinlarni to‘ldir va yagona uslubni qo‘lla',
+  aiOutlineBriefPh: 'Bu sahifa mazmuni — tahrirlash mumkin',
+  aiStylePresetLabel: 'Uslub',
+  aiStylePresetAuto: 'Avto',
+  aiStylePresetEditorial: 'Jurnal uslubi',
+  aiStylePresetSwiss: 'Shveytsariya panjarasi',
+  aiStylePresetDark: 'Qorong‘u',
+  aiStylePresetMinimal: 'Minimal',
+  aiUpgradeAskStyleHint: 'Uslub yo‘nalishi: {hint}',
+  aiStylePresetEditorialHint: 'jurnal-uslubiy ko‘rinish — katta serserif sarlavhalar, iliq qog‘oz tonlari, keng bo‘sh joylar',
+  aiStylePresetSwissHint: 'Shveytsariya xalqaro uslubi — qat‘iy panjara, bitta asosiy urg‘u rangi, kuchli shrift kontrasti, ingichka chiziqlar, yumaloq kartalar yoki soyalarsiz',
+  aiStylePresetDarkHint: 'qorong‘u muhit — chuqur ko‘mir yoki to‘q ko‘k fon, bitta yorug‘ urg‘u, ulkan tipografiya, kinematografik tasvirlar',
+  aiStylePresetMinimalHint: 'yengil minimal — keng bo‘sh joylar, bitta tortinchoq urg‘u bilan deyarli monoxrom palitra, sokin aniq tipografiya',
+
 } satisfies Record<keyof typeof zh, string>

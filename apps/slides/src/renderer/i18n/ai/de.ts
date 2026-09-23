@@ -253,4 +253,17 @@ export const de = {
   aiUpgradeAskVisuals: 'Fülle die Bild-Platzhalter auf den Folien: erzeuge Bilder und Infografiken',
   aiUpgradeAskStyle: 'Wende einen einheitlichen Design-Stil auf das ganze Deck an',
   aiUpgradeAskFull: 'Fülle die Platzhalter und wende den einheitlichen Design-Stil an',
+  aiOutlineBriefPh: 'Worum es auf dieser Seite geht — frei bearbeitbar',
+  aiStylePresetLabel: 'Stil',
+  aiStylePresetAuto: 'Auto',
+  aiStylePresetEditorial: 'Editorial',
+  aiStylePresetSwiss: 'Swiss Grid',
+  aiStylePresetDark: 'Dunkel',
+  aiStylePresetMinimal: 'Minimal',
+  aiUpgradeAskStyleHint: 'Stilrichtung: {hint}',
+  aiStylePresetEditorialHint: 'redaktioneller Magazin-Look — Serifen-Display-Titel, warme Papiertöne, viel Weißraum',
+  aiStylePresetSwissHint: 'Schweizer Internationaler Stil — striktes Raster, eine Anker-Akzentfarbe, starker Größenkontrast der Typografie, Haarlinien, keine abgerundeten Karten oder Schatten',
+  aiStylePresetDarkHint: 'dunkle Atmosphäre — tiefes Anthrazit oder Navy, ein leuchtender Akzent, übergroße Typografie, cineastische Bildsprache',
+  aiStylePresetMinimalHint: 'helles Minimal — luftiger Weißraum, nahezu monochrome Palette mit einem zurückhaltenden Akzent, ruhige präzise Typografie',
+
 } satisfies Record<keyof typeof zh, string>
