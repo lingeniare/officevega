@@ -40,6 +40,8 @@ import {
   themedSurfaceColor,
   OPEN_FILE_DIALOG_CHANNEL,
   forwardRendererConsole,
+  MAX_REMOTE_IMAGE_BYTES,
+  readBodyCapped,
 } from '@genoffice/electron-utils'
 import { createI18n, getUiLang } from '@genoffice/i18n'
 import { generateImageTool } from '@genoffice/ai-search'
@@ -1746,7 +1748,8 @@ function registerHtmlIpc(): void {
         : ct.includes('gif')
           ? 'image/gif'
           : 'image/jpeg'
-      return { base64: Buffer.from(await resp.arrayBuffer()).toString('base64'), mime }
+      const bytes = await readBodyCapped(resp, MAX_REMOTE_IMAGE_BYTES)
+      return { base64: Buffer.from(bytes).toString('base64'), mime }
     } catch {
       return null
     }

@@ -103,7 +103,6 @@ export const uz = {
   ribbonThemeColorShadeTip: 'Mavzu rangi {r}-{c}',
   ribbonStandardColors: 'Standart ranglar',
   ribbonMoreColors: 'Boshqa ranglar…',
-  ribbonGroupFont: 'Shrift',
   ribbonBullets: 'Belgilar',
   ribbonNumbering: 'Raqamlash',
   ribbonDecreaseIndent: 'Chekinishni kamaytirish',
@@ -737,4 +736,6 @@ export const uz = {
   ribbonAutoFitTip: 'Jadval ustunlari o‘lchamini avtomatik moslashtirish',
   ribbonZoomInTip: 'Kattalashtirish',
   ribbonZoomOutTip: 'Kichraytirish',
+  ribbonFontEastAsia: 'Sharqiy Osiyo shrifti',
+  ribbonFontLatin: 'Lotin shrifti',
 } satisfies Record<keyof typeof zh, string>

@@ -40,6 +40,9 @@ export const pl = {
   paneAnimEffShrink: 'Zmniejszenie i obrót',
   paneAnimEffZoomOut: 'Powiększenie (wyjście)',
   paneAnimEffMotionPath: 'Ścieżka ruchu',
+  paneAnimEffMediaPlay: 'Odtwórz',
+  paneAnimEffMediaPause: 'Wstrzymaj',
+  paneAnimEffMediaStop: 'Zatrzymaj',
 
   paneChartEditTitle: 'Edytuj dane wykresu',
   paneChartCategoryN: 'Kategoria {n}',
@@ -279,4 +282,13 @@ export const pl = {
   paneShowRehearseTotal: 'Łącznie {time}',
   paneFormatFillTip: 'Opcje wypełnienia zaznaczenia',
   paneFormatOutlineTip: 'Opcje konturu zaznaczenia',
+  paneShowMenuNext: 'Dalej',
+  paneShowMenuPrev: 'Wstecz',
+  paneShowMenuLastViewed: 'Ostatnio wyświetlany',
+  paneShowMenuSeeAll: 'Zobacz wszystkie slajdy',
+  paneShowMenuScreen: 'Ekran',
+  paneShowMenuBlack: 'Czarny ekran',
+  paneShowMenuWhite: 'Biały ekran',
+  paneShowMenuEnd: 'Zakończ pokaz',
+  panePresenterWhiteOn: 'Biały ekran (W, aby wrócić)',
 } satisfies Record<keyof typeof zh, string>

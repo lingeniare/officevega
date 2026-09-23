@@ -9,7 +9,11 @@ import {
   streamText,
   type AgentImage,
 } from '@genoffice/agent-core'
-import { imageGenerationAvailable, withFastModel } from '@genoffice/ai-provider/browser'
+import {
+  imageGenerationAvailable,
+  mediaAnalysisAvailable,
+  withFastModel,
+} from '@genoffice/ai-provider/browser'
 import type { AiSettings, AttachmentAddResult, AttachmentMeta } from '../../shared/ipc'
 import { ATTACHMENT_IMAGE_EXTS } from '../../shared/ipc'
 import type { PmNode } from '../editor/convert'
@@ -831,6 +835,7 @@ export function AiPanel({
           () => pageSetupAccessRef.current,
           () => docExtrasRef.current,
           () => notesAccessRef.current,
+          () => mediaAnalysisAvailable(settingsRef.current, gskLoggedInRef.current),
         ),
         createFilesSkill(availableAttachments),
       ]),

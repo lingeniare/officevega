@@ -372,4 +372,7 @@ export const az = {
   appUpdateStyleTip: 'Cari seçimin əsasında bu üslubu yenilə (styles.xml faylına geri yazılır)',
   appNewStyleFromSelection: 'Cari seçimdən yeni üslub',
   appStyleNamePlaceholder: 'Üslub adı',
+  appDocTooLargeBlocks: '{name}: sənəd açmaq üçün çox böyükdür ({blocks} abzas, {chars} simvol)',
+  appDocLargeReadOnly: 'Böyük sənəd ({blocks} abzas): oxu rejimində açıldı — redaktə üçün Esc basın',
+  appDocLargeSpellOff: 'Böyük sənəd ({blocks} abzas): yazarkən orfoqrafiya yoxlaması söndürülüb — Review › Spelling bölməsində yandırın',
 } satisfies Record<keyof typeof zh, string>

@@ -17,6 +17,7 @@ const realFetch = globalThis.fetch
 afterEach(() => {
   globalThis.fetch = realFetch
   delete process.env.SERPER_API_KEY
+  delete process.env.PARALLEL_API_KEY
   delete process.env.TAVILY_API_KEY
 })
 
@@ -70,6 +71,20 @@ describe('webSearch (Serper)', () => {
     expect(r.method).toBe('duckduckgo')
     expect(r.results[0]?.url).toBe('https://x.com')
     expect(r.results[0]?.title).toBe('X Title')
+  })
+
+  it('clamps wild maxResults and truncates huge queries at entry', async () => {
+    process.env.SERPER_API_KEY = 'test-key'
+    let seen: { q: string; num: number } | undefined
+    mockFetch((_url, init) => {
+      seen = JSON.parse(String(init?.body)) as { q: string; num: number }
+      return { ok: true, json: { organic: [] } }
+    })
+    await webSearch('x'.repeat(5000), 1e9)
+    expect(seen!.num).toBeLessThanOrEqual(20)
+    expect(seen!.q.length).toBeLessThanOrEqual(500)
+    await webSearch('normal', NaN)
+    expect(seen!.num).toBeGreaterThanOrEqual(1)
   })
 })
 
@@ -319,6 +334,7 @@ describe('search-tools', () => {
           vega: { apiKey: '' },
           serper: { apiKey: 'k' },
           tavily: { apiKey: '' },
+          parallel: { apiKey: '' },
         },
       },
     }
@@ -331,6 +347,7 @@ describe('search-tools', () => {
           vega: { apiKey: '' },
           serper: { apiKey: '' },
           tavily: { apiKey: 't' },
+          parallel: { apiKey: '' },
         },
       },
     }
@@ -348,6 +365,7 @@ describe('search-tools', () => {
           vega: { apiKey: '' },
           serper: { apiKey: '' },
           tavily: { apiKey: '' },
+          parallel: { apiKey: '' },
         },
       },
     }

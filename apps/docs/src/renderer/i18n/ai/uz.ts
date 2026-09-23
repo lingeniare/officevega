@@ -180,4 +180,8 @@ export const uz = {
   aiCmdImages: '{count} ta rasm yangilandi',
   aiCmdToc: 'Mundarija kiritildi ({count} ta yozuv)',
   aiCmdSkipped: ' ({count} ta himoyalangan blok o‘tkazib yuborildi)',
+  aiSumEditNote: 'Izoh oʻzgartirildi',
+  aiSumAnalyzeMedia: 'Medianı tahlil qilish',
+  aiSumAnalyzeMediaDone: 'Media tahlil qilindi',
+  aiCmdNoneUnchanged: '{count} ta mos blok oʻzgarmadi; hujjat oʻzgartirilmadi.',
 } satisfies Record<keyof typeof zh, string>

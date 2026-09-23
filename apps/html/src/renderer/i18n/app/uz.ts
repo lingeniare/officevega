@@ -162,4 +162,5 @@ export const uz = {
   insertImageTip: 'Rasm kiritish',
   insertTableTip: 'Jadval qo‘shish',
   insertMoreTip: 'Qo‘shimcha kiritish parametrlari',
+  elementPath: 'Element yoʻli',
 } satisfies Record<keyof typeof zh, string>

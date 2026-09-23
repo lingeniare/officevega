@@ -163,4 +163,5 @@ export const tk = {
   insertImageTip: 'Surat goşuň',
   insertTableTip: 'Tablisa goş',
   insertMoreTip: 'Goşmak üçin has köp opsiýa',
+  elementPath: 'Element ýoly',
 } satisfies Record<keyof typeof zh, string>

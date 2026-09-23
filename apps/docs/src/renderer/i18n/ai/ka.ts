@@ -180,4 +180,8 @@ export const ka = {
   aiCmdImages: 'განახლებულია {count} სურათი',
   aiCmdToc: 'ჩასმულია სარჩევი ({count} ჩანაწერი)',
   aiCmdSkipped: ' ({count} დაცული ბლოკი გამოტოვებულია)',
+  aiSumEditNote: 'შენიშვნა შეიცვალა',
+  aiSumAnalyzeMedia: 'მედიის ანალიზი',
+  aiSumAnalyzeMediaDone: 'მედია განალიზებულია',
+  aiCmdNoneUnchanged: '{count} შესაბამისი ბლოკი უცვლელი დარჩა; დოკუმენტი არ შეცვლილა.',
 } satisfies Record<keyof typeof zh, string>

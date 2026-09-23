@@ -57,6 +57,7 @@ export const es = {
   aiSumInsertFootnote: 'Nota al pie insertada',
   aiSumInsertEndnote: 'Nota al final insertada',
   aiSumDeleteNote: 'Nota eliminada',
+  aiSumEditNote: 'Nota editada',
   aiSumReadNotes: 'Notas leídas',
   aiSumAddComment: 'Comentario añadido',
   aiSumDeleteComment: 'Comentario eliminado',
@@ -126,6 +127,8 @@ export const es = {
   aiSumWebSearchDone: 'Búsqueda de «{query}» ({count} resultados)',
   aiSumImageSearch: 'Búsqueda de imágenes',
   aiSumImageSearchDone: 'Búsqueda de imágenes «{query}» ({count} imágenes)',
+  aiSumAnalyzeMedia: 'Analizar contenido',
+  aiSumAnalyzeMediaDone: 'Contenido analizado',
   aiSumInsertImage: 'Insertar imagen',
   aiSumInsertWebImage: 'Imagen web insertada',
   aiSumGenerateImage: 'Generar imagen',
@@ -168,6 +171,8 @@ export const es = {
   aiCmdNone: 'No hay bloques coincidentes; el documento no se modificó.',
   aiCmdNoneSkipped:
     'No hay bloques editables; el documento no se modificó ({count} bloques protegidos omitidos: las tablas/imágenes no se pueden modificar con comandos de estilo).',
+  aiCmdNoneUnchanged:
+    '{count} bloque(s) coincidente(s) quedaron sin cambios; el documento no se modificó.',
   aiCmdTextStyle: 'Estilo de texto actualizado en {count} bloque(s)',
   aiCmdMatchedStyle: 'Estilo aplicado a {count} coincidencia(s) en {blocks} bloque(s)',
   aiCmdParaStyle: 'Formato de párrafo actualizado en {count} bloque(s)',

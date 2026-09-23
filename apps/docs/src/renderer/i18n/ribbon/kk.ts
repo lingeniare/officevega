@@ -102,7 +102,6 @@ export const kk = {
   ribbonThemeColorShadeTip: 'Тақырып түсі {r}-{c}',
   ribbonStandardColors: 'Стандартты түстер',
   ribbonMoreColors: 'Қосымша түстер…',
-  ribbonGroupFont: 'Қаріп',
   ribbonBullets: 'Маркерлер',
   ribbonNumbering: 'Нөмірлеу',
   ribbonDecreaseIndent: 'Шегіністі азайту',
@@ -734,4 +733,6 @@ export const kk = {
   ribbonAutoFitTip: 'Кесте бағандарының өлшемін автоматты түрде сәйкестендіру',
   ribbonZoomInTip: 'Масштабты үлкейту',
   ribbonZoomOutTip: 'Масштабты кішірейту',
+  ribbonFontEastAsia: 'Шығыс Азия қарпі',
+  ribbonFontLatin: 'Латын қарпі',
 } satisfies Record<keyof typeof zh, string>

@@ -56,6 +56,13 @@ describe('provider registry', () => {
       baseUrl: 'https://api.deepseek.com/v1',
       bodyExtras: { thinking: { type: 'disabled' } },
     })
+    // the listed V4.1 Flash name is the pool spelling; the vendor only serves `deepseek-flash`
+    expect(AI_PROVIDER_ADAPTERS.deepseek.resolveEndpoint(config('deep-seek-v4.1-flash'))).toEqual({
+      protocol: 'openai-compatible',
+      baseUrl: 'https://api.deepseek.com/v1',
+      bodyExtras: { thinking: { type: 'disabled' } },
+      model: 'deepseek-flash',
+    })
     expect(AI_PROVIDER_ADAPTERS.openai.resolveEndpoint(config('gpt-4.1-mini'))).toEqual({
       protocol: 'openai-compatible',
       baseUrl: 'https://api.openai.com/v1',
@@ -227,6 +234,19 @@ describe('provider registry', () => {
     expect(() => AI_PROVIDER_ADAPTERS.custom.resolveEndpoint(config('m'))).toThrow(
       'A custom provider requires a Base URL',
     )
+  })
+
+  it('rejects non-http and oversized custom base URLs', () => {
+    const resolve = (baseUrl: string) =>
+      AI_PROVIDER_ADAPTERS.custom.resolveEndpoint(config('m', baseUrl))
+    expect(() => resolve('javascript:alert(1)')).toThrow('http or https')
+    expect(() => resolve('file:///etc/passwd')).toThrow('http or https')
+    expect(() => resolve('not a url')).toThrow('valid http')
+    expect(() => resolve(`https://x/${'a'.repeat(3000)}`)).toThrow('2048')
+    // a regional mirror with whitespace still resolves to the trimmed URL
+    expect(
+      AI_PROVIDER_ADAPTERS.custom.resolveEndpoint(config('m', '  https://mirror/v1  ')).baseUrl,
+    ).toBe('https://mirror/v1')
   })
 
   it('only genspark authenticates through the gsk login', () => {

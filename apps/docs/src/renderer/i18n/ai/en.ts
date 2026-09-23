@@ -55,6 +55,7 @@ export const en = {
   aiSumInsertFootnote: 'Inserted footnote',
   aiSumInsertEndnote: 'Inserted endnote',
   aiSumDeleteNote: 'Deleted note',
+  aiSumEditNote: 'Edited note',
   aiSumReadNotes: 'Read notes',
   aiSumAddComment: 'Added comment',
   aiSumDeleteComment: 'Deleted comment',
@@ -122,6 +123,8 @@ export const en = {
   aiSumWebSearchDone: 'Searched "{query}" ({count} results)',
   aiSumImageSearch: 'Image search',
   aiSumImageSearchDone: 'Image search "{query}" ({count} images)',
+  aiSumAnalyzeMedia: 'Analyze media',
+  aiSumAnalyzeMediaDone: 'Analyzed media',
   aiSumInsertImage: 'Insert image',
   aiSumInsertWebImage: 'Inserted web image',
   aiSumGenerateImage: 'Generate image',
@@ -164,6 +167,8 @@ export const en = {
   aiCmdNone: 'No matching blocks; the document was not changed.',
   aiCmdNoneSkipped:
     'No editable blocks; the document was not changed ({count} protected blocks skipped — tables/images cannot be changed by style commands).',
+  aiCmdNoneUnchanged:
+    '{count} matching block(s) were left unchanged; the document was not changed.',
   aiCmdTextStyle: 'Updated text style on {count} block(s)',
   aiCmdMatchedStyle: 'Styled {count} match(es) across {blocks} block(s)',
   aiCmdParaStyle: 'Updated paragraph format on {count} block(s)',

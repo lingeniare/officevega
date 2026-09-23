@@ -265,4 +265,5 @@ export const uz = {
   aiStylePresetDarkHint: 'qorong‘u muhit — chuqur ko‘mir yoki to‘q ko‘k fon, bitta yorug‘ urg‘u, ulkan tipografiya, kinematografik tasvirlar',
   aiStylePresetMinimalHint: 'yengil minimal — keng bo‘sh joylar, bitta tortinchoq urg‘u bilan deyarli monoxrom palitra, sokin aniq tipografiya',
 
+  aiClarifyPrev: 'Oldingi',
 } satisfies Record<keyof typeof zh, string>

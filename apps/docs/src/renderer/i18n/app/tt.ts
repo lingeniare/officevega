@@ -371,4 +371,7 @@ export const tt = {
   appUpdateStyleTip: 'Бу стильне гамәлдәге сайланмадан яңарту (styles.xml файлына языла)',
   appNewStyleFromSelection: 'Гамәлдәге сайланмадан яңа стиль',
   appStyleNamePlaceholder: 'Стиль исеме',
+  appDocTooLargeBlocks: '{name}: документ ачар өчен бигрәк зур ({blocks} абзац, {chars} символ)',
+  appDocLargeReadOnly: 'Зур документ ({blocks} абзац): уку режимында ачылды — төзәтү өчен Esc басыгыз',
+  appDocLargeSpellOff: 'Зур документ ({blocks} абзац): язышканда орфография тикшерүе сүндерелгән — Review › Spelling бүлегендә кабызыгыз',
 } satisfies Record<keyof typeof zh, string>

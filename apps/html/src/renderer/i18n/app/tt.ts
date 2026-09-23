@@ -162,4 +162,5 @@ export const tt = {
   insertImageTip: 'Рәсем кую',
   insertTableTip: 'Таблица кертү',
   insertMoreTip: 'Күбрәк кую параметрлары',
+  elementPath: 'Элемент юлы',
 } satisfies Record<keyof typeof zh, string>

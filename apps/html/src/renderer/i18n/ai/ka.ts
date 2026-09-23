@@ -183,4 +183,5 @@ export const ka = {
   aiFillImagesAsk: 'შეიქმნას {n} სურათი გვერდისთვის?',
   aiFillImagesYes: 'შექმნა',
   aiFillImagesNo: 'ახლა არა',
+  aiClarifyPrev: 'წინა',
 } satisfies Record<keyof typeof zh, string>

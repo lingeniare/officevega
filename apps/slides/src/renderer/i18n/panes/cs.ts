@@ -40,6 +40,9 @@ export const cs = {
   paneAnimEffShrink: 'Zmenšit a otočit',
   paneAnimEffZoomOut: 'Oddálit',
   paneAnimEffMotionPath: 'Dráha pohybu',
+  paneAnimEffMediaPlay: 'Přehrát',
+  paneAnimEffMediaPause: 'Pozastavit',
+  paneAnimEffMediaStop: 'Zastavit',
 
   paneChartEditTitle: 'Upravit data grafu',
   paneChartCategoryN: 'Kategorie {n}',
@@ -278,4 +281,13 @@ export const cs = {
   paneShowRehearseTotal: 'Celkem {time}',
   paneFormatFillTip: 'Možnosti výplně výběru',
   paneFormatOutlineTip: 'Možnosti obrysu výběru',
+  paneShowMenuNext: 'Další',
+  paneShowMenuPrev: 'Předchozí',
+  paneShowMenuLastViewed: 'Naposledy zobrazený',
+  paneShowMenuSeeAll: 'Zobrazit všechny snímky',
+  paneShowMenuScreen: 'Obrazovka',
+  paneShowMenuBlack: 'Černá obrazovka',
+  paneShowMenuWhite: 'Bílá obrazovka',
+  paneShowMenuEnd: 'Ukončit prezentaci',
+  panePresenterWhiteOn: 'Bílá obrazovka (W pro návrat)',
 } satisfies Record<keyof typeof zh, string>

@@ -40,6 +40,9 @@ export const ms = {
   paneAnimEffShrink: 'Kecil dan Pusing',
   paneAnimEffZoomOut: 'Zum Keluar',
   paneAnimEffMotionPath: 'Laluan Gerakan',
+  paneAnimEffMediaPlay: 'Main',
+  paneAnimEffMediaPause: 'Jeda',
+  paneAnimEffMediaStop: 'Henti',
 
   paneChartEditTitle: 'Edit Data Carta',
   paneChartCategoryN: 'Kategori {n}',
@@ -281,4 +284,13 @@ export const ms = {
   paneShowRehearseTotal: 'Jumlah {time}',
   paneFormatFillTip: 'Pilihan isian untuk pilihan',
   paneFormatOutlineTip: 'Pilihan garis luar untuk pilihan',
+  paneShowMenuNext: 'Seterusnya',
+  paneShowMenuPrev: 'Sebelumnya',
+  paneShowMenuLastViewed: 'Terakhir Dilihat',
+  paneShowMenuSeeAll: 'Lihat Semua Slaid',
+  paneShowMenuScreen: 'Skrin',
+  paneShowMenuBlack: 'Skrin Hitam',
+  paneShowMenuWhite: 'Skrin Putih',
+  paneShowMenuEnd: 'Tamatkan Persembahan',
+  panePresenterWhiteOn: 'Skrin putih (tekan W untuk kembali)',
 } satisfies Record<keyof typeof zh, string>

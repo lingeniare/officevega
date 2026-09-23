@@ -62,7 +62,13 @@ export type DeckProgressEvent =
       summary: string
       pages: PageProgressItem[]
     }
-  | { stage: 'done'; total: number; summary: string }
+  | {
+      stage: 'done'
+      total: number
+      summary: string
+      /** absent on success; the card must not read a failed or stopped run as "done" */
+      outcome?: 'failed' | 'cancelled'
+    }
 
 /** Panel/skill access point to the currently open deck (refs provided by App, stay fresh across renders). */
 export interface DeckAccess {
@@ -2888,6 +2894,7 @@ async function executeTool(
           stage: 'done',
           total: landedPages,
           summary: t('aiSumStoppedKept', { n: landedPages }),
+          outcome: 'cancelled',
         })
         return cancelResult(landedPages, total)
       }
@@ -2913,6 +2920,7 @@ async function executeTool(
           stage: 'done',
           total: 0,
           summary: t('aiStageAllFailed', { n: total }),
+          outcome: 'failed',
         })
         return fail(
           t('aiFailGenDeck'),

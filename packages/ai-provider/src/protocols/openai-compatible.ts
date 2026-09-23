@@ -13,6 +13,8 @@ import {
   sseLines,
   throwIfCreditsNotice,
   throwIfPaymentRequired,
+  throwIfToolCountOverBudget,
+  throwIfToolJsonOverBudget,
   type StreamCallbacks,
 } from './shared'
 
@@ -244,6 +246,9 @@ async function openAiCompatibleTurn(
   }
   // tool call arguments stream in fragments keyed by index
   const pendingTools = new Map<number, { id: string; name: string; json: string }>()
+  // Early emission removes finished calls from pendingTools, so the count cap
+  // needs its own tally of every index the stream has started.
+  const seenToolIndexes = new Set<number>()
   let stopReason: string | undefined
   let abnormalFinish: string | undefined
   let sawFinish = false
@@ -320,6 +325,10 @@ async function openAiCompatibleTurn(
           cb.onToolCall({ id: pending.id, name: pending.name, input, inputError: error })
         }
       }
+      if (!seenToolIndexes.has(tc.index)) {
+        seenToolIndexes.add(tc.index)
+        throwIfToolCountOverBudget(seenToolIndexes.size, 'openai-compatible')
+      }
       const pending = pendingTools.get(tc.index) ?? {
         id: tc.id ?? crypto.randomUUID(),
         name: '',
@@ -336,7 +345,10 @@ async function openAiCompatibleTurn(
           ? tc.function.name
           : pending.name + tc.function.name
       }
-      if (tc.function?.arguments) pending.json += tc.function.arguments
+      if (tc.function?.arguments) {
+        pending.json += tc.function.arguments
+        throwIfToolJsonOverBudget(pending.json.length, 'openai-compatible')
+      }
       pendingTools.set(tc.index, pending)
     }
     if (choice.finish_reason) {

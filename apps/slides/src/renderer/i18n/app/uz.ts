@@ -46,7 +46,6 @@ export const uz = {
   appStatusLinkSet:
     'Giperhavola o‘rnatildi (PowerPoint slayd namoyishi paytida bosilganda faollashadi)',
   appStatusLinkRemoved: 'Giperhavola olib tashlandi',
-  appZoomButtonText: '▸ {page}-slayd',
   appStatusZoomInserted:
     'Zoom qo‘shildi: slayd namoyishi paytida {page}-slaydga o‘tish uchun bosing',
   appStatusHfApplied: 'Yuqori va pastki kolontitullar barcha slaydlarga qo‘llandi',
@@ -240,4 +239,25 @@ export const uz = {
   appSettingsSave: 'Saqlash',
   appCropHint:
     'Tasdiqlash uchun Enter · bekor qilish uchun Esc · tasdiqlash uchun tashqariga bosing',
+  appCtxCollapseAll: 'Hammasini yigʻish',
+  appCtxEditPoints: 'Nuqtalarni tahrirlash',
+  appCtxExpandAll: 'Hammasini yoyish',
+  appCtxRegroup: 'Qayta guruhlash',
+  appCtxRemoveAllSections: 'Barcha boʻlimlarni olib tashlash',
+  appCtxRemoveSectionSlides: 'Boʻlim va slaydlarini olib tashlash',
+  appCtxResetSlide: 'Slaydni tiklash',
+  appCtxSaveAsPicture: 'Rasm sifatida saqlash…',
+  appCtxSelectAll: 'Hammasini tanlash',
+  appCtxSetDefaultShape: 'Standart shakl sifatida belgilash',
+  appCtxSizePosition: 'Oʻlcham va joylashuv…',
+  appSectionN: '{n}-boʻlim',
+  appSectionSummary: 'Xulosa boʻlimi',
+  appStatusPictureSaveFailed: 'Rasm sifatida saqlash muvaffaqiyatsiz: {error}',
+  appStatusPictureSaved: 'Rasm {path} ga saqlandi',
+  appStatusSectionSlidesRemoved: 'Boʻlim va uning slaydlari olib tashlandi',
+  appStatusSectionsRemoved: 'Barcha boʻlimlar olib tashlandi (slaydlar saqlandi)',
+  appStatusSlidesHidden: '{count} ta slayd yashirildi (slayd-shouda oʻtkazib yuboriladi)',
+  appStatusSlidesUnhidden: '{count} ta slayd koʻrsatildi',
+  appStatusSummaryZoomInserted: '{count} ta plitka bilan Xulosa Zoom slaydi qoʻshildi',
+  appStatusZoomsInserted: '{count} ta masshtab qoʻshildi: slayd-shouda bosib shu slaydlarga oʻting',
 } satisfies Record<keyof typeof zh, string>

@@ -98,6 +98,7 @@ import {
   setGskProxyUrl,
   startVegaofficeLogin,
   vegaAccountInfo,
+  watchVegaofficeApiKey,
 } from '@genoffice/ai-search'
 
 import {
@@ -122,7 +123,9 @@ import {
   setDocsMenuGate,
   setDocsShellHooks,
   createAiDocument,
+  projectFilePaths,
   projectFileRenamed,
+  setDocsHostWindowHook,
   setDocsShellWindow,
   setDocsFileSavedHook,
   setDocsFileOpenedHook,
@@ -166,6 +169,7 @@ import {
   setSheetsCloseTabHook,
   setSheetsExtraFileMenuItems,
   setSheetsExtraAppMenuItems,
+  setSheetsHostWindowHook,
   setSheetsShellWindow,
   setSheetsWorkbookOpenedHook,
   startSheetsCaptureServer,
@@ -176,6 +180,7 @@ import {
   discardSlidesRecovery,
   exportSlidesPdfHeadless,
   installSlidesMenu,
+  readSlidesRecentFiles,
   replaceSlidesRecentFile,
   requestSlidesClose,
   setSlidesCloseTabHook,
@@ -196,6 +201,7 @@ import {
   requestPdfSaveAs,
   sendPdfPrintRequest,
   setPdfRenamedHook,
+  setPdfRedactionSavedHook,
   setPdfSaveAsInFlight,
 } from '../../../pdf/src/main/pdf-main'
 import { PDF_CHANNELS } from '../../../pdf/src/shared/ipc'
@@ -248,6 +254,10 @@ import type {
   RenameResult,
   StarPromptShow,
   UiTheme,
+  FileSearchPage,
+  FileSearchQuery,
+  FileSearchRerank,
+  FileSearchSettings,
 } from '../shared/home-api'
 import { HOME_CHANNELS } from '../shared/home-api'
 import {
@@ -267,10 +277,10 @@ import {
 import { isSameFile, isValidRawRenameName } from './rename-validation'
 import {
   FolderWatcher,
-  collectTreeFiles,
   createFolder,
   describeRoot,
   isInsideRoot,
+  pathsUnder,
   listFolder,
   movePathsInto,
   rebasePath,
@@ -278,8 +288,40 @@ import {
   uniqueNameIn,
   type FolderErrors,
 } from './folder-tree'
+import {
+  FOLDER_ROOTS_KEY,
+  describeExtraRoot,
+  readExtraRoots,
+  withExtraRoot,
+  withoutExtraRoot,
+} from './folder-roots'
+import extractWorkerPath from './file-index/extract-worker?modulePath'
+import { FileIndexer } from './file-index/indexer'
+import { FileIndexStore } from './file-index/store'
+import {
+  jevEndpointOf,
+  normalizeFileSearchSettings,
+  probeJev,
+  SearchReranker,
+} from './file-index/rerank'
 import { runHeadlessExport, type HeadlessExporters } from './headless-export'
 import { TabManager } from './tab-manager'
+import {
+  activateDetached,
+  closeDetachedWithoutPrompt,
+  createDetachedEditorWindow,
+  detachedFilePaths,
+  detachedOpenDocuments,
+  detachedRenameFile,
+  detachedSetFileFor,
+  detachedWebContentsFor,
+  detachedWindowForWebContents,
+  findDetachedTabByPath,
+  focusDetachedByPath,
+  focusedDetachedKind,
+  isDetachedTabId,
+  setDetachedChangedListener,
+} from './detached-windows'
 import { applyUpdateChannel, checkForUpdatesNow, initAutoUpdater } from './updater'
 import { isUpdateChannel, type UpdateChannel } from '../shared/update-api'
 
@@ -408,9 +450,16 @@ const APP_SETTINGS_PATH = () => join(app.getPath('userData'), 'app-settings.json
 const OPEN_DOCUMENTS_PATH = () => join(app.getPath('userData'), OPEN_DOCUMENTS_FILE)
 /** only the instance holding the single-instance lock may write or remove the registry */
 let ownsOpenDocumentsRegistry = false
+let stopAuthWatch: (() => void) | null = null
 const publishOpenDocumentsIfOwner = (paths: readonly string[]) => {
   if (ownsOpenDocumentsRegistry) publishOpenDocuments(OPEN_DOCUMENTS_PATH(), paths)
 }
+
+/** every open file: the shell's tabs plus the detached editor windows */
+function publishAllOpenDocuments(): void {
+  publishOpenDocumentsIfOwner([...(tabManager?.openFilePaths() ?? []), ...detachedFilePaths()])
+}
+setDetachedChangedListener(publishAllOpenDocuments)
 
 let uiLang: Lang | null = null
 
@@ -549,10 +598,13 @@ async function fetchGithubStars(): Promise<number | null> {
 
 const tMain = createI18n({
   zh: {
+    dlgAddFolderRoot: '添加文件夹到首页',
+    errFolderRootUnusable: '无法读取所选文件夹',
     menuFile: '文件',
     menuSectionNew: '新建',
     menuNewDoc: '文档',
     menuNewSheet: '表格',
+    menuOpenInNewWindow: '在新窗口中打开',
     untitledSheet: '未命名表格',
     untitledDoc: '未命名文档',
     untitledDeck: '未命名演示文稿',
@@ -564,6 +616,7 @@ const tMain = createI18n({
     menuNewHtml: 'HTML',
     menuNewPdf: 'PDF',
     menuExportPdf: '导出为 PDF…',
+    menuExportImages: '导出为图片…',
     menuExportHtml: '导出为单文件 HTML…',
     menuOpenInDocs: '转换为 Docs 文档并打开',
     menuPrint: '打印…',
@@ -631,10 +684,13 @@ const tMain = createI18n({
     errSaveDirUnusable: '所选文件夹不可写，无法用作默认保存位置',
   },
   en: {
+    dlgAddFolderRoot: 'Add Folder to Home',
+    errFolderRootUnusable: 'The selected folder cannot be read',
     menuFile: 'File',
     menuSectionNew: 'New',
     menuNewDoc: 'Document',
     menuNewSheet: 'Spreadsheet',
+    menuOpenInNewWindow: 'Open in New Window',
     untitledSheet: 'Untitled Spreadsheet',
     untitledDoc: 'Untitled Document',
     untitledDeck: 'Untitled Presentation',
@@ -646,6 +702,7 @@ const tMain = createI18n({
     menuNewHtml: 'HTML',
     menuNewPdf: 'PDF',
     menuExportPdf: 'Export as PDF…',
+    menuExportImages: 'Export as Images…',
     menuExportHtml: 'Export as Single-File HTML…',
     menuOpenInDocs: 'Convert and Open in Docs',
     menuPrint: 'Print…',
@@ -721,10 +778,13 @@ const tMain = createI18n({
       'The selected folder is not writable and cannot be used as the default save location',
   },
   ja: {
+    dlgAddFolderRoot: 'フォルダーをホームに追加',
+    errFolderRootUnusable: '選択したフォルダーを読み取れません',
     menuFile: 'ファイル',
     menuSectionNew: '新規作成',
     menuNewDoc: '文書',
     menuNewSheet: 'スプレッドシート',
+    menuOpenInNewWindow: '新しいウィンドウで開く',
     untitledSheet: '無題のスプレッドシート',
     untitledDoc: '無題のドキュメント',
     untitledDeck: '無題のプレゼンテーション',
@@ -736,6 +796,7 @@ const tMain = createI18n({
     menuNewHtml: 'HTML',
     menuNewPdf: 'PDF',
     menuExportPdf: 'PDF として書き出す…',
+    menuExportImages: '画像としてエクスポート…',
     menuExportHtml: '単一ファイル HTML として書き出す…',
     menuOpenInDocs: 'Docs 文書に変換して開く',
     menuPrint: '印刷…',
@@ -811,10 +872,13 @@ const tMain = createI18n({
       '選択したフォルダーは書き込みできないため、既定の保存先として使用できません',
   },
   ko: {
+    dlgAddFolderRoot: '홈에 폴더 추가',
+    errFolderRootUnusable: '선택한 폴더를 읽을 수 없습니다',
     menuFile: '파일',
     menuSectionNew: '새로 만들기',
     menuNewDoc: '문서',
     menuNewSheet: '스프레드시트',
+    menuOpenInNewWindow: '새 창에서 열기',
     untitledSheet: '제목 없는 스프레드시트',
     untitledDoc: '제목 없는 문서',
     untitledDeck: '제목 없는 프레젠테이션',
@@ -826,6 +890,7 @@ const tMain = createI18n({
     menuNewHtml: 'HTML',
     menuNewPdf: 'PDF',
     menuExportPdf: 'PDF로 내보내기…',
+    menuExportImages: '이미지로 내보내기…',
     menuExportHtml: '단일 파일 HTML로 내보내기…',
     menuOpenInDocs: 'Docs 문서로 변환하여 열기',
     menuPrint: '인쇄…',
@@ -900,10 +965,13 @@ const tMain = createI18n({
     errSaveDirUnusable: '선택한 폴더에 쓸 수 없어 기본 저장 위치로 사용할 수 없습니다',
   },
   fr: {
+    dlgAddFolderRoot: "Ajouter un dossier à l'accueil",
+    errFolderRootUnusable: 'Le dossier sélectionné ne peut pas être lu',
     menuFile: 'Fichier',
     menuSectionNew: 'Nouveau',
     menuNewDoc: 'Document',
     menuNewSheet: 'Feuille de calcul',
+    menuOpenInNewWindow: 'Ouvrir dans une nouvelle fenêtre',
     untitledSheet: 'Feuille de calcul sans titre',
     untitledDoc: 'Document sans titre',
     untitledDeck: 'Présentation sans titre',
@@ -915,6 +983,7 @@ const tMain = createI18n({
     menuNewHtml: 'HTML',
     menuNewPdf: 'PDF',
     menuExportPdf: 'Exporter en PDF…',
+    menuExportImages: 'Exporter en images…',
     menuExportHtml: 'Exporter en HTML (fichier unique)…',
     menuOpenInDocs: 'Convertir et ouvrir dans Docs',
     menuPrint: 'Imprimer…',
@@ -991,10 +1060,13 @@ const tMain = createI18n({
       "Le dossier sélectionné n'est pas accessible en écriture et ne peut pas servir d'emplacement d'enregistrement par défaut",
   },
   de: {
+    dlgAddFolderRoot: 'Ordner zur Startseite hinzufügen',
+    errFolderRootUnusable: 'Der ausgewählte Ordner kann nicht gelesen werden',
     menuFile: 'Datei',
     menuSectionNew: 'Neu',
     menuNewDoc: 'Dokument',
     menuNewSheet: 'Tabelle',
+    menuOpenInNewWindow: 'In neuem Fenster öffnen',
     untitledSheet: 'Unbenannte Tabelle',
     untitledDoc: 'Unbenanntes Dokument',
     untitledDeck: 'Unbenannte Präsentation',
@@ -1006,6 +1078,7 @@ const tMain = createI18n({
     menuNewHtml: 'HTML',
     menuNewPdf: 'PDF',
     menuExportPdf: 'Als PDF exportieren…',
+    menuExportImages: 'Als Bilder exportieren…',
     menuExportHtml: 'Als Einzeldatei-HTML exportieren…',
     menuOpenInDocs: 'In Docs umwandeln und öffnen',
     menuPrint: 'Drucken…',
@@ -1082,10 +1155,13 @@ const tMain = createI18n({
       'Der ausgewählte Ordner ist nicht beschreibbar und kann nicht als Standard-Speicherort verwendet werden',
   },
   es: {
+    dlgAddFolderRoot: 'Añadir carpeta al inicio',
+    errFolderRootUnusable: 'No se puede leer la carpeta seleccionada',
     menuFile: 'Archivo',
     menuSectionNew: 'Nuevo',
     menuNewDoc: 'Documento',
     menuNewSheet: 'Hoja de cálculo',
+    menuOpenInNewWindow: 'Abrir en una ventana nueva',
     untitledSheet: 'Hoja de cálculo sin título',
     untitledDoc: 'Documento sin título',
     untitledDeck: 'Presentación sin título',
@@ -1097,6 +1173,7 @@ const tMain = createI18n({
     menuNewHtml: 'HTML',
     menuNewPdf: 'PDF',
     menuExportPdf: 'Exportar como PDF…',
+    menuExportImages: 'Exportar como imágenes…',
     menuExportHtml: 'Exportar como HTML de archivo único…',
     menuOpenInDocs: 'Convertir y abrir en Docs',
     menuPrint: 'Imprimir…',
@@ -1173,10 +1250,13 @@ const tMain = createI18n({
       'La carpeta seleccionada no admite escritura y no puede usarse como ubicación de guardado predeterminada',
   },
   th: {
+    dlgAddFolderRoot: 'เพิ่มโฟลเดอร์ไปยังหน้าแรก',
+    errFolderRootUnusable: 'ไม่สามารถอ่านโฟลเดอร์ที่เลือกได้',
     menuFile: 'ไฟล์',
     menuSectionNew: 'สร้างใหม่',
     menuNewDoc: 'เอกสาร',
     menuNewSheet: 'สเปรดชีต',
+    menuOpenInNewWindow: 'เปิดในหน้าต่างใหม่',
     untitledSheet: 'สเปรดชีตไม่มีชื่อ',
     untitledDoc: 'เอกสารไม่มีชื่อ',
     untitledDeck: 'งานนำเสนอไม่มีชื่อ',
@@ -1188,6 +1268,7 @@ const tMain = createI18n({
     menuNewHtml: 'HTML',
     menuNewPdf: 'PDF',
     menuExportPdf: 'ส่งออกเป็น PDF…',
+    menuExportImages: 'ส่งออกเป็นรูปภาพ…',
     menuExportHtml: 'ส่งออกเป็น HTML ไฟล์เดียว…',
     menuOpenInDocs: 'แปลงและเปิดใน Docs',
     menuPrint: 'พิมพ์…',
@@ -1260,10 +1341,13 @@ const tMain = createI18n({
     errSaveDirUnusable: 'โฟลเดอร์ที่เลือกไม่สามารถเขียนได้ จึงใช้เป็นตำแหน่งบันทึกเริ่มต้นไม่ได้',
   },
   id: {
+    dlgAddFolderRoot: 'Tambahkan Folder ke Beranda',
+    errFolderRootUnusable: 'Folder yang dipilih tidak dapat dibaca',
     menuFile: 'File',
     menuSectionNew: 'Baru',
     menuNewDoc: 'Dokumen',
     menuNewSheet: 'Spreadsheet',
+    menuOpenInNewWindow: 'Buka di Jendela Baru',
     untitledSheet: 'Spreadsheet tanpa judul',
     untitledDoc: 'Dokumen tanpa judul',
     untitledDeck: 'Presentasi tanpa judul',
@@ -1275,6 +1359,7 @@ const tMain = createI18n({
     menuNewHtml: 'HTML',
     menuNewPdf: 'PDF',
     menuExportPdf: 'Ekspor sebagai PDF…',
+    menuExportImages: 'Ekspor sebagai gambar…',
     menuExportHtml: 'Ekspor sebagai HTML satu file…',
     menuOpenInDocs: 'Konversi dan buka di Docs',
     menuPrint: 'Cetak…',
@@ -1351,10 +1436,13 @@ const tMain = createI18n({
       'Folder yang dipilih tidak dapat ditulis dan tidak bisa digunakan sebagai lokasi penyimpanan default',
   },
   ru: {
+    dlgAddFolderRoot: 'Добавить папку на главную',
+    errFolderRootUnusable: 'Не удалось прочитать выбранную папку',
     menuFile: 'Файл',
     menuSectionNew: 'Создать',
     menuNewDoc: 'Документ',
     menuNewSheet: 'Таблица',
+    menuOpenInNewWindow: 'Открыть в новом окне',
     untitledSheet: 'Таблица без названия',
     untitledDoc: 'Документ без названия',
     untitledDeck: 'Презентация без названия',
@@ -1366,6 +1454,7 @@ const tMain = createI18n({
     menuNewHtml: 'HTML',
     menuNewPdf: 'PDF',
     menuExportPdf: 'Экспортировать в PDF…',
+    menuExportImages: 'Экспорт в изображения…',
     menuExportHtml: 'Экспортировать в один файл HTML…',
     menuOpenInDocs: 'Преобразовать и открыть в Docs',
     menuPrint: 'Печать…',
@@ -1442,10 +1531,13 @@ const tMain = createI18n({
       'Выбранная папка недоступна для записи и не может использоваться как папка сохранения по умолчанию',
   },
   ar: {
+    dlgAddFolderRoot: 'إضافة مجلد إلى الصفحة الرئيسية',
+    errFolderRootUnusable: 'لا يمكن قراءة المجلد المحدد',
     menuFile: 'ملف',
     menuSectionNew: 'جديد',
     menuNewDoc: 'مستند',
     menuNewSheet: 'جدول بيانات',
+    menuOpenInNewWindow: 'فتح في نافذة جديدة',
     untitledSheet: 'جدول بيانات بلا عنوان',
     untitledDoc: 'مستند بدون عنوان',
     untitledDeck: 'عرض تقديمي بدون عنوان',
@@ -1457,6 +1549,7 @@ const tMain = createI18n({
     menuNewHtml: 'HTML',
     menuNewPdf: 'PDF',
     menuExportPdf: 'تصدير بتنسيق PDF…',
+    menuExportImages: 'تصدير كصور…',
     menuExportHtml: 'تصدير كملف HTML واحد…',
     menuOpenInDocs: 'التحويل والفتح في Docs',
     menuPrint: 'طباعة…',
@@ -1529,10 +1622,13 @@ const tMain = createI18n({
     errSaveDirUnusable: 'المجلد المحدد غير قابل للكتابة ولا يمكن استخدامه كموقع حفظ افتراضي',
   },
   pt: {
+    dlgAddFolderRoot: 'Adicionar pasta à página inicial',
+    errFolderRootUnusable: 'Não é possível ler a pasta selecionada',
     menuFile: 'Arquivo',
     menuSectionNew: 'Novo',
     menuNewDoc: 'Documento',
     menuNewSheet: 'Planilha',
+    menuOpenInNewWindow: 'Abrir em nova janela',
     untitledSheet: 'Planilha sem título',
     untitledDoc: 'Documento sem título',
     untitledDeck: 'Apresentação sem título',
@@ -1544,6 +1640,7 @@ const tMain = createI18n({
     menuNewHtml: 'HTML',
     menuNewPdf: 'PDF',
     menuExportPdf: 'Exportar como PDF…',
+    menuExportImages: 'Exportar como imagens…',
     menuExportHtml: 'Exportar como HTML de arquivo único…',
     menuOpenInDocs: 'Converter e abrir no Docs',
     menuPrint: 'Imprimir…',
@@ -1620,10 +1717,13 @@ const tMain = createI18n({
       'A pasta selecionada não permite gravação e não pode ser usada como local de salvamento padrão',
   },
   it: {
+    dlgAddFolderRoot: 'Aggiungi cartella alla Home',
+    errFolderRootUnusable: 'Impossibile leggere la cartella selezionata',
     menuFile: 'File',
     menuSectionNew: 'Nuovo',
     menuNewDoc: 'Documento',
     menuNewSheet: 'Foglio di calcolo',
+    menuOpenInNewWindow: 'Apri in una nuova finestra',
     untitledSheet: 'Foglio di calcolo senza titolo',
     untitledDoc: 'Documento senza titolo',
     untitledDeck: 'Presentazione senza titolo',
@@ -1635,6 +1735,7 @@ const tMain = createI18n({
     menuNewHtml: 'HTML',
     menuNewPdf: 'PDF',
     menuExportPdf: 'Esporta come PDF…',
+    menuExportImages: 'Esporta come immagini…',
     menuExportHtml: 'Esporta come HTML a file singolo…',
     menuOpenInDocs: 'Converti e apri in Docs',
     menuPrint: 'Stampa…',
@@ -1711,10 +1812,13 @@ const tMain = createI18n({
       'La cartella selezionata non è scrivibile e non può essere usata come posizione di salvataggio predefinita',
   },
   pl: {
+    dlgAddFolderRoot: 'Dodaj folder do strony głównej',
+    errFolderRootUnusable: 'Nie można odczytać wybranego folderu',
     menuFile: 'Plik',
     menuSectionNew: 'Nowy',
     menuNewDoc: 'Dokument',
     menuNewSheet: 'Arkusz',
+    menuOpenInNewWindow: 'Otwórz w nowym oknie',
     untitledSheet: 'Arkusz bez tytułu',
     untitledDoc: 'Dokument bez tytułu',
     untitledDeck: 'Prezentacja bez tytułu',
@@ -1726,6 +1830,7 @@ const tMain = createI18n({
     menuNewHtml: 'HTML',
     menuNewPdf: 'PDF',
     menuExportPdf: 'Eksportuj jako PDF…',
+    menuExportImages: 'Eksportuj jako obrazy…',
     menuExportHtml: 'Eksportuj jako pojedynczy plik HTML…',
     menuOpenInDocs: 'Konwertuj i otwórz w Docs',
     menuPrint: 'Drukuj…',
@@ -1802,10 +1907,13 @@ const tMain = createI18n({
       'Wybrany folder nie pozwala na zapis i nie może być domyślną lokalizacją zapisu',
   },
   cs: {
+    dlgAddFolderRoot: 'Přidat složku na domovskou stránku',
+    errFolderRootUnusable: 'Vybranou složku nelze načíst',
     menuFile: 'Soubor',
     menuSectionNew: 'Nový',
     menuNewDoc: 'Dokument',
     menuNewSheet: 'Tabulka',
+    menuOpenInNewWindow: 'Otevřít v novém okně',
     untitledSheet: 'Sešit bez názvu',
     untitledDoc: 'Dokument bez názvu',
     untitledDeck: 'Prezentace bez názvu',
@@ -1817,6 +1925,7 @@ const tMain = createI18n({
     menuNewHtml: 'HTML',
     menuNewPdf: 'PDF',
     menuExportPdf: 'Exportovat jako PDF…',
+    menuExportImages: 'Exportovat jako obrázky…',
     menuExportHtml: 'Exportovat jako samostatné HTML…',
     menuOpenInDocs: 'Převést a otevřít v Docs',
     menuPrint: 'Tisk…',
@@ -1891,10 +2000,13 @@ const tMain = createI18n({
       'Do vybrané složky nelze zapisovat a nelze ji použít jako výchozí umístění pro ukládání',
   },
   nl: {
+    dlgAddFolderRoot: 'Map toevoegen aan startpagina',
+    errFolderRootUnusable: 'De geselecteerde map kan niet worden gelezen',
     menuFile: 'Bestand',
     menuSectionNew: 'Nieuw',
     menuNewDoc: 'Document',
     menuNewSheet: 'Spreadsheet',
+    menuOpenInNewWindow: 'Openen in nieuw venster',
     untitledSheet: 'Naamloze spreadsheet',
     untitledDoc: 'Naamloos document',
     untitledDeck: 'Naamloze presentatie',
@@ -1906,6 +2018,7 @@ const tMain = createI18n({
     menuNewHtml: 'HTML',
     menuNewPdf: 'PDF',
     menuExportPdf: 'Exporteren als PDF…',
+    menuExportImages: 'Exporteren als afbeeldingen…',
     menuExportHtml: 'Exporteren als één HTML-bestand…',
     menuOpenInDocs: 'Converteren en openen in Docs',
     menuPrint: 'Afdrukken…',
@@ -1982,10 +2095,13 @@ const tMain = createI18n({
       'De geselecteerde map is niet beschrijfbaar en kan niet als standaard opslaglocatie worden gebruikt',
   },
   ms: {
+    dlgAddFolderRoot: 'Tambah Folder ke Laman Utama',
+    errFolderRootUnusable: 'Folder yang dipilih tidak dapat dibaca',
     menuFile: 'Fail',
     menuSectionNew: 'Baharu',
     menuNewDoc: 'Dokumen',
     menuNewSheet: 'Hamparan',
+    menuOpenInNewWindow: 'Buka dalam Tetingkap Baharu',
     untitledSheet: 'Hamparan tanpa tajuk',
     untitledDoc: 'Dokumen tanpa tajuk',
     untitledDeck: 'Persembahan tanpa tajuk',
@@ -1997,6 +2113,7 @@ const tMain = createI18n({
     menuNewHtml: 'HTML',
     menuNewPdf: 'PDF',
     menuExportPdf: 'Eksport sebagai PDF…',
+    menuExportImages: 'Eksport sebagai imej…',
     menuExportHtml: 'Eksport sebagai HTML fail tunggal…',
     menuOpenInDocs: 'Tukar dan buka dalam Docs',
     menuPrint: 'Cetak…',
@@ -2072,10 +2189,13 @@ const tMain = createI18n({
       'Folder yang dipilih tidak boleh ditulis dan tidak dapat digunakan sebagai lokasi simpanan lalai',
   },
   he: {
+    dlgAddFolderRoot: 'הוספת תיקייה לדף הבית',
+    errFolderRootUnusable: 'לא ניתן לקרוא את התיקייה שנבחרה',
     menuFile: 'קובץ',
     menuSectionNew: 'חדש',
     menuNewDoc: 'מסמך',
     menuNewSheet: 'גיליון',
+    menuOpenInNewWindow: 'פתח בחלון חדש',
     untitledSheet: 'גיליון אלקטרוני ללא שם',
     untitledDoc: 'מסמך ללא שם',
     untitledDeck: 'מצגת ללא שם',
@@ -2087,6 +2207,7 @@ const tMain = createI18n({
     menuNewHtml: 'HTML',
     menuNewPdf: 'PDF',
     menuExportPdf: 'ייצוא כ-PDF…',
+    menuExportImages: 'ייצוא כתמונות…',
     menuExportHtml: 'ייצוא כ-HTML בקובץ יחיד…',
     menuOpenInDocs: 'המרה ופתיחה ב-Docs',
     menuPrint: 'הדפסה…',
@@ -2160,10 +2281,13 @@ const tMain = createI18n({
       'התיקייה שנבחרה אינה ניתנת לכתיבה ולא ניתן להשתמש בה כמיקום שמירה כברירת מחדל',
   },
   hi: {
+    dlgAddFolderRoot: 'होम में फ़ोल्डर जोड़ें',
+    errFolderRootUnusable: 'चयनित फ़ोल्डर पढ़ा नहीं जा सका',
     menuFile: 'फ़ाइल',
     menuSectionNew: 'नया',
     menuNewDoc: 'दस्तावेज़',
     menuNewSheet: 'स्प्रेडशीट',
+    menuOpenInNewWindow: 'नई विंडो में खोलें',
     untitledSheet: 'शीर्षकहीन स्प्रेडशीट',
     untitledDoc: 'बिना शीर्षक दस्तावेज़',
     untitledDeck: 'बिना शीर्षक प्रस्तुति',
@@ -2175,6 +2299,7 @@ const tMain = createI18n({
     menuNewHtml: 'HTML',
     menuNewPdf: 'PDF',
     menuExportPdf: 'PDF के रूप में निर्यात…',
+    menuExportImages: 'छवियों के रूप में निर्यात…',
     menuExportHtml: 'एकल-फ़ाइल HTML के रूप में निर्यात…',
     menuOpenInDocs: 'Docs में बदलें और खोलें',
     menuPrint: 'प्रिंट करें…',
@@ -2251,10 +2376,13 @@ const tMain = createI18n({
       'चयनित फ़ोल्डर में लिखा नहीं जा सकता, इसलिए इसे डिफ़ॉल्ट सहेजने के स्थान के रूप में उपयोग नहीं किया जा सकता',
   },
   'zh-TW': {
+    dlgAddFolderRoot: '將資料夾加入首頁',
+    errFolderRootUnusable: '無法讀取所選資料夾',
     menuFile: '檔案',
     menuSectionNew: '新增',
     menuNewDoc: '文件',
     menuNewSheet: '試算表',
+    menuOpenInNewWindow: '在新視窗中開啟',
     untitledSheet: '未命名試算表',
     untitledDoc: '未命名文件',
     untitledDeck: '未命名簡報',
@@ -2266,6 +2394,7 @@ const tMain = createI18n({
     menuNewHtml: 'HTML',
     menuNewPdf: 'PDF',
     menuExportPdf: '匯出為 PDF…',
+    menuExportImages: '匯出為圖片…',
     menuExportHtml: '匯出為單檔 HTML…',
     menuOpenInDocs: '轉換為 Docs 文件並開啟',
     menuPrint: '列印…',
@@ -2421,7 +2550,11 @@ const tMain = createI18n({
     dlgPickSaveDir: 'Standart saqlash joyini tanlang',
     errSaveDirUnusable:
       'Tanlangan jildga yozib bo‘lmaydi va undan standart saqlash joyi sifatida foydalanib bo‘lmaydi',
-  },
+      dlgAddFolderRoot: 'Jildni Bosh sahifaga qoʻshish',
+    errFolderRootUnusable: 'Tanlangan jild oʻqilmaydi',
+    menuExportImages: 'Rasmlar sifatida eksport qilish…',
+    menuOpenInNewWindow: 'Yangi oynada ochish',
+},
   kk: {
     menuFile: 'Файл',
     menuSectionNew: 'Жаңа',
@@ -2511,7 +2644,11 @@ const tMain = createI18n({
     dlgPickSaveDir: 'Әдепкі сақтау орнын таңдау',
     errSaveDirUnusable:
       'Таңдалған қалтаға жазу мүмкін емес, оны әдепкі сақтау орны ретінде пайдалану мүмкін емес',
-  },
+      dlgAddFolderRoot: 'Қалтаны Басты бетке қосу',
+    errFolderRootUnusable: 'Таңдалған қалта оқылмайды',
+    menuExportImages: 'Суреттер түрінде экспорттау…',
+    menuOpenInNewWindow: 'Жаңа терезеде ашу',
+},
   az: {
     menuFile: 'Fayl',
     menuSectionNew: 'Yeni',
@@ -2600,7 +2737,11 @@ const tMain = createI18n({
     dlgPickSaveDir: 'Defolt yadda saxlama məkanını seçin',
     errSaveDirUnusable:
       'Seçilmiş qovluğa yazmaq mümkün deyil və o, standart saxlama yeri kimi istifadə edilə bilməz',
-  },
+      dlgAddFolderRoot: 'Qovluğu Ana səhifəyə əlavə et',
+    errFolderRootUnusable: 'Seçilmiş qovluq oxuna bilmir',
+    menuExportImages: 'Şəkillər kimi ixrac et…',
+    menuOpenInNewWindow: 'Yeni pəncərədə aç',
+},
   tk: {
     menuFile: 'Faýl',
     menuSectionNew: 'Täze',
@@ -2689,7 +2830,11 @@ const tMain = createI18n({
     dlgPickSaveDir: 'Bellenen ýatda saklama ýerini saýla',
     errSaveDirUnusable:
       'Saýlanan bukja ýazmak mümkin däl we ony deslapky ýatda saklama ýeri hökmünde ulanyp bolmaýar',
-  },
+      dlgAddFolderRoot: 'Bujany Baş sahypa goşuň',
+    errFolderRootUnusable: 'Saýlanan buja okalmaýar',
+    menuExportImages: 'Suratlar hökmünde eksport ediň…',
+    menuOpenInNewWindow: 'Täze penjirä açyň',
+},
   ky: {
     menuFile: 'Файл',
     menuSectionNew: 'Жаңы',
@@ -2778,7 +2923,11 @@ const tMain = createI18n({
     dlgPickSaveDir: 'Демейки сактоо ордун тандоо',
     errSaveDirUnusable:
       'Тандалган папкага жазууга болбойт, аны демейки сактоо жайгашкан жери катары колдонууга мүмкүн эмес',
-  },
+      dlgAddFolderRoot: 'Папканы Башкы бетке кошуу',
+    errFolderRootUnusable: 'Тандалган папка окулбайт',
+    menuExportImages: 'Сүрөттөр катары экспорттоо…',
+    menuOpenInNewWindow: 'Жаңа терезеде ачуу',
+},
   tt: {
     menuFile: 'Файл',
     menuSectionNew: 'Яңа',
@@ -2868,7 +3017,11 @@ const tMain = createI18n({
     dlgPickSaveDir: 'Килешү буенча саклау урынын сайлагыз',
     errSaveDirUnusable:
       'Сайланган папкага язу мөмкин түгел, аны килешү буенча саклау урыны итеп кулланып булмый',
-  },
+      dlgAddFolderRoot: 'Папканы Баш биткә өстәү',
+    errFolderRootUnusable: 'Сайланган папка укылмый',
+    menuExportImages: 'Рәсемнәр итеп экспортлау…',
+    menuOpenInNewWindow: 'Яңа тәрәзәдә ачу',
+},
   ka: {
     menuFile: 'ფაილი',
     menuSectionNew: 'ახალი',
@@ -2958,7 +3111,11 @@ const tMain = createI18n({
     dlgPickSaveDir: 'აირჩიეთ ნაგულისხმევი შენახვის მდებარეობა',
     errSaveDirUnusable:
       'არჩეულ საქაღალდეში ჩაწერა შეუძლებელია და ის ნაგულისხმევ შენახვის ადგილად ვერ გამოიყენება',
-  },
+      dlgAddFolderRoot: 'საქაღალდის დამატება მთავარში',
+    errFolderRootUnusable: 'არჩეული საქაღალდე ვერ იკითხება',
+    menuExportImages: 'სურათებად ექსპორტი…',
+    menuOpenInNewWindow: 'ახალ ფანჯარაში გახსნა',
+},
 })
 
 const tm = (key: Parameters<typeof tMain>[1], params?: Parameters<typeof tMain>[2]) =>
@@ -2977,6 +3134,24 @@ let tabManager: TabManager | null = null
  * created, and the tab's first save moves the fresh file there.
  * key: 'doc' | 'sheet' | 'slide' | 'markdown' | 'html' | 'pdf'
  */
+/** folders the user added to the home tree beside the default save folder */
+function extraFolderRoots(): string[] {
+  return readExtraRoots(readAppSettings(APP_SETTINGS_PATH()), defaultSaveDir())
+}
+
+function folderRootPaths(): string[] {
+  return [defaultSaveDir(), ...extraFolderRoots()]
+}
+
+function insideAnyRoot(path: string): boolean {
+  return folderRootPaths().some((root) => isInsideRoot(root, path))
+}
+
+function isAnyRoot(path: string): boolean {
+  const key = resolve(path)
+  return folderRootPaths().some((root) => resolve(root) === key)
+}
+
 const pendingNewFileDir = new Map<string, { dir: string; setAt: number }>()
 /** folder bound to a freshly created editor tab, keyed by its webContents id; consumed by the first save */
 const pendingDirByWc = new Map<number, { dir: string; setAt: number }>()
@@ -2985,8 +3160,7 @@ const PENDING_DIR_TTL_MS = 30 * 60 * 1000
 
 function rememberPendingDir(kind: string, opts?: NewFileOpts): void {
   const dir = opts?.dir
-  const root = defaultSaveDir()
-  if (!dir || resolve(dir) === resolve(root) || !isInsideRoot(root, dir)) {
+  if (!dir || resolve(dir) === resolve(defaultSaveDir()) || !insideAnyRoot(dir)) {
     pendingNewFileDir.delete(kind)
     return
   }
@@ -3059,6 +3233,8 @@ function afterFileMoved(oldPath: string, newPath: string): void {
   projectFileRenamed(oldPath, newPath)
   if (/\.pptx$/i.test(newPath)) void replaceSlidesRecentFile(oldPath, newPath)
   const affected = tabManager?.renameTabFile(oldPath, newPath) ?? []
+  const detachedAffected = detachedRenameFile(oldPath, newPath)
+  if (detachedAffected) affected.push(detachedAffected)
   for (const t of affected) {
     if (t.kind === 'slides') slidesFileRenamed(t.webContents, oldPath, newPath)
     else if (t.kind === 'docs') docsFileRenamed(t.webContents, oldPath, newPath)
@@ -3069,26 +3245,74 @@ function afterFileMoved(oldPath: string, newPath: string): void {
   }
 }
 
-/** a folder moved/renamed: re-key every file that lived under it */
+function trackedFilesUnder(dir: string): string[] {
+  return pathsUnder(dir, [
+    ...readRecentFiles(),
+    ...readStarredFiles(),
+    ...projectFilePaths(),
+    ...readSlidesRecentFiles(),
+    ...(tabManager?.openFilePaths() ?? []),
+    ...detachedFilePaths(),
+  ])
+}
+
+/** a folder moved/renamed: re-key every tracked file that lived under it */
 function afterFolderMoved(oldDir: string, newDir: string, filesBefore: readonly string[]): void {
   for (const file of filesBefore) afterFileMoved(file, rebasePath(file, oldDir, newDir))
 }
 
-let folderWatcher: FolderWatcher | null = null
-let folderWatcherRoot = ''
+const folderWatchers = new Map<string, FolderWatcher>()
 
-/** (re)start the root watcher; the tree root follows the default save folder setting */
-function ensureFolderWatcher(): void {
-  const root = defaultSaveDir()
-  if (folderWatcher?.active && folderWatcherRoot === root) return
-  folderWatcher?.close()
-  folderWatcherRoot = root
-  // the home screen and every editor's Files pane listen
-  folderWatcher = new FolderWatcher(root, (dirs) => {
-    for (const wc of webContents.getAllWebContents()) {
-      if (!wc.isDestroyed()) wc.send(HOME_CHANNELS.folderChanged, dirs)
-    }
+let fileIndexStore: FileIndexStore | null = null
+let fileIndexer: FileIndexer | null = null
+let searchReranker: SearchReranker | null = null
+
+function readFileSearchSettings(): FileSearchSettings {
+  return normalizeFileSearchSettings(readAppSettings(APP_SETTINGS_PATH()).fileSearch)
+}
+
+/** the search index lives in userData and follows the save folder plus recents/starred */
+function ensureFileIndexer(): FileIndexer | null {
+  if (fileIndexer) return fileIndexer
+  try {
+    fileIndexStore = new FileIndexStore(join(app.getPath('userData'), 'file-index.db'))
+  } catch (e) {
+    console.warn('[file-index] unavailable:', e instanceof Error ? e.message : e)
+    return null
+  }
+  fileIndexer = new FileIndexer(fileIndexStore, extractWorkerPath, {
+    roots: () => folderRootPaths().filter((root) => existsSync(root)),
+    extraPaths: () => [...readRecentFiles(), ...readStarredFiles()],
   })
+  return fileIndexer
+}
+
+const SEARCH_EXT_FAMILY: Record<string, readonly string[]> = {
+  docx: ['docx', 'doc'],
+  xlsx: ['xlsx', 'xlsm', 'xls', 'csv'],
+  pptx: ['pptx', 'ppt'],
+  md: ['md', 'markdown'],
+  html: ['html', 'htm'],
+}
+
+/** one recursive watcher per tree root; follows the save-folder setting and the added folders */
+function ensureFolderWatchers(): void {
+  const wanted = new Set(folderRootPaths().filter((root) => existsSync(root)))
+  for (const [root, watcher] of folderWatchers) {
+    if (wanted.has(root) && watcher.active) continue
+    watcher.close()
+    folderWatchers.delete(root)
+  }
+  for (const root of wanted) {
+    if (folderWatchers.has(root)) continue
+    const watcher = new FolderWatcher(root, (dirs) => {
+      fileIndexer?.refresh()
+      for (const wc of webContents.getAllWebContents()) {
+        if (!wc.isDestroyed()) wc.send(HOME_CHANNELS.folderChanged, dirs)
+      }
+    })
+    folderWatchers.set(root, watcher)
+  }
 }
 
 function applyMenuFor(kind: TabKind): void {
@@ -3158,14 +3382,19 @@ function createShellWindow(): void {
   // DOM event anywhere — will-move is the only signal to dismiss popovers
   win.on('will-move', () => broadcastChromePressed())
   // A detached editor window claims the process-global menu/active-editor targets
-  // while focused; take them back when the shell window regains focus
-  win.on('focus', () => tabManager?.refreshActiveTargets())
+  // while focused; take them back when the shell window regains focus. Keyboard
+  // focus must land back on the active tab's view too — regaining window focus
+  // gives it to the chrome webContents, leaving typing dead in the document.
+  win.on('focus', () => {
+    tabManager?.refreshActiveTargets()
+    tabManager?.focusActiveView()
+  })
 
   const manager = new TabManager(
     win,
     () => {
       win.webContents.send(TABS_CHANNELS.changed, manager.list())
-      publishOpenDocumentsIfOwner(manager.openFilePaths())
+      publishOpenDocumentsIfOwner([...manager.openFilePaths(), ...detachedFilePaths()])
     },
     applyMenuFor,
     // no extension: these tabs have no file on disk yet; the title becomes the
@@ -3183,11 +3412,17 @@ function createShellWindow(): void {
   )
   tabManager = manager
 
-  // pushRecent-triggered docs menu rebuilds must not clobber the active tab's menu
-  setDocsMenuGate(() => manager.list().some((t) => t.active && t.kind === 'docs'))
+  // pushRecent-triggered docs menu rebuilds must not clobber the active tab's
+  // menu; a focused detached docs window owns the menu just like an active tab
+  setDocsMenuGate(
+    () =>
+      focusedDetachedKind() === 'docs' || manager.list().some((t) => t.active && t.kind === 'docs'),
+  )
 
   setDocsShellWindow(win)
   setSheetsShellWindow(win)
+  setDocsHostWindowHook((wc) => detachedWindowForWebContents(wc.id))
+  setSheetsHostWindowHook((wc) => detachedWindowForWebContents(wc.id))
   setSlidesShellWindow(win)
   setSlidesShowBleed((wc, on) => manager.setContentBleed(wc, on))
   setHtmlPresentHooks({
@@ -3203,20 +3438,30 @@ function createShellWindow(): void {
       return !!id
     },
   })
+  // A detached docs/sheets window can outlive the shell window; its hooks must
+  // then reach the live tab manager (recreating the shell), never this closure's.
   setDocsShellHooks({
-    openTab: (openPath, options) => manager.openDocsTab(openPath, options),
+    openTab: (openPath, options) => ensureTabManager().openDocsTab(openPath, options),
     openAiDocTab: (content) =>
-      manager.openDocsTab(undefined, { newBlank: true, aiContent: content }),
+      ensureTabManager().openDocsTab(undefined, { newBlank: true, aiContent: content }),
     listTabs: () =>
-      manager
-        .list()
+      (tabManager?.list() ?? [])
         .filter((t) => t.kind === 'docs')
         .map((t) => ({ id: t.id, title: t.title, focused: t.active })),
-    focusTab: (id) => manager.activateTab(id),
-    closeActiveTab: () => manager.closeActiveTab(),
+    focusTab: (id) => tabManager?.activateTab(id),
+    // ⌘W in a detached docs window closes that window (its own close guard runs)
+    closeActiveTab: () => {
+      const focused = BrowserWindow.getFocusedWindow()
+      if (focused && focused !== win) focused.close()
+      else tabManager?.closeActiveTab()
+    },
     openGeneratedPath: (path) => openGeneratedDocument(path),
   })
-  setSheetsCloseTabHook(() => manager.closeActiveTab())
+  setSheetsCloseTabHook(() => {
+    const focused = BrowserWindow.getFocusedWindow()
+    if (focused && focused !== win) focused.close()
+    else tabManager?.closeActiveTab()
+  })
   // ⌘W targets the focused window: in a detached slides editor window it closes
   // that window (running its own close guard), not the shell's active tab
   setSlidesCloseTabHook(() => {
@@ -3228,6 +3473,7 @@ function createShellWindow(): void {
   // The first save / save-as fires this too, so applyPendingDir also runs here.
   setSheetsWorkbookOpenedHook((wc, path) => {
     manager.setTabFileFor(wc.id, path)
+    detachedSetFileFor(wc.id, path)
     recordRecentFile(path)
   })
   setSlidesOpenedHook((wc, path) => {
@@ -3238,14 +3484,16 @@ function createShellWindow(): void {
   // docs' save-as / silent first save lands on a new path → sync the tab title too
   setDocsFileSavedHook((wc, path) => {
     manager.setTabFileFor(wc.id, path)
+    detachedSetFileFor(wc.id, path)
     recordRecentFile(path)
-    applyPendingDir(wc.id, path)
+    return applyPendingDir(wc.id, path)
   })
   // ⌘O / open-path inside a docs tab: sync the tab title immediately, same
   // contract as the sheets/slides opened hooks (a plain save to the original
   // path never renames the tab, so the open must — r115)
   setDocsFileOpenedHook((wcId, path) => {
     manager.setTabFileFor(wcId, path)
+    detachedSetFileFor(wcId, path)
     recordRecentFile(path)
     applyPendingDir(wcId, path)
   })
@@ -3261,6 +3509,12 @@ function createShellWindow(): void {
     applyPendingDir(wc.id, path)
   })
   setHtmlProvisionalTitleHook((wc, title) => manager.setTabTitleFor(wc.id, title))
+  // A redacted copy becomes this tab's document; the source still exists.
+  setPdfRedactionSavedHook((wc, path) => {
+    manager.setTabFileFor(wc.id, path)
+    recordRecentFile(path)
+    applyPendingDir(wc.id, path)
+  })
   // pdf content-derived auto-rename: the file moved on disk, follow it everywhere
   setPdfRenamedHook((wc, oldPath, newPath) => {
     manager.setTabFileFor(wc.id, newPath)
@@ -3344,7 +3598,7 @@ function createShellWindow(): void {
     if (shellWindow === win) shellWindow = null
     if (tabManager === manager) {
       tabManager = null
-      publishOpenDocumentsIfOwner([])
+      publishAllOpenDocuments()
     }
   })
 
@@ -3429,14 +3683,16 @@ function showAppWarning(message: string): void {
  * and route through the normal File > Open pipeline; detached editor windows
  * can host the drop target, so the shell must reveal itself after opening.
  */
+const droppedFilesDeps = () => ({
+  openDocumentPath,
+  revealShellWindow,
+  showWarning: showAppWarning,
+  unsupportedMessage: (exts: string[]) => tm('errUnsupportedExt', { ext: exts.join(', ') }),
+})
+
 function registerDroppedFilesIpc(): void {
   ipcMain.on(DROP_OPEN_CHANNEL, (_event, raw: unknown) =>
-    handleDroppedFiles(raw, {
-      openDocumentPath,
-      revealShellWindow,
-      showWarning: showAppWarning,
-      unsupportedMessage: (exts) => tm('errUnsupportedExt', { ext: exts.join(', ') }),
-    }),
+    handleDroppedFiles(raw, droppedFilesDeps()),
   )
   // Ribbon File > Open inside any app view: same dialog + routing as the
   // native File > Open menu item.
@@ -3470,7 +3726,10 @@ function openGeneratedDocument(filePath: string): boolean {
 }
 
 function routeDocumentPath(filePath: string): boolean {
-  if (!existsSync(filePath) || !tabManager) return false
+  if (!existsSync(filePath)) return false
+  // a detached editor window already shows this file — focus it, never a second copy
+  if (focusDetachedByPath(filePath)) return true
+  if (!tabManager) return false
   if (DOCX_RE.test(filePath)) {
     recordRecentFile(filePath)
     const existing = tabManager.findDocsTabByPath(filePath)
@@ -3805,6 +4064,71 @@ function registerHomeIpc(): void {
     pageRecentPaths(readRecentFiles(), query, new Set(readStarredFiles())),
   )
 
+  ipcMain.handle(HOME_CHANNELS.searchFiles, (_event, raw: unknown): FileSearchPage => {
+    const query = (raw && typeof raw === 'object' ? raw : {}) as Partial<FileSearchQuery>
+    const indexer = ensureFileIndexer()
+    if (!indexer || !fileIndexStore) {
+      return { hits: [], total: 0, index: { indexed: 0, pending: 0, scanning: false } }
+    }
+    // an open search box is the moment a stale index shows; rescan at most once a minute
+    indexer.refreshIfStale(60_000)
+    const q = typeof query.q === 'string' ? query.q.trim().slice(0, 200) : ''
+    const filter = typeof query.ext === 'string' ? query.ext : ''
+    const exts = filter && filter !== 'all' ? (SEARCH_EXT_FAMILY[filter] ?? [filter]) : undefined
+    const offset = Number.isFinite(query.offset) ? Math.max(0, Math.floor(query.offset!)) : 0
+    const limit = Number.isFinite(query.limit) ? Math.max(0, Math.floor(query.limit!)) : 50
+    const starred = new Set(readStarredFiles())
+    const result = q ? fileIndexStore.search(q, { exts, offset, limit }) : { hits: [], total: 0 }
+    return {
+      hits: result.hits.map((h) => ({ ...h, starred: starred.has(h.path) })),
+      total: result.total,
+      index: indexer.progress(),
+    }
+  })
+
+  ipcMain.handle(
+    HOME_CHANNELS.rerankSearch,
+    async (_event, raw: unknown): Promise<FileSearchRerank | null> => {
+      const settings = readFileSearchSettings()
+      if (!settings.rerank) return null
+      const query = (raw && typeof raw === 'object' ? raw : {}) as { q?: unknown; paths?: unknown }
+      const q = typeof query.q === 'string' ? query.q.trim().slice(0, 200) : ''
+      const paths = Array.isArray(query.paths)
+        ? query.paths.filter((p): p is string => typeof p === 'string').slice(0, 20)
+        : []
+      if (!q || paths.length < 2 || !ensureFileIndexer() || !fileIndexStore) return null
+      searchReranker ??= new SearchReranker(fileIndexStore)
+      return searchReranker.rerank(q, paths, settings)
+    },
+  )
+
+  ipcMain.handle(HOME_CHANNELS.getFileSearchSettings, (): FileSearchSettings =>
+    readFileSearchSettings(),
+  )
+
+  ipcMain.handle(
+    HOME_CHANNELS.setFileSearchSettings,
+    (_event, patch: unknown): FileSearchSettings => {
+      const current = readFileSearchSettings()
+      const p = (patch && typeof patch === 'object' ? patch : {}) as Partial<FileSearchSettings>
+      const next = normalizeFileSearchSettings({
+        ...current,
+        ...p,
+        jevKeys: { ...current.jevKeys, ...(p.jevKeys ?? {}) },
+      })
+      writeAppSetting(APP_SETTINGS_PATH(), 'fileSearch', next)
+      return next
+    },
+  )
+
+  ipcMain.handle(HOME_CHANNELS.testFileSearchRerank, (_event, input: unknown) => {
+    const { endpoint, apiKey } = (input && typeof input === 'object' ? input : {}) as {
+      endpoint?: unknown
+      apiKey?: unknown
+    }
+    return probeJev(jevEndpointOf(endpoint), typeof apiKey === 'string' ? apiKey : '')
+  })
+
   // Starred files sort by mtime, which requires stat-ing them all first; they are hand-picked and few, so this is fine
   ipcMain.handle(HOME_CHANNELS.starred, (_event, query: unknown): RecentPage => {
     const { offset, limit, ext } = normalizeRecentQuery(query)
@@ -3826,7 +4150,9 @@ function registerHomeIpc(): void {
   })
 
   ipcMain.handle(HOME_CHANNELS.openPath, (_event, path: unknown) => {
-    if (typeof path === 'string') openDocumentPath(path)
+    if (typeof path !== 'string' || !path || path.length > 4096) return
+    openDocumentPath(path)
+    fileIndexer?.refresh()
   })
 
   ipcMain.handle(HOME_CHANNELS.browse, async (event) => {
@@ -4109,14 +4435,61 @@ function registerHomeIpc(): void {
     failed: tm('errRenameFailed'),
   })
   const insideRoot = (path: unknown): path is string =>
-    typeof path === 'string' && isInsideRoot(defaultSaveDir(), path)
-  const isRoot = (path: string) => resolve(path) === resolve(defaultSaveDir())
+    typeof path === 'string' && insideAnyRoot(path)
+  const isRoot = (path: string) => isAnyRoot(path)
 
-  ipcMain.handle(HOME_CHANNELS.folderRoot, (): FolderRoot => {
-    // describeRoot creates a missing root, so the watcher has something to attach to
-    const root = describeRoot(defaultSaveDir())
-    if (root.usable) ensureFolderWatcher()
-    return root
+  ipcMain.handle(HOME_CHANNELS.folderRoots, (): FolderRoot[] => {
+    // describeRoot creates a missing save folder, so its watcher has something to attach to
+    const roots = [describeRoot(defaultSaveDir()), ...extraFolderRoots().map(describeExtraRoot)]
+    ensureFolderWatchers()
+    return roots
+  })
+
+  // an added folder joins the tree where it is: nothing on disk is created, copied or moved
+  const addFolderRoot = (path: string): FolderRoot | null => {
+    const extras = withExtraRoot(extraFolderRoots(), defaultSaveDir(), path)
+    if (!extras) return null
+    writeAppSetting(APP_SETTINGS_PATH(), FOLDER_ROOTS_KEY, extras)
+    ensureFolderWatchers()
+    fileIndexer?.refresh()
+    return describeExtraRoot(path)
+  }
+
+  ipcMain.handle(HOME_CHANNELS.addFolderRoot, async (): Promise<FolderRoot | null> => {
+    const result = await showOpenDialogWithMemory(dialog, shellWindow, {
+      title: tm('dlgAddFolderRoot'),
+      properties: ['openDirectory'],
+    })
+    const picked = result.filePaths[0]
+    if (result.canceled || !picked) return null
+    if (!describeExtraRoot(picked).readable) {
+      showErrorDialog(shellWindow, tm('errFolderRootUnusable'), picked)
+      return null
+    }
+    return addFolderRoot(picked)
+  })
+
+  ipcMain.handle(HOME_CHANNELS.dropFolderRoots, (_event, paths: unknown): FolderRoot[] => {
+    const added: FolderRoot[] = []
+    const files: string[] = []
+    for (const path of stringPaths(paths)) {
+      if (!describeExtraRoot(path).readable) {
+        files.push(path)
+        continue
+      }
+      const root = addFolderRoot(path)
+      if (root) added.push(root)
+    }
+    if (files.length > 0) handleDroppedFiles(files, droppedFilesDeps())
+    return added
+  })
+
+  ipcMain.handle(HOME_CHANNELS.removeFolderRoot, (_event, path: unknown) => {
+    if (typeof path !== 'string') return
+    const extras = withoutExtraRoot(extraFolderRoots(), path)
+    writeAppSetting(APP_SETTINGS_PATH(), FOLDER_ROOTS_KEY, extras)
+    ensureFolderWatchers()
+    fileIndexer?.refresh()
   })
 
   ipcMain.handle(HOME_CHANNELS.listFolder, (_event, dir: unknown): FolderListing => {
@@ -4138,7 +4511,7 @@ function registerHomeIpc(): void {
     (_event, dir: unknown, newName: unknown): RenameResult => {
       if (!insideRoot(dir) || isRoot(dir) || typeof newName !== 'string')
         return { ok: false, error: tm('errBadArgs') }
-      const filesBefore = collectTreeFiles(dir)
+      const filesBefore = trackedFilesUnder(dir)
       const result = renameFolder(dir, newName, folderErrors())
       if (result.ok && result.path && result.path !== dir) {
         afterFolderMoved(dir, result.path, filesBefore)
@@ -4164,9 +4537,9 @@ function registerHomeIpc(): void {
           return false
         }
       }
-      // files may come from anywhere (the Recent list); folders only from inside the tree
-      const sources = list.filter((p) => !isDir(p) || isInsideRoot(defaultSaveDir(), p))
-      const dirFiles = new Map(sources.filter(isDir).map((p) => [p, collectTreeFiles(p)]))
+      // files may come from anywhere (the Recent list); folders only from inside the tree, never a root itself
+      const sources = list.filter((p) => !isDir(p) || (insideAnyRoot(p) && !isAnyRoot(p)))
+      const dirFiles = new Map(sources.filter(isDir).map((p) => [p, trackedFilesUnder(p)]))
       // 'replace' must not destroy data: the displaced target goes to the trash,
       // and everything keyed on its path (recents, stars, chat history) leaves
       // with it so the incoming file does not inherit another document's record
@@ -4174,7 +4547,7 @@ function registerHomeIpc(): void {
       const result = movePathsInto(sources, targetDir, conflictPolicy, folderErrors(), {
         replaceExisting: (path) => {
           const parked = join(dirname(path), `.vegaoffice-replaced-${Date.now()}-${basename(path)}`)
-          const files = isDir(path) ? collectTreeFiles(path) : [path]
+          const files = isDir(path) ? trackedFilesUnder(path) : [path]
           renameSync(path, parked)
           return {
             commit: () => {
@@ -4205,7 +4578,7 @@ function registerHomeIpc(): void {
 
   ipcMain.handle(HOME_CHANNELS.deleteFolder, async (_event, dir: unknown) => {
     if (!insideRoot(dir) || isRoot(dir)) return
-    const files = collectTreeFiles(dir)
+    const files = trackedFilesUnder(dir)
     try {
       await shell.trashItem(dir)
     } catch {
@@ -4230,7 +4603,7 @@ function registerHomeIpc(): void {
       return null
     }
     writeAppSetting(APP_SETTINGS_PATH(), DEFAULT_SAVE_DIR_KEY, picked)
-    ensureFolderWatcher()
+    ensureFolderWatchers()
     return picked
   })
 
@@ -4346,11 +4719,34 @@ function broadcastChromePressed(exclude?: WebContents): void {
   }
 }
 
+/** the shell's tab manager, recreating the shell window when a detached editor outlived it */
+function ensureTabManager(): TabManager {
+  if (!tabManager) createShellWindow()
+  if (!tabManager) throw new Error('the shell window could not be created')
+  return tabManager
+}
+
+/** "Open in New Window": reparent the tab's live view into a detached editor
+ *  window — the document moves as-is, unsaved edits included. */
+function detachTabToWindow(id: string): void {
+  if (!tabManager) return
+  const record = tabManager.detachTab(id)
+  if (!record) return
+  const win = createDetachedEditorWindow({ ...record, applyMenuFor })
+  win.focus()
+}
+
 function registerTabsIpc(): void {
   ipcMain.on(TABS_CHANNELS.chromePressed, (event) => broadcastChromePressed(event.sender))
   ipcMain.handle(TABS_CHANNELS.list, () => tabManager?.list() ?? [])
-  ipcMain.handle(TABS_CHANNELS.activate, (_event, id: string) => tabManager?.activateTab(id))
-  ipcMain.handle(TABS_CHANNELS.close, (_event, id: string) => tabManager?.closeTab(id))
+  ipcMain.handle(TABS_CHANNELS.activate, (_event, id: unknown) => {
+    if (typeof id !== 'string' || !id) return
+    tabManager?.activateTab(id)
+  })
+  ipcMain.handle(TABS_CHANNELS.close, (_event, id: unknown) => {
+    if (typeof id !== 'string' || !id) return
+    return tabManager?.closeTab(id)
+  })
   ipcMain.handle(TABS_CHANNELS.reorder, (_event, id: string, toIndex: number) => {
     if (typeof id === 'string' && Number.isInteger(toIndex)) tabManager?.reorderTab(id, toIndex)
   })
@@ -4377,6 +4773,38 @@ function registerTabsIpc(): void {
       })),
     )
     menu.popup({
+      window: shellWindow,
+      ...(typeof x === 'number' && typeof y === 'number'
+        ? { x: Math.round(x), y: Math.round(y) }
+        : {}),
+    })
+  })
+  ipcMain.handle(TABS_CHANNELS.detach, (_event, id: unknown) => {
+    if (typeof id !== 'string') return
+    const tab = tabManager?.list().find((t) => t.id === id)
+    if (tab && (tab.kind === 'docs' || tab.kind === 'sheets')) detachTabToWindow(id)
+  })
+  // per-tab context menu — native for the same reason as the tab list above
+  ipcMain.handle(TABS_CHANNELS.showTabMenu, (_event, id: unknown, x: unknown, y: unknown) => {
+    if (!tabManager || !shellWindow || typeof id !== 'string') return
+    const tab = tabManager.list().find((t) => t.id === id)
+    if (!tab || tab.kind === 'home') return
+    const template: MenuItemConstructorOptions[] = []
+    // MVP: docs + sheets; the other editors follow once their
+    // detached-window quirks (slides fullscreen bleed, pdf) are covered
+    if (tab.kind === 'docs' || tab.kind === 'sheets') {
+      template.push({
+        label: tm('menuOpenInNewWindow'),
+        click: () => detachTabToWindow(id),
+      })
+      template.push({ type: 'separator' })
+    }
+    template.push({
+      label: tm('menuClose'),
+      enabled: tab.closable,
+      click: () => void tabManager?.closeTab(id),
+    })
+    Menu.buildFromTemplate(template).popup({
       window: shellWindow,
       ...(typeof x === 'number' && typeof y === 'number'
         ? { x: Math.round(x), y: Math.round(y) }
@@ -4683,6 +5111,13 @@ function buildMarkdownMenu(): void {
           click: () => {
             const tab = tabManager?.activeMarkdownTab()
             if (tab) sendMarkdownExportRequest(tab.webContents, 'pdf')
+          },
+        },
+        {
+          label: tm('menuExportImages'),
+          click: () => {
+            const tab = tabManager?.activeMarkdownTab()
+            if (tab) sendMarkdownExportRequest(tab.webContents, 'png')
           },
         },
         {
@@ -5435,6 +5870,8 @@ async function runHeadlessExportEntry(
 }
 
 app.whenReady().then(async () => {
+  // first scan waits for the windows to come up; later ones follow folder changes
+  setTimeout(() => ensureFileIndexer()?.refresh(), 4000)
   installRendererProtocol({
     docs: join(DOCS_OUT, 'renderer'),
     sheets: join(SHEETS_OUT, 'renderer'),
@@ -5476,6 +5913,14 @@ app.whenReady().then(async () => {
     app.quit()
     return
   }
+  // another VegaOffice-family app re-logging in rotates the shared key; the
+  // home page re-reads its account status. A logout that clears the key is
+  // not a login
+  stopAuthWatch = watchVegaofficeApiKey((key) => {
+    if (!key) return
+    for (const w of BrowserWindow.getAllWindows())
+      w.webContents.send(HOME_CHANNELS.accountLoginEvent, { phase: 'success' })
+  })
   // a registry left by a crashed instance must not block vegaoffice writes
   ownsOpenDocumentsRegistry = true
   publishOpenDocuments(OPEN_DOCUMENTS_PATH(), [])
@@ -5558,12 +6003,14 @@ app.whenReady().then(async () => {
     // documents the user has open: the tab list plus each family's own bridge,
     // so an agent reaches a tab nobody but the user opened
     openDocumentsControl: createOpenDocumentsControl({
-      list: () => {
-        if (!tabManager) throw new Error('the tab manager is not ready')
-        return tabManager.openDocuments()
+      list: async () => {
+        const tabs = tabManager ? await tabManager.openDocuments() : []
+        return [...tabs, ...(await detachedOpenDocuments())]
       },
-      webContentsFor: (tabId) => tabManager?.webContentsForTab(tabId),
-      closeTab: (tabId) => tabManager?.closeTabWithoutPrompt(tabId) ?? false,
+      webContentsFor: (tabId) =>
+        tabManager?.webContentsForTab(tabId) ?? detachedWebContentsFor(tabId),
+      closeTab: (tabId) =>
+        closeDetachedWithoutPrompt(tabId) || (tabManager?.closeTabWithoutPrompt(tabId) ?? false),
       defaultSaveDir: () => defaultSaveDir(),
       docs: mcpDocsControl,
       sheets: mcpSheetsControl,
@@ -5592,15 +6039,20 @@ app.whenReady().then(async () => {
     // lets the content tools take a `document` argument (tab id or path) and edit
     // a tab the *user* has open, with no create_session involved
     resolveTarget: createOpenTargetResolver({
-      list: () => {
-        if (!tabManager) throw new Error('the tab manager is not ready')
-        return tabManager.openDocuments()
+      list: async () => {
+        const tabs = tabManager ? await tabManager.openDocuments() : []
+        return [...tabs, ...(await detachedOpenDocuments())]
       },
-      webContentsFor: (tabId) => tabManager?.webContentsForTab(tabId),
+      webContentsFor: (tabId) =>
+        tabManager?.webContentsForTab(tabId) ?? detachedWebContentsFor(tabId),
       // an agent editing a background tab would otherwise work where nobody can
-      // see it: switch to that tab and bring the window forward first
-      activate: (tabId) => tabManager?.activateTab(tabId),
-      revealWindow: revealShellWindow,
+      // see it: switch to that tab and bring its window forward first
+      activate: (tabId) => {
+        if (!activateDetached(tabId)) tabManager?.activateTab(tabId)
+      },
+      revealWindow: (tabId) => {
+        if (!isDetachedTabId(tabId)) revealShellWindow()
+      },
     }),
     logFilePath: join(app.getPath('userData'), 'mcp-log.txt'),
   })
@@ -5622,8 +6074,10 @@ app.whenReady().then(async () => {
     controlHandler({
       reveal: revealShellWindow,
       openDocument: openDocumentPath,
-      activateTab: (id) => tabManager?.activateTab(id),
-      findTab: (path) => tabManager?.findTabByPath(path),
+      activateTab: (id) => {
+        if (!activateDetached(id)) tabManager?.activateTab(id)
+      },
+      findTab: (path) => tabManager?.findTabByPath(path) ?? findDetachedTabByPath(path),
     }),
   ).then(
     (server) => {
@@ -5655,7 +6109,10 @@ app.on('before-quit', () => {
 
 // after every window has closed, so the shell window's own 'closed' republish cannot revive the file
 app.on('will-quit', () => {
-  folderWatcher?.close()
+  fileIndexer?.stop()
+  fileIndexStore?.close()
+  stopAuthWatch?.()
+  for (const watcher of folderWatchers.values()) watcher.close()
   controlServer?.close()
   // a second instance that lost the lock quits too; it must not delete the running editor's list
   if (ownsOpenDocumentsRegistry) clearOpenDocuments(OPEN_DOCUMENTS_PATH())

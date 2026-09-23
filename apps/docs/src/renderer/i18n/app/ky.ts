@@ -373,4 +373,7 @@ export const ky = {
   appUpdateStyleTip: 'Учурдагы тандоодон бул стилди жаңыртуу (styles.xml файлына кайра жазылат)',
   appNewStyleFromSelection: 'Учурдагы тандоодон жаңы стиль',
   appStyleNamePlaceholder: 'Стиль аты',
+  appDocTooLargeBlocks: '{name}: документ ачуу үчүн өтө чоң ({blocks} абзац, {chars} белги)',
+  appDocLargeReadOnly: 'Чоң документ ({blocks} абзац): окуу режиминде ачылды — түзөтүү үчүн Esc басыңыз',
+  appDocLargeSpellOff: 'Чоң документ ({blocks} абзац): терсиңизде орфография текшерүүсү өчүк — Review › Spelling бөлүмүндөн күйгүзүңүз',
 } satisfies Record<keyof typeof zh, string>

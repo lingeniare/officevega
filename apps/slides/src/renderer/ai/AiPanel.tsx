@@ -23,10 +23,10 @@ import {
   type DeckProgressEvent,
   type OutlineProposal,
   type OutlineProposalResult,
-  type PageProgressItem,
 } from './slides-skill'
 import { extractJsonObject, parseOutlineJson } from './outline-json'
 import { EditQueueCard } from './EditQueueCard'
+import { deriveDeckProgressView, type DeckProgressSnapshot } from './deck-progress-view'
 import {
   buildPageInstruction,
   groupByPage,
@@ -228,36 +228,6 @@ function safeJsonInput(input: unknown): string | undefined {
   } catch {
     return undefined
   }
-}
-
-/** Generation progress snapshot in the chat stream (same card updated in real time) */
-interface DeckProgressSnapshot {
-  research?: { label: string; status: 'running' | 'done' | 'error'; summary: string }
-  style?: { label: string; status: 'running' | 'done' | 'error'; summary: string }
-  plan?: {
-    label: string
-    done: number
-    total: number
-    status: 'running' | 'done' | 'error'
-    summary: string
-  }
-  images?: {
-    label: string
-    done: number
-    total: number
-    status: 'running' | 'done' | 'error'
-    summary: string
-  }
-  pages?: {
-    label: string
-    done: number
-    total: number
-    status: 'running' | 'done' | 'error'
-    summary: string
-    items: PageProgressItem[]
-  }
-  finalTotal?: number // Total page count from the done event
-  isDone?: boolean
 }
 
 interface ChatEntry {
@@ -1484,7 +1454,13 @@ export function AiPanel({
             }
           }
           if (event.stage === 'done') {
-            return { ...prev, finalTotal: event.total, isDone: true }
+            return {
+              ...prev,
+              finalTotal: event.total,
+              isDone: true,
+              doneSummary: event.summary,
+              ...(event.outcome ? { doneOutcome: event.outcome } : {}),
+            }
           }
           return prev
         })
@@ -2327,7 +2303,7 @@ export function AiPanel({
         onPointerDown={startResize}
         role="separator"
         aria-orientation="vertical"
-        aria-label={lang === 'ru' ? 'ВЕГА' : 'VEGA'}
+        aria-label={t('aiPanelTitle')}
       />
       <div className="ai-panel-header">
         <span className="ai-panel-title">{t('aiPanelTitle')}</span>
@@ -3081,52 +3057,8 @@ function DeckProgressCard({ progress }: { progress: DeckProgressSnapshot }) {
   // Collapsed by default: while generating only the one-line head shows (fewer concurrent loaders);
   // expanding is a view-only toggle
   const [open, setOpen] = useState(false)
-  const { research, style, plan, images, pages, isDone, finalTotal } = progress
-
-  type StepStatus = 'done' | 'error' | 'running'
-
-  // Fix the step display order (only steps that have appeared are shown).
-  // Labels come from skill-layer events (backend-defined steps pattern);
-  // in progress shows a live summary (e.g. "planned 5/10 page outlines…"), frozen to the label when done.
-  const steps: Array<{ key: string; label: string; stepStatus: StepStatus }> = []
-
-  const stepView = (
-    status: 'running' | 'done' | 'error',
-    label: string,
-    summary: string,
-  ): { label: string; stepStatus: StepStatus } => ({
-    // In progress/failed read summary; success freezes to the label
-    label: status === 'done' ? label : summary,
-    stepStatus: status === 'done' ? 'done' : status === 'error' ? 'error' : 'running',
-  })
-
-  if (research) {
-    steps.push({ key: 'research', ...stepView(research.status, research.label, research.summary) })
-  }
-  if (style) {
-    steps.push({ key: 'style', ...stepView(style.status, style.label, style.summary) })
-  }
-  if (plan) {
-    steps.push({ key: 'plan', ...stepView(plan.status, plan.label, plan.summary) })
-  }
-  if (images) {
-    steps.push({ key: 'images', ...stepView(images.status, images.label, images.summary) })
-  }
-  if (pages) {
-    const allDone = isDone || pages.status === 'done'
-    const hasError = pages.items.some((p) => p.status === 'error')
-    steps.push({
-      key: 'pages',
-      label: allDone
-        ? `${pages.label}${pages.total > 0 ? t('aiPagesSuffix', { n: pages.total }) : ''}`
-        : pages.summary || pages.label,
-      stepStatus: allDone ? (hasError ? 'error' : 'done') : 'running',
-    })
-  }
-
-  // Show the summary when done; if any step errored, change the title to failed (avoiding perpetual "generating…" + spinner)
-  const doneSummary = isDone && finalTotal != null ? t('aiProgressDone', { n: finalTotal }) : null
-  const hasStepError = steps.some((s) => s.stepStatus === 'error')
+  const { head, steps } = deriveDeckProgressView(progress, t)
+  const pages = progress.pages
 
   if (steps.length === 0) return null
 
@@ -3138,12 +3070,12 @@ function DeckProgressCard({ progress }: { progress: DeckProgressSnapshot }) {
         aria-expanded={open}
         onClick={() => setOpen(!open)}
       >
-        {!doneSummary && !hasStepError && <span className="deck-progress-spinner" aria-hidden />}
-        {doneSummary ? (
-          <span className="deck-progress-done">{doneSummary}</span>
+        {head.tone === 'running' && <span className="deck-progress-spinner" aria-hidden />}
+        {head.tone === 'done' ? (
+          <span className="deck-progress-done">{head.text}</span>
         ) : (
-          <span className={`deck-progress-title${hasStepError ? ' is-error' : ''}`}>
-            {hasStepError ? t('aiProgressFailed') : t('aiProgressTitle')}
+          <span className={`deck-progress-title${head.tone === 'error' ? ' is-error' : ''}`}>
+            {head.text}
           </span>
         )}
         <span className={`ai-tool-chip-caret${open ? ' open' : ''}`} aria-hidden>
@@ -3348,7 +3280,7 @@ function ClarifyCard({
             className="ai-clarify-head-arrow"
             disabled={qIdx === 0}
             onClick={() => goTo(qIdx - 1)}
-            aria-label="‹"
+            aria-label={t('aiClarifyPrev')}
           >
             ‹
           </button>
@@ -3357,7 +3289,7 @@ function ClarifyCard({
             className="ai-clarify-head-arrow"
             disabled={qIdx >= furthest || !hasAnswer}
             onClick={() => goTo(qIdx + 1)}
-            aria-label="›"
+            aria-label={t('aiClarifyNext')}
           >
             ›
           </button>

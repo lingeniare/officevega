@@ -101,7 +101,6 @@ export const tk = {
   ribbonThemeColorShadeTip: 'Tema reňki {r}-{c}',
   ribbonStandardColors: 'Standart reňkler',
   ribbonMoreColors: 'Goşmaça reňkler…',
-  ribbonGroupFont: 'Şrift',
   ribbonBullets: 'Bellikler',
   ribbonNumbering: 'San belgilemesi',
   ribbonDecreaseIndent: 'Çepden gyşarmany azalt',
@@ -732,4 +731,6 @@ export const tk = {
   ribbonAutoFitTip: 'Tablisanyň sütünleriniň ölçegini awtomatiki sazlaň',
   ribbonZoomInTip: 'Ulalt',
   ribbonZoomOutTip: 'Kiçelt',
+  ribbonFontEastAsia: 'Gündogar Aziýa şrifti',
+  ribbonFontLatin: 'Latyn şrifti',
 } satisfies Record<keyof typeof zh, string>

@@ -263,4 +263,5 @@ export const ky = {
   aiStylePresetDarkHint: 'караңгы атмосфера — терең көмүр же кочкул көк фон, бир жаркыраган акцент, чоң типография, кинематографиялык сүрөттөр',
   aiStylePresetMinimalHint: 'жарык минимализм — кенен бош орундар, бир тыйым акценти бар дээрлик монохром палитра, тынч так типография',
 
+  aiClarifyPrev: 'Мурунку',
 } satisfies Record<keyof typeof zh, string>

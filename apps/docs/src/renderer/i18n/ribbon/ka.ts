@@ -102,7 +102,6 @@ export const ka = {
   ribbonThemeColorShadeTip: 'თემის ფერი {r}-{c}',
   ribbonStandardColors: 'სტანდარტული ფერები',
   ribbonMoreColors: 'მეტი ფერი…',
-  ribbonGroupFont: 'შრიფტი',
   ribbonBullets: 'მარკერები',
   ribbonNumbering: 'ნუმერაცია',
   ribbonDecreaseIndent: 'შეწევის შემცირება',
@@ -733,4 +732,6 @@ export const ka = {
   ribbonAutoFitTip: 'ცხრილის სვეტების ზომის ავტომატურად მორგება',
   ribbonZoomInTip: 'მასშტაბის გაზრდა',
   ribbonZoomOutTip: 'მასშტაბის შემცირება',
+  ribbonFontEastAsia: 'აღმოსავლური აზიური შრიფტი',
+  ribbonFontLatin: 'ლათინური შრიფტი',
 } satisfies Record<keyof typeof zh, string>

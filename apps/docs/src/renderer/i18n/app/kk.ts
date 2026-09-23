@@ -372,4 +372,7 @@ export const kk = {
   appUpdateStyleTip: 'Ағымдағы таңдаудан осы мәнерді жаңарту (styles.xml файлына жазылады)',
   appNewStyleFromSelection: 'Ағымдағы таңдаудан жаңа мәнер жасау',
   appStyleNamePlaceholder: 'Мәнер атауы',
+  appDocTooLargeBlocks: '{name}: құжат ашу үшін тым үлкен ({blocks} абзац, {chars} таңба)',
+  appDocLargeReadOnly: 'Үлкен құжат ({blocks} абзац): оқу режимінде ашылады — өңдеу үшін Esc басыңыз',
+  appDocLargeSpellOff: 'Үлкен құжат ({blocks} абзац): теру кезінде емле тексерісі өшірулі — Рецензирование › Орфография бөлімінде қосыңыз',
 } satisfies Record<keyof typeof zh, string>

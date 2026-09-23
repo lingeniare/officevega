@@ -186,4 +186,5 @@ export const uz = {
   aiFillImagesAsk: 'Sahifa uchun {n} ta rasm yaratsinmi?',
   aiFillImagesYes: 'Yaratish',
   aiFillImagesNo: 'Hozir emas',
+  aiClarifyPrev: 'Oldingi',
 } satisfies Record<keyof typeof zh, string>

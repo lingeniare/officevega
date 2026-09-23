@@ -40,6 +40,9 @@ export const zhTW = {
   paneAnimEffShrink: '縮小旋轉',
   paneAnimEffZoomOut: '縮放離開',
   paneAnimEffMotionPath: '移動路徑',
+  paneAnimEffMediaPlay: '播放',
+  paneAnimEffMediaPause: '暫停',
+  paneAnimEffMediaStop: '停止',
 
   paneChartEditTitle: '編輯圖表資料',
   paneChartCategoryN: '類別 {n}',
@@ -276,4 +279,13 @@ export const zhTW = {
   paneShowRehearseTotal: '總時長 {time}',
   paneFormatFillTip: '選取範圍的填滿選項',
   paneFormatOutlineTip: '選取範圍的外框選項',
+  paneShowMenuNext: '下一頁',
+  paneShowMenuPrev: '上一頁',
+  paneShowMenuLastViewed: '上次檢視的',
+  paneShowMenuSeeAll: '檢視所有投影片',
+  paneShowMenuScreen: '螢幕',
+  paneShowMenuBlack: '黑色畫面',
+  paneShowMenuWhite: '白色畫面',
+  paneShowMenuEnd: '結束放映',
+  panePresenterWhiteOn: '白色畫面中（按 W 鍵恢復）',
 } satisfies Record<keyof typeof zh, string>

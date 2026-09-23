@@ -101,7 +101,6 @@ export const az = {
   ribbonThemeColorShadeTip: 'Tema rəngi {r}-{c}',
   ribbonStandardColors: 'Standart rənglər',
   ribbonMoreColors: 'Daha çox rəng…',
-  ribbonGroupFont: 'Şrift',
   ribbonBullets: 'Marker işarələri',
   ribbonNumbering: 'Nömrələmə',
   ribbonDecreaseIndent: 'Girintini azalt',
@@ -733,4 +732,6 @@ export const az = {
   ribbonAutoFitTip: 'Cədvəl sütunlarını avtomatik uyğunlaşdırın',
   ribbonZoomInTip: 'Böyüt',
   ribbonZoomOutTip: 'Kiçilt',
+  ribbonFontEastAsia: 'Şərq Asiya şrifti',
+  ribbonFontLatin: 'Latın şrifti',
 } satisfies Record<keyof typeof zh, string>

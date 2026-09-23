@@ -180,4 +180,8 @@ export const kk = {
   aiCmdImages: '{count} сурет жаңартылды',
   aiCmdToc: 'Мазмұн кестесі енгізілді ({count} жазба)',
   aiCmdSkipped: ' ({count} қорғалған блок өткізіліп жіберілді)',
+  aiSumEditNote: 'Ескертпе өзгертілді',
+  aiSumAnalyzeMedia: 'Медианы талдау',
+  aiSumAnalyzeMediaDone: 'Медиа талданды',
+  aiCmdNoneUnchanged: '{count} сәйкес блок өзгеріссіз қалды; құжат өзгертілмеді.',
 } satisfies Record<keyof typeof zh, string>

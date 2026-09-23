@@ -23,12 +23,18 @@ export const AI_SEARCH_PROVIDERS: AiSearchProviderMeta[] = [
   },
   { id: 'serper', label: 'Serper', keyPlaceholder: 'Serper API key', imageSearch: true },
   { id: 'tavily', label: 'Tavily', keyPlaceholder: 'tvly-...', imageSearch: false },
+  { id: 'parallel', label: 'Parallel', keyPlaceholder: 'Parallel API key', imageSearch: false },
 ]
 
 export function defaultAiSearchSettings(): AiSearchSettings {
   return {
     provider: 'vega',
-    providers: { vega: { apiKey: '' }, serper: { apiKey: '' }, tavily: { apiKey: '' } },
+    providers: {
+      vega: { apiKey: '' },
+      serper: { apiKey: '' },
+      tavily: { apiKey: '' },
+      parallel: { apiKey: '' },
+    },
   }
 }
 
@@ -38,7 +44,7 @@ export function resolveAiSearchSettings(
   const defaults = defaultAiSearchSettings()
   if (!stored) return defaults
   const providers = { ...defaults.providers }
-  for (const id of ['vega', 'serper', 'tavily'] as const) {
+  for (const id of ['vega', 'serper', 'tavily', 'parallel'] as const) {
     const key = stored.providers?.[id]?.apiKey
     if (typeof key === 'string') providers[id] = { apiKey: key.trim() }
   }
@@ -72,6 +78,7 @@ export function activeSearchProvider(
     if (!cloudToolsEnabled(settings)) return 'genspark'
     return vegaSearchKey(settings) ? 'vega' : 'genspark'
   }
+  if (search.provider === 'parallel') return 'parallel'
   // Trim-aware: a whitespace-only key from in-memory settings falls back
   // instead of sending `Bearer    ` to the search backend.
   return search.providers?.[search.provider]?.apiKey?.trim() ? search.provider : 'genspark'

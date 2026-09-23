@@ -182,4 +182,5 @@ export const az = {
   aiFillImagesAsk: 'Səhifə üçün {n} şəkil yaradılsın?',
   aiFillImagesYes: 'Yarat',
   aiFillImagesNo: 'İndi yox',
+  aiClarifyPrev: 'Əvvəlki',
 } satisfies Record<keyof typeof zh, string>

@@ -11,6 +11,7 @@ const emptyKeys = {
   vega: { apiKey: '' },
   serper: { apiKey: '' },
   tavily: { apiKey: '' },
+  parallel: { apiKey: '' },
 }
 
 describe('search settings', () => {
@@ -110,5 +111,46 @@ describe('search settings', () => {
         gskToolsEnabled: false,
       }),
     ).toBe('genspark')
+  })
+})
+
+describe('Parallel search settings', () => {
+  it('restores and trims a saved Parallel key', () => {
+    const settings = resolveAiSearchSettings(
+      JSON.parse(
+        JSON.stringify({
+          provider: 'parallel',
+          providers: { parallel: { apiKey: ' parallel-key ' } },
+        }),
+      ),
+    )
+    expect(settings.providers.parallel.apiKey).toBe('parallel-key')
+    expect(activeSearchProvider({ search: settings })).toBe('parallel')
+  })
+
+  it('loads older settings without changing the selected provider or existing keys', () => {
+    const settings = resolveAiSearchSettings(
+      JSON.parse(
+        JSON.stringify({
+          provider: 'tavily',
+          providers: { tavily: { apiKey: 'existing-key' } },
+        }),
+      ),
+    )
+    expect(activeSearchProvider({ search: settings })).toBe('tavily')
+    expect(settings.providers.tavily.apiKey).toBe('existing-key')
+    expect(settings.providers.parallel.apiKey).toBe('')
+  })
+
+  it('keeps Parallel selected for free search when the key is blank', () => {
+    const settings = resolveAiSearchSettings(
+      JSON.parse(
+        JSON.stringify({
+          provider: 'parallel',
+          providers: { parallel: { apiKey: '   ' } },
+        }),
+      ),
+    )
+    expect(activeSearchProvider({ search: settings })).toBe('parallel')
   })
 })

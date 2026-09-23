@@ -1,7 +1,7 @@
 import { ANTHROPIC_BASE_URL } from './protocols/anthropic'
 import { GEMINI_BASE_URL } from './protocols/gemini'
 import { VEGA_BASE_URL } from './media'
-import { AI_PROVIDERS, GENSPARK_LLM_BASE_URLS } from './providers'
+import { AI_PROVIDERS, DEEPSEEK_V41_FLASH, GENSPARK_LLM_BASE_URLS } from './providers'
 import type { AiProviderConfig, AiProviderId, AiProviderMeta } from './types'
 
 /** Wire protocols every provider maps onto, including the official Codex app-server bridge. */
@@ -23,6 +23,8 @@ export interface ResolvedEndpoint {
   useMaxCompletionTokens?: boolean
   /** vendor-specific request fields merged into the chat-completions body */
   bodyExtras?: Record<string, unknown>
+  /** id to put on the wire when the vendor spells the configured model differently */
+  model?: string
 }
 
 export interface ProviderAdapter {
@@ -83,6 +85,12 @@ export function modelEchoesReasoning(model: string): boolean {
 const DEEPSEEK_NON_THINKING = { thinking: { type: 'disabled' } }
 
 /**
+ * The direct API 400s on the versioned pool spelling we list (verified
+ * 2026-09-21: GET /v1/models serves only `deepseek-flash` and `deepseek-v4-pro`).
+ */
+const DEEPSEEK_WIRE_IDS: Record<string, string> = { [DEEPSEEK_V41_FLASH]: 'deepseek-flash' }
+
+/**
  * OpenCode Zen / Go (opencode.ai) are protocol passthrough gateways: each
  * model is served on exactly one vendor protocol and the other paths answer
  * 500 (verified 2026-09-03 against the public free tier), so the route is
@@ -96,13 +104,35 @@ const OPENCODE_GATEWAY_ROOTS = {
   go: 'https://opencode.ai/zen/go',
 } as const
 
+/**
+ * Stored provider settings are user data: a custom base URL must be a
+ * bounded http(s) URL. Anything else (file:/javascript: schemes, megabyte
+ * strings) would misroute gateway traffic or overflow request builders.
+ */
+function normalizeBaseUrl(raw: string | undefined, fallback: string): string {
+  const candidate = (raw ?? fallback).trim()
+  if (candidate === '' || candidate.length > 2048) {
+    throw new Error('Base URL must be a non-empty http(s) URL under 2048 characters')
+  }
+  let parsed: URL
+  try {
+    parsed = new URL(candidate)
+  } catch {
+    throw new Error('Base URL must be a valid http(s) URL')
+  }
+  if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+    throw new Error('Base URL must use http or https')
+  }
+  return candidate
+}
+
 function opencodeEndpoint(
   root: string,
   routes: { anthropic: RegExp; gemini?: RegExp },
 ): (config: AiProviderConfig) => ResolvedEndpoint {
   return (config) => {
     // a stored base URL replaces the gateway root; the documented `/v1` API base is tolerated
-    const base = (config.baseUrl || root).replace(/\/+$/, '').replace(/\/v1$/, '')
+    const base = normalizeBaseUrl(config.baseUrl, root).replace(/\/+$/, '').replace(/\/v1$/, '')
     const model = config.model ?? ''
     const omit =
       model !== '' && (modelHasFixedSampling(model) || model.toLowerCase().startsWith('kimi-'))
@@ -129,7 +159,7 @@ function fixedEndpoint(
     const omit = extras?.omitTemperature || modelHasFixedSampling(config.model)
     return {
       protocol,
-      baseUrl: config.baseUrl || baseUrl,
+      baseUrl: config.baseUrl ? normalizeBaseUrl(config.baseUrl, baseUrl) : baseUrl,
       ...(omit ? { omitTemperature: true } : {}),
       ...(extras?.useMaxCompletionTokens ? { useMaxCompletionTokens: true } : {}),
       ...(extras?.bodyExtras ? { bodyExtras: extras.bodyExtras } : {}),
@@ -175,9 +205,15 @@ export const AI_PROVIDER_ADAPTERS: Record<AiProviderId, ProviderAdapter> = {
   deepseek: {
     meta: metaOf('deepseek'),
     capabilities: { auth: 'api-key', vision: true },
-    resolveEndpoint: fixedEndpoint('openai-compatible', 'https://api.deepseek.com/v1', {
-      bodyExtras: DEEPSEEK_NON_THINKING,
-    }),
+    resolveEndpoint(config) {
+      const wire = DEEPSEEK_WIRE_IDS[config.model]
+      return {
+        ...fixedEndpoint('openai-compatible', 'https://api.deepseek.com/v1', {
+          bodyExtras: DEEPSEEK_NON_THINKING,
+        })(config),
+        ...(wire ? { model: wire } : {}),
+      }
+    },
   },
   openai: {
     meta: metaOf('openai'),
@@ -283,7 +319,7 @@ export const AI_PROVIDER_ADAPTERS: Record<AiProviderId, ProviderAdapter> = {
       if (!config.baseUrl) throw new Error('A custom provider requires a Base URL')
       return {
         protocol: 'openai-compatible',
-        baseUrl: config.baseUrl,
+        baseUrl: normalizeBaseUrl(config.baseUrl, ''),
         ...(modelHasFixedSampling(config.model) ? { omitTemperature: true } : {}),
       }
     },

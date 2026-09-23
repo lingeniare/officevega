@@ -376,4 +376,7 @@ export const ka = {
     'ამ სტილის განახლება მიმდინარე მონიშნული ფრაგმენტის მიხედვით (ჩაიწერება styles.xml-ში)',
   appNewStyleFromSelection: 'ახალი სტილი მიმდინარე მონიშნული ფრაგმენტის მიხედვით',
   appStyleNamePlaceholder: 'სტილის სახელი',
+  appDocTooLargeBlocks: '{name}: დოკუმენტი ზედმეტად დიდია გასახსნელად ({blocks} აბზაცი, {chars} სიმბოლო)',
+  appDocLargeReadOnly: 'დიდი დოკუმენტი ({blocks} აბზაცი): გაიხსნა კითხვის რეჟიმში — რედაქტირებისთვის დააჭირეთ Esc',
+  appDocLargeSpellOff: 'დიდი დოკუმენტი ({blocks} აბზაცი): მართლწერის შემოწმება კრეფისას გამორთულია — ჩართეთ Review › Spelling-ში',
 } satisfies Record<keyof typeof zh, string>

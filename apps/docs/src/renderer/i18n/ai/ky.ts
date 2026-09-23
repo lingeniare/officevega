@@ -181,4 +181,8 @@ export const ky = {
   aiCmdImages: '{count} сүрөт жаңыртылды',
   aiCmdToc: 'Мазмун таблицасы киргизилди ({count} жазуу)',
   aiCmdSkipped: ' ({count} корголгон блок өткөрүлүп кетти)',
+  aiSumEditNote: 'Эскертүү өзгөртүлдү',
+  aiSumAnalyzeMedia: 'Медианы талдоо',
+  aiSumAnalyzeMediaDone: 'Медиа талданды',
+  aiCmdNoneUnchanged: '{count} дал келген блок өзгөртүлгөн жок; документ өзгөртүлгөн жок.',
 } satisfies Record<keyof typeof zh, string>

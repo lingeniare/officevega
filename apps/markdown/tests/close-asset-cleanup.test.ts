@@ -75,6 +75,7 @@ vi.mock('electron', () => ({
 vi.mock('@genoffice/electron-utils', () => ({
   configuredDefaultSaveDir: vi.fn(() => tmpdir()),
   contextMenuLabels: vi.fn(() => ({})),
+  forwardRendererConsole: vi.fn(),
   installContextMenu: vi.fn(),
   installNavigationGuard: vi.fn(),
   rendererUrl: vi.fn(() => 'vegaoffice-app://markdown/index.html'),

@@ -12,7 +12,15 @@
  * deposit for the account UI.
  */
 
-import { existsSync, mkdirSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs'
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  unlinkSync,
+  unwatchFile,
+  watchFile,
+  writeFileSync,
+} from 'node:fs'
 import { createRequire } from 'node:module'
 import { homedir } from 'node:os'
 import { dirname, join } from 'node:path'
@@ -216,6 +224,37 @@ function emitAuthChanged(auth: VegaofficeAuth | null): void {
 /** The app-issued VEGA key (server key name "vegaoffice"); '' when not signed in. Cached (invalidated by login/logout). */
 export function vegaofficeApiKey(): string {
   return loadVegaofficeAuth()?.apiKey ?? ''
+}
+
+/** Drop the cache so the next read sees a key written by another process. */
+export function reloadVegaofficeAuth(): void {
+  cachedAuth = undefined
+}
+
+/**
+ * Fires when the sign-in key changes on disk — another VegaOffice instance
+ * re-logging in mints a new key and revokes the one this process holds.
+ * Polls by path (watchFile): auth.json is replaced whole, and fs.watch misses
+ * events for a moment after it is armed. In-process saveAuth/clearAuth already
+ * notify via setVegaofficeAuthListener; this covers writes we did not make.
+ */
+export function watchVegaofficeApiKey(
+  onChange: (key: string) => void,
+  intervalMs = 2000,
+): () => void {
+  let last = vegaofficeApiKey()
+  const check = (): void => {
+    reloadVegaofficeAuth()
+    const key = vegaofficeApiKey()
+    if (key === last) return
+    last = key
+    onChange(key)
+  }
+  const files = [vegaofficeAuthPath(), ...legacyAuthPaths()]
+  for (const f of files) watchFile(f, { persistent: false, interval: intervalMs }, check)
+  return () => {
+    for (const f of files) unwatchFile(f, check)
+  }
 }
 
 function saveAuth(auth: VegaofficeAuth): void {

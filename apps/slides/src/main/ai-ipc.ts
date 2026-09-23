@@ -37,7 +37,12 @@ import {
   type LegacyAiSettings,
 } from '@genoffice/ai-provider'
 import { shutdownCodexAppServers } from '@genoffice/ai-provider/codex-app-server'
-import { fetchRemoteImage, storeGeneratedImage } from '@genoffice/electron-utils'
+import {
+  MAX_REMOTE_IMAGE_BYTES,
+  fetchRemoteImage,
+  readBodyCapped,
+  storeGeneratedImage,
+} from '@genoffice/electron-utils'
 import {
   webSearchTool,
   imageSearchTool,
@@ -409,7 +414,7 @@ export function registerSlidesOnlyAiIpc(): void {
           // fetchRemoteImage adds CDN-friendly headers and transient-error retries.
           const resp = await fetchRemoteImage(String(op.url))
           if (!resp || !resp.ok) return null
-          buf = Buffer.from(await resp.arrayBuffer())
+          buf = Buffer.from(await readBodyCapped(resp, MAX_REMOTE_IMAGE_BYTES))
           const ct = resp.headers.get('content-type') ?? ''
           ext = ct.includes('png') ? 'png' : ct.includes('gif') ? 'gif' : 'jpg'
         }
@@ -482,7 +487,7 @@ export function registerSlidesOnlyAiIpc(): void {
         } else {
           const resp = await fetchRemoteImage(String(op.url))
           if (!resp || !resp.ok) return null
-          buf = Buffer.from(await resp.arrayBuffer())
+          buf = Buffer.from(await readBodyCapped(resp, MAX_REMOTE_IMAGE_BYTES))
           const ct = resp.headers.get('content-type') ?? ''
           ext = ct.includes('png') ? 'png' : ct.includes('gif') ? 'gif' : 'jpg'
         }

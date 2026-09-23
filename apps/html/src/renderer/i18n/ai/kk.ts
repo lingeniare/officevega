@@ -185,4 +185,5 @@ export const kk = {
   aiFillImagesAsk: 'Бетке {n} сурет жасайын ба?',
   aiFillImagesYes: 'Жасау',
   aiFillImagesNo: 'Қазір емес',
+  aiClarifyPrev: 'Алдыңғы',
 } satisfies Record<keyof typeof zh, string>

@@ -172,6 +172,15 @@ describe('w:altChunk expansion', () => {
     const visible = parsed.blocks.filter((b) => !b.hidden)
     expect(visible.map((b) => b.type)).toEqual(['passthrough', 'paragraph'])
     expect(visible[0].label).toBe('w:altChunk')
+    // a host that can convert (the UI thread) reparses when it sees this
+    expect(parsed.extras.altChunksNeedConverter).toBe(1)
+  })
+
+  it('does not flag chunks when a converter is installed', async () => {
+    installStubConverter()
+    const bytes = await hostDocx({ path: 'word/afchunk.htm', body: HTML, contentType: 'text/html' })
+    const parsed = await parseDocx(bytes)
+    expect(parsed.extras.altChunksNeedConverter).toBeUndefined()
   })
 })
 
@@ -187,5 +196,22 @@ describe('MIME decoding helpers', () => {
       'Content-Transfer-Encoding: 8bit\r\n\r\n<html><body>\u00e9</body></html>'
     const bytes = Uint8Array.from(mht, (c) => c.charCodeAt(0) & 0xff)
     expect(decodeMhtToHtml(bytes)).toBe('<html><body>\u00e9</body></html>')
+  })
+
+  it('inlines thousands of image parts in one pass over the html', () => {
+    const boundary = 'bomb'
+    let mht =
+      `Content-Type: multipart/related; boundary="${boundary}"\r\n\r\n` +
+      `--${boundary}\r\nContent-Type: text/html\r\n\r\n<html><body><p>hi</p><img src="F1999.PNG"><img src=f0.png></body></html>\r\n`
+    for (let i = 0; i < 2000; i++) {
+      mht += `--${boundary}\r\nContent-Type: image/png\r\nContent-Location: f${i}.png\r\n\r\nx\r\n`
+    }
+    mht += `--${boundary}--\r\n`
+    const bytes = Uint8Array.from(mht, (c) => c.charCodeAt(0) & 0xff)
+    const html = decodeMhtToHtml(bytes)
+    expect(html).toContain('<p>hi</p>')
+    expect(html).toContain(
+      '<img src="data:image/png;base64,eA=="><img src="data:image/png;base64,eA==">',
+    )
   })
 })

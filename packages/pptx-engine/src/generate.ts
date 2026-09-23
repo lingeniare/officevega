@@ -293,11 +293,13 @@ function findRunSpans(xml: string): Span[] {
   return spans
 }
 
-/** Points → ST_TextFontSize hundredths, clamped to the schema range (1pt..4000pt). */
+/** Points → ST_TextFontSize hundredths, clamped to the schema range (1pt..4000pt).
+ *  Non-finite inputs land on the lower bound (Math.max/min propagate NaN). */
 const MIN_FONT_SIZE_PT = 1
 const MAX_FONT_SIZE_PT = 4000
-function szAttr(pt: number): string {
-  return String(Math.round(Math.min(MAX_FONT_SIZE_PT, Math.max(MIN_FONT_SIZE_PT, pt)) * 100))
+export function szAttr(pt: number): string {
+  const safe = Number.isFinite(pt) ? pt : MIN_FONT_SIZE_PT
+  return String(Math.round(Math.min(MAX_FONT_SIZE_PT, Math.max(MIN_FONT_SIZE_PT, safe)) * 100))
 }
 
 /** Integer attribute value inside a schema range; NaN/Infinity land on the lower bound. */
@@ -797,6 +799,9 @@ export function generateParagraphXml(p: Paragraph): string {
     pPrAttrs.push(`indent="${clampInt(p.indent, -51206400, 51206400)}"`)
   if (p.align && want('align')) pPrAttrs.push(`algn="${alignMap[p.align]}"`)
   if (p.rtl != null) pPrAttrs.push(`rtl="${p.rtl ? 1 : 0}"`)
+  if (p.eaLnBrk === false) pPrAttrs.push('eaLnBrk="0"')
+  if (p.latinLnBrk) pPrAttrs.push('latinLnBrk="1"')
+  if (p.hangingPunct === false) pPrAttrs.push('hangingPunct="0"')
   if (p.level) pPrAttrs.push(`lvl="${p.level}"`)
 
   // CT_TextParagraphProperties child order: lnSpc → spcBef → spcAft → buClr → buSzPct → buFont → bu*

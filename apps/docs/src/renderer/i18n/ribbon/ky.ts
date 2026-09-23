@@ -103,7 +103,6 @@ export const ky = {
   ribbonThemeColorShadeTip: 'Теманын түсү {r}-{c}',
   ribbonStandardColors: 'Стандарттык түстөр',
   ribbonMoreColors: 'Көбүрөөк түстөр…',
-  ribbonGroupFont: 'Шрифт',
   ribbonBullets: 'Маркерлер',
   ribbonNumbering: 'Номерлөө',
   ribbonDecreaseIndent: 'Чегинүүнү азайтуу',
@@ -736,4 +735,6 @@ export const ky = {
   ribbonAutoFitTip: 'Таблица тилкелерин автоматтык түрдө тууралоо',
   ribbonZoomInTip: 'Чоңойтуу',
   ribbonZoomOutTip: 'Кичирейтүү',
+  ribbonFontEastAsia: 'Чыгыш Азия шрифти',
+  ribbonFontLatin: 'Латын шрифти',
 } satisfies Record<keyof typeof zh, string>

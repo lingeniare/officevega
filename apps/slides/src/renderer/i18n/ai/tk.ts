@@ -263,4 +263,5 @@ export const tk = {
   aiStylePresetDarkHint: 'garaňky atmosfera — çuň kömür ýa-da gök fon, bir ýalply akýsent, uly tipografiýa, kinematografik suratlar',
   aiStylePresetMinimalHint: 'ýagty minimal — giň boş ýerler, bir çäklendiriji akýsentli ýakyn monoxrom palitra, ýumşak takyk tipografiýa',
 
+  aiClarifyPrev: 'Öňki',
 } satisfies Record<keyof typeof zh, string>

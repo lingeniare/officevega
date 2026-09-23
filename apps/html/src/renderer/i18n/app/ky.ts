@@ -163,4 +163,5 @@ export const ky = {
   insertImageTip: 'Сүрөт киргизүү',
   insertTableTip: 'Таблица кыстаруу',
   insertMoreTip: 'Кошумча киргизүү параметрлери',
+  elementPath: 'Элемент жолу',
 } satisfies Record<keyof typeof zh, string>

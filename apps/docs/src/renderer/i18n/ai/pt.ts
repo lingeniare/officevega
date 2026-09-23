@@ -57,6 +57,7 @@ export const pt = {
   aiSumInsertFootnote: 'Nota de rodapé inserida',
   aiSumInsertEndnote: 'Nota de fim inserida',
   aiSumDeleteNote: 'Nota excluída',
+  aiSumEditNote: 'Nota editada',
   aiSumReadNotes: 'Notas lidas',
   aiSumAddComment: 'Comentário adicionado',
   aiSumDeleteComment: 'Comentário excluído',
@@ -125,6 +126,8 @@ export const pt = {
   aiSumWebSearchDone: 'Pesquisou "{query}" ({count} resultados)',
   aiSumImageSearch: 'Pesquisa de imagens',
   aiSumImageSearchDone: 'Pesquisa de imagens "{query}" ({count} imagens)',
+  aiSumAnalyzeMedia: 'Analisar mídia',
+  aiSumAnalyzeMediaDone: 'Mídia analisada',
   aiSumInsertImage: 'Inserir imagem',
   aiSumInsertWebImage: 'Imagem da web inserida',
   aiSumGenerateImage: 'Gerar imagem',
@@ -167,6 +170,8 @@ export const pt = {
   aiCmdNone: 'Nenhum bloco correspondente; o documento não foi alterado.',
   aiCmdNoneSkipped:
     'Nenhum bloco editável; o documento não foi alterado ({count} blocos protegidos ignorados — tabelas/imagens não podem ser alteradas por comandos de estilo).',
+  aiCmdNoneUnchanged:
+    '{count} bloco(s) correspondente(s) ficaram sem alterações; o documento não foi alterado.',
   aiCmdTextStyle: 'Estilo de texto atualizado em {count} bloco(s)',
   aiCmdMatchedStyle: 'Estilo aplicado a {count} ocorrência(s) em {blocks} bloco(s)',
   aiCmdParaStyle: 'Formato de parágrafo atualizado em {count} bloco(s)',

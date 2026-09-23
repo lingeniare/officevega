@@ -262,4 +262,5 @@ export const az = {
   aiStylePresetDarkHint: 'tünd atmosfera — dərin kömür və ya tünd mavi fon, bir işıqlı vurğu, nəhəng tipoqrafiya, kinematik görüntülər',
   aiStylePresetMinimalHint: 'işıqlı minimal — geniş boş sahələr, bir təmkinli vurğu ilə demək olar ki, monoxrom palitra, sakit dəqiq tipoqrafiya',
 
+  aiClarifyPrev: 'Əvvəlki',
 } satisfies Record<keyof typeof zh, string>

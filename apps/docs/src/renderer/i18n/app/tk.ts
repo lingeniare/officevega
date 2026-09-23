@@ -371,4 +371,7 @@ export const tk = {
   appUpdateStyleTip: 'Bu stili häzirki saýlawdan täzeläň (styles.xml faýlyna gaýtadan ýazylýar)',
   appNewStyleFromSelection: 'Häzirki saýlawdan täze stil',
   appStyleNamePlaceholder: 'Stiliň ady',
+  appDocTooLargeBlocks: '{name}: resminama açmak üçin gaty uly ({blocks} abzas, {chars} belgi)',
+  appDocLargeReadOnly: 'Uly resminama ({blocks} abzas): diňe okamak režiminde açyldy — redaktirlemek üçin Esc basyň',
+  appDocLargeSpellOff: 'Uly resminama ({blocks} abzas): ýazýarka imla barlagy öçürilen — Review › Spelling bölüminde açyň',
 } satisfies Record<keyof typeof zh, string>

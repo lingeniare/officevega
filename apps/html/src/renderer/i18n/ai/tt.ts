@@ -182,4 +182,5 @@ export const tt = {
   aiFillImagesAsk: 'Бит өчен {n} рәсем ясаргамы?',
   aiFillImagesYes: 'Ясарга',
   aiFillImagesNo: 'Хәзер түгел',
+  aiClarifyPrev: 'Алдагы',
 } satisfies Record<keyof typeof zh, string>

@@ -43,6 +43,11 @@ vegaoffice docs read report.docx [--range 0-9] [--html] [--full] [--comments] [-
 vegaoffice docs apply report.docx --ops ops.json [--dry-run]           # apply_ops entries + insert_content / replace_blocks / insert_image / insert_chart / edit_chart / set_header_footer / reply_comment / resolve_comment
 vegaoffice docs check report.docx --json                               # fields without results, broken bookmark references, stale TOC, missing images, empty charts/headings, heading level skips, placeholder text, pending revisions, open comments; exit 0
 vegaoffice guide docs                                                   # op signatures + restricted-HTML rules (`guide <domain> --json` = the catalog with each op's schema and a fingerprint)
+vegaoffice selection report.docx --json   # what the user has selected in the editor showing the file
+vegaoffice skill list   # coding agents found on this machine and the skill version each has
+vegaoffice skill install --dir ./skills --force   # copy the bundled skill into a skills directory
+vegaoffice install-cli   # put vegaoffice on the PATH
+vegaoffice mcp --http 3000 [--host 127.0.0.1] [--token secret]   # Streamable HTTP for clients on other machines; omit --http for stdio
 ```
 
 Word and Markdown commands run the docs and markdown editors under jsdom (installed once per process, loaded lazily). Those modules are imported from the app renderers by relative path until they move into packages of their own.
@@ -98,6 +103,10 @@ outline entry and the palette), `deck_build` and `deck_replace`
 (`src/mcp/deck.ts`). The deck directory is the state, laid out exactly as the
 command line's staged flow, so a deck started from either side can be finished
 from the other.
+
+Behind a reverse proxy, set `VEGAOFFICE_TRUST_PROXY_HEADERS=1` so the download
+URLs the server hands out use the forwarded host and scheme; by default the
+`X-Forwarded-*` headers are ignored.
 
 `vegaoffice mcp --http <port> [--host <addr>] [--token <secret>]` serves the
 same tools over Streamable HTTP for clients on other machines (`src/mcp/http.ts`).
@@ -155,9 +164,13 @@ Independently of the PATH, every launch of the packaged app writes the launcher 
 
 ## Cloud commands
 
-`search`, `image` and `media` reuse the editors' provider routing: Genspark
-when signed in (`~/.vegaoffice/auth.json`) and cloud tools are on, otherwise the
-Serper / Tavily or BYOK image / media provider chosen in the app's AI settings
+`search`, `image` and `media` reuse the editors' provider routing. Search uses
+the selected Serper / Tavily provider when its key is configured, or Parallel
+with an optional key (a blank saved key uses its free, rate-limited Search MCP);
+otherwise VEGA is the default when signed in (`~/.vegaoffice/auth.json`)
+and cloud tools are on, with free-source fallbacks when unavailable. Parallel
+and Tavily provide web search only. Image generation and media analysis use
+the corresponding provider chosen in the app's AI settings
 (`VegaOffice/ai-settings.json` in the platform config directory, override with
 `VEGAOFFICE_AI_SETTINGS`). `HTTPS_PROXY` / `HTTP_PROXY` / `ALL_PROXY` are honoured.
 Search results, image bytes and analysis text come back in the JSON `detail`;

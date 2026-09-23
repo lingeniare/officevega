@@ -96,7 +96,8 @@ describe('run fragmentation: layout fragments merge back into original runs by s
     const div = document.createElement('div')
     populateEditorDom(
       div,
-      layout([{ runs: [{ text: 'AI 原生 APP 断层第一', bold: true }] }]).lines,
+      layout([{ runs: [{ text: 'AI \u539f\u751f APP \u65ad\u5c42\u7b2c\u4e00', bold: true }] }])
+        .lines,
     )
     const cells = [...div.querySelectorAll<HTMLElement>('[data-layout-fragment]')].filter(
       (f) => f.style.width !== '',

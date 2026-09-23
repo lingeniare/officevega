@@ -21,7 +21,11 @@ import {
 } from '@genoffice/ai-provider'
 // deep imports: the package root re-exports Electron-bound modules, and this file also runs in the vegaoffice CLI
 import { readGeneratedImage, storeGeneratedImage } from '@genoffice/electron-utils/generated-images'
-import { fetchRemoteImage } from '@genoffice/electron-utils/remote-image'
+import {
+  ResponseTooLargeError,
+  fetchRemoteImage,
+  readBodyCapped,
+} from '@genoffice/electron-utils/remote-image'
 import { fetchWithSsrfGuard } from '@genoffice/electron-utils/safe-remote-url'
 import { gskAnalyzeMedia, gskGenerateImage, hasGskAuth, type GskGenerateImageOptions } from './gsk'
 
@@ -89,11 +93,14 @@ export async function loadMediaReference(ref: string): Promise<MediaBlob> {
       ? fetchRemoteImage(ref)
       : fetchWithSsrfGuard(ref, { headers: { 'User-Agent': 'Mozilla/5.0' } }))
     if (!resp || !resp.ok) throw new Error(`Could not download ${ref}`)
-    const declared = Number(resp.headers.get('content-length') ?? 0)
-    if (declared > MAX_MEDIA_BYTES) throw new MediaTooLargeError(`${ref} is too large to analyze`)
-    const bytes = new Uint8Array(await resp.arrayBuffer())
-    if (bytes.byteLength > MAX_MEDIA_BYTES) {
-      throw new MediaTooLargeError(`${ref} is too large to analyze`)
+    let bytes: Uint8Array
+    try {
+      bytes = await readBodyCapped(resp, MAX_MEDIA_BYTES)
+    } catch (err) {
+      if (err instanceof ResponseTooLargeError) {
+        throw new MediaTooLargeError(`${ref} is too large to analyze`)
+      }
+      throw err
     }
     const rawCt = resp.headers.get('content-type')?.split(';')[0]?.trim().toLowerCase()
     const ct = rawCt && rawCt !== 'application/octet-stream' ? rawCt : undefined
@@ -102,6 +109,17 @@ export async function loadMediaReference(ref: string): Promise<MediaBlob> {
       ct && ct !== 'application/octet-stream' ? ct : MIME_BY_EXT[extname(name ?? '').toLowerCase()]
     if (!mime) throw new Error(`Could not tell the media type of ${ref}`)
     return { bytes, mime, ...(name ? { name } : {}) }
+  }
+  // data URLs (pictures embedded in a document) carry their own bytes and type
+  if (ref.startsWith('data:')) {
+    const m = /^data:([^;,]+);base64,([\s\S]*)$/.exec(ref)
+    if (!m) throw new Error('Unsupported data URL: only base64-encoded media can be analyzed')
+    const [, mime = '', b64 = ''] = m
+    const bytes = new Uint8Array(Buffer.from(b64.replace(/\s+/g, ''), 'base64'))
+    if (bytes.byteLength > MAX_MEDIA_BYTES) {
+      throw new MediaTooLargeError('data URL is too large to analyze')
+    }
+    return { bytes, mime: mime.toLowerCase() }
   }
   if (ref.startsWith('file:')) {
     const local = readGeneratedImage(ref)

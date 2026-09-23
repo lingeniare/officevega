@@ -264,4 +264,5 @@ export const tt = {
   aiStylePresetDarkHint: 'караңгы атмосфера — тирән күмер яки кочкыл зәңгәр фон, бер якты акцент, зур типография, кинематографик сурәтләр',
   aiStylePresetMinimalHint: 'якты минимализм — киң буш урыннар, бер тыйнак акцентлы диярлек монохром палитра, тынч төгәл типография',
 
+  aiClarifyPrev: 'Алдагы',
 } satisfies Record<keyof typeof zh, string>

@@ -47,7 +47,6 @@ export const kk = {
   appStatusLinkSet:
     'Гиперсілтеме орнатылды (PowerPoint слайд көрсетілімінде басқанда іске қосылады)',
   appStatusLinkRemoved: 'Гиперсілтеме жойылды',
-  appZoomButtonText: '▸ {page}-слайд',
   appStatusZoomInserted:
     'Масштабтау сілтемесі енгізілді: слайд көрсетілімінде басып, {page}-слайдқа өтіңіз',
   appStatusHfApplied: 'Үстіңгі және төменгі деректемелер барлық слайдтарға қолданылды',
@@ -238,4 +237,25 @@ export const kk = {
   appSettingsSave: 'Сақтау',
   appCropHint:
     'Растау үшін Enter пернесін басыңыз · Болдырмау үшін Esc пернесін басыңыз · Растау үшін сыртты басыңыз',
+  appCtxCollapseAll: 'Барлығын жию',
+  appCtxEditPoints: 'Нүктелерді өңдеу',
+  appCtxExpandAll: 'Барлығын жайу',
+  appCtxRegroup: 'Қайта топтастыру',
+  appCtxRemoveAllSections: 'Барлық бөлімді жою',
+  appCtxRemoveSectionSlides: 'Бөлім мен слайдтарды жою',
+  appCtxResetSlide: 'Слайдты қалпына келтіру',
+  appCtxSaveAsPicture: 'Сурет ретінде сақтау…',
+  appCtxSelectAll: 'Барлығын таңдау',
+  appCtxSetDefaultShape: 'Әдепкі фигура ету',
+  appCtxSizePosition: 'Өлшем және орналасу…',
+  appSectionN: '{n} бөлімі',
+  appSectionSummary: 'Жиынтық бөлім',
+  appStatusPictureSaveFailed: 'Сурет ретінде сақтау сәтсіз: {error}',
+  appStatusPictureSaved: 'Сурет {path} жеріне сақталды',
+  appStatusSectionSlidesRemoved: 'Бөлім мен оның слайдтары жойылды',
+  appStatusSectionsRemoved: 'Барлық бөлім жойылды (слайдтар сақталды)',
+  appStatusSlidesHidden: '{count} слайд жасырилды (слайд-шоуда өткізіліп жіберіледі)',
+  appStatusSlidesUnhidden: '{count} слайд көрсетілді',
+  appStatusSummaryZoomInserted: '{count} плиткамен Жиынтық Zoom слайды қосылды',
+  appStatusZoomsInserted: '{count} масштаб қосылды: слайд-шоуда нұқып слайдтарға өтіңіз',
 } satisfies Record<keyof typeof zh, string>

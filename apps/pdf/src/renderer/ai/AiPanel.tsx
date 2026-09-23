@@ -654,7 +654,7 @@ export function AiPanel({
         onPointerDown={startResize}
         role="separator"
         aria-orientation="vertical"
-        aria-label={lang === 'ru' ? 'ИИ' : 'AI'}
+        aria-label={t('ribbonAiAssistant')}
       />
       <header className="ai-panel-header">
         <span className="ai-panel-title">{lang === 'ru' ? 'ВЕГА' : 'VEGA'}</span>

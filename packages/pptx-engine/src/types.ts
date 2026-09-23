@@ -303,6 +303,12 @@ export interface Paragraph {
   alignSrc?: string
   /** Paragraph base direction (a:pPr rtl): true = RTL base, false = explicit LTR base, absent = inferred from the first strong character */
   rtl?: boolean
+  /** <a:pPr hangingPunct="0"> switches off East Asian hanging punctuation (a trailing closing mark may overhang the margin); absent = PowerPoint's default, on */
+  hangingPunct?: boolean
+  /** <a:pPr latinLnBrk="1"> ("allow Latin text to wrap in the middle of a word"): Hangul words then break per syllable like CJK; absent = word wrap */
+  latinLnBrk?: boolean
+  /** <a:pPr eaLnBrk="0"> switches off East Asian line-break rules (kinsoku: no closing mark at a line start, no opening bracket at a line end) */
+  eaLnBrk?: boolean
   /** Indent level (bullet level) */
   level?: number
   /** Line spacing (%, 100 = single) or absolute (pt, via lineExact) */
@@ -521,6 +527,8 @@ export interface Scene3D {
   extrusionColor?: ResolvedColor
   /** <a:sp3d prstMaterial> (legacyWireframe renders edges only) */
   material?: string
+  /** <a:sp3d><a:bevelT>: front-face bevel (width/height EMU, ST_BevelPresetType; defaults 76200/circle) */
+  bevelTop?: { wEmu: number; hEmu: number; preset: string }
 }
 
 export interface TextElement extends ElementBase {
@@ -531,6 +539,8 @@ export interface TextElement extends ElementBase {
   adjust?: Record<string, number>
   /** Custom geometry (mutually exclusive with presetGeometry) */
   customGeometry?: CustomGeometry
+  /** spPr carried neither a:prstGeom nor a:custGeom (non-placeholder): PowerPoint draws only the text */
+  noGeometry?: true
   fill?: Fill
   /** <p:sp useBgFill="1">: painted with the slide's effective background fill (fill is only a fallback) */
   useBgFill?: boolean
@@ -626,6 +636,8 @@ export interface TableCell {
   /** Cell fill (explicit tcPr fill; table-style inheritance not yet supported) */
   fill?: Fill
   borders?: TableCellBorders
+  /** <a:tcPr><a:cell3D>: bevelled cell (width EMU from a:bevel@w, default 76200) */
+  bevel?: { widthEmu: number; preset?: string; lightDir?: string }
   /** Horizontal merge span in columns (gridSpan, default 1) */
   gridSpan?: number
   /** Vertical merge span in rows (rowSpan, default 1) */

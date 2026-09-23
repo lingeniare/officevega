@@ -65,6 +65,7 @@ export const id = {
   aiClarifyDecideAnswer: '(putuskan untuk saya)',
   aiClarifyMulti: 'Pilih beberapa',
   aiClarifyNext: 'Berikutnya',
+  aiClarifyPrev: 'Sebelumnya',
   aiClarifyOther: 'Lainnya (isi sendiri)',
   aiClarifySelected: '{n} dipilih',
   aiClarifySkip: 'Lewati survei',

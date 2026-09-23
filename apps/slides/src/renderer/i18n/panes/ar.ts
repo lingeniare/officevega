@@ -40,6 +40,9 @@ export const ar = {
   paneAnimEffShrink: 'تقليص مع الدوران',
   paneAnimEffZoomOut: 'تكبير/تصغير للخارج',
   paneAnimEffMotionPath: 'مسار الحركة',
+  paneAnimEffMediaPlay: 'تشغيل',
+  paneAnimEffMediaPause: 'إيقاف مؤقت',
+  paneAnimEffMediaStop: 'إيقاف',
 
   paneChartEditTitle: 'تحرير بيانات المخطط',
   paneChartCategoryN: 'الفئة {n}',
@@ -277,4 +280,13 @@ export const ar = {
   paneShowRehearseTotal: 'الإجمالي {time}',
   paneFormatFillTip: 'خيارات التعبئة للتحديد',
   paneFormatOutlineTip: 'خيارات المخطط التفصيلي للتحديد',
+  paneShowMenuNext: 'التالي',
+  paneShowMenuPrev: 'السابق',
+  paneShowMenuLastViewed: 'آخر شريحة تم عرضها',
+  paneShowMenuSeeAll: 'عرض كل الشرائح',
+  paneShowMenuScreen: 'الشاشة',
+  paneShowMenuBlack: 'شاشة سوداء',
+  paneShowMenuWhite: 'شاشة بيضاء',
+  paneShowMenuEnd: 'إنهاء العرض',
+  panePresenterWhiteOn: 'شاشة بيضاء (اضغط W للعودة)',
 } satisfies Record<keyof typeof zh, string>

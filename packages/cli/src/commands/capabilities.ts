@@ -11,8 +11,8 @@ import { appLaunch } from '../resources'
 
 /**
  * What the cloud commands can do on this machine, decided from VegaOffice's
- * own settings without a network call: a Genspark login, a VEGA key, or a
- * BYOK key the user entered in Settings. Unkeyed fallbacks (DuckDuckGo)
+ * own settings without a network call: a VEGA login with cloud tools on,
+ * a BYOK key, or explicitly selected free Parallel search. Unkeyed fallbacks (DuckDuckGo)
  * do not count as configured. Agents check this once before planning work
  * that needs photos or web facts.
  */
@@ -26,17 +26,21 @@ export const capabilitiesCommand: CommandDef = {
     const settings = readAiSettingsFile(aiSettingsPath(ctx.env))
     const gsk = hasGskAuth()
     const searchProvider = activeSearchProvider(settings)
-    const keyedSearch = searchProvider !== 'genspark'
-    const search = gsk || keyedSearch
-    const imageSearch = gsk || searchProvider === 'serper'
+    const gskSearch = gsk && searchProvider === 'genspark'
+    const customSearch = searchProvider !== 'genspark'
+    const search = gskSearch || customSearch
+    const imageSearch = gskSearch || searchProvider === 'serper'
     const imageGeneration = imageGenerationAvailable(settings, hasGskAuth())
     const mediaAnalysis = mediaAnalysisAvailable(settings, hasGskAuth())
     const via = (byok: string | null | undefined) => (byok ? byok : gsk ? 'genspark' : null)
     const detail = {
-      search: { available: search, via: keyedSearch ? searchProvider : gsk ? 'genspark' : null },
+      search: {
+        available: search,
+        via: customSearch ? searchProvider : gskSearch ? 'genspark' : null,
+      },
       image_search: {
         available: imageSearch,
-        via: searchProvider === 'serper' ? 'serper' : gsk ? 'genspark' : null,
+        via: searchProvider === 'serper' ? 'serper' : gskSearch ? 'genspark' : null,
       },
       image_generation: {
         available: imageGeneration,

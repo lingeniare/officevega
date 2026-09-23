@@ -178,4 +178,8 @@ export const tt = {
   aiCmdImages: '{count} рәсем яңартылды',
   aiCmdToc: 'Эчтәлекләр таблицасы кертелде ({count} язма)',
   aiCmdSkipped: ' ({count} сакланган блок үткәреп калдырылды)',
+  aiSumEditNote: 'Искәрмә үзгәртелде',
+  aiSumAnalyzeMedia: 'Медианы анализлау',
+  aiSumAnalyzeMediaDone: 'Медиа анализланды',
+  aiCmdNoneUnchanged: '{count} туры килгән блок үзгәртелмәде; документ үзгәртелмәде.',
 } satisfies Record<keyof typeof zh, string>

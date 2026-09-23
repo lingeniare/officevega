@@ -57,6 +57,7 @@ export const nl = {
   aiSumInsertFootnote: 'Voetnoot ingevoegd',
   aiSumInsertEndnote: 'Eindnoot ingevoegd',
   aiSumDeleteNote: 'Noot verwijderd',
+  aiSumEditNote: 'Noot bewerkt',
   aiSumReadNotes: 'Noten gelezen',
   aiSumAddComment: 'Opmerking toegevoegd',
   aiSumDeleteComment: 'Opmerking verwijderd',
@@ -125,6 +126,8 @@ export const nl = {
   aiSumWebSearchDone: 'Gezocht naar "{query}" ({count} resultaten)',
   aiSumImageSearch: 'Afbeeldingen zoeken',
   aiSumImageSearchDone: 'Afbeeldingen gezocht met "{query}" ({count} afbeeldingen)',
+  aiSumAnalyzeMedia: 'Media analyseren',
+  aiSumAnalyzeMediaDone: 'Media geanalyseerd',
   aiSumInsertImage: 'Afbeelding invoegen',
   aiSumInsertWebImage: 'Webafbeelding ingevoegd',
   aiSumGenerateImage: 'Afbeelding genereren',
@@ -167,6 +170,8 @@ export const nl = {
   aiCmdNone: 'Geen overeenkomende blokken; het document is niet gewijzigd.',
   aiCmdNoneSkipped:
     'Geen bewerkbare blokken; het document is niet gewijzigd ({count} beveiligde blokken overgeslagen — tabellen/afbeeldingen kunnen niet met stijlopdrachten worden gewijzigd).',
+  aiCmdNoneUnchanged:
+    '{count} overeenkomende blok(ken) bleven ongewijzigd; het document is niet gewijzigd.',
   aiCmdTextStyle: 'Tekststijl bijgewerkt in {count} blok(ken)',
   aiCmdMatchedStyle: 'Stijl toegepast op {count} overeenkomst(en) in {blocks} blok(ken)',
   aiCmdParaStyle: 'Alineaopmaak bijgewerkt in {count} blok(ken)',

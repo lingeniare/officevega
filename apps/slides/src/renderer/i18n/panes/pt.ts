@@ -40,6 +40,9 @@ export const pt = {
   paneAnimEffShrink: 'Encolher e Girar',
   paneAnimEffZoomOut: 'Zoom (Saída)',
   paneAnimEffMotionPath: 'Trajetória de Animação',
+  paneAnimEffMediaPlay: 'Reproduzir',
+  paneAnimEffMediaPause: 'Pausar',
+  paneAnimEffMediaStop: 'Parar',
 
   paneChartEditTitle: 'Editar Dados do Gráfico',
   paneChartCategoryN: 'Categoria {n}',
@@ -282,4 +285,13 @@ export const pt = {
   paneShowRehearseTotal: 'Total {time}',
   paneFormatFillTip: 'Opções de preenchimento para a seleção',
   paneFormatOutlineTip: 'Opções de contorno para a seleção',
+  paneShowMenuNext: 'Seguinte',
+  paneShowMenuPrev: 'Anterior',
+  paneShowMenuLastViewed: 'Último visualizado',
+  paneShowMenuSeeAll: 'Ver todos os slides',
+  paneShowMenuScreen: 'Tela',
+  paneShowMenuBlack: 'Tela preta',
+  paneShowMenuWhite: 'Tela branca',
+  paneShowMenuEnd: 'Terminar apresentação',
+  panePresenterWhiteOn: 'Tela branca (W para retomar)',
 } satisfies Record<keyof typeof zh, string>

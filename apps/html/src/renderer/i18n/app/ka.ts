@@ -163,4 +163,5 @@ export const ka = {
   insertImageTip: 'სურათის ჩასმა',
   insertTableTip: 'ცხრილის ჩასმა',
   insertMoreTip: 'ჩასმის დამატებითი პარამეტრები',
+  elementPath: 'ელემენტის გზა',
 } satisfies Record<keyof typeof zh, string>

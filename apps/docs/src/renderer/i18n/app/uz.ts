@@ -375,4 +375,7 @@ export const uz = {
     'Joriy tanlov asosida ushbu uslubni yangilash (styles.xml fayliga qayta yoziladi)',
   appNewStyleFromSelection: 'Joriy tanlov asosida yangi uslub',
   appStyleNamePlaceholder: 'Uslub nomi',
+  appDocTooLargeBlocks: '{name}: hujjat ochish uchun juda katta ({blocks} ta abzats, {chars} ta belgi)',
+  appDocLargeReadOnly: 'Katta hujjat ({blocks} ta abzats): faqat oʻqish rejimida ochildi — tahrirlash uchun Esc bosing',
+  appDocLargeSpellOff: 'Katta hujjat ({blocks} ta abzats): yozish jarayonida imlo tekshiruvi oʻchiq — Review › Spelling boʻlimida yoqing',
 } satisfies Record<keyof typeof zh, string>

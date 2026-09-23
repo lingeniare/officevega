@@ -40,6 +40,9 @@ export const he = {
   paneAnimEffShrink: 'כיווץ וסיבוב',
   paneAnimEffZoomOut: 'זום החוצה',
   paneAnimEffMotionPath: 'נתיב תנועה',
+  paneAnimEffMediaPlay: 'הפעל',
+  paneAnimEffMediaPause: 'השהה',
+  paneAnimEffMediaStop: 'עצור',
 
   paneChartEditTitle: 'עריכת נתוני תרשים',
   paneChartCategoryN: 'קטגוריה {n}',
@@ -276,4 +279,13 @@ export const he = {
   paneShowRehearseTotal: 'סה״כ {time}',
   paneFormatFillTip: 'אפשרויות מילוי עבור הבחירה',
   paneFormatOutlineTip: 'אפשרויות קווי מתאר עבור הבחירה',
+  paneShowMenuNext: 'הבא',
+  paneShowMenuPrev: 'הקודם',
+  paneShowMenuLastViewed: 'הוצג לאחרונה',
+  paneShowMenuSeeAll: 'הצג את כל השקופיות',
+  paneShowMenuScreen: 'מסך',
+  paneShowMenuBlack: 'מסך שחור',
+  paneShowMenuWhite: 'מסך לבן',
+  paneShowMenuEnd: 'סיים הצגה',
+  panePresenterWhiteOn: 'מסך לבן (W לחזרה)',
 } satisfies Record<keyof typeof zh, string>

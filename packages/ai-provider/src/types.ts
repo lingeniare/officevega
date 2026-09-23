@@ -126,8 +126,8 @@ export interface AiMediaSettings {
   provider?: AiMediaProviderId | undefined
 }
 
-/** web/image search backends: Genspark (gsk) or a user key for Serper / Tavily */
-export type AiSearchProviderId = 'genspark' | 'vega' | 'serper' | 'tavily'
+/** web/image search backends: VEGA, account sign-in (gsk), or a user key for Serper / Tavily / Parallel (Parallel also runs keyless) */
+export type AiSearchProviderId = 'genspark' | 'vega' | 'serper' | 'tavily' | 'parallel'
 
 export interface AiSearchProviderMeta {
   id: AiSearchProviderId

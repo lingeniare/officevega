@@ -179,4 +179,8 @@ export const az = {
   aiCmdImages: '{count} şəkil yeniləndi',
   aiCmdToc: 'Mündəricat daxil edildi ({count} qeyd)',
   aiCmdSkipped: ' ({count} qorunan blok ötürüldü)',
+  aiSumEditNote: 'Qeyd redaktə edildi',
+  aiSumAnalyzeMedia: 'Medianı təhlil et',
+  aiSumAnalyzeMediaDone: 'Media təhlil edildi',
+  aiCmdNoneUnchanged: '{count} uyğun blok dəyişmədi; sənəd dəyişdirilmədi.',
 } satisfies Record<keyof typeof zh, string>

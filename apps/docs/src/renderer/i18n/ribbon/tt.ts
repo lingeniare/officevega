@@ -101,7 +101,6 @@ export const tt = {
   ribbonThemeColorShadeTip: 'Тема төсе {r}-{c}',
   ribbonStandardColors: 'Стандарт төсләр',
   ribbonMoreColors: 'Күбрәк төсләр…',
-  ribbonGroupFont: 'Шрифт',
   ribbonBullets: 'Маркерлар',
   ribbonNumbering: 'Номерлау',
   ribbonDecreaseIndent: 'Абзац чиген киметү',
@@ -730,4 +729,6 @@ export const tt = {
   ribbonAutoFitTip: 'Таблица баганаларын автоматик рәвештә туры китерү',
   ribbonZoomInTip: 'Зурайту',
   ribbonZoomOutTip: 'Кечерәйтү',
+  ribbonFontEastAsia: 'Көнчыгыш Азия шрифты',
+  ribbonFontLatin: 'Латин шрифты',
 } satisfies Record<keyof typeof zh, string>

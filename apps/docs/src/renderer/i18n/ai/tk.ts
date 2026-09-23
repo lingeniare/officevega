@@ -180,4 +180,8 @@ export const tk = {
   aiCmdImages: '{count} surat täzelendi',
   aiCmdToc: 'Mazmun tablisasy goýuldy ({count} ýazgy)',
   aiCmdSkipped: ' ({count} goragly blok geçirildi)',
+  aiSumEditNote: 'Bellik üýtgedildi',
+  aiSumAnalyzeMedia: 'Mediýany seljermek',
+  aiSumAnalyzeMediaDone: 'Media seljerildi',
+  aiCmdNoneUnchanged: '{count} gabat gelýän blok üýtgedilmedik; resminama üýtgedilmedi.',
 } satisfies Record<keyof typeof zh, string>

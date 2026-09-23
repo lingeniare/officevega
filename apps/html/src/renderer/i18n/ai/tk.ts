@@ -183,4 +183,5 @@ export const tk = {
   aiFillImagesAsk: 'Sahypa üçin {n} surat döredeýinmi?',
   aiFillImagesYes: 'Döret',
   aiFillImagesNo: 'Häzir däl',
+  aiClarifyPrev: 'Öňki',
 } satisfies Record<keyof typeof zh, string>

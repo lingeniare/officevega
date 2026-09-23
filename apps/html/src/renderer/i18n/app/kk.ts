@@ -163,4 +163,5 @@ export const kk = {
   insertImageTip: 'Суретті кірістіру',
   insertTableTip: 'Кесте кірістіру',
   insertMoreTip: 'Қосымша кірістіру параметрлері',
+  elementPath: 'Элемент жолы',
 } satisfies Record<keyof typeof zh, string>

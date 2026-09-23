@@ -531,7 +531,7 @@ export function AiChatPanel({
         onPointerDown={startResize}
         role="separator"
         aria-orientation="vertical"
-        aria-label={lang === 'ru' ? 'ВЕГА' : 'VEGA'}
+        aria-label={t('aiVEGAAccount')}
       />
       <header className="ai-panel-header">
         <span className="ai-panel-title">{lang === 'ru' ? 'ВЕГА' : 'VEGA'}</span>

@@ -1,5 +1,23 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+vi.mock('node:fs', () => {
+  const realpathSync = ((path?: string) => {
+    if (path === undefined) return undefined
+    if (path === '/real/file' || path === '/canonical/file' || path === '/REAL/FILE')
+      return '/real/file'
+    return path
+  }) as typeof import('node:fs').realpathSync
+
+  realpathSync.native = ((path?: string) => {
+    if (path === undefined) return undefined
+    if (path === '/real/file' || path === '/canonical/file' || path === '/REAL/FILE')
+      return '/real/file'
+    return path
+  }) as typeof import('node:fs').realpathSync.native
+
+  return { realpathSync }
+})
+
 /**
  * TabManager (src/main/tab-manager.ts): tab list state, activation,
  * close guards, and view lifecycle inside the shell's single window.
@@ -13,6 +31,7 @@ interface FakeWebContents {
   once: ReturnType<typeof vi.fn>
   close: ReturnType<typeof vi.fn>
   reload: ReturnType<typeof vi.fn>
+  focus: ReturnType<typeof vi.fn>
   isDestroyed: ReturnType<typeof vi.fn>
   listeners: Map<string, () => void>
 }
@@ -38,6 +57,7 @@ function makeFakeView(): FakeView {
       once: vi.fn(),
       close: vi.fn(),
       reload: vi.fn(),
+      focus: vi.fn(),
       isDestroyed: vi.fn(() => false),
     },
     setVisible: vi.fn(),
@@ -120,8 +140,9 @@ const WINDOW_HEIGHT = 600
 interface FakeShellWindow {
   on: ReturnType<typeof vi.fn>
   once: ReturnType<typeof vi.fn>
-  webContents: { once: ReturnType<typeof vi.fn> }
+  webContents: { once: ReturnType<typeof vi.fn>; focus: ReturnType<typeof vi.fn> }
   isDestroyed: ReturnType<typeof vi.fn>
+  isFocused: ReturnType<typeof vi.fn>
   getContentBounds: () => { x: number; y: number; width: number; height: number }
   contentView: {
     addChildView: ReturnType<typeof vi.fn>
@@ -133,8 +154,9 @@ function makeShellWindow(): FakeShellWindow {
   return {
     on: vi.fn(),
     once: vi.fn(),
-    webContents: { once: vi.fn() },
+    webContents: { once: vi.fn(), focus: vi.fn() },
     isDestroyed: vi.fn(() => false),
+    isFocused: vi.fn(() => true),
     getContentBounds: () => ({ x: 0, y: 0, width: WINDOW_WIDTH, height: WINDOW_HEIGHT }),
     contentView: { addChildView: vi.fn(), removeChildView: vi.fn() },
   }
@@ -333,6 +355,30 @@ describe('activation', () => {
       height: WINDOW_HEIGHT - TAB_STRIP_HEIGHT,
     })
     expect(manager.list().find((t) => t.id === docsId)?.active).toBe(true)
+  })
+
+  it('hands keyboard focus to the activated view so typing works right after open/switch', () => {
+    const docsId = manager.openDocsTab()
+    const docsView = lastCreatedView(createDocsView)
+    expect(docsView.webContents.focus).toHaveBeenCalled()
+
+    docsView.webContents.focus.mockClear()
+    manager.activateTab('home')
+    expect(shellWindow.webContents.focus).toHaveBeenCalled()
+    manager.activateTab(docsId)
+    expect(docsView.webContents.focus).toHaveBeenCalledTimes(1)
+  })
+
+  it('does not steal OS focus for a background open (window unfocused)', () => {
+    shellWindow.isFocused.mockReturnValue(false)
+    manager.openDocsTab()
+    const docsView = lastCreatedView(createDocsView)
+    expect(docsView.webContents.focus).not.toHaveBeenCalled()
+
+    // the window `focus` handler runs it once the user comes back
+    shellWindow.isFocused.mockReturnValue(true)
+    manager.focusActiveView()
+    expect(docsView.webContents.focus).toHaveBeenCalledTimes(1)
   })
 
   it('ignores activation of unknown tab ids', () => {
@@ -571,6 +617,37 @@ describe('file path bookkeeping', () => {
     expect(manager.findSlidesTabByPath('/tmp/b.pptx')).toBe('t2')
     expect(manager.findPdfTabByPath('/tmp/c.pdf')).toBe('t3')
     expect(manager.findPdfTabByPath('/tmp/missing.pdf')).toBeUndefined()
+  })
+
+  it('finds every document family by a canonicalized path alias', () => {
+    const docsId = manager.openDocsTab('/real/file')
+    const sheetsId = manager.openSheetsTab('/real/file')
+    const slidesId = manager.openSlidesTab('/real/file')
+    const pdfId = manager.openPdfTab('/real/file')
+    // markdown/html view factories need electron protocol mocks the shell
+    // suite does not provide, so seed their tab records directly: the
+    // finders only read kind/view/filePath.
+    const seedTab = (kind: string, filePath: string) => {
+      const tabs = (
+        manager as unknown as {
+          tabs: Array<{ id: string; kind: string; view: unknown; filePath: string }>
+        }
+      ).tabs
+      const id = `seed-${kind}`
+      tabs.push({ id, kind, view: {}, filePath })
+      return id
+    }
+    const markdownId = seedTab('markdown', '/real/file')
+    const htmlId = seedTab('html', '/real/file')
+
+    expect(manager.findDocsTabByPath('/canonical/file')).toBe(docsId)
+    expect(manager.findSheetsTabByPath('/REAL/FILE')).toBe(sheetsId)
+    expect(manager.findSlidesTabByPath('/canonical/file')).toBe(slidesId)
+    expect(manager.findPdfTabByPath('/REAL/FILE')).toBe(pdfId)
+    expect(manager.findMarkdownTabByPath('/canonical/file')).toBe(markdownId)
+    expect(manager.findHtmlTabByPath('/REAL/FILE')).toBe(htmlId)
+    expect(manager.findDocsTabByPath('/missing')).toBeUndefined()
+    expect(manager.findDocsTabByPath()).toBeUndefined()
   })
 
   it('reloads an existing pdf tab so a re-export rereads the file from disk', () => {

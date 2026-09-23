@@ -40,6 +40,9 @@ export const ru = {
   paneAnimEffShrink: 'Сжатие и поворот',
   paneAnimEffZoomOut: 'Масштабирование (выход)',
   paneAnimEffMotionPath: 'Путь перемещения',
+  paneAnimEffMediaPlay: 'Воспроизвести',
+  paneAnimEffMediaPause: 'Пауза',
+  paneAnimEffMediaStop: 'Остановить',
 
   paneChartEditTitle: 'Изменение данных диаграммы',
   paneChartCategoryN: 'Категория {n}',
@@ -278,4 +281,13 @@ export const ru = {
   paneShowRehearseTotal: 'Всего {time}',
   paneFormatFillTip: 'Параметры заливки для выделения',
   paneFormatOutlineTip: 'Параметры контура для выделения',
+  paneShowMenuNext: 'Далее',
+  paneShowMenuPrev: 'Назад',
+  paneShowMenuLastViewed: 'Последний просмотренный',
+  paneShowMenuSeeAll: 'Показать все слайды',
+  paneShowMenuScreen: 'Экран',
+  paneShowMenuBlack: 'Чёрный экран',
+  paneShowMenuWhite: 'Белый экран',
+  paneShowMenuEnd: 'Завершить показ',
+  panePresenterWhiteOn: 'Белый экран (W — вернуться)',
 } satisfies Record<keyof typeof zh, string>
