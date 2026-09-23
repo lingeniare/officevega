@@ -1,4 +1,5 @@
 import { basename, dirname } from 'node:path'
+import { vegaofficeApiKey } from '@genoffice/ai-search'
 import type { FileSearchRerank, FileSearchSettings, JevEndpoint } from '../../shared/home-api'
 import { evaluate, MAX_DOCS, type JevTransport } from './jev'
 import type { FileIndexStore } from './store'
@@ -8,9 +9,9 @@ const CACHE_TTL_MS = 30 * 60 * 1000
 const CACHE_MAX = 200
 
 export const DEFAULT_FILE_SEARCH_SETTINGS: FileSearchSettings = {
-  rerank: false,
-  jevEndpoint: 'openrouter',
-  jevKeys: { openrouter: '', direct: '' },
+  rerank: true,
+  jevEndpoint: 'vega',
+  jevKeys: { vega: '', openrouter: '', direct: '' },
 }
 
 export function normalizeFileSearchSettings(raw: unknown): FileSearchSettings {
@@ -21,10 +22,23 @@ export function normalizeFileSearchSettings(raw: unknown): FileSearchSettings {
   >
   const key = (v: unknown) => (typeof v === 'string' ? v.trim().slice(0, 512) : '')
   return {
-    rerank: r.rerank === true,
-    jevEndpoint: r.jevEndpoint === 'direct' ? 'direct' : 'openrouter',
-    jevKeys: { openrouter: key(keys.openrouter), direct: key(keys.direct) },
+    // absent = on: the VEGA endpoint rides the sign-in key, so there is nothing
+    // to configure; a stored false stays an explicit opt-out
+    rerank: r.rerank !== false,
+    jevEndpoint: jevEndpointOf(r.jevEndpoint),
+    jevKeys: {
+      vega: key(keys.vega),
+      openrouter: key(keys.openrouter),
+      direct: key(keys.direct),
+    },
   }
+}
+
+/** the configured key, or — for the VEGA endpoint — the key the sign-in issued */
+function jevKey(settings: FileSearchSettings): string {
+  const own = settings.jevKeys[settings.jevEndpoint]
+  if (own) return own
+  return settings.jevEndpoint === 'vega' ? vegaofficeApiKey() : ''
 }
 
 /**
@@ -49,7 +63,7 @@ export class SearchReranker {
     paths: readonly string[],
     settings: FileSearchSettings,
   ): Promise<FileSearchRerank | null> {
-    const key = settings.jevKeys[settings.jevEndpoint]
+    const key = jevKey(settings)
     if (!settings.rerank || !key) return null
     const hits = this.store.excerptsFor(paths.slice(0, MAX_DOCS), q, EXCERPT_CHARS)
     if (hits.length < 2) return null
@@ -98,7 +112,7 @@ export class SearchReranker {
 }
 
 export function jevEndpointOf(v: unknown): JevEndpoint {
-  return v === 'direct' ? 'direct' : 'openrouter'
+  return v === 'direct' ? 'direct' : v === 'openrouter' ? 'openrouter' : 'vega'
 }
 
 const PROBE_DOCS = [
@@ -112,7 +126,13 @@ export async function probeJev(
   key: string,
   send?: JevTransport,
 ): Promise<{ ok: boolean; error?: string }> {
-  if (!key.trim()) return { ok: false, error: 'Enter an API key' }
+  key = key.trim() || (endpoint === 'vega' ? vegaofficeApiKey() : '')
+  if (!key) {
+    return {
+      ok: false,
+      error: endpoint === 'vega' ? 'Sign in to VEGA or enter an API key' : 'Enter an API key',
+    }
+  }
   try {
     await evaluate('connection test', PROBE_DOCS, endpoint, key, send)
     return { ok: true }

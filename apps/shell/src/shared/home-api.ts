@@ -126,7 +126,7 @@ export interface FileSearchHit extends RecentEntry {
   needles: string[]
 }
 
-export type JevEndpoint = 'openrouter' | 'direct'
+export type JevEndpoint = 'vega' | 'openrouter' | 'direct'
 
 /** home search options persisted in app-settings.json under `fileSearch` */
 export interface FileSearchSettings {

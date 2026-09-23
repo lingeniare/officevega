@@ -1,7 +1,7 @@
 import { mkdtempSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
   evaluate,
   prepare,
@@ -15,6 +15,12 @@ import {
   SearchReranker,
 } from '../src/main/file-index/rerank'
 import { FileIndexStore } from '../src/main/file-index/store'
+
+vi.mock('@genoffice/ai-search', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@genoffice/ai-search')>()),
+  // the sign-in-issued key the vega endpoint falls back to when its slot is blank
+  vegaofficeApiKey: () => 'sk-test-account',
+}))
 
 const docs = [
   { title: 'a.md', heading: 'notes', text: 'alpha' },
@@ -57,6 +63,13 @@ describe('prepare', () => {
     expect(parsed.questions.d0.type).toBe('score')
   })
 
+  it('sends the VEGA catalog alias and keeps the TypeSafe route pin', () => {
+    const { body } = prepare('q', docs, 'vega')
+    const parsed = JSON.parse(body)
+    expect(parsed.model).toBe('~typesafe/jev-latest')
+    expect(parsed.provider.only).toEqual(['typesafe'])
+  })
+
   it('stops adding documents at the 24 KB body budget and rejects empty input', () => {
     const many = Array.from({ length: 20 }, (_, i) => ({
       title: `${i}`,
@@ -80,6 +93,16 @@ describe('validate', () => {
     expect(r.scores).toEqual([2, 0.5, 0])
     expect(r.inputTokens).toBe(120)
     expect(r.cost).toBe(0.00001)
+  })
+
+  it('accepts the VEGA alias echo and any resolved jev snapshot', () => {
+    expect(validate(JSON.parse(answer([1], '~typesafe/jev-latest')), 1, 'vega').scores).toEqual([1])
+    expect(
+      validate(JSON.parse(answer([1], 'typesafe/jev-1.14-20990101')), 1, 'vega').scores,
+    ).toEqual([1])
+    expect(() => validate(JSON.parse(answer([1], 'other/model')), 1, 'vega')).toThrow(
+      'model-mismatch',
+    )
   })
 
   it('rejects another model, provider warnings, and a distribution that disagrees with the score', () => {
@@ -130,6 +153,7 @@ describe('SearchReranker', () => {
     jevEndpoint: 'openrouter',
     jevKeys: { openrouter: 'k' },
   })
+  expect(settings.jevKeys).toEqual({ vega: '', openrouter: 'k', direct: '' })
 
   beforeEach(() => {
     dir = mkdtempSync(join(tmpdir(), 'genoffice-jev-'))
@@ -185,7 +209,7 @@ describe('SearchReranker', () => {
     expect(
       await off.rerank('budget', SHOWN, {
         ...settings,
-        jevKeys: { openrouter: '', direct: '' },
+        jevKeys: { vega: '', openrouter: '', direct: '' },
       }),
     ).toBeNull()
     // the judged set is exactly the shown one: unknown paths drop, a single survivor is not judged
@@ -200,10 +224,34 @@ describe('SearchReranker', () => {
         jevKeys: { direct: ' abc ' },
       }),
     ).toEqual({
-      rerank: false,
+      // 'yes' is not a stored opt-out, so the default-on rule applies
+      rerank: true,
       jevEndpoint: 'direct',
-      jevKeys: { openrouter: '', direct: 'abc' },
+      jevKeys: { vega: '', openrouter: '', direct: 'abc' },
     })
+  })
+
+  it('defaults to the VEGA endpoint and rides the sign-in key when its slot is blank', async () => {
+    const vega = normalizeFileSearchSettings(undefined)
+    expect(vega).toEqual({
+      rerank: true,
+      jevEndpoint: 'vega',
+      jevKeys: { vega: '', openrouter: '', direct: '' },
+    })
+    const send: JevTransport = async (url, _body, key) => {
+      expect(url).toBe('https://api.vega.chat/api/alpha/decisions')
+      expect(key).toBe('sk-test-account')
+      return { status: 200, body: answer([2, 1, 0]) }
+    }
+    const reranker = new SearchReranker(store, send)
+    const r = await reranker.rerank('budget', SHOWN, vega)
+    expect(r!.order).toEqual(['/n/first.md', '/n/second.md', '/n/third.md'])
+    // an explicit vega key wins over the account one
+    const own = new SearchReranker(store, async (_url, _body, key) => {
+      expect(key).toBe('own-key')
+      return { status: 200, body: answer([2, 1, 0]) }
+    })
+    await own.rerank('budget', SHOWN, { ...vega, jevKeys: { ...vega.jevKeys, vega: 'own-key' } })
   })
 })
 
@@ -229,5 +277,7 @@ describe('probeJev', () => {
       error: 'Enter an API key',
     })
     expect(sent).toBe(0)
+    // vega keyless probes the sign-in key instead of demanding one
+    expect(await probeJev('vega', '', ok(answer([2, 0])))).toEqual({ ok: true })
   })
 })

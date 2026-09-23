@@ -5,9 +5,12 @@
  * fails validation is an error; callers keep the local order.
  */
 
-export type JevEndpoint = 'openrouter' | 'direct'
+export type JevEndpoint = 'vega' | 'openrouter' | 'direct'
 
 const ENDPOINTS: Record<JevEndpoint, { url: string; model: string }> = {
+  // api.vega.chat proxies OpenRouter — the decisions alpha rides the same path;
+  // '~' marks a server-side alias row in the VEGA catalog (always the latest Jev)
+  vega: { url: 'https://api.vega.chat/api/alpha/decisions', model: '~typesafe/jev-latest' },
   openrouter: { url: 'https://openrouter.ai/api/alpha/decisions', model: 'typesafe/jev-1.13' },
   direct: { url: 'https://api.typesafe.ai/v1/systemone', model: 'jev-1.13.0' },
 }
@@ -23,6 +26,8 @@ const TIMEOUT_MS = 4000
 const PROB_TOLERANCE = 0.02
 /** OpenRouter may resolve to a dated snapshot of the pinned version */
 const OPENROUTER_MODEL_PATTERN = /^typesafe\/jev-1\.13(?:-\d{8})?$/
+// VEGA resolves the alias and echoes the concrete snapshot — accept either form
+const VEGA_MODEL_PATTERN = /^~?typesafe\/jev-[\w.-]+$/
 
 export interface JevDocument {
   title: string
@@ -77,7 +82,7 @@ export function prepare(
         { type: 'score', instructions: instructions(i), criteria: CRITERIA },
       ]),
     )
-    if (endpoint === 'openrouter') {
+    if (endpoint !== 'direct') {
       // pin the route to TypeSafe: other providers cannot return score distributions
       const provider = {
         only: ['typesafe'],
@@ -85,7 +90,7 @@ export function prepare(
         zdr: true,
         data_collection: 'deny',
       }
-      return JSON.stringify({ model: ENDPOINTS.openrouter.model, state, questions, provider })
+      return JSON.stringify({ model: ENDPOINTS[endpoint].model, state, questions, provider })
     }
     return JSON.stringify({ model: ENDPOINTS.direct.model, state, questions })
   }
@@ -120,7 +125,8 @@ export function validate(raw: unknown, count: number, endpoint: JevEndpoint): Je
   if (endpoint === 'direct') {
     if (r.model !== ENDPOINTS.direct.model) throw new Error('model-mismatch')
   } else {
-    if (typeof r.model !== 'string' || !OPENROUTER_MODEL_PATTERN.test(r.model))
+    const pattern = endpoint === 'vega' ? VEGA_MODEL_PATTERN : OPENROUTER_MODEL_PATTERN
+    if (typeof r.model !== 'string' || !pattern.test(r.model))
       throw new Error('model-mismatch')
     if (Array.isArray(r.warnings) && r.warnings.length) throw new Error('provider-warning')
   }
@@ -148,7 +154,7 @@ export function validate(raw: unknown, count: number, endpoint: JevEndpoint): Je
       inputTokens = num(usage.input_tokens, 0, Number.MAX_SAFE_INTEGER)
       if (!Number.isInteger(inputTokens)) throw new Error('invalid-response')
     }
-    if (endpoint === 'openrouter' && usage.cost !== undefined)
+    if (endpoint !== 'direct' && usage.cost !== undefined)
       cost = num(usage.cost, 0, Number.MAX_SAFE_INTEGER)
   }
   return { scores, inputTokens, cost }

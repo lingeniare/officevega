@@ -873,6 +873,7 @@ export interface SettingsTarget {
 type TestResult = { ok: boolean; error?: string }
 
 const JEV_ENDPOINTS: { value: JevEndpoint; label: string }[] = [
+  { value: 'vega', label: 'VEGA' },
   { value: 'openrouter', label: 'OpenRouter' },
   { value: 'direct', label: 'TypeSafe' },
 ]
@@ -1446,22 +1447,25 @@ function AiMediaPane({
                   ariaLabel={t('setSearchRerankEndpoint')}
                   options={JEV_ENDPOINTS}
                   onPick={(v) =>
-                    setFileSearch({
-                      ...fileSearch,
-                      jevEndpoint: v === 'direct' ? 'direct' : 'openrouter',
-                    })
+                    setFileSearch({ ...fileSearch, jevEndpoint: v as JevEndpoint })
                   }
                 />
               </div>
-              {keyRow(
-                'set-search-jev-key',
-                fileSearch.jevKeys[fileSearch.jevEndpoint],
-                fileSearch.jevEndpoint === 'openrouter' ? 'sk-or-…' : 'API Key',
-                (v) =>
-                  setFileSearch({
-                    ...fileSearch,
-                    jevKeys: { ...fileSearch.jevKeys, [fileSearch.jevEndpoint]: v },
-                  }),
+              {fileSearch.jevEndpoint === 'vega' ? (
+                // VEGA reranks on the sign-in key — no API key field, same as
+                // the search/media providers above
+                <div className="set-field-desc set-ai-note">{t('setAiAccountHint')}</div>
+              ) : (
+                keyRow(
+                  'set-search-jev-key',
+                  fileSearch.jevKeys[fileSearch.jevEndpoint],
+                  fileSearch.jevEndpoint === 'openrouter' ? 'sk-or-…' : 'API Key',
+                  (v) =>
+                    setFileSearch({
+                      ...fileSearch,
+                      jevKeys: { ...fileSearch.jevKeys, [fileSearch.jevEndpoint]: v },
+                    }),
+                )
               )}
             </>
           )}
