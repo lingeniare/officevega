@@ -107,7 +107,7 @@ const queueWorkbookForView = vi.fn()
 const requestSheetsClose = vi.fn(() => Promise.resolve(true))
 const setActiveSheetsWebContents = vi.fn()
 const setSheetsNewBlank = vi.fn()
-const sheetsPendingEditCount = vi.fn(() => 0)
+const sheetsPendingEditCount = vi.fn((_id: number) => 0)
 
 vi.mock('../../sheets/src/main/sheets-main', () => ({
   createSheetsView: (...args: unknown[]) => createSheetsView(...(args as [])),
@@ -116,7 +116,7 @@ vi.mock('../../sheets/src/main/sheets-main', () => ({
   requestSheetsClose: (...args: unknown[]) => requestSheetsClose(...(args as [])),
   setActiveSheetsWebContents: (...args: unknown[]) => setActiveSheetsWebContents(...args),
   setSheetsNewBlank: (...args: unknown[]) => setSheetsNewBlank(...args),
-  sheetsPendingEditCount: (...args: unknown[]) => sheetsPendingEditCount(...(args as [])),
+  sheetsPendingEditCount: (...args: unknown[]) => sheetsPendingEditCount(...(args as [number])),
 }))
 
 const createSlidesView = vi.fn(() => makeFakeView())
