@@ -22,6 +22,7 @@ import { tableModelToPmNode } from '../editor/convert'
 import { insertPageBreak } from '../editor/page-break'
 import { isStraightLineKind } from '../editor/shape-svg'
 import type { InkTool } from '../editor/ink'
+import { appTitle } from '@genoffice/i18n'
 import { t, useI18n, type StringKey } from '../i18n/locale'
 import iconEditor from '../assets/icon-editor.png'
 import iconTranslate from '../assets/icon-translate.png'
@@ -1110,7 +1111,7 @@ export function ViewTab({
   onSplitView,
   onPagePreview,
 }: ViewTabProps) {
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
   const [winMenuOpen, setWinMenuOpen] = useState(false)
   const [windows, setWindows] = useState<DocsTabInfo[]>([])
   /** wrap holding both the switch-tabs trigger and its menu */
@@ -1375,7 +1376,7 @@ export function ViewTab({
                     }}
                   >
                     {w.focused ? '✓ ' : ''}
-                    {w.title || 'Office VEGA Docs'}
+                    {w.title || appTitle(lang, 'Docs')}
                   </button>
                 ))}
               </div>

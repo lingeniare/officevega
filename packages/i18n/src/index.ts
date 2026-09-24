@@ -113,6 +113,18 @@ export function htmlLang(lang: Lang): string {
   return HTML_LANGS[lang]
 }
 
+/**
+ * Product name for window/tab titles and brand labels: stays Latin "Office
+ * VEGA" in every UI language except the Cyrillic-script locales (ru, tt),
+ * which read «Офис ВЕГА» (matching the ru dictionary's «Офис ВЕГА» form).
+ * Pass the editor suffix for the standalone app windows ('Docs', 'Sheets',
+ * 'Slides').
+ */
+export function appTitle(lang: Lang, suffix?: string): string {
+  const name = lang === 'ru' || lang === 'tt' ? 'Офис ВЕГА' : 'Office VEGA'
+  return suffix ? `${name} ${suffix}` : name
+}
+
 // ---- platform-native shortcut hints ----
 // Dictionaries write shortcut hints in Mac notation (⌘S, ⇧⌘Z, ⌘+Click); on
 // Windows/Linux every translated string is rewritten to Ctrl/Alt/Shift form.

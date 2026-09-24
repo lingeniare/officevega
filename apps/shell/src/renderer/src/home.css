@@ -14,9 +14,6 @@
   --timeline-user-text: #5a6170;
   /* lift for the active segment in gray-track tab pills */
   --shadow-pill: 0 1px 2px rgb(0 0 0 / 8%);
-
-  /* vegaoffice-logo.svg is pure black-and-white; dark themes flip it to 1 */
-  --logo-invert: 0;
 }
 
 /* ── Dark mode overrides ─────────────────────────────────── */
@@ -32,7 +29,6 @@
   --timeline-user-bg: #2a2a3a;
   --timeline-user-text: #b0b0c0;
   --shadow-pill: 0 1px 2px rgb(0 0 0 / 40%);
-  --logo-invert: 1;
 }
 
 /* System dark: no data-theme or data-theme="system" — follow OS preference */
@@ -47,7 +43,6 @@
     --timeline-user-bg: #2a2a3a;
     --timeline-user-text: #b0b0c0;
     --shadow-pill: 0 1px 2px rgb(0 0 0 / 40%);
-    --logo-invert: 1;
   }
 }
 
@@ -116,11 +111,29 @@ body.vib .home {
   margin-bottom: 20px;
 }
 
+/* brand mark: the svg plate follows --text (currentColor), the paper sheets
+ * inside follow --surface — the pair inverts itself across themes */
+.logo-mark {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  color: var(--text);
+}
+
+.logo-mark-paper {
+  fill: var(--surface);
+}
+
+/* wordmark as text — bundled Google Sans (--gs-font-sans) covers the
+ * Cyrillic «Офис ВЕГА» form too */
 .logo-lockup {
-  display: block;
-  height: 28px;
-  width: auto;
-  filter: invert(var(--logo-invert));
+  font-family: var(--gs-font-sans);
+  font-size: 19px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  white-space: nowrap;
+  user-select: none;
 }
 
 .sidebar-nav {
@@ -1895,6 +1908,7 @@ body.vib .home {
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow-wrap: anywhere;
 }

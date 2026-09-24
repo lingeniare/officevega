@@ -43,7 +43,14 @@ import menuPlusIcon1x from './assets/menu-plus.png?asset'
 import menuPlusIcon2x from './assets/menu-plus@2x.png?asset'
 import menuFolderIcon1x from './assets/menu-folder.png?asset'
 import menuFolderIcon2x from './assets/menu-folder@2x.png?asset'
-import { createI18n, isLang, normalizeLang, setUiLang, type Lang } from '@genoffice/i18n'
+import {
+  appTitle,
+  createI18n,
+  isLang,
+  normalizeLang,
+  setUiLang,
+  type Lang,
+} from '@genoffice/i18n'
 import {
   DEFAULT_SAVE_DIR_KEY,
   DROP_OPEN_CHANNEL,
@@ -499,6 +506,12 @@ function currentTheme(): UiTheme {
   const saved = readAppSettings(APP_SETTINGS_PATH()).theme
   cachedTheme = saved === 'light' || saved === 'dark' ? saved : 'system'
   return cachedTheme
+}
+
+/** user-chosen name for the home greeting; '' = derive it from the account email */
+function currentDisplayName(): string {
+  const saved = readAppSettings(APP_SETTINGS_PATH()).displayName
+  return typeof saved === 'string' ? saved : ''
 }
 
 let cachedAutoSaveDefault: AutoSaveDefault | null = null
@@ -3351,7 +3364,7 @@ function createShellWindow(): void {
     height: 900,
     minWidth: 720,
     minHeight: 550,
-    title: 'Office VEGA',
+    title: appTitle(currentLang()),
     // painted until the home renderer's first frame; matches --surface so a
     // cold start under the dark theme doesn't flash white
     backgroundColor: themedSurfaceColor(),
@@ -4333,6 +4346,17 @@ function registerHomeIpc(): void {
     for (const wc of webContents.getAllWebContents()) wc.send('app:theme-changed', theme)
   })
 
+  ipcMain.handle(HOME_CHANNELS.getDisplayName, (): string => currentDisplayName())
+
+  ipcMain.handle(HOME_CHANNELS.setDisplayName, (_event, name: unknown) => {
+    if (typeof name !== 'string') return
+    const next = name.trim().slice(0, 80)
+    if (next === currentDisplayName()) return
+    writeAppSetting(APP_SETTINGS_PATH(), 'displayName', next)
+    for (const wc of webContents.getAllWebContents())
+      wc.send('app:display-name-changed', next)
+  })
+
   ipcMain.handle(HOME_CHANNELS.getAutoSaveDefault, (): AutoSaveDefault => currentAutoSaveDefault())
   ipcMain.handle('app:get-auto-save-default', (): AutoSaveDefault => currentAutoSaveDefault())
 
@@ -4963,7 +4987,7 @@ function buildHomeMenu(): void {
         { label: tm('thirdPartyNotices'), click: () => void openThirdPartyNotices() },
         { type: 'separator' },
         checkUpdatesMenuItem(appMenuLabels(currentLang())),
-        aboutMenuItem(appMenuLabels(currentLang())),
+        aboutMenuItem(appMenuLabels(currentLang()), appTitle(currentLang())),
         { type: 'separator' },
         licenseMenuItem(appMenuLabels(currentLang())),
         privacyMenuItem(appMenuLabels(currentLang())),
@@ -5050,7 +5074,7 @@ function buildPdfMenu(): void {
         { label: tm('thirdPartyNotices'), click: () => void openThirdPartyNotices() },
         { type: 'separator' },
         checkUpdatesMenuItem(appMenuLabels(currentLang())),
-        aboutMenuItem(appMenuLabels(currentLang())),
+        aboutMenuItem(appMenuLabels(currentLang()), appTitle(currentLang())),
         { type: 'separator' },
         licenseMenuItem(appMenuLabels(currentLang())),
         privacyMenuItem(appMenuLabels(currentLang())),
@@ -5153,7 +5177,7 @@ function buildMarkdownMenu(): void {
         { label: tm('thirdPartyNotices'), click: () => void openThirdPartyNotices() },
         { type: 'separator' },
         checkUpdatesMenuItem(appMenuLabels(currentLang())),
-        aboutMenuItem(appMenuLabels(currentLang())),
+        aboutMenuItem(appMenuLabels(currentLang()), appTitle(currentLang())),
         { type: 'separator' },
         licenseMenuItem(appMenuLabels(currentLang())),
         privacyMenuItem(appMenuLabels(currentLang())),
@@ -5249,7 +5273,7 @@ function buildHtmlMenu(): void {
         { label: tm('thirdPartyNotices'), click: () => void openThirdPartyNotices() },
         { type: 'separator' },
         checkUpdatesMenuItem(appMenuLabels(currentLang())),
-        aboutMenuItem(appMenuLabels(currentLang())),
+        aboutMenuItem(appMenuLabels(currentLang()), appTitle(currentLang())),
         { type: 'separator' },
         licenseMenuItem(appMenuLabels(currentLang())),
         privacyMenuItem(appMenuLabels(currentLang())),

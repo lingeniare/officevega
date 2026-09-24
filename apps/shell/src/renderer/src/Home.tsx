@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { DragEvent as ReactDragEvent, ReactElement } from 'react'
-import logoLockup from './assets/vegaoffice-logo.svg'
 import iconDocx from './assets/file-docx.svg'
 import iconXlsx from './assets/file-xlsx.svg'
 import iconPptx from './assets/file-pptx.svg'
@@ -21,6 +20,7 @@ import type {
 import type { IntegrationsApi } from '../../shared/integrations-api'
 import { markText } from '../../shared/text-marks'
 import { useDismissablePopover } from '@genoffice/ui'
+import { appTitle } from '@genoffice/i18n'
 import { fileCountKey, visiblePageCount } from './counts'
 import { useI18n } from './locale'
 import type { I18n, StringKey } from './locale'
@@ -691,6 +691,8 @@ function AccountEntry({
 }) {
   const { t } = useI18n()
   const [status, setStatus] = useState<AccountStatus | null>(null)
+  // user-chosen name (Settings > Account); '' falls back to the email prefix
+  const [displayName, setDisplayName] = useState('')
 
   useEffect(() => {
     onStatusChange?.(status)
@@ -722,6 +724,19 @@ function AccountEntry({
     })
     return () => {
       alive = false
+    }
+  }, [])
+
+  // the display name loads once, then live edits pushed from main keep it fresh
+  useEffect(() => {
+    let alive = true
+    void window.aiOffice.getDisplayName?.().then((name) => {
+      if (alive) setDisplayName(name)
+    })
+    const off = window.aiOffice.onDisplayNameChanged?.((name) => setDisplayName(name))
+    return () => {
+      alive = false
+      off?.()
     }
   }, [])
 
@@ -820,7 +835,8 @@ function AccountEntry({
 
   const loggedIn = status?.loggedIn ?? false
   const email = status?.email ?? ''
-  const initial = email ? email[0].toUpperCase() : loggedIn ? 'V' : '?'
+  const shownName = displayName || email.split('@')[0]
+  const initial = shownName ? shownName[0].toUpperCase() : loggedIn ? 'V' : '?'
   const errorText = loginError
     ? {
         timeout: t('loginTimeout'),
@@ -996,9 +1012,7 @@ function AccountEntry({
         <span className="account-text">
           <span className="account-name">
             {loggedIn
-              ? email
-                ? email.split('@')[0]
-                : t('loggedIn')
+              ? shownName || t('loggedIn')
               : waiting
                 ? t('waitingShort')
                 : t('login')}
@@ -1139,8 +1153,10 @@ export function Home() {
   const [confirmDelete, setConfirmDelete] = useState<string[] | null>(null)
   // unavailable recent entry (missing flag) the user clicked — offer list removal
   const [confirmMissing, setConfirmMissing] = useState<RecentEntry | null>(null)
-  // name in the greeting; omitted when logged out
+  // name in the greeting: the user's chosen display name, else the email prefix
+  // (omitted when logged out and no display name is set)
   const [accountName, setAccountName] = useState('')
+  const [displayName, setDisplayName] = useState('')
   // single source of account state: AccountEntry reports every change (initial
   // load, login, logout), keeping the greeting name in sync
   const handleAccountStatus = useCallback((s: AccountStatus | null) => {
@@ -1150,6 +1166,19 @@ export function Home() {
   const [greetAskKey] = useState(
     () => GREET_ASK_KEYS[Math.floor(Math.random() * GREET_ASK_KEYS.length)]!,
   )
+
+  // display name: initial read, then live updates pushed from main (Settings > Account)
+  useEffect(() => {
+    let alive = true
+    void window.aiOffice.getDisplayName?.().then((name) => {
+      if (alive) setDisplayName(name)
+    })
+    const off = window.aiOffice.onDisplayNameChanged?.((name) => setDisplayName(name))
+    return () => {
+      alive = false
+      off?.()
+    }
+  }, [])
 
   // ── Folder tree state ──
   // the default save folder first, then the folders the user added; `root` is the default one
@@ -2794,7 +2823,8 @@ export function Home() {
             ? 'greetAfternoon'
             : 'greetEvening'
     const cjk = lang === 'zh' || lang === 'zh-TW' || lang === 'ja'
-    const greeting = `${t(greetKey)}${accountName ? (cjk ? '，' : ', ') + accountName : ''}${cjk ? '。' : '. '}`
+    const greetName = displayName || accountName
+    const greeting = `${t(greetKey)}${greetName ? (cjk ? '，' : ', ') + greetName : ''}${cjk ? '。' : '. '}`
     return (
       <main className="content">
         <section className="quick-start" aria-label={t('secQuickStart')}>
@@ -2921,7 +2951,20 @@ export function Home() {
     <div className="home">
       <aside className="sidebar">
         <div className="sidebar-logo">
-          <img className="logo-lockup" src={logoLockup} alt="Office VEGA" />
+          {/* same mark as vegaoffice-logo.svg, inline so it tracks the theme
+           * via currentColor/--surface instead of the --logo-invert filter */}
+          <svg className="logo-mark" viewBox="0 0 240 240" aria-hidden="true">
+            <rect width="240" height="240" rx="54" fill="currentColor" />
+            <rect x="51" y="46" width="90" height="108" rx="16" className="logo-mark-paper" />
+            <rect x="99" y="86" width="90" height="108" rx="16" className="logo-mark-paper" />
+            <path
+              d="M99 102C99 93.1634 106.163 86 115 86H141V138C141 146.837 133.837 154 125 154H99V102Z"
+              fill="currentColor"
+            />
+          </svg>
+          {/* wordmark is text (Google Sans via --gs-font-sans): localized like
+           * every other product-name surface, and selectable */}
+          <span className="logo-lockup">{appTitle(lang)}</span>
         </div>
         <nav className="sidebar-nav">
           <button

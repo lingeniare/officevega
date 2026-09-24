@@ -627,7 +627,7 @@ const LABELS: Record<string, Labels> = {
     zoomOut: 'Кечерәйтү',
     fullscreen: 'Тулы экран',
     help: 'Ярдәм',
-    about: 'Office VEGA турында',
+    about: 'Офис ВЕГА турында',
     checkUpdates: 'Яңартуларны тикшерү…',
     version: 'Версия',
     license: 'Лицензия',
@@ -772,8 +772,12 @@ export function checkUpdatesMenuItem(labels: AppMenuLabels): MenuItemConstructor
 }
 
 /** Help > About: a native dialog with the app version — every window's menu
- * gets one, so users can report the exact build they run. */
-export function aboutMenuItem(labels: AppMenuLabels): MenuItemConstructorOptions {
+ * gets one, so users can report the exact build they run. productName is the
+ * caller's localized app title (i18n appTitle()); defaults to the Latin brand. */
+export function aboutMenuItem(
+  labels: AppMenuLabels,
+  productName = 'Office VEGA',
+): MenuItemConstructorOptions {
   return {
     label: labels.about,
     click: async () => {
@@ -782,14 +786,14 @@ export function aboutMenuItem(labels: AppMenuLabels): MenuItemConstructorOptions
       const canCheck = updateCheckInvoker !== null
       const { response } = await dialog.showMessageBox({
         type: 'info',
-        title: 'Office VEGA',
-        message: 'Office VEGA',
+        title: productName,
+        message: productName,
         detail: `${labels.version} ${version}`,
         buttons: ['OK', labels.copy, ...(canCheck ? [labels.checkUpdates] : [])],
         defaultId: 0,
         cancelId: 0,
       })
-      if (response === 1) clipboard.writeText(`Office VEGA ${version}`)
+      if (response === 1) clipboard.writeText(`${productName} ${version}`)
       if (response === 2) updateCheckInvoker?.()
     },
   }
@@ -832,10 +836,12 @@ export function privacyMenuItem(labels: AppMenuLabels): MenuItemConstructorOptio
 }
 
 /** Help menu with Check for Updates… + About + legal docs; extra app-specific
- * items go before the separator. */
+ * items go before the separator. productName localizes the About dialog (see
+ * aboutMenuItem). */
 export function helpMenuTemplate(
   labels: AppMenuLabels,
   extraItems: MenuItemConstructorOptions[] = [],
+  productName = 'Office VEGA',
 ): MenuItemConstructorOptions {
   return {
     role: 'help',
@@ -844,7 +850,7 @@ export function helpMenuTemplate(
       ...extraItems,
       ...(extraItems.length > 0 ? [{ type: 'separator' } as const] : []),
       checkUpdatesMenuItem(labels),
-      aboutMenuItem(labels),
+      aboutMenuItem(labels, productName),
       { type: 'separator' },
       licenseMenuItem(labels),
       privacyMenuItem(labels),

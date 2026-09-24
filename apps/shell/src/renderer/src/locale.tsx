@@ -1,6 +1,6 @@
-import { createContext, useContext, useMemo, useState } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
-import { createI18n, htmlLang, type Lang, type Params } from '@genoffice/i18n'
+import { appTitle, createI18n, htmlLang, type Lang, type Params } from '@genoffice/i18n'
 import { strings } from './strings'
 
 const translate = createI18n(strings)
@@ -17,6 +17,10 @@ const LocaleContext = createContext<LocaleValue>({ lang: 'zh', setLang: () => {}
 
 export function LocaleProvider({ initial, children }: { initial: Lang; children?: ReactNode }) {
   const [lang, setLangState] = useState<Lang>(initial)
+  // the OS window title tracks the page title — keep the product name localized
+  useEffect(() => {
+    document.title = appTitle(lang)
+  }, [lang])
   const value = useMemo<LocaleValue>(
     () => ({
       lang,

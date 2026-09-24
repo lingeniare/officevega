@@ -70,7 +70,7 @@ import {
   readBodyCapped,
 } from '@genoffice/electron-utils'
 import { configureMetricsCache, familyVerticalMetrics } from '@genoffice/font-metrics'
-import { createI18n, getUiLang, normalizeLang, setUiLang } from '@genoffice/i18n'
+import { appTitle, createI18n, getUiLang, normalizeLang, setUiLang } from '@genoffice/i18n'
 import { ProjectStore } from '@genoffice/project-store'
 import type {
   IpcMainInvokeEvent,
@@ -2777,7 +2777,7 @@ const tMain = createI18n({
     menuWindow: 'Тәрәзә',
     menuHelp: 'Ярдәм',
     menuShortcuts: 'Клавиатура кыска юллары',
-    menuDocsHelp: 'Office VEGA Docs ярдәме',
+    menuDocsHelp: 'Офис ВЕГА Docs ярдәме',
   },
   ka: {
     dlgOpenDoc: 'დოკუმენტის გახსნა',
@@ -5427,7 +5427,7 @@ export function buildDocsMenu(): void {
         { label: tm('menuDocsHelp'), enabled: false },
         { type: 'separator' },
         checkUpdatesMenuItem(appMenuLabels(getUiLang())),
-        aboutMenuItem(appMenuLabels(getUiLang())),
+        aboutMenuItem(appMenuLabels(getUiLang()), appTitle(getUiLang())),
         { type: 'separator' },
         licenseMenuItem(appMenuLabels(getUiLang())),
         privacyMenuItem(appMenuLabels(getUiLang())),
@@ -5515,7 +5515,7 @@ export function createDocsWindow(openPath?: string): BrowserWindow {
     height: 900,
     minWidth: 720,
     minHeight: 550,
-    title: 'Office VEGA Docs',
+    title: appTitle(getUiLang(), 'Docs'),
     backgroundColor: themedSurfaceColor(),
     // Word-like custom title bar (document name centered, quick-access buttons)
     ...(process.platform === 'darwin'

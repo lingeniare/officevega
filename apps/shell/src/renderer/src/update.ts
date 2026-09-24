@@ -1,3 +1,4 @@
+import { appTitle, normalizeLang } from '@genoffice/i18n'
 import type { UpdateUiState, UpdateWindowApi } from '../../shared/update-api'
 
 // exposed by src/preload/update.ts
@@ -23,6 +24,8 @@ function render(state: UpdateUiState): void {
 
   document.documentElement.lang = state.lang
   document.title = s.title
+  const icon = document.querySelector<HTMLImageElement>('#hero img')
+  if (icon) icon.alt = appTitle(normalizeLang(state.lang))
   headline.textContent = s.headline
   verCurrent.textContent = `v${state.currentVersion}`
   verNew.textContent = `v${state.version}`

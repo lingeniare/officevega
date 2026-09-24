@@ -1566,6 +1566,7 @@ export function SettingsModal({
 }: SettingsModalProps) {
   const { lang, setLang, t } = useI18n()
   const [section, setSection] = useState<SectionId>(target?.section ?? 'account')
+  const [displayName, setDisplayName] = useState('')
   const [theme, setTheme] = useState<UiTheme>('system')
   const [saveDir, setSaveDir] = useState('')
   const [autoSaveOn, setAutoSaveOn] = useState(false)
@@ -1578,6 +1579,9 @@ export function SettingsModal({
     let alive = true
     void window.aiOffice.getTheme?.().then((th) => {
       if (alive) setTheme(th)
+    })
+    void window.aiOffice.getDisplayName?.().then((name) => {
+      if (alive) setDisplayName(name)
     })
     void window.aiOffice.getDefaultSaveDir?.().then((dir) => {
       if (alive && dir) setSaveDir(dir)
@@ -1673,6 +1677,32 @@ export function SettingsModal({
             {section === 'account' && (
               <>
                 <h3 className="set-pane-title">{t('setSecAccount')}</h3>
+                <div className="set-field">
+                  <div className="set-field-text">
+                    <div className="set-field-stack">
+                      <label className="set-field-label" htmlFor="set-display-name">
+                        {t('setDisplayName')}
+                      </label>
+                    </div>
+                  </div>
+                  <input
+                    id="set-display-name"
+                    className="set-input"
+                    type="text"
+                    value={displayName}
+                    placeholder={
+                      loggedIn && email ? email.split('@')[0] : t('setDisplayName')
+                    }
+                    spellCheck={false}
+                    autoComplete="off"
+                    maxLength={80}
+                    onChange={(e) => {
+                      const name = e.target.value
+                      setDisplayName(name)
+                      void window.aiOffice.setDisplayName?.(name)
+                    }}
+                  />
+                </div>
                 <Field label={t('setEmail')} value={loggedIn ? email : t('setNotLoggedIn')} />
                 {loggedIn && (
                   <Field

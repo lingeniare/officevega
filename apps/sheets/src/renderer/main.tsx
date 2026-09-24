@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom/client'
-import { htmlLang, type Lang } from '@genoffice/i18n'
+import { appTitle, htmlLang, type Lang } from '@genoffice/i18n'
 import { applyAiPanelPrefs, installScreenTips } from '@genoffice/ui'
 
 import '@genoffice/ui/tokens.css'
@@ -69,6 +69,8 @@ async function bootstrap(): Promise<void> {
   }
   setModuleLang(lang)
   document.documentElement.lang = htmlLang(lang)
+  // standalone window title: the static <title> stays Latin otherwise
+  document.title = appTitle(lang, 'Sheets')
   applyTheme(theme)
   await loadCellFonts()
   window.desktopApi?.onThemeChanged(applyTheme)

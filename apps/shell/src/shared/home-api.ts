@@ -231,6 +231,12 @@ export interface HomeApi {
   getUpdateChannel(): Promise<UpdateChannel>
   /** switch + persist the update channel; triggers an immediate update check */
   setUpdateChannel(channel: UpdateChannel): Promise<void>
+  /** display name for the home greeting (persisted in userData/app-settings.json; '' = derive from the email) */
+  getDisplayName(): Promise<string>
+  /** persist the display name; broadcasts 'app:display-name-changed' to all web contents */
+  setDisplayName(name: string): Promise<void>
+  /** the name was changed anywhere (broadcast from the main process) */
+  onDisplayNameChanged(handler: (name: string) => void): () => void
   /** VEGA account status (the issued sk-apivega key; deposit included when reachable) */
   accountStatus(): Promise<AccountStatus>
   /** start VEGA login (opens the browser; accountStatus flips to logged-in on completion); returns whether the launch succeeded */
@@ -497,6 +503,8 @@ export const HOME_CHANNELS = {
   setLanguage: 'home:set-language',
   getUpdateChannel: 'home:get-update-channel',
   setUpdateChannel: 'home:set-update-channel',
+  getDisplayName: 'home:get-display-name',
+  setDisplayName: 'home:set-display-name',
   accountStatus: 'home:account-status',
   accountLogin: 'home:account-login',
   accountLoginEvent: 'home:account-login-event',

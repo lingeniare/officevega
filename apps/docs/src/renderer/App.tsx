@@ -17,6 +17,7 @@ import { handleDocsControl, type ControlRequest } from './control'
 import { DOMParser as PmDOMParser, type Mark as PmMark, Slice as PmSlice } from '@tiptap/pm/model'
 import { NodeSelection, type Transaction } from '@tiptap/pm/state'
 import { Dropdown, ImageViewer, createZoomWheelClassifier, useAutoSavePref } from '@genoffice/ui'
+import { appTitle } from '@genoffice/i18n'
 import { wordRangeAtCaret } from './editor/comments'
 import { markdownPasteHtml } from './editor/markdown-paste'
 import { pasteTextSlice, singleCellPasteText } from './editor/paste-text'
@@ -1617,8 +1618,8 @@ export function App() {
 
   // window title follows the document, so the OS window list and Switch Window show file names
   useEffect(() => {
-    document.title = doc ? doc.fileName : 'Office VEGA Docs'
-  }, [doc])
+    document.title = doc ? doc.fileName : appTitle(lang, 'Docs')
+  }, [doc, lang])
 
   useEffect(() => window.desktop.onTeardown?.(() => setTornDown(true)), [])
 

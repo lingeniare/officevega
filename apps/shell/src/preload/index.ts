@@ -245,6 +245,21 @@ const homeApi: HomeApi = {
     if (channel !== 'stable' && channel !== 'beta') throw new Error('Invalid update channel.')
     await ipcRenderer.invoke(HOME_CHANNELS.setUpdateChannel, channel)
   },
+  async getDisplayName() {
+    const result: unknown = await ipcRenderer.invoke(HOME_CHANNELS.getDisplayName)
+    return typeof result === 'string' ? result : ''
+  },
+  async setDisplayName(name) {
+    if (typeof name !== 'string') throw new Error('Invalid display name.')
+    await ipcRenderer.invoke(HOME_CHANNELS.setDisplayName, name)
+  },
+  onDisplayNameChanged(handler) {
+    const listener = (_event: IpcRendererEvent, name: unknown) => {
+      if (typeof name === 'string') handler(name)
+    }
+    ipcRenderer.on('app:display-name-changed', listener)
+    return () => ipcRenderer.removeListener('app:display-name-changed', listener)
+  },
   async accountStatus() {
     const result: unknown = await ipcRenderer.invoke(HOME_CHANNELS.accountStatus)
     return (result ?? { loggedIn: false }) as AccountStatus

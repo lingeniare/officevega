@@ -77,7 +77,7 @@ import {
   isElementClipboardToken,
   writeElementClipboardImage,
 } from './element-clipboard'
-import { getUiLang, normalizeLang, setUiLang } from '@genoffice/i18n'
+import { appTitle, getUiLang, normalizeLang, setUiLang } from '@genoffice/i18n'
 import { ProjectStore } from '@genoffice/project-store'
 import {
   copyElementData,
@@ -4800,7 +4800,7 @@ export function createSlidesWindow(openPath?: string | null): BrowserWindow {
   const win = new BrowserWindow({
     width: 1280,
     height: 840,
-    title: 'Office VEGA Slides',
+    title: appTitle(getUiLang(), 'Slides'),
     backgroundColor: themedSurfaceColor(),
     ...(process.platform === 'darwin'
       ? { titleBarStyle: 'hiddenInset' as const }
@@ -4989,7 +4989,7 @@ export function buildSlidesMenu(): Menu {
         toggleDevToolsItem(labels),
       ],
     },
-    helpMenuTemplate(labels),
+    helpMenuTemplate(labels, [], appTitle(getUiLang())),
     ...extraAppMenuItems,
   ]
   return Menu.buildFromTemplate(template)

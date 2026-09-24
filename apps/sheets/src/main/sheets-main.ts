@@ -56,7 +56,7 @@ import {
   rendererUrl,
   forwardRendererConsole,
 } from '@genoffice/electron-utils'
-import { createI18n, getUiLang, type Lang, normalizeLang, setUiLang } from '@genoffice/i18n'
+import { appTitle, createI18n, getUiLang, type Lang, normalizeLang, setUiLang } from '@genoffice/i18n'
 import { ProjectStore } from '@genoffice/project-store'
 
 import {
@@ -2395,7 +2395,7 @@ export async function createSheetsWindow(
     minWidth: 720,
     minHeight: 550,
     show: false,
-    title: 'Office VEGA Sheets',
+    title: appTitle(getUiLang(), 'Sheets'),
     // Traffic lights sit inside the toolbar row.
     ...(process.platform === 'darwin' ? { titleBarStyle: 'hiddenInset' as const } : {}),
     webPreferences: {
@@ -4604,7 +4604,7 @@ function installApplicationMenu(): void {
       },
       viewMenuTemplate(labels),
       windowMenuTemplate(process.platform, labels),
-      helpMenuTemplate(labels),
+      helpMenuTemplate(labels, [], appTitle(getUiLang())),
       ...extraAppMenuItems,
     ]),
   )

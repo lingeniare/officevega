@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import type { CSSProperties, ReactElement } from 'react'
+import { appTitle } from '@genoffice/i18n'
 import type { TabsApi, TabSummary } from '../../shared/tabs-api'
 import { useI18n } from './locale'
 
@@ -127,7 +128,7 @@ const KIND_ICON: Record<TabSummary['kind'], ReactElement> = {
 }
 
 export function TabBar() {
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
   const [tabs, setTabs] = useState<TabSummary[]>([])
   const stripRef = useRef<HTMLDivElement>(null)
 
@@ -277,7 +278,7 @@ export function TabBar() {
               className={`tab-item ${tab.kind === 'home' ? 'tab-home' : ''} ${tab.active ? 'active' : ''} ${dragVisual?.id === tab.id ? 'drag-source' : ''}`}
               // long file names ellipsize in the strip — hover reveals the
               // full title (the close button's own tooltip still wins there)
-              title={tab.title}
+              title={tab.kind === 'home' ? appTitle(lang) : tab.title}
               style={dragStyle}
               onContextMenu={(event) => {
                 event.preventDefault()
@@ -375,7 +376,7 @@ export function TabBar() {
               {/* highlight plate behind the content — hover capsule / active white body */}
               <span className="tab-plate" aria-hidden="true" />
               <span className="tab-icon">{KIND_ICON[tab.kind]}</span>
-              <span className="tab-title">{tab.title}</span>
+              <span className="tab-title">{tab.kind === 'home' ? appTitle(lang) : tab.title}</span>
               {tab.closable && (
                 <button
                   className="tab-close"

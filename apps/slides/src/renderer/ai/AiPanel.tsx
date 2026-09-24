@@ -1111,6 +1111,7 @@ export function AiPanel({
           '  Allowed shape values: rect, roundRect, ellipse, triangle, rightArrow, leftArrow, upArrow, downArrow, chevron, diamond, parallelogram, trapezoid, hexagon, pentagon, pie, donut, star5, heart, cloud, line, lineArrow. line/lineArrow draw the diagonal of their box from top-left to bottom-right and need a stroke (a horizontal rule = a box with h:1).\n' +
           '- Text: {"type":"text","x":80,"y":60,"w":800,"h":90,"valign":"top","paragraphs":[{"align":"left","lineSpacingPct":110,"spaceAfterPt":6,"bullet":false,"runs":[{"text":"...","sizePt":18,"bold":true,"italic":false,"color":"#RRGGBB","font":"Font Name"}]}]}\n' +
           '  A paragraph may mix runs of different weight/color/size (e.g. a big number run + a small unit run in one line).\n' +
+          '  List-like lines are real lists: set "bullet":true on the paragraph — never type •/-/– characters into run text (typed bullets break the hanging indent: wrapped lines slide under the bullet glyph).\n' +
           '- Image: {"type":"image","url":"<one of the available image URLs>","x":660,"y":80,"w":540,"h":560} — center-cropped to fill its box (object-fit: cover).\n' +
           '\n' +
           '## Hard layout rules\n' +
@@ -1126,6 +1127,7 @@ export function AiPanel({
           '- Fills: solid "#RRGGBB(AA)", or a linear gradient object {"gradient":{"stops":[{"pos":0,"color":"#A"},{"pos":100,"color":"#B"}],"angle":45}} — pos is 0-100, angle in degrees (0=left→right, 90=top→bottom). Use gradients for large cover/background blocks, not small elements; "background" accepts the same gradient object. **No placeholders of any kind**: all copy comes from the brief’s real content.\n' +
           '\n' +
           '## Composition (this is what separates designed pages from assembled ones)\n' +
+          '- Design bar: art-directed, keynote-stage quality. When images are available, commit to them — one photo carried large (hero panel, full-bleed, a generous split) beats several small thumbnails. Data slots become bespoke infographic compositions — bars/rings/timelines/flows drawn proportionally to the real values — never a labeled box or a default-looking chart.\n' +
           '- Exactly ONE dominant focal element per page — a hero number, a statement, or a hero image; everything else is subordinate. A page with three equal-weight elements reads as a form, not a slide.\n' +
           '- Asymmetric placement is encouraged; avoid centered-everything. Align elements to an invisible grid (shared left edges, consistent ~60px margins).\n' +
           '- Whitespace is a design element: leave deliberate breathing room; never fill every corner.\n' +
@@ -1194,6 +1196,7 @@ export function AiPanel({
           '- Cover page: large title (~36pt bold) + one subtitle line (~18pt). Content pages: title top-left (~26pt bold) + concise bulleted body (~14pt) or simple #F8FAFC roundRect column cards. Closing page: centered short line.\n' +
           '- Every visual slot listed for a page → a placeholder box: {"type":"shape","shape":"roundRect","fill":"#F1F5F9","stroke":{"color":"#CBD5E1","widthPt":1},"valign":"middle","paragraphs":[{"align":"center","runs":[{"text":"IMAGE: <slot description>","sizePt":12,"color":"#64748B"}]}]} at the slot\'s planned position. For chart/data slots label it "CHART: <description>" instead. NEVER draw real charts, icons or images — placeholders only.\n' +
           '- Text boxes have zero padding: a line is ~sizePt*1.8 px tall at lineSpacingPct 110, a Latin char ~sizePt*0.7 px wide, a CJK char ~sizePt*1.35 px. Size each box for its wrapped lines plus one spare; no text overflow, no text overlapping other elements.\n' +
+          '- List-like lines are real lists: set "bullet":true on the paragraph — never type •/-/– characters into run text (typed bullets break the hanging indent: wrapped lines slide under the bullet glyph).\n' +
           "- Keep each page's real text from its brief. Titles make a claim, not a topic label (\"Costs fell 18%\", not \"Cost overview\"). One idea per page; bullets ≤8 words each with parallel grammar; no filler (\"In conclusion\", \"As we all know\"). Do not invent figures not in the brief/material.\n"
         const userMsg =
           `Deck topic: ${args.topic || args.coreHook || 'Presentation'}\nCore hook: ${args.coreHook}\n` +
@@ -1260,7 +1263,7 @@ export function AiPanel({
           const briefParts = [args.brief]
           if (args.layout) briefParts.push(`Layout intent: ${args.layout}`)
           briefParts.push(
-            'Composition: exactly one dominant focal element (hero number, statement, or hero image) — everything else subordinate; asymmetric grid placement encouraged; whitespace is a design element; title runs 2-3x body size; follow the Style Skill strictly.',
+            'Composition: exactly one dominant focal element (hero number, statement, or hero image) — everything else subordinate; asymmetric grid placement encouraged; whitespace is a design element; title runs 2-3x body size; follow the Style Skill strictly. The page should read as art-directed keynote design: carry photos large (hero/full-bleed), format enumerations as real bulleted lists (list markup, never typed • characters), and build data slots as bespoke infographic compositions — not default-looking charts.',
           )
           if (args.context)
             briefParts.push(
@@ -1312,7 +1315,8 @@ export function AiPanel({
           '  Grid: [e.g. 12-column, ~60px margins; asymmetric placements encouraged]\n' +
           '  Visual rhythm: alternate loud pages (full-bleed image, oversized type, one dominant element) with quiet pages (structured grids, generous whitespace) — never two loud pages in a row.\n' +
           '  Focal point: every page gets exactly ONE dominant element (a hero number, a statement, a hero image) — everything else is subordinate to it.\n' +
-          '  Image treatment: [how images live in this system: full-bleed hero / side panel / framed block / duotone — images are first-class design elements, never decorative sprinkles]\n' +
+          '  Image treatment: [how images live in this system: full-bleed hero / side panel / framed block / duotone — images are first-class design elements, never decorative sprinkles; photography is carried large and cinematic, not thumbnail-sized]\n' +
+          '  Quality bar: pages read as art-directed keynote slides — bespoke infographic compositions for data (drawn to the real values, never default-looking charts), photography as hero material, typography doing real hierarchy work.\n' +
           '  Decoration budget: at most ONE recurring motif (hairline rules | oversized page numeral | contour line | corner crop mark), consistent in position and style across all pages. No card-grid-everything, no rainbow per entity, no corner ornaments, no decorative accent bars.\n\n' +
           'Layout variants per page type (list at least 2 variants each, format: variant name: description)\n' +
           '  cover variants:\n    cover_typography_hero: pure typography, huge title (100px+), no photo\n    cover_full_image_overlay: full-bleed photo background + dark overlay, centered white title\n    cover_split_image: title block left + hero image right\n    cover_editorial: magazine-style oversized title filling 60% of the page, small metadata block, partial imagery\n    cover_dark_minimal: dark background, centered large title + one accent detail\n    cover_split_color: two color blocks side by side (60/40)\n' +
