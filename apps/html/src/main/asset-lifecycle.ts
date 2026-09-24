@@ -14,7 +14,9 @@ import {
 import { basename, dirname, extname, isAbsolute, join, relative, resolve, sep } from 'node:path'
 import { atomicWriteFile } from './atomic-write'
 
-export const ASSET_MANIFEST_FILENAME = '.vegaoffice-assets.json'
+export const ASSET_MANIFEST_FILENAME = '.officevega-assets.json'
+/** pre-rename builds wrote the same manifest under this name — still read, re-published on next write */
+const LEGACY_ASSET_MANIFEST_FILENAME = '.vegaoffice-assets.json'
 
 export interface OwnedAssetRecord {
   name: string
@@ -84,6 +86,7 @@ function isSafeAssetName(name: string): boolean {
     name !== '.' &&
     name !== '..' &&
     name !== ASSET_MANIFEST_FILENAME &&
+    name !== LEGACY_ASSET_MANIFEST_FILENAME &&
     basename(name) === name &&
     !name.includes('/') &&
     !name.includes('\\') &&
@@ -108,7 +111,9 @@ function sanitizeAssetName(input: string): string {
       .slice(0, maxStem)
       .replace(/[. ]+$/g, '') || 'image'
   const name = `${stem}${ext}`
-  return name === ASSET_MANIFEST_FILENAME ? `image-${name}` : name
+  return name === ASSET_MANIFEST_FILENAME || name === LEGACY_ASSET_MANIFEST_FILENAME
+    ? `image-${name}`
+    : name
 }
 
 function nameWithSuffix(name: string, suffix: number): string {
@@ -232,20 +237,28 @@ async function assertSafeManifestFile(path: string): Promise<void> {
   }
 }
 
-async function readManifestUnlocked(documentPath: string): Promise<OwnedAssetManifest> {
-  const assetsDir = await existingAssetsDir(documentPath)
-  if (!assetsDir) return emptyManifest()
-  const manifestPath = join(assetsDir, ASSET_MANIFEST_FILENAME)
+async function readManifestFile(manifestPath: string): Promise<OwnedAssetManifest | null> {
   try {
     await assertSafeManifestFile(manifestPath)
     return normalizedManifest(JSON.parse(await readFile(manifestPath, 'utf8')))
   } catch (error) {
-    if (errorCode(error) === 'ENOENT') return emptyManifest()
+    if (errorCode(error) === 'ENOENT') return null
     if (error instanceof SyntaxError) {
       throw new Error('asset manifest is invalid JSON', { cause: error })
     }
     throw error
   }
+}
+
+async function readManifestUnlocked(documentPath: string): Promise<OwnedAssetManifest> {
+  const assetsDir = await existingAssetsDir(documentPath)
+  if (!assetsDir) return emptyManifest()
+  const manifest =
+    (await readManifestFile(join(assetsDir, ASSET_MANIFEST_FILENAME))) ??
+    // pre-rename installs left the manifest under the old name; keep reading
+    // it so existing documents don't lose their asset ownership
+    (await readManifestFile(join(assetsDir, LEGACY_ASSET_MANIFEST_FILENAME)))
+  return manifest ?? emptyManifest()
 }
 
 async function writeManifestUnlocked(

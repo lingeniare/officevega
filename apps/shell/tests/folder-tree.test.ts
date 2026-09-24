@@ -44,7 +44,7 @@ function touch(rel: string, content = 'x'): string {
 }
 
 beforeEach(() => {
-  root = realpathSync(mkdtempSync(join(tmpdir(), 'vegaoffice-folders-')))
+  root = realpathSync(mkdtempSync(join(tmpdir(), 'officevega-folders-')))
 })
 
 afterEach(() => {
@@ -75,7 +75,7 @@ describe('listFolder', () => {
   it('hides the Markdown assets folder only when it holds the asset manifest', () => {
     mkdirSync(join(root, 'assets'))
     expect(isHiddenEntry(root, 'assets', true)).toBe(false)
-    touch('assets/.vegaoffice-assets.json', '{}')
+    touch('assets/.officevega-assets.json', '{}')
     expect(isHiddenEntry(root, 'assets', true)).toBe(true)
     expect(listFolder(root, new Set()).folders).toEqual([])
   })
@@ -110,7 +110,7 @@ describe('isInsideRoot', () => {
   })
 
   it('rejects a symlink inside the root that points outside it', (ctx) => {
-    const outside = mkdtempSync(join(tmpdir(), 'vegaoffice-outside-'))
+    const outside = mkdtempSync(join(tmpdir(), 'officevega-outside-'))
     try {
       try {
         symlinkSync(outside, join(root, 'escape'))
@@ -299,10 +299,10 @@ describe('helpers', () => {
   })
 
   it('describeRoot creates a missing root and reports it usable', () => {
-    const fresh = join(root, 'VegaOffice')
+    const fresh = join(root, 'OfficeVega')
     expect(describeRoot(fresh)).toEqual({
       path: fresh,
-      name: 'VegaOffice',
+      name: 'OfficeVega',
       usable: true,
       readable: true,
       removable: false,

@@ -6,13 +6,13 @@ and current status after sync Round 1 (2026-09-17). Details live in
 
 ## 1. Auth & key lifecycle — [x] implemented
 
-> The client now sends `client_id:"vegaoffice"` and calls
-> `/api/v1/keys/vegaoffice*` (product-consistent wire names). The backend
-> whitelist must register `vegaoffice` — previously verified `genoffice`
+> The client now sends `client_id:"officevega"` and calls
+> `/api/v1/keys/officevega*` (product-consistent wire names). The backend
+> whitelist must register `officevega` — previously verified `genoffice`
 > answers `400 invalid_client`/`404` to anything else, so sign-in fails
 > until the new value is registered.
 
-- [x] `POST /api/auth/device/code` accepts `{client_id:"vegaoffice"}` —
+- [x] `POST /api/auth/device/code` accepts `{client_id:"officevega"}` —
       whitelisted value — and returns `device_code`, `user_code`,
       `verification_uri`, `verification_uri_complete`, `expires_in` (600),
       `interval` (5).
@@ -20,10 +20,10 @@ and current status after sync Round 1 (2026-09-17). Details live in
       `authorization_pending` until approved, then a session `access_token`.
 - [x] Verification page `https://api.vega.chat/device` — sign-in → approve →
       return, no extra requirements.
-- [x] `POST /api/v1/keys/vegaoffice` (Bearer = session token) mints the single
+- [x] `POST /api/v1/keys/officevega` (Bearer = session token) mints the single
       app key `sk-apivega-[0-9a-f]{48}`; plaintext returned once. Re-login
-      supersedes the previous key — at most one active `vegaoffice` key.
-- [x] `POST /api/v1/keys/vegaoffice/revoke` (Bearer = the API key) — sign-out.
+      supersedes the previous key — at most one active `officevega` key.
+- [x] `POST /api/v1/keys/officevega/revoke` (Bearer = the API key) — sign-out.
       Revocation flips `enabled=false`; the row + billing attribution stay.
 - [x] `GET /api/v1/account` (key-auth, <1 s) →
       `{email, balance, balanceRub, currency:"USD", totalUsage, limit, keyName}`.
@@ -47,21 +47,23 @@ for every endpoint — no cookies, no CORS, no WAF challenges (confirmed).
 
 ## 3. Feature contracts — [x] confirmed working
 
-- [x] **Chat** — `model:"openrouter/auto"` alias resolves upstream.
+- [x] **Chat** — `model:"openai/gpt-6-sol"` default (fast tier
+      `openai/gpt-6-luna`); `openrouter/auto` alias still resolves upstream.
 - [x] **Web search** — `plugins:[{id:"web", engine:"parallel"|"exa",
   max_results:N}]` passes through; citations arrive as
       `type:"url_citation"` annotations. Client retries parallel→exa itself
       (one engine per request).
 - [x] **Image generation** — `/images/generations` with
-      `{model:"google/gemini-3.1-flash-image", prompt, n:1, aspect_ratio,
+      `{model:"openai/gpt-image-2.5-sunburst", prompt, n:1, aspect_ratio,
   response_format:"b64_json"}`; edits = inline `input_references` on the
       same endpoint (no multipart `/images/edits` — not needed).
 - [x] **Image analysis** — `chat/completions` + `image_url` data-URL parts,
-      model `google/gemini-3.5-flash-lite`.
-- [x] **Video analysis** — same with `video_url` data-URL parts; routed to a
-      video-capable model.
-- [x] **Model slots** — pinned ids (`openrouter/auto`,
-      `google/gemini-3.1-flash-image`, `google/gemini-3.5-flash-lite`) served
+      model `openai/gpt-6-luna`.
+- [x] **Video analysis** — same with `video_url` data-URL parts; pinned to
+      `google/gemini-3.5-flash-lite` (Luna takes no video input).
+- [x] **Model slots** — pinned ids (`openai/gpt-6-sol`, `openai/gpt-6-luna`,
+      `openrouter/auto`, `openai/gpt-image-2.5-sunburst`,
+      `google/gemini-3.5-flash-lite`) served
       as-is; retired ids remapped server-side (`model-aliases.ts`), never 404.
 - [x] **Spellcheck** — native Chromium client-side; nothing to implement.
       If VEGA later ships a proofreading model, it lands in `/models` as a

@@ -220,7 +220,7 @@ export interface GatewayBuildInput {
 
 const MAX_SPARKLINES_PER_OP = 200
 
-const NOTE_AUTHOR = 'Office VEGA'
+const NOTE_AUTHOR = 'OfficeVega'
 const MAX_IMAGE_BYTES = 20 * 1024 * 1024
 
 type FilterDraft = { range: RangeBounds; columns: Map<number, string[]>; cleared: boolean }
@@ -246,7 +246,7 @@ export async function buildGatewayPayloads(input: GatewayBuildInput): Promise<Ga
       { failures: [classifyOpError(index, op, message)] },
       {
         reason: 'op_rejected',
-        suggestion: 'fix the op against `vegaoffice guide sheets`, then resend the whole batch',
+        suggestion: 'fix the op against `officevega guide sheets`, then resend the whole batch',
       },
     )
   }
@@ -412,7 +412,7 @@ export async function buildGatewayPayloads(input: GatewayBuildInput): Promise<Ga
             reject(
               i,
               op.op,
-              `${sheet}'s filter already has criteria the CLI cannot re-save; run set_filter on the range first (it clears them) or use the Office VEGA app`,
+              `${sheet}'s filter already has criteria the CLI cannot re-save; run set_filter on the range first (it clears them) or use the OfficeVega app`,
             )
           }
           draft = { range: existing!.range, columns: new Map(), cleared: false }
@@ -479,11 +479,11 @@ export async function buildGatewayPayloads(input: GatewayBuildInput): Promise<Ga
           reject(
             i,
             op.op,
-            'chartPath must be a chart part of the file (xl/charts/chartN.xml); `vegaoffice info` lists them',
+            'chartPath must be a chart part of the file (xl/charts/chartN.xml); `officevega info` lists them',
           )
         }
         if (op.seriesData !== undefined) {
-          reject(i, op.op, 'seriesData (repointing a series at new cells) needs the Office VEGA app')
+          reject(i, op.op, 'seriesData (repointing a series at new cells) needs the OfficeVega app')
         }
         const edit: Record<string, unknown> = { chartPath: op.chartPath }
         for (const k of [

@@ -38,7 +38,7 @@ describe('genoffice mcp --http', () => {
       host: '127.0.0.1',
       token: TOKEN,
       cwd: dir,
-      env: { ...process.env, VEGAOFFICE_AUDIT_LOG: 'off', VEGAOFFICE_ALLOWED_ROOTS: '' },
+      env: { ...process.env, OFFICEVEGA_AUDIT_LOG: 'off', OFFICEVEGA_ALLOWED_ROOTS: '' },
       log: () => {},
       registry,
     })
@@ -199,13 +199,13 @@ describe('genoffice mcp --http', () => {
   })
 })
 
-describe('http mode with VEGAOFFICE_ALLOWED_ROOTS set', () => {
+describe('http mode with OFFICEVEGA_ALLOWED_ROOTS set', () => {
   it('still lets the tools read uploads', async () => {
     const roots = tempDir()
     const handle = await startHttp({
       port: 0,
       cwd: roots,
-      env: { ...process.env, VEGAOFFICE_AUDIT_LOG: 'off', VEGAOFFICE_ALLOWED_ROOTS: roots },
+      env: { ...process.env, OFFICEVEGA_AUDIT_LOG: 'off', OFFICEVEGA_ALLOWED_ROOTS: roots },
       log: () => {},
       registry,
     })

@@ -20,7 +20,7 @@ let logPath: string
 let port: number
 
 beforeEach(async () => {
-  dir = await mkdtemp(join(tmpdir(), 'vegaoffice-mcp-apply-'))
+  dir = await mkdtemp(join(tmpdir(), 'officevega-mcp-apply-'))
   logPath = join(dir, 'mcp-log.txt')
   port = await freePort()
   configureMcpRuntime({

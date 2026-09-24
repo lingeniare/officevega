@@ -26,11 +26,11 @@ export async function run(argv: string[], opts: Omit<RunOptions, 'io'> = {}): Pr
 }
 
 export function tempDir(): string {
-  return mkdtempSync(join(tmpdir(), 'vegaoffice-test-'))
+  return mkdtempSync(join(tmpdir(), 'officevega-test-'))
 }
 
 /** A valid one-page PDF with real Helvetica text; enough for page counting and conversion. */
-export function writeMinimalPdf(path: string, text = 'Hello vegaoffice'): string {
+export function writeMinimalPdf(path: string, text = 'Hello officevega'): string {
   const content = `BT /F1 24 Tf 72 700 Td (${text}) Tj ET`
   const objects = [
     '<< /Type /Catalog /Pages 2 0 R >>',

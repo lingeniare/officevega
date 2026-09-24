@@ -46,9 +46,9 @@ import {
 import {
   webSearchTool,
   imageSearchTool,
-  ensureVegaofficeLogin,
-  vegaofficeApiKey,
-  setVegaofficeAuthListener,
+  ensureOfficeVegaLogin,
+  officeVegaApiKey,
+  setOfficeVegaAuthListener,
   gskApiKey,
   generateImageTool,
   analyzeMediaTool,
@@ -115,7 +115,7 @@ export function registerAiIpc(): void {
   app.once('before-quit', shutdownCodexAppServers)
   // sign-in/out lands here whichever UI started it (chat button, Home,
   // settings): every open view re-reads settings/status off this push
-  setVegaofficeAuthListener((auth) => {
+  setOfficeVegaAuthListener((auth) => {
     const payload = { loggedIn: auth !== null }
     for (const wc of webContents.getAllWebContents()) {
       if (!wc.isDestroyed()) wc.send('ai:auth-changed', payload)
@@ -123,7 +123,7 @@ export function registerAiIpc(): void {
   })
   // Node fetch (undici) direct connections get reset under VPN/tun setups; retry over Chromium's stack
   setRescueFetch((url, init) => net.fetch(url, init))
-  setAiUserAgent(`VegaOffice/${app.getVersion()}`)
+  setAiUserAgent(`OfficeVega/${app.getVersion()}`)
   // keep TLS sockets warm between agent turns (default pool drops them after ~4s idle)
   warmAiConnections()
 
@@ -145,7 +145,7 @@ export function registerAiIpc(): void {
   ipcMain.handle(
     'ai:gsk-status',
     async (_event, withEmail?: boolean): Promise<GenSparkAccountStatus> => {
-      const vegaKey = vegaofficeApiKey()
+      const vegaKey = officeVegaApiKey()
       if (!vegaKey && !hasGskAuth()) return { loggedIn: false }
       if (!withEmail) return { loggedIn: true }
       const email = (await (vegaKey ? vegaAccountInfo() : gskLoginInfo()))?.email
@@ -154,7 +154,7 @@ export function registerAiIpc(): void {
   )
 
   ipcMain.handle('ai:gsk-login', () => {
-    ensureVegaofficeLogin((url) => void shell.openExternal(url))
+    ensureOfficeVegaLogin((url) => void shell.openExternal(url))
   })
 
   ipcMain.handle('ai:set-settings', (_event, settings: AiSettings) => {
@@ -182,7 +182,7 @@ export function registerAiIpc(): void {
     if (provider === 'genspark' && config && !config.apiKey) {
       config = { ...config, apiKey: gskApiKey() }
     } else if (provider === 'vega' && config && !config.apiKey?.trim()) {
-      config = { ...config, apiKey: vegaofficeApiKey() }
+      config = { ...config, apiKey: officeVegaApiKey() }
     }
     const send = (chunk: AiStreamChunk) => {
       if (!event.sender.isDestroyed()) event.sender.send('ai:stream-chunk', chunk)
@@ -192,7 +192,7 @@ export function registerAiIpc(): void {
         requestId,
         type: 'error',
         error:
-          provider === 'genspark' || (provider === 'vega' && !vegaofficeApiKey())
+          provider === 'genspark' || (provider === 'vega' && !officeVegaApiKey())
             ? tm('errGskNotLoggedIn')
             : tm('errNoApiKey', { provider }),
       })

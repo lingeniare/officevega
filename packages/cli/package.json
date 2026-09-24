@@ -4,7 +4,7 @@
   "license": "Apache-2.0",
   "private": true,
   "type": "module",
-  "description": "vegaoffice: the VegaOffice command line (create, convert, read, edit and render documents) built on the same engines as the app; runs headless on the app's bundled Node runtime",
+  "description": "officevega: the OfficeVega command line (create, convert, read, edit and render documents) built on the same engines as the app; runs headless on the app's bundled Node runtime",
   "exports": {
     ".": "./src/index.ts",
     "./install": "./src/install.ts",
@@ -12,7 +12,7 @@
     "./control-protocol": "./src/control-protocol.ts"
   },
   "bin": {
-    "vegaoffice": "./bin/vegaoffice"
+    "officevega": "./bin/officevega"
   },
   "scripts": {
     "build": "node build.mjs && node collect-deps.mjs",

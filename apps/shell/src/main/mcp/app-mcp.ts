@@ -35,7 +35,7 @@ export interface McpRuntimeDeps {
   slidesControl?: SlidesControl
   /** drive a visible sheets grid (renderer workbook session); absent in headless runs */
   sheetsControl?: SheetsControl
-  /** the bundled vegaoffice CLI, backing the headless create/read tools; absent when unavailable */
+  /** the bundled officevega CLI, backing the headless create/read tools; absent when unavailable */
   cliRunner?: CliRunner
   /**
    * documents the user has open (list/read/close); absent in headless runs,
@@ -141,11 +141,11 @@ function buildTools(): McpToolDefinition[] {
         // headless create_docx is opt-in: off by default so the default surface is
         // the visible document session
         background: currentSettings.background,
-        // open_in_vegaoffice reports ok only when the file routed to a tab
+        // open_in_officevega reports ok only when the file routed to a tab
         openInTab: (filePath) => {
           if (!deps) return
           const opened = deps.openPath(filePath)
-          if (!opened) throw new Error(`could not open ${filePath} in Office VEGA`)
+          if (!opened) throw new Error(`could not open ${filePath} in OfficeVega`)
         },
         docs: deps.docsControl,
         extraFormats,

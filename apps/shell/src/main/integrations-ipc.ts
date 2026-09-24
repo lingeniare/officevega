@@ -28,9 +28,9 @@ export interface IntegrationsDeps {
   settingsPath: () => string
   /** the shell window dialogs attach to */
   window: () => BrowserWindow | null
-  /** directory holding vegaoffice / vegaoffice.cmd and, packaged, skills/vegaoffice/SKILL.md */
+  /** directory holding officevega / officevega.cmd and, packaged, skills/officevega/SKILL.md */
   cliDir: string
-  /** skills/vegaoffice/SKILL.md (repo file in dev, Resources/cli/skills/... packaged) */
+  /** skills/officevega/SKILL.md (repo file in dev, Resources/cli/skills/... packaged) */
   skillPath: string
   /** packages/cli/package.json (its version is the CLI version) */
   cliPackageJson: string
@@ -47,7 +47,7 @@ export function registerIntegrationsIpc(deps: IntegrationsDeps): void {
   ipcMain.handle(INTEGRATIONS_CHANNELS.status, (): IntegrationsStatus => {
     const skill = bundled()
     const l = ledger()
-    const launcher = join(deps.cliDir, process.platform === 'win32' ? 'vegaoffice.cmd' : 'vegaoffice')
+    const launcher = join(deps.cliDir, process.platform === 'win32' ? 'officevega.cmd' : 'officevega')
     return {
       cli: {
         ...inspectCliLink({ launcher }),
@@ -104,7 +104,7 @@ export function registerIntegrationsIpc(deps: IntegrationsDeps): void {
       const skill = bundled()
       const opts: Electron.SaveDialogOptions = {
         title: String(title ?? ''),
-        defaultPath: join(app.getPath('downloads'), `vegaoffice-skill-${skill.version}.zip`),
+        defaultPath: join(app.getPath('downloads'), `officevega-skill-${skill.version}.zip`),
         filters: [{ name: 'ZIP', extensions: ['zip'] }],
       }
       const win = deps.window()

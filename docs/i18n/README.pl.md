@@ -2,12 +2,12 @@
   <a href="https://github.com/lingeniare/getoffice/">
     <picture>
       <source srcset="../assets/readme/hero-dark.webp" media="(prefers-color-scheme: dark)">
-      <img src="../assets/readme/hero.webp" alt="VegaOffice — otwarty pakiet biurowy AI: Docs, Sheets, Slides, PDF, Markdown i HTML z wbudowanym panelem AI" width="100%">
+      <img src="../assets/readme/hero.webp" alt="OfficeVega — otwarty pakiet biurowy AI: Docs, Sheets, Slides, PDF, Markdown i HTML z wbudowanym panelem AI" width="100%">
     </picture>
   </a>
 </p>
 
-<h1 align="center">VegaOffice</h1>
+<h1 align="center">OfficeVega</h1>
 
 <p align="center"><b>Pierwszy na świecie w pełni funkcjonalny otwarty pakiet biurowy z AI.</b><br>
 Pliki Word, Excel, PowerPoint i PDF, edytowane przez Ciebie i Twoją AI, zapisywane z powrotem w prawdziwych formatach.</p>
@@ -30,7 +30,7 @@ Pliki Word, Excel, PowerPoint i PDF, edytowane przez Ciebie i Twoją AI, zapisyw
   <a href="../../PRIVACY.md"><b>Prywatność</b></a>
 </p>
 
-VegaOffice to darmowa, otwarta alternatywa dla Microsoft Office na macOS,
+OfficeVega to darmowa, otwarta alternatywa dla Microsoft Office na macOS,
 Windows i Linux. Otwiera i zapisuje natywne pliki `.docx`, `.xlsx` i `.pptx`,
 edytuje PDF, Markdown i HTML, a przy każdym dokumencie stawia agenta AI — nie
 jest to czat dopięty z boku, lecz edytor, który czyta plik, wprowadza zmianę
@@ -53,7 +53,7 @@ i pokazuje precyzyjnie, czego dotknął.
   Doubao, MiniMax, Grok, Mistral, OpenRouter, Requesty lub dowolnego endpointu
   zgodnego z OpenAI, w tym lokalnych serwerów.
 - **Skryptowalne i gotowe na agentów.** Aplikacja dostarcza wiersz poleceń
-  `vegaoffice` oraz skill dla agentów Claude Code, Codex, Cursor, Gemini CLI,
+  `officevega` oraz skill dla agentów Claude Code, Codex, Cursor, Gemini CLI,
   GitHub Copilot, OpenCode i Windsurf, dzięki czemu agent kodujący może
   tworzyć, konwertować, czytać i edytować prawdziwe pliki Office na Twoim
   komputerze bez otwierania okna.
@@ -73,8 +73,8 @@ AI jest prowadzona promptem widocznym w panelu.
 
 <table>
 <tr>
-<td width="50%"><img src="../assets/readme/docs-report.webp" alt="VegaOffice Docs renderuje dwukolumnową stronę raportu rocznego z pełnowymiarowym zdjęciem na okładce, zacienioną tabelą KPI, nagłówkiem i stopką, przy powiększeniu 80% ze zwiniętym panelem AI"></td>
-<td width="50%"><img src="../assets/readme/docs-ai.webp" alt="VegaOffice Docs: przegląd firmy z obrazem w formie banera; AI skróciła sekcję Overview i wstawiła nową sekcję z punktami, a panel proponuje jednokrotne przywrócenie"></td>
+<td width="50%"><img src="../assets/readme/docs-report.webp" alt="OfficeVega Docs renderuje dwukolumnową stronę raportu rocznego z pełnowymiarowym zdjęciem na okładce, zacienioną tabelą KPI, nagłówkiem i stopką, przy powiększeniu 80% ze zwiniętym panelem AI"></td>
+<td width="50%"><img src="../assets/readme/docs-ai.webp" alt="OfficeVega Docs: przegląd firmy z obrazem w formie banera; AI skróciła sekcję Overview i wstawiła nową sekcję z punktami, a panel proponuje jednokrotne przywrócenie"></td>
 </tr>
 <tr>
 <td><b>Otwiera plik tak, jak układa go Word</b> — dwukolumnowe sekcje, obrazy na całą szerokość, zacienione tabele, nagłówki i stopki, paginacja według metryk linii Worda. Style, komentarze, śledzone zmiany, równania i pismo odręczne wracają bez zmian.</td>
@@ -86,8 +86,8 @@ AI jest prowadzona promptem widocznym w panelu.
 
 <table>
 <tr>
-<td width="50%"><img src="../assets/readme/sheets-ai.webp" alt="VegaOffice Sheets: AI dodała arkusz Summary z przychodami według regionu i kategorii przy użyciu formuł SUMIF, plus wykres kolumnowy, i zgłasza 43 zastosowane zmiany z przyciskiem Undo"></td>
-<td width="50%"><img src="../assets/readme/sheets-qa.webp" alt="VegaOffice Sheets: na pytanie, który region przewodził w przychodach za Q2, AI odpowiada Europa z podziałem na kategorie i podaje jako klikalne odnośniki komórki, z których skorzystała, obok arkusza Orders"></td>
+<td width="50%"><img src="../assets/readme/sheets-ai.webp" alt="OfficeVega Sheets: AI dodała arkusz Summary z przychodami według regionu i kategorii przy użyciu formuł SUMIF, plus wykres kolumnowy, i zgłasza 43 zastosowane zmiany z przyciskiem Undo"></td>
+<td width="50%"><img src="../assets/readme/sheets-qa.webp" alt="OfficeVega Sheets: na pytanie, który region przewodził w przychodach za Q2, AI odpowiada Europa z podziałem na kategorie i podaje jako klikalne odnośniki komórki, z których skorzystała, obok arkusza Orders"></td>
 </tr>
 <tr>
 <td><b>Zbuduj to</b> — z jednego zdania agent dodaje arkusz Summary z prawdziwymi formułami <code>SUMIF</code> według regionu i kategorii, wstawia wykres kolumnowy i stosuje 43 zmiany jako jedną grupę do wycofania.</td>
@@ -97,15 +97,15 @@ AI jest prowadzona promptem widocznym w panelu.
 
 ### 3 · Slides — od promptu do prezentacji `.pptx`
 
-<img src="../assets/readme/slides-generate.webp" alt="Timelapse VegaOffice Slides generującego prezentację inwestorską Aurora Home: AI planuje fabułę w panelu, slajdy pojawiają się na płótnie jeden po drugim, a gotowa prezentacja kończy się finałowym wezwaniem do działania" width="100%">
+<img src="../assets/readme/slides-generate.webp" alt="Timelapse OfficeVega Slides generującego prezentację inwestorską Aurora Home: AI planuje fabułę w panelu, slajdy pojawiają się na płótnie jeden po drugim, a gotowa prezentacja kończy się finałowym wezwaniem do działania" width="100%">
 
 <table>
 <tr>
-<td width="50%"><img src="../assets/readme/slides-cover.webp" alt="VegaOffice Slides: slajd tytułowy wygenerowanej przez AI prezentacji inwestorskiej Aurora Home na płótnie, z oryginalnym jednowierszowym promptem i podsumowaniem AI tego, co zbudowała, w panelu"></td>
-<td width="50%"><img src="../assets/readme/slides-ai.webp" alt="VegaOffice Slides: zaprojektowany slajd końcowy tej samej 11-slajdowej prezentacji, z paskiem miniatur po lewej i panelem AI podsumowującym fabułę"></td>
+<td width="50%"><img src="../assets/readme/slides-cover.webp" alt="OfficeVega Slides: slajd tytułowy wygenerowanej przez AI prezentacji inwestorskiej Aurora Home na płótnie, z oryginalnym jednowierszowym promptem i podsumowaniem AI tego, co zbudowała, w panelu"></td>
+<td width="50%"><img src="../assets/readme/slides-ai.webp" alt="OfficeVega Slides: zaprojektowany slajd końcowy tej samej 11-slajdowej prezentacji, z paskiem miniatur po lewej i panelem AI podsumowującym fabułę"></td>
 </tr>
 <tr>
-<td><b>Jedna linijka na wejściu</b> — „Stwórz 10-slajdową prezentację inwestorską dla Aurora Home…”. VegaOffice planuje fabułę, sprawdza dane liczbowe i tworzy każdy slajd na płótnie jako prawdziwy plik `.pptx`.</td>
+<td><b>Jedna linijka na wejściu</b> — „Stwórz 10-slajdową prezentację inwestorską dla Aurora Home…”. OfficeVega planuje fabułę, sprawdza dane liczbowe i tworzy każdy slajd na płótnie jako prawdziwy plik `.pptx`.</td>
 <td><b>Gotowa prezentacja na wyjściu</b> — jedenaście zaprojektowanych slajdów o spójnej typografii, grafice i zamykającym wezwaniu do działania; edytuj dalej za pomocą wzorców, układów, inteligentnych linii pomocniczych i nieinwazyjnego kadrowania, albo poproś panel o zmianę stylu, przepisanie i przełożenie kolejności.</td>
 </tr>
 </table>
@@ -114,8 +114,8 @@ AI jest prowadzona promptem widocznym w panelu.
 
 <table>
 <tr>
-<td width="50%"><img src="../assets/readme/pdf-edit.webp" alt="VegaOffice PDF: tryb Edit text zaznacza każdy blok tekstu na stronie do edycji w miejscu, a panel AI odpowiada na pytanie o raport z cytowaniem stron"></td>
-<td width="50%"><img src="../assets/readme/pdf-convert.webp" alt="VegaOffice Docs wyświetla dokument Word przekonwertowany lokalnie z kwartalnego raportu Helios w formacie PDF, otwarty w drugiej karcie obok oryginalnego PDF"></td>
+<td width="50%"><img src="../assets/readme/pdf-edit.webp" alt="OfficeVega PDF: tryb Edit text zaznacza każdy blok tekstu na stronie do edycji w miejscu, a panel AI odpowiada na pytanie o raport z cytowaniem stron"></td>
+<td width="50%"><img src="../assets/readme/pdf-convert.webp" alt="OfficeVega Docs wyświetla dokument Word przekonwertowany lokalnie z kwartalnego raportu Helios w formacie PDF, otwarty w drugiej karcie obok oryginalnego PDF"></td>
 </tr>
 <tr>
 <td><b>Edytuj wewnątrz strony</b> — tryb Edit text zaznacza każdy blok tekstu do ponownego wpisania w miejscu; strumień treści jest przepisywany przez PDFium z zachowaniem oryginalnych czcionek, a nie zasłaniany anotacją. Zadaj AI pytanie o długi raport i otrzymaj odpowiedzi z cytowaniem stron.</td>
@@ -130,11 +130,11 @@ proponuje **brief projektowy** — hasło, paletę kolorów, typografię i kieru
 stylistyczne — a potem buduje jeden samodzielny plik `.html` zgodny z tymi
 wytycznymi.
 
-<img src="../assets/readme/html-restyle-motion.webp" alt="Timelapse VegaOffice HTML zmieniającego styl strony docelowej Lumen: jedno żądanie Restyle w panelu zmienia ciemną stronę Midnight Studio w ciepłą wersję Solar Daybreak, podczas gdy każda sekcja i cała treść pozostają na miejscu" width="100%">
+<img src="../assets/readme/html-restyle-motion.webp" alt="Timelapse OfficeVega HTML zmieniającego styl strony docelowej Lumen: jedno żądanie Restyle w panelu zmienia ciemną stronę Midnight Studio w ciepłą wersję Solar Daybreak, podczas gdy każda sekcja i cała treść pozostają na miejscu" width="100%">
 
 <table>
 <tr>
-<td width="50%"><img src="../assets/readme/html-ai.webp" alt="VegaOffice HTML: wygenerowana strona docelowa dla solarnej lampki biurkowej w ciemnym kierunku Midnight Studio, wyświetlana w podglądzie na żywo z panelem AI podsumowującym właśnie zbudowaną stronę"></td>
+<td width="50%"><img src="../assets/readme/html-ai.webp" alt="OfficeVega HTML: wygenerowana strona docelowa dla solarnej lampki biurkowej w ciemnym kierunku Midnight Studio, wyświetlana w podglądzie na żywo z panelem AI podsumowującym właśnie zbudowaną stronę"></td>
 <td width="50%"><img src="../assets/readme/html-restyle.webp" alt="Ta sama strona docelowa Lumen przestylizowana przez AI na ciepły kierunek Solar Daybreak: papierowe tło, szeryfowe nagłówki i pomarańczowy akcent, z zachowaniem wszystkich sekcji i całej treści"></td>
 </tr>
 <tr>
@@ -144,8 +144,8 @@ wytycznymi.
 </table>
 <table>
 <tr>
-<td width="50%"><img src="../assets/readme/html-dashboard.webp" alt="VegaOffice HTML: wygenerowany interfejs osobistego panelu dla projektanta freelancera w ciepłym, lnianym stylu, z lewym panelem bocznym, szeryfowym powitaniem i czterema kartami metryk"></td>
-<td width="50%"><img src="../assets/readme/html-report.webp" alt="VegaOffice HTML: wygenerowany raport danych o rynku pojazdów elektrycznych w stylu gazetowym, z szeryfową winietą tytułową, nagłówkową liczbą 17,3 miliona i wierszem statystyk"></td>
+<td width="50%"><img src="../assets/readme/html-dashboard.webp" alt="OfficeVega HTML: wygenerowany interfejs osobistego panelu dla projektanta freelancera w ciepłym, lnianym stylu, z lewym panelem bocznym, szeryfowym powitaniem i czterema kartami metryk"></td>
+<td width="50%"><img src="../assets/readme/html-report.webp" alt="OfficeVega HTML: wygenerowany raport danych o rynku pojazdów elektrycznych w stylu gazetowym, z szeryfową winietą tytułową, nagłówkową liczbą 17,3 miliona i wierszem statystyk"></td>
 </tr>
 <tr>
 <td><b>Makiety interfejsów</b> — starter „personal dashboard” zamienia persona w działający układ: lewy panel boczny, powitanie, wykres iskrowy godzin rozliczeniowych, karty faktur i wykorzystania — wszystko jako prawdziwy HTML, który można przekazać programiście.</td>
@@ -157,8 +157,8 @@ wytycznymi.
 
 <table>
 <tr>
-<td width="50%"><img src="../assets/readme/markdown-ai.webp" alt="VegaOffice Markdown: zaznaczony akapit pokazuje wyskakujące okno Ask AI z wpisaną instrukcją i chipami z podpowiedziami, takimi jak Polish, Make more concise, Expand i Fix grammar, a także przyciskami Send now i Add to queue"></td>
-<td width="50%"><img src="../assets/readme/markdown-render.webp" alt="VegaOffice Markdown renderuje dokument z notatkami o wydaniu z tabelą, diagramem przepływu Mermaid i listą zadań, z podpowiedziami startowymi panelu AI po lewej stronie"></td>
+<td width="50%"><img src="../assets/readme/markdown-ai.webp" alt="OfficeVega Markdown: zaznaczony akapit pokazuje wyskakujące okno Ask AI z wpisaną instrukcją i chipami z podpowiedziami, takimi jak Polish, Make more concise, Expand i Fix grammar, a także przyciskami Send now i Add to queue"></td>
+<td width="50%"><img src="../assets/readme/markdown-render.webp" alt="OfficeVega Markdown renderuje dokument z notatkami o wydaniu z tabelą, diagramem przepływu Mermaid i listą zadań, z podpowiedziami startowymi panelu AI po lewej stronie"></td>
 </tr>
 <tr>
 <td><b>Zapytaj AI o zaznaczenie</b> — zaznacz dowolny fragment i pojawi się chip <b>Ask AI</b>: wpisz instrukcję lub wybierz podpowiedź, wyślij ją natychmiast albo umieść w kolejce kilka przypisanych do miejsc edycji i wykonaj je za jednym razem. Ta sama funkcja jest dostępna w każdej aplikacji.</td>
@@ -166,42 +166,42 @@ wytycznymi.
 </tr>
 </table>
 
-### 7 · CLI — Twój agent kodujący steruje VegaOffice, na Twoim komputerze
+### 7 · CLI — Twój agent kodujący steruje OfficeVega, na Twoim komputerze
 
-VegaOffice dostarcza wiersz poleceń `vegaoffice` oraz skill dla agentów.
+OfficeVega dostarcza wiersz poleceń `officevega` oraz skill dla agentów.
 Zainstaluj skill, a Claude Code, Codex, Cursor, Gemini CLI, GitHub Copilot,
 OpenCode lub Windsurf będą mogły tworzyć, konwertować, czytać i edytować
 prawdziwe pliki Office przez te same silniki, co aplikacje, bez otwierania
 okna.
 
-<img src="../assets/readme/cli-deck-in-app.webp" alt="VegaOffice Slides pokazuje ośmioslajdową prezentację o Układzie Słonecznym, którą agent kodujący zbudował przez wiersz poleceń vegaoffice: slajd tytułowy na płótnie, osiem miniatur po lewej i otwarty panel AI" width="100%">
+<img src="../assets/readme/cli-deck-in-app.webp" alt="OfficeVega Slides pokazuje ośmioslajdową prezentację o Układzie Słonecznym, którą agent kodujący zbudował przez wiersz poleceń officevega: slajd tytułowy na płótnie, osiem miniatur po lewej i otwarty panel AI" width="100%">
 
 <table>
 <tr>
 <td width="50%"><img src="../assets/readme/cli-slides-grid.webp" alt="Osiem wyrenderowanych slajdów prezentacji o Układzie Słonecznym obok siebie: okładka, oś czasu eksploracji, cztery kluczowe liczby, wykres słupkowy średnic planet, planety skaliste kontra olbrzymy, 99,8% Słońca jako liczba nagłówkowa, siatka czterech olbrzymów i wnioski"></td>
-<td width="50%"><img src="../assets/readme/cli-integrations.webp" alt="Ustawienia VegaOffice, strona Integracje: skill vegaoffice zainstalowany w Claude Code, z przyciskami Zainstaluj przy pozycjach Codex i Cursor"></td>
+<td width="50%"><img src="../assets/readme/cli-integrations.webp" alt="Ustawienia OfficeVega, strona Integracje: skill officevega zainstalowany w Claude Code, z przyciskami Zainstaluj przy pozycjach Codex i Cursor"></td>
 </tr>
 <tr>
-<td><b>Jeden prompt do Twojego agenta</b> — „Zbuduj ośmioslajdową prezentację o Układzie Słonecznym”. Agent czyta skill, pisze arkusz stylów, konspekt i jedną specyfikację strony na slajd, generuje dwa zdjęcia za pomocą <code>vegaoffice image</code> i pozwala, by <code>vegaoffice slides check</code> odrzuciło wszystko, co wychodzi poza obszar lub nachodzi na siebie, zanim <code>vegaoffice create</code> złoży plik <code>.pptx</code>, a <code>slides render</code> odda po jednym PNG na slajd do obejrzenia.</td>
-<td><b>Zainstaluj raz, w Ustawienia → Integracje</b> — VegaOffice wyświetla agentów kodujących, których znajdzie na tym komputerze, i zapisuje skill w każdym, którego wybierzesz. Możesz też pobrać skill jako zip albo uruchomić <code>npx skills add lingeniare/getoffice</code>. Polecenia i pełny przepływ pracy znajdziesz w sekcji <a href="#command-line-and-agent-skill">Wiersz poleceń i skill dla agentów</a>.</td>
+<td><b>Jeden prompt do Twojego agenta</b> — „Zbuduj ośmioslajdową prezentację o Układzie Słonecznym”. Agent czyta skill, pisze arkusz stylów, konspekt i jedną specyfikację strony na slajd, generuje dwa zdjęcia za pomocą <code>officevega image</code> i pozwala, by <code>officevega slides check</code> odrzuciło wszystko, co wychodzi poza obszar lub nachodzi na siebie, zanim <code>officevega create</code> złoży plik <code>.pptx</code>, a <code>slides render</code> odda po jednym PNG na slajd do obejrzenia.</td>
+<td><b>Zainstaluj raz, w Ustawienia → Integracje</b> — OfficeVega wyświetla agentów kodujących, których znajdzie na tym komputerze, i zapisuje skill w każdym, którego wybierzesz. Możesz też pobrać skill jako zip albo uruchomić <code>npx skills add lingeniare/getoffice</code>. Polecenia i pełny przepływ pracy znajdziesz w sekcji <a href="#command-line-and-agent-skill">Wiersz poleceń i skill dla agentów</a>.</td>
 </tr>
 </table>
 
 ### 8 · MCP — te same narzędzia przez Model Context Protocol
 
-Każde polecenie `vegaoffice` jest też narzędziem MCP. Claude Code, Claude
+Każde polecenie `officevega` jest też narzędziem MCP. Claude Code, Claude
 Desktop, Cursor i każdy inny klient MCP mogą samodzielnie uruchomić
-`vegaoffice mcp`, bez instalowania jakiegokolwiek skilla i bez otwierania
+`officevega mcp`, bez instalowania jakiegokolwiek skilla i bez otwierania
 okna, i otrzymują 29 narzędzi oraz odniesienia do operacji jako zasoby.
 Drugi, serwer HTTP wewnątrz aplikacji pozwala agentowi budować dokument
 Word w widocznej karcie edytora, podczas gdy Ty patrzysz.
 
-<img src="../assets/readme/mcp-deck-motion.webp" alt="Poklatkowe nagranie Claude Code budującego ośmioslajdową prezentację inwestorską o energii odnawialnej przez serwer MCP vegaoffice: szuka ilustracji i zdjęć, sprawdza każde kandydujące zdjęcie za pomocą media, deck_start zapisuje arkusz stylów i konspekt, deck_page dodaje po jednej sprawdzonej stronie naraz, deck_build składa plik .pptx, a slides_render zwraca obraz każdego slajdu; gotowa prezentacja otwiera się potem w VegaOffice Slides" width="100%">
+<img src="../assets/readme/mcp-deck-motion.webp" alt="Poklatkowe nagranie Claude Code budującego ośmioslajdową prezentację inwestorską o energii odnawialnej przez serwer MCP officevega: szuka ilustracji i zdjęć, sprawdza każde kandydujące zdjęcie za pomocą media, deck_start zapisuje arkusz stylów i konspekt, deck_page dodaje po jednej sprawdzonej stronie naraz, deck_build składa plik .pptx, a slides_render zwraca obraz każdego slajdu; gotowa prezentacja otwiera się potem w OfficeVega Slides" width="100%">
 
 <table>
 <tr>
-<td width="50%"><img src="../assets/readme/mcp-deck-in-app.webp" alt="VegaOffice Slides pokazuje ośmioslajdową prezentację Renewable Energy 2026, którą Claude Code zbudował przez serwer MCP vegaoffice: slajd tytułowy ze zdjęciem farmy wiatrowej na płótnie i osiem miniatur po lewej"></td>
-<td width="50%"><img src="../assets/readme/mcp-integrations.webp" alt="Ustawienia VegaOffice, strona Integracje, część MCP: jednowierszowe polecenie claude mcp add dla Claude Code, blok JSON dla Cursor, Claude Desktop i innych klientów MCP oraz opcja lokalnego serwera HTTP poniżej"></td>
+<td width="50%"><img src="../assets/readme/mcp-deck-in-app.webp" alt="OfficeVega Slides pokazuje ośmioslajdową prezentację Renewable Energy 2026, którą Claude Code zbudował przez serwer MCP officevega: slajd tytułowy ze zdjęciem farmy wiatrowej na płótnie i osiem miniatur po lewej"></td>
+<td width="50%"><img src="../assets/readme/mcp-integrations.webp" alt="Ustawienia OfficeVega, strona Integracje, część MCP: jednowierszowe polecenie claude mcp add dla Claude Code, blok JSON dla Cursor, Claude Desktop i innych klientów MCP oraz opcja lokalnego serwera HTTP poniżej"></td>
 </tr>
 <tr>
 <td><b>Jeden prompt, 38 wywołań narzędzi, bez terminala</b> — „Zbuduj ośmioslajdową prezentację inwestorską o energii odnawialnej w 2026 roku, z prawdziwym zdjęciem na okładce i wszędzie tam, gdzie zdjęcie się przyda”. Agent pobiera ilustracje i zdjęcia za pomocą <code>search</code>, pyta <code>media</code>, czy każde kandydujące zdjęcie jest prawdziwą fotografią, wywołuje <code>deck_start</code> z arkuszem stylów i konspektem, potem <code>deck_page</code> raz na slajd; każda strona jest sprawdzana względem konspektu i palety, zanim zostanie zachowana, <code>deck_build</code> składa plik <code>.pptx</code>, <code>slides_audit</code> szuka przepełnień, <code>slides_render</code> oddaje po jednym PNG na slajd jako treść obrazu, którą model może obejrzeć, a <code>deck_replace</code> poprawia trzy strony, które mu się nie spodobały.</td>
@@ -209,7 +209,7 @@ Word w widocznej karcie edytora, podczas gdy Ty patrzysz.
 </tr>
 </table>
 
-## Dlaczego VegaOffice
+## Dlaczego OfficeVega
 
 - **Otwarty kod źródłowy**, Apache-2.0, tworzony w pełni otwarcie na GitHubie.
 - **Twój do uruchomienia.** Natywne aplikacje na macOS, Windows i Linux; pliki
@@ -228,7 +228,7 @@ Word w widocznej karcie edytora, podczas gdy Ty patrzysz.
   Word, Excel lub PowerPoint lokalnie, z systemowym OCR dla skanów.
 - **Także Markdown i HTML**, z tym samym panelem AI i lokalnym eksportem do
   Word.
-- **Skryptowalne.** Wiersz poleceń `vegaoffice`, skill dla agentów i serwer
+- **Skryptowalne.** Wiersz poleceń `officevega`, skill dla agentów i serwer
   MCP oddają każdy silnik do dyspozycji Claude Code, Claude Desktop, Codex,
   Cursor i innych agentów — nadal lokalnie na urządzeniu.
 - **Bezpłatne**, dla pojedynczych osób i zespołów.
@@ -258,10 +258,10 @@ zachowują oryginalne kolory dokumentu.
 
 ## Wiersz poleceń i skill dla agentów
 
-Wszystko, co aplikacje potrafią zrobić z plikiem, wiersz poleceń `vegaoffice`
+Wszystko, co aplikacje potrafią zrobić z plikiem, wiersz poleceń `officevega`
 potrafi zrobić z terminala: sprawdzać, konwertować, tworzyć, czytać i
 edytować pliki Word, Excel, PowerPoint, PDF, Markdown i HTML na tych samych
-silnikach, bez interfejsu graficznego. Instaluje się razem z VegaOffice, nie
+silnikach, bez interfejsu graficznego. Instaluje się razem z OfficeVega, nie
 potrzebuje własnego środowiska uruchomieniowego i nigdy nie wysyła dokumentu
 poza komputer. W połączeniu z dołączonym **skillem dla agentów** zamienia
 agenta kodującego w pracownika biurowego, który tworzy prawdziwe pliki Office
@@ -276,30 +276,30 @@ każdym klientem MCP.
 
 | Jak                                       | Co się dzieje                                                                                                                                                                                          |
 | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Ustawienia → Integracje** w aplikacji   | Wyświetla agentów znalezionych na tym komputerze; jedno kliknięcie zapisuje skill w każdym, którego wybierzesz. Gdy nowe wydanie VegaOffice przynosi nowszy skill, pojawia się przycisk **Aktualizuj**. |
+| **Ustawienia → Integracje** w aplikacji   | Wyświetla agentów znalezionych na tym komputerze; jedno kliknięcie zapisuje skill w każdym, którego wybierzesz. Gdy nowe wydanie OfficeVega przynosi nowszy skill, pojawia się przycisk **Aktualizuj**. |
 | **Pobierz jako zip** na tej samej stronie | Układ, który claude.ai, aplikacje desktopowe Claude i inni asystenci przyjmują jako przesłany skill.                                                                                                   |
 | `npx skills add lingeniare/getoffice`    | Instaluje z tego repozytorium w dowolnym agencie obsługującym skille.                                                                                                                                  |
 
 Następnie zacznij nowy czat i poproś o dokument. Skill uczy agenta, kiedy
-sięgać po `vegaoffice`, jak przeczytać plik przed jego edycją i jak sprawdzać
+sięgać po `officevega`, jak przeczytać plik przed jego edycją i jak sprawdzać
 własną pracę.
 
 ### Szybki start z terminala
 
 ```bash
-vegaoffice --version
-vegaoffice info report.docx --json                  # headings and blocks; or sheets, slides, pages
-vegaoffice convert report.md --to pdf               # md/html/docx/xlsx/pptx → pdf, pdf → docx/xlsx/pptx, …
-vegaoffice create --type docx --from notes.md --out notes.docx
-vegaoffice create --type xlsx --from table.json --out sales.xlsx   # "=SUM(B2:B9)" cells stay live formulas
-vegaoffice docs read report.docx --range 0-9 --json # then `docs apply --ops edits.json` edits in place
-vegaoffice render report.docx --out shots/          # one PNG per page, to look at what you made
-vegaoffice open sales.xlsx                          # hand the result to the editor
+officevega --version
+officevega info report.docx --json                  # headings and blocks; or sheets, slides, pages
+officevega convert report.md --to pdf               # md/html/docx/xlsx/pptx → pdf, pdf → docx/xlsx/pptx, …
+officevega create --type docx --from notes.md --out notes.docx
+officevega create --type xlsx --from table.json --out sales.xlsx   # "=SUM(B2:B9)" cells stay live formulas
+officevega docs read report.docx --range 0-9 --json # then `docs apply --ops edits.json` edits in place
+officevega render report.docx --out shots/          # one PNG per page, to look at what you made
+officevega open sales.xlsx                          # hand the result to the editor
 ```
 
 Każde polecenie wypisuje jednowierszowe podsumowanie albo — z `--json` —
 pojedynczy obiekt JSON. Edycje są atomowe: odrzucona operacja pozostawia plik
-nietknięty i wraca z pomocnym komunikatem błędu. `vegaoffice help` wypisuje
+nietknięty i wraca z pomocnym komunikatem błędu. `officevega help` wypisuje
 aktualny zestaw poleceń; pełna dokumentacja znajduje się w
 [packages/cli/README.md](../../packages/cli/README.md).
 
@@ -310,21 +310,21 @@ Claude Code. W tle agent podążał za etapowym przepływem pracy ze skilla, a
 CLI sprawdzało każdy etap, zanim zaczął się następny:
 
 ```bash
-vegaoffice capabilities --json                        # which cloud tools VegaOffice has configured
-vegaoffice guide slides design                        # the deck workflow and layout library
-vegaoffice image "the eight planets in a row …" --aspect 16:9 --out deck/assets/cover.jpg
-vegaoffice slides check deck/outline.json --json      # 8 pages, no findings
-vegaoffice slides check deck/pages/01.json --json     # builds one slide, audits overflow and overlap
+officevega capabilities --json                        # which cloud tools OfficeVega has configured
+officevega guide slides design                        # the deck workflow and layout library
+officevega image "the eight planets in a row …" --aspect 16:9 --out deck/assets/cover.jpg
+officevega slides check deck/outline.json --json      # 8 pages, no findings
+officevega slides check deck/pages/01.json --json     # builds one slide, audits overflow and overlap
 …                                                    # one page file per slide, fixed until each check is clean
-vegaoffice create --type pptx --spec deck/pages --outline deck/outline.json --out deck/solar-system.pptx --json
-vegaoffice slides render deck/solar-system.pptx --out deck/shots --json
-vegaoffice slides audit deck/solar-system.pptx --json    # 8 slides, no layout issues
-vegaoffice slides replace deck/solar-system.pptx --slide 4 --spec deck/pages/05.json --json
-vegaoffice open deck/solar-system.pptx
+officevega create --type pptx --spec deck/pages --outline deck/outline.json --out deck/solar-system.pptx --json
+officevega slides render deck/solar-system.pptx --out deck/shots --json
+officevega slides audit deck/solar-system.pptx --json    # 8 slides, no layout issues
+officevega slides replace deck/solar-system.pptx --slide 4 --spec deck/pages/05.json --json
+officevega open deck/solar-system.pptx
 ```
 
-Wewnątrz `vegaoffice` nie dochodzi do żadnego wywołania modelu: agent myśli,
-CLI buduje i sprawdza, a wynik otwiera się w VegaOffice lub PowerPoint jako
+Wewnątrz `officevega` nie dochodzi do żadnego wywołania modelu: agent myśli,
+CLI buduje i sprawdza, a wynik otwiera się w OfficeVega lub PowerPoint jako
 zwyczajny plik `.pptx`.
 
 <a id="mcp-server"></a>
@@ -339,33 +339,33 @@ sposoby połączenia, oba pokazane z gotowymi do skopiowania fragmentami w
 
 | Sposób                             | Co to jest                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **A · `vegaoffice mcp`** (zalecane) | Serwer stdio, który asystent uruchamia sam; VegaOffice nie musi być otwarte. Jedno narzędzie na polecenie (`info`, `convert`, `create_docx`, `create_xlsx`, `create_pptx`, `create_pdf`, `docs_read` / `docs_apply` / `docs_check`, `sheet_*`, `slides_*`, `render`, `guide`, `search`, `image`, `media`, `open`) oraz etapowy przepływ prezentacji `deck_start` → `deck_page` → `deck_build` → `deck_replace`. Operacje, specyfikacje i Markdown są przekazywane inline, więc działa też klient bez systemu plików. |
-| **B · Lokalny serwer HTTP**        | Działa wewnątrz aplikacji VegaOffice pod adresem `http://127.0.0.1:3093/mcp` (Streamable HTTP, z przestarzałym SSE). Jego narzędzia sterują widoczną kartą edytora Word: `create_session`, `insert_content`, `replace_blocks`, `apply_ops`, `read_document`, `save_session`, a Ty obserwujesz, jak dokument nabiera kształtu. Domyślnie wyłączony; włącz go w tym samym panelu ustawień.                                                                                                                             |
+| **A · `officevega mcp`** (zalecane) | Serwer stdio, który asystent uruchamia sam; OfficeVega nie musi być otwarte. Jedno narzędzie na polecenie (`info`, `convert`, `create_docx`, `create_xlsx`, `create_pptx`, `create_pdf`, `docs_read` / `docs_apply` / `docs_check`, `sheet_*`, `slides_*`, `render`, `guide`, `search`, `image`, `media`, `open`) oraz etapowy przepływ prezentacji `deck_start` → `deck_page` → `deck_build` → `deck_replace`. Operacje, specyfikacje i Markdown są przekazywane inline, więc działa też klient bez systemu plików. |
+| **B · Lokalny serwer HTTP**        | Działa wewnątrz aplikacji OfficeVega pod adresem `http://127.0.0.1:3093/mcp` (Streamable HTTP, z przestarzałym SSE). Jego narzędzia sterują widoczną kartą edytora Word: `create_session`, `insert_content`, `replace_blocks`, `apply_ops`, `read_document`, `save_session`, a Ty obserwujesz, jak dokument nabiera kształtu. Domyślnie wyłączony; włącz go w tym samym panelu ustawień.                                                                                                                             |
 
 ```bash
 # Claude Code
-claude mcp add --transport stdio vegaoffice -- vegaoffice mcp
+claude mcp add --transport stdio officevega -- officevega mcp
 ```
 
 ```jsonc
 // Cursor, Claude Desktop lub inny klient MCP
-{ "mcpServers": { "vegaoffice": { "command": "vegaoffice", "args": ["mcp"] } } }
+{ "mcpServers": { "officevega": { "command": "officevega", "args": ["mcp"] } } }
 ```
 
-`vegaoffice` oznacza tu CLI dostarczane wewnątrz aplikacji (na macOS
-`/Applications/VegaOffice.app/Contents/Resources/cli/vegaoffice`; panel
+`officevega` oznacza tu CLI dostarczane wewnątrz aplikacji (na macOS
+`/Applications/OfficeVega.app/Contents/Resources/cli/officevega`; panel
 ustawień wyświetla dokładną ścieżkę dla Twojej instalacji). Serwer niesie
 własne instrukcje przepływu pracy i udostępnia odniesienia do operacji
-jako zasoby `vegaoffice://guide/*`, więc żaden skill nie jest potrzebny;
+jako zasoby `officevega://guide/*`, więc żaden skill nie jest potrzebny;
 skill i serwer MCP mogą współistnieć, a asystent wybiera jeden z nich.
 Funkcje w chmurze (`search`, `image`, `media`) nadal przechodzą przez
-dostawcę skonfigurowanego w VegaOffice; wszystko inne działa lokalnie, a
-`VEGAOFFICE_ALLOWED_ROOTS` ogranicza każde narzędzie do folderów, które
+dostawcę skonfigurowanego w OfficeVega; wszystko inne działa lokalnie, a
+`OFFICEVEGA_ALLOWED_ROOTS` ogranicza każde narzędzie do folderów, które
 wskażesz.
 
 Prezentacja o energii odnawialnej z dema powyżej pokazuje, jak od strony
 protokołu wygląda jeden prompt w Claude Code z podłączonym tylko serwerem
-MCP `vegaoffice`:
+MCP `officevega`:
 
 ```text
 capabilities · guide(slides, spec) · guide(slides, design)
@@ -386,7 +386,7 @@ Trzydzieści osiem wywołań, około trzynastu minut, i asystent ani razu nie
 dotknął terminala: ilustracje, zdjęcia, przewodniki, sprawdzenia i
 renderowania podróżowały jako wyniki narzędzi MCP. Tylko `search` i
 `media` opuściły maszynę, trafiając do dostawcy skonfigurowanego w
-VegaOffice.
+OfficeVega.
 
 <a id="download"></a>
 
@@ -409,18 +409,18 @@ podpisane. Starsze wersje znajdują się na stronie
 <details>
 <summary><b>Instalacja na Linuksie</b></summary>
 
-Plik deb instaluje się przez apt — ściąga zależności i dodaje VegaOffice do
+Plik deb instaluje się przez apt — ściąga zależności i dodaje OfficeVega do
 menu aplikacji:
 
 ```bash
-sudo apt install ./vegaoffice_<version>_amd64.deb
+sudo apt install ./officevega_<version>_amd64.deb
 ```
 
 Na Fedorze / rodzinie RHEL / openSUSE zainstaluj pakiet rpm:
 
 ```bash
-sudo dnf install ./vegaoffice-<version>.x86_64.rpm     # Fedora / rodzina RHEL
-sudo zypper install ./vegaoffice-<version>.x86_64.rpm  # openSUSE
+sudo dnf install ./officevega-<version>.x86_64.rpm     # Fedora / rodzina RHEL
+sudo zypper install ./officevega-<version>.x86_64.rpm  # openSUSE
 ```
 
 AppImage działa bez instalacji: zainstaluj środowisko FUSE 2
@@ -428,8 +428,8 @@ AppImage działa bez instalacji: zainstaluj środowisko FUSE 2
 `libfuse2t64`), nadaj plikowi prawo wykonywania, a potem go uruchom:
 
 ```bash
-chmod +x VegaOffice-<version>.AppImage
-./VegaOffice-<version>.AppImage
+chmod +x OfficeVega-<version>.AppImage
+./OfficeVega-<version>.AppImage
 ```
 
 </details>
@@ -477,30 +477,30 @@ scalania pull requestów.
 
 ## Społeczność
 
-VegaOffice jest w aktywnym rozwoju, a Twoja opinia go kształtuje.
+OfficeVega jest w aktywnym rozwoju, a Twoja opinia go kształtuje.
 
 - **Zgłoś błąd lub poproś o funkcję** w
   [GitHub Issues](https://github.com/lingeniare/getoffice/issues).
-- **Przyłącz się do czatu grupowego VegaOffice** na
+- **Przyłącz się do czatu grupowego OfficeVega** na
   [GitHub](https://github.com/lingeniare/getoffice), aby rozmawiać z zespołem i innymi
   użytkownikami.
-- **Oznacz repozytorium gwiazdką**, jeśli VegaOffice jest dla Ciebie
+- **Oznacz repozytorium gwiazdką**, jeśli OfficeVega jest dla Ciebie
   przydatne — to najlepszy sposób wsparcia projektu.
 
 ## FAQ
 
 <details>
-<summary><b>Czy VegaOffice jest darmowe?</b></summary>
+<summary><b>Czy OfficeVega jest darmowe?</b></summary>
 
-Tak. VegaOffice jest darmowe i otwarte na licencji Apache-2.0 — bez okresu
+Tak. OfficeVega jest darmowe i otwarte na licencji Apache-2.0 — bez okresu
 próbnego, bez płatnego poziomu dla samych aplikacji.
 
 </details>
 
 <details>
-<summary><b>Czy VegaOffice może otwierać pliki Microsoft Word, Excel i PowerPoint?</b></summary>
+<summary><b>Czy OfficeVega może otwierać pliki Microsoft Word, Excel i PowerPoint?</b></summary>
 
-Tak. VegaOffice otwiera i zapisuje natywne pliki `.docx`, `.xlsx` i `.pptx`.
+Tak. OfficeVega otwiera i zapisuje natywne pliki `.docx`, `.xlsx` i `.pptx`.
 Zapis zachowuje treść bit po bicie: części pliku, których nie dotknięto, są
 zapisywane z powrotem bez zmian, dzięki czemu dokumenty wciąż działają w
 Microsoft Office.
@@ -508,7 +508,7 @@ Microsoft Office.
 </details>
 
 <details>
-<summary><b>Czy VegaOffice działa offline?</b></summary>
+<summary><b>Czy OfficeVega działa offline?</b></summary>
 
 Edycja dokumentów jest w pełni lokalna — pliki nigdy nie opuszczają Twojego
 urządzenia, aby zostać otwarte, edytowane, zapisane lub przekonwertowane.
@@ -519,7 +519,7 @@ modelu.
 </details>
 
 <details>
-<summary><b>Czy VegaOffice może edytować pliki PDF?</b></summary>
+<summary><b>Czy OfficeVega może edytować pliki PDF?</b></summary>
 
 Tak — to prawdziwa edycja tekstu i obrazów w PDF, która przepisuje strumień
 treści strony z zachowaniem oryginalnych czcionek, a nie zasłania go
@@ -528,7 +528,7 @@ anotacjami.
 </details>
 
 <details>
-<summary><b>Czy VegaOffice może konwertować PDF do Word, Excel lub PowerPoint?</b></summary>
+<summary><b>Czy OfficeVega może konwertować PDF do Word, Excel lub PowerPoint?</b></summary>
 
 Tak — całkowicie lokalnie: ekstrakcja znaków na poziomie PDFium wraz z
 analizą układu opartą na geometrii, bez usługi w chmurze, bez wysyłania
@@ -541,7 +541,7 @@ tekstu, a nie obrazu strony.
 <details>
 <summary><b>Czy mogę użyć własnego modelu AI lub klucza API?</b></summary>
 
-Tak. Oprócz bezkluczowego logowania przez VEGA, VegaOffice wspiera
+Tak. Oprócz bezkluczowego logowania przez VEGA, OfficeVega wspiera
 użycie własnego klucza dla Claude, OpenAI, Gemini, DeepSeek, Kimi, GLM,
 Qwen, Doubao, MiniMax, Grok, Mistral, OpenRouter, Requesty i OpenCode Zen/Go, a także
 dowolnego endpointu zgodnego z OpenAI — w tym lokalnych serwerów modeli.
@@ -551,7 +551,7 @@ klucze w Ustawienia → AI Media & Search.
 </details>
 
 <details>
-<summary><b>Czy VegaOffice może konwertować HTML do Worda?</b></summary>
+<summary><b>Czy OfficeVega może konwertować HTML do Worda?</b></summary>
 
 Tak — opcja Export as Word w aplikacji HTML tworzy natywny, edytowalny plik
 `.docx` całkowicie lokalnie. Strona jest renderowana we wbudowanym Chromium
@@ -563,9 +563,9 @@ osadzane jako obrazy.
 </details>
 
 <details>
-<summary><b>Czy mogę sterować VegaOffice z narzędzi Claude Code, Codex, Cursor albo ze skryptu?</b></summary>
+<summary><b>Czy mogę sterować OfficeVega z narzędzi Claude Code, Codex, Cursor albo ze skryptu?</b></summary>
 
-Tak. VegaOffice instaluje wiersz poleceń `vegaoffice`, który uruchamia te same
+Tak. OfficeVega instaluje wiersz poleceń `officevega`, który uruchamia te same
 silniki bez interfejsu graficznego: sprawdzaj, konwertuj, twórz, czytaj i
 edytuj dokumenty z terminala lub skryptu, z wyjściem `--json` dla programów.
 Dołączony skill dla agentów uczy Claude Code, Codex, Cursor, Gemini CLI,
@@ -576,9 +576,9 @@ GitHub Copilot, OpenCode i Windsurf, jak z niego korzystać; zainstaluj go w
 </details>
 
 <details>
-<summary><b>Czy VegaOffice zbiera jakieś dane?</b></summary>
+<summary><b>Czy OfficeVega zbiera jakieś dane?</b></summary>
 
-VegaOffice nie zbiera ani nie wysyła żadnych analiz użytkowania ani telemetrii. Szczegóły w [VegaOffice Privacy](../../PRIVACY.md).
+OfficeVega nie zbiera ani nie wysyła żadnych analiz użytkowania ani telemetrii. Szczegóły w [OfficeVega Privacy](../../PRIVACY.md).
 
 </details>
 
@@ -590,7 +590,7 @@ linków zewnętrznych) oraz modele zagrożeń dla treści generowanych przez AI.
 
 ## Podziękowania
 
-VegaOffice nie byłoby możliwe bez tych projektów open source:
+OfficeVega nie byłoby możliwe bez tych projektów open source:
 
 - [Electron](https://www.electronjs.org/) — środowisko desktopowe dla każdej
   aplikacji.
@@ -639,9 +639,9 @@ wykonawczego są na licencjach MIT/Apache-2.0/BSD-3-Clause/OFL.
 
 ## Licencja
 
-VegaOffice jest licencjonowane na warunkach [Apache License 2.0](../../LICENSE), z
+OfficeVega jest licencjonowane na warunkach [Apache License 2.0](../../LICENSE), z
 jednym wyjątkiem: katalog `ee/` jest zarezerwowany dla przyszłych modułów
-enterprise i jest objęty [VegaOffice Enterprise License](../../ee/LICENSE).
+enterprise i jest objęty [OfficeVega Enterprise License](../../ee/LICENSE).
 
 Nazwy i logo GenOffice oraz Genspark są znakami towarowymi Mainfunc, Inc.
 Licencja Apache-2.0 nie daje prawa do ich używania (patrz sekcja 6); forki

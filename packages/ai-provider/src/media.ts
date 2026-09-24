@@ -64,6 +64,7 @@ export const AI_MEDIA_PROVIDERS: AiMediaProviderMeta[] = [
     // (image-to-image capable, 2026-09); the settings picker refreshes live with
     // the same filter — this list with its display names is the offline fallback
     imageModels: [
+      { id: 'openai/gpt-image-2.5-sunburst', name: 'OpenAI: GPT Image 2.5 Sunburst' },
       { id: 'x-ai/grok-imagine-image-2.0', name: 'xAI: Grok Imagine Image 2.0' },
       { id: 'google/gemini-3.1-flash-image', name: 'Nano Banana 2 (Gemini 3.1 Flash Image)' },
       { id: 'openai/gpt-image-2', name: 'GPT Image 2' },
@@ -73,17 +74,21 @@ export const AI_MEDIA_PROVIDERS: AiMediaProviderMeta[] = [
       { id: 'qwen/qwen-image-3', name: 'Qwen Image 3' },
       { id: 'recraft/recraft-v4', name: 'Recraft V4' },
     ],
-    defaultImageModel: 'x-ai/grok-imagine-image-2.0',
+    defaultImageModel: 'openai/gpt-image-2.5-sunburst',
     analysisProtocol: 'openai-chat',
-    // image+video input models per GET /models?input_modalities=video
+    // fixed slots — the proxy may still route them; `openai/gpt-6-luna` covers
+    // image input, video/audio payloads go to a video-capable model
+    // (per GET /models?input_modalities=video)
     analysisModels: [
+      'openai/gpt-6-luna',
       'google/gemini-3.5-flash-lite',
       'google/gemini-3.8-flash',
       'qwen/qwen3.8-flash',
       'moonshotai/kimi-k3',
       'google/gemini-2.5-flash',
     ],
-    defaultAnalysisModel: 'google/gemini-3.5-flash-lite',
+    defaultAnalysisModel: 'openai/gpt-6-luna',
+    defaultVideoAnalysisModel: 'google/gemini-3.5-flash-lite',
     videoAnalysis: true,
   },
   {
@@ -357,9 +362,12 @@ function byokModel(settings: MediaSettingsSlice, capability: MediaCapability): s
   if (!active) return null
   const meta = getMediaProviderMeta(active.provider)!
   // VEGA analysis models are still picked server-side (the settings UI has no
-  // picker for them) — only its image model is user-pickable
+  // picker for them) — only its image model is user-pickable. Video/audio
+  // payloads ride their own slot when the provider defines one.
   if (active.provider === 'vega' && capability !== 'image') {
-    return meta.defaultAnalysisModel
+    return capability === 'video'
+      ? (meta.defaultVideoAnalysisModel ?? meta.defaultAnalysisModel)
+      : meta.defaultAnalysisModel
   }
   return capability === 'image'
     ? active.config.imageModel || meta.defaultImageModel

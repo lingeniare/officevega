@@ -39,7 +39,7 @@ async function freePort(): Promise<number> {
 }
 
 beforeEach(async () => {
-  dir = await mkdtemp(join(tmpdir(), 'vegaoffice-mcp-pptx-'))
+  dir = await mkdtemp(join(tmpdir(), 'officevega-mcp-pptx-'))
 })
 
 afterEach(async () => {

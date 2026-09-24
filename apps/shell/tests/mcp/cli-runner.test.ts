@@ -31,7 +31,7 @@ describe('createCliRunner output cap', () => {
       MAX_CLI_OUTPUT_BYTES + 2000,
     )
     expect(outcome.stderr).toContain('truncated')
-    expect(cliErrorMessage(outcome)).toContain('vegaoffice failed')
+    expect(cliErrorMessage(outcome)).toContain('officevega failed')
   }, 60_000)
 
   it('passes normal runs through uncapped', async () => {

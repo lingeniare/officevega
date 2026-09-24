@@ -252,7 +252,7 @@ test.describe('MCP sheet values and addressing', () => {
     const launched = await launchShell({
       videoDir: 'mcp-sheet-names',
       userDataDir,
-      env: { VEGAOFFICE_DEBUG_HOOKS: '1' },
+      env: { OFFICEVEGA_DEBUG_HOOKS: '1' },
     })
     const { app, page } = launched
     try {

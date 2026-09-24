@@ -71,7 +71,7 @@ const HOME_ID = 'home'
  */
 export class TabManager {
   private readonly tabs: TabRecord[] = [
-    { id: HOME_ID, kind: 'home', view: null, title: 'Office VEGA' },
+    { id: HOME_ID, kind: 'home', view: null, title: 'OfficeVega' },
   ]
   private activeId: string = HOME_ID
   private nextId = 1
@@ -142,7 +142,7 @@ export class TabManager {
   }
 
   private scheduleSpareSheetsView(delayMs: number): void {
-    if (process.env.VEGAOFFICE_NO_SPARE_VIEW || this.spareSheetsTimer) return
+    if (process.env.OFFICEVEGA_NO_SPARE_VIEW || this.spareSheetsTimer) return
     this.spareSheetsTimer = setTimeout(() => {
       this.spareSheetsTimer = null
       if (this.spareSheetsView || this.shellWindow.isDestroyed()) return
@@ -295,7 +295,7 @@ export class TabManager {
       id,
       kind: 'docs',
       view,
-      title: openPath ? basename(openPath) : this.untitled('docs', 'Office VEGA Docs'),
+      title: openPath ? basename(openPath) : this.untitled('docs', 'OfficeVega Docs'),
       filePath: openPath,
     })
     this.activateTab(id)

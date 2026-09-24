@@ -7,11 +7,11 @@ body:
     attributes:
       label: App
       options:
-        - VegaOffice Docs (docs)
-        - VegaOffice Sheets (sheets)
-        - VegaOffice Slides (slides)
-        - VegaOffice PDF (pdf)
-        - VegaOffice Markdown (markdown)
+        - OfficeVega Docs (docs)
+        - OfficeVega Sheets (sheets)
+        - OfficeVega Slides (slides)
+        - OfficeVega PDF (pdf)
+        - OfficeVega Markdown (markdown)
         - Shell / home screen
         - AI panel / providers
         - Whole suite

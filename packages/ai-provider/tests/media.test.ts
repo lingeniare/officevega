@@ -267,7 +267,7 @@ describe('generateImageWithProvider', () => {
     expect(
       JSON.parse((fetchMock.mock.calls[0] as unknown as [string, RequestInit])[1].body as string)
         .model,
-    ).toBe('x-ai/grok-imagine-image-2.0')
+    ).toBe('openai/gpt-image-2.5-sunburst')
   })
 
   it('uses the edits endpoint (multipart) when reference images are given', async () => {
@@ -582,6 +582,34 @@ describe('analyzeMediaWithProvider', () => {
     )
     expect(body.contents[0].parts[0].inline_data.mime_type).toBe('video/mp4')
     expect(body.contents[0].parts[1].text).toBe('summarize')
+  })
+
+  it('routes VEGA image analysis to Luna but video payloads to the video slot', async () => {
+    const fetchMock = vi.fn(async () =>
+      jsonResponse({ choices: [{ message: { content: 'ok' } }] }),
+    )
+    vi.stubGlobal('fetch', fetchMock)
+    const config = { apiKey: 'sk-apivega-x', imageModel: '', analysisModel: '' }
+    await analyzeMediaWithProvider('vega', config, {
+      media: [{ bytes: PNG, mime: 'image/png' }],
+      requirements: 'count',
+    })
+    expect(
+      JSON.parse((fetchMock.mock.calls[0] as unknown as [string, RequestInit])[1].body as string)
+        .model,
+    ).toBe('openai/gpt-6-luna')
+    await analyzeMediaWithProvider('vega', config, {
+      media: [{ bytes: PNG, mime: 'video/mp4' }],
+      requirements: 'summarize',
+    })
+    const [url, init] = fetchMock.mock.calls[1] as unknown as [string, RequestInit]
+    expect(url).toBe('https://api.vega.chat/api/v1/chat/completions')
+    const body = JSON.parse(init.body as string)
+    expect(body.model).toBe('google/gemini-3.5-flash-lite')
+    expect(body.messages[0].content[1]).toEqual({
+      type: 'video_url',
+      video_url: { url: `data:video/mp4;base64,${PNG_B64}` },
+    })
   })
 })
 

@@ -72,7 +72,7 @@ const OPS_JSON = 'inline-json' as const
 const READ_THEN_APPLY =
   'Read the file with the matching *_read tool first: ops target the ids and indexes it lists. '
 const GUI_OPEN =
-  'A file open in an Office VEGA tab is refused without force (the editor would overwrite the edit on its next save).'
+  'A file open in an OfficeVega tab is refused without force (the editor would overwrite the edit on its next save).'
 
 export const TOOLS: ToolSpec[] = [
   {
@@ -88,7 +88,7 @@ export const TOOLS: ToolSpec[] = [
     name: 'convert',
     command: 'convert',
     description:
-      'Convert a document to another format with the Office VEGA engines (pdf, docx, xlsx, pptx, md, html, csv; the `to` description lists the routes). Targets that need layout (to pdf, docx to html, html to docx) start a hidden Office VEGA process for 1-6 s. Output defaults to the input name with the new extension.',
+      'Convert a document to another format with the OfficeVega engines (pdf, docx, xlsx, pptx, md, html, csv; the `to` description lists the routes). Targets that need layout (to pdf, docx to html, html to docx) start a hidden OfficeVega process for 1-6 s. Output defaults to the input name with the new extension.',
     positionals: [{ key: 'file', description: 'path of the source document' }],
     options: ['to', 'out', 'force', 'password', 'sheet'],
   },
@@ -140,7 +140,7 @@ export const TOOLS: ToolSpec[] = [
     name: 'create_pdf',
     command: 'create',
     description:
-      'Print a document (md, html, docx, xlsx, pptx) to a new PDF with the Office VEGA renderer, in a hidden Office VEGA process.',
+      'Print a document (md, html, docx, xlsx, pptx) to a new PDF with the OfficeVega renderer, in a hidden OfficeVega process.',
     fixed: ['--type', 'pdf'],
     options: [
       { key: 'from', description: 'path of the document to print', required: true },
@@ -199,7 +199,7 @@ export const TOOLS: ToolSpec[] = [
     command: 'docs',
     verb: 'apply',
     description:
-      'Edit a .docx with a batch of ops (the op reference: guide docs, or the vegaoffice://guide/docs resource). ' +
+      'Edit a .docx with a batch of ops (the op reference: guide docs, or the officevega://guide/docs resource). ' +
       READ_THEN_APPLY +
       'Block indexes inside one batch are live: after an insert adds two blocks, later indexes shift by two. Atomic by default: one rejected op leaves the file untouched and comes back with its index and reason; fix that op and resend the whole batch. dry_run validates without writing. ' +
       GUI_OPEN,
@@ -318,7 +318,7 @@ export const TOOLS: ToolSpec[] = [
     readOnly: true,
     images: true,
     description:
-      'One PNG per slide (960x540 at scale 1 for 16:9), written to a directory and returned as images so you can look at the pages. Starts a hidden Office VEGA process (a few seconds). Use after building or editing a deck; slide renders one page.',
+      'One PNG per slide (960x540 at scale 1 for 16:9), written to a directory and returned as images so you can look at the pages. Starts a hidden OfficeVega process (a few seconds). Use after building or editing a deck; slide renders one page.',
     positionals: [{ key: 'file', description: 'path of the .pptx' }],
     options: [
       { key: 'out', description: 'directory for the PNGs (required)', required: true },
@@ -357,7 +357,7 @@ export const TOOLS: ToolSpec[] = [
     readOnly: true,
     images: true,
     description:
-      'One PNG per page of a document (docx, xlsx, pptx, pdf, md, html) as the Office VEGA renderer lays it out, written to a directory and returned as images. Starts a hidden Office VEGA process. page renders one page; grid adds a contact sheet of every page.',
+      'One PNG per page of a document (docx, xlsx, pptx, pdf, md, html) as the OfficeVega renderer lays it out, written to a directory and returned as images. Starts a hidden OfficeVega process. page renders one page; grid adds a contact sheet of every page.',
     positionals: [{ key: 'file', description: 'path of the document' }],
     options: [
       { key: 'out', description: 'directory for the PNGs (required)', required: true },
@@ -376,7 +376,7 @@ export const TOOLS: ToolSpec[] = [
     readOnly: true,
     plainText: true,
     description:
-      'The op reference an agent reads before writing ops: guide("docs"), guide("sheets") or guide("slides") list the groups; topic narrows to one group or one op. guide("slides", "design") is the staged deck workflow and guide("slides", "spec") the outline and page spec format (deck_start returns both). Also available as vegaoffice://guide/* resources.',
+      'The op reference an agent reads before writing ops: guide("docs"), guide("sheets") or guide("slides") list the groups; topic narrows to one group or one op. guide("slides", "design") is the staged deck workflow and guide("slides", "spec") the outline and page spec format (deck_start returns both). Also available as officevega://guide/* resources.',
     positionals: [
       { key: 'domain', description: 'slides | docs | sheets' },
       {
@@ -392,7 +392,7 @@ export const TOOLS: ToolSpec[] = [
     command: 'capabilities',
     readOnly: true,
     description:
-      'Which cloud features are configured in Office VEGA: web search, image search, image generation, media understanding. Check once before planning photos or live facts; everything else runs locally.',
+      'Which cloud features are configured in OfficeVega: web search, image search, image generation, media understanding. Check once before planning photos or live facts; everything else runs locally.',
   },
   {
     name: 'search',
@@ -400,7 +400,7 @@ export const TOOLS: ToolSpec[] = [
     openWorld: true,
     readOnly: true,
     description:
-      'Web search, or image search with images=true, through the provider configured in Office VEGA (the query leaves the machine). Image results carry imageUrl, width and height for addPicture / insert_image.',
+      'Web search, or image search with images=true, through the provider configured in OfficeVega (the query leaves the machine). Image results carry imageUrl, width and height for addPicture / insert_image.',
     positionals: [{ key: 'query', description: 'the search query' }],
     options: ['images', 'max'],
   },
@@ -409,7 +409,7 @@ export const TOOLS: ToolSpec[] = [
     command: 'image',
     openWorld: true,
     description:
-      'Generate an image from a prompt with the provider configured in Office VEGA and save it; the result names the real format. ref images steer edits (background removal, upscale).',
+      'Generate an image from a prompt with the provider configured in OfficeVega and save it; the result names the real format. ref images steer edits (background removal, upscale).',
     positionals: [{ key: 'prompt', description: 'what to draw' }],
     options: ['out', 'aspect', 'size', 'ref', 'model', 'force'],
   },
@@ -427,7 +427,7 @@ export const TOOLS: ToolSpec[] = [
     name: 'open',
     command: 'open',
     description:
-      'Open a document in the Office VEGA app for the user (starts the app if needed), optionally selecting a slide, element, block, range or page. Only when the user asks to see the file: an open tab makes later *_apply calls refuse to write.',
+      'Open a document in the OfficeVega app for the user (starts the app if needed), optionally selecting a slide, element, block, range or page. Only when the user asks to see the file: an open tab makes later *_apply calls refuse to write.',
     positionals: [{ key: 'file', description: 'path of the document' }],
     options: ['slide', 'el', 'block', 'range', 'sheet', 'page'],
   },

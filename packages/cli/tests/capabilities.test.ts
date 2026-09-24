@@ -7,8 +7,8 @@ import { run, tempDir } from './helpers'
 // hasGskAuth reads process.env, not the command context: isolate the login state per test
 const saved: Record<string, string | undefined> = {}
 beforeEach(() => {
-  for (const k of ['VEGAOFFICE_AUTH_DIR', 'AI_SEARCH_DISABLE_GSK']) saved[k] = process.env[k]
-  process.env.VEGAOFFICE_AUTH_DIR = join(tempDir(), 'no-auth')
+  for (const k of ['OFFICEVEGA_AUTH_DIR', 'AI_SEARCH_DISABLE_GSK']) saved[k] = process.env[k]
+  process.env.OFFICEVEGA_AUTH_DIR = join(tempDir(), 'no-auth')
   process.env.AI_SEARCH_DISABLE_GSK = '1'
 })
 afterEach(() => {
@@ -26,14 +26,14 @@ function settingsFile(dir: string, settings: Record<string, unknown>): string {
   return path
 }
 
-describe('vegaoffice capabilities', () => {
+describe('officevega capabilities', () => {
   it('reports nothing configured when signed out with default settings', async () => {
     const dir = tempDir()
     const r = await run(['capabilities', '--json'], {
       env: {
         ...process.env,
-        VEGAOFFICE_AI_SETTINGS: join(dir, 'missing.json'),
-        VEGAOFFICE_APP_BIN: '',
+        OFFICEVEGA_AI_SETTINGS: join(dir, 'missing.json'),
+        OFFICEVEGA_APP_BIN: '',
       },
     })
     expect(r.code).toBe(0)
@@ -60,8 +60,8 @@ describe('vegaoffice capabilities', () => {
     const r = await run(['capabilities', '--json'], {
       env: {
         ...process.env,
-        VEGAOFFICE_AI_SETTINGS: settings,
-        VEGAOFFICE_APP_BIN: join(dir, 'bin', 'app'),
+        OFFICEVEGA_AI_SETTINGS: settings,
+        OFFICEVEGA_APP_BIN: join(dir, 'bin', 'app'),
       },
     })
     expect(r.code).toBe(0)
@@ -83,7 +83,7 @@ describe('vegaoffice capabilities', () => {
       },
     })
     const r = await run(['capabilities', '--json'], {
-      env: { ...process.env, VEGAOFFICE_AI_SETTINGS: settings },
+      env: { ...process.env, OFFICEVEGA_AI_SETTINGS: settings },
     })
     const d = r.json().detail
     expect(d.search).toEqual({ available: true, via: provider })
@@ -98,7 +98,7 @@ describe('vegaoffice capabilities', () => {
         search: { provider, providers: { [provider]: { apiKey: 'test-key' } } },
       })
       const r = await run(['capabilities', '--json'], {
-        env: { ...process.env, VEGAOFFICE_AI_SETTINGS: settings },
+        env: { ...process.env, OFFICEVEGA_AI_SETTINGS: settings },
       })
       const d = r.json().detail
       expect(d.search).toEqual({ available: true, via: provider })
@@ -113,7 +113,7 @@ describe('vegaoffice capabilities', () => {
       search: { provider: 'parallel', providers: { parallel: { apiKey: '' } } },
     })
     const r = await run(['capabilities', '--json'], {
-      env: { ...process.env, VEGAOFFICE_AI_SETTINGS: settings },
+      env: { ...process.env, OFFICEVEGA_AI_SETTINGS: settings },
     })
     expect(r.json().detail.search).toEqual({ available: true, via: 'parallel' })
     expect(r.json().detail.image_search).toEqual({ available: false, via: null })

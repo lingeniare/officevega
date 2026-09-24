@@ -1,5 +1,5 @@
 /**
- * Shared main-process state for VegaOffice Slides, extracted from slides-main.ts so
+ * Shared main-process state for OfficeVega Slides, extracted from slides-main.ts so
  * the IPC modules (slides-main, ai-ipc, presenter-show) can share it:
  * per-renderer sessions, snapshot undo/redo history, runtime paths, window
  * references, and RenderSlide rebuild helpers.
@@ -29,7 +29,7 @@ export interface RuntimePaths {
   preloadPath: string
   rendererDevUrl?: string | undefined
   rendererFilePath?: string | undefined
-  /** Shell router used to open exported PDFs in a new VegaOffice tab. */
+  /** Shell router used to open exported PDFs in a new OfficeVega tab. */
   openGeneratedPath?: (path: string) => boolean
 }
 

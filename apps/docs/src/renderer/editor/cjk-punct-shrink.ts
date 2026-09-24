@@ -123,7 +123,7 @@ export interface CjkPunctShrinkStorage {
 }
 
 /** dispatched on document after the doc-scoped <style> commits (App) */
-export const DOC_CSS_COMMITTED_EVENT = 'vegaoffice:doc-css'
+export const DOC_CSS_COMMITTED_EVENT = 'officevega:doc-css'
 
 export function measuresAlignment(textAlign: string, legacyLayout: boolean): boolean {
   return textAlign === 'justify' || legacyLayout

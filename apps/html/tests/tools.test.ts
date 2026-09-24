@@ -426,7 +426,7 @@ describe('generation flow tools', () => {
     expect(writes).toBe(1)
     expect(r.output).toContain('extract')
     expect(spec?.page).toContain('<title>Report</title>')
-    expect(existing.text.replace(/\n<meta name="vegaoffice:brief"[^>]*>/, '')).toBe(DOC)
+    expect(existing.text.replace(/\n<meta name="officevega:brief"[^>]*>/, '')).toBe(DOC)
   })
 
   it('write_document routes a content plan to the page writer', async () => {
@@ -465,8 +465,8 @@ describe('generation flow tools', () => {
     const r = await core.executeTool(call('plan_page', proposal))
     expect(r.mutated).toBe(true)
     expect(r.output).toContain('now pinned')
-    expect(doc.text).toMatch(/<head>\n<meta name="vegaoffice:brief"[^>]*><title>Report<\/title>/)
-    expect(doc.text.replace(/\n<meta name="vegaoffice:brief"[^>]*>/, '')).toBe(DOC)
+    expect(doc.text).toMatch(/<head>\n<meta name="officevega:brief"[^>]*><title>Report<\/title>/)
+    expect(doc.text.replace(/\n<meta name="officevega:brief"[^>]*>/, '')).toBe(DOC)
     const again = await core.executeTool(call('plan_page', proposal))
     expect(again.mutated).toBeFalsy()
     expect(again.output).toContain('already current')
@@ -494,7 +494,7 @@ describe('generation flow tools', () => {
     const r = await core.executeTool(call('plan_page', { mode: 'extract' }))
     expect(r.mutated).toBe(true)
     expect(doc.text).toContain('Quarterly (live)')
-    expect(doc.text).toMatch(/<meta name="vegaoffice:brief"/)
+    expect(doc.text).toMatch(/<meta name="officevega:brief"/)
   })
 
   it('plan_page refuses to overwrite text the user typed while the brief card was open', async () => {
@@ -521,7 +521,7 @@ describe('generation flow tools', () => {
 
   it('context surfaces a pinned brief', () => {
     const html =
-      '<html><head><meta charset="utf-8"><meta name="vegaoffice:brief" content=\'{"core_hook":"Ship faster","style":{"tone":"technical","palette":{},"typography":{}},"sections":[{"title":"Why","brief":"x"}],"version":1}\'></head><body><p>x</p></body></html>'
+      '<html><head><meta charset="utf-8"><meta name="officevega:brief" content=\'{"core_hook":"Ship faster","style":{"tone":"technical","palette":{},"typography":{}},"sections":[{"title":"Why","brief":"x"}],"version":1}\'></head><body><p>x</p></body></html>'
     const core = createHtmlSkillCore(fakeAccess(html).access)
     const ctx = core.buildContext()
     expect(ctx).toContain('## Brief')

@@ -2254,7 +2254,7 @@ export function App() {
       window.desktop.onZoteroRequest(async (request) => {
         try {
           const activeEditor = editorRef.current
-          if (!activeEditor) throw new Error('No active Office VEGA document')
+          if (!activeEditor) throw new Error('No active OfficeVega document')
           const controller =
             zoteroControllerRef.current ??
             new ZoteroDocumentController(activeEditor, {
@@ -5277,9 +5277,9 @@ export function App() {
     if (src) setViewImage(src)
   }, [])
 
-  // vegaoffice CLI (`open --block`, `selection`): the shell evaluates this hook
+  // officevega CLI (`open --block`, `selection`): the shell evaluates this hook
   useEffect(() => {
-    ;(window as unknown as Record<string, unknown>).__vegaofficeControl = (req: ControlRequest) =>
+    ;(window as unknown as Record<string, unknown>).__officeVegaControl = (req: ControlRequest) =>
       handleDocsControl(req, editor, doc !== null)
   })
 

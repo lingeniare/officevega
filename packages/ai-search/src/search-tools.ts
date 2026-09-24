@@ -67,7 +67,7 @@ export async function testSearchProvider(
     parallelKey: provider === 'parallel' ? apiKey : '',
     prefer: provider,
   }
-  const r = await webSearch('VegaOffice', 1, options)
+  const r = await webSearch('OfficeVega', 1, options)
   if (r.method === provider) return { ok: true }
   return {
     ok: false,

@@ -67,7 +67,7 @@ function electronCompatArgs(): string[] {
   if (!process.versions.electron) return []
   if (compatPath === undefined) {
     try {
-      const dir = join(homedir(), '.vegaoffice', 'bin')
+      const dir = join(homedir(), '.officevega', 'bin')
       mkdirSync(dir, { recursive: true })
       compatPath = join(dir, 'electron-compat.js')
       writeFileSync(compatPath, 'delete process.versions.electron;\n')
@@ -81,7 +81,7 @@ function electronCompatArgs(): string[] {
 /**
  * API key for Genspark LLM proxy / tool_cli auth; '' when not logged in.
  * Priority: GSK_API_KEY env → shared gsk CLI login (bills to the Claw bucket).
- * VegaOffice's own sign-in lives on VEGA now (vegaoffice-auth.ts) and mints a
+ * OfficeVega's own sign-in lives on VEGA now (officevega-auth.ts) and mints a
  * sk-apivega-… key — it must not be sent to Genspark endpoints.
  */
 export function gskApiKey(): string {
@@ -100,8 +100,8 @@ export function gskApiKey(): string {
  * Fires when the effective gsk key changes on disk — another app re-logging
  * into the shared gsk CLI rotates the key this process holds. Polls by path
  * (watchFile): fs.watch misses events for a moment after it is armed.
- * VegaOffice's own VEGA sign-in is covered separately by watchVegaofficeApiKey
- * (vegaoffice-auth.ts) — its sk-apivega-… key is never sent to Genspark.
+ * OfficeVega's own VEGA sign-in is covered separately by watchOfficeVegaApiKey
+ * (officevega-auth.ts) — its sk-apivega-… key is never sent to Genspark.
  */
 export function watchGskApiKey(onChange: (key: string) => void, intervalMs = 2000): () => void {
   let last = gskApiKey()
@@ -439,7 +439,7 @@ async function toolCliPost(
   try {
     const resp = await fetch(`${GSK_TOOL_CLI_BASE}${path}`, {
       method: 'POST',
-      // X-Agent-Type splits VegaOffice usage out of the proxy's "Claw" billing
+      // X-Agent-Type splits OfficeVega usage out of the proxy's "Claw" billing
       // bucket — the value is registered server-side as "genoffice"
       headers: {
         'X-Api-Key': key,

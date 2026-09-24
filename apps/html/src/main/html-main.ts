@@ -912,7 +912,7 @@ function savePastedImage(data: unknown, ext: unknown): string | null {
         ? Buffer.from(data.buffer, data.byteOffset, data.byteLength)
         : null
   if (!bytes || bytes.byteLength === 0) return null
-  const dir = join(app.getPath('temp'), 'vegaoffice-pasted')
+  const dir = join(app.getPath('temp'), 'officevega-pasted')
   mkdirSync(dir, { recursive: true })
   prunePastedImages(dir)
   const stamp = new Date().toISOString().slice(0, 19).replace(/[-:]/g, '').replace('T', '-')
@@ -943,7 +943,7 @@ interface RuntimePaths {
   preloadPath: string
   rendererUrl?: string
   rendererFile?: string
-  /** Shell router used to open exported PDFs in a new VegaOffice tab. */
+  /** Shell router used to open exported PDFs in a new OfficeVega tab. */
   openGeneratedPath?: (path: string) => boolean
 }
 
@@ -1780,7 +1780,7 @@ function registerHtmlIpc(): void {
       if (docxExportPrepareHook && !(await docxExportPrepareHook(picked.filePath))) {
         return { ok: true, canceled: true }
       }
-      const workDir = await mkdtemp(join(tmpdir(), 'vegaoffice-html-docx-'))
+      const workDir = await mkdtemp(join(tmpdir(), 'officevega-html-docx-'))
       let driver: ElectronBrowserDriver | null = null
       try {
         // Same document the preview shows (scripts on, relative assets via html-asset://):
@@ -1825,7 +1825,7 @@ function registerHtmlIpc(): void {
               configuredDefaultSaveDir(app),
             )
       if (picked.canceled || !picked.filePath) return { ok: true, canceled: true }
-      const workDir = await mkdtemp(join(tmpdir(), 'vegaoffice-html-pdf-'))
+      const workDir = await mkdtemp(join(tmpdir(), 'officevega-html-pdf-'))
       try {
         const docPath = savePathByWc.get(e.sender.id)
         await writeFile(picked.filePath, await renderPrintPdf(request.html, docPath, workDir))
@@ -1881,7 +1881,7 @@ function registerHtmlIpc(): void {
     HTML_CHANNELS.print,
     async (e, request: { html?: unknown }): Promise<{ ok: boolean; error?: string }> => {
       if (typeof request?.html !== 'string') return { ok: false, error: 'html: bad print request' }
-      const workDir = await mkdtemp(join(tmpdir(), 'vegaoffice-html-print-'))
+      const workDir = await mkdtemp(join(tmpdir(), 'officevega-html-print-'))
       try {
         const docPath = savePathByWc.get(e.sender.id)
         const base = docPath ? assetBaseHref(dirname(docPath)) : null

@@ -186,7 +186,7 @@ describe('pipeline integration', () => {
     expect(parsed.blocks.filter((b) => b.type === 'image')).toHaveLength(0)
   })
 
-  it('never re-degrades an OCR-recovered page via the VegaOffice confidence floor', async () => {
+  it('never re-degrades an OCR-recovered page via the OfficeVega confidence floor', async () => {
     // invariant guarded by !page.ocrRecovered in the fidelity floor: however
     // noisy the recognized text scores in the analyze layer, a page reported
     // as 'ocr' must actually ship editable text, never a bitmap fallback

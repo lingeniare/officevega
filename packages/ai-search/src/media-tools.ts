@@ -19,7 +19,7 @@ import {
   type LegacyAiSettings,
   type MediaBlob,
 } from '@genoffice/ai-provider'
-// deep imports: the package root re-exports Electron-bound modules, and this file also runs in the vegaoffice CLI
+// deep imports: the package root re-exports Electron-bound modules, and this file also runs in the officevega CLI
 import { readGeneratedImage, storeGeneratedImage } from '@genoffice/electron-utils/generated-images'
 import {
   ResponseTooLargeError,

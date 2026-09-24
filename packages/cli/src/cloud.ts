@@ -1,18 +1,25 @@
 import { existsSync } from 'node:fs'
 import { join } from 'node:path'
 import { setGskProxyUrl } from '@genoffice/ai-search'
-import { vegaofficeUserDataDir } from './gui'
+import { legacyUserDataDir, officeVegaUserDataDir } from './gui'
 import { packagedResourcesDir } from './resources'
 
 /**
  * The cloud commands (search / image / media) reuse the editors' provider
- * routing: Genspark when signed in (~/.vegaoffice/auth.json) and cloud tools
+ * routing: Genspark when signed in (~/.officevega/auth.json) and cloud tools
  * are on, otherwise the BYOK provider chosen in the app's AI settings. That
- * settings file lives in the shell's Electron userData directory, which vegaoffice
+ * settings file lives in the shell's Electron userData directory, which officevega
  * has to locate without Electron.
  */
 export function aiSettingsPath(env: NodeJS.ProcessEnv): string {
-  return env.VEGAOFFICE_AI_SETTINGS || join(vegaofficeUserDataDir(env), 'ai-settings.json')
+  const override = env.OFFICEVEGA_AI_SETTINGS || env.VEGAOFFICE_AI_SETTINGS
+  if (override) return override
+  const primary = join(officeVegaUserDataDir(env), 'ai-settings.json')
+  if (existsSync(primary)) return primary
+  // a pre-rename install's settings still feed the cloud commands until the
+  // app runs once and migrates its userData
+  const legacy = join(legacyUserDataDir(env), 'ai-settings.json')
+  return existsSync(legacy) ? legacy : primary
 }
 
 /** First http(s) proxy in the usual environment variables, as the app's main process reads them. */

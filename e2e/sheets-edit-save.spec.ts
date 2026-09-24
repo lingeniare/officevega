@@ -45,7 +45,7 @@ function sheetXml(workbookPath: string): string {
 
 test.describe('sheets: edit and save an external workbook', () => {
   test('cell edit round-trips through save and reopen', async () => {
-    const scratch = await mkdtemp(join(tmpdir(), 'vegaoffice-sheets-e2e-'))
+    const scratch = await mkdtemp(join(tmpdir(), 'officevega-sheets-e2e-'))
     const workbook = join(scratch, 'edit-save.xlsx')
     await copyFile(FIXTURE, workbook)
 

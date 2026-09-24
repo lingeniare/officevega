@@ -499,4 +499,4 @@ export interface DesktopApi {
 }
 
 /** mirrors VIEW_IMAGE_CHANNEL in @genoffice/electron-utils (kept literal so the preload stays free of main-only deps) */
-export const VIEW_IMAGE_CHANNEL = 'vegaoffice:view-image'
+export const VIEW_IMAGE_CHANNEL = 'officevega:view-image'

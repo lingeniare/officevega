@@ -679,7 +679,7 @@ describe('sectionWidthSpecs — differing-width sections wrap at their own conte
     expect(specs[1].widthPx).toBeCloseTo(((11906 - 1701 - 1417) / 1440) * 96, 1)
   })
 
-  it('pages narrower than the widest section are centered on the shared paper (vegaoffice#246)', () => {
+  it('pages narrower than the widest section are centered on the shared paper (officevega#246)', () => {
     // portrait pages in a document with a landscape section: the canvas paper is
     // the landscape width, so every portrait block carries the centering offset
     const landscape = sec({ pageWidth: 16838, pageHeight: 11906, orientation: 'landscape' })

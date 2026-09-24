@@ -10,7 +10,7 @@ import type { CommandDef } from '../registry'
 import { appLaunch } from '../resources'
 
 /**
- * What the cloud commands can do on this machine, decided from VegaOffice's
+ * What the cloud commands can do on this machine, decided from OfficeVega's
  * own settings without a network call: a VEGA login with cloud tools on,
  * a BYOK key, or explicitly selected free Parallel search. Unkeyed fallbacks (DuckDuckGo)
  * do not count as configured. Agents check this once before planning work
@@ -19,7 +19,7 @@ import { appLaunch } from '../resources'
 export const capabilitiesCommand: CommandDef = {
   name: 'capabilities',
   summary:
-    'Report which cloud features (search, image search, image generation, media analysis) are configured in Office VEGA, and whether the app is installed.',
+    'Report which cloud features (search, image search, image generation, media analysis) are configured in OfficeVega, and whether the app is installed.',
   usage: 'capabilities',
   async run(_args, ctx) {
     await prepareCloud(ctx.env)

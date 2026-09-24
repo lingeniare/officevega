@@ -1,5 +1,5 @@
 import { basename, dirname } from 'node:path'
-import { vegaofficeApiKey } from '@genoffice/ai-search'
+import { officeVegaApiKey } from '@genoffice/ai-search'
 import type { FileSearchRerank, FileSearchSettings, JevEndpoint } from '../../shared/home-api'
 import { evaluate, MAX_DOCS, type JevTransport } from './jev'
 import type { FileIndexStore } from './store'
@@ -38,7 +38,7 @@ export function normalizeFileSearchSettings(raw: unknown): FileSearchSettings {
 function jevKey(settings: FileSearchSettings): string {
   const own = settings.jevKeys[settings.jevEndpoint]
   if (own) return own
-  return settings.jevEndpoint === 'vega' ? vegaofficeApiKey() : ''
+  return settings.jevEndpoint === 'vega' ? officeVegaApiKey() : ''
 }
 
 /**
@@ -126,7 +126,7 @@ export async function probeJev(
   key: string,
   send?: JevTransport,
 ): Promise<{ ok: boolean; error?: string }> {
-  key = key.trim() || (endpoint === 'vega' ? vegaofficeApiKey() : '')
+  key = key.trim() || (endpoint === 'vega' ? officeVegaApiKey() : '')
   if (!key) {
     return {
       ok: false,

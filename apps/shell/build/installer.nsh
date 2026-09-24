@@ -1,5 +1,5 @@
-; Keeps the vegaoffice command line (resources\cli, holding vegaoffice.cmd and the
-; extension-less vegaoffice for Git Bash) on the installing user's PATH for the
+; Keeps the officevega command line (resources\cli, holding officevega.cmd and the
+; extension-less officevega for Git Bash) on the installing user's PATH for the
 ; lifetime of the install. The value is read and written unexpanded
 ; (REG_EXPAND_SZ) so entries such as %USERPROFILE%\bin survive, and Explorer
 ; is told about the change so terminals opened afterwards see it.
@@ -9,16 +9,26 @@
 !include "WinMessages.nsh"
 !include "StrFunc.nsh"
 
-!define VEGAOFFICE_PATH_MAX 7900
+!define OFFICEVEGA_PATH_MAX 7900
+
+; Default the installer UI to Russian: electron-builder's template inserts
+; preInit in .onInit before MUI_LANGDLL_DISPLAY (displayLanguageSelector), so
+; the language pick dialog opens with Russian already selected — other
+; bundled languages stay reachable from the same dialog. ${LANG_RUSSIAN}
+; resolves at insertion time, after addLangs' MUI_LANGUAGE lines, so the
+; constant is always defined.
+!macro preInit
+  StrCpy $LANGUAGE ${LANG_RUSSIAN}
+!macroend
 
 ; Scope templates to our ProgIDs (electron-builder uses fileAssociations.name).
 ; A shared .ext\ShellNew would overwrite Office/WPS templates. OOXML files
 ; must be copied from valid packages, never created with NullFile.
-!macro VegaOfficeRegisterShellNew EXT PROGID
+!macro OfficeVegaRegisterShellNew EXT PROGID
   WriteRegStr SHELL_CONTEXT "Software\Classes\.${EXT}\${PROGID}\ShellNew" "FileName" "$INSTDIR\resources\shell-new\blank.${EXT}"
 !macroend
 
-!macro VegaOfficeUnregisterShellNew EXT PROGID
+!macro OfficeVegaUnregisterShellNew EXT PROGID
   ; Only remove our own registration, including when uninstalling for an update.
   ReadRegStr $0 SHELL_CONTEXT "Software\Classes\.${EXT}\${PROGID}\ShellNew" "FileName"
   ${If} $0 == "$INSTDIR\resources\shell-new\blank.${EXT}"
@@ -29,20 +39,20 @@
 
 !macro customInstall
   Push "$INSTDIR\resources\cli"
-  Call VegaOfficeAddToUserPath
-  !insertmacro VegaOfficeRegisterShellNew "docx" "Word Document"
-  !insertmacro VegaOfficeRegisterShellNew "xlsx" "Excel Workbook"
-  !insertmacro VegaOfficeRegisterShellNew "pptx" "PowerPoint Presentation"
+  Call OfficeVegaAddToUserPath
+  !insertmacro OfficeVegaRegisterShellNew "docx" "Word Document"
+  !insertmacro OfficeVegaRegisterShellNew "xlsx" "Excel Workbook"
+  !insertmacro OfficeVegaRegisterShellNew "pptx" "PowerPoint Presentation"
   !insertmacro UPDATEFILEASSOC
 !macroend
 
 !macro customUnInstall
   Push "$INSTDIR\resources\cli"
-  Call un.VegaOfficeRemoveFromUserPath
+  Call un.OfficeVegaRemoveFromUserPath
   Push $0
-  !insertmacro VegaOfficeUnregisterShellNew "docx" "Word Document"
-  !insertmacro VegaOfficeUnregisterShellNew "xlsx" "Excel Workbook"
-  !insertmacro VegaOfficeUnregisterShellNew "pptx" "PowerPoint Presentation"
+  !insertmacro OfficeVegaUnregisterShellNew "docx" "Word Document"
+  !insertmacro OfficeVegaUnregisterShellNew "xlsx" "Excel Workbook"
+  !insertmacro OfficeVegaUnregisterShellNew "pptx" "PowerPoint Presentation"
   Pop $0
   !insertmacro UPDATEFILEASSOC
 !macroend
@@ -50,7 +60,7 @@
 !ifndef BUILD_UNINSTALLER
 ${StrStr}
 
-Function VegaOfficeAddToUserPath
+Function OfficeVegaAddToUserPath
   Exch $0 ; directory
   Push $1
   Push $2
@@ -58,7 +68,7 @@ Function VegaOfficeAddToUserPath
   ReadRegStr $1 HKCU "Environment" "Path"
   StrLen $2 $1
   ; leave an already oversized PATH alone rather than truncate it
-  IntCmp $2 ${VEGAOFFICE_PATH_MAX} done 0 done
+  IntCmp $2 ${OFFICEVEGA_PATH_MAX} done 0 done
   ${StrStr} $3 ";$1;" ";$0;"
   StrCmp $3 "" 0 done
   StrCmp $1 "" 0 +3
@@ -80,7 +90,7 @@ FunctionEnd
 ${UnStrStr}
 ${UnStrRep}
 
-Function un.VegaOfficeRemoveFromUserPath
+Function un.OfficeVegaRemoveFromUserPath
   Exch $0 ; directory
   Push $1
   Push $2

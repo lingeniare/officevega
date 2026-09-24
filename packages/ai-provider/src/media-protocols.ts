@@ -745,7 +745,13 @@ export async function analyzeMediaWithProvider(
   const meta = metaOf(provider)
   requireBaseUrl(meta, config)
   if (!meta.analysisProtocol) throw new Error(`${meta.label} does not analyze media`)
-  const model = modelOf(meta, config, 'analysisModel')
+  // non-image payloads go to the video slot when the provider defines one —
+  // VEGA's image analysis rides the Luna slot, video stays on Gemini
+  const model =
+    meta.defaultVideoAnalysisModel &&
+    input.media.some((m) => !m.mime.startsWith('image/'))
+      ? meta.defaultVideoAnalysisModel
+      : modelOf(meta, config, 'analysisModel')
   const guard = withTimeout(signal, ANALYZE_TIMEOUT_MS)
   return meta.analysisProtocol === 'gemini'
     ? analyzeMediaGemini(config, model, input, guard)

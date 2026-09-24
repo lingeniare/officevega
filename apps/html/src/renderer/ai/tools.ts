@@ -659,7 +659,7 @@ export function createHtmlSkillCore(access: HtmlDocAccess): {
       }
       const brief = parseBrief(text)
       const briefBlock = brief
-        ? `\n\n## Brief (pinned in <meta name="vegaoffice:brief">)\n${briefSummary(brief)}\nNew content follows this core hook and style; a restyle starts by updating the --brief-* variables and this meta via plan_page.`
+        ? `\n\n## Brief (pinned in <meta name="officevega:brief">)\n${briefSummary(brief)}\nNew content follows this core hook and style; a restyle starts by updating the --brief-* variables and this meta via plan_page.`
         : ''
       const budget =
         CONTEXT_MAX_CHARS - head.join('\n').length - selection.length - briefBlock.length - 40
@@ -1094,7 +1094,7 @@ export function createHtmlSkillCore(access: HtmlDocAccess): {
             return {
               output: `Brief confirmed (${mode}).${edited}\n${briefSummary(decision.brief)}\n${
                 pinned
-                  ? 'The brief is now pinned in <head> (meta name="vegaoffice:brief"). '
+                  ? 'The brief is now pinned in <head> (meta name="officevega:brief"). '
                   : 'The pinned brief was already current. '
               }${
                 mode === 'restyle'

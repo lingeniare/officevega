@@ -1,5 +1,5 @@
 #!/bin/sh
-# vegaoffice launcher. Inside a packaged VegaOffice it runs the bundled CLI on the
+# officevega launcher. Inside a packaged OfficeVega it runs the bundled CLI on the
 # app's own Node runtime (ELECTRON_RUN_AS_NODE); in a dev checkout it falls
 # back to the system node and the local build output. Usually reached through
 # a symlink on the PATH, so the real location is resolved first.
@@ -13,24 +13,24 @@ while [ -L "$self" ]; do
 done
 here=$(cd "$(dirname "$self")" && pwd)
 
-if [ -n "$VEGAOFFICE_NODE" ]; then
-  exec "$VEGAOFFICE_NODE" "$here/vegaoffice.cjs" "$@"
+if [ -n "$OFFICEVEGA_NODE" ]; then
+  exec "$OFFICEVEGA_NODE" "$here/officevega.cjs" "$@"
 fi
 
 case "$here" in
-  */Contents/Resources/cli) app="$here/../../MacOS/VegaOffice" ;;
+  */Contents/Resources/cli) app="$here/../../MacOS/OfficeVega" ;;
   */resources/cli)
     # Linux install, or the Windows install reached from Git Bash / MSYS
-    if [ -x "$here/../../VegaOffice.exe" ]; then app="$here/../../VegaOffice.exe"; else app="$here/../../vegaoffice"; fi
+    if [ -x "$here/../../OfficeVega.exe" ]; then app="$here/../../OfficeVega.exe"; else app="$here/../../officevega"; fi
     ;;
   *) app="" ;;
 esac
 
 if [ -n "$app" ] && [ -x "$app" ]; then
-  ELECTRON_RUN_AS_NODE=1 exec "$app" "$here/vegaoffice.cjs" "$@"
+  ELECTRON_RUN_AS_NODE=1 exec "$app" "$here/officevega.cjs" "$@"
 fi
 
-if [ -f "$here/vegaoffice.cjs" ]; then
-  exec node "$here/vegaoffice.cjs" "$@"
+if [ -f "$here/officevega.cjs" ]; then
+  exec node "$here/officevega.cjs" "$@"
 fi
-exec node "$here/../dist/vegaoffice.cjs" "$@"
+exec node "$here/../dist/officevega.cjs" "$@"

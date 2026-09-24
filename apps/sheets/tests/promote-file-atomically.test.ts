@@ -31,7 +31,7 @@ const scratches: string[] = []
 const actualCopyFile = copyFileMock.getMockImplementation()!
 
 async function scratchDir(): Promise<string> {
-  const dir = await mkdtemp(join(tmpdir(), 'vegaoffice-promote-test-'))
+  const dir = await mkdtemp(join(tmpdir(), 'officevega-promote-test-'))
   scratches.push(dir)
   return dir
 }

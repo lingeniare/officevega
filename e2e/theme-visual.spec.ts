@@ -59,7 +59,7 @@ function minimalPdf(): Buffer {
 
 test.describe('theme visual adoption', () => {
   test('html editor surface follows dark theme', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'vegaoffice-theme-html-'))
+    const dir = await mkdtemp(join(tmpdir(), 'officevega-theme-html-'))
     const htmlPath = join(dir, 'doc.html')
     await writeFile(htmlPath, '<html><body><p>Body.</p></body></html>\n')
 
@@ -91,7 +91,7 @@ test.describe('theme visual adoption', () => {
   })
 
   test('markdown editor surface follows dark theme', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'vegaoffice-theme-md-'))
+    const dir = await mkdtemp(join(tmpdir(), 'officevega-theme-md-'))
     const mdPath = join(dir, 'doc.md')
     await writeFile(mdPath, '# Doc\n\nBody.\n')
 
@@ -206,7 +206,7 @@ test.describe('theme visual adoption', () => {
   })
 
   test('pdf chrome follows dark theme while the page stays paper-white', async () => {
-    const dir = await mkdtemp(join(tmpdir(), 'vegaoffice-theme-pdf-'))
+    const dir = await mkdtemp(join(tmpdir(), 'officevega-theme-pdf-'))
     const pdfPath = join(dir, 'doc.pdf')
     await writeFile(pdfPath, minimalPdf())
 

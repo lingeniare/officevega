@@ -13,7 +13,7 @@ import {
 let root: string
 
 beforeEach(() => {
-  root = mkdtempSync(join(tmpdir(), 'vegaoffice-save-dir-'))
+  root = mkdtempSync(join(tmpdir(), 'officevega-save-dir-'))
 })
 
 afterEach(() => {
@@ -53,7 +53,7 @@ describe('resolveDefaultSaveDir', () => {
   })
 
   it('creates and returns the fallback when nothing is configured', () => {
-    const fallback = join(root, 'Documents', 'VegaOffice')
+    const fallback = join(root, 'Documents', 'OfficeVega')
     expect(resolveDefaultSaveDir(null, fallback)).toBe(fallback)
     expect(existsSync(fallback)).toBe(true)
   })
@@ -95,14 +95,14 @@ describe('configuredDefaultSaveDir', () => {
     expect(configuredDefaultSaveDir(app)).toBe(custom)
   })
 
-  it('falls back to <Documents>/VegaOffice without a setting', () => {
+  it('falls back to <Documents>/OfficeVega without a setting', () => {
     const userData = join(root, 'userData')
     const documents = join(root, 'Documents')
     mkdirSync(userData, { recursive: true })
     const app = {
       getPath: (name: 'userData' | 'documents') => (name === 'userData' ? userData : documents),
     }
-    expect(configuredDefaultSaveDir(app)).toBe(join(documents, 'VegaOffice'))
-    expect(existsSync(join(documents, 'VegaOffice'))).toBe(true)
+    expect(configuredDefaultSaveDir(app)).toBe(join(documents, 'OfficeVega'))
+    expect(existsSync(join(documents, 'OfficeVega'))).toBe(true)
   })
 })

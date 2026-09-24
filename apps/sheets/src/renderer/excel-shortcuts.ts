@@ -47,16 +47,16 @@ const KEY_PAGE_DOWN = 34
 const KEY_END = 35
 const KEY_HOME = 36
 
-const ACTIVATE_ADJACENT_SHEET_ID = 'vegaoffice.command.activate-adjacent-sheet'
-const SELECT_SHEET_HOME_ID = 'vegaoffice.command.select-sheet-home'
-const SELECT_SHEET_END_ID = 'vegaoffice.command.select-sheet-end'
-const SELECT_ROW_HOME_ID = 'vegaoffice.command.select-row-home'
-const SELECT_WHOLE_COLUMN_ID = 'vegaoffice.command.select-whole-column'
-const SELECT_WHOLE_ROW_ID = 'vegaoffice.command.select-whole-row'
-const HIDE_SELECTED_ROWS_ID = 'vegaoffice.command.hide-selected-rows'
-const UNHIDE_SELECTED_ROWS_ID = 'vegaoffice.command.unhide-selected-rows'
-const HIDE_SELECTED_COLS_ID = 'vegaoffice.command.hide-selected-cols'
-const UNHIDE_SELECTED_COLS_ID = 'vegaoffice.command.unhide-selected-cols'
+const ACTIVATE_ADJACENT_SHEET_ID = 'officevega.command.activate-adjacent-sheet'
+const SELECT_SHEET_HOME_ID = 'officevega.command.select-sheet-home'
+const SELECT_SHEET_END_ID = 'officevega.command.select-sheet-end'
+const SELECT_ROW_HOME_ID = 'officevega.command.select-row-home'
+const SELECT_WHOLE_COLUMN_ID = 'officevega.command.select-whole-column'
+const SELECT_WHOLE_ROW_ID = 'officevega.command.select-whole-row'
+const HIDE_SELECTED_ROWS_ID = 'officevega.command.hide-selected-rows'
+const UNHIDE_SELECTED_ROWS_ID = 'officevega.command.unhide-selected-rows'
+const HIDE_SELECTED_COLS_ID = 'officevega.command.hide-selected-cols'
+const UNHIDE_SELECTED_COLS_ID = 'officevega.command.unhide-selected-cols'
 
 /** first visible line at or after `from` (hidden rows/columns are not landing spots) */
 function firstVisible(worksheet: Worksheet, axis: 'row' | 'column', from: number): number {

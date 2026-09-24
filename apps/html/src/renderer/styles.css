@@ -147,7 +147,7 @@ body,
   -webkit-app-region: drag;
 }
 
-html.vegaoffice-popover-open .ribbon-tabs {
+html.officevega-popover-open .ribbon-tabs {
   -webkit-app-region: no-drag;
 }
 

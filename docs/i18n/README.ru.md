@@ -54,7 +54,7 @@ AI-агента рядом с каждым документом — не чат-
   DeepSeek, Kimi, GLM, Qwen, Doubao, MiniMax, Grok, Mistral, OpenRouter, Requesty или
   любого совместимого с OpenAI эндпоинта, включая локальные серверы.
 - **Скриптуемость и готовность к агентам.** В комплекте с приложением идёт
-  командная строка `vegaoffice` и скилл для Claude Code, Codex, Cursor,
+  командная строка `officevega` и скилл для Claude Code, Codex, Cursor,
   Gemini CLI, GitHub Copilot, OpenCode и Windsurf, так что кодинг-агент может
   создавать, конвертировать, читать и редактировать настоящие файлы Office на
   вашем компьютере, не открывая ни одного окна.
@@ -168,38 +168,38 @@ AI-агента рядом с каждым документом — не чат-
 
 ### 7 · CLI — ваш кодинг-агент управляет Офис ВЕГА на вашем компьютере
 
-В Офис ВЕГА входит командная строка `vegaoffice` и агентный скилл. Установите
+В Офис ВЕГА входит командная строка `officevega` и агентный скилл. Установите
 скилл — и Claude Code, Codex, Cursor, Gemini CLI, GitHub Copilot, OpenCode или
 Windsurf смогут создавать, конвертировать, читать и редактировать настоящие
 файлы Office через те же движки, что и приложения, не открывая ни одного окна.
 
-<img src="../assets/readme/cli-deck-in-app.webp" alt="Офис ВЕГА Slides показывает презентацию о Солнечной системе из восьми слайдов, которую кодинг-агент собрал через командную строку vegaoffice: титульный слайд на холсте, восемь миниатюр слева и открытая AI-панель" width="100%">
+<img src="../assets/readme/cli-deck-in-app.webp" alt="Офис ВЕГА Slides показывает презентацию о Солнечной системе из восьми слайдов, которую кодинг-агент собрал через командную строку officevega: титульный слайд на холсте, восемь миниатюр слева и открытая AI-панель" width="100%">
 
 <table>
 <tr>
 <td width="50%"><img src="../assets/readme/cli-slides-grid.webp" alt="Восемь отрисованных слайдов презентации о Солнечной системе рядом друг с другом: обложка, хронология исследований, четыре ключевых числа, столбчатая диаграмма диаметров планет, каменистые миры против гигантов, заголовная цифра 99,8% для Солнца, сетка четырёх гигантов и выводы"></td>
-<td width="50%"><img src="../assets/readme/cli-integrations.webp" alt="Офис ВЕГА Settings, страница Integrations: скилл vegaoffice установлен в Claude Code, рядом с Codex и Cursor — кнопки Install"></td>
+<td width="50%"><img src="../assets/readme/cli-integrations.webp" alt="Офис ВЕГА Settings, страница Integrations: скилл officevega установлен в Claude Code, рядом с Codex и Cursor — кнопки Install"></td>
 </tr>
 <tr>
-<td><b>Один промпт вашему агенту</b> — «Сделай презентацию о Солнечной системе из восьми слайдов». Агент читает скилл, пишет таблицу стилей, план и по одной спецификации страницы на слайд, генерирует две фотографии через <code>vegaoffice image</code> и даёт <code>vegaoffice slides check</code> отклонить всё, что выходит за границы или перекрывается, прежде чем <code>vegaoffice create</code> соберёт <code>.pptx</code>, а <code>slides render</code> вернёт по одному PNG на слайд для просмотра.</td>
+<td><b>Один промпт вашему агенту</b> — «Сделай презентацию о Солнечной системе из восьми слайдов». Агент читает скилл, пишет таблицу стилей, план и по одной спецификации страницы на слайд, генерирует две фотографии через <code>officevega image</code> и даёт <code>officevega slides check</code> отклонить всё, что выходит за границы или перекрывается, прежде чем <code>officevega create</code> соберёт <code>.pptx</code>, а <code>slides render</code> вернёт по одному PNG на слайд для просмотра.</td>
 <td><b>Установите один раз, через Настройки → Интеграции</b> — Офис ВЕГА перечисляет кодинг-агентов, найденных на этом компьютере, и записывает скилл в каждый выбранный вами. Либо скачайте скилл в виде zip или выполните <code>npx skills add lingeniare/getoffice</code>. Команды и полный рабочий процесс — в разделе <a href="#command-line-and-agent-skill">Командная строка и агентный скилл</a>.</td>
 </tr>
 </table>
 
 ### 8 · MCP — те же инструменты через Model Context Protocol
 
-Каждая команда `vegaoffice` — это ещё и инструмент MCP. Claude Code, Claude
-Desktop, Cursor и любой другой MCP-клиент могут сами запустить `vegaoffice
+Каждая команда `officevega` — это ещё и инструмент MCP. Claude Code, Claude
+Desktop, Cursor и любой другой MCP-клиент могут сами запустить `officevega
 mcp`, без установки скилла и без открытого окна, и получить 29
 инструментов, а также справочники по операциям в виде ресурсов. Второй,
 HTTP-сервер внутри приложения позволяет агенту собирать документ Word
 прямо во вкладке редактора у вас на глазах.
 
-<img src="../assets/readme/mcp-deck-motion.webp" alt="Ускоренная съёмка того, как Claude Code строит восьмислайдовую презентацию для инвесторов о возобновляемой энергетике через MCP-сервер vegaoffice: ищет иллюстрации и фотографии, проверяет каждую фотографию-кандидата с помощью media, deck_start пишет таблицу стилей и план, deck_page добавляет по одной проверенной странице за раз, deck_build собирает .pptx и slides_render возвращает изображение каждого слайда; готовая презентация затем открывается в Офис ВЕГА Slides" width="100%">
+<img src="../assets/readme/mcp-deck-motion.webp" alt="Ускоренная съёмка того, как Claude Code строит восьмислайдовую презентацию для инвесторов о возобновляемой энергетике через MCP-сервер officevega: ищет иллюстрации и фотографии, проверяет каждую фотографию-кандидата с помощью media, deck_start пишет таблицу стилей и план, deck_page добавляет по одной проверенной странице за раз, deck_build собирает .pptx и slides_render возвращает изображение каждого слайда; готовая презентация затем открывается в Офис ВЕГА Slides" width="100%">
 
 <table>
 <tr>
-<td width="50%"><img src="../assets/readme/mcp-deck-in-app.webp" alt="Офис ВЕГА Slides показывает восьмислайдовую презентацию Renewable Energy 2026, которую Claude Code построил через MCP-сервер vegaoffice: титульный слайд с фотографией ветропарка на холсте и восемь миниатюр слева"></td>
+<td width="50%"><img src="../assets/readme/mcp-deck-in-app.webp" alt="Офис ВЕГА Slides показывает восьмислайдовую презентацию Renewable Energy 2026, которую Claude Code построил через MCP-сервер officevega: титульный слайд с фотографией ветропарка на холсте и восемь миниатюр слева"></td>
 <td width="50%"><img src="../assets/readme/mcp-integrations.webp" alt="Офис ВЕГА Settings, страница Integrations, часть MCP: однострочная команда claude mcp add для Claude Code, JSON-блок для Cursor, Claude Desktop и других MCP-клиентов, и опция локального HTTP-сервера ниже"></td>
 </tr>
 <tr>
@@ -227,7 +227,7 @@ HTTP-сервер внутри приложения позволяет аген�
   в систему OCR для сканов.
 - **А также Markdown и HTML**, с той же панелью AI и локальным экспортом в
   Word.
-- **Скриптуемость.** Командная строка `vegaoffice`, агентный скилл и
+- **Скриптуемость.** Командная строка `officevega`, агентный скилл и
   MCP-сервер отдают каждый движок в распоряжение Claude Code, Claude
   Desktop, Codex, Cursor и других агентов — по-прежнему на устройстве.
 - **Бесплатно**, как для отдельных пользователей, так и для команд.
@@ -257,7 +257,7 @@ MiniMax или любой совместимый с OpenAI эндпоинт дл
 
 ## Командная строка и агентный скилл
 
-Всё, что приложения умеют делать с файлом, командная строка `vegaoffice` умеет
+Всё, что приложения умеют делать с файлом, командная строка `officevega` умеет
 делать из терминала: инспектировать, конвертировать, создавать, читать и
 редактировать Word, Excel, PowerPoint, PDF, Markdown и HTML на тех же движках,
 без графического интерфейса. Она устанавливается вместе с Офис ВЕГА, не
@@ -280,25 +280,25 @@ MCP-клиентом.
 | `npx skills add lingeniare/getoffice`  | Устанавливает скилл из этого репозитория в любой агент, поддерживающий скиллы.                                                                                                   |
 
 Затем начните новый чат и попросите документ. Скилл учит агента, когда
-обращаться к `vegaoffice`, как прочитать файл перед редактированием и как
+обращаться к `officevega`, как прочитать файл перед редактированием и как
 проверять собственную работу.
 
 ### Быстрый старт из терминала
 
 ```bash
-vegaoffice --version
-vegaoffice info report.docx --json                  # headings and blocks; or sheets, slides, pages
-vegaoffice convert report.md --to pdf               # md/html/docx/xlsx/pptx → pdf, pdf → docx/xlsx/pptx, …
-vegaoffice create --type docx --from notes.md --out notes.docx
-vegaoffice create --type xlsx --from table.json --out sales.xlsx   # "=SUM(B2:B9)" cells stay live formulas
-vegaoffice docs read report.docx --range 0-9 --json # then `docs apply --ops edits.json` edits in place
-vegaoffice render report.docx --out shots/          # one PNG per page, to look at what you made
-vegaoffice open sales.xlsx                          # hand the result to the editor
+officevega --version
+officevega info report.docx --json                  # headings and blocks; or sheets, slides, pages
+officevega convert report.md --to pdf               # md/html/docx/xlsx/pptx → pdf, pdf → docx/xlsx/pptx, …
+officevega create --type docx --from notes.md --out notes.docx
+officevega create --type xlsx --from table.json --out sales.xlsx   # "=SUM(B2:B9)" cells stay live formulas
+officevega docs read report.docx --range 0-9 --json # then `docs apply --ops edits.json` edits in place
+officevega render report.docx --out shots/          # one PNG per page, to look at what you made
+officevega open sales.xlsx                          # hand the result to the editor
 ```
 
 Каждая команда выводит однострочную сводку или один JSON-объект с `--json`.
 Правки атомарны: отклонённая операция оставляет файл нетронутым и возвращается
-с подсказкой об ошибке. `vegaoffice help` показывает актуальный набор команд;
+с подсказкой об ошибке. `officevega help` показывает актуальный набор команд;
 полный справочник — в [packages/cli/README.md](../../packages/cli/README.md).
 
 ### Что на самом деле запускает агент
@@ -308,20 +308,20 @@ Claude Code. За кулисами агент следовал поэтапно�
 проверял каждый этап, прежде чем начинался следующий:
 
 ```bash
-vegaoffice capabilities --json                        # which cloud tools Офис ВЕГА has configured
-vegaoffice guide slides design                        # the deck workflow and layout library
-vegaoffice image "the eight planets in a row …" --aspect 16:9 --out deck/assets/cover.jpg
-vegaoffice slides check deck/outline.json --json      # 8 pages, no findings
-vegaoffice slides check deck/pages/01.json --json     # builds one slide, audits overflow and overlap
+officevega capabilities --json                        # which cloud tools Офис ВЕГА has configured
+officevega guide slides design                        # the deck workflow and layout library
+officevega image "the eight planets in a row …" --aspect 16:9 --out deck/assets/cover.jpg
+officevega slides check deck/outline.json --json      # 8 pages, no findings
+officevega slides check deck/pages/01.json --json     # builds one slide, audits overflow and overlap
 …                                                    # one page file per slide, fixed until each check is clean
-vegaoffice create --type pptx --spec deck/pages --outline deck/outline.json --out deck/solar-system.pptx --json
-vegaoffice slides render deck/solar-system.pptx --out deck/shots --json
-vegaoffice slides audit deck/solar-system.pptx --json    # 8 slides, no layout issues
-vegaoffice slides replace deck/solar-system.pptx --slide 4 --spec deck/pages/05.json --json
-vegaoffice open deck/solar-system.pptx
+officevega create --type pptx --spec deck/pages --outline deck/outline.json --out deck/solar-system.pptx --json
+officevega slides render deck/solar-system.pptx --out deck/shots --json
+officevega slides audit deck/solar-system.pptx --json    # 8 slides, no layout issues
+officevega slides replace deck/solar-system.pptx --slide 4 --spec deck/pages/05.json --json
+officevega open deck/solar-system.pptx
 ```
 
-Внутри `vegaoffice` не происходит ни одного вызова модели: агент думает, CLI
+Внутри `officevega` не происходит ни одного вызова модели: агент думает, CLI
 собирает и проверяет, а результат открывается в Офис ВЕГА или PowerPoint как
 обычный `.pptx`.
 
@@ -336,33 +336,33 @@ vegaoffice open deck/solar-system.pptx
 
 | Способ                                  | Что это                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **A · `vegaoffice mcp`** (рекомендуется) | stdio-сервер, который ассистент запускает сам; Офис ВЕГА не обязательно держать открытым. По одному инструменту на команду (`info`, `convert`, `create_docx`, `create_xlsx`, `create_pptx`, `create_pdf`, `docs_read` / `docs_apply` / `docs_check`, `sheet_*`, `slides_*`, `render`, `guide`, `search`, `image`, `media`, `open`), а также поэтапный сценарий сборки презентации `deck_start` → `deck_page` → `deck_build` → `deck_replace`. Операции, спецификации и Markdown передаются прямо в аргументах, так что клиент без файловой системы тоже работает. |
+| **A · `officevega mcp`** (рекомендуется) | stdio-сервер, который ассистент запускает сам; Офис ВЕГА не обязательно держать открытым. По одному инструменту на команду (`info`, `convert`, `create_docx`, `create_xlsx`, `create_pptx`, `create_pdf`, `docs_read` / `docs_apply` / `docs_check`, `sheet_*`, `slides_*`, `render`, `guide`, `search`, `image`, `media`, `open`), а также поэтапный сценарий сборки презентации `deck_start` → `deck_page` → `deck_build` → `deck_replace`. Операции, спецификации и Markdown передаются прямо в аргументах, так что клиент без файловой системы тоже работает. |
 | **B · Локальный HTTP-сервер**           | Работает внутри приложения Офис ВЕГА по адресу `http://127.0.0.1:3093/mcp` (Streamable HTTP, с поддержкой устаревшего SSE). Его инструменты управляют видимой вкладкой редактора Word: `create_session`, `insert_content`, `replace_blocks`, `apply_ops`, `read_document`, `save_session` — и вы видите, как документ обретает форму. По умолчанию выключен; включается на той же панели настроек.                                                                                                                                                                |
 
 ```bash
 # Claude Code
-claude mcp add --transport stdio vegaoffice -- vegaoffice mcp
+claude mcp add --transport stdio officevega -- officevega mcp
 ```
 
 ```jsonc
 // Cursor, Claude Desktop или любой другой MCP-клиент
-{ "mcpServers": { "vegaoffice": { "command": "vegaoffice", "args": ["mcp"] } } }
+{ "mcpServers": { "officevega": { "command": "officevega", "args": ["mcp"] } } }
 ```
 
-Здесь `vegaoffice` — это CLI, встроенный в приложение (на macOS —
-`/Applications/VegaOffice.app/Contents/Resources/cli/vegaoffice`; панель
+Здесь `officevega` — это CLI, встроенный в приложение (на macOS —
+`/Applications/OfficeVega.app/Contents/Resources/cli/officevega`; панель
 настроек показывает точный путь для вашей установки). Сервер несёт
 собственные инструкции по рабочему процессу и предоставляет справочники по
-операциям как ресурсы `vegaoffice://guide/*`, так что скилл не нужен; скилл
+операциям как ресурсы `officevega://guide/*`, так что скилл не нужен; скилл
 и MCP-сервер могут сосуществовать, и ассистент выбирает один из них.
 Облачные возможности (`search`, `image`, `media`) по-прежнему идут через
 провайдера, настроенного в Офис ВЕГА; всё остальное выполняется локально, а
-`VEGAOFFICE_ALLOWED_ROOTS` ограничивает каждый инструмент папками из вашего
+`OFFICEVEGA_ALLOWED_ROOTS` ограничивает каждый инструмент папками из вашего
 списка.
 
 Презентация о возобновляемой энергетике из демо выше — вот как выглядит со
 стороны протокола единственный промпт в Claude Code, к которому подключён
-только MCP-сервер `vegaoffice`:
+только MCP-сервер `officevega`:
 
 ```text
 capabilities · guide(slides, spec) · guide(slides, design)
@@ -409,14 +409,14 @@ Deb-пакет устанавливается через apt — он подтя
 добавляет Офис ВЕГА в меню приложений:
 
 ```bash
-sudo apt install ./vegaoffice_<version>_amd64.deb
+sudo apt install ./officevega_<version>_amd64.deb
 ```
 
 На Fedora / в семействе RHEL / openSUSE вместо этого установите rpm-пакет:
 
 ```bash
-sudo dnf install ./vegaoffice-<version>.x86_64.rpm     # Fedora / RHEL family
-sudo zypper install ./vegaoffice-<version>.x86_64.rpm  # openSUSE
+sudo dnf install ./officevega-<version>.x86_64.rpm     # Fedora / RHEL family
+sudo zypper install ./officevega-<version>.x86_64.rpm  # openSUSE
 ```
 
 AppImage запускается прямо на месте: установите runtime FUSE 2
@@ -561,7 +561,7 @@ Chromium и сводится к настоящим структурам Word: з
 <details>
 <summary><b>Могу ли я управлять Офис ВЕГА из Claude Code, Codex, Cursor или скрипта?</b></summary>
 
-Да. Офис ВЕГА устанавливает командную строку `vegaoffice`, которая запускает те
+Да. Офис ВЕГА устанавливает командную строку `officevega`, которая запускает те
 же движки без графического интерфейса: инспектируйте, конвертируйте,
 создавайте, читайте и редактируйте документы из терминала или скрипта, с
 выводом `--json` для программ. Встроенный агентный скилл учит Claude Code,

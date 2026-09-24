@@ -9,7 +9,7 @@ import type {
 } from '../../shared/integrations-api'
 
 // ── Settings → Integrations ─────────────────────────────────
-// Installs the bundled `vegaoffice` skill into the coding agents found on this
+// Installs the bundled `officevega` skill into the coding agents found on this
 // machine. Every write starts with a click and shows the absolute path first,
 // because the app does not see the shell's CODEX_HOME-style overrides and the
 // user has to be able to spot a wrong target.
@@ -42,21 +42,21 @@ export interface McpLaunch {
 }
 
 /**
- * How an MCP client starts `vegaoffice mcp`. Clients spawn without a shell, so on Windows
- * neither vegaoffice.cmd nor cmd /c is safe (a path with a space splits); the snippet does
- * what vegaoffice.cmd does: the app binary as Node on the bundled CLI. Elsewhere it is the
+ * How an MCP client starts `officevega mcp`. Clients spawn without a shell, so on Windows
+ * neither officevega.cmd nor cmd /c is safe (a path with a space splits); the snippet does
+ * what officevega.cmd does: the app binary as Node on the bundled CLI. Elsewhere it is the
  * bare name once it is on the PATH, else the launcher itself.
  */
 export function mcpLaunch(cli: { status: string; launcherDir: string }): McpLaunch {
   const dir = cli.launcherDir
   if (dir.includes('\\')) {
     return {
-      command: `${dir}\\..\\..\\VegaOffice.exe`,
-      args: [`${dir}\\vegaoffice.cjs`, 'mcp'],
+      command: `${dir}\\..\\..\\OfficeVega.exe`,
+      args: [`${dir}\\officevega.cjs`, 'mcp'],
       env: { ELECTRON_RUN_AS_NODE: '1' },
     }
   }
-  return { command: cli.status === 'present' ? 'vegaoffice' : `${dir}/vegaoffice`, args: ['mcp'] }
+  return { command: cli.status === 'present' ? 'officevega' : `${dir}/officevega`, args: ['mcp'] }
 }
 
 const shellWord = (w: string) => (/\s/.test(w) ? `"${w}"` : w)
@@ -65,11 +65,11 @@ const shellWord = (w: string) => (/\s/.test(w) ? `"${w}"` : w)
 export function mcpClaudeCommand(launch: McpLaunch): string {
   const env = Object.entries(launch.env ?? {}).map(([k, v]) => `-e ${k}=${v} `)
   const words = [launch.command, ...launch.args].map(shellWord).join(' ')
-  return `claude mcp add ${env.join('')}--transport stdio vegaoffice -- ${words}`
+  return `claude mcp add ${env.join('')}--transport stdio officevega -- ${words}`
 }
 
 export function mcpConfigJson(launch: McpLaunch): string {
-  const json = JSON.stringify({ mcpServers: { vegaoffice: launch } }, null, 2)
+  const json = JSON.stringify({ mcpServers: { officevega: launch } }, null, 2)
   return json.replace(/"args": \[[^\]]*\]/, `"args": ${JSON.stringify(launch.args)}`)
 }
 
@@ -150,7 +150,7 @@ export function IntegrationsPane({
     const sep = dir.includes('\\') && !dir.includes('/') ? '\\' : '/'
     setPending({
       kind: 'install',
-      path: `${dir}${sep}vegaoffice${sep}SKILL.md`,
+      path: `${dir}${sep}officevega${sep}SKILL.md`,
       target: { dir },
     })
   }

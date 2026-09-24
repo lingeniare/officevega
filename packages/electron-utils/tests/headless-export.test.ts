@@ -12,7 +12,7 @@ import {
 
 /** argv as Electron delivers it: binary first, then the app's own switches. */
 const argv = (...rest: string[]): string[] => [
-  '/Applications/VegaOffice.app/Contents/MacOS/VegaOffice',
+  '/Applications/OfficeVega.app/Contents/MacOS/OfficeVega',
   ...rest,
 ]
 
@@ -134,7 +134,7 @@ describe('formatHeadlessEnvelope', () => {
 })
 
 describe('headlessExitCode', () => {
-  it('maps outcomes to the vegaoffice exit-code convention', () => {
+  it('maps outcomes to the officevega exit-code convention', () => {
     expect(headlessExitCode({ ok: true, input: '/a', outPath: '/b' })).toBe(0)
     expect(headlessExitCode({ ok: false, code: HEADLESS_EXIT.badArgs, message: 'x' })).toBe(1)
     expect(headlessExitCode({ ok: false, code: HEADLESS_EXIT.inputError, message: 'x' })).toBe(2)

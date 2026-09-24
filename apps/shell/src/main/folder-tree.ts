@@ -45,7 +45,9 @@ export const TREE_FILE_EXTENSIONS: ReadonlySet<string> = new Set([
 const HIDDEN_DIR_NAMES = new Set(['node_modules', '__macosx'])
 const HIDDEN_FILE_NAMES = new Set(['thumbs.db', 'desktop.ini'])
 /** the Markdown / HTML apps' image folder is app-owned when it holds this manifest */
-const MD_ASSET_MANIFEST = '.vegaoffice-assets.json'
+const MD_ASSET_MANIFEST = '.officevega-assets.json'
+/** pre-rename builds wrote the same manifest under this name — keep hiding those folders */
+const MD_ASSET_MANIFEST_LEGACY = '.vegaoffice-assets.json'
 
 export function isSupportedTreeFile(name: string): boolean {
   return TREE_FILE_EXTENSIONS.has(extname(name).slice(1).toLowerCase())
@@ -57,7 +59,12 @@ export function isHiddenEntry(dir: string, name: string, isDir: boolean): boolea
   const lower = name.toLowerCase()
   if (isDir) {
     if (HIDDEN_DIR_NAMES.has(lower)) return true
-    if (lower === 'assets' && existsSync(join(dir, name, MD_ASSET_MANIFEST))) return true
+    if (
+      lower === 'assets' &&
+      (existsSync(join(dir, name, MD_ASSET_MANIFEST)) ||
+        existsSync(join(dir, name, MD_ASSET_MANIFEST_LEGACY)))
+    )
+      return true
     return false
   }
   return HIDDEN_FILE_NAMES.has(lower)

@@ -687,11 +687,11 @@ const projectApi: ProjectApi = {
 }
 contextBridge.exposeInMainWorld('projectApi', projectApi)
 
-// Off by default. e2e drivers launch the BUILT app with VEGAOFFICE_DEBUG_HOOKS=1
-// so the renderer exposes window.__vegaofficeDebug (see App.tsx) — the dev-only
+// Off by default. e2e drivers launch the BUILT app with OFFICEVEGA_DEBUG_HOOKS=1
+// so the renderer exposes window.__officeVegaDebug (see App.tsx) — the dev-only
 // __univerAPI hook does not exist in production bundles.
-if (process.env.VEGAOFFICE_DEBUG_HOOKS === '1') {
-  contextBridge.exposeInMainWorld('__vegaofficeDebugHooks', true)
+if (process.env.OFFICEVEGA_DEBUG_HOOKS === '1') {
+  contextBridge.exposeInMainWorld('__officeVegaDebugHooks', true)
 }
 
 // open documents dragged from the OS onto this tab as a new shell tab

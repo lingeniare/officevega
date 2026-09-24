@@ -11,7 +11,7 @@ import http, { createServer } from 'node:http'
 /**
  * MCP headless generation against the real built app.
  *
- * The headless tools delegate to the bundled `vegaoffice` CLI, which the app
+ * The headless tools delegate to the bundled `officevega` CLI, which the app
  * spawns on its own Node runtime (ELECTRON_RUN_AS_NODE) — this is the only test
  * that exercises that spawn path end to end: the app has to locate and run the
  * CLI, and the produced files are reparsed with the real engines.
@@ -60,8 +60,8 @@ test.describe('MCP headless generation', () => {
   test('spawns the bundled CLI to create docx/pptx/xlsx', async () => {
     test.setTimeout(120_000)
     const port = await freePort()
-    const outDir = await mkdtemp(join(tmpdir(), 'vegaoffice-mcp-headless-'))
-    const userDataDir = await mkdtemp(join(tmpdir(), 'vegaoffice-mcp-headless-userdata-'))
+    const outDir = await mkdtemp(join(tmpdir(), 'officevega-mcp-headless-'))
+    const userDataDir = await mkdtemp(join(tmpdir(), 'officevega-mcp-headless-userdata-'))
     // background generation must be ON to expose the create_* tools
     await writeFile(
       join(userDataDir, 'app-settings.json'),

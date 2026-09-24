@@ -70,7 +70,7 @@ export const sheetCommand: CommandDef = {
       name: 'ops',
       value: 'file',
       description:
-        'apply: JSON array of workbook DSL ops (the in-app propose_operations vocabulary; `vegaoffice guide sheets`); "-" reads stdin',
+        'apply: JSON array of workbook DSL ops (the in-app propose_operations vocabulary; `officevega guide sheets`); "-" reads stdin',
     },
     { name: 'dry-run', description: 'apply --ops: validate and print the plan without writing' },
     ...BATCH_OPTIONS,
@@ -78,7 +78,7 @@ export const sheetCommand: CommandDef = {
     {
       name: 'force',
       description:
-        'apply: overwrite an existing --out file, or write while Office VEGA has the file open',
+        'apply: overwrite an existing --out file, or write while OfficeVega has the file open',
     },
   ],
   async run(args, ctx) {
@@ -97,7 +97,7 @@ export const sheetCommand: CommandDef = {
           undefined,
           {
             reason: verb === undefined ? 'missing_argument' : 'invalid_argument',
-            suggestion: 'run `vegaoffice help sheet`',
+            suggestion: 'run `officevega help sheet`',
           },
         )
     }

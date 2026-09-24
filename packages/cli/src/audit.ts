@@ -4,8 +4,8 @@ import { dirname, join } from 'node:path'
 
 /**
  * One JSON line per executed command, so the person who let an agent loose
- * with vegaoffice can see afterwards what it touched. Default location
- * ~/.vegaoffice/cli-audit.jsonl; VEGAOFFICE_AUDIT_LOG=<path> redirects, `off`
+ * with officevega can see afterwards what it touched. Default location
+ * ~/.officevega/cli-audit.jsonl; OFFICEVEGA_AUDIT_LOG=<path> redirects, `off`
  * disables. Never throws: a failed audit write must not fail the command.
  */
 export interface AuditRecord {
@@ -21,10 +21,10 @@ export interface AuditRecord {
 const MAX_BYTES = 2_000_000
 
 export function auditLogPath(env: NodeJS.ProcessEnv): string | null {
-  const raw = env.VEGAOFFICE_AUDIT_LOG?.trim()
+  const raw = env.OFFICEVEGA_AUDIT_LOG?.trim()
   if (raw?.toLowerCase() === 'off') return null
   if (raw) return raw
-  return join(env.VEGAOFFICE_AUTH_DIR || join(homedir(), '.vegaoffice'), 'cli-audit.jsonl')
+  return join(env.OFFICEVEGA_AUTH_DIR || join(homedir(), '.officevega'), 'cli-audit.jsonl')
 }
 
 export function appendAudit(env: NodeJS.ProcessEnv, record: AuditRecord): void {

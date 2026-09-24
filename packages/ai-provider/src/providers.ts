@@ -20,7 +20,7 @@ export const GENSPARK_LLM_BASE_URLS = {
 } as const
 
 /**
- * Splits VegaOffice usage out of the proxy's default "Claw" billing bucket
+ * Splits OfficeVega usage out of the proxy's default "Claw" billing bucket
  * (the backend attributes gsk-key traffic by X-Agent-Type). Only sent to the
  * Genspark proxy — never to direct vendor APIs. The value is registered
  * server-side as "genoffice" — a billing wire name, not the product name.
@@ -35,7 +35,7 @@ export function gensparkAttributionHeaders(baseUrl?: string): Record<string, str
 
 /**
  * OpenCode Zen / Go route and cache per conversation and answer 400
- * MissingSessionID without this header (vegaoffice#331). The renderer's
+ * MissingSessionID without this header (officevega#331). The renderer's
  * transport id is stable for a chat; a one-shot call is its own conversation.
  */
 export function opencodeSessionHeaders(
@@ -56,9 +56,11 @@ export const AI_PROVIDERS: AiProviderMeta[] = [
     label: 'VEGA',
     // Live catalog: GET {base}/models lists every OpenRouter-routed model
     // (~440 ids); the picker filters to text-capable ones. `openrouter/auto`
-    // is the catalog's own router id — keep it as the safe default.
+    // is the catalog's own router id and stays pickable; the default pins the
+    // GPT-6 flagship tier, with Luna as the fast-model default (2026-09).
     models: [],
-    defaultModel: 'openrouter/auto',
+    defaultModel: 'openai/gpt-6-sol',
+    defaultFastModel: 'openai/gpt-6-luna',
     keyPlaceholder: 'sk-apivega-...',
     liveCatalog: true,
   },
@@ -333,6 +335,7 @@ export function defaultAiSettings(
     providers[meta.id] = {
       apiKey: defaultApiKeys?.[meta.id] ?? '',
       model: meta.defaultModel,
+      fastModel: meta.defaultFastModel,
       baseUrl: meta.needsBaseUrl ? '' : undefined,
       cliPath: meta.needsCliPath ? '' : undefined,
     }

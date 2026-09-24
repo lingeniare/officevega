@@ -9,15 +9,12 @@ import {
   type ControlReply,
   type ControlRequest,
 } from './control-protocol'
-import { vegaofficeUserDataDir } from './gui'
+import { userDataDirCandidates } from './gui'
 import { CliError, EXIT, type ErrorReason } from './result'
 
 /** The running shell's control endpoint, or null when no live shell published one. */
 export function controlEndpoint(env: NodeJS.ProcessEnv): ControlEndpoint | null {
-  const dirs = env.VEGAOFFICE_USER_DATA
-    ? [env.VEGAOFFICE_USER_DATA]
-    : [vegaofficeUserDataDir(env), `${vegaofficeUserDataDir(env)} Dev`]
-  for (const dir of dirs) {
+  for (const dir of userDataDirCandidates(env)) {
     const file = join(dir, CONTROL_FILE)
     if (!existsSync(file)) continue
     try {
@@ -77,9 +74,9 @@ export function controlRequest(
     const unavailable = (why: string) =>
       settle(() =>
         reject(
-          new CliError(EXIT.app, `Office VEGA did not answer: ${why}`, undefined, {
+          new CliError(EXIT.app, `OfficeVega did not answer: ${why}`, undefined, {
             reason: 'app_unavailable',
-            suggestion: 'start Office VEGA (or `vegaoffice open <file>`) and retry',
+            suggestion: 'start OfficeVega (or `officevega open <file>`) and retry',
           }),
         ),
       )
@@ -135,7 +132,7 @@ function defaultSuggestion(reason: ErrorReason, detail: Record<string, unknown>)
     case 'sheet_not_found':
       return 'use one of `detail.sheets` verbatim'
     case 'file_not_open_in_gui':
-      return 'run `vegaoffice open <file>` first'
+      return 'run `officevega open <file>` first'
     default:
       return 'check the target and retry'
   }

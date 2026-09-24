@@ -58,7 +58,7 @@ const FILE_ICONS: Record<string, string> = {
 const OPEN_LOCAL_EXTENSIONS = '.docx / .xlsx / .xlsm / .xls / .csv / .pptx / .pdf / .md / .html'
 
 /** drag payload of home file/folder rows (JSON array of absolute paths) */
-const DRAG_PATHS_MIME = 'application/x-vegaoffice-paths'
+const DRAG_PATHS_MIME = 'application/x-officevega-paths'
 /** hovering a collapsed folder this long while dragging expands it */
 const DRAG_EXPAND_DELAY_MS = 600
 /** expanded folders survive a home reload; the selection is per session */
@@ -2950,7 +2950,7 @@ export function Home() {
     <div className="home">
       <aside className="sidebar">
         <div className="sidebar-logo">
-          {/* same mark as vegaoffice-logo.svg, inline so it tracks the theme
+          {/* same mark as officevega-logo.svg, inline so it tracks the theme
            * via currentColor/--surface instead of the --logo-invert filter */}
           <svg className="logo-mark" viewBox="0 0 240 240" aria-hidden="true">
             <rect width="240" height="240" rx="54" fill="currentColor" />

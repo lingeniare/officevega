@@ -55,7 +55,7 @@ const tools: AgentToolDef[] = [
 
 describe('Codex app-server bridge', () => {
   it('automatically selects the newest complete desktop-managed Codex install', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'vegaoffice-codex-discovery-'))
+    const root = await mkdtemp(join(tmpdir(), 'officevega-codex-discovery-'))
     try {
       const older = join(root, 'old-release')
       const newer = join(root, 'new-release')
@@ -79,7 +79,7 @@ describe('Codex app-server bridge', () => {
   })
 
   it('migrates a stale saved hash path to the current managed install', async () => {
-    const root = await mkdtemp(join(tmpdir(), 'vegaoffice-codex-migration-'))
+    const root = await mkdtemp(join(tmpdir(), 'officevega-codex-migration-'))
     try {
       const current = join(root, 'current-release')
       await mkdir(current)
@@ -104,22 +104,22 @@ describe('Codex app-server bridge', () => {
 
   it('confines Codex tool reads to the temp dir through a permission profile', () => {
     const config = { apiKey: '', model: 'gpt-5.6-terra' }
-    const params = codexThreadStartParams(config, '/tmp/vegaoffice-codex-x', 'profile')
+    const params = codexThreadStartParams(config, '/tmp/officevega-codex-x', 'profile')
     expect(params).not.toHaveProperty('sandbox')
     expect(params.approvalPolicy).toBe('never')
     expect(params.config).toEqual({
-      default_permissions: 'vegaoffice',
+      default_permissions: 'officevega',
       permissions: {
-        vegaoffice: {
-          filesystem: { ':minimal': 'read', '/tmp/vegaoffice-codex-x': 'read' },
+        officevega: {
+          filesystem: { ':minimal': 'read', '/tmp/officevega-codex-x': 'read' },
         },
       },
     })
-    expect(codexThreadStartParams(config, '/tmp/vegaoffice-codex-x', 'read-only')).toMatchObject({
+    expect(codexThreadStartParams(config, '/tmp/officevega-codex-x', 'read-only')).toMatchObject({
       sandbox: 'read-only',
     })
-    expect(activePermissionProfileId({ activePermissionProfile: { id: 'vegaoffice' } })).toBe(
-      'vegaoffice',
+    expect(activePermissionProfileId({ activePermissionProfile: { id: 'officevega' } })).toBe(
+      'officevega',
     )
     expect(activePermissionProfileId({ activePermissionProfile: null })).toBeUndefined()
   })
@@ -155,7 +155,7 @@ describe('Codex app-server bridge', () => {
     expect(prompt).toContain('8192 output tokens')
   })
 
-  it('parses text and JSON-encoded VegaOffice tool arguments', () => {
+  it('parses text and JSON-encoded OfficeVega tool arguments', () => {
     expect(
       parseCodexAppServerTurn(
         JSON.stringify({

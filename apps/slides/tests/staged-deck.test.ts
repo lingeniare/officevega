@@ -669,13 +669,13 @@ describe('upgrade_deck: imagery survives the style stage', () => {
     const stored: string[] = []
     access.storeImageData = async (d: string) => {
       stored.push(d)
-      return { ok: true, url: 'file:///vegaoffice-ai-images/x.png' }
+      return { ok: true, url: 'file:///officevega-ai-images/x.png' }
     }
     const skill = createSlidesSkill(access)
     // No draft state — a foreign/imported deck; stage:'style' must keep its imagery
     await skill.executeTool(upgradeCall('style'))
     expect(stored).toEqual([dataUrl])
-    expect(localPageCalls[0]!.brief).toContain('file:///vegaoffice-ai-images/x.png')
+    expect(localPageCalls[0]!.brief).toContain('file:///officevega-ai-images/x.png')
     expect(localPageCalls[0]!.brief).toContain('reuse these exact images')
   })
 
@@ -689,7 +689,7 @@ describe('upgrade_deck: imagery survives the style stage', () => {
     let calls = 0
     access.storeImageData = async () => {
       calls++
-      return { ok: true, url: 'file:///vegaoffice-ai-images/x.png' }
+      return { ok: true, url: 'file:///officevega-ai-images/x.png' }
     }
     const skill = createSlidesSkill(access)
     await skill.executeTool(upgradeCall('style'))
@@ -698,7 +698,7 @@ describe('upgrade_deck: imagery survives the style stage', () => {
     // Second restyle: the remembered file:// URL is fed again — no rematerialization
     await skill.executeTool(upgradeCall('style'))
     expect(calls).toBe(1)
-    expect(localPageCalls[0]!.brief).toContain('file:///vegaoffice-ai-images/x.png')
+    expect(localPageCalls[0]!.brief).toContain('file:///officevega-ai-images/x.png')
   })
 
   it('append mode: appended pages keep their own slots; earlier pages keep their own imagery', async () => {
@@ -718,7 +718,7 @@ describe('upgrade_deck: imagery survives the style stage', () => {
     const stored: string[] = []
     access.storeImageData = async (d: string) => {
       stored.push(d)
-      return { ok: true, url: 'file:///vegaoffice-ai-images/old.png' }
+      return { ok: true, url: 'file:///officevega-ai-images/old.png' }
     }
     const skill = createSlidesSkill(access)
     await skill.executeTool(
@@ -738,7 +738,7 @@ describe('upgrade_deck: imagery survives the style stage', () => {
     // Page 1 (pre-existing): no slot of its own — its own picture is materialized
     // and re-fed; it must NOT inherit the appended page's image.
     expect(stored).toEqual([dataUrl])
-    expect(briefFor(1)).toContain('file:///vegaoffice-ai-images/old.png')
+    expect(briefFor(1)).toContain('file:///officevega-ai-images/old.png')
     expect(briefFor(1)).not.toContain('https://gen.img/')
     // Page 2 (appended): keeps the exact image its own generation resolved.
     expect(briefFor(2)).toContain('https://gen.img/')

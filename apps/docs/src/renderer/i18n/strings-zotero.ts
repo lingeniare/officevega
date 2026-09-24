@@ -16,7 +16,7 @@ export const zoteroStrings = defineStrings({
     zoteroConnectionError: '无法连接 Zotero。请先启动 Zotero，并保持桌面程序运行。',
     zoteroOperationError: 'Zotero 操作失败。',
     zoteroNoteFieldsUnsupported:
-      '此文档的脚注或尾注中含有 Zotero 引文，Office VEGA 目前还不能更新它们。为保持参考文献表完整，已停用此文档的 Zotero 命令。',
+      '此文档的脚注或尾注中含有 Zotero 引文，OfficeVega 目前还不能更新它们。为保持参考文献表完整，已停用此文档的 Zotero 命令。',
     zoteroGroup: 'Zotero',
   },
   en: {
@@ -33,7 +33,7 @@ export const zoteroStrings = defineStrings({
     zoteroConnectionError: 'Unable to connect to Zotero. Start Zotero and keep it running.',
     zoteroOperationError: 'The Zotero operation failed.',
     zoteroNoteFieldsUnsupported:
-      'This document has Zotero citations in footnotes or endnotes, which Office VEGA cannot update yet. Zotero commands are turned off here so the bibliography stays intact.',
+      'This document has Zotero citations in footnotes or endnotes, which OfficeVega cannot update yet. Zotero commands are turned off here so the bibliography stays intact.',
     zoteroGroup: 'Zotero',
   },
   ja: {
@@ -50,7 +50,7 @@ export const zoteroStrings = defineStrings({
     zoteroConnectionError: 'Zotero に接続できません。Zotero を起動したままにしてください。',
     zoteroOperationError: 'Zotero の操作に失敗しました。',
     zoteroNoteFieldsUnsupported:
-      'この文書の脚注または文末脚注に Zotero の引用が含まれていますが、Office VEGA はまだ更新できません。参考文献一覧を保つため、この文書では Zotero コマンドを無効にしています。',
+      'この文書の脚注または文末脚注に Zotero の引用が含まれていますが、OfficeVega はまだ更新できません。参考文献一覧を保つため、この文書では Zotero コマンドを無効にしています。',
     zoteroGroup: 'Zotero',
   },
   ko: {
@@ -67,7 +67,7 @@ export const zoteroStrings = defineStrings({
     zoteroConnectionError: 'Zotero에 연결할 수 없습니다. Zotero를 실행한 상태로 유지하세요.',
     zoteroOperationError: 'Zotero 작업에 실패했습니다.',
     zoteroNoteFieldsUnsupported:
-      '이 문서의 각주 또는 미주에 Zotero 인용이 있으며 Office VEGA는 아직 이를 업데이트할 수 없습니다. 참고문헌을 그대로 유지하기 위해 이 문서에서는 Zotero 명령이 비활성화되었습니다.',
+      '이 문서의 각주 또는 미주에 Zotero 인용이 있으며 OfficeVega는 아직 이를 업데이트할 수 없습니다. 참고문헌을 그대로 유지하기 위해 이 문서에서는 Zotero 명령이 비활성화되었습니다.',
     zoteroGroup: 'Zotero',
   },
   fr: {
@@ -86,7 +86,7 @@ export const zoteroStrings = defineStrings({
       'Impossible de se connecter à Zotero. Démarrez Zotero et laissez-le ouvert.',
     zoteroOperationError: "L'opération Zotero a échoué.",
     zoteroNoteFieldsUnsupported:
-      'Ce document contient des citations Zotero dans les notes de bas de page ou de fin, que Office VEGA ne peut pas encore mettre à jour. Les commandes Zotero sont désactivées ici afin de préserver la bibliographie.',
+      'Ce document contient des citations Zotero dans les notes de bas de page ou de fin, que OfficeVega ne peut pas encore mettre à jour. Les commandes Zotero sont désactivées ici afin de préserver la bibliographie.',
     zoteroGroup: 'Zotero',
   },
   de: {
@@ -104,7 +104,7 @@ export const zoteroStrings = defineStrings({
       'Verbindung mit Zotero nicht möglich. Starten Sie Zotero und lassen Sie es geöffnet.',
     zoteroOperationError: 'Der Zotero-Vorgang ist fehlgeschlagen.',
     zoteroNoteFieldsUnsupported:
-      'Dieses Dokument enthält Zotero-Zitate in Fuß- oder Endnoten, die Office VEGA noch nicht aktualisieren kann. Die Zotero-Befehle sind hier deaktiviert, damit das Literaturverzeichnis intakt bleibt.',
+      'Dieses Dokument enthält Zotero-Zitate in Fuß- oder Endnoten, die OfficeVega noch nicht aktualisieren kann. Die Zotero-Befehle sind hier deaktiviert, damit das Literaturverzeichnis intakt bleibt.',
     zoteroGroup: 'Zotero',
   },
   es: {
@@ -121,7 +121,7 @@ export const zoteroStrings = defineStrings({
     zoteroConnectionError: 'No se puede conectar con Zotero. Inicie Zotero y manténgalo abierto.',
     zoteroOperationError: 'La operación de Zotero ha fallado.',
     zoteroNoteFieldsUnsupported:
-      'Este documento tiene citas de Zotero en notas al pie o al final que Office VEGA aún no puede actualizar. Los comandos de Zotero están desactivados aquí para mantener intacta la bibliografía.',
+      'Este documento tiene citas de Zotero en notas al pie o al final que OfficeVega aún no puede actualizar. Los comandos de Zotero están desactivados aquí para mantener intacta la bibliografía.',
     zoteroGroup: 'Zotero',
   },
   th: {
@@ -138,7 +138,7 @@ export const zoteroStrings = defineStrings({
     zoteroConnectionError: 'ไม่สามารถเชื่อมต่อกับ Zotero ได้ โปรดเปิด Zotero ทิ้งไว้',
     zoteroOperationError: 'การดำเนินการ Zotero ล้มเหลว',
     zoteroNoteFieldsUnsupported:
-      'เอกสารนี้มีการอ้างอิง Zotero ในเชิงอรรถหรืออ้างอิงท้ายเรื่อง ซึ่ง Office VEGA ยังอัปเดตไม่ได้ คำสั่ง Zotero จึงถูกปิดไว้เพื่อรักษาบรรณานุกรมให้ครบถ้วน',
+      'เอกสารนี้มีการอ้างอิง Zotero ในเชิงอรรถหรืออ้างอิงท้ายเรื่อง ซึ่ง OfficeVega ยังอัปเดตไม่ได้ คำสั่ง Zotero จึงถูกปิดไว้เพื่อรักษาบรรณานุกรมให้ครบถ้วน',
     zoteroGroup: 'Zotero',
   },
   id: {
@@ -157,7 +157,7 @@ export const zoteroStrings = defineStrings({
       'Tidak dapat terhubung ke Zotero. Jalankan Zotero dan biarkan tetap terbuka.',
     zoteroOperationError: 'Operasi Zotero gagal.',
     zoteroNoteFieldsUnsupported:
-      'Dokumen ini memiliki sitasi Zotero di catatan kaki atau catatan akhir yang belum dapat diperbarui Office VEGA. Perintah Zotero dinonaktifkan di sini agar daftar pustaka tetap utuh.',
+      'Dokumen ini memiliki sitasi Zotero di catatan kaki atau catatan akhir yang belum dapat diperbarui OfficeVega. Perintah Zotero dinonaktifkan di sini agar daftar pustaka tetap utuh.',
     zoteroGroup: 'Zotero',
   },
   ru: {
@@ -192,7 +192,7 @@ export const zoteroStrings = defineStrings({
     zoteroConnectionError: 'تعذر الاتصال بـ Zotero. شغّل Zotero واتركه مفتوحًا.',
     zoteroOperationError: 'فشلت عملية Zotero.',
     zoteroNoteFieldsUnsupported:
-      'يحتوي هذا المستند على استشهادات Zotero في الحواشي السفلية أو الختامية، ولا يستطيع Office VEGA تحديثها بعد. تم تعطيل أوامر Zotero هنا للحفاظ على قائمة المراجع سليمة.',
+      'يحتوي هذا المستند على استشهادات Zotero في الحواشي السفلية أو الختامية، ولا يستطيع OfficeVega تحديثها بعد. تم تعطيل أوامر Zotero هنا للحفاظ على قائمة المراجع سليمة.',
     zoteroGroup: 'Zotero',
   },
   pt: {
@@ -210,7 +210,7 @@ export const zoteroStrings = defineStrings({
       'Não foi possível conectar ao Zotero. Inicie o Zotero e mantenha-o aberto.',
     zoteroOperationError: 'A operação do Zotero falhou.',
     zoteroNoteFieldsUnsupported:
-      'Este documento tem citações do Zotero em notas de rodapé ou de fim que o Office VEGA ainda não consegue atualizar. Os comandos do Zotero estão desativados aqui para manter a bibliografia intacta.',
+      'Este documento tem citações do Zotero em notas de rodapé ou de fim que o OfficeVega ainda não consegue atualizar. Os comandos do Zotero estão desativados aqui para manter a bibliografia intacta.',
     zoteroGroup: 'Zotero',
   },
   it: {
@@ -228,7 +228,7 @@ export const zoteroStrings = defineStrings({
     zoteroConnectionError: 'Impossibile connettersi a Zotero. Avvia Zotero e lascialo aperto.',
     zoteroOperationError: "L'operazione Zotero non è riuscita.",
     zoteroNoteFieldsUnsupported:
-      'Questo documento contiene citazioni Zotero nelle note a piè di pagina o di chiusura, che Office VEGA non può ancora aggiornare. I comandi Zotero sono disattivati qui per mantenere intatta la bibliografia.',
+      'Questo documento contiene citazioni Zotero nelle note a piè di pagina o di chiusura, che OfficeVega non può ancora aggiornare. I comandi Zotero sono disattivati qui per mantenere intatta la bibliografia.',
     zoteroGroup: 'Zotero',
   },
   pl: {
@@ -245,7 +245,7 @@ export const zoteroStrings = defineStrings({
     zoteroConnectionError: 'Nie można połączyć się z Zotero. Uruchom Zotero i pozostaw je otwarte.',
     zoteroOperationError: 'Operacja Zotero nie powiodła się.',
     zoteroNoteFieldsUnsupported:
-      'Ten dokument zawiera cytowania Zotero w przypisach dolnych lub końcowych, których Office VEGA nie potrafi jeszcze aktualizować. Polecenia Zotero są tu wyłączone, aby bibliografia pozostała nienaruszona.',
+      'Ten dokument zawiera cytowania Zotero w przypisach dolnych lub końcowych, których OfficeVega nie potrafi jeszcze aktualizować. Polecenia Zotero są tu wyłączone, aby bibliografia pozostała nienaruszona.',
     zoteroGroup: 'Zotero',
   },
   cs: {
@@ -262,7 +262,7 @@ export const zoteroStrings = defineStrings({
     zoteroConnectionError: 'K Zoteru se nelze připojit. Spusťte Zotero a nechte je otevřené.',
     zoteroOperationError: 'Operace Zotero se nezdařila.',
     zoteroNoteFieldsUnsupported:
-      'Tento dokument obsahuje citace Zotero v poznámkách pod čarou nebo vysvětlivkách, které Office VEGA zatím neumí aktualizovat. Příkazy Zotero jsou zde vypnuté, aby bibliografie zůstala nedotčená.',
+      'Tento dokument obsahuje citace Zotero v poznámkách pod čarou nebo vysvětlivkách, které OfficeVega zatím neumí aktualizovat. Příkazy Zotero jsou zde vypnuté, aby bibliografie zůstala nedotčená.',
     zoteroGroup: 'Zotero',
   },
   nl: {
@@ -281,7 +281,7 @@ export const zoteroStrings = defineStrings({
       'Kan geen verbinding maken met Zotero. Start Zotero en laat het geopend.',
     zoteroOperationError: 'De Zotero-bewerking is mislukt.',
     zoteroNoteFieldsUnsupported:
-      'Dit document bevat Zotero-citaties in voet- of eindnoten die Office VEGA nog niet kan bijwerken. Zotero-opdrachten zijn hier uitgeschakeld zodat de bibliografie intact blijft.',
+      'Dit document bevat Zotero-citaties in voet- of eindnoten die OfficeVega nog niet kan bijwerken. Zotero-opdrachten zijn hier uitgeschakeld zodat de bibliografie intact blijft.',
     zoteroGroup: 'Zotero',
   },
   ms: {
@@ -300,7 +300,7 @@ export const zoteroStrings = defineStrings({
       'Tidak dapat menyambung ke Zotero. Mulakan Zotero dan biarkannya terbuka.',
     zoteroOperationError: 'Operasi Zotero gagal.',
     zoteroNoteFieldsUnsupported:
-      'Dokumen ini mempunyai petikan Zotero dalam nota kaki atau nota hujung yang belum boleh dikemas kini oleh Office VEGA. Perintah Zotero dimatikan di sini supaya bibliografi kekal utuh.',
+      'Dokumen ini mempunyai petikan Zotero dalam nota kaki atau nota hujung yang belum boleh dikemas kini oleh OfficeVega. Perintah Zotero dimatikan di sini supaya bibliografi kekal utuh.',
     zoteroGroup: 'Zotero',
   },
   he: {
@@ -317,7 +317,7 @@ export const zoteroStrings = defineStrings({
     zoteroConnectionError: 'לא ניתן להתחבר ל-Zotero. יש להפעיל את Zotero ולהשאיר אותו פתוח.',
     zoteroOperationError: 'פעולת Zotero נכשלה.',
     zoteroNoteFieldsUnsupported:
-      'מסמך זה מכיל ציטוטים של Zotero בהערות שוליים או הערות סיום, ש-Office VEGA עדיין אינו יכול לעדכן. פקודות Zotero מושבתות כאן כדי לשמור על הביבליוגרפיה שלמה.',
+      'מסמך זה מכיל ציטוטים של Zotero בהערות שוליים או הערות סיום, ש-OfficeVega עדיין אינו יכול לעדכן. פקודות Zotero מושבתות כאן כדי לשמור על הביבליוגרפיה שלמה.',
     zoteroGroup: 'Zotero',
   },
   hi: {
@@ -334,7 +334,7 @@ export const zoteroStrings = defineStrings({
     zoteroConnectionError: 'Zotero से कनेक्ट नहीं हो सका। Zotero शुरू करें और उसे खुला रखें।',
     zoteroOperationError: 'Zotero कार्रवाई विफल रही।',
     zoteroNoteFieldsUnsupported:
-      'इस दस्तावेज़ के फ़ुटनोट या एंडनोट में Zotero उद्धरण हैं, जिन्हें Office VEGA अभी अपडेट नहीं कर सकता। ग्रंथसूची को सुरक्षित रखने के लिए यहाँ Zotero कमांड बंद हैं।',
+      'इस दस्तावेज़ के फ़ुटनोट या एंडनोट में Zotero उद्धरण हैं, जिन्हें OfficeVega अभी अपडेट नहीं कर सकता। ग्रंथसूची को सुरक्षित रखने के लिए यहाँ Zotero कमांड बंद हैं।',
     zoteroGroup: 'Zotero',
   },
   'zh-TW': {
@@ -351,7 +351,7 @@ export const zoteroStrings = defineStrings({
     zoteroConnectionError: '無法連線至 Zotero。請先啟動 Zotero，並保持桌面程式執行。',
     zoteroOperationError: 'Zotero 操作失敗。',
     zoteroNoteFieldsUnsupported:
-      '此文件的註腳或章節附註中含有 Zotero 引文，Office VEGA 目前還無法更新它們。為保持參考文獻完整，已停用此文件的 Zotero 命令。',
+      '此文件的註腳或章節附註中含有 Zotero 引文，OfficeVega 目前還無法更新它們。為保持參考文獻完整，已停用此文件的 Zotero 命令。',
     zoteroGroup: 'Zotero',
   },
   uz: {
@@ -370,7 +370,7 @@ export const zoteroStrings = defineStrings({
       'Zotero bilan ulanib bo‘lmadi. Zotero’ni ishga tushiring va uni ishlayotgan holda qoldiring.',
     zoteroOperationError: 'Zotero amaliyoti bajarilmadi.',
     zoteroNoteFieldsUnsupported:
-      'Bu hujjat izohlar yoki yakuniy izohlarda Zotero iqtiboslarini o‘z ichiga oladi, ularni Office VEGA hozircha yangilay olmaydi. Bibliografiya buzilmasligi uchun bu yerda Zotero buyruqlari o‘chirib qo‘yilgan.',
+      'Bu hujjat izohlar yoki yakuniy izohlarda Zotero iqtiboslarini o‘z ichiga oladi, ularni OfficeVega hozircha yangilay olmaydi. Bibliografiya buzilmasligi uchun bu yerda Zotero buyruqlari o‘chirib qo‘yilgan.',
     zoteroGroup: 'Zotero',
   },
   kk: {
@@ -389,7 +389,7 @@ export const zoteroStrings = defineStrings({
       'Zotero-ға қосылу мүмкін болмады. Zotero-ны іске қосып, жұмыс істеп тұрған күйде қалдырыңыз.',
     zoteroOperationError: 'Zotero операциясы сәтсіз аяқталды.',
     zoteroNoteFieldsUnsupported:
-      'Бұл құжатта түсіндірмелерде немесе соңғы ескертпелерде Zotero дәйексөздері бар, оларды Office VEGA әзірше жаңарта алмайды. Библиография өзгеріссіз қалуы үшін мұнда Zotero пәрмендері өшірілді.',
+      'Бұл құжатта түсіндірмелерде немесе соңғы ескертпелерде Zotero дәйексөздері бар, оларды OfficeVega әзірше жаңарта алмайды. Библиография өзгеріссіз қалуы үшін мұнда Zotero пәрмендері өшірілді.',
     zoteroGroup: 'Zotero',
   },
   az: {
@@ -408,7 +408,7 @@ export const zoteroStrings = defineStrings({
       'Zotero-ya qoşulmaq mümkün olmadı. Zotero-nu başladın və işlək vəziyyətdə saxlayın.',
     zoteroOperationError: 'Zotero əməliyyatı uğursuz oldu.',
     zoteroNoteFieldsUnsupported:
-      'Bu sənəddə haşiyələrdə və ya son qeydlərdə Zotero sitatları var və Office VEGA onları hələ yeniləyə bilmir. Biblioqrafiyanın bütövlüyünü qorumaq üçün Zotero əmrləri burada deaktiv edilib.',
+      'Bu sənəddə haşiyələrdə və ya son qeydlərdə Zotero sitatları var və OfficeVega onları hələ yeniləyə bilmir. Biblioqrafiyanın bütövlüyünü qorumaq üçün Zotero əmrləri burada deaktiv edilib.',
     zoteroGroup: 'Zotero',
   },
   tk: {
@@ -427,7 +427,7 @@ export const zoteroStrings = defineStrings({
       'Zotero-a birigip bolmady. Zotero-ny başladyň we işleýän ýagdaýda saklaň.',
     zoteroOperationError: 'Zotero amaly şowsuz tamamlandy.',
     zoteroNoteFieldsUnsupported:
-      'Bu resminamada aşakky ýa-da soňky belliklerde Zotero salgylanmalary bar, Office VEGA olary häzirlikçe täzeläp bilmeýär. Bibliografiýanyň bitewiligini saklamak üçin Zotero buýruklary şu ýerde öçürildi.',
+      'Bu resminamada aşakky ýa-da soňky belliklerde Zotero salgylanmalary bar, OfficeVega olary häzirlikçe täzeläp bilmeýär. Bibliografiýanyň bitewiligini saklamak üçin Zotero buýruklary şu ýerde öçürildi.',
     zoteroGroup: 'Zotero',
   },
   ky: {
@@ -445,7 +445,7 @@ export const zoteroStrings = defineStrings({
       "Zotero'го туташуу мүмкүн эмес. Zotero'ну иштетип, аны иштеп турган абалда калтырыңыз.",
     zoteroOperationError: 'Zotero операциясы ишке ашкан жок.',
     zoteroNoteFieldsUnsupported:
-      'Бул документте шилтемелерде же аяккы шилтемелерде Zotero шилтемелери бар, аларды Office VEGA азырынча жаңырта албайт. Библиография өзгөрүүсүз калышы үчүн бул жерде Zotero буйруктары өчүрүлдү.',
+      'Бул документте шилтемелерде же аяккы шилтемелерде Zotero шилтемелери бар, аларды OfficeVega азырынча жаңырта албайт. Библиография өзгөрүүсүз калышы үчүн бул жерде Zotero буйруктары өчүрүлдү.',
     zoteroGroup: 'Zotero',
   },
   tt: {
@@ -464,7 +464,7 @@ export const zoteroStrings = defineStrings({
       'Zotero белән тоташа алмадык. Zotero-ны эшләтеп, аны эшләгән килеш калдырыгыз.',
     zoteroOperationError: 'Zotero операциясе уңышсыз тәмамланды.',
     zoteroNoteFieldsUnsupported:
-      'Бу документта аскы яки ахыргы искәрмәләрдә Zotero цитаталары бар, ә Office VEGA аларны әлегә яңарта алмый. Библиография үзгәрешсез калсын өчен, монда Zotero боерыклары сүндерелгән.',
+      'Бу документта аскы яки ахыргы искәрмәләрдә Zotero цитаталары бар, ә OfficeVega аларны әлегә яңарта алмый. Библиография үзгәрешсез калсын өчен, монда Zotero боерыклары сүндерелгән.',
     zoteroGroup: 'Zotero',
   },
   ka: {
@@ -483,7 +483,7 @@ export const zoteroStrings = defineStrings({
       'Zotero-სთან დაკავშირება ვერ მოხერხდა. გაუშვით Zotero და დატოვეთ გაშვებული.',
     zoteroOperationError: 'Zotero-ს ოპერაცია ვერ შესრულდა.',
     zoteroNoteFieldsUnsupported:
-      'ამ დოკუმენტში სქოლიოებში ან ბოლო შენიშვნებში Zotero-ს ციტატებია, რომელთა განახლებაც Office VEGA-ს ჯერ არ შეუძლია. აქ Zotero-ს ბრძანებები გამორთულია, რათა ბიბლიოგრაფია უცვლელი დარჩეს.',
+      'ამ დოკუმენტში სქოლიოებში ან ბოლო შენიშვნებში Zotero-ს ციტატებია, რომელთა განახლებაც OfficeVega-ს ჯერ არ შეუძლია. აქ Zotero-ს ბრძანებები გამორთულია, რათა ბიბლიოგრაფია უცვლელი დარჩეს.',
     zoteroGroup: 'Zotero',
   },
 })

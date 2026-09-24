@@ -282,7 +282,7 @@ export interface HomeApi {
   getAiPanelPrefs(): Promise<AiPanelPrefs>
   /** merge + persist; broadcasts 'app:ai-panel-prefs-changed' to all web contents */
   setAiPanelPrefs(patch: Partial<AiPanelPrefs>): Promise<AiPanelPrefs>
-  /** effective default save folder for new/untitled files (configured in userData/app-settings.json, falls back to <Documents>/VegaOffice) */
+  /** effective default save folder for new/untitled files (configured in userData/app-settings.json, falls back to <Documents>/OfficeVega) */
   getDefaultSaveDir(): Promise<string>
   /** directory picker to change the default save folder; resolves to the new folder, or null when canceled or the pick was unusable */
   pickDefaultSaveDir(): Promise<string | null>
@@ -374,7 +374,7 @@ export interface StarPromptShow {
 }
 
 export interface AccountStatus {
-  /** a VegaOffice-named VEGA key exists in the local auth file */
+  /** a OfficeVega-named VEGA key exists in the local auth file */
   loggedIn: boolean
   email?: string
   /** deposit balance in `currency` (USD); absent when the account query failed */

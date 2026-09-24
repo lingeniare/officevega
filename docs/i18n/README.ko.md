@@ -2,12 +2,12 @@
   <a href="https://github.com/lingeniare/getoffice/">
     <picture>
       <source srcset="../assets/readme/hero-dark.webp" media="(prefers-color-scheme: dark)">
-      <img src="../assets/readme/hero.webp" alt="VegaOffice — 내장 AI 패널을 갖춘 오픈소스 AI 오피스 제품군: Docs, Sheets, Slides, PDF, Markdown, HTML" width="100%">
+      <img src="../assets/readme/hero.webp" alt="OfficeVega — 내장 AI 패널을 갖춘 오픈소스 AI 오피스 제품군: Docs, Sheets, Slides, PDF, Markdown, HTML" width="100%">
     </picture>
   </a>
 </p>
 
-<h1 align="center">VegaOffice</h1>
+<h1 align="center">OfficeVega</h1>
 
 <p align="center"><b>세계 최초의 완전한 기능을 갖춘 오픈소스 AI 오피스 스위트.</b><br>
 Word, Excel, PowerPoint, PDF 파일을 당신과 당신의 AI가 함께 편집하고, 실제 포맷 그대로 저장합니다.</p>
@@ -30,7 +30,7 @@ Word, Excel, PowerPoint, PDF 파일을 당신과 당신의 AI가 함께 편집�
   <a href="../../PRIVACY.md"><b>개인정보</b></a>
 </p>
 
-VegaOffice는 macOS, Windows, Linux에서 사용할 수 있는 무료 오픈소스
+OfficeVega는 macOS, Windows, Linux에서 사용할 수 있는 무료 오픈소스
 마이크로소프트 오피스 대체 프로그램입니다. 네이티브 `.docx`, `.xlsx`,
 `.pptx` 파일을 열고 저장하며, PDF, Markdown, HTML을 편집하고, 모든 문서
 옆에 AI 에이전트를 배치합니다 — 옆에 덧붙인 챗봇이 아니라, 파일을 읽고
@@ -52,7 +52,7 @@ VegaOffice는 macOS, Windows, Linux에서 사용할 수 있는 무료 오픈소�
   Qwen, Doubao, MiniMax, Grok, Mistral, OpenRouter, Requesty는 물론 OpenAI
   호환 엔드포인트(로컬 서버 포함)까지 직접 가져올 수 있습니다.
 - **스크립트로 다룰 수 있고, 에이전트가 바로 쓸 수 있습니다.** 앱에는
-  `vegaoffice` 명령줄과 Claude Code, Codex, Cursor, Gemini CLI, GitHub Copilot,
+  `officevega` 명령줄과 Claude Code, Codex, Cursor, Gemini CLI, GitHub Copilot,
   OpenCode, Windsurf용 스킬이 함께 제공되어, 코딩 에이전트가 창 하나 열지
   않고도 내 컴퓨터에서 실제 Office 파일을 만들고, 변환하고, 읽고, 편집할 수
   있습니다.
@@ -72,8 +72,8 @@ VegaOffice는 macOS, Windows, Linux에서 사용할 수 있는 무료 오픈소�
 
 <table>
 <tr>
-<td width="50%"><img src="../assets/readme/docs-report.webp" alt="VegaOffice Docs가 전체 폭 표지 이미지, 음영 처리된 KPI 표, 머리글과 바닥글이 있는 2단 연차 보고서 페이지를 80% 확대 비율로 렌더링하고 있으며 AI 패널은 접혀 있는 화면"></td>
-<td width="50%"><img src="../assets/readme/docs-ai.webp" alt="VegaOffice Docs: 배너 이미지가 있는 회사 개요 문서에서 AI가 개요 섹션을 다듬고 새로운 글머리 기호 섹션을 삽입했으며, 패널에서 원클릭 롤백을 제공하는 화면"></td>
+<td width="50%"><img src="../assets/readme/docs-report.webp" alt="OfficeVega Docs가 전체 폭 표지 이미지, 음영 처리된 KPI 표, 머리글과 바닥글이 있는 2단 연차 보고서 페이지를 80% 확대 비율로 렌더링하고 있으며 AI 패널은 접혀 있는 화면"></td>
+<td width="50%"><img src="../assets/readme/docs-ai.webp" alt="OfficeVega Docs: 배너 이미지가 있는 회사 개요 문서에서 AI가 개요 섹션을 다듬고 새로운 글머리 기호 섹션을 삽입했으며, 패널에서 원클릭 롤백을 제공하는 화면"></td>
 </tr>
 <tr>
 <td><b>Word가 배치한 그대로 파일을 엽니다</b> — 2단 구성, 여백 없는 전체 이미지, 음영 표, 머리글과 바닥글, Word의 줄 단위 계량 기준을 따르는 페이지 나누기까지 그대로입니다. 스타일, 댓글, 변경 내용 추적, 수식, 잉크 주석도 손상 없이 그대로 유지됩니다.</td>
@@ -85,8 +85,8 @@ VegaOffice는 macOS, Windows, Linux에서 사용할 수 있는 무료 오픈소�
 
 <table>
 <tr>
-<td width="50%"><img src="../assets/readme/sheets-ai.webp" alt="VegaOffice Sheets: AI가 SUMIF 수식을 사용해 지역 및 카테고리별 매출이 담긴 Summary 시트와 세로 막대형 차트를 추가하고, 실행 취소 버튼과 함께 43건의 변경 사항이 적용되었다고 알려주는 화면"></td>
-<td width="50%"><img src="../assets/readme/sheets-qa.webp" alt="VegaOffice Sheets: 2분기 매출을 어느 지역이 주도했는지 묻자 AI가 카테고리별 세부 내역과 함께 유럽이라고 답하고, 사용한 셀을 링크 형태의 출처로 인용하는 화면(Orders 시트 옆에 표시됨)"></td>
+<td width="50%"><img src="../assets/readme/sheets-ai.webp" alt="OfficeVega Sheets: AI가 SUMIF 수식을 사용해 지역 및 카테고리별 매출이 담긴 Summary 시트와 세로 막대형 차트를 추가하고, 실행 취소 버튼과 함께 43건의 변경 사항이 적용되었다고 알려주는 화면"></td>
+<td width="50%"><img src="../assets/readme/sheets-qa.webp" alt="OfficeVega Sheets: 2분기 매출을 어느 지역이 주도했는지 묻자 AI가 카테고리별 세부 내역과 함께 유럽이라고 답하고, 사용한 셀을 링크 형태의 출처로 인용하는 화면(Orders 시트 옆에 표시됨)"></td>
 </tr>
 <tr>
 <td><b>직접 만들어 줍니다</b> — 한 문장의 요청만으로 에이전트가 지역 및 카테고리별 실제 <code>SUMIF</code> 수식이 담긴 Summary 시트를 추가하고, 세로 막대형 차트를 삽입하며, 43건의 변경을 실행 취소 가능한 하나의 배치로 적용합니다.</td>
@@ -96,15 +96,15 @@ VegaOffice는 macOS, Windows, Linux에서 사용할 수 있는 무료 오픈소�
 
 ### 3 · Slides — 프롬프트 한 줄로 완성하는 `.pptx` 덱
 
-<img src="../assets/readme/slides-generate.webp" alt="VegaOffice Slides가 Aurora Home 투자자용 덱을 생성하는 타임랩스: AI가 패널에서 스토리라인을 구상하고, 슬라이드가 캔버스에 차례로 나타나며, 완성된 덱은 마무리 제안으로 끝난다" width="100%">
+<img src="../assets/readme/slides-generate.webp" alt="OfficeVega Slides가 Aurora Home 투자자용 덱을 생성하는 타임랩스: AI가 패널에서 스토리라인을 구상하고, 슬라이드가 캔버스에 차례로 나타나며, 완성된 덱은 마무리 제안으로 끝난다" width="100%">
 
 <table>
 <tr>
-<td width="50%"><img src="../assets/readme/slides-cover.webp" alt="VegaOffice Slides: 캔버스에 표시된 AI 생성 Aurora Home 투자자 덱의 표지 슬라이드, 패널에는 원래 입력한 한 줄 프롬프트와 AI가 만든 내용에 대한 요약이 보이는 화면"></td>
-<td width="50%"><img src="../assets/readme/slides-ai.webp" alt="VegaOffice Slides: 같은 11장짜리 덱의 디자인이 완료된 마지막 슬라이드, 왼쪽에는 축소판 슬라이드 목록이, AI 패널에는 전체 스토리라인 요약이 표시된 화면"></td>
+<td width="50%"><img src="../assets/readme/slides-cover.webp" alt="OfficeVega Slides: 캔버스에 표시된 AI 생성 Aurora Home 투자자 덱의 표지 슬라이드, 패널에는 원래 입력한 한 줄 프롬프트와 AI가 만든 내용에 대한 요약이 보이는 화면"></td>
+<td width="50%"><img src="../assets/readme/slides-ai.webp" alt="OfficeVega Slides: 같은 11장짜리 덱의 디자인이 완료된 마지막 슬라이드, 왼쪽에는 축소판 슬라이드 목록이, AI 패널에는 전체 스토리라인 요약이 표시된 화면"></td>
 </tr>
 <tr>
-<td><b>한 줄만 입력하세요</b> — "Aurora Home을 위한 10장짜리 투자자 피치 덱을 만들어줘…"처럼요. VegaOffice가 스토리라인을 구성하고, 필요한 숫자를 조사하고, 실제 <code>.pptx</code>로 모든 슬라이드를 캔버스에 초안 작성합니다.</td>
+<td><b>한 줄만 입력하세요</b> — "Aurora Home을 위한 10장짜리 투자자 피치 덱을 만들어줘…"처럼요. OfficeVega가 스토리라인을 구성하고, 필요한 숫자를 조사하고, 실제 <code>.pptx</code>로 모든 슬라이드를 캔버스에 초안 작성합니다.</td>
 <td><b>완성된 덱이 나옵니다</b> — 일관된 타이포그래피, 이미지, 마무리 행동 유도 문구까지 디자인이 완료된 11장의 슬라이드. 마스터, 레이아웃, 스마트 가이드, 비파괴 자르기로 계속 편집하거나, 패널에 스타일 변경, 재작성, 순서 재배치를 요청할 수 있습니다.</td>
 </tr>
 </table>
@@ -113,8 +113,8 @@ VegaOffice는 macOS, Windows, Linux에서 사용할 수 있는 무료 오픈소�
 
 <table>
 <tr>
-<td width="50%"><img src="../assets/readme/pdf-edit.webp" alt="VegaOffice PDF: 텍스트 편집 모드가 페이지의 모든 텍스트 블록을 표시해 바로 편집할 수 있게 하고, 동시에 AI 패널이 보고서에 대한 질문에 페이지 출처와 함께 답변하는 화면"></td>
-<td width="50%"><img src="../assets/readme/pdf-convert.webp" alt="VegaOffice Docs가 Helios 분기 보고서 PDF에서 로컬로 변환된 Word 문서를, 원본 PDF 옆의 두 번째 탭에 열어 보여주는 화면"></td>
+<td width="50%"><img src="../assets/readme/pdf-edit.webp" alt="OfficeVega PDF: 텍스트 편집 모드가 페이지의 모든 텍스트 블록을 표시해 바로 편집할 수 있게 하고, 동시에 AI 패널이 보고서에 대한 질문에 페이지 출처와 함께 답변하는 화면"></td>
+<td width="50%"><img src="../assets/readme/pdf-convert.webp" alt="OfficeVega Docs가 Helios 분기 보고서 PDF에서 로컬로 변환된 Word 문서를, 원본 PDF 옆의 두 번째 탭에 열어 보여주는 화면"></td>
 </tr>
 <tr>
 <td><b>페이지 안에서 바로 편집합니다</b> — 텍스트 편집 모드가 모든 텍스트 블록을 표시해 그 자리에서 다시 입력할 수 있게 하며, 위에 덮어씌우는 주석이 아니라 PDFium을 통해 원본 폰트를 유지한 채 콘텐츠 스트림 자체를 다시 작성합니다. 긴 보고서에 대해 AI에게 물으면 페이지 출처와 함께 답변을 받을 수 있습니다.</td>
@@ -128,11 +128,11 @@ VegaOffice는 macOS, Windows, Linux에서 사용할 수 있는 무료 오픈소�
 제안합니다 — 후킹 문구, 색상 팔레트, 타이포그래피, 스타일 방향까지 —
 그런 다음 이 토큰들을 기준으로 완전히 독립된 `.html` 파일 하나를 만듭니다.
 
-<img src="../assets/readme/html-restyle-motion.webp" alt="VegaOffice HTML이 Lumen 랜딩 페이지를 리스타일링하는 타임랩스: 패널에서의 한 번의 Restyle 요청으로 어두운 Midnight Studio 페이지가 따뜻한 Solar Daybreak 버전으로 바뀌지만, 모든 섹션과 문구는 그대로 유지된다" width="100%">
+<img src="../assets/readme/html-restyle-motion.webp" alt="OfficeVega HTML이 Lumen 랜딩 페이지를 리스타일링하는 타임랩스: 패널에서의 한 번의 Restyle 요청으로 어두운 Midnight Studio 페이지가 따뜻한 Solar Daybreak 버전으로 바뀌지만, 모든 섹션과 문구는 그대로 유지된다" width="100%">
 
 <table>
 <tr>
-<td width="50%"><img src="../assets/readme/html-ai.webp" alt="VegaOffice HTML: 어두운 Midnight Studio 스타일로 생성된 태양광 스탠드 랜딩 페이지가 실시간 미리보기에 표시되고, AI 패널이 방금 만든 페이지를 요약해 보여주는 화면"></td>
+<td width="50%"><img src="../assets/readme/html-ai.webp" alt="OfficeVega HTML: 어두운 Midnight Studio 스타일로 생성된 태양광 스탠드 랜딩 페이지가 실시간 미리보기에 표시되고, AI 패널이 방금 만든 페이지를 요약해 보여주는 화면"></td>
 <td width="50%"><img src="../assets/readme/html-restyle.webp" alt="같은 Lumen 랜딩 페이지를 AI가 따뜻한 느낌의 Solar Daybreak 스타일로 다시 디자인한 화면: 종이 질감 배경, 세리프 헤드라인, 오렌지 강조색을 사용했지만 모든 섹션과 문구는 그대로 유지된 모습"></td>
 </tr>
 <tr>
@@ -142,8 +142,8 @@ VegaOffice는 macOS, Windows, Linux에서 사용할 수 있는 무료 오픈소�
 </table>
 <table>
 <tr>
-<td width="50%"><img src="../assets/readme/html-dashboard.webp" alt="VegaOffice HTML: 프리랜서 디자이너를 위해 생성된 개인 대시보드 UI가 따뜻한 리넨 스타일로 표시되고, 왼쪽 레일, 세리프체 인사말, 네 개의 지표 카드가 있는 화면"></td>
-<td width="50%"><img src="../assets/readme/html-report.webp" alt="VegaOffice HTML: 신문 형식으로 생성된 전기차 시장 데이터 보고서, 세리프체 제호, 1,730만이라는 헤드라인 숫자, 통계 행이 표시된 화면"></td>
+<td width="50%"><img src="../assets/readme/html-dashboard.webp" alt="OfficeVega HTML: 프리랜서 디자이너를 위해 생성된 개인 대시보드 UI가 따뜻한 리넨 스타일로 표시되고, 왼쪽 레일, 세리프체 인사말, 네 개의 지표 카드가 있는 화면"></td>
+<td width="50%"><img src="../assets/readme/html-report.webp" alt="OfficeVega HTML: 신문 형식으로 생성된 전기차 시장 데이터 보고서, 세리프체 제호, 1,730만이라는 헤드라인 숫자, 통계 행이 표시된 화면"></td>
 </tr>
 <tr>
 <td><b>UI 목업</b> — "개인 대시보드" 스타터는 페르소나를 실제로 동작하는 레이아웃으로 바꿔줍니다: 왼쪽 레일, 인사말, 청구 가능 시간 스파크라인, 인보이스와 사용률 카드까지 모두 개발자에게 그대로 넘길 수 있는 실제 HTML입니다.</td>
@@ -155,8 +155,8 @@ VegaOffice는 macOS, Windows, Linux에서 사용할 수 있는 무료 오픈소�
 
 <table>
 <tr>
-<td width="50%"><img src="../assets/readme/markdown-ai.webp" alt="VegaOffice Markdown: 선택한 문단에 Ask AI 팝오버가 나타나 입력한 지시문과 함께 다듬기, 더 간결하게, 확장하기, 문법 수정 같은 제안 칩, 그리고 지금 보내기와 대기열에 추가 버튼이 표시된 화면"></td>
-<td width="50%"><img src="../assets/readme/markdown-render.webp" alt="VegaOffice Markdown이 표, Mermaid 순서도, 할 일 목록이 포함된 출시 공지 문서를 렌더링하고, 왼쪽에는 AI 패널의 시작 프롬프트가 표시된 화면"></td>
+<td width="50%"><img src="../assets/readme/markdown-ai.webp" alt="OfficeVega Markdown: 선택한 문단에 Ask AI 팝오버가 나타나 입력한 지시문과 함께 다듬기, 더 간결하게, 확장하기, 문법 수정 같은 제안 칩, 그리고 지금 보내기와 대기열에 추가 버튼이 표시된 화면"></td>
+<td width="50%"><img src="../assets/readme/markdown-render.webp" alt="OfficeVega Markdown이 표, Mermaid 순서도, 할 일 목록이 포함된 출시 공지 문서를 렌더링하고, 왼쪽에는 AI 패널의 시작 프롬프트가 표시된 화면"></td>
 </tr>
 <tr>
 <td><b>선택한 부분에 대해 AI에게 물어보세요</b> — 원하는 부분을 선택하면 <b>Ask AI</b> 칩이 나타납니다: 직접 지시문을 입력하거나 제안 중 하나를 고르고, 바로 실행하거나 여러 개의 위치 지정 편집을 대기열에 쌓아 한 번에 실행할 수 있습니다. 동일한 진입점이 모든 앱에 있습니다.</td>
@@ -164,40 +164,40 @@ VegaOffice는 macOS, Windows, Linux에서 사용할 수 있는 무료 오픈소�
 </tr>
 </table>
 
-### 7 · CLI — 코딩 에이전트가 내 컴퓨터에서 VegaOffice를 움직입니다
+### 7 · CLI — 코딩 에이전트가 내 컴퓨터에서 OfficeVega를 움직입니다
 
-VegaOffice에는 `vegaoffice` 명령줄과 에이전트 스킬이 함께 제공됩니다. 스킬을
+OfficeVega에는 `officevega` 명령줄과 에이전트 스킬이 함께 제공됩니다. 스킬을
 설치하면 Claude Code, Codex, Cursor, Gemini CLI, GitHub Copilot, OpenCode,
 Windsurf가 앱과 동일한 엔진을 통해 창을 열지 않고도 실제 Office 파일을
 만들고, 변환하고, 읽고, 편집할 수 있습니다.
 
-<img src="../assets/readme/cli-deck-in-app.webp" alt="VegaOffice Slides가 코딩 에이전트가 vegaoffice 명령줄로 만든 8장짜리 태양계 덱을 보여주는 화면: 캔버스에는 표지 슬라이드, 왼쪽에는 여덟 개의 축소판, AI 패널은 열려 있음" width="100%">
+<img src="../assets/readme/cli-deck-in-app.webp" alt="OfficeVega Slides가 코딩 에이전트가 officevega 명령줄로 만든 8장짜리 태양계 덱을 보여주는 화면: 캔버스에는 표지 슬라이드, 왼쪽에는 여덟 개의 축소판, AI 패널은 열려 있음" width="100%">
 
 <table>
 <tr>
 <td width="50%"><img src="../assets/readme/cli-slides-grid.webp" alt="태양계 덱의 렌더링된 슬라이드 여덟 장을 나란히 놓은 화면: 표지, 탐사 연표, 네 가지 핵심 수치, 행성 지름 막대 차트, 암석 행성 대 거대 행성, 태양이 99.8%를 차지한다는 헤드라인 숫자, 네 거대 행성 격자, 요약"></td>
-<td width="50%"><img src="../assets/readme/cli-integrations.webp" alt="VegaOffice 설정의 연동 페이지: vegaoffice 스킬이 Claude Code에 설치되어 있고, Codex와 Cursor 옆에는 설치 버튼이 표시된 화면"></td>
+<td width="50%"><img src="../assets/readme/cli-integrations.webp" alt="OfficeVega 설정의 연동 페이지: officevega 스킬이 Claude Code에 설치되어 있고, Codex와 Cursor 옆에는 설치 버튼이 표시된 화면"></td>
 </tr>
 <tr>
-<td><b>에이전트에게 프롬프트 하나</b> — "태양계에 관한 8장짜리 덱을 만들어줘." 에이전트는 스킬을 읽고 스타일 시트, 개요, 슬라이드마다 하나씩의 페이지 스펙을 작성하고, <code>vegaoffice image</code>로 사진 두 장을 생성하고, <code>vegaoffice slides check</code>가 넘치거나 겹치는 요소를 걸러낸 뒤, <code>vegaoffice create</code>로 <code>.pptx</code>를 조립하고 <code>slides render</code>로 슬라이드마다 PNG 한 장을 받아 확인합니다.</td>
-<td><b>설정 → 연동에서 한 번만 설치</b> — VegaOffice가 이 컴퓨터에서 찾은 코딩 에이전트를 나열하고, 선택한 각 에이전트에 스킬을 기록합니다. 스킬을 zip으로 내려받거나 <code>npx skills add lingeniare/getoffice</code>를 실행해도 됩니다. 명령과 전체 워크플로는 <a href="#command-line-and-agent-skill">명령줄과 에이전트 스킬</a>에 있습니다.</td>
+<td><b>에이전트에게 프롬프트 하나</b> — "태양계에 관한 8장짜리 덱을 만들어줘." 에이전트는 스킬을 읽고 스타일 시트, 개요, 슬라이드마다 하나씩의 페이지 스펙을 작성하고, <code>officevega image</code>로 사진 두 장을 생성하고, <code>officevega slides check</code>가 넘치거나 겹치는 요소를 걸러낸 뒤, <code>officevega create</code>로 <code>.pptx</code>를 조립하고 <code>slides render</code>로 슬라이드마다 PNG 한 장을 받아 확인합니다.</td>
+<td><b>설정 → 연동에서 한 번만 설치</b> — OfficeVega가 이 컴퓨터에서 찾은 코딩 에이전트를 나열하고, 선택한 각 에이전트에 스킬을 기록합니다. 스킬을 zip으로 내려받거나 <code>npx skills add lingeniare/getoffice</code>를 실행해도 됩니다. 명령과 전체 워크플로는 <a href="#command-line-and-agent-skill">명령줄과 에이전트 스킬</a>에 있습니다.</td>
 </tr>
 </table>
 
 ### 8 · MCP — Model Context Protocol로 제공되는 동일한 도구
 
-모든 `vegaoffice` 명령은 MCP 도구이기도 합니다. Claude Code, Claude Desktop,
+모든 `officevega` 명령은 MCP 도구이기도 합니다. Claude Code, Claude Desktop,
 Cursor 및 다른 모든 MCP 클라이언트는 스킬을 설치하거나 창을 열 필요 없이
-직접 `vegaoffice mcp`를 실행해 29개의 도구와 리소스로 제공되는 작업 레퍼런스를
+직접 `officevega mcp`를 실행해 29개의 도구와 리소스로 제공되는 작업 레퍼런스를
 얻을 수 있습니다. 앱 내부의 두 번째 HTTP 서버를 사용하면 에이전트가 눈에
 보이는 편집기 탭에서 Word 문서를 만드는 과정을 지켜볼 수도 있습니다.
 
-<img src="../assets/readme/mcp-deck-motion.webp" alt="Claude Code가 vegaoffice MCP 서버로 8장짜리 재생에너지 투자 브리핑 덱을 만드는 과정의 타임랩스: search로 도표와 사진을 찾고 media로 각 후보 사진을 확인한 뒤, deck_start가 스타일 시트와 개요를 작성하고, deck_page가 검사를 마친 페이지를 한 장씩 추가하며, deck_build가 .pptx를 조립하고 slides_render가 슬라이드마다 이미지를 돌려줍니다. 완성된 덱은 이후 VegaOffice Slides에서 열립니다" width="100%">
+<img src="../assets/readme/mcp-deck-motion.webp" alt="Claude Code가 officevega MCP 서버로 8장짜리 재생에너지 투자 브리핑 덱을 만드는 과정의 타임랩스: search로 도표와 사진을 찾고 media로 각 후보 사진을 확인한 뒤, deck_start가 스타일 시트와 개요를 작성하고, deck_page가 검사를 마친 페이지를 한 장씩 추가하며, deck_build가 .pptx를 조립하고 slides_render가 슬라이드마다 이미지를 돌려줍니다. 완성된 덱은 이후 OfficeVega Slides에서 열립니다" width="100%">
 
 <table>
 <tr>
-<td width="50%"><img src="../assets/readme/mcp-deck-in-app.webp" alt="VegaOffice Slides가 Claude Code가 vegaoffice MCP 서버로 만든 8장짜리 재생에너지 2026 덱을 보여주는 화면: 캔버스에는 풍력 발전 단지 사진이 있는 표지 슬라이드, 왼쪽에는 여덟 개의 축소판"></td>
-<td width="50%"><img src="../assets/readme/mcp-integrations.webp" alt="VegaOffice 설정의 연동 페이지, MCP 부분: Claude Code용 한 줄짜리 claude mcp add 명령, Cursor, Claude Desktop 및 다른 MCP 클라이언트용 JSON 블록, 그 아래의 로컬 HTTP 서버 옵션"></td>
+<td width="50%"><img src="../assets/readme/mcp-deck-in-app.webp" alt="OfficeVega Slides가 Claude Code가 officevega MCP 서버로 만든 8장짜리 재생에너지 2026 덱을 보여주는 화면: 캔버스에는 풍력 발전 단지 사진이 있는 표지 슬라이드, 왼쪽에는 여덟 개의 축소판"></td>
+<td width="50%"><img src="../assets/readme/mcp-integrations.webp" alt="OfficeVega 설정의 연동 페이지, MCP 부분: Claude Code용 한 줄짜리 claude mcp add 명령, Cursor, Claude Desktop 및 다른 MCP 클라이언트용 JSON 블록, 그 아래의 로컬 HTTP 서버 옵션"></td>
 </tr>
 <tr>
 <td><b>프롬프트 하나, 도구 호출 서른여덟 번, 터미널 없이</b> — "2026년 재생에너지에 관한 8장짜리 투자 브리핑을 만들어줘. 표지와 사진이 도움이 될 만한 곳에는 실제 사진을 넣어줘." 에이전트는 <code>search</code>로 도표와 사진을 가져오고, <code>media</code>로 각 후보 사진이 실제 사진인지 확인한 다음, 스타일 시트와 개요를 담아 <code>deck_start</code>를 호출하고, 이어서 슬라이드마다 <code>deck_page</code>를 호출합니다. 모든 페이지는 개요와 팔레트에 맞는지 검사를 통과해야 유지되며, <code>deck_build</code>가 <code>.pptx</code>를 조립하고, <code>slides_audit</code>이 넘치는 부분을 찾고, <code>slides_render</code>가 모델이 볼 수 있는 이미지 콘텐츠로 슬라이드마다 PNG를 돌려주면, 마지막으로 <code>deck_replace</code>가 마음에 들지 않았던 세 페이지를 고칩니다.</td>
@@ -205,7 +205,7 @@ Cursor 및 다른 모든 MCP 클라이언트는 스킬을 설치하거나 창을
 </tr>
 </table>
 
-## VegaOffice를 선택하는 이유
+## OfficeVega를 선택하는 이유
 
 - **오픈소스**, Apache-2.0 라이선스로 GitHub에서 공개 개발됩니다.
 - **내 기기에서 직접 실행.** macOS, Windows, Linux용 네이티브 앱; 파일은 디스크
@@ -222,7 +222,7 @@ Cursor 및 다른 모든 MCP 클라이언트는 스킬을 설치하거나 창을
   Word, Excel, PowerPoint로 변환하며, 스캔 문서는 시스템 OCR을 사용합니다.
 - **Markdown과 HTML도 지원**하며, 동일한 AI 패널과 로컬 Word 내보내기를 사용합
   니다.
-- **스크립트로 다룰 수 있습니다.** `vegaoffice` 명령줄, 에이전트 스킬, MCP
+- **스크립트로 다룰 수 있습니다.** `officevega` 명령줄, 에이전트 스킬, MCP
   서버가 모든 엔진을 Claude Code, Claude Desktop, Codex, Cursor 및 다른
   에이전트가 쓸 수 있게 하며, 이 역시 기기 내에서 동작합니다.
 - **무료**로 개인과 팀 모두 사용할 수 있습니다.
@@ -251,9 +251,9 @@ OpenAI 호환 이미지 엔드포인트 중에서 선택합니다.
 
 ## 명령줄과 에이전트 스킬
 
-앱이 파일에 할 수 있는 모든 일을 `vegaoffice` 명령줄은 터미널에서 할 수
+앱이 파일에 할 수 있는 모든 일을 `officevega` 명령줄은 터미널에서 할 수
 있습니다: Word, Excel, PowerPoint, PDF, Markdown, HTML을 동일한 엔진으로,
-화면 없이 검사하고, 변환하고, 만들고, 읽고, 편집합니다. VegaOffice와 함께
+화면 없이 검사하고, 변환하고, 만들고, 읽고, 편집합니다. OfficeVega와 함께
 설치되며, 별도의 런타임이 필요 없고, 문서를 어디로도 전송하지 않습니다.
 함께 제공되는 **에이전트 스킬**과 결합하면 코딩 에이전트는 Markdown으로
 흉내 낸 결과물 대신 실제 Office 파일을 만들어내는 문서 작업자가 됩니다.
@@ -267,30 +267,30 @@ OpenCode, Windsurf는 바로 사용할 수 있고, 스킬을 읽을 수 있는 �
 
 | 방법                                   | 동작                                                                                                                                                                 |
 | -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 앱의 **설정 → 연동**                   | 이 컴퓨터에서 찾은 에이전트를 나열하고, 클릭 한 번으로 선택한 각 에이전트에 스킬을 기록합니다. VegaOffice 릴리스에 새 스킬이 포함되면 **업데이트** 버튼이 나타납니다. |
+| 앱의 **설정 → 연동**                   | 이 컴퓨터에서 찾은 에이전트를 나열하고, 클릭 한 번으로 선택한 각 에이전트에 스킬을 기록합니다. OfficeVega 릴리스에 새 스킬이 포함되면 **업데이트** 버튼이 나타납니다. |
 | 같은 페이지의 **zip으로 다운로드**     | claude.ai, Claude 데스크톱 앱, 그 밖의 어시스턴트가 업로드 스킬로 받아들이는 구조입니다.                                                                             |
 | `npx skills add lingeniare/getoffice` | 이 저장소에서 스킬을 지원하는 모든 에이전트에 설치합니다.                                                                                                            |
 
-그런 다음 새 대화를 시작해 문서를 요청하세요. 스킬은 언제 `vegaoffice`를
+그런 다음 새 대화를 시작해 문서를 요청하세요. 스킬은 언제 `officevega`를
 꺼내야 하는지, 편집 전에 파일을 어떻게 읽어야 하는지, 자신의 작업을
 어떻게 검증해야 하는지를 에이전트에게 알려줍니다.
 
 ### 터미널에서 빠르게 시작하기
 
 ```bash
-vegaoffice --version
-vegaoffice info report.docx --json                  # headings and blocks; or sheets, slides, pages
-vegaoffice convert report.md --to pdf               # md/html/docx/xlsx/pptx → pdf, pdf → docx/xlsx/pptx, …
-vegaoffice create --type docx --from notes.md --out notes.docx
-vegaoffice create --type xlsx --from table.json --out sales.xlsx   # "=SUM(B2:B9)" cells stay live formulas
-vegaoffice docs read report.docx --range 0-9 --json # then `docs apply --ops edits.json` edits in place
-vegaoffice render report.docx --out shots/          # one PNG per page, to look at what you made
-vegaoffice open sales.xlsx                          # hand the result to the editor
+officevega --version
+officevega info report.docx --json                  # headings and blocks; or sheets, slides, pages
+officevega convert report.md --to pdf               # md/html/docx/xlsx/pptx → pdf, pdf → docx/xlsx/pptx, …
+officevega create --type docx --from notes.md --out notes.docx
+officevega create --type xlsx --from table.json --out sales.xlsx   # "=SUM(B2:B9)" cells stay live formulas
+officevega docs read report.docx --range 0-9 --json # then `docs apply --ops edits.json` edits in place
+officevega render report.docx --out shots/          # one PNG per page, to look at what you made
+officevega open sales.xlsx                          # hand the result to the editor
 ```
 
 모든 명령은 한 줄 요약을 출력하며, `--json`을 붙이면 단일 JSON 객체를
 반환합니다. 편집은 원자적입니다: 거부된 작업은 파일을 건드리지 않고,
-안내가 담긴 오류로 돌아옵니다. `vegaoffice help`는 현재 명령 목록을
+안내가 담긴 오류로 돌아옵니다. `officevega help`는 현재 명령 목록을
 보여주며, 전체 레퍼런스는 [packages/cli/README.md](../../packages/cli/README.md)에 있습니다.
 
 ### 에이전트가 실제로 실행하는 것
@@ -300,22 +300,22 @@ vegaoffice open sales.xlsx                          # hand the result to the edi
 넘어가기 전에 매 단계를 검사했습니다:
 
 ```bash
-vegaoffice capabilities --json                        # which cloud tools VegaOffice has configured
-vegaoffice guide slides design                        # the deck workflow and layout library
-vegaoffice image "the eight planets in a row …" --aspect 16:9 --out deck/assets/cover.jpg
-vegaoffice slides check deck/outline.json --json      # 8 pages, no findings
-vegaoffice slides check deck/pages/01.json --json     # builds one slide, audits overflow and overlap
+officevega capabilities --json                        # which cloud tools OfficeVega has configured
+officevega guide slides design                        # the deck workflow and layout library
+officevega image "the eight planets in a row …" --aspect 16:9 --out deck/assets/cover.jpg
+officevega slides check deck/outline.json --json      # 8 pages, no findings
+officevega slides check deck/pages/01.json --json     # builds one slide, audits overflow and overlap
 …                                                    # one page file per slide, fixed until each check is clean
-vegaoffice create --type pptx --spec deck/pages --outline deck/outline.json --out deck/solar-system.pptx --json
-vegaoffice slides render deck/solar-system.pptx --out deck/shots --json
-vegaoffice slides audit deck/solar-system.pptx --json    # 8 slides, no layout issues
-vegaoffice slides replace deck/solar-system.pptx --slide 4 --spec deck/pages/05.json --json
-vegaoffice open deck/solar-system.pptx
+officevega create --type pptx --spec deck/pages --outline deck/outline.json --out deck/solar-system.pptx --json
+officevega slides render deck/solar-system.pptx --out deck/shots --json
+officevega slides audit deck/solar-system.pptx --json    # 8 slides, no layout issues
+officevega slides replace deck/solar-system.pptx --slide 4 --spec deck/pages/05.json --json
+officevega open deck/solar-system.pptx
 ```
 
-`vegaoffice` 내부에서는 어떤 모델 호출도 일어나지 않습니다: 생각은
+`officevega` 내부에서는 어떤 모델 호출도 일어나지 않습니다: 생각은
 에이전트가 하고, 만들고 검사하는 일은 CLI가 하며, 결과는 평범한 `.pptx`로
-VegaOffice나 PowerPoint에서 열립니다.
+OfficeVega나 PowerPoint에서 열립니다.
 
 <a id="mcp-server"></a>
 
@@ -328,30 +328,30 @@ MCP**에 바로 복사할 수 있는 코드 조각으로 안내되어 있습니�
 
 | 방법                          | 설명                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **A · `vegaoffice mcp`**(권장) | 어시스턴트가 직접 실행하는 stdio 서버로, VegaOffice가 열려 있을 필요가 없습니다. 명령마다 도구가 하나씩 있습니다(`info`, `convert`, `create_docx`, `create_xlsx`, `create_pptx`, `create_pdf`, `docs_read` / `docs_apply` / `docs_check`, `sheet_*`, `slides_*`, `render`, `guide`, `search`, `image`, `media`, `open`). 여기에 단계별 덱 흐름 `deck_start` → `deck_page` → `deck_build` → `deck_replace`가 더해집니다. Ops, 스펙, Markdown이 모두 인라인으로 전달되므로 파일 시스템이 없는 클라이언트도 문제없이 동작합니다. |
-| **B · 로컬 HTTP 서버**        | VegaOffice 앱 내부에서 `http://127.0.0.1:3093/mcp`(Streamable HTTP, 레거시 SSE 지원)로 실행됩니다. 이 도구들은 눈에 보이는 Word 편집기 탭을 움직입니다: `create_session`, `insert_content`, `replace_blocks`, `apply_ops`, `read_document`, `save_session`이며, 문서가 만들어지는 과정을 직접 지켜볼 수 있습니다. 기본값은 꺼짐이며, 같은 설정 화면에서 켤 수 있습니다.                                                                                                                                                       |
+| **A · `officevega mcp`**(권장) | 어시스턴트가 직접 실행하는 stdio 서버로, OfficeVega가 열려 있을 필요가 없습니다. 명령마다 도구가 하나씩 있습니다(`info`, `convert`, `create_docx`, `create_xlsx`, `create_pptx`, `create_pdf`, `docs_read` / `docs_apply` / `docs_check`, `sheet_*`, `slides_*`, `render`, `guide`, `search`, `image`, `media`, `open`). 여기에 단계별 덱 흐름 `deck_start` → `deck_page` → `deck_build` → `deck_replace`가 더해집니다. Ops, 스펙, Markdown이 모두 인라인으로 전달되므로 파일 시스템이 없는 클라이언트도 문제없이 동작합니다. |
+| **B · 로컬 HTTP 서버**        | OfficeVega 앱 내부에서 `http://127.0.0.1:3093/mcp`(Streamable HTTP, 레거시 SSE 지원)로 실행됩니다. 이 도구들은 눈에 보이는 Word 편집기 탭을 움직입니다: `create_session`, `insert_content`, `replace_blocks`, `apply_ops`, `read_document`, `save_session`이며, 문서가 만들어지는 과정을 직접 지켜볼 수 있습니다. 기본값은 꺼짐이며, 같은 설정 화면에서 켤 수 있습니다.                                                                                                                                                       |
 
 ```bash
 # Claude Code
-claude mcp add --transport stdio vegaoffice -- vegaoffice mcp
+claude mcp add --transport stdio officevega -- officevega mcp
 ```
 
 ```jsonc
 // Cursor, Claude Desktop 또는 다른 모든 MCP 클라이언트
-{ "mcpServers": { "vegaoffice": { "command": "vegaoffice", "args": ["mcp"] } } }
+{ "mcpServers": { "officevega": { "command": "officevega", "args": ["mcp"] } } }
 ```
 
-여기서 `vegaoffice`는 앱 내부에 포함된 바로 그 CLI입니다(macOS에서는
-`/Applications/VegaOffice.app/Contents/Resources/cli/vegaoffice`이며, 설정
+여기서 `officevega`는 앱 내부에 포함된 바로 그 CLI입니다(macOS에서는
+`/Applications/OfficeVega.app/Contents/Resources/cli/officevega`이며, 설정
 화면에서 실제 설치 경로를 확인할 수 있습니다). 이 서버는 자체 워크플로
-안내를 담고 있고, 작업 레퍼런스를 `vegaoffice://guide/*` 리소스로 노출하므로
+안내를 담고 있고, 작업 레퍼런스를 `officevega://guide/*` 리소스로 노출하므로
 별도의 스킬이 필요 없습니다. 스킬과 MCP 서버는 함께 존재할 수 있으며,
 어시스턴트가 둘 중 하나를 선택해 사용합니다. 클라우드 기능(`search`,
-`image`, `media`)은 여전히 VegaOffice에 설정된 공급자를 거치며, 그 밖의
-모든 기능은 로컬에서 동작하고, `VEGAOFFICE_ALLOWED_ROOTS`가 모든 도구를
+`image`, `media`)은 여전히 OfficeVega에 설정된 공급자를 거치며, 그 밖의
+모든 기능은 로컬에서 동작하고, `OFFICEVEGA_ALLOWED_ROOTS`가 모든 도구를
 지정한 폴더로 제한합니다.
 
-위의 데모에 나온 재생에너지 덱은, `vegaoffice` MCP 서버만 연결한 Claude
+위의 데모에 나온 재생에너지 덱은, `officevega` MCP 서버만 연결한 Claude
 Code에서 프롬프트 하나가 프로토콜 수준에서 어떻게 보이는지를 보여줍니다:
 
 ```text
@@ -369,7 +369,7 @@ deck_replace(dir, n, page) ×3 · slides_render(file, out)
                                          → three pages fixed after looking at the renders
 ```
 
-서른여덟 번의 호출, 약 13분, 그리고 어시스턴트는 터미널을 한 번도 건드리지 않았습니다: 도표, 사진, 가이드, 검사, 렌더링 결과가 모두 MCP 도구 결과로 오갔습니다. 기기를 벗어난 것은 `search`와 `media`뿐이며, VegaOffice에 설정된 제공업체로 전달되었습니다.
+서른여덟 번의 호출, 약 13분, 그리고 어시스턴트는 터미널을 한 번도 건드리지 않았습니다: 도표, 사진, 가이드, 검사, 렌더링 결과가 모두 MCP 도구 결과로 오갔습니다. 기기를 벗어난 것은 `search`와 `media`뿐이며, OfficeVega에 설정된 제공업체로 전달되었습니다.
 
 <a id="download"></a>
 
@@ -391,18 +391,18 @@ deck_replace(dir, n, page) ×3 · slides_render(file, out)
 <details>
 <summary><b>Linux에 설치하기</b></summary>
 
-deb 패키지는 apt로 설치합니다 — 필요한 의존성을 함께 설치하고 VegaOffice를
+deb 패키지는 apt로 설치합니다 — 필요한 의존성을 함께 설치하고 OfficeVega를
 애플리케이션 메뉴에 추가합니다:
 
 ```bash
-sudo apt install ./vegaoffice_<version>_amd64.deb
+sudo apt install ./officevega_<version>_amd64.deb
 ```
 
 Fedora / RHEL 계열 / openSUSE에서는 대신 rpm을 설치합니다:
 
 ```bash
-sudo dnf install ./vegaoffice-<version>.x86_64.rpm     # Fedora / RHEL family
-sudo zypper install ./vegaoffice-<version>.x86_64.rpm  # openSUSE
+sudo dnf install ./officevega-<version>.x86_64.rpm     # Fedora / RHEL family
+sudo zypper install ./officevega-<version>.x86_64.rpm  # openSUSE
 ```
 
 AppImage는 별도 설치 없이 그 자리에서 실행됩니다: FUSE 2 런타임을
@@ -410,8 +410,8 @@ AppImage는 별도 설치 없이 그 자리에서 실행됩니다: FUSE 2 런타
 `libfuse2t64`), 파일에 실행 권한을 부여한 뒤 실행하세요:
 
 ```bash
-chmod +x VegaOffice-<version>.AppImage
-./VegaOffice-<version>.AppImage
+chmod +x OfficeVega-<version>.AppImage
+./OfficeVega-<version>.AppImage
 ```
 
 </details>
@@ -457,30 +457,30 @@ sheets 앱은 xlsx 사이드카를 위해 Rust 툴체인이 추가로 필요합�
 
 ## 커뮤니티
 
-VegaOffice는 활발히 개발되고 있으며, 여러분의 피드백이 그 방향을
+OfficeVega는 활발히 개발되고 있으며, 여러분의 피드백이 그 방향을
 만들어갑니다.
 
 - **버그를 신고하거나 기능을 요청**하려면
   [GitHub Issues](https://github.com/lingeniare/getoffice/issues)를 이용하세요.
-- **VegaOffice 그룹 채팅에 참여**하려면
+- **OfficeVega 그룹 채팅에 참여**하려면
   [GitHub](https://github.com/lingeniare/getoffice)에서 팀 및 다른 사용자들과 대화할 수 있습니다.
-- VegaOffice가 유용하다고 느끼셨다면 **저장소에 스타를 눌러주세요** —
+- OfficeVega가 유용하다고 느끼셨다면 **저장소에 스타를 눌러주세요** —
   프로젝트를 지원하는 가장 좋은 방법입니다.
 
 ## 자주 묻는 질문
 
 <details>
-<summary><b>VegaOffice는 무료인가요?</b></summary>
+<summary><b>OfficeVega는 무료인가요?</b></summary>
 
-네. VegaOffice는 Apache-2.0 라이선스 아래 무료로 제공되는 오픈소스
+네. OfficeVega는 Apache-2.0 라이선스 아래 무료로 제공되는 오픈소스
 소프트웨어입니다 — 체험판도 없고, 앱 자체에 유료 등급도 없습니다.
 
 </details>
 
 <details>
-<summary><b>VegaOffice에서 마이크로소프트 Word, Excel, PowerPoint 파일을 열 수 있나요?</b></summary>
+<summary><b>OfficeVega에서 마이크로소프트 Word, Excel, PowerPoint 파일을 열 수 있나요?</b></summary>
 
-네. VegaOffice는 네이티브 `.docx`, `.xlsx`, `.pptx` 파일을 열고 저장할 수
+네. OfficeVega는 네이티브 `.docx`, `.xlsx`, `.pptx` 파일을 열고 저장할 수
 있습니다. 저장은 바이트 단위로 보존되므로, 손대지 않은 부분은 그대로
 다시 기록되어 문서가 마이크로소프트 오피스에서도 계속 정상적으로
 열립니다.
@@ -488,7 +488,7 @@ VegaOffice는 활발히 개발되고 있으며, 여러분의 피드백이 그 �
 </details>
 
 <details>
-<summary><b>VegaOffice는 오프라인에서도 동작하나요?</b></summary>
+<summary><b>OfficeVega는 오프라인에서도 동작하나요?</b></summary>
 
 문서 편집은 완전히 로컬에서 이루어집니다 — 파일을 열고, 편집하고,
 저장하고, 변환하는 과정에서 파일이 기기를 벗어나지 않습니다. AI
@@ -498,7 +498,7 @@ VegaOffice는 활발히 개발되고 있으며, 여러분의 피드백이 그 �
 </details>
 
 <details>
-<summary><b>VegaOffice에서 PDF 파일을 편집할 수 있나요?</b></summary>
+<summary><b>OfficeVega에서 PDF 파일을 편집할 수 있나요?</b></summary>
 
 네 — 위에 덮어씌우는 주석이 아니라, 원본 폰트를 유지한 채 페이지
 콘텐츠 스트림 자체를 다시 작성하는 실제 PDF 텍스트/이미지 편집 기능을
@@ -507,7 +507,7 @@ VegaOffice는 활발히 개발되고 있으며, 여러분의 피드백이 그 �
 </details>
 
 <details>
-<summary><b>VegaOffice에서 PDF를 Word, Excel, PowerPoint로 변환할 수 있나요?</b></summary>
+<summary><b>OfficeVega에서 PDF를 Word, Excel, PowerPoint로 변환할 수 있나요?</b></summary>
 
 네 — 전적으로 기기 내에서 처리됩니다: PDFium을 이용한 문자 단위 추출과
 기하학 기반 레이아웃 분석만 사용하며, 클라우드 서비스나 업로드가 필요
@@ -519,7 +519,7 @@ VegaOffice는 활발히 개발되고 있으며, 여러분의 피드백이 그 �
 <details>
 <summary><b>제 AI 모델이나 API 키를 직접 사용할 수 있나요?</b></summary>
 
-네. 키가 필요 없는 VEGA 로그인 외에도, VegaOffice는 Claude, OpenAI,
+네. 키가 필요 없는 VEGA 로그인 외에도, OfficeVega는 Claude, OpenAI,
 Gemini, DeepSeek, Kimi, GLM, Qwen, Doubao, MiniMax, Grok, Mistral,
 OpenRouter, Requesty, OpenCode Zen/Go를 위한 직접 키 사용을 지원하며, 로컬 모델
 서버를 포함한 모든 OpenAI 호환 엔드포인트도 사용할 수 있습니다. 검색,
@@ -529,7 +529,7 @@ OpenRouter, Requesty, OpenCode Zen/Go를 위한 직접 키 사용을 지원하�
 </details>
 
 <details>
-<summary><b>VegaOffice에서 HTML을 Word로 변환할 수 있나요?</b></summary>
+<summary><b>OfficeVega에서 HTML을 Word로 변환할 수 있나요?</b></summary>
 
 네 — HTML 앱의 Word로 내보내기 기능은 전적으로 기기 내에서 네이티브
 편집 가능한 `.docx`를 생성합니다. 페이지는 내장 Chromium에서 렌더링된
@@ -540,9 +540,9 @@ OpenRouter, Requesty, OpenCode Zen/Go를 위한 직접 키 사용을 지원하�
 </details>
 
 <details>
-<summary><b>Claude Code, Codex, Cursor 또는 스크립트에서 VegaOffice를 제어할 수 있나요?</b></summary>
+<summary><b>Claude Code, Codex, Cursor 또는 스크립트에서 OfficeVega를 제어할 수 있나요?</b></summary>
 
-네. VegaOffice는 동일한 엔진을 화면 없이 실행하는 `vegaoffice` 명령줄을
+네. OfficeVega는 동일한 엔진을 화면 없이 실행하는 `officevega` 명령줄을
 설치합니다: 터미널이나 스크립트에서 문서를 검사하고, 변환하고, 만들고,
 읽고, 편집할 수 있으며, 프로그램용 `--json` 출력도 제공합니다. 함께
 제공되는 에이전트 스킬은 Claude Code, Codex, Cursor, Gemini CLI, GitHub
@@ -553,9 +553,9 @@ Copilot, OpenCode, Windsurf에 사용법을 알려주며, **설정 → 연동**�
 </details>
 
 <details>
-<summary><b>VegaOffice가 데이터를 수집하나요?</b></summary>
+<summary><b>OfficeVega가 데이터를 수집하나요?</b></summary>
 
-VegaOffice는 사용 분석이나 원격 측정 데이터를 수집하거나 전송하지 않습니다. 자세한 내용은 [VegaOffice Privacy](../../PRIVACY.md)를 참조하세요.
+OfficeVega는 사용 분석이나 원격 측정 데이터를 수집하거나 전송하지 않습니다. 자세한 내용은 [OfficeVega Privacy](../../PRIVACY.md)를 참조하세요.
 
 </details>
 
@@ -566,7 +566,7 @@ VegaOffice는 사용 분석이나 원격 측정 데이터를 수집하거나 전
 
 ## 감사의 말
 
-VegaOffice는 다음의 오픈소스 프로젝트가 없었다면 만들어질 수 없었습니다:
+OfficeVega는 다음의 오픈소스 프로젝트가 없었다면 만들어질 수 없었습니다:
 
 - [Electron](https://www.electronjs.org/) — 모든 앱의 데스크톱 런타임입니다.
 - [Univer](https://github.com/dream-num/univer) (Apache-2.0) — Sheets가
@@ -613,9 +613,9 @@ VegaOffice는 다음의 오픈소스 프로젝트가 없었다면 만들어질 �
 
 ## 라이선스
 
-VegaOffice는 [Apache License 2.0](../../LICENSE)에 따라 라이선스가
+OfficeVega는 [Apache License 2.0](../../LICENSE)에 따라 라이선스가
 부여됩니다. 단, `ee/` 디렉터리는 향후 엔터프라이즈 모듈을 위해
-예약되어 있으며 [VegaOffice Enterprise License](../../ee/LICENSE)가
+예약되어 있으며 [OfficeVega Enterprise License](../../ee/LICENSE)가
 적용됩니다.
 
 GenOffice와 Genspark의 이름과 로고는 Mainfunc, Inc.의 상표입니다.

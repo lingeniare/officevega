@@ -1,6 +1,6 @@
 import type { RenderNode, RenderSlide } from '@genoffice/pptx-render'
 
-/** Request/reply the shell relays from `vegaoffice open --slide/--el` and `vegaoffice selection`. */
+/** Request/reply the shell relays from `officevega open --slide/--el` and `officevega selection`. */
 export type ControlRequest =
   { cmd: 'goto'; target: { kind: string; slide?: number; el?: string } } | { cmd: 'selection' }
 

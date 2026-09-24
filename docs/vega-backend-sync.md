@@ -10,7 +10,7 @@ what the client sends today and what the backend must guarantee.
 - Everything goes to `https://api.vega.chat/api/v1` with
   `Authorization: Bearer sk-apivega-...` — one issued key for all features,
   billed to the account deposit, attributed to the server-registered key
-  name `vegaoffice`.
+  name `officevega`.
 - The key is main-process only: never rendered, never editable, never in
   `ai-settings.json`. The client has **no user-facing override** for VEGA —
   no key field, no Base URL field, no media model pickers.
@@ -26,18 +26,19 @@ what the client sends today and what the backend must guarantee.
 
 ```
 POST /api/v1/chat/completions
-{ "model": "openrouter/auto",            // default; user may pick any /models id
+{ "model": "openai/gpt-6-sol",           // default; user may pick any /models id
   "messages": [...], "stream": true }
 ```
 
-Must return OpenAI SSE deltas (`choices[0].delta.content`). `openrouter/auto`
-is the default model — keep the alias alive or tell us the replacement.
+Must return OpenAI SSE deltas (`choices[0].delta.content`). `openai/gpt-6-sol`
+is the default chat model and `openai/gpt-6-luna` the default fast model;
+`openrouter/auto` remains a supported catalog alias users can still pick.
 
 ### 2. Web search
 
 ```
 POST /api/v1/chat/completions
-{ "model": "google/gemini-3.5-flash-lite",
+{ "model": "openai/gpt-6-luna",
   "plugins": [{ "id": "web", "engine": "parallel", "max_results": 6 }],
   "messages": [{ "role": "user", "content": "<query>" }] }
 ```
@@ -51,7 +52,7 @@ POST /api/v1/chat/completions
 
 ```
 POST /api/v1/images/generations
-{ "model": "google/gemini-3.1-flash-image",
+{ "model": "openai/gpt-image-2.5-sunburst",
   "prompt": "...",
   "n": 1,
   "aspect_ratio": "16:9",                  // OpenRouter string form, not WxH
@@ -70,7 +71,7 @@ Response must carry `data[0].b64_json` (or an OpenRouter `image_urls[0]` /
 
 ```
 POST /api/v1/chat/completions
-{ "model": "google/gemini-3.5-flash-lite",
+{ "model": "openai/gpt-6-luna",
   "messages": [{ "role": "user", "content": [
     { "type": "text", "text": "<prompt>" },
     { "type": "image_url", "image_url": { "url": "data:image/...;base64,..." } }
@@ -79,9 +80,10 @@ POST /api/v1/chat/completions
 
 ### 5. Video analysis
 
-Same as (4) but the media part is
+Same as (4) but `model` is `google/gemini-3.5-flash-lite` and the media part is
 `{ "type": "video_url", "video_url": { "url": "data:video/...;base64,..." } }`
-(OpenRouter video modality). Route the slot to a video-capable model.
+(OpenRouter video modality). `openai/gpt-6-luna` takes no video input, so the
+client pins a video-capable id here — keep it routed to one.
 
 ### 6. Model catalog
 
@@ -118,8 +120,8 @@ Drives the account block and low-balance warnings; keep it <1 s and key-auth
 | --- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
 | 1   | Does the `web` plugin accept `engine`/`max_results` per the OpenRouter spec, and is `parallel` live?                                           | If unsupported we'll drop the field and take whatever default engine you run.                                 |
 | 2   | Can the backend do parallel→exa fallback inside one request?                                                                                   | If yes, we remove the client retry and send one request.                                                      |
-| 3   | Are our fixed ids (`google/gemini-3.1-flash-image`, `google/gemini-3.5-flash-lite`) served as-is or remapped?                                  | If remapped, give us the canonical slot names to put in the client.                                           |
-| 4   | `openrouter/auto` on VEGA: supported alias for chat, or should the default be a concrete model?                                                | We ship it as the default chat model.                                                                         |
+| 3   | Are our fixed ids (`openai/gpt-image-2.5-sunburst`, `openai/gpt-6-luna`) served as-is or remapped?                                               | If remapped, give us the canonical slot names to put in the client.                                           |
+| 4   | `openrouter/auto` on VEGA: supported alias for chat, or should the default be a concrete model?                                                | Resolved: the default chat model is now `openai/gpt-6-sol`; `openrouter/auto` stays a pickable catalog alias.    |
 | 5   | `input_references` on `/images/generations` — confirmed working for edits?                                                                     | Otherwise we switch to multipart `/images/edits` for VEGA too.                                                |
 | 6   | Size limits on `data:` URLs (a 30 s video can be tens of MB)?                                                                                  | If too tight we need an upload/Files endpoint before video analysis can ship.                                 |
 | 7   | Rate limits / concurrency caps for streaming chat + images?                                                                                    | We need numbers to set client-side retry/backoff.                                                             |
@@ -130,7 +132,7 @@ Drives the account block and low-balance warnings; keep it <1 s and key-auth
 ## Sync protocol going forward
 
 - Contract changes (endpoints, payload shapes, engine names, model slots)
-  land in this file + `vega-features-api-spec.md`; ping the VegaOffice side
+  land in this file + `vega-features-api-spec.md`; ping the OfficeVega side
   before shipping a breaking change.
 - The `/models` catalog is the source of truth for capabilities — keep
   modality metadata accurate and the client stays compatible without a
@@ -142,15 +144,15 @@ Drives the account block and low-balance warnings; keep it <1 s and key-auth
 
 ### Backend changes confirmed
 
-- `client_id` whitelist and key name are now **`vegaoffice`** — the client
+- `client_id` whitelist and key name are now **`officevega`** — the client
   was switched to the product-consistent wire names
-  (`CLIENT_ID`/`KEY_NAME` in `vegaoffice-auth.ts`). Verified live
-  2026-09-17: `client_id:"vegaoffice"` → `400 invalid_client` and
-  `POST /api/v1/keys/vegaoffice` → 404 while only `genoffice` was
-  registered — **the backend must register `vegaoffice`** (or accept both)
+  (`CLIENT_ID`/`KEY_NAME` in `officevega-auth.ts`). Verified live
+  2026-09-17: `client_id:"officevega"` → `400 invalid_client` and
+  `POST /api/v1/keys/officevega` → 404 while only `genoffice` was
+  registered — **the backend must register `officevega`** (or accept both)
   before this client can sign in.
-- Key endpoints: `POST /api/v1/keys/vegaoffice` (mint),
-  `POST /api/v1/keys/vegaoffice/revoke` (sign-out).
+- Key endpoints: `POST /api/v1/keys/officevega` (mint),
+  `POST /api/v1/keys/officevega/revoke` (sign-out).
 - Keys are never deleted: revocation flips `enabled=false`; the row, prefix
   and `usage_logs.api_key_id` billing attribution persist. No delete affordance
   for app-managed keys, dashboard or server-side.
@@ -175,12 +177,13 @@ limit, keyName}` — all fields the client reads are present.
 
 ### Our answers to the VEGA questions
 
-1. `client_id: "vegaoffice"` — what the client sends and what the whitelist
-   must accept; mint/revoke paths are `/api/v1/keys/vegaoffice*`.
-2. Complete pinned-id list: `openrouter/auto` (chat default),
-   `google/gemini-3.1-flash-image` (image generation),
-   `google/gemini-3.5-flash-lite` (web-search synthesis + image/video
-   analysis). Nothing else is pinned.
+1. `client_id: "officevega"` — what the client sends and what the whitelist
+   must accept; mint/revoke paths are `/api/v1/keys/officevega*`.
+2. Complete pinned-id list: `openai/gpt-6-sol` (chat default),
+   `openai/gpt-6-luna` (fast-model default), `openrouter/auto` (supported
+   chat alias), `openai/gpt-image-2.5-sunburst` (image generation default),
+   `openai/gpt-6-luna` (web-search synthesis + image analysis),
+   `google/gemini-3.5-flash-lite` (video analysis). Nothing else is pinned.
 3. We never call `/api/v1/images` bare or `/images/edits` against VEGA —
    generations only, with inline `input_references`.
 4. ~75 MB raw is enough for the foreseeable video-analysis use; if we outgrow

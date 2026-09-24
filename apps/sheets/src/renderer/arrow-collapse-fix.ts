@@ -28,8 +28,8 @@ import {
 import { MOVE_SELECTION_COMMAND } from './selection-wrap-fix'
 import type { UniverRuntime } from './univer-state'
 
-/** vegaoffice's Ctrl+Arrow data-edge jump (excel-jump-nav.ts) — same rule */
-const JUMP_MOVE_COMMAND = 'vegaoffice.command.move-selection-excel-jump'
+/** officevega's Ctrl+Arrow data-edge jump (excel-jump-nav.ts) — same rule */
+const JUMP_MOVE_COMMAND = 'officevega.command.move-selection-excel-jump'
 
 export interface PrimaryBlock {
   startRow: number

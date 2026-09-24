@@ -121,7 +121,7 @@ export function htmlLang(lang: Lang): string {
  * 'Slides').
  */
 export function appTitle(lang: Lang, suffix?: string): string {
-  const name = lang === 'ru' || lang === 'tt' ? 'Офис ВЕГА' : 'Office VEGA'
+  const name = lang === 'ru' || lang === 'tt' ? 'Офис ВЕГА' : 'OfficeVega'
   return suffix ? `${name} ${suffix}` : name
 }
 

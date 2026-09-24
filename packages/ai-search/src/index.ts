@@ -20,17 +20,17 @@ import {
 } from './shared'
 import { gskImageSearch, gskWebSearch, gskApiKey, hasGskAuth } from './gsk'
 import { parallelMcpSearch } from './parallel-mcp'
-import { vegaofficeApiKey } from './vegaoffice-auth'
+import { officeVegaApiKey } from './officevega-auth'
 
 // The sign-in credentials feed provider/media/search resolution in
 // @genoffice/ai-provider (it can't import this package — the registry is its
 // side of the boundary). Importing ai-search in a main process is enough.
-setIssuedVegaKeyGetter(vegaofficeApiKey)
+setIssuedVegaKeyGetter(officeVegaApiKey)
 setLegacyGskKeyGetter(gskApiKey)
 
 export type { ImageSearchResult, WebSearchResult } from './shared'
 export * from './gsk'
-export * from './vegaoffice-auth'
+export * from './officevega-auth'
 export * from './media-tools'
 export * from './search-tools'
 
@@ -157,7 +157,7 @@ async function tavilyWebSearch(
  * engine; a failed/empty answer is retried on Exa before the caller's own
  * fallback chain takes over.
  */
-const VEGA_SEARCH_MODEL = 'google/gemini-3.5-flash-lite'
+const VEGA_SEARCH_MODEL = 'openai/gpt-6-luna'
 const VEGA_SEARCH_ENGINES = ['parallel', 'exa'] as const
 
 async function vegaWebSearchOnce(

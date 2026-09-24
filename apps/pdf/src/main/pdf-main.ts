@@ -625,7 +625,7 @@ interface RuntimePaths {
   preloadPath: string
   rendererUrl?: string
   rendererFile?: string
-  /** Shell router used to open generated PDFs in a new VegaOffice tab. */
+  /** Shell router used to open generated PDFs in a new OfficeVega tab. */
   openGeneratedPath?: (path: string) => boolean
   /** Host-owned cross-app document creator (the shell routes DOCX into Docs). */
   createDocument?: (request: CreateDocumentRequest) => Promise<CreateDocumentResult>
@@ -682,7 +682,7 @@ async function createStandaloneDocument(
   if (request.type === 'docx') {
     return {
       ok: false,
-      error: 'Creating DOCX files requires the Office VEGA shell or Docs app.',
+      error: 'Creating DOCX files requires the OfficeVega shell or Docs app.',
     }
   }
   const title = sanitizeGeneratedDocumentTitle(request.title)

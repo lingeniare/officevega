@@ -42,10 +42,10 @@ export const guideCommand: CommandDef = {
       throw new CliError(
         EXIT.usage,
         'guides available for: slides, docs, sheets',
-        { usage: 'vegaoffice guide slides | vegaoffice guide docs | vegaoffice guide sheets' },
+        { usage: 'officevega guide slides | officevega guide docs | officevega guide sheets' },
         {
           reason: domain === undefined ? 'missing_argument' : 'invalid_argument',
-          suggestion: 'run `vegaoffice guide slides|docs|sheets`',
+          suggestion: 'run `officevega guide slides|docs|sheets`',
         },
       )
     }
@@ -77,7 +77,7 @@ export const guideCommand: CommandDef = {
           reason: 'invalid_argument',
           suggestion: guess
             ? `did you mean ${guess}?`
-            : `run \`vegaoffice guide ${domain}\` for the groups and ops`,
+            : `run \`officevega guide ${domain}\` for the groups and ops`,
         },
       )
     }
@@ -112,13 +112,13 @@ async function load(
       if (index) return docs.opSignatureIndex()
       if (group) return docs.opGuide(group)!
       return [
-        'Op groups (vegaoffice guide slides <group> prints one; vegaoffice guide slides <op> prints one op):',
+        'Op groups (officevega guide slides <group> prints one; officevega guide slides <op> prints one op):',
         docs.opGuideCatalog(),
         '',
-        'Building a new deck: `vegaoffice guide slides design` (the staged workflow: style sheet, outline, one page file at a time, build, QC) and `vegaoffice guide slides spec` (the outline and page spec JSON for `vegaoffice slides check` and `vegaoffice create --type pptx --spec`).',
+        'Building a new deck: `officevega guide slides design` (the staged workflow: style sheet, outline, one page file at a time, build, QC) and `officevega guide slides spec` (the outline and page spec JSON for `officevega slides check` and `officevega create --type pptx --spec`).',
         '',
         'Every op: { "op": "<name>", "target": { "slide": <index|"s_n">, "el"?: "e_*" }, ...fields }.',
-        'Units are EMU (914400 per inch; suffixes in/cm/mm/pt/px accepted); font sizes are pt. `vegaoffice slides read <file>` lists ids and geometry.',
+        'Units are EMU (914400 per inch; suffixes in/cm/mm/pt/px accepted); font sizes are pt. `officevega slides read <file>` lists ids and geometry.',
         'Vocabulary:',
         docs.opVocabulary(),
       ].join('\n')
@@ -142,8 +142,8 @@ function slidesCatalog(docs: SlidesOpDocs): OpCatalog {
 
 function docsGuideText(catalog: OpCatalog, htmlRules: string, group?: string): string {
   const lines = [
-    'Word ops (vegaoffice docs apply --ops): a JSON array; every entry has "op".',
-    'Targets: { "blockIndexes": [..] } or { "nodeType": "docHeading"|"docParagraph"|"docListItem"|"image", "headingLevel"? }; get indexes from `vegaoffice docs read`.',
+    'Word ops (officevega docs apply --ops): a JSON array; every entry has "op".',
+    'Targets: { "blockIndexes": [..] } or { "nodeType": "docHeading"|"docParagraph"|"docListItem"|"image", "headingLevel"? }; get indexes from `officevega docs read`.',
     'Field notation: bare = string, n = number, bool = boolean, ? = optional, a|b = one of.',
     '',
     ...renderGroups(catalog, group),

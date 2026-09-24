@@ -37,9 +37,9 @@ export interface Brief {
   version: 1
 }
 
-export const BRIEF_META_NAME = 'vegaoffice:brief'
+export const BRIEF_META_NAME = 'officevega:brief'
 
-const META_RE = /<meta\s+[^>]*name\s*=\s*["']vegaoffice:brief["'][^>]*>/i
+const META_RE = /<meta\s+[^>]*name\s*=\s*["']officevega:brief["'][^>]*>/i
 
 function decodeAttr(value: string): string {
   return value

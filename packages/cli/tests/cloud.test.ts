@@ -7,11 +7,11 @@ import { run } from './helpers'
 
 describe('cloud command plumbing', () => {
   it('locates the shell ai-settings.json without Electron and honours the override', () => {
-    expect(aiSettingsPath({ VEGAOFFICE_AI_SETTINGS: '/x/ai.json' })).toBe('/x/ai.json')
+    expect(aiSettingsPath({ OFFICEVEGA_AI_SETTINGS: '/x/ai.json' })).toBe('/x/ai.json')
     const p = aiSettingsPath({})
-    expect(p.endsWith(join('VegaOffice', 'ai-settings.json'))).toBe(true)
+    expect(p.endsWith(join('OfficeVega', 'ai-settings.json'))).toBe(true)
     if (process.platform === 'darwin') expect(p).toContain('Library/Application Support')
-    expect(aiSettingsPath({ VEGAOFFICE_USER_DATA: '/ud' })).toBe(join('/ud', 'ai-settings.json'))
+    expect(aiSettingsPath({ OFFICEVEGA_USER_DATA: '/ud' })).toBe(join('/ud', 'ai-settings.json'))
   })
 
   it('picks the first http(s) proxy variable and ignores socks', () => {
@@ -43,12 +43,12 @@ describe('cloud command plumbing', () => {
     expect(r.json().message).toContain('output exists')
   })
 
-  it('applies VEGAOFFICE_ALLOWED_ROOTS to --out and local --ref before any network call', async () => {
+  it('applies OFFICEVEGA_ALLOWED_ROOTS to --out and local --ref before any network call', async () => {
     const { writeFileSync } = await import('node:fs')
     const { tempDir } = await import('./helpers')
     const inside = tempDir()
     const outside = tempDir()
-    const env = { ...process.env, VEGAOFFICE_AUDIT_LOG: 'off', VEGAOFFICE_ALLOWED_ROOTS: inside }
+    const env = { ...process.env, OFFICEVEGA_AUDIT_LOG: 'off', OFFICEVEGA_ALLOWED_ROOTS: inside }
     const out = await run(['image', 'a cat', '--out', join(outside, 'x.png'), '--json'], { env })
     expect(out.code).toBe(2)
     expect(out.json().message).toContain('refusing to write')

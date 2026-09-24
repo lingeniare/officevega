@@ -473,6 +473,8 @@ describe('withFastModel', () => {
     settings.provider = 'anthropic'
     const fast = withFastModel(settings)
     expect(fast.providers.anthropic.model).toBe('claude-haiku-4-5-20251001')
+    // the shipped vega fast tier swaps in too
+    expect(fast.providers.vega.model).toBe('openai/gpt-6-luna')
     // untouched providers keep their own model — including the stored config
     expect(settings.providers.anthropic.model).toBe('claude-sonnet-5')
     expect(fast.providers.gemini.model).toBe('gemini-3.7-flash')
@@ -480,6 +482,8 @@ describe('withFastModel', () => {
 
   it('returns the same object when no provider configures a fast model', () => {
     const settings = defaultAiSettings()
+    // vega ships a default fast tier — clear it so no provider has one
+    settings.providers.vega = { ...settings.providers.vega, fastModel: undefined }
     expect(withFastModel(settings)).toBe(settings)
   })
 

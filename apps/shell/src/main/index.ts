@@ -100,12 +100,12 @@ import {
 } from './star-prompt'
 import { handleDroppedFiles } from './dropped-files'
 import {
-  vegaofficeLogout,
-  loadVegaofficeAuth,
+  officeVegaLogout,
+  loadOfficeVegaAuth,
   setGskProxyUrl,
-  startVegaofficeLogin,
+  startOfficeVegaLogin,
   vegaAccountInfo,
-  watchVegaofficeApiKey,
+  watchOfficeVegaApiKey,
 } from '@genoffice/ai-search'
 
 import {
@@ -333,7 +333,7 @@ import { applyUpdateChannel, checkForUpdatesNow, initAutoUpdater } from './updat
 import { isUpdateChannel, type UpdateChannel } from '../shared/update-api'
 
 /**
- * VegaOffice unified shell: ONE Electron app, ONE BrowserWindow, hosting the
+ * OfficeVega unified shell: ONE Electron app, ONE BrowserWindow, hosting the
  * docs and sheets modules as WebContentsView tabs behind a WPS-style tab
  * strip. The shell owns the lifecycle — single-instance lock, file-
  * association routing by extension, and per-active-tab menu switching.
@@ -343,13 +343,15 @@ import { isUpdateChannel, type UpdateChannel } from '../shared/update-api'
 
 // ANY unpacked run (`npm run shell`, `npm run dev`, `npx electron .`) must not
 // share the installed app's userData or single-instance lock — otherwise a dev
-// run silently quits and forwards its argv to the running installed VegaOffice.
-// VEGAOFFICE_USER_DATA: test drivers point this at a scratch dir so an
+// run silently quits and forwards its argv to the running installed OfficeVega.
+// OFFICEVEGA_USER_DATA: test drivers point this at a scratch dir so an
 // automated instance can run alongside the dev instance (separate lock).
 if (!app.isPackaged)
   app.setPath(
     'userData',
-    process.env.VEGAOFFICE_USER_DATA ?? join(app.getPath('appData'), 'VegaOffice Dev'),
+    process.env.OFFICEVEGA_USER_DATA ??
+      process.env.VEGAOFFICE_USER_DATA ??
+      join(app.getPath('appData'), 'OfficeVega Dev'),
   )
 
 /**
@@ -364,13 +366,15 @@ if (headlessArgv.kind !== 'none') {
   app.dock?.hide()
 }
 
-// The product renames ("AI Office" → GenOffice → GetOffice → VegaOffice) changed the userData path; migrate old user data once
-if (app.isPackaged) {
+// The product renames ("AI Office" → GenOffice → GetOffice → VegaOffice → OfficeVega) changed the userData path; migrate old user data once
+{
   const newDir = app.getPath('userData')
   const newEmpty = !existsSync(newDir) || readdirSync(newDir).length === 0
   if (newEmpty) {
-    for (const legacy of ['GetOffice', 'GenOffice', 'AI Office']) {
-      const oldDir = join(app.getPath('appData'), legacy)
+    // packaged installs used "<name>", dev checkouts "<name> Dev"
+    const suffix = app.isPackaged ? '' : ' Dev'
+    for (const legacy of ['VegaOffice', 'GetOffice', 'GenOffice', 'AI Office']) {
+      const oldDir = join(app.getPath('appData'), `${legacy}${suffix}`)
       if (existsSync(oldDir)) {
         cpSync(oldDir, newDir, { recursive: true })
         break
@@ -451,7 +455,7 @@ registerPrivilegedSchemes()
 
 // ---- UI language ----
 // Persisted in userData/app-settings.json so the editor modules can read the
-// same file when they pick up i18n later. VEGAOFFICE_LANG overrides for tests.
+// same file when they pick up i18n later. OFFICEVEGA_LANG overrides for tests.
 
 const APP_SETTINGS_PATH = () => join(app.getPath('userData'), 'app-settings.json')
 const OPEN_DOCUMENTS_PATH = () => join(app.getPath('userData'), OPEN_DOCUMENTS_FILE)
@@ -472,8 +476,8 @@ let uiLang: Lang | null = null
 
 function currentLang(): Lang {
   if (uiLang) return uiLang
-  if (process.env.VEGAOFFICE_LANG) {
-    uiLang = normalizeLang(process.env.VEGAOFFICE_LANG)
+  if (process.env.OFFICEVEGA_LANG) {
+    uiLang = normalizeLang(process.env.OFFICEVEGA_LANG)
     setUiLang(uiLang)
     return uiLang
   }
@@ -3843,7 +3847,7 @@ function newDocTab(): void {
 
 /** MCP: open a blank docs tab and return its webContents id, for the visible-editor bridge */
 function openBlankDocsTabForMcp(): number {
-  if (!tabManager) throw new Error('Office VEGA is not ready')
+  if (!tabManager) throw new Error('OfficeVega is not ready')
   const tabId = tabManager.openDocsTab(undefined, { newBlank: true })
   const view = tabManager.docsTabs().find((t) => t.id === tabId)
   if (!view) throw new Error('the new document tab could not be opened')
@@ -3859,7 +3863,7 @@ function openBlankDocsTabForMcp(): number {
  * marking is skipped, the file name is the agent's business.
  */
 async function openBlankSheetsTabForMcp(): Promise<number> {
-  if (!tabManager) throw new Error('Office VEGA is not ready')
+  if (!tabManager) throw new Error('OfficeVega is not ready')
   const filePath = uniquePathIn(defaultSaveDir(), `${tm('untitledSheet')}.xlsx`)
   writeFileSync(filePath, await blankXlsxBuffer())
   const tabId = tabManager.openSheetsTab(filePath)
@@ -3929,7 +3933,7 @@ function abandonBlankTabForMcp(
 
 /** MCP: open a blank slides tab and return its webContents id, for the visible-deck bridge */
 function openBlankSlidesTabForMcp(): number {
-  if (!tabManager) throw new Error('Office VEGA is not ready')
+  if (!tabManager) throw new Error('OfficeVega is not ready')
   const tabId = tabManager.openSlidesTab()
   const view = tabManager.slidesTabs().find((t) => t.id === tabId)
   if (!view) throw new Error('the new presentation tab could not be opened')
@@ -4019,10 +4023,10 @@ function statEntries(paths: string[]): RecentEntry[] {
 }
 
 function registerHomeIpc(): void {
-  // signed-in means VegaOffice's own VEGA device login (the issued
+  // signed-in means OfficeVega's own VEGA device login (the issued
   // sk-apivega-… key); GET /api/v1/account supplies the deposit
   ipcMain.handle(HOME_CHANNELS.accountStatus, async () => {
-    if (!loadVegaofficeAuth()) return { loggedIn: false }
+    if (!loadOfficeVegaAuth()) return { loggedIn: false }
     await proxyBootstrap
     const info = await vegaAccountInfo()
     return info
@@ -4049,7 +4053,7 @@ function registerHomeIpc(): void {
     }
     // open the browser on the first url event only; later events refresh the rescue URL
     let opened = false
-    const launched = startVegaofficeLogin((progress) => {
+    const launched = startOfficeVegaLogin((progress) => {
       if (progress.url) {
         pendingLoginUrl = progress.url
         if (!opened) {
@@ -4068,7 +4072,7 @@ function registerHomeIpc(): void {
   })
 
   ipcMain.handle(HOME_CHANNELS.accountLogout, async () => {
-    await vegaofficeLogout()
+    await officeVegaLogout()
   })
 
   ipcMain.handle(HOME_CHANNELS.getAppVersion, (): string => app.getVersion())
@@ -4570,7 +4574,7 @@ function registerHomeIpc(): void {
       const displaced: string[] = []
       const result = movePathsInto(sources, targetDir, conflictPolicy, folderErrors(), {
         replaceExisting: (path) => {
-          const parked = join(dirname(path), `.vegaoffice-replaced-${Date.now()}-${basename(path)}`)
+          const parked = join(dirname(path), `.officevega-replaced-${Date.now()}-${basename(path)}`)
           const files = isDir(path) ? trackedFilesUnder(path) : [path]
           renameSync(path, parked)
           return {
@@ -4653,8 +4657,8 @@ function registerHomeIpc(): void {
     const state = readStarPrompt()
     const docOpens = state.docOpens ?? 0
     // dev preview of the card without waiting out the value thresholds
-    // (same pattern as VEGAOFFICE_FAKE_UPDATE); nothing is recorded
-    if (!app.isPackaged && process.env.VEGAOFFICE_FORCE_STAR_PROMPT) return { show: true, docOpens }
+    // (same pattern as OFFICEVEGA_FAKE_UPDATE); nothing is recorded
+    if (!app.isPackaged && process.env.OFFICEVEGA_FORCE_STAR_PROMPT) return { show: true, docOpens }
     const grant = (): StarPromptShow => {
       writeStarPrompt(withShown(state, now))
       starPromptSessionGrant = { show: true, docOpens }
@@ -5839,8 +5843,8 @@ registerIntegrationsIpc({
     ? join(process.resourcesPath, 'cli')
     : join(APPS_ROOT, '..', 'packages', 'cli', 'bin'),
   skillPath: app.isPackaged
-    ? join(process.resourcesPath, 'cli', 'skills', 'vegaoffice', 'SKILL.md')
-    : join(APPS_ROOT, '..', 'skills', 'vegaoffice', 'SKILL.md'),
+    ? join(process.resourcesPath, 'cli', 'skills', 'officevega', 'SKILL.md')
+    : join(APPS_ROOT, '..', 'skills', 'officevega', 'SKILL.md'),
   cliPackageJson: app.isPackaged
     ? join(process.resourcesPath, 'cli', 'package.json')
     : join(APPS_ROOT, '..', 'packages', 'cli', 'package.json'),
@@ -5866,7 +5870,7 @@ const headlessExporters: HeadlessExporters = {
 /**
  * The whole `--headless-export` run: no shell window, no menus, no updater,
  * no single-instance lock (a GUI instance may well be running). Prints
- * exactly one line and exits with the vegaoffice convention (0/1/2/3).
+ * exactly one line and exits with the officevega convention (0/1/2/3).
  */
 async function runHeadlessExportEntry(
   parsed: Exclude<HeadlessArgvParse, { kind: 'none' }>,
@@ -5888,7 +5892,7 @@ async function runHeadlessExportEntry(
       resolve()
     })
   })
-  // app.quit() always exits 0; the vegaoffice envelope needs the real code, and
+  // app.quit() always exits 0; the officevega envelope needs the real code, and
   // every teardown this run owns has already happened.
   app.exit(headlessExitCode(outcome))
 }
@@ -5937,15 +5941,15 @@ app.whenReady().then(async () => {
     app.quit()
     return
   }
-  // another VegaOffice-family app re-logging in rotates the shared key; the
+  // another OfficeVega-family app re-logging in rotates the shared key; the
   // home page re-reads its account status. A logout that clears the key is
   // not a login
-  stopAuthWatch = watchVegaofficeApiKey((key) => {
+  stopAuthWatch = watchOfficeVegaApiKey((key) => {
     if (!key) return
     for (const w of BrowserWindow.getAllWindows())
       w.webContents.send(HOME_CHANNELS.accountLoginEvent, { phase: 'success' })
   })
-  // a registry left by a crashed instance must not block vegaoffice writes
+  // a registry left by a crashed instance must not block officevega writes
   ownsOpenDocumentsRegistry = true
   publishOpenDocuments(OPEN_DOCUMENTS_PATH(), [])
   if (!app.isPackaged) {
@@ -6051,14 +6055,14 @@ app.whenReady().then(async () => {
         discard: htmlDiscardPendingAssets,
       },
     }),
-    // the headless create_*/read_* tools delegate to the bundled vegaoffice CLI
+    // the headless create_*/read_* tools delegate to the bundled officevega CLI
     // (the same engines, no second implementation); it runs on the app's own
     // Node runtime via ELECTRON_RUN_AS_NODE
     cliRunner: createCliRunner({
       executable: process.execPath,
       entry: app.isPackaged
-        ? join(process.resourcesPath, 'cli', 'vegaoffice.cjs')
-        : join(APPS_ROOT, '..', 'packages', 'cli', 'dist', 'vegaoffice.cjs'),
+        ? join(process.resourcesPath, 'cli', 'officevega.cjs')
+        : join(APPS_ROOT, '..', 'packages', 'cli', 'dist', 'officevega.cjs'),
     }),
     // lets the content tools take a `document` argument (tab id or path) and edit
     // a tab the *user* has open, with no create_session involved

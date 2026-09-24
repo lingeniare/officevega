@@ -2,12 +2,12 @@
   <a href="https://github.com/lingeniare/getoffice/">
     <picture>
       <source srcset="../assets/readme/hero-dark.webp" media="(prefers-color-scheme: dark)">
-      <img src="../assets/readme/hero.webp" alt="VegaOffice — rangkaian Pejabat AI sumber terbuka: Docs, Sheets, Slides, PDF, Markdown dan HTML dengan panel AI terbina dalam" width="100%">
+      <img src="../assets/readme/hero.webp" alt="OfficeVega — rangkaian Pejabat AI sumber terbuka: Docs, Sheets, Slides, PDF, Markdown dan HTML dengan panel AI terbina dalam" width="100%">
     </picture>
   </a>
 </p>
 
-<h1 align="center">VegaOffice</h1>
+<h1 align="center">OfficeVega</h1>
 
 <p align="center"><b>Rangkaian Office AI sumber terbuka pertama di dunia yang paling lengkap ciri.</b><br>
 Fail Word, Excel, PowerPoint dan PDF, disunting oleh anda dan AI anda, disimpan semula dalam format sebenar.</p>
@@ -30,7 +30,7 @@ Fail Word, Excel, PowerPoint dan PDF, disunting oleh anda dan AI anda, disimpan 
   <a href="../../PRIVACY.md"><b>Privasi</b></a>
 </p>
 
-VegaOffice ialah alternatif percuma dan sumber terbuka kepada Microsoft Office
+OfficeVega ialah alternatif percuma dan sumber terbuka kepada Microsoft Office
 untuk macOS, Windows dan Linux. Ia membuka dan menyimpan fail asli `.docx`,
 `.xlsx` dan `.pptx`, menyunting PDF, Markdown dan HTML, serta meletakkan agen
 AI di sebelah setiap dokumen — bukan sekadar kotak sembang yang ditampal di
@@ -55,7 +55,7 @@ kepada anda dengan tepat apa yang disentuhnya.
   OpenRouter, Requesty, atau mana-mana titik akhir yang serasi dengan OpenAI, termasuk
   pelayan setempat.
 - **Boleh dijalankan melalui skrip dan sedia untuk agen.** Aplikasi ini
-  disertakan dengan baris arahan `vegaoffice` dan skill untuk Claude Code,
+  disertakan dengan baris arahan `officevega` dan skill untuk Claude Code,
   Codex, Cursor, Gemini CLI, GitHub Copilot, OpenCode dan Windsurf, jadi agen
   pengekodan boleh mencipta, menukar, membaca dan menyunting fail Office
   sebenar pada mesin anda tanpa membuka sebarang tetingkap.
@@ -75,8 +75,8 @@ oleh gesaan yang boleh anda baca dalam panel.
 
 <table>
 <tr>
-<td width="50%"><img src="../assets/readme/docs-report.webp" alt="VegaOffice Docs memaparkan halaman laporan tahunan dua lajur dengan imej muka depan sepenuh lebar, jadual KPI berlorek, pengepala dan pengaki, pada zum 80% dengan panel AI dilipat"></td>
-<td width="50%"><img src="../assets/readme/docs-ai.webp" alt="VegaOffice Docs: gambaran keseluruhan syarikat dengan imej sepanduk; AI memadatkan bahagian Overview dan menyisipkan bahagian berbulet baharu, dan panel menawarkan rollback satu klik"></td>
+<td width="50%"><img src="../assets/readme/docs-report.webp" alt="OfficeVega Docs memaparkan halaman laporan tahunan dua lajur dengan imej muka depan sepenuh lebar, jadual KPI berlorek, pengepala dan pengaki, pada zum 80% dengan panel AI dilipat"></td>
+<td width="50%"><img src="../assets/readme/docs-ai.webp" alt="OfficeVega Docs: gambaran keseluruhan syarikat dengan imej sepanduk; AI memadatkan bahagian Overview dan menyisipkan bahagian berbulet baharu, dan panel menawarkan rollback satu klik"></td>
 </tr>
 <tr>
 <td><b>Membuka fail sepertimana Word menyusun aturnya</b> — bahagian dua lajur, imej sepenuh muka, jadual berlorek, pengepala dan pengaki, penomboran halaman berdasarkan metrik baris Word. Gaya, komen, perubahan yang dijejak, persamaan dan tulisan dakwat kekal utuh selepas pergi-balik.</td>
@@ -88,8 +88,8 @@ oleh gesaan yang boleh anda baca dalam panel.
 
 <table>
 <tr>
-<td width="50%"><img src="../assets/readme/sheets-ai.webp" alt="VegaOffice Sheets: AI menambah helaian Summary dengan hasil mengikut wilayah dan kategori menggunakan formula SUMIF, ditambah carta lajur, dan melaporkan 43 perubahan yang digunakan dengan butang Undo"></td>
-<td width="50%"><img src="../assets/readme/sheets-qa.webp" alt="VegaOffice Sheets: ditanya wilayah mana yang mencatat hasil Q2 tertinggi, AI menjawab Eropah dengan pecahan kategori dan merujuk sel yang digunakannya sebagai pautan, di sebelah helaian Orders"></td>
+<td width="50%"><img src="../assets/readme/sheets-ai.webp" alt="OfficeVega Sheets: AI menambah helaian Summary dengan hasil mengikut wilayah dan kategori menggunakan formula SUMIF, ditambah carta lajur, dan melaporkan 43 perubahan yang digunakan dengan butang Undo"></td>
+<td width="50%"><img src="../assets/readme/sheets-qa.webp" alt="OfficeVega Sheets: ditanya wilayah mana yang mencatat hasil Q2 tertinggi, AI menjawab Eropah dengan pecahan kategori dan merujuk sel yang digunakannya sebagai pautan, di sebelah helaian Orders"></td>
 </tr>
 <tr>
 <td><b>Bina ia</b> — daripada satu ayat, agen menambah helaian Summary dengan <code>SUMIF</code> sebenar mengikut wilayah dan kategori, menyisipkan carta lajur, dan melaksanakan 43 perubahan itu sebagai satu kelompok yang boleh dibuat asal.</td>
@@ -99,15 +99,15 @@ oleh gesaan yang boleh anda baca dalam panel.
 
 ### 3 · Slides — daripada gesaan kepada deck `.pptx`
 
-<img src="../assets/readme/slides-generate.webp" alt="Time-lapse VegaOffice Slides menjana deck pelabur Aurora Home: AI merancang jalan cerita dalam panel, slaid muncul satu demi satu pada kanvas, dan deck yang siap berakhir dengan closing ask" width="100%">
+<img src="../assets/readme/slides-generate.webp" alt="Time-lapse OfficeVega Slides menjana deck pelabur Aurora Home: AI merancang jalan cerita dalam panel, slaid muncul satu demi satu pada kanvas, dan deck yang siap berakhir dengan closing ask" width="100%">
 
 <table>
 <tr>
-<td width="50%"><img src="../assets/readme/slides-cover.webp" alt="VegaOffice Slides: slaid muka depan deck pelabur Aurora Home yang dijana AI pada kanvas, dengan gesaan asal satu baris dan ringkasan AI tentang apa yang dibinanya dalam panel"></td>
-<td width="50%"><img src="../assets/readme/slides-ai.webp" alt="VegaOffice Slides: slaid penutup yang direka bagi deck 11 slaid yang sama, dengan jalur lakaran kecil di kiri dan panel AI meringkaskan jalan ceritanya"></td>
+<td width="50%"><img src="../assets/readme/slides-cover.webp" alt="OfficeVega Slides: slaid muka depan deck pelabur Aurora Home yang dijana AI pada kanvas, dengan gesaan asal satu baris dan ringkasan AI tentang apa yang dibinanya dalam panel"></td>
+<td width="50%"><img src="../assets/readme/slides-ai.webp" alt="OfficeVega Slides: slaid penutup yang direka bagi deck 11 slaid yang sama, dengan jalur lakaran kecil di kiri dan panel AI meringkaskan jalan ceritanya"></td>
 </tr>
 <tr>
-<td><b>Satu baris masuk</b> — "Create a 10-slide investor pitch deck for Aurora Home…". VegaOffice merancang jalan cerita, menyelidik angka-angka itu, dan merangka setiap slaid terus pada kanvas sebagai `.pptx` sebenar.</td>
+<td><b>Satu baris masuk</b> — "Create a 10-slide investor pitch deck for Aurora Home…". OfficeVega merancang jalan cerita, menyelidik angka-angka itu, dan merangka setiap slaid terus pada kanvas sebagai `.pptx` sebenar.</td>
 <td><b>Deck siap keluar</b> — sebelas slaid yang direka dengan tipografi, imej yang konsisten dan seruan tindakan penutup; teruskan menyunting dengan induk (masters), susun atur, garis pandu pintar dan pemangkasan tidak merosakkan, atau minta panel menggayakan semula, menulis semula dan menyusun semula.</td>
 </tr>
 </table>
@@ -116,8 +116,8 @@ oleh gesaan yang boleh anda baca dalam panel.
 
 <table>
 <tr>
-<td width="50%"><img src="../assets/readme/pdf-edit.webp" alt="VegaOffice PDF: mod Edit text menggariskan setiap blok teks pada halaman untuk penyuntingan semula di tempatnya sementara panel AI menjawab soalan tentang laporan itu dengan rujukan halaman"></td>
-<td width="50%"><img src="../assets/readme/pdf-convert.webp" alt="VegaOffice Docs memaparkan dokumen Word yang ditukar secara setempat daripada PDF ulasan suku tahunan Helios, dibuka dalam tab kedua di sebelah PDF asal"></td>
+<td width="50%"><img src="../assets/readme/pdf-edit.webp" alt="OfficeVega PDF: mod Edit text menggariskan setiap blok teks pada halaman untuk penyuntingan semula di tempatnya sementara panel AI menjawab soalan tentang laporan itu dengan rujukan halaman"></td>
+<td width="50%"><img src="../assets/readme/pdf-convert.webp" alt="OfficeVega Docs memaparkan dokumen Word yang ditukar secara setempat daripada PDF ulasan suku tahunan Helios, dibuka dalam tab kedua di sebelah PDF asal"></td>
 </tr>
 <tr>
 <td><b>Sunting di dalam halaman</b> — mod Edit text menggariskan setiap blok teks untuk ditaip semula di tempatnya; strim kandungan ditulis semula melalui PDFium dengan fon asal, bukan anotasi yang sekadar menutup. Tanya AI tentang laporan panjang dan dapatkan jawapan dengan rujukan halaman.</td>
@@ -131,11 +131,11 @@ Nyatakan tujuan halaman itu dan untuk siapa ia dibina. AI mencadangkan
 **ringkasan reka bentuk** dahulu — hook, palet warna, tipografi dan arah
 gaya — sebelum membina satu fail `.html` mandiri berdasarkan token-token itu.
 
-<img src="../assets/readme/html-restyle-motion.webp" alt="Time-lapse VegaOffice HTML menggayakan semula halaman pendaratan Lumen: satu permintaan Restyle dalam panel menukar halaman Midnight Studio yang gelap kepada versi Solar Daybreak yang hangat, sementara setiap bahagian dan semua kandungan kekal di tempatnya" width="100%">
+<img src="../assets/readme/html-restyle-motion.webp" alt="Time-lapse OfficeVega HTML menggayakan semula halaman pendaratan Lumen: satu permintaan Restyle dalam panel menukar halaman Midnight Studio yang gelap kepada versi Solar Daybreak yang hangat, sementara setiap bahagian dan semua kandungan kekal di tempatnya" width="100%">
 
 <table>
 <tr>
-<td width="50%"><img src="../assets/readme/html-ai.webp" alt="VegaOffice HTML: halaman pendaratan yang dijana untuk lampu meja solar dalam arah gelap Midnight Studio, ditunjukkan dalam pratonton langsung dengan panel AI meringkaskan halaman yang baru dibinanya"></td>
+<td width="50%"><img src="../assets/readme/html-ai.webp" alt="OfficeVega HTML: halaman pendaratan yang dijana untuk lampu meja solar dalam arah gelap Midnight Studio, ditunjukkan dalam pratonton langsung dengan panel AI meringkaskan halaman yang baru dibinanya"></td>
 <td width="50%"><img src="../assets/readme/html-restyle.webp" alt="Halaman pendaratan Lumen yang sama digayakan semula oleh AI ke arah hangat Solar Daybreak: latar belakang seperti kertas, tajuk serif dan aksen jingga, dengan setiap bahagian dan semua teks dikekalkan"></td>
 </tr>
 <tr>
@@ -145,8 +145,8 @@ gaya — sebelum membina satu fail `.html` mandiri berdasarkan token-token itu.
 </table>
 <table>
 <tr>
-<td width="50%"><img src="../assets/readme/html-dashboard.webp" alt="VegaOffice HTML: UI papan pemuka peribadi yang dijana untuk pereka bebas dalam gaya linen hangat, dengan rel kiri, sapaan serif dan empat kad metrik"></td>
-<td width="50%"><img src="../assets/readme/html-report.webp" alt="VegaOffice HTML: laporan data pasaran kenderaan elektrik yang dijana dalam gaya akhbar besar, dengan kepala akhbar serif, angka utama 17.3 juta dan baris statistik"></td>
+<td width="50%"><img src="../assets/readme/html-dashboard.webp" alt="OfficeVega HTML: UI papan pemuka peribadi yang dijana untuk pereka bebas dalam gaya linen hangat, dengan rel kiri, sapaan serif dan empat kad metrik"></td>
+<td width="50%"><img src="../assets/readme/html-report.webp" alt="OfficeVega HTML: laporan data pasaran kenderaan elektrik yang dijana dalam gaya akhbar besar, dengan kepala akhbar serif, angka utama 17.3 juta dan baris statistik"></td>
 </tr>
 <tr>
 <td><b>Reka bentuk UI</b> — permulaan "papan pemuka peribadi" mengubah satu persona kepada susun atur yang berfungsi: rel kiri, sapaan, sparkline jam bercaj, kad invois dan penggunaan, semuanya HTML sebenar yang boleh anda serahkan kepada pembangun.</td>
@@ -158,8 +158,8 @@ gaya — sebelum membina satu fail `.html` mandiri berdasarkan token-token itu.
 
 <table>
 <tr>
-<td width="50%"><img src="../assets/readme/markdown-ai.webp" alt="VegaOffice Markdown: perenggan yang dipilih memaparkan popover Ask AI dengan arahan yang ditaip dan cip cadangan seperti Polish, Make more concise, Expand dan Fix grammar, ditambah butang Send now dan Add to queue"></td>
-<td width="50%"><img src="../assets/readme/markdown-render.webp" alt="VegaOffice Markdown memaparkan dokumen nota pelancaran dengan jadual, carta alir Mermaid dan senarai tugas, dengan gesaan permulaan panel AI di sebelah kiri"></td>
+<td width="50%"><img src="../assets/readme/markdown-ai.webp" alt="OfficeVega Markdown: perenggan yang dipilih memaparkan popover Ask AI dengan arahan yang ditaip dan cip cadangan seperti Polish, Make more concise, Expand dan Fix grammar, ditambah butang Send now dan Add to queue"></td>
+<td width="50%"><img src="../assets/readme/markdown-render.webp" alt="OfficeVega Markdown memaparkan dokumen nota pelancaran dengan jadual, carta alir Mermaid dan senarai tugas, dengan gesaan permulaan panel AI di sebelah kiri"></td>
 </tr>
 <tr>
 <td><b>Tanya AI tentang pilihan teks</b> — pilih mana-mana ayat dan cip <b>Ask AI</b> akan muncul: taip arahan atau pilih cadangan, hantar serta-merta, atau baris beberapa suntingan berlabuh dan jalankan dalam satu pusingan. Kemasukan yang sama wujud dalam setiap aplikasi.</td>
@@ -167,42 +167,42 @@ gaya — sebelum membina satu fail `.html` mandiri berdasarkan token-token itu.
 </tr>
 </table>
 
-### 7 · CLI — agen pengekodan anda memandu VegaOffice, pada mesin anda
+### 7 · CLI — agen pengekodan anda memandu OfficeVega, pada mesin anda
 
-VegaOffice disertakan dengan baris arahan `vegaoffice` dan skill agen. Pasang
+OfficeVega disertakan dengan baris arahan `officevega` dan skill agen. Pasang
 skill itu dan Claude Code, Codex, Cursor, Gemini CLI, GitHub Copilot, OpenCode
 atau Windsurf boleh mencipta, menukar, membaca dan menyunting fail Office
 sebenar melalui enjin yang sama seperti aplikasi, tanpa membuka sebarang
 tetingkap.
 
-<img src="../assets/readme/cli-deck-in-app.webp" alt="VegaOffice Slides memaparkan deck Sistem Suria lapan slaid yang dibina oleh agen pengekodan melalui baris arahan vegaoffice: slaid muka depan pada kanvas, lapan lakaran kecil di kiri dan panel AI terbuka" width="100%">
+<img src="../assets/readme/cli-deck-in-app.webp" alt="OfficeVega Slides memaparkan deck Sistem Suria lapan slaid yang dibina oleh agen pengekodan melalui baris arahan officevega: slaid muka depan pada kanvas, lapan lakaran kecil di kiri dan panel AI terbuka" width="100%">
 
 <table>
 <tr>
 <td width="50%"><img src="../assets/readme/cli-slides-grid.webp" alt="Lapan slaid deck Sistem Suria yang telah dipaparkan bersebelahan: muka depan, garis masa penerokaan, empat angka utama, carta bar diameter planet, dunia berbatu lawan gergasi, angka utama 99.8% milik Matahari, grid empat gergasi dan rumusan"></td>
-<td width="50%"><img src="../assets/readme/cli-integrations.webp" alt="VegaOffice Settings, halaman Integrations: skill vegaoffice dipasang ke dalam Claude Code, dengan butang Install di sebelah Codex dan Cursor"></td>
+<td width="50%"><img src="../assets/readme/cli-integrations.webp" alt="OfficeVega Settings, halaman Integrations: skill officevega dipasang ke dalam Claude Code, dengan butang Install di sebelah Codex dan Cursor"></td>
 </tr>
 <tr>
-<td><b>Satu gesaan kepada agen anda</b> — "Build an eight-slide deck about the Solar System." Agen membaca skill, menulis helaian gaya, rangka dan satu spesifikasi halaman bagi setiap slaid, menjana dua foto dengan <code>vegaoffice image</code>, dan membiarkan <code>vegaoffice slides check</code> menolak apa-apa yang melimpah atau bertindih sebelum <code>vegaoffice create</code> memasang <code>.pptx</code> dan <code>slides render</code> memulangkan satu PNG bagi setiap slaid untuk dilihat.</td>
-<td><b>Pasang sekali, daripada Tetapan → Integrasi</b> — VegaOffice menyenaraikan agen pengekodan yang ditemuinya pada komputer ini dan menulis skill ke dalam setiap satu yang anda pilih. Atau muat turun skill sebagai zip, atau jalankan <code>npx skills add lingeniare/getoffice</code>. Arahan dan aliran kerja penuh ada dalam <a href="#command-line-and-agent-skill">Baris arahan dan skill agen</a>.</td>
+<td><b>Satu gesaan kepada agen anda</b> — "Build an eight-slide deck about the Solar System." Agen membaca skill, menulis helaian gaya, rangka dan satu spesifikasi halaman bagi setiap slaid, menjana dua foto dengan <code>officevega image</code>, dan membiarkan <code>officevega slides check</code> menolak apa-apa yang melimpah atau bertindih sebelum <code>officevega create</code> memasang <code>.pptx</code> dan <code>slides render</code> memulangkan satu PNG bagi setiap slaid untuk dilihat.</td>
+<td><b>Pasang sekali, daripada Tetapan → Integrasi</b> — OfficeVega menyenaraikan agen pengekodan yang ditemuinya pada komputer ini dan menulis skill ke dalam setiap satu yang anda pilih. Atau muat turun skill sebagai zip, atau jalankan <code>npx skills add lingeniare/getoffice</code>. Arahan dan aliran kerja penuh ada dalam <a href="#command-line-and-agent-skill">Baris arahan dan skill agen</a>.</td>
 </tr>
 </table>
 
 ### 8 · MCP — alat yang sama melalui Model Context Protocol
 
-Setiap arahan `vegaoffice` turut menjadi alat MCP. Claude Code, Claude
-Desktop, Cursor dan mana-mana klien MCP lain boleh memulakan `vegaoffice
+Setiap arahan `officevega` turut menjadi alat MCP. Claude Code, Claude
+Desktop, Cursor dan mana-mana klien MCP lain boleh memulakan `officevega
 mcp` sendiri, tanpa perlu memasang skill dan tanpa membuka tetingkap, lalu
 mendapat 29 alat serta rujukan operasi sebagai sumber (resources). Pelayan
 HTTP kedua di dalam aplikasi membolehkan agen membina dokumen Word dalam
 tab editor yang kelihatan sementara anda memerhati.
 
-<img src="../assets/readme/mcp-deck-motion.webp" alt="Rakaman time-lapse Claude Code membina taklimat pelabur lapan slaid tentang tenaga boleh diperbaharui melalui pelayan MCP vegaoffice: mencari rajah dan foto, menyemak setiap gambar calon dengan media, deck_start menulis helaian gaya dan rangka, deck_page menambah satu halaman yang disemak pada satu masa, deck_build memasang .pptx dan slides_render memulangkan gambar setiap slaid; deck yang siap kemudian dibuka dalam VegaOffice Slides" width="100%">
+<img src="../assets/readme/mcp-deck-motion.webp" alt="Rakaman time-lapse Claude Code membina taklimat pelabur lapan slaid tentang tenaga boleh diperbaharui melalui pelayan MCP officevega: mencari rajah dan foto, menyemak setiap gambar calon dengan media, deck_start menulis helaian gaya dan rangka, deck_page menambah satu halaman yang disemak pada satu masa, deck_build memasang .pptx dan slides_render memulangkan gambar setiap slaid; deck yang siap kemudian dibuka dalam OfficeVega Slides" width="100%">
 
 <table>
 <tr>
-<td width="50%"><img src="../assets/readme/mcp-deck-in-app.webp" alt="VegaOffice Slides memaparkan deck Renewable Energy 2026 lapan slaid yang dibina Claude Code melalui pelayan MCP vegaoffice: slaid muka depan dengan foto ladang angin pada kanvas dan lapan lakaran kecil di kiri"></td>
-<td width="50%"><img src="../assets/readme/mcp-integrations.webp" alt="VegaOffice Settings, halaman Integrations, bahagian MCP: arahan satu baris claude mcp add untuk Claude Code, blok JSON untuk Cursor, Claude Desktop dan klien MCP lain, serta pilihan pelayan HTTP tempatan di bawah"></td>
+<td width="50%"><img src="../assets/readme/mcp-deck-in-app.webp" alt="OfficeVega Slides memaparkan deck Renewable Energy 2026 lapan slaid yang dibina Claude Code melalui pelayan MCP officevega: slaid muka depan dengan foto ladang angin pada kanvas dan lapan lakaran kecil di kiri"></td>
+<td width="50%"><img src="../assets/readme/mcp-integrations.webp" alt="OfficeVega Settings, halaman Integrations, bahagian MCP: arahan satu baris claude mcp add untuk Claude Code, blok JSON untuk Cursor, Claude Desktop dan klien MCP lain, serta pilihan pelayan HTTP tempatan di bawah"></td>
 </tr>
 <tr>
 <td><b>Satu gesaan, 38 panggilan alat, tanpa shell</b> — "Bina taklimat pelabur lapan slaid tentang tenaga boleh diperbaharui pada 2026, dengan foto sebenar pada muka depan dan di mana-mana sahaja foto membantu." Agen menarik rajah dan foto menggunakan <code>search</code>, bertanya kepada <code>media</code> sama ada setiap gambar calon adalah foto sebenar, memanggil <code>deck_start</code> dengan helaian gaya dan rangka, kemudian <code>deck_page</code> bagi setiap slaid; setiap halaman disemak berbanding rangka dan palet sebelum disimpan, <code>deck_build</code> memasang <code>.pptx</code>, <code>slides_audit</code> mencari limpahan, <code>slides_render</code> memulangkan PNG bagi setiap slaid sebagai kandungan imej yang boleh dilihat model, dan <code>deck_replace</code> membetulkan tiga halaman yang tidak disukainya.</td>
@@ -210,7 +210,7 @@ tab editor yang kelihatan sementara anda memerhati.
 </tr>
 </table>
 
-## Mengapa VegaOffice
+## Mengapa OfficeVega
 
 - **Sumber terbuka**, Apache-2.0, dibangunkan secara terbuka di GitHub.
 - **Milik anda untuk dijalankan.** Aplikasi native untuk macOS, Windows dan
@@ -229,7 +229,7 @@ tab editor yang kelihatan sementara anda memerhati.
   sistem untuk hasil imbasan.
 - **Markdown dan HTML juga**, dengan panel AI yang sama dan eksport setempat
   ke Word.
-- **Boleh dijalankan melalui skrip.** Baris arahan `vegaoffice`, skill agen
+- **Boleh dijalankan melalui skrip.** Baris arahan `officevega`, skill agen
   dan pelayan MCP meletakkan setiap enjin di bawah khidmat Claude Code,
   Claude Desktop, Codex, Cursor dan agen lain, masih di peranti sendiri.
 - **Percuma**, untuk individu dan pasukan.
@@ -259,9 +259,9 @@ yang disimpan sentiasa mengekalkan warna sebenar dokumen itu.
 ## Baris arahan dan skill agen
 
 Segala yang boleh dilakukan aplikasi pada sesuatu fail boleh dilakukan oleh
-baris arahan `vegaoffice` dari terminal: memeriksa, menukar, mencipta, membaca
+baris arahan `officevega` dari terminal: memeriksa, menukar, mencipta, membaca
 dan menyunting Word, Excel, PowerPoint, PDF, Markdown dan HTML pada enjin yang
-sama, tanpa antara muka (headless). Ia dipasang bersama VegaOffice, tidak
+sama, tanpa antara muka (headless). Ia dipasang bersama OfficeVega, tidak
 memerlukan runtime sendiri, dan tidak pernah menghantar dokumen ke mana-mana.
 Digandingkan dengan **skill agen** yang disertakan, ia menjadikan agen
 pengekodan sebagai pekerja dokumen yang menghasilkan fail Office sebenar dan
@@ -276,30 +276,30 @@ setiap klien MCP.
 
 | Cara                                              | Apa yang berlaku                                                                                                                                                                                      |
 | ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Tetapan → Integrasi** dalam aplikasi            | Menyenaraikan agen yang ditemui pada komputer ini; satu klik menulis skill ke dalam setiap satu yang anda pilih. Butang **Update** muncul apabila keluaran VegaOffice membawa skill yang lebih baharu. |
+| **Tetapan → Integrasi** dalam aplikasi            | Menyenaraikan agen yang ditemui pada komputer ini; satu klik menulis skill ke dalam setiap satu yang anda pilih. Butang **Update** muncul apabila keluaran OfficeVega membawa skill yang lebih baharu. |
 | **Muat turun sebagai zip** pada halaman yang sama | Susun atur yang diterima oleh claude.ai, aplikasi desktop Claude dan pembantu lain sebagai skill yang dimuat naik.                                                                                    |
 | `npx skills add lingeniare/getoffice`            | Memasang daripada repositori ini ke dalam mana-mana agen yang serasi dengan skill.                                                                                                                    |
 
 Kemudian mulakan sembang baharu dan minta sesuatu dokumen. Skill itu mengajar
-agen bila perlu menggunakan `vegaoffice`, cara membaca fail sebelum
+agen bila perlu menggunakan `officevega`, cara membaca fail sebelum
 menyuntingnya, dan cara menyemak hasil kerjanya sendiri.
 
 ### Mula pantas dari terminal
 
 ```bash
-vegaoffice --version
-vegaoffice info report.docx --json                  # headings and blocks; or sheets, slides, pages
-vegaoffice convert report.md --to pdf               # md/html/docx/xlsx/pptx → pdf, pdf → docx/xlsx/pptx, …
-vegaoffice create --type docx --from notes.md --out notes.docx
-vegaoffice create --type xlsx --from table.json --out sales.xlsx   # "=SUM(B2:B9)" cells stay live formulas
-vegaoffice docs read report.docx --range 0-9 --json # then `docs apply --ops edits.json` edits in place
-vegaoffice render report.docx --out shots/          # one PNG per page, to look at what you made
-vegaoffice open sales.xlsx                          # hand the result to the editor
+officevega --version
+officevega info report.docx --json                  # headings and blocks; or sheets, slides, pages
+officevega convert report.md --to pdf               # md/html/docx/xlsx/pptx → pdf, pdf → docx/xlsx/pptx, …
+officevega create --type docx --from notes.md --out notes.docx
+officevega create --type xlsx --from table.json --out sales.xlsx   # "=SUM(B2:B9)" cells stay live formulas
+officevega docs read report.docx --range 0-9 --json # then `docs apply --ops edits.json` edits in place
+officevega render report.docx --out shots/          # one PNG per page, to look at what you made
+officevega open sales.xlsx                          # hand the result to the editor
 ```
 
 Setiap arahan mencetak ringkasan satu baris, atau satu objek JSON dengan
 `--json`. Suntingan bersifat atomik: op yang ditolak membiarkan fail tidak
-tersentuh dan memulangkan ralat berpandu. `vegaoffice help` menyenaraikan set
+tersentuh dan memulangkan ralat berpandu. `officevega help` menyenaraikan set
 arahan semasa; rujukan penuh ada dalam
 [packages/cli/README.md](../../packages/cli/README.md).
 
@@ -310,21 +310,21 @@ Code. Di sebaliknya, agen mengikuti aliran kerja berperingkat skill itu dan
 CLI menyemak setiap peringkat sebelum peringkat seterusnya bermula:
 
 ```bash
-vegaoffice capabilities --json                        # which cloud tools VegaOffice has configured
-vegaoffice guide slides design                        # the deck workflow and layout library
-vegaoffice image "the eight planets in a row …" --aspect 16:9 --out deck/assets/cover.jpg
-vegaoffice slides check deck/outline.json --json      # 8 pages, no findings
-vegaoffice slides check deck/pages/01.json --json     # builds one slide, audits overflow and overlap
+officevega capabilities --json                        # which cloud tools OfficeVega has configured
+officevega guide slides design                        # the deck workflow and layout library
+officevega image "the eight planets in a row …" --aspect 16:9 --out deck/assets/cover.jpg
+officevega slides check deck/outline.json --json      # 8 pages, no findings
+officevega slides check deck/pages/01.json --json     # builds one slide, audits overflow and overlap
 …                                                    # one page file per slide, fixed until each check is clean
-vegaoffice create --type pptx --spec deck/pages --outline deck/outline.json --out deck/solar-system.pptx --json
-vegaoffice slides render deck/solar-system.pptx --out deck/shots --json
-vegaoffice slides audit deck/solar-system.pptx --json    # 8 slides, no layout issues
-vegaoffice slides replace deck/solar-system.pptx --slide 4 --spec deck/pages/05.json --json
-vegaoffice open deck/solar-system.pptx
+officevega create --type pptx --spec deck/pages --outline deck/outline.json --out deck/solar-system.pptx --json
+officevega slides render deck/solar-system.pptx --out deck/shots --json
+officevega slides audit deck/solar-system.pptx --json    # 8 slides, no layout issues
+officevega slides replace deck/solar-system.pptx --slide 4 --spec deck/pages/05.json --json
+officevega open deck/solar-system.pptx
 ```
 
-Tiada panggilan model berlaku di dalam `vegaoffice`: agen yang berfikir, CLI
-yang membina dan menyemak, dan hasilnya dibuka dalam VegaOffice atau PowerPoint
+Tiada panggilan model berlaku di dalam `officevega`: agen yang berfikir, CLI
+yang membina dan menyemak, dan hasilnya dibuka dalam OfficeVega atau PowerPoint
 sebagai `.pptx` biasa.
 
 <a id="mcp-server"></a>
@@ -338,33 +338,33 @@ ditunjukkan dengan cebisan sedia salin dalam **Tetapan → Integrasi → MCP**:
 
 | Cara                                | Apa dia                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **A · `vegaoffice mcp`** (disyorkan) | Pelayan stdio yang pembantu mulakan sendiri; VegaOffice tidak perlu dibuka. Satu alat bagi setiap arahan (`info`, `convert`, `create_docx`, `create_xlsx`, `create_pptx`, `create_pdf`, `docs_read` / `docs_apply` / `docs_check`, `sheet_*`, `slides_*`, `render`, `guide`, `search`, `image`, `media`, `open`) ditambah aliran deck berperingkat `deck_start` → `deck_page` → `deck_build` → `deck_replace`. Ops, spesifikasi dan Markdown dihantar terus dalam argumen, jadi klien tanpa sistem fail tetap berfungsi. |
-| **B · Pelayan HTTP tempatan**       | Berjalan di dalam aplikasi VegaOffice pada `http://127.0.0.1:3093/mcp` (Streamable HTTP, dengan SSE lama). Alatnya memandu tab editor Word yang kelihatan: `create_session`, `insert_content`, `replace_blocks`, `apply_ops`, `read_document`, `save_session`, dan anda melihat dokumen itu terbentuk. Dimatikan secara lalai; hidupkan pada panel tetapan yang sama.                                                                                                                                                    |
+| **A · `officevega mcp`** (disyorkan) | Pelayan stdio yang pembantu mulakan sendiri; OfficeVega tidak perlu dibuka. Satu alat bagi setiap arahan (`info`, `convert`, `create_docx`, `create_xlsx`, `create_pptx`, `create_pdf`, `docs_read` / `docs_apply` / `docs_check`, `sheet_*`, `slides_*`, `render`, `guide`, `search`, `image`, `media`, `open`) ditambah aliran deck berperingkat `deck_start` → `deck_page` → `deck_build` → `deck_replace`. Ops, spesifikasi dan Markdown dihantar terus dalam argumen, jadi klien tanpa sistem fail tetap berfungsi. |
+| **B · Pelayan HTTP tempatan**       | Berjalan di dalam aplikasi OfficeVega pada `http://127.0.0.1:3093/mcp` (Streamable HTTP, dengan SSE lama). Alatnya memandu tab editor Word yang kelihatan: `create_session`, `insert_content`, `replace_blocks`, `apply_ops`, `read_document`, `save_session`, dan anda melihat dokumen itu terbentuk. Dimatikan secara lalai; hidupkan pada panel tetapan yang sama.                                                                                                                                                    |
 
 ```bash
 # Claude Code
-claude mcp add --transport stdio vegaoffice -- vegaoffice mcp
+claude mcp add --transport stdio officevega -- officevega mcp
 ```
 
 ```jsonc
 // Cursor, Claude Desktop atau mana-mana klien MCP lain
-{ "mcpServers": { "vegaoffice": { "command": "vegaoffice", "args": ["mcp"] } } }
+{ "mcpServers": { "officevega": { "command": "officevega", "args": ["mcp"] } } }
 ```
 
-`vegaoffice` di sini ialah CLI yang disertakan di dalam aplikasi (pada macOS
-`/Applications/VegaOffice.app/Contents/Resources/cli/vegaoffice`; panel
+`officevega` di sini ialah CLI yang disertakan di dalam aplikasi (pada macOS
+`/Applications/OfficeVega.app/Contents/Resources/cli/officevega`; panel
 tetapan memaparkan laluan tepat untuk pemasangan anda). Pelayan ini membawa
 arahan aliran kerjanya sendiri dan mendedahkan rujukan operasi sebagai
-sumber `vegaoffice://guide/*`, jadi tiada skill diperlukan; skill dan
+sumber `officevega://guide/*`, jadi tiada skill diperlukan; skill dan
 pelayan MCP boleh wujud bersama dan pembantu memilih salah satu. Ciri awan
 (`search`, `image`, `media`) masih melalui pembekal yang ditetapkan dalam
-VegaOffice; selebihnya berjalan secara tempatan, dan
-`VEGAOFFICE_ALLOWED_ROOTS` mengehadkan setiap alat kepada folder yang anda
+OfficeVega; selebihnya berjalan secara tempatan, dan
+`OFFICEVEGA_ALLOWED_ROOTS` mengehadkan setiap alat kepada folder yang anda
 senaraikan.
 
 Deck tenaga boleh diperbaharui dalam demo di atas ialah gambaran, dari sudut
 protokol, satu gesaan dalam Claude Code yang hanya menyambungkan pelayan
-MCP `vegaoffice`:
+MCP `officevega`:
 
 ```text
 capabilities · guide(slides, spec) · guide(slides, design)
@@ -384,7 +384,7 @@ deck_replace(dir, n, page) ×3 · slides_render(file, out)
 Tiga puluh lapan panggilan, kira-kira tiga belas minit, dan pembantu itu
 langsung tidak menyentuh shell: rajah, foto, semua panduan, semakan dan
 render bergerak sebagai hasil panggilan alat MCP. Hanya `search` dan `media`
-meninggalkan mesin, kepada pembekal yang dikonfigurasikan dalam VegaOffice.
+meninggalkan mesin, kepada pembekal yang dikonfigurasikan dalam OfficeVega.
 
 <a id="download"></a>
 
@@ -408,17 +408,17 @@ ditandatangani. Versi lama boleh didapati di halaman
 <summary><b>Memasang pada Linux</b></summary>
 
 Fail deb dipasang menggunakan apt — ia menarik kebergantungan dan menambah
-VegaOffice ke menu aplikasi:
+OfficeVega ke menu aplikasi:
 
 ```bash
-sudo apt install ./vegaoffice_<version>_amd64.deb
+sudo apt install ./officevega_<version>_amd64.deb
 ```
 
 Pada Fedora / keluarga RHEL / openSUSE, pasang fail rpm sebaliknya:
 
 ```bash
-sudo dnf install ./vegaoffice-<version>.x86_64.rpm     # Fedora / RHEL family
-sudo zypper install ./vegaoffice-<version>.x86_64.rpm  # openSUSE
+sudo dnf install ./officevega-<version>.x86_64.rpm     # Fedora / RHEL family
+sudo zypper install ./officevega-<version>.x86_64.rpm  # openSUSE
 ```
 
 AppImage berjalan di tempatnya: pasang runtime FUSE 2
@@ -426,8 +426,8 @@ AppImage berjalan di tempatnya: pasang runtime FUSE 2
 `libfuse2t64`), jadikan fail itu boleh dilaksanakan, kemudian jalankannya:
 
 ```bash
-chmod +x VegaOffice-<version>.AppImage
-./VegaOffice-<version>.AppImage
+chmod +x OfficeVega-<version>.AppImage
+./OfficeVega-<version>.AppImage
 ```
 
 </details>
@@ -474,37 +474,37 @@ yang perlu dilalui setiap perubahan dan cara pull request diterima masuk.
 
 ## Komuniti
 
-VegaOffice sedang dibangunkan secara aktif dan maklum balas anda membentuknya.
+OfficeVega sedang dibangunkan secara aktif dan maklum balas anda membentuknya.
 
 - **Laporkan pepijat atau minta ciri** di
   [GitHub Issues](https://github.com/lingeniare/getoffice/issues).
-- **Sertai sembang kumpulan VegaOffice** di
+- **Sertai sembang kumpulan OfficeVega** di
   [GitHub](https://github.com/lingeniare/getoffice) untuk berbual dengan pasukan dan
   pengguna lain.
-- **Berikan bintang pada repo ini** jika VegaOffice bermanfaat untuk anda —
+- **Berikan bintang pada repo ini** jika OfficeVega bermanfaat untuk anda —
   ini cara terbaik untuk menyokong projek ini.
 
 ## Soalan Lazim
 
 <details>
-<summary><b>Adakah VegaOffice percuma?</b></summary>
+<summary><b>Adakah OfficeVega percuma?</b></summary>
 
-Ya. VegaOffice percuma dan sumber terbuka di bawah lesen Apache-2.0 — tiada
+Ya. OfficeVega percuma dan sumber terbuka di bawah lesen Apache-2.0 — tiada
 percubaan, tiada peringkat berbayar untuk aplikasi itu sendiri.
 
 </details>
 
 <details>
-<summary><b>Bolehkah VegaOffice membuka fail Microsoft Word, Excel dan PowerPoint?</b></summary>
+<summary><b>Bolehkah OfficeVega membuka fail Microsoft Word, Excel dan PowerPoint?</b></summary>
 
-Ya. VegaOffice membuka dan menyimpan fail asli `.docx`, `.xlsx` dan `.pptx`.
+Ya. OfficeVega membuka dan menyimpan fail asli `.docx`, `.xlsx` dan `.pptx`.
 Penyimpanan terpelihara bit demi bit: bahagian fail yang tidak anda sentuh
 ditulis semula seadanya, jadi dokumen kekal berfungsi dalam Microsoft Office.
 
 </details>
 
 <details>
-<summary><b>Adakah VegaOffice berfungsi luar talian?</b></summary>
+<summary><b>Adakah OfficeVega berfungsi luar talian?</b></summary>
 
 Penyuntingan dokumen sepenuhnya setempat — fail tidak pernah keluar daripada
 mesin anda untuk dibuka, disunting, disimpan atau ditukar. Ciri-ciri AI
@@ -514,7 +514,7 @@ masuk VEGA atau kunci API model anda sendiri.
 </details>
 
 <details>
-<summary><b>Bolehkah VegaOffice menyunting fail PDF?</b></summary>
+<summary><b>Bolehkah OfficeVega menyunting fail PDF?</b></summary>
 
 Ya — penyuntingan teks dan imej PDF sebenar yang menulis semula strim
 kandungan halaman dengan fon asal terpelihara, bukan anotasi yang sekadar
@@ -523,7 +523,7 @@ menutup.
 </details>
 
 <details>
-<summary><b>Bolehkah VegaOffice menukar PDF kepada Word, Excel atau PowerPoint?</b></summary>
+<summary><b>Bolehkah OfficeVega menukar PDF kepada Word, Excel atau PowerPoint?</b></summary>
 
 Ya — sepenuhnya di peranti sendiri: pengekstrakan aksara PDFium ditambah
 analisis susun atur berasaskan geometri, tanpa perkhidmatan awan, tanpa muat
@@ -536,7 +536,7 @@ halaman.
 <details>
 <summary><b>Bolehkah saya menggunakan model AI atau kunci API saya sendiri?</b></summary>
 
-Ya. Selain log masuk VEGA tanpa kunci, VegaOffice menyokong bawa kunci
+Ya. Selain log masuk VEGA tanpa kunci, OfficeVega menyokong bawa kunci
 anda sendiri untuk Claude, OpenAI, Gemini, DeepSeek, Kimi, GLM, Qwen, Doubao,
 MiniMax, Grok, Mistral, OpenRouter, Requesty dan OpenCode Zen/Go, ditambah mana-mana
 titik akhir serasi OpenAI — termasuk pelayan model setempat. Carian,
@@ -546,7 +546,7 @@ Settings → AI Media & Search.
 </details>
 
 <details>
-<summary><b>Bolehkah VegaOffice menukar HTML kepada Word?</b></summary>
+<summary><b>Bolehkah OfficeVega menukar HTML kepada Word?</b></summary>
 
 Ya — Export as Word dalam aplikasi HTML menghasilkan `.docx` asli yang boleh
 disunting, sepenuhnya di peranti sendiri. Halaman itu dipaparkan dalam
@@ -558,9 +558,9 @@ kotak berhias) dibenamkan sebagai gambar.
 </details>
 
 <details>
-<summary><b>Bolehkah saya memandu VegaOffice daripada Claude Code, Codex, Cursor atau skrip?</b></summary>
+<summary><b>Bolehkah saya memandu OfficeVega daripada Claude Code, Codex, Cursor atau skrip?</b></summary>
 
-Ya. VegaOffice memasang baris arahan `vegaoffice` yang menjalankan enjin yang
+Ya. OfficeVega memasang baris arahan `officevega` yang menjalankan enjin yang
 sama tanpa antara muka: memeriksa, menukar, mencipta, membaca dan menyunting
 dokumen dari terminal atau skrip, dengan output `--json` untuk program. Skill
 agen yang disertakan mengajar Claude Code, Codex, Cursor, Gemini CLI, GitHub
@@ -571,9 +571,9 @@ Copilot, OpenCode dan Windsurf menggunakannya; pasang daripada
 </details>
 
 <details>
-<summary><b>Adakah VegaOffice mengumpul sebarang data?</b></summary>
+<summary><b>Adakah OfficeVega mengumpul sebarang data?</b></summary>
 
-VegaOffice tidak mengumpul atau menghantar sebarang analitik penggunaan atau telemetri. Lihat [VegaOffice Privacy](../../PRIVACY.md) untuk butiran.
+OfficeVega tidak mengumpul atau menghantar sebarang analitik penggunaan atau telemetri. Lihat [OfficeVega Privacy](../../PRIVACY.md) untuk butiran.
 
 </details>
 
@@ -585,7 +585,7 @@ ancaman untuk kandungan yang dijana AI.
 
 ## Penghargaan
 
-VegaOffice tidak akan wujud tanpa projek-projek sumber terbuka ini:
+OfficeVega tidak akan wujud tanpa projek-projek sumber terbuka ini:
 
 - [Electron](https://www.electronjs.org/) — runtime desktop untuk setiap
   aplikasi.
@@ -630,10 +630,10 @@ MIT/Apache-2.0/BSD-3-Clause/OFL.
 
 ## Lesen
 
-VegaOffice dilesenkan di bawah [Apache License 2.0](../../LICENSE), dengan
+OfficeVega dilesenkan di bawah [Apache License 2.0](../../LICENSE), dengan
 satu kekecualian: direktori `ee/` dikhususkan untuk modul perusahaan pada
 masa hadapan dan dilindungi oleh
-[Lesen Perusahaan VegaOffice](../../ee/LICENSE).
+[Lesen Perusahaan OfficeVega](../../ee/LICENSE).
 
 Nama dan logo GenOffice serta Genspark adalah tanda dagangan Mainfunc, Inc.
 Lesen Apache-2.0 tidak memberikan kebenaran untuk menggunakannya (lihat

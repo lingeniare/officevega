@@ -64,7 +64,7 @@ describe('MCP server core', () => {
     expect(res.status).toBe(200)
     const body = (await res.json()) as { status: string; server: string }
     expect(body.status).toBe('ok')
-    expect(body.server).toBe('Office VEGA')
+    expect(body.server).toBe('OfficeVega')
   })
 
   it('completes initialize and lists the registered tools', async () => {

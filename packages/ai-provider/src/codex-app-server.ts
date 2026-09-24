@@ -60,9 +60,9 @@ const REQUEST_TIMEOUT_MS = 30_000
 const IDLE_SHUTDOWN_MS = 120_000
 const MAX_NATIVE_SESSIONS = 64
 const MAX_MODEL_PAGES = 10
-const CODEX_TEMP_PREFIX = 'vegaoffice-codex-app-server-'
+const CODEX_TEMP_PREFIX = 'officevega-codex-app-server-'
 const CODEX_BASE_INSTRUCTIONS =
-  'You are the language-model backend embedded in Office VEGA. Never inspect or modify local files, run shell commands, browse, call MCP, use apps, or invoke any built-in Codex tool. The caller supplies the complete relevant conversation and a JSON Schema. Return exactly one assistant response matching that schema; Office VEGA itself executes document tools.'
+  'You are the language-model backend embedded in OfficeVega. Never inspect or modify local files, run shell commands, browse, call MCP, use apps, or invoke any built-in Codex tool. The caller supplies the complete relevant conversation and a JSON Schema. Return exactly one assistant response matching that schema; OfficeVega itself executes document tools.'
 
 function cleanCliPath(value: string | undefined): string {
   const trimmed = (value ?? '').trim()
@@ -373,7 +373,7 @@ class CodexAppServerClient {
 
   private async initialize(): Promise<void> {
     await this.requestWire('initialize', {
-      clientInfo: { name: 'vegaoffice', title: 'Office VEGA', version: '0.1.0' },
+      clientInfo: { name: 'officevega', title: 'OfficeVega', version: '0.1.0' },
       capabilities: { experimentalApi: false, requestAttestation: false },
     })
     this.notify('initialized')
@@ -419,7 +419,7 @@ class CodexAppServerClient {
       return
     }
     if (typeof message.method === 'string' && message.id !== undefined) {
-      // VegaOffice deliberately disables Codex-owned tools. Reply instead of
+      // OfficeVega deliberately disables Codex-owned tools. Reply instead of
       // leaving an unexpected server request pending forever.
       this.write({
         id: message.id,
@@ -590,13 +590,13 @@ export function buildCodexAppServerPrompt(
     })),
   }
   return [
-    'Treat the payload below as the new Office VEGA conversation events for this turn and follow its system instruction.',
-    'Do not use Codex tools. Office VEGA will execute only the tool calls returned in the required response schema.',
-    'Put user-visible prose in text. Put requested Office VEGA tool calls in toolCalls; inputJson must be a JSON-encoded object matching the listed inputSchema. Use only listed tool names. If no tool is needed, return an empty toolCalls array.',
+    'Treat the payload below as the new OfficeVega conversation events for this turn and follow its system instruction.',
+    'Do not use Codex tools. OfficeVega will execute only the tool calls returned in the required response schema.',
+    'Put user-visible prose in text. Put requested OfficeVega tool calls in toolCalls; inputJson must be a JSON-encoded object matching the listed inputSchema. Use only listed tool names. If no tool is needed, return an empty toolCalls array.',
     `Keep this one-turn response within roughly ${maxTokens} output tokens.`,
-    '<vegaoffice_payload>',
+    '<officevega_payload>',
     JSON.stringify(payload),
-    '</vegaoffice_payload>',
+    '</officevega_payload>',
   ].join('\n')
 }
 
@@ -665,7 +665,7 @@ function incrementalMessages(
   for (let index = 0; index < existing.messageFingerprints.length; index++) {
     if (fingerprint(messages[index]!) !== existing.messageFingerprints[index]) return null
   }
-  // The assistant response is already native app-server history. VegaOffice's
+  // The assistant response is already native app-server history. OfficeVega's
   // following tool results or user message are the only new events to inject.
   return messages.slice(existing.messageFingerprints.length).filter((m) => m.role !== 'assistant')
 }
@@ -695,7 +695,7 @@ function finalMessageFromTurn(params: unknown): string {
   return ''
 }
 
-const CODEX_PERMISSION_PROFILE = 'vegaoffice'
+const CODEX_PERMISSION_PROFILE = 'officevega'
 
 /**
  * Codex keeps its own shell tool even when told not to use it, and the plain
@@ -712,7 +712,7 @@ export function codexThreadStartParams(
     ...(config.model.trim() ? { model: config.model.trim() } : {}),
     cwd: tempDir,
     approvalPolicy: 'never',
-    serviceName: 'vegaoffice',
+    serviceName: 'officevega',
     baseInstructions: CODEX_BASE_INSTRUCTIONS,
     ephemeral: true,
   }

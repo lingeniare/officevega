@@ -1787,7 +1787,7 @@ export function sha256(input: Buffer | string): string {
 
 /// Package-relative form of a ZIP entry name, null when it escapes the root.
 /// '\' separators, a leading '/' and empty segments are producer quirks Excel
-/// tolerates (vegaoffice#196 shipped `/xl/workbook.xml`); folding them keeps
+/// tolerates (officevega#196 shipped `/xl/workbook.xml`); folding them keeps
 /// lookups and the saved package on conformant names.
 function canonicalEntryName(raw: string): string | null {
   if (raw.includes('\0')) return null

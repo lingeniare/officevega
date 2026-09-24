@@ -17,18 +17,18 @@ import {
 import { buildArgv, resolveTools, toolShape, type ResolvedTool } from './tools'
 
 const ABOUT =
-  'Office VEGA: create, read, convert, edit and render Office documents locally (docx, xlsx, pptx, pdf, md, html, csv). The app need not be running; render, convert-to-pdf and create_pdf start a hidden Office VEGA process for a few seconds.'
+  'OfficeVega: create, read, convert, edit and render Office documents locally (docx, xlsx, pptx, pdf, md, html, csv). The app need not be running; render, convert-to-pdf and create_pdf start a hidden OfficeVega process for a few seconds.'
 const WORKFLOW = [
-  'Editing: read the file with the *_read tool, write the ops with the op reference from guide (or the vegaoffice://guide/* resources), then *_apply. A rejected op names its index and reason; fix that op and resend the whole batch.',
+  'Editing: read the file with the *_read tool, write the ops with the op reference from guide (or the officevega://guide/* resources), then *_apply. A rejected op names its index and reason; fix that op and resend the whole batch.',
   'A new presentation for a person: deck_start (style sheet + outline), deck_page once per page in order, deck_build, then slides_render to look and slides_audit for geometry, deck_replace to fix a page. Edits to an existing deck: slides_read + slides_apply, keeping its design.',
 ]
 
 /** What the client shows the model about this server before any tool is called. */
 export const INSTRUCTIONS = [
   ABOUT,
-  'Paths are absolute, or relative to the working directory the server was started in. Only search, image and media send data off the machine, to the provider configured in Office VEGA.',
+  'Paths are absolute, or relative to the working directory the server was started in. Only search, image and media send data off the machine, to the provider configured in OfficeVega.',
   ...WORKFLOW,
-  'A file open in an Office VEGA tab is not written unless force is set. Do not call open unless the user asks to see the file.',
+  'A file open in an OfficeVega tab is not written unless force is set. Do not call open unless the user asks to see the file.',
 ].join('\n')
 
 /** The http-mode variant: the client is on another machine, so files travel as URLs and result content. */
@@ -37,38 +37,38 @@ export function remoteInstructions(baseUrl: string): string {
   return [
     ABOUT,
     `This server runs on another machine: paths you know are not visible to it. To work on a file you have, upload it first (curl -T report.docx ${base}/files/ — the reply carries its url) and pass that url wherever a tool takes a file; any other http(s) URL the server can reach works too. Relative paths and deck folders live in a private scratch directory of this session.`,
-    'Omit out: the file a tool writes comes back in the result as output_url (download it with curl -o) and, when small, as an embedded resource with the bytes. Only search, image and media send data to the cloud provider configured in Office VEGA.',
+    'Omit out: the file a tool writes comes back in the result as output_url (download it with curl -o) and, when small, as an embedded resource with the bytes. Only search, image and media send data to the cloud provider configured in OfficeVega.',
     ...WORKFLOW,
   ].join('\n')
 }
 
 const GUIDES: { uri: string; name: string; argv: string[]; description: string }[] = [
   {
-    uri: 'vegaoffice://guide/docs',
+    uri: 'officevega://guide/docs',
     name: 'Word ops reference',
     argv: ['guide', 'docs'],
     description: 'every docs_apply op with its fields and the restricted-HTML rules',
   },
   {
-    uri: 'vegaoffice://guide/sheets',
+    uri: 'officevega://guide/sheets',
     name: 'Excel ops reference',
     argv: ['guide', 'sheets'],
     description: 'every sheet_apply DSL op with its fields',
   },
   {
-    uri: 'vegaoffice://guide/slides',
+    uri: 'officevega://guide/slides',
     name: 'PowerPoint ops reference',
     argv: ['guide', 'slides'],
     description: 'the slides_apply op groups and vocabulary',
   },
   {
-    uri: 'vegaoffice://guide/slides/design',
+    uri: 'officevega://guide/slides/design',
     name: 'Deck design guide',
     argv: ['guide', 'slides', 'design'],
     description: 'the staged deck workflow: style sheet, outline, one page at a time, build, QC',
   },
   {
-    uri: 'vegaoffice://guide/slides/spec',
+    uri: 'officevega://guide/slides/spec',
     name: 'Deck spec format',
     argv: ['guide', 'slides', 'spec'],
     description: 'the outline and one-page spec JSON the deck_* tools take',
@@ -83,12 +83,12 @@ export function createMcpServer(ctx: McpContext, opts: ServerOptions = {}): McpS
   const registry = opts.registry ?? defaultRegistry()
   const remote = ctx.mode === 'http'
   const server = new McpServer(
-    { name: 'vegaoffice', version: VERSION },
+    { name: 'officevega', version: VERSION },
     { instructions: remote ? remoteInstructions(ctx.baseUrl ?? '') : INSTRUCTIONS },
   )
 
   for (const tool of resolveTools(registry)) {
-    // there is no VegaOffice window in front of a remote client
+    // there is no OfficeVega window in front of a remote client
     if (remote && tool.name === 'open') continue
     server.registerTool(
       tool.name,

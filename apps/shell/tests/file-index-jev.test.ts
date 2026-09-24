@@ -19,7 +19,7 @@ import { FileIndexStore } from '../src/main/file-index/store'
 vi.mock('@genoffice/ai-search', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@genoffice/ai-search')>()),
   // the sign-in-issued key the vega endpoint falls back to when its slot is blank
-  vegaofficeApiKey: () => 'sk-test-account',
+  officeVegaApiKey: () => 'sk-test-account',
 }))
 
 const docs = [

@@ -5,7 +5,7 @@ import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 /**
- * Two layouts: packaged (Resources/cli/vegaoffice.cjs next to Resources/wasm,
+ * Two layouts: packaged (Resources/cli/officevega.cjs next to Resources/wasm,
  * Resources/native, Resources/ocr — see apps/shell/electron-builder.cjs) and
  * the dev checkout (packages/cli/{src,dist} inside the monorepo).
  */
@@ -30,7 +30,7 @@ export function repoRoot(): string | null {
     const pkg = join(dir, 'package.json')
     if (existsSync(pkg)) {
       try {
-        if (JSON.parse(readFileSync(pkg, 'utf-8')).name === 'vegaoffice') {
+        if (JSON.parse(readFileSync(pkg, 'utf-8')).name === 'officevega') {
           cachedRepo = dir
           return dir
         }
@@ -45,7 +45,7 @@ export function repoRoot(): string | null {
 }
 
 export function pdfiumWasmPath(): string {
-  if (process.env.VEGAOFFICE_PDFIUM_WASM) return process.env.VEGAOFFICE_PDFIUM_WASM
+  if (process.env.OFFICEVEGA_PDFIUM_WASM) return process.env.OFFICEVEGA_PDFIUM_WASM
   const packaged = packagedResourcesDir()
   if (packaged) return join(packaged, 'wasm', 'pdfium.wasm')
   const root = repoRoot()
@@ -54,7 +54,7 @@ export function pdfiumWasmPath(): string {
       return createRequire(join(root, 'package.json')).resolve('@embedpdf/pdfium/pdfium.wasm')
     } catch {}
   }
-  throw new Error('pdfium.wasm not found (set VEGAOFFICE_PDFIUM_WASM)')
+  throw new Error('pdfium.wasm not found (set OFFICEVEGA_PDFIUM_WASM)')
 }
 
 export function xlsxSidecarPath(): string | null {
@@ -80,12 +80,12 @@ export function ocrHelperPath(): string | null {
   return candidates.find((p) => existsSync(p)) ?? null
 }
 
-/** skills/vegaoffice/SKILL.md as shipped beside this bundle (Resources/cli/skills) or in the checkout. */
+/** skills/officevega/SKILL.md as shipped beside this bundle (Resources/cli/skills) or in the checkout. */
 export function bundledSkillPath(): string | null {
   const packaged = packagedResourcesDir()
   const candidates = [
-    ...(packaged ? [join(packaged, 'cli', 'skills', 'vegaoffice', 'SKILL.md')] : []),
-    ...(repoRoot() ? [join(repoRoot()!, 'skills', 'vegaoffice', 'SKILL.md')] : []),
+    ...(packaged ? [join(packaged, 'cli', 'skills', 'officevega', 'SKILL.md')] : []),
+    ...(repoRoot() ? [join(repoRoot()!, 'skills', 'officevega', 'SKILL.md')] : []),
   ]
   return candidates.find((p) => existsSync(p)) ?? null
 }
@@ -95,9 +95,9 @@ export interface AppLaunch {
   args: string[]
 }
 
-/** How to start the VegaOffice GUI: the app binary that hosts this CLI, an installed app, or the dev checkout. */
+/** How to start the OfficeVega GUI: the app binary that hosts this CLI, an installed app, or the dev checkout. */
 export function appLaunch(env: NodeJS.ProcessEnv = process.env): AppLaunch | null {
-  if (env.VEGAOFFICE_APP_BIN) return { command: env.VEGAOFFICE_APP_BIN, args: [] }
+  if (env.OFFICEVEGA_APP_BIN) return { command: env.OFFICEVEGA_APP_BIN, args: [] }
   if (packagedResourcesDir() && process.versions.electron) {
     return { command: process.execPath, args: [] }
   }
@@ -112,20 +112,31 @@ export function appLaunch(env: NodeJS.ProcessEnv = process.env): AppLaunch | nul
   return null
 }
 
+// new-name installs first, then the pre-rename "VegaOffice" locations so a
+// machine that only ever ran the old build still resolves an app to launch
 function installedAppBinaries(env: NodeJS.ProcessEnv): string[] {
   switch (process.platform) {
     case 'darwin':
       return [
+        '/Applications/OfficeVega.app/Contents/MacOS/OfficeVega',
+        join(homedir(), 'Applications/OfficeVega.app/Contents/MacOS/OfficeVega'),
         '/Applications/VegaOffice.app/Contents/MacOS/VegaOffice',
         join(homedir(), 'Applications/VegaOffice.app/Contents/MacOS/VegaOffice'),
       ]
     case 'win32':
       return [
+        env.LOCALAPPDATA ? join(env.LOCALAPPDATA, 'Programs', 'OfficeVega', 'OfficeVega.exe') : '',
+        env.ProgramFiles ? join(env.ProgramFiles, 'OfficeVega', 'OfficeVega.exe') : '',
         env.LOCALAPPDATA ? join(env.LOCALAPPDATA, 'Programs', 'VegaOffice', 'VegaOffice.exe') : '',
         env.ProgramFiles ? join(env.ProgramFiles, 'VegaOffice', 'VegaOffice.exe') : '',
       ].filter(Boolean)
     default:
-      return ['/opt/VegaOffice/vegaoffice', '/usr/bin/vegaoffice']
+      return [
+        '/opt/OfficeVega/officevega',
+        '/usr/bin/officevega',
+        '/opt/VegaOffice/vegaoffice',
+        '/usr/bin/vegaoffice',
+      ]
   }
 }
 

@@ -3100,9 +3100,9 @@ export function App() {
 
   const _fileName = slide ? path?.split('/').pop() || t('appUntitledPresentation') : undefined
 
-  // vegaoffice CLI (`open --slide/--el`, `selection`): the shell evaluates this hook
+  // officevega CLI (`open --slide/--el`, `selection`): the shell evaluates this hook
   useEffect(() => {
-    ;(window as unknown as Record<string, unknown>).__vegaofficeControl = (req: ControlRequest) =>
+    ;(window as unknown as Record<string, unknown>).__officeVegaControl = (req: ControlRequest) =>
       handleSlidesControl(req, {
         slides,
         path,

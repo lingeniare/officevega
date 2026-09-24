@@ -53,6 +53,8 @@ export interface AiProviderMeta {
   label: string
   models: string[]
   defaultModel: string
+  /** optional fast/cheap tier shipped in fresh configs (absent = same as `defaultModel`) */
+  defaultFastModel?: string
   keyPlaceholder: string
   needsBaseUrl?: boolean
   needsCliPath?: boolean
@@ -108,6 +110,8 @@ export interface AiMediaProviderMeta {
   analysisProtocol?: AiAnalysisProtocol
   analysisModels: AiMediaModelEntry[]
   defaultAnalysisModel: string
+  /** fixed slot for video/audio payloads when it differs from `defaultAnalysisModel` (absent = same model) */
+  defaultVideoAnalysisModel?: string
   /** the analysis model accepts video input (Gemini natively; OpenAI-compatible vendors via a video_url part) */
   videoAnalysis: boolean
   /** model pickers are refreshed live from {base}/models; the static lists are the offline fallback */

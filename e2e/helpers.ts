@@ -2,7 +2,7 @@
  * Shared launcher for Electron E2E tests.
  *
  * Each test boots the built shell (`apps/shell/out`) against a scratch
- * userData dir (via VEGAOFFICE_USER_DATA) so runs never touch real settings
+ * userData dir (via OFFICEVEGA_USER_DATA) so runs never touch real settings
  * and never collide with a running install's single-instance lock.
  * Build first: `npm run build:all`.
  */
@@ -21,7 +21,7 @@ const SHELL_MAIN = join(SHELL_DIR, 'out/main/index.js')
 interface LaunchOptions {
   /** reuse a previous scratch dir to simulate a second launch */
   userDataDir?: string
-  /** UI language override (VEGAOFFICE_LANG); defaults to English for stable assertions */
+  /** UI language override (OFFICEVEGA_LANG); defaults to English for stable assertions */
   lang?: string
   /** pre-seed app-settings.json with onboardingSeen=true to start at the home screen */
   onboardingSeen?: boolean
@@ -45,7 +45,7 @@ export async function launchShell(options: LaunchOptions): Promise<LaunchedApp> 
   if (!existsSync(SHELL_MAIN)) {
     throw new Error(`Missing build output at ${SHELL_MAIN} — run \`npm run build:all\` first`)
   }
-  const userDataDir = options.userDataDir ?? (await mkdtemp(join(tmpdir(), 'vegaoffice-e2e-')))
+  const userDataDir = options.userDataDir ?? (await mkdtemp(join(tmpdir(), 'officevega-e2e-')))
   if (options.onboardingSeen || options.settings) {
     await writeFile(
       join(userDataDir, 'app-settings.json'),
@@ -74,9 +74,9 @@ export async function launchShell(options: LaunchOptions): Promise<LaunchedApp> 
     args,
     env: {
       ...hostEnv,
-      VEGAOFFICE_USER_DATA: userDataDir,
-      VEGAOFFICE_NO_SPARE_VIEW: '1',
-      VEGAOFFICE_LANG: options.lang ?? 'en',
+      OFFICEVEGA_USER_DATA: userDataDir,
+      OFFICEVEGA_NO_SPARE_VIEW: '1',
+      OFFICEVEGA_LANG: options.lang ?? 'en',
       ...(options.env ?? {}),
       ...(process.platform === 'linux' ? { ELECTRON_DISABLE_SANDBOX: '1' } : {}),
     },

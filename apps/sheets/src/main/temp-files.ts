@@ -36,7 +36,7 @@ export async function cleanupSessionResources(
   } catch {
     // Continue with owned temp cleanup even when the sidecar is already gone.
   }
-  const snapshotRoot = join(options.tempRoot, 'vegaoffice-sheets-sessions')
+  const snapshotRoot = join(options.tempRoot, 'officevega-sheets-sessions')
   if (isDirectOwnedChild(options.snapshotPath, snapshotRoot, SESSION_SNAPSHOT_NAME)) {
     await rm(options.snapshotPath, { force: true }).catch(() => undefined)
   }
@@ -49,7 +49,7 @@ export async function cleanupImportTempDirectory(
   tempRoot: string,
   importTempDir: string,
 ): Promise<void> {
-  const importRoot = join(tempRoot, 'vegaoffice-imports')
+  const importRoot = join(tempRoot, 'officevega-imports')
   if (!isDirectOwnedChild(importTempDir, importRoot, IMPORT_DIRECTORY_NAME)) return
   await rm(importTempDir, { recursive: true, force: true }).catch(() => undefined)
 }
@@ -62,7 +62,7 @@ export async function cleanupExpiredPastedFiles(
   tempRoot: string,
   now = Date.now(),
 ): Promise<string[]> {
-  const dir = join(tempRoot, 'vegaoffice-pasted')
+  const dir = join(tempRoot, 'officevega-pasted')
   const cutoff = now - PASTED_FILE_TTL_MS
   const removed: string[] = []
   let entries

@@ -1,5 +1,5 @@
 /**
- * VegaOffice end-to-end coverage through the real PDFium wasm: style mapping,
+ * OfficeVega end-to-end coverage through the real PDFium wasm: style mapping,
  * list rebuild, vector-illustration rasterization and the per-page result API.
  */
 import { parseDocx } from '@genoffice/docx-engine'

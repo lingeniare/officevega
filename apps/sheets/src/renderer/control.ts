@@ -1,6 +1,6 @@
 import type { FWorkbook, FWorksheet } from '@univerjs/sheets/facade'
 
-/** Request/reply the shell relays from `vegaoffice open --range` and `vegaoffice selection`. */
+/** Request/reply the shell relays from `officevega open --range` and `officevega selection`. */
 export type ControlRequest =
   { cmd: 'goto'; target: { kind: string; sheet?: string; range?: string } } | { cmd: 'selection' }
 

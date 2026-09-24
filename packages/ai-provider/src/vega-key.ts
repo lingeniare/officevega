@@ -11,7 +11,7 @@
 let vegaKeyGetter: () => string = () => ''
 let gskKeyGetter: () => string = () => ''
 
-/** main-process hookup: ai-search registers vegaofficeApiKey here at import time */
+/** main-process hookup: ai-search registers officeVegaApiKey here at import time */
 export function setIssuedVegaKeyGetter(fn: () => string): void {
   vegaKeyGetter = fn
 }

@@ -29,11 +29,9 @@ test('Jev reranking lives in the AI Media & Search pane, saves with it, and repo
     // the block reports its own verdict: no key entered, nothing leaves the machine
     await page.getByRole('button', { name: 'Test connection', exact: true }).click()
     await expect(block.locator('.set-ai-status.err')).toHaveText('Enter an API key')
-    // the footer names the first failing block and its provider; which one comes
-    // first depends on whether this machine is signed in to Genspark
-    await expect(page.locator('.set-pane-actions .set-ai-status.err')).toHaveText(
-      /^(Web search · Genspark|Local file search · TypeSafe): .+/,
-    )
+    // test verdicts live only on the blocks — the sticky pane head keeps just
+    // the autosave pill so no result floats over the scrolled rows
+    await expect(page.locator('.set-pane-actions .set-ai-status.err')).toHaveCount(0)
     await page.screenshot({ path: screenshotPath('settings-media-search-test') })
 
     await block.locator('#set-search-jev-key').fill('ts-key')

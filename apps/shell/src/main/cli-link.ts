@@ -1,4 +1,4 @@
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { homedir } from 'node:os'
 import { join } from 'node:path'
 import { app } from 'electron'
@@ -14,8 +14,8 @@ interface CliLinkRecord {
 }
 
 /**
- * Every launch: record where the vegaoffice launcher lives so agents can find it
- * without a PATH (the `vegaoffice` skill reads `~/.vegaoffice/launcher`), then
+ * Every launch: record where the officevega launcher lives so agents can find it
+ * without a PATH (the `officevega` skill reads `~/.officevega/launcher`), then
  * try to expose it on the PATH. The dmg has no installer step to do that, so
  * macOS retries on each start until a writable directory turns up; Windows
  * gets its PATH entry from the installer and only re-checks once per version
@@ -27,24 +27,30 @@ export function installCliLinkBestEffort(settingsPath: string): void {
     if (isEphemeralInstall(process.resourcesPath, process.env)) {
       // a DMG under /Volumes or an AppImage FUSE mount vanishes on exit; linking
       // to it would leave a dead command, so wait for a real install
-      console.log('[vegaoffice] cli link skipped: app runs from a temporary mount')
+      console.log('[officevega] cli link skipped: app runs from a temporary mount')
       return
     }
     const dir = join(process.resourcesPath, 'cli')
     writeLauncherFile(launcherFilePath(process.env), dir)
+    // skills installed by pre-rename builds read the pointer from
+    // ~/.vegaoffice/launcher — keep it pointing at the live CLI
+    if (!process.env.OFFICEVEGA_AUTH_DIR && !process.env.VEGAOFFICE_AUTH_DIR) {
+      const legacyDir = join(homedir(), '.vegaoffice')
+      if (existsSync(legacyDir)) writeLauncherFile(join(legacyDir, 'launcher'), dir)
+    }
     const version = app.getVersion()
     const previous = readAppSettings(settingsPath)[SETTING_KEY] as CliLinkRecord | undefined
     if (process.platform === 'win32' && previous?.version === version) return
-    const launcher = join(dir, process.platform === 'win32' ? 'vegaoffice.cmd' : 'vegaoffice')
+    const launcher = join(dir, process.platform === 'win32' ? 'officevega.cmd' : 'officevega')
     const outcome = installCliLink({ launcher })
     console.log(
-      `[vegaoffice] cli link: ${outcome.status}${outcome.location ? ` (${outcome.location})` : ''}`,
+      `[officevega] cli link: ${outcome.status}${outcome.location ? ` (${outcome.location})` : ''}`,
     )
     const record: CliLinkRecord = { version, status: outcome.status }
     if (outcome.location) record.location = outcome.location
     writeAppSetting(settingsPath, SETTING_KEY, record)
   } catch (err) {
-    console.warn('[vegaoffice] cli link failed:', err instanceof Error ? err.message : err)
+    console.warn('[officevega] cli link failed:', err instanceof Error ? err.message : err)
   }
 }
 
@@ -53,12 +59,15 @@ export function isEphemeralInstall(resourcesPath: string, env: NodeJS.ProcessEnv
   return /^\/Volumes\//.test(resourcesPath) || /\/\.mount_[^/]+\//.test(resourcesPath)
 }
 
-/** Same directory the vegaoffice CLI uses for auth.json and its audit log. */
+/** Same directory the officevega CLI uses for auth.json and its audit log. */
 export function launcherFilePath(env: NodeJS.ProcessEnv): string {
-  return join(env.VEGAOFFICE_AUTH_DIR || join(homedir(), '.vegaoffice'), 'launcher')
+  return join(
+    env.OFFICEVEGA_AUTH_DIR || env.VEGAOFFICE_AUTH_DIR || join(homedir(), '.officevega'),
+    'launcher',
+  )
 }
 
-/** One line, the directory holding vegaoffice / vegaoffice.cmd; rewritten only when it changed. */
+/** One line, the directory holding officevega / officevega.cmd; rewritten only when it changed. */
 export function writeLauncherFile(file: string, launcherDir: string): boolean {
   const content = `${launcherDir}\n`
   try {

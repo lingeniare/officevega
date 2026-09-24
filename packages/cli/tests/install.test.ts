@@ -12,20 +12,20 @@ describe('installCliLink', () => {
     const dir = tempDir()
     const bin = join(dir, 'bin')
     mkdirSync(bin)
-    const launcher = join(dir, 'app', 'vegaoffice')
+    const launcher = join(dir, 'app', 'officevega')
     mkdirSync(join(dir, 'app'))
     writeFileSync(launcher, '#!/bin/sh\n')
     expect(inspectCliLink({ launcher, platform: 'linux', candidateDirs: [bin] }).status).toBe(
       'missing',
     )
     const first = installCliLink({ launcher, platform: 'linux', candidateDirs: [bin] })
-    expect(first).toEqual({ status: 'linked', location: join(bin, 'vegaoffice') })
-    expect(readlinkSync(join(bin, 'vegaoffice'))).toBe(launcher)
+    expect(first).toEqual({ status: 'linked', location: join(bin, 'officevega') })
+    expect(readlinkSync(join(bin, 'officevega'))).toBe(launcher)
     const again = installCliLink({ launcher, platform: 'linux', candidateDirs: [bin] })
     expect(again.status).toBe('present')
     expect(inspectCliLink({ launcher, platform: 'linux', candidateDirs: [bin] })).toEqual({
       status: 'present',
-      location: join(bin, 'vegaoffice'),
+      location: join(bin, 'officevega'),
     })
   })
 
@@ -35,26 +35,26 @@ describe('installCliLink', () => {
       const dir = tempDir()
       const bin = join(dir, 'bin')
       mkdirSync(bin)
-      const launcher = join(dir, 'new-app', 'cli', 'vegaoffice')
+      const launcher = join(dir, 'new-app', 'cli', 'officevega')
       mkdirSync(join(dir, 'new-app', 'cli'), { recursive: true })
       writeFileSync(launcher, '')
-      symlinkSync(join(dir, 'old-app', 'cli', 'vegaoffice'), join(bin, 'vegaoffice'))
+      symlinkSync(join(dir, 'old-app', 'cli', 'officevega'), join(bin, 'officevega'))
       expect(inspectCliLink({ launcher, platform: 'linux', candidateDirs: [bin] }).status).toBe(
         'missing',
       )
       expect(installCliLink({ launcher, platform: 'linux', candidateDirs: [bin] }).status).toBe(
         'linked',
       )
-      expect(readlinkSync(join(bin, 'vegaoffice'))).toBe(launcher)
+      expect(readlinkSync(join(bin, 'officevega'))).toBe(launcher)
 
       const npm = join(dir, 'npm-bin')
       mkdirSync(npm)
-      const npmTarget = join(dir, 'lib', 'node_modules', 'vegaoffice', 'bin', 'vegaoffice.js')
-      symlinkSync(npmTarget, join(npm, 'vegaoffice'))
+      const npmTarget = join(dir, 'lib', 'node_modules', 'officevega', 'bin', 'officevega.js')
+      symlinkSync(npmTarget, join(npm, 'officevega'))
       expect(installCliLink({ launcher, platform: 'linux', candidateDirs: [npm] }).status).toBe(
         'occupied',
       )
-      expect(readlinkSync(join(npm, 'vegaoffice'))).toBe(npmTarget)
+      expect(readlinkSync(join(npm, 'officevega'))).toBe(npmTarget)
       expect(inspectCliLink({ launcher, platform: 'linux', candidateDirs: [npm] }).status).toBe(
         'occupied',
       )
@@ -62,22 +62,22 @@ describe('installCliLink', () => {
       mkdirSync(spare)
       expect(inspectCliLink({ launcher, platform: 'linux', candidateDirs: [npm, spare] })).toEqual({
         status: 'missing',
-        location: join(spare, 'vegaoffice'),
+        location: join(spare, 'officevega'),
         manual: expect.any(String),
       })
       expect(installCliLink({ launcher, platform: 'linux', candidateDirs: [npm, spare] })).toEqual({
         status: 'linked',
-        location: join(spare, 'vegaoffice'),
+        location: join(spare, 'officevega'),
       })
 
       const taken = join(dir, 'taken')
       mkdirSync(taken)
-      writeFileSync(join(taken, 'vegaoffice'), 'someone else')
+      writeFileSync(join(taken, 'officevega'), 'someone else')
       const occupied = installCliLink({ launcher, platform: 'linux', candidateDirs: [taken] })
       expect(occupied.status).toBe('occupied')
       expect(occupied.manual).toContain('sudo')
       expect(occupied.manual).toContain('ln -sf')
-      expect(lstatSync(join(taken, 'vegaoffice')).isSymbolicLink()).toBe(false)
+      expect(lstatSync(join(taken, 'officevega')).isSymbolicLink()).toBe(false)
       expect(inspectCliLink({ launcher, platform: 'linux', candidateDirs: [taken] }).status).toBe(
         'occupied',
       )
@@ -98,12 +98,12 @@ describe('installCliLink', () => {
 
   it('reports a missing /usr/local/bin as unwritable instead of skipping it', () => {
     const dir = tempDir()
-    const launcher = join(dir, 'vegaoffice')
+    const launcher = join(dir, 'officevega')
     writeFileSync(launcher, '')
     const absent = join(dir, 'no-such-bin')
     const r = installCliLink({ launcher, platform: 'linux', candidateDirs: [absent] })
     expect(r.status).toBe('unwritable')
-    expect(r.location).toBe(join(absent, 'vegaoffice'))
+    expect(r.location).toBe(join(absent, 'officevega'))
     expect(r.manual).toContain('mkdir -p /usr/local/bin')
     expect(defaultCandidateDirs('darwin')[0]).toBe('/usr/local/bin')
 
@@ -113,7 +113,7 @@ describe('installCliLink', () => {
     expect(inspectCliLink({ launcher, platform: 'darwin', candidateDirs: [absent, brew] })).toEqual(
       {
         status: 'missing',
-        location: join(brew, 'vegaoffice'),
+        location: join(brew, 'officevega'),
         manual: expect.stringContaining('ln -sf'),
       },
     )
@@ -129,8 +129,8 @@ describe('installCliLink', () => {
       return { ok: true, stdout: scripts.length === 1 ? 'linked\n' : 'present\n' }
     }
     const launcher =
-      "C:\\Users\\O'Brien\\AppData\\Local\\Programs\\VegaOffice\\resources\\vegaoffice\\vegaoffice.cmd"
-    const dir = "C:\\Users\\O'Brien\\AppData\\Local\\Programs\\VegaOffice\\resources\\vegaoffice"
+      "C:\\Users\\O'Brien\\AppData\\Local\\Programs\\OfficeVega\\resources\\officevega\\officevega.cmd"
+    const dir = "C:\\Users\\O'Brien\\AppData\\Local\\Programs\\OfficeVega\\resources\\officevega"
     const first = installCliLink({ launcher, platform: 'win32', runPowerShell: run })
     expect(first).toEqual({ status: 'linked', location: dir })
     expect(scripts[0]).toContain("$dir = 'C:\\Users\\O''Brien\\AppData")
@@ -152,14 +152,14 @@ describe('installCliLink', () => {
 
   it('inspects the Windows PATH read-only', () => {
     const scripts: string[] = []
-    const launcher = 'C:\\VegaOffice\\resources\\vegaoffice\\vegaoffice.cmd'
+    const launcher = 'C:\\OfficeVega\\resources\\officevega\\officevega.cmd'
     const present = inspectCliLink({
       launcher,
       platform: 'win32',
       runPowerShell: (s) => (scripts.push(s), { ok: true, stdout: 'present\n' }),
     })
     expect(present.status).toBe('present')
-    expect(present.location).toBe('C:\\VegaOffice\\resources\\vegaoffice')
+    expect(present.location).toBe('C:\\OfficeVega\\resources\\officevega')
     expect(scripts[0]).not.toContain('SetValue')
     const missing = inspectCliLink({
       launcher,

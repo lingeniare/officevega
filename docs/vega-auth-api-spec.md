@@ -2,13 +2,13 @@
 
 ## Context
 
-VegaOffice is an Electron desktop suite (Docs / Sheets / Slides + shell). Today it
+OfficeVega is an Electron desktop suite (Docs / Sheets / Slides + shell). Today it
 authenticates against `www.genspark.ai` and we want to move that identity to
 `api.vega.chat`, which runs **better-auth**.
 
 ### What exists today (to be replaced)
 
-The current client flow lives in `packages/ai-search/src/vegaoffice-auth.ts`:
+The current client flow lives in `packages/ai-search/src/officevega-auth.ts`:
 
 1. `POST {base}/api/office_addin_auth/device_code?app_type=genoffice`
    → `{ device_code, auth_url, expires_in, poll_interval }`
@@ -20,7 +20,7 @@ The current client flow lives in `packages/ai-search/src/vegaoffice-auth.ts`:
    → session cookie via `Set-Cookie`.
 5. `POST {base}/api/api_tokens/create` (Cookie auth) with
    `{ key_name: 'genoffice' }` → `{ data: { token, key_id } }`.
-6. Stored locally in `~/.vegaoffice/auth.json`:
+6. Stored locally in `~/.officevega/auth.json`:
    `{ api_key, key_id, access_token }` (mode 0600).
 7. Logout: rebuild the session from `access_token`, then
    `POST {base}/api/api_tokens/revoke { key_id }`, then delete the local file.
@@ -136,7 +136,7 @@ Document the exact response for each failure mode we branch on:
 
 ## Acceptance criteria
 
-1. From a clean machine: clicking "Sign in" in VegaOffice opens the VEGA
+1. From a clean machine: clicking "Sign in" in OfficeVega opens the VEGA
    verification page; after approval the app holds a working
    `sk-apivega-...` key with zero manual steps.
 2. `GET /api/v1/chat/completions` with that key succeeds; the call is billed
@@ -214,9 +214,9 @@ Document the exact response for each failure mode we branch on:
 
 ## What we will change once you answer
 
-- `packages/ai-search/src/vegaoffice-auth.ts` → VEGA device flow + key
-  issuance (same exported surface: `startVegaofficeLogin`,
-  `vegaofficeApiKey`, `vegaofficeLogout`, `vegaofficeLoginInFlight`).
+- `packages/ai-search/src/officevega-auth.ts` → VEGA device flow + key
+  issuance (same exported surface: `startOfficeVegaLogin`,
+  `officeVegaApiKey`, `officeVegaLogout`, `officeVegaLoginInFlight`).
 - `gskLoginInfo` / account-status IPC → the new balance endpoint.
 - Settings UI: replace the manual `sk-apivega-...` paste field with a
   "Sign in to VEGA" button + deposit display (keeping manual paste as a
@@ -247,9 +247,9 @@ database (`scripts/test-device-flow.ts` — 12/12 checks green).
      user is signed out the page redirects through `/login` and returns.
 3. `client_id` is whitelist-validated server-side — send literally
    `"vegaoffice"`. Other values get `400 { error: "invalid_client" }`.
-   (Renamed with the product rebrand — the backend whitelist must register
-   `"vegaoffice"`; until it does, prod still accepts only the old value
-   `"genoffice"`.)
+   (The value predates the OfficeVega rebrand: prod whitelists
+   `"vegaoffice"`, so a future `"officevega"` client_id needs the backend
+   whitelist updated first.)
 4. See (1): session token, 90-day TTL. The app should **drop it after key
    issuance** — only the `sk-apivega-...` key is needed afterwards.
 5. The page is built at `/device` (code entry + approve/deny, sign-in
@@ -311,7 +311,7 @@ database (`scripts/test-device-flow.ts` — 12/12 checks green).
     `/device/token` polling is exempt from the IP rate limiter.
 17. No required headers beyond `Authorization`. `HTTP-Referer`/`X-Title`
     are supported OpenRouter-style for attribution — send
-    `X-Title: VegaOffice` if you want the app tagged in stats.
+    `X-Title: OfficeVega` if you want the app tagged in stats.
 18. CORS is `Access-Control-Allow-Origin: *` on all `/api/v1/*` endpoints —
     callable from any client, no Origin needed.
 

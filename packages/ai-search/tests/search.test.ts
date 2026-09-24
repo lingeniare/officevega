@@ -7,10 +7,10 @@ import { searchOptionsFromSettings, testSearchProvider } from '../src/search-too
 import { defaultAiSettings } from '@genoffice/ai-provider'
 
 // These cases only test the Serper/DuckDuckGo paths; a local gsk login would take priority, so disable it explicitly.
-// VEGAOFFICE_AUTH_DIR keeps a developer's real VEGA sign-in out of the tests (index registers vegaofficeApiKey as the issued-key getter).
+// OFFICEVEGA_AUTH_DIR keeps a developer's real VEGA sign-in out of the tests (index registers officeVegaApiKey as the issued-key getter).
 beforeAll(() => {
   process.env.AI_SEARCH_DISABLE_GSK = '1'
-  process.env.VEGAOFFICE_AUTH_DIR = mkdtempSync(join(tmpdir(), 'vegaoffice-auth-test-'))
+  process.env.OFFICEVEGA_AUTH_DIR = mkdtempSync(join(tmpdir(), 'officevega-auth-test-'))
 })
 
 const realFetch = globalThis.fetch

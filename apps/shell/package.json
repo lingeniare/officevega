@@ -1,13 +1,13 @@
 {
-  "name": "@vegaoffice/shell",
-  "productName": "VegaOffice",
-  "version": "0.10.1",
+  "name": "@officevega/shell",
+  "productName": "OfficeVega",
+  "version": "0.10.2",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/LINGENIARE_VEGAOFFICE_GUARD",
+  "homepage": "https://github.com/LINGENIARE_OFFICEVEGA_GUARD",
   "private": true,
-  "description": "Unified VegaOffice shell: one app hosting the docs and sheets modules behind a home/launcher window",
+  "description": "Unified OfficeVega shell: one app hosting the docs and sheets modules behind a home/launcher window",
   "main": "out/main/index.js",
-  "desktopName": "vegaoffice.desktop",
+  "desktopName": "officevega.desktop",
   "scripts": {
     "dev": "electron-vite dev --watch",
     "build": "electron-vite build",
@@ -49,5 +49,5 @@
     "vite": "^7.3.1",
     "vitest": "^4.1.11"
   },
-  "author": "VegaOffice"
+  "author": "OfficeVega"
 }

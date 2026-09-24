@@ -2,7 +2,7 @@
 
 ## Context
 
-VegaOffice is an Electron desktop suite. Per `docs/vega-auth-api-spec.md`
+OfficeVega is an Electron desktop suite. Per `docs/vega-auth-api-spec.md`
 (implemented), sign-in mints one `sk-apivega-...` key per account. This
 document covers the **feature surface** that key unlocks: `api.vega.chat` acts
 as a 100% OpenRouter-compatible proxy, and every AI capability in the app —
@@ -13,7 +13,7 @@ to VEGA on that key.
 
 - All calls are `Authorization: Bearer sk-apivega-...` against
   `https://api.vega.chat/api/v1` — the same key for every feature, billed to
-  the account deposit and attributed to the registered key name `vegaoffice`.
+  the account deposit and attributed to the registered key name `officevega`.
 - The issued key **never enters the renderer**. Settings UI has no API-key,
   Base-URL or model picker for VEGA; the client sends fixed model ids (below)
   and the server is free to remap them.
@@ -47,7 +47,7 @@ The client sends:
 ```json
 POST /api/v1/chat/completions
 {
-  "model": "google/gemini-3.5-flash-lite",
+  "model": "openai/gpt-6-luna",
   "plugins": [{ "id": "web", "engine": "parallel", "max_results": 6 }],
   "messages": [{ "role": "user", "content": "<query>" }]
 }
@@ -66,7 +66,7 @@ POST /api/v1/chat/completions
 
 ```
 POST /api/v1/images/generations
-{ "model": "google/gemini-3.1-flash-image", "prompt": "...", "n": 1,
+{ "model": "openai/gpt-image-2.5-sunburst", "prompt": "...", "n": 1,
   "size": "1024x1024" | aspect-mapped }
 ```
 
@@ -83,7 +83,7 @@ to the chat UI later, at which point the id stops being fixed.
 
 ```
 POST /api/v1/chat/completions
-{ "model": "google/gemini-3.5-flash-lite",
+{ "model": "openai/gpt-6-luna",
   "messages": [{ "role": "user", "content": [
     { "type": "text", "text": "<prompt>" },
     { "type": "image_url", "image_url": { "url": "data:image/...;base64,..." } }
@@ -95,10 +95,11 @@ needs OpenAI-shaped `choices[0].message.content` back.
 
 ### R5. Video analysis — fixed model slot
 
-Identical to R4 except the media part is
+Identical to R4 except `model` is `google/gemini-3.5-flash-lite` and the
+media part is
 `{ "type": "video_url", "video_url": { "url": "data:video/...;base64,..." } }`
-(OpenRouter video modality). The backend picks a video-capable model —
-route the fixed id to one.
+(OpenRouter video modality). `openai/gpt-6-luna` accepts no video input, so
+the client pins a video-capable id — route it to one.
 
 ### R6. Spellcheck — out of scope (documented for completeness)
 
@@ -109,7 +110,7 @@ and we will wire it as a separate opt-in feature.
 
 ### R7. Key secrecy
 
-- `sk-apivega-...` lives only in `~/.vegaoffice/auth.json` (0600) in the main
+- `sk-apivega-...` lives only in `~/.officevega/auth.json` (0600) in the main
   process; it is injected into requests there.
 - Never return the plaintext key from any endpoint after issuance; account
   info comes from `GET /api/v1/account` (email, balance, plan — no key).

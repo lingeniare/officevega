@@ -434,7 +434,7 @@ interface RuntimePaths {
   preloadPath: string
   rendererUrl?: string
   rendererFile?: string
-  /** Shell router used to open exported PDFs in a new VegaOffice tab. */
+  /** Shell router used to open exported PDFs in a new OfficeVega tab. */
   openGeneratedPath?: (path: string) => boolean
 }
 

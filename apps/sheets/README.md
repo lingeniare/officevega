@@ -1,4 +1,4 @@
-# VegaOffice Sheets
+# OfficeVega Sheets
 
 An AI-native spreadsheet app for macOS and Windows.
 

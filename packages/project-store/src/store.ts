@@ -598,7 +598,7 @@ export class ProjectStore {
 
   /**
    * Lists files that currently exist for a project. Stored paths are historical
-   * records and may outlive files deleted or moved outside VegaOffice.
+   * records and may outlive files deleted or moved outside OfficeVega.
    */
   listProjectFiles(projectId: string): string[] {
     const proj = this.readProject(projectId)

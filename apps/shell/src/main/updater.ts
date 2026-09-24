@@ -25,7 +25,7 @@ import {
  * the update channel prefix (production builds only). The packaged app reads
  * that URL from resources/app-update.yml, which electron-builder bakes in
  * from the `publish` config in apps/shell/electron-builder.cjs — the URL
- * itself is injected at build time via the VEGAOFFICE_UPDATE_URL env var and
+ * itself is injected at build time via the OFFICEVEGA_UPDATE_URL env var and
  * is intentionally not committed to the repo.
  *
  * UX is the strong-guidance modal card (update-window.ts), not a native
@@ -36,7 +36,7 @@ import {
  * replaces the .AppImage file in place, no root needed); deb installs have
  * no updater — users upgrade via `apt install ./<new>.deb`.
  *
- * Dev preview: VEGAOFFICE_FAKE_UPDATE=<version> in an unpacked run opens the
+ * Dev preview: OFFICEVEGA_FAKE_UPDATE=<version> in an unpacked run opens the
  * window with a simulated download so the UI can be exercised end to end.
  */
 
@@ -577,7 +577,7 @@ function manualDownloadUrlFor(info: UpdateInfo): string | null {
 let started = false
 // version the user declined this session — don't nag again until next launch
 let dismissedVersion: string | null = null
-// re-shows the VEGAOFFICE_FAKE_UPDATE window so the manual check is
+// re-shows the OFFICEVEGA_FAKE_UPDATE window so the manual check is
 // exercisable in dev runs too
 let fakeShowAgain: (() => void) | null = null
 let manualCheckInFlight = false
@@ -702,8 +702,8 @@ export function initAutoUpdater(
   started = true
 
   // dev preview of the update window with a simulated download
-  if (!app.isPackaged && process.env.VEGAOFFICE_FAKE_UPDATE) {
-    initFakeUpdate(getWindow, process.env.VEGAOFFICE_FAKE_UPDATE)
+  if (!app.isPackaged && process.env.OFFICEVEGA_FAKE_UPDATE) {
+    initFakeUpdate(getWindow, process.env.OFFICEVEGA_FAKE_UPDATE)
     return
   }
   // Unpacked runs have no app-update.yml and must not hit the CDN with a

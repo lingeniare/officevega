@@ -1106,29 +1106,6 @@ function AiMediaPane({
     setTesting(false)
   }
 
-  const blockLabel = (block: TestedBlock) =>
-    block === 'search'
-      ? t('setAiCapSearch')
-      : block === 'image'
-        ? t('setAiCapImage')
-        : block === 'analysis'
-          ? t('setAiCapAnalysis')
-          : block === 'video'
-            ? t('setAiCapVideo')
-            : t('setAiCapFileSearch')
-  const blockProvider = (block: TestedBlock) => {
-    if (block === 'rerank')
-      return JEV_ENDPOINTS.find((e) => e.value === fileSearch?.jevEndpoint)?.label ?? ''
-    if (block === 'search')
-      return searchCatalog.find((m) => m.id === search.provider)?.label ?? search.provider
-    const id =
-      block === 'image'
-        ? media.imageProvider
-        : block === 'video'
-          ? media.videoAnalysisProvider
-          : media.analysisProvider
-    return mediaCatalog.find((m) => m.id === id)?.label ?? id
-  }
   const blockStatus = (block: TestedBlock): AiStatus | null => {
     if (testing) return { kind: 'testing', text: t('setAiTesting') }
     const r = testResults?.[block]
@@ -1143,23 +1120,14 @@ function AiMediaPane({
       <AiStatusPill status={blockStatus(block)} />
     </div>
   )
-  const failed = testResults
-    ? (Object.keys(testResults) as TestedBlock[]).filter((b) => !testResults[b]?.ok)
-    : []
-  const headStatus: AiStatus | null = testing
-    ? { kind: 'testing', text: t('setAiTesting') }
-    : testResults
-      ? failed.length === 0
-        ? { kind: 'ok', text: t('setAiTestOk') }
-        : {
-            kind: 'err',
-            text: `${blockLabel(failed[0]!)} · ${blockProvider(failed[0]!)}: ${testResults[failed[0]!]?.error || t('setAiTestFail')}`,
-          }
-      : saveError
-        ? { kind: 'err', text: saveError }
-        : saved
-          ? { kind: 'ok', text: t('setAiSaved') }
-          : null
+  // the head is sticky, so a result pill there floats over every block —
+  // test verdicts live on each block's own subhead; the head only carries
+  // the autosave feedback
+  const headStatus: AiStatus | null = saveError
+    ? { kind: 'err', text: saveError }
+    : saved
+      ? { kind: 'ok', text: t('setAiSaved') }
+      : null
 
   const providerRow = (
     label: string,

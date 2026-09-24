@@ -178,7 +178,7 @@ export async function printHtmlToPdf(
   html: PrintableHtml,
   createWindow: () => PrintWindow,
 ): Promise<Buffer> {
-  const workDir = await mkdtemp(join(tmpdir(), 'vegaoffice-ai-doc-'))
+  const workDir = await mkdtemp(join(tmpdir(), 'officevega-ai-doc-'))
   let printWin: PrintWindow | undefined
   try {
     printWin = createWindow()
