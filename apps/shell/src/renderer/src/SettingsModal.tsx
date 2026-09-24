@@ -936,6 +936,10 @@ function AiMediaPane({
   // autosave discipline as the AI settings, then the home search re-judges
   // its order via onFileSearchChange
   const fileSearchConfirmed = useRef<FileSearchSettings | null>(null)
+  const onFileSearchChangeRef = useRef(onFileSearchChange)
+  useEffect(() => {
+    onFileSearchChangeRef.current = onFileSearchChange
+  })
   useEffect(() => {
     if (!fileSearch || fileSearch === fileSearchConfirmed.current) return
     const timer = setTimeout(() => {
@@ -944,7 +948,7 @@ function AiMediaPane({
         .setFileSearchSettings?.(snapshot)
         .then(() => {
           fileSearchConfirmed.current = snapshot
-          onFileSearchChange?.()
+          onFileSearchChangeRef.current?.()
         })
         .catch(() => {})
     }, AI_SETTINGS_AUTOSAVE_MS)

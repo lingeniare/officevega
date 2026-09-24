@@ -17,7 +17,6 @@ import type {
   FileSearchPage,
   FileSearchRerank,
 } from '../../shared/home-api'
-import type { IntegrationsApi } from '../../shared/integrations-api'
 import { markText } from '../../shared/text-marks'
 import { useDismissablePopover } from '@genoffice/ui'
 import { appTitle } from '@genoffice/i18n'

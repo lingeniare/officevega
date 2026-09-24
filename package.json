@@ -45,7 +45,13 @@
   },
   "overrides": {
     "nanoid@3": "^3.3.17",
-    "nanoid@5": "^5.1.16"
+    "nanoid@5": "^5.1.16",
+    "@tiptap/core": "3.31.0",
+    "@tiptap/extension-bubble-menu": "3.31.0",
+    "@tiptap/extension-floating-menu": "3.31.0",
+    "pptxgenjs": {
+      "image-size": "^2.0.3"
+    }
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -60,5 +66,11 @@
     "pngjs": "^7.0.0",
     "prettier": "^3.9.6",
     "typescript-eslint": "^8.65.0"
+  },
+  "allowScripts": {
+    "esbuild@0.25.12": true,
+    "electron-winstaller@5.4.0": true,
+    "esbuild@0.28.1": true,
+    "protobufjs@7.6.5": true
   }
 }

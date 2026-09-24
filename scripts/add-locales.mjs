@@ -71,7 +71,6 @@ const langs = LANGS_FILTER ?? NEW_LANGS
 
 /** decode a JS string literal ('x', "x", `x`) */
 function evalLit(lit) {
-  // eslint-disable-next-line no-new-func
   return Function(`"use strict"; return (${lit})`)()
 }
 
@@ -84,6 +83,7 @@ function emitLit(value) {
     .replace(/\t/g, '\\t')
     .replace(/\r/g, '\\r')
     .replace(
+      // eslint-disable-next-line no-control-regex -- literal escaping must catch control chars
       /[\u0000-\u001f\u2028\u2029]/g,
       (c) => `\\u${c.charCodeAt(0).toString(16).padStart(4, '0')}`,
     )
@@ -130,7 +130,6 @@ function parseEntries(lines, where) {
     let end = i
     for (;;) {
       const trimmed = rest.trimStart()
-      const litStart = rest.length - trimmed.length
       if (trimmed && (trimmed[0] === "'" || trimmed[0] === '"' || trimmed[0] === '`')) {
         const le = literalEnd(trimmed)
         if (le !== -1 && /^[,\s]*(\/\/.*)?$/.test(trimmed.slice(le))) {

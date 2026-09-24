@@ -3260,7 +3260,7 @@ async function executeTool(
             // re-feed the pictures themselves — the renderer materializes the embedded
             // data: bytes into the generated-image store. Local path only; the cloud
             // service cannot reach local bytes, so those pages keep today's behavior.
-            let canvasImgs: string[] = []
+            const canvasImgs: string[] = []
             if (!remembered.length && !upCloud && access.storeImageData) {
               for (const d of pictureDataUrls(slidesNow[idx]?.nodes).slice(0, 4)) {
                 try {

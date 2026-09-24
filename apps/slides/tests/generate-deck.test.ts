@@ -717,7 +717,7 @@ describe('generate_deck internal research', () => {
       order.push('style:end')
       return { ok: true, styleSkill: 'STYLE:' + a.topic }
     }
-    access.searchWeb = async (q) => {
+    access.searchWeb = async (_q) => {
       order.push('research:start')
       await new Promise((r) => setTimeout(r, 10))
       order.push('research:end')

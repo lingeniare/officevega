@@ -276,9 +276,10 @@ describe('fast model picker', () => {
 
     // non-liveCatalog provider: the fast picker is a Dropdown whose first row
     // is "Same as main model"
-    const fastDd = Array.from(host.querySelectorAll<HTMLElement>('.set-field'))
-      .find((f) => f.textContent?.includes('Fast model'))
-      ?.querySelector<HTMLElement>('.gs-dd-btn')!
+    const fastField = Array.from(host.querySelectorAll<HTMLElement>('.set-field')).find((f) =>
+      f.textContent?.includes('Fast model'),
+    )!
+    const fastDd = fastField.querySelector<HTMLElement>('.gs-dd-btn')!
     expect(fastDd.textContent).toContain('Same as main model')
     await click(fastDd)
     const luna = Array.from(host.querySelectorAll<HTMLElement>('[role="option"]')).find(

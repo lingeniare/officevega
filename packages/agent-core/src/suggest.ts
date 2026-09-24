@@ -66,7 +66,7 @@ export function parseSuggestedQuestions(raw: string): string[] {
       .split('\n')
       .map((line) => line.trim())
       // drop raw JSON fragments — a broken {"questions": …} blob must not become a chip
-      .filter((line) => line !== '' && !/^[{\[].*[}\]]?$/.test(line) && !/^[}\]]/.test(line))
+      .filter((line) => line !== '' && !/^[{[].*[}\]]?$/.test(line) && !/^[}\]]/.test(line))
   }
   const out: string[] = []
   const seen = new Set<string>()
@@ -76,7 +76,7 @@ export function parseSuggestedQuestions(raw: string): string[] {
       .trim()
       // list markers: "- ", "• ", "1. ", "2) " — but never a leading digit that is part of the question
       .replace(/^(?:[-*•]|\d+[.)])\s+/, '')
-      .replace(/^["'«»„“”‘’\`]+|["'«»„“”‘’\`]+$/g, '')
+      .replace(/^["'«»„“”‘’`]+|["'«»„“”‘’`]+$/g, '')
       .trim()
     if (!q || q.length > QUESTION_MAX_CHARS) continue
     const key = q.toLowerCase()
