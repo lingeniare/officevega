@@ -249,11 +249,15 @@ import {
   carryHistoryForReplacement,
   dialogParent,
   endHistoryBatch,
+  enqueueSessionMutation,
   getFontMetrics,
   resetFontMetrics,
   journalOps,
   makeMediaResolver,
   pushHistory,
+  qcSlideCheckpoint,
+  qcSlideCheckpointsClear,
+  qcSlideRestore,
   rebuildSlide,
   rebuildSlideWithReparse,
   registerAiSnapshot,
@@ -1909,8 +1913,6 @@ export function registerSlidesIpc(): void {
           if (!existing) {
             return { error: tm('errNoDeckAppend') }
           }
-          const opened = existing.opened
-          const beforeCount = opened.deck.slides.length
           // Push an undo snapshot: appending is an ordinary edit, ⌘Z should return to the
           // pre-append state (previously the undoStack was simply cleared, making all of the
           // user's prior manual edits non-undoable — inconsistent with replace_at behavior)
@@ -1928,41 +1930,46 @@ export function registerSlidesIpc(): void {
               lastErr = pageErr instanceof Error ? pageErr.message : String(pageErr)
             }
           }
-          let merged = 0
-          if (sources.length > 0) {
-            pushHistory(existing)
-            const r = journaledTxn(existing, 'generate', {
-              isolation: 'per_op',
-              ops: sources.map((source) => ({ op: 'insertSlidePptx', source })),
-            })
-            merged = r.records?.length ?? 0
-            if (merged === 0) existing.undoStack.pop() // Nothing happened, pop the just-pushed snapshot
-            if (!lastErr) lastErr = r.failures?.[0]?.error
-          }
-          if (merged === 0) {
-            return { error: tm('errAppendFailed', { reason: lastErr ?? tm('errUnknown') }) }
-          }
-          existing.fitWidthPx = fitWidthPx
-          // Save the draft: persist the current complete deck
-          const bytes = await savePptx(opened)
-          await saveDraftAfterGenerate(e.sender, existing, bytes, 'append', deckName)
-          // Draft now matches memory: reopen from the output bytes to clear dirty (same as
-          // slides:save) — otherwise pure AI generation (per-page append merges mark
-          // structureDirty) would trigger the close confirmation even without edits
-          if (existing.path) {
-            existing.opened = await openPptx(bytes)
-            existing.metaDirty = false
-          }
-          return {
-            path: existing.path,
-            slides: buildAllRenderSlides(existing.opened, fitWidthPx),
-            size: { cx: existing.opened.deck.size.cx, cy: existing.opened.deck.size.cy },
-            defaultFont: deckDefaultFont(existing.opened),
-            appendedFrom: beforeCount,
-            ...(lastErr && merged < pageMarkers.length
-              ? { fallbackReason: tm('errPartialAppend', { reason: lastErr }) }
-              : {}),
-          }
+          // The mutate → save → reopen tail queues per session: concurrent landings must
+          // not interleave their opened replacement (a sibling's txn could be dropped).
+          return await enqueueSessionMutation(existing, async () => {
+            const beforeCount = existing.opened.deck.slides.length
+            let merged = 0
+            if (sources.length > 0) {
+              pushHistory(existing)
+              const r = journaledTxn(existing, 'generate', {
+                isolation: 'per_op',
+                ops: sources.map((source) => ({ op: 'insertSlidePptx', source })),
+              })
+              merged = r.records?.length ?? 0
+              if (merged === 0) existing.undoStack.pop() // Nothing happened, pop the just-pushed snapshot
+              if (!lastErr) lastErr = r.failures?.[0]?.error
+            }
+            if (merged === 0) {
+              return { error: tm('errAppendFailed', { reason: lastErr ?? tm('errUnknown') }) }
+            }
+            existing.fitWidthPx = fitWidthPx
+            // Save the draft: persist the current complete deck
+            const bytes = await savePptx(existing.opened)
+            await saveDraftAfterGenerate(e.sender, existing, bytes, 'append', deckName)
+            // Draft now matches memory: reopen from the output bytes to clear dirty (same as
+            // slides:save) — otherwise pure AI generation (per-page append merges mark
+            // structureDirty) would trigger the close confirmation even without edits
+            if (existing.path) {
+              existing.opened = await openPptx(bytes)
+              existing.metaDirty = false
+            }
+            return {
+              path: existing.path,
+              slides: buildAllRenderSlides(existing.opened, fitWidthPx),
+              size: { cx: existing.opened.deck.size.cx, cy: existing.opened.deck.size.cy },
+              defaultFont: deckDefaultFont(existing.opened),
+              appendedFrom: beforeCount,
+              ...(lastErr && merged < pageMarkers.length
+                ? { fallbackReason: tm('errPartialAppend', { reason: lastErr }) }
+                : {}),
+            }
+          })
         }
 
         // Redo one page in place: the insertSlidePptx op merges the extracted page at the
@@ -1973,11 +1980,6 @@ export function registerSlidesIpc(): void {
           if (!existing) {
             return { error: tm('errNoDeckReplace') }
           }
-          const opened = existing.opened
-          const total = opened.deck.slides.length
-          if (atIndex == null || !Number.isInteger(atIndex) || atIndex < 0 || atIndex >= total) {
-            return { error: tm('errIndexRange', { max: total - 1 }) }
-          }
           const marker = pageMarkers[0]
           if (!marker || pageMarkers.length !== 1) {
             return { error: tm('errReplaceNeedsOne') }
@@ -1987,28 +1989,36 @@ export function registerSlidesIpc(): void {
           if (!source) {
             return { error: tm('errMergeFailed') }
           }
-          pushHistory(existing)
-          const r = journaledTxn(existing, 'generate', {
-            ops: [{ op: 'insertSlidePptx', source, at: atIndex, replace: true }],
+          // Queued tail (see append): the bounds check belongs inside — the deck may have
+          // changed while this call waited on a sibling landing.
+          return await enqueueSessionMutation(existing, async () => {
+            const total = existing.opened.deck.slides.length
+            if (atIndex == null || !Number.isInteger(atIndex) || atIndex < 0 || atIndex >= total) {
+              return { error: tm('errIndexRange', { max: total - 1 }) }
+            }
+            pushHistory(existing)
+            const r = journaledTxn(existing, 'generate', {
+              ops: [{ op: 'insertSlidePptx', source, at: atIndex, replace: true }],
+            })
+            if (!r.applied) {
+              existing.undoStack.pop() // The executor already restored the deck
+              return { error: r.failures?.[0]?.error ?? tm('errReplaceFailed') }
+            }
+            existing.fitWidthPx = fitWidthPx
+            const bytes = await savePptx(existing.opened)
+            await saveDraftAfterGenerate(e.sender, existing, bytes, 'append', deckName)
+            if (existing.path) {
+              existing.opened = await openPptx(bytes)
+              existing.metaDirty = false
+            }
+            return {
+              path: existing.path,
+              slides: buildAllRenderSlides(existing.opened, fitWidthPx),
+              size: { cx: existing.opened.deck.size.cx, cy: existing.opened.deck.size.cy },
+              defaultFont: deckDefaultFont(existing.opened),
+              replacedIndex: atIndex,
+            }
           })
-          if (!r.applied) {
-            existing.undoStack.pop() // The executor already restored the deck
-            return { error: r.failures?.[0]?.error ?? tm('errReplaceFailed') }
-          }
-          existing.fitWidthPx = fitWidthPx
-          const bytes = await savePptx(opened)
-          await saveDraftAfterGenerate(e.sender, existing, bytes, 'append', deckName)
-          if (existing.path) {
-            existing.opened = await openPptx(bytes)
-            existing.metaDirty = false
-          }
-          return {
-            path: existing.path,
-            slides: buildAllRenderSlides(existing.opened, fitWidthPx),
-            size: { cx: existing.opened.deck.size.cx, cy: existing.opened.deck.size.cy },
-            defaultFont: deckDefaultFont(existing.opened),
-            replacedIndex: atIndex,
-          }
         }
 
         // Insert one page at atIndex (later pages shift back): used to regenerate a failed middle
@@ -2019,11 +2029,6 @@ export function registerSlidesIpc(): void {
           if (!existing) {
             return { error: tm('errNoDeckInsert') }
           }
-          const opened = existing.opened
-          const total = opened.deck.slides.length
-          if (atIndex == null || !Number.isInteger(atIndex) || atIndex < 0 || atIndex > total) {
-            return { error: tm('errIndexRange', { max: total }) }
-          }
           const marker = pageMarkers[0]
           if (!marker || pageMarkers.length !== 1) {
             return { error: tm('errInsertNeedsOne') }
@@ -2033,28 +2038,34 @@ export function registerSlidesIpc(): void {
           if (!source) {
             return { error: tm('errMergeFailed') }
           }
-          pushHistory(existing)
-          const r = journaledTxn(existing, 'generate', {
-            ops: [{ op: 'insertSlidePptx', source, at: atIndex }],
+          return await enqueueSessionMutation(existing, async () => {
+            const total = existing.opened.deck.slides.length
+            if (atIndex == null || !Number.isInteger(atIndex) || atIndex < 0 || atIndex > total) {
+              return { error: tm('errIndexRange', { max: total }) }
+            }
+            pushHistory(existing)
+            const r = journaledTxn(existing, 'generate', {
+              ops: [{ op: 'insertSlidePptx', source, at: atIndex }],
+            })
+            if (!r.applied) {
+              existing.undoStack.pop() // The executor already restored the deck
+              return { error: r.failures?.[0]?.error ?? tm('errInsertFailed') }
+            }
+            existing.fitWidthPx = fitWidthPx
+            const bytes = await savePptx(existing.opened)
+            await saveDraftAfterGenerate(e.sender, existing, bytes, 'append', deckName)
+            if (existing.path) {
+              existing.opened = await openPptx(bytes)
+              existing.metaDirty = false
+            }
+            return {
+              path: existing.path,
+              slides: buildAllRenderSlides(existing.opened, fitWidthPx),
+              size: { cx: existing.opened.deck.size.cx, cy: existing.opened.deck.size.cy },
+              defaultFont: deckDefaultFont(existing.opened),
+              insertedIndex: atIndex,
+            }
           })
-          if (!r.applied) {
-            existing.undoStack.pop() // The executor already restored the deck
-            return { error: r.failures?.[0]?.error ?? tm('errInsertFailed') }
-          }
-          existing.fitWidthPx = fitWidthPx
-          const bytes = await savePptx(opened)
-          await saveDraftAfterGenerate(e.sender, existing, bytes, 'append', deckName)
-          if (existing.path) {
-            existing.opened = await openPptx(bytes)
-            existing.metaDirty = false
-          }
-          return {
-            path: existing.path,
-            slides: buildAllRenderSlides(existing.opened, fitWidthPx),
-            size: { cx: existing.opened.deck.size.cx, cy: existing.opened.deck.size.cy },
-            defaultFont: deckDefaultFont(existing.opened),
-            insertedIndex: atIndex,
-          }
         }
 
         // replace mode: assemble the whole batch into one multi-page pptx as the new deck base.
@@ -4326,6 +4337,27 @@ export function registerSlidesIpc(): void {
     if (!session) return null
     const before = endHistoryBatch(session)
     return before ? registerAiSnapshot(session, before) : null
+  })
+
+  // Per-slide QC checkpoints: the parallel post-generation QC pass reverts a page
+  // whose auto-fix made the deterministic audit worse through these copies, never
+  // through a history batch (session-global) or ai-snapshot (whole deck).
+  ipcMain.handle('slides:qc-slide-checkpoint', (e, slideIndex: number) => {
+    const session = sessions.get(e.sender.id)
+    if (!session) return false
+    return qcSlideCheckpoint(session, Number(slideIndex))
+  })
+
+  ipcMain.handle('slides:qc-slide-restore', (e, slideIndex: number) => {
+    const session = sessions.get(e.sender.id)
+    if (!session || !qcSlideRestore(session, Number(slideIndex))) return null
+    scheduleDeckBroadcast(session)
+    return rebuildSlide(session, Number(slideIndex))
+  })
+
+  ipcMain.handle('slides:qc-checkpoints-clear', (e) => {
+    const session = sessions.get(e.sender.id)
+    if (session) qcSlideCheckpointsClear(session)
   })
 
   ipcMain.handle('slides:ai-snapshot-restore', (e, id: number) => {

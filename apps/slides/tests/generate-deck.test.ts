@@ -30,6 +30,7 @@ function makeAccess(opts?: {
   const landOrder: string[] = [] // records the landing order
   const imageSearchCalls: string[] = [] // records the queries searchImages was called with
   const imagesSeen: string[][] = [] // records the images each generatePageCloud call received
+  const imageAspectsSeen: (Record<string, string> | undefined)[] = [] // records each page request's declared slot aspects
   const sidecarSaves: Array<{ topic: string; styleSkill: string; createdAt: string }> = []
   const savedTemplates: Record<
     string,
@@ -80,6 +81,7 @@ function makeAccess(opts?: {
       genPageCalls.push(args.pageIndex)
       stylesSeen.push(args.style)
       imagesSeen.push([...args.images])
+      imageAspectsSeen.push(args.imageAspects ? { ...args.imageAspects } : undefined)
       if (failPages.has(args.pageIndex)) return { ok: false, error: 'mock fail' }
       if (failAttempts[args.pageIndex] && failAttempts[args.pageIndex] > 0) {
         failAttempts[args.pageIndex] -= 1
@@ -95,6 +97,7 @@ function makeAccess(opts?: {
       localPageCalls.push(args.pageIndex)
       stylesSeen.push(args.style)
       imagesSeen.push([...args.images])
+      imageAspectsSeen.push(args.imageAspects ? { ...args.imageAspects } : undefined)
       if (failPages.has(args.pageIndex)) return { ok: false, error: 'mock fail' }
       if (failAttempts[args.pageIndex] && failAttempts[args.pageIndex] > 0) {
         failAttempts[args.pageIndex] -= 1
@@ -160,6 +163,7 @@ function makeAccess(opts?: {
     landOrder,
     imageSearchCalls,
     imagesSeen,
+    imageAspectsSeen,
     sidecarSaves,
     savedTemplates,
     getPages: () => pages,
@@ -889,6 +893,54 @@ describe('generate_deck AI image generation (generation-first imagery)', () => {
     expect(imagesSeen[1]).toEqual([])
   })
 
+  it('a slot aspect tag drives the generation ratio and reaches the page request as imageAspects', async () => {
+    const { access, imagesSeen, imageAspectsSeen } = makeAccess()
+    const seen: { prompt: string; aspectRatio?: string }[] = []
+    access.imageGenAvailable = () => true
+    access.generateImage = async ({ prompt, aspectRatio }) => {
+      seen.push({ prompt, aspectRatio })
+      return { ok: true, url: `https://gen.img/${encodeURIComponent(prompt)}.png` }
+    }
+    const skill = createSlidesSkill(access)
+    await skill.executeTool(
+      promptsCall(['neon city skyline hero [9:16]', 'wide harbor panorama']),
+    )
+    // The tag is stripped from the prompt and drives aspectRatio; untagged = 16:9
+    expect(seen).toEqual([
+      { prompt: 'neon city skyline hero', aspectRatio: '9:16' },
+      { prompt: 'wide harbor panorama', aspectRatio: '16:9' },
+    ])
+    expect(imageAspectsSeen[0]).toEqual({
+      'https://gen.img/neon%20city%20skyline%20hero.png': '9:16',
+      'https://gen.img/wide%20harbor%20panorama.png': '16:9',
+    })
+    expect(imagesSeen[0]).toHaveLength(2)
+  })
+
+  it('a tagged explicit URL is passed clean, with its declared aspect', async () => {
+    const { access, imagesSeen, imageAspectsSeen } = makeAccess()
+    const skill = createSlidesSkill(access)
+    await skill.executeTool({
+      id: 'c-tagged',
+      name: 'generate_deck',
+      input: {
+        core_hook: 'h',
+        style: 's',
+        detail: 'full',
+        pages: [
+          {
+            title: 'P1',
+            brief: 'b',
+            layout: 'content',
+            image_queries: ['https://cdn.example/pic.png [3:4]'],
+          },
+        ],
+      },
+    } as AgentToolCall)
+    expect(imagesSeen[0]).toEqual(['https://cdn.example/pic.png'])
+    expect(imageAspectsSeen[0]).toEqual({ 'https://cdn.example/pic.png': '3:4' })
+  })
+
   it('a failed generation falls back to searching the prompt text', async () => {
     const { access, imageSearchCalls, imagesSeen } = makeAccess()
     access.imageGenAvailable = () => true
@@ -909,7 +961,7 @@ describe('generate_deck AI image generation (generation-first imagery)', () => {
     expect(imagesSeen[0][0]).toContain('https://mock.img/')
   })
 
-  it('image generation runs concurrently (pool of 3) across prompts', async () => {
+  it('image generation runs concurrently (default pool of 8) across prompts', async () => {
     const { access } = makeAccess()
     let concurrent = 0
     let maxConcurrent = 0
@@ -922,10 +974,73 @@ describe('generate_deck AI image generation (generation-first imagery)', () => {
       return { ok: true, url: `https://gen.img/${prompt}.png` }
     }
     const skill = createSlidesSkill(access)
-    await skill.executeTool(
-      promptsCall(['p1', 'p2', 'p3', 'p4', 'p5'], {}),
-    )
+    // 10 pages × 1 unique slot: the eager pool caps at 8 in flight
+    await skill.executeTool({
+      id: 'c-pool',
+      name: 'generate_deck',
+      input: {
+        core_hook: 'h',
+        style: 's',
+        detail: 'full',
+        pages: Array.from({ length: 10 }, (_, i) => ({
+          title: `P${i + 1}`,
+          brief: 'b',
+          layout: 'content',
+          image_prompts: [`p${i + 1}`],
+        })),
+      },
+    } as AgentToolCall)
+    expect(maxConcurrent).toBe(8)
+  })
+
+  it('DeckAccess.imageGenConcurrency overrides the image pool size', async () => {
+    const { access } = makeAccess()
+    access.imageGenConcurrency = 3
+    let concurrent = 0
+    let maxConcurrent = 0
+    access.imageGenAvailable = () => true
+    access.generateImage = async ({ prompt }) => {
+      concurrent++
+      maxConcurrent = Math.max(maxConcurrent, concurrent)
+      await new Promise((r) => setTimeout(r, 15))
+      concurrent--
+      return { ok: true, url: `https://gen.img/${prompt}.png` }
+    }
+    const skill = createSlidesSkill(access)
+    await skill.executeTool(promptsCall(['p1', 'p2', 'p3', 'p4', 'p5'], {}))
     expect(maxConcurrent).toBe(3)
+  })
+
+  it('a failed generation is retried once before falling back to search', async () => {
+    const { access, imageSearchCalls, imagesSeen } = makeAccess()
+    access.imageGenAvailable = () => true
+    let calls = 0
+    access.generateImage = async () => {
+      calls++
+      return calls === 1
+        ? { ok: false, error: 'rate limited' }
+        : { ok: true, url: 'https://gen.img/recovered.png' }
+    }
+    const skill = createSlidesSkill(access)
+    await skill.executeTool(promptsCall(['flaky slot']))
+    expect(calls).toBe(2) // initial try + one retry
+    expect(imageSearchCalls).toEqual([]) // recovered — no search fallback needed
+    expect(imagesSeen[0]).toEqual(['https://gen.img/recovered.png'])
+  })
+
+  it('a slot failing both attempts falls back to image search', async () => {
+    const { access, imageSearchCalls, imagesSeen } = makeAccess()
+    access.imageGenAvailable = () => true
+    let calls = 0
+    access.generateImage = async () => {
+      calls++
+      return { ok: false, error: 'down' }
+    }
+    const skill = createSlidesSkill(access)
+    await skill.executeTool(promptsCall(['hopeless slot']))
+    expect(calls).toBe(2) // initial try + one retry
+    expect(imageSearchCalls).toEqual(['hopeless slot'])
+    expect(imagesSeen[0][0]).toContain('https://mock.img/')
   })
 
   it('an unresolved image slot is reported in the tool output (never silently blank)', async () => {
@@ -1086,7 +1201,7 @@ describe('generate_deck parallelism', () => {
     expect(landOrder.some((l) => l.includes('PAGE13:Planned page 25'))).toBe(false)
   })
 
-  it('cloud page generation runs 4 pages concurrently per batch', async () => {
+  it('cloud page generation runs up to 8 pages concurrently per batch', async () => {
     const { access } = makeAccess()
     let concurrent = 0
     let maxConcurrent = 0
@@ -1099,11 +1214,11 @@ describe('generate_deck parallelism', () => {
       return orig(a)
     }
     const skill = createSlidesSkill(access)
-    await skill.executeTool(topicCall(6))
-    expect(maxConcurrent).toBe(4)
+    await skill.executeTool(topicCall(10))
+    expect(maxConcurrent).toBe(8)
   })
 
-  it('local page generation keeps concurrency at 2 (proxy stability)', async () => {
+  it('local page generation keeps a narrower pool of 4 (proxy stability)', async () => {
     const { access } = makeAccess({ cloudEnabled: false })
     let concurrent = 0
     let maxConcurrent = 0
@@ -1116,7 +1231,166 @@ describe('generate_deck parallelism', () => {
       return orig(a)
     }
     const skill = createSlidesSkill(access)
-    await skill.executeTool(topicCall(5))
-    expect(maxConcurrent).toBe(2)
+    await skill.executeTool(topicCall(6))
+    expect(maxConcurrent).toBe(4)
+  })
+})
+
+describe('generate_deck style choice card (Q1)', () => {
+  const variants = [
+    { name: 'Quiet Boardroom', concept: 'restrained paper neutral', palette: 'bg #FFFFFF', fonts: 'Georgia + Arial', motif: 'hairline rules' },
+    { name: 'Bold Signal', concept: 'dark stage with orange accent', palette: 'bg #111111', fonts: 'Arial Black + Arial', motif: 'oversized numeral' },
+    { name: 'Night Editorial', concept: 'cinematic serif duotone', palette: 'bg #0F0F0F', fonts: 'Georgia + Courier', motif: 'gradient orb' },
+  ]
+  const styleCall = (): AgentToolCall => ({
+    id: 'c-style',
+    name: 'generate_deck',
+    input: { topic: 'Coffee Pitch', approx_pages: 2, detail: 'full' },
+  })
+
+  it('the user pick steers the full Style Skill via styleHint', async () => {
+    const { access, getPages } = makeAccess()
+    const hints: (string | undefined)[] = []
+    const asked: { id: string; options: string[] }[] = []
+    access.generateStyleVariants = async () => ({ ok: true, variants })
+    access.askClarification = async (questions) => {
+      asked.push({ id: questions[0]!.id, options: questions[0]!.options })
+      return { answers: 'style: Bold Signal' }
+    }
+    const orig = access.generateStyleSkill!
+    access.generateStyleSkill = async (a) => {
+      hints.push(a.styleHint)
+      return orig(a)
+    }
+    const skill = createSlidesSkill(access)
+    const res = (await skill.executeTool(styleCall())) as { summary: string }
+    expect(asked).toHaveLength(1)
+    expect(asked[0]!.options).toHaveLength(3)
+    expect(hints[0]).toContain('Bold Signal')
+    expect(hints[0]).toContain('User-picked direction')
+    expect(getPages()).toBe(2)
+    expect(res.summary).toContain('2/2')
+  })
+
+  it('dismissing the card falls back to the single-style path (deck still generates)', async () => {
+    const { access, getPages } = makeAccess()
+    const hints: (string | undefined)[] = []
+    access.generateStyleVariants = async () => ({ ok: true, variants })
+    access.askClarification = async () => ({ answers: '', cancelled: true })
+    const orig = access.generateStyleSkill!
+    access.generateStyleSkill = async (a) => {
+      hints.push(a.styleHint)
+      return orig(a)
+    }
+    const skill = createSlidesSkill(access)
+    await skill.executeTool(styleCall())
+    expect(hints[0] ?? '').not.toContain('User-picked direction')
+    expect(getPages()).toBe(2)
+  })
+
+  it('no variants support → no card, single-style path unchanged', async () => {
+    const { access, getPages } = makeAccess()
+    let asked = 0
+    access.askClarification = async () => {
+      asked++
+      return { answers: '' }
+    }
+    const skill = createSlidesSkill(access)
+    await skill.executeTool(styleCall())
+    expect(asked).toBe(0) // generateStyleVariants absent → card never shows
+    expect(getPages()).toBe(2)
+  })
+})
+
+describe('generate_deck pipelined imagery (S1)', () => {
+  it('a slot shared across chunk boundaries is generated once and reaches both pages', async () => {
+    const { access, imagesSeen } = makeAccess()
+    const prompts: string[] = []
+    access.imageGenAvailable = () => true
+    access.generateImage = async ({ prompt }) => {
+      prompts.push(prompt)
+      return { ok: true, url: 'https://gen.img/shared.png' }
+    }
+    const skill = createSlidesSkill(access)
+    // 6 pages on the cloud path → GEN_BATCH chunks [1-4],[5-6]; the shared slot
+    // sits in chunk 1 (page 1) and chunk 2 (page 6)
+    await skill.executeTool({
+      id: 'c-pipe',
+      name: 'generate_deck',
+      input: {
+        core_hook: 'h',
+        style: 's',
+        detail: 'full',
+        pages: Array.from({ length: 6 }, (_, i) => ({
+          title: `P${i + 1}`,
+          brief: 'b',
+          layout: 'content',
+          image_queries: i === 0 || i === 5 ? ['shared harbor view'] : [],
+        })),
+      },
+    } as AgentToolCall)
+    expect(prompts).toEqual(['shared harbor view']) // resolved once, shared caches dedup
+    expect(imagesSeen[0]).toEqual(['https://gen.img/shared.png'])
+    expect(imagesSeen[5]).toEqual(['https://gen.img/shared.png'])
+  })
+
+  it('a mid-deck generation miss falls back to search immediately for that chunk', async () => {
+    const { access, imageSearchCalls, imagesSeen } = makeAccess()
+    access.imageGenAvailable = () => true
+    access.generateImage = async ({ prompt }) =>
+      prompt === 'unlucky slot'
+        ? { ok: false, error: 'quota exhausted' }
+        : { ok: true, url: `https://gen.img/${encodeURIComponent(prompt)}.png` }
+    const skill = createSlidesSkill(access)
+    await skill.executeTool({
+      id: 'c-pipe2',
+      name: 'generate_deck',
+      input: {
+        core_hook: 'h',
+        style: 's',
+        detail: 'full',
+        pages: [
+          { title: 'P1', brief: 'b', layout: 'content', image_queries: ['lucky slot'] },
+          { title: 'P2', brief: 'b', layout: 'content', image_queries: ['unlucky slot'] },
+        ],
+      },
+    } as AgentToolCall)
+    expect(imageSearchCalls).toEqual(['unlucky slot'])
+    expect(imagesSeen[0]).toEqual(['https://gen.img/lucky%20slot.png'])
+    expect(imagesSeen[1][0]).toContain('https://mock.img/')
+  })
+
+  it('slots beyond the first chunk start resolving immediately (eager pool overlaps page generation)', async () => {
+    const { access } = makeAccess()
+    let concurrent = 0
+    let maxConcurrent = 0
+    access.imageGenAvailable = () => true
+    access.generateImage = async ({ prompt }) => {
+      concurrent++
+      maxConcurrent = Math.max(maxConcurrent, concurrent)
+      await new Promise((r) => setTimeout(r, 15))
+      concurrent--
+      return { ok: true, url: `https://gen.img/${prompt}.png` }
+    }
+    const skill = createSlidesSkill(access)
+    // 6 pages × 1 unique slot across two GEN_BATCH chunks: the old per-chunk
+    // pool (3) could not start chunk 2's slots until chunk 1's pages generated —
+    // the eager pool puts all 6 in flight at once.
+    await skill.executeTool({
+      id: 'c-eager',
+      name: 'generate_deck',
+      input: {
+        core_hook: 'h',
+        style: 's',
+        detail: 'full',
+        pages: Array.from({ length: 6 }, (_, i) => ({
+          title: `P${i + 1}`,
+          brief: 'b',
+          layout: 'content',
+          image_queries: [`slot ${i + 1}`],
+        })),
+      },
+    } as AgentToolCall)
+    expect(maxConcurrent).toBe(6)
   })
 })

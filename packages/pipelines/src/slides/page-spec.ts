@@ -24,6 +24,7 @@ import {
 } from '@genoffice/pptx-engine'
 import { buildRenderSlide, EMU_PER_PX_96, type FontMetricsProvider } from '@genoffice/pptx-render'
 import { coverCropFractions } from './cover-crop'
+import { IMAGE_ASPECT_LIST, snapToImageAspect, splitSlotAspect } from './aspect-ratio'
 
 export const SPEC_CANVAS_W = 1280
 export const SPEC_CANVAS_H = 720
@@ -31,6 +32,11 @@ export const SPEC_CANVAS_H = 720
 const MAX_ELEMENTS = 48
 const MAX_IMAGES = 8
 const MAX_TEXT_LEN = 4000
+
+/** Draft-mode visual placeholder labels held to the fixed slot-aspect set —
+ *  "IMAGE: …"/"VISUAL: …" boxes become real photos at the same ratio.
+ *  CHART:/INFOGRAPHIC: stay free-form: they turn into bespoke shape compositions. */
+const IMAGE_SLOT_LABEL = /^\s*(IMAGE|VISUAL)\s*[:：]/i
 
 /** Preset geometries the spec may use; unknown kinds fall back to rect instead of emitting invalid prst XML. */
 const SHAPE_KINDS = new Set([
@@ -289,6 +295,18 @@ export function parsePageSpecObject(
     const base = { x: cx, y: cy, w: cw, h: ch }
     const type = el.type
 
+    // Image boxes and draft "IMAGE:"/"VISUAL:" placeholder shapes live on the
+    // fixed slot-aspect set the outline tags declare — a miss is snapped to the
+    // nearest allowed ratio instead of landing as an unrealistic narrow strip.
+    const snapBase = (kind: string, aspect?: string) => {
+      const snapped = snapToImageAspect(base, canvasW, canvasH, aspect)
+      if (!snapped) return base
+      warnings.push(
+        `element ${i}: ${kind} box ${base.w}×${base.h} is not at ${snapped.aspect}; snapped (${snapped.box.w}×${snapped.box.h}) — allowed: ${IMAGE_ASPECT_LIST}`,
+      )
+      return snapped.box
+    }
+
     if (type === 'image') {
       const url = typeof el.url === 'string' ? el.url.trim() : ''
       if (!/^https?:\/\//.test(url) && !(opts.localImages && url)) {
@@ -300,7 +318,7 @@ export function parsePageSpecObject(
         continue
       }
       images += 1
-      elements.push({ type: 'image', url, ...base })
+      elements.push({ type: 'image', url, ...snapBase('image') })
       continue
     }
 
@@ -343,10 +361,18 @@ export function parsePageSpecObject(
       }
       const paragraphs = parseParagraphs(el.paragraphs)
       const valign = el.valign
+      const slotLabel = paragraphs
+        .flatMap((p) => p.runs.map((r) => r.text))
+        .join('')
+        .trimStart()
+      const isImageSlot = IMAGE_SLOT_LABEL.test(slotLabel)
+      // A tagged label ("IMAGE: sunset [3:4]") pins the box to its declared
+      // ratio; an untagged one snaps to the nearest allowed aspect.
+      const slotAspect = isImageSlot ? splitSlotAspect(slotLabel).aspect : undefined
       elements.push({
         type: 'shape',
         shape,
-        ...base,
+        ...(isImageSlot ? snapBase('image placeholder', slotAspect) : base),
         ...(fill ? { fill } : {}),
         ...(stroke ? { stroke } : {}),
         ...(paragraphs.some((p) => p.runs.some((r) => r.text.trim())) ? { paragraphs } : {}),

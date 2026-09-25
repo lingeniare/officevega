@@ -1627,6 +1627,13 @@ export interface SlidesApi {
   applyTxn: (op: ApplyTxnOp) => Promise<ApplyTxnResult | null>
   /** Roll the deck back to an AI rollback point; returns the restored full RenderSlide array, null when the id is unknown */
   aiSnapshotRestore: (id: number) => Promise<RenderSlide[] | null>
+  /** Parallel-QC helpers: a per-slide private copy taken before the page's pass, so a
+      worsening auto-fix can be reverted without touching sibling pages' concurrent edits. */
+  qcSlideCheckpoint: (slideIndex: number) => Promise<boolean>
+  /** Swap the checkpointed slide back in; returns the rebuilt page, null when no checkpoint exists */
+  qcSlideRestore: (slideIndex: number) => Promise<RenderSlide | null>
+  /** Drop leftover checkpoints — called once at the start of every QC pass */
+  qcCheckpointsClear: () => Promise<void>
   /** Undo/redo (main-process snapshot history): returns the restored full RenderSlide array, null when nothing to undo */
   undo: () => Promise<RenderSlide[] | null>
   redo: () => Promise<RenderSlide[] | null>

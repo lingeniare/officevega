@@ -467,7 +467,7 @@ describe('staged deck folder: outline and style checks', () => {
         pages: [
           { ...outlinePage('The squeeze', 'cover', 'cover_typography_hero') },
           {
-            ...outlinePage('Where the margin went', 'content', 'three_column_cards'),
+            ...outlinePage('Where the margin went', 'content', 'three_columns'),
             image_queries: ['container port cranes at dawn'],
           },
           outlinePage('Thanks', 'closing', 'closing_cta'),
@@ -693,7 +693,7 @@ describe('officevega slides replace', () => {
     expect(bad.json().message).toContain('--slide must be one 0-based slide index')
   })
 
-  it('check reports an image box that crops away most of its picture', async () => {
+  it('check snaps an image box off the allowed slot aspects to the nearest ratio', async () => {
     const dir = tempDir()
     writeFileSync(join(dir, 'pic.png'), PNG_1PX)
     const page = join(dir, '01.json')
@@ -702,7 +702,7 @@ describe('officevega slides replace', () => {
       JSON.stringify({
         elements: [
           text('Strip', { x: 80, y: 80, w: 600, h: 60 }),
-          // a square picture in a 10:1 strip keeps a tenth of it
+          // a 10:1 strip is not an allowed slot aspect — the box gets snapped
           { type: 'image', url: 'pic.png', x: 80, y: 500, w: 800, h: 80 },
         ],
       }),
@@ -710,7 +710,7 @@ describe('officevega slides replace', () => {
     const r = await run(['slides', 'check', page, '--json'])
     expect(r.code).toBe(0)
     const warnings = r.json().detail.warnings as string[]
-    expect(warnings.some((w) => w.includes('pic.png') && w.includes('only 10%'))).toBe(true)
+    expect(warnings.some((w) => w.includes('image box') && w.includes('snapped'))).toBe(true)
     expect(r.json().detail.imageFailures).toEqual([])
   })
 })
@@ -735,7 +735,7 @@ describe('officevega guide slides design|spec', () => {
     const design = await run(['guide', 'slides', 'design'])
     expect(design.code).toBe(0)
     expect(design.stdout).toContain('Style sheet first')
-    expect(design.stdout).toContain('three_column_cards')
+    expect(design.stdout).toContain('three_columns')
     const spec = await run(['guide', 'slides', 'spec'])
     expect(spec.stdout).toContain('1280 × 720')
     expect(spec.stdout).toContain('"type": "image"')

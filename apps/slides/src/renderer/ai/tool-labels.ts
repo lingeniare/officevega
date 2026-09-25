@@ -7,6 +7,7 @@ import { t, type StringKey } from '../i18n/locale'
 const TOOL_LABEL_KEYS: Record<string, StringKey> = {
   read_slide: 'aiFailReadSlide',
   execute_slide_script: 'aiFailScript',
+  execute_layout_script: 'aiFailScript',
   web_search: 'aiFailWebSearch',
   image_search: 'aiFailImageSearch',
   generate_image: 'aiFailGenImage',
@@ -17,6 +18,7 @@ const TOOL_LABEL_KEYS: Record<string, StringKey> = {
   plan_deck: 'aiFailPlan',
   regenerate_slide: 'aiFailRegen',
   generate_deck: 'aiFailGenDeck',
+  upgrade_deck: 'aiFailUpgrade',
   save_style_template: 'aiFailSaveTemplate',
   list_style_templates: 'aiFailListTemplates',
   edit_chart: 'aiFailChartEdit',

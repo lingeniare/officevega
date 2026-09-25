@@ -238,6 +238,96 @@ describe('parsePageSpec near-duplicate text', () => {
   })
 })
 
+describe('parsePageSpec slot-aspect snap', () => {
+  const imageAt = (w: number, h: number, x = 100, y = 60) => ({
+    type: 'image',
+    url: 'https://ok.example/a.png',
+    x,
+    y,
+    w,
+    h,
+  })
+
+  it('snaps a narrow image box to the nearest allowed aspect and warns', () => {
+    const r = parsePageSpec(
+      JSON.stringify({ elements: [imageAt(200, 600), textSpec('t')] }),
+    )
+    expect(r.ok).toBe(true)
+    if (!r.ok) return
+    // 200×600 is a 1:3 strip — snapped up to 9:16 by widening, position kept
+    expect(r.spec.elements[0]).toMatchObject({ x: 100, y: 60, w: 338, h: 600 })
+    expect(r.warnings.some((w) => w.includes('at 9:16'))).toBe(true)
+  })
+
+  it('leaves boxes already on an allowed aspect untouched, without warnings', () => {
+    const r = parsePageSpec(
+      JSON.stringify({
+        elements: [
+          { ...imageAt(1280, 720), x: 0, y: 0 },
+          { ...imageAt(300, 400), url: 'https://ok.example/b.png' }, // 3:4
+        ],
+      }),
+    )
+    expect(r.ok).toBe(true)
+    if (!r.ok) return
+    expect(r.spec.elements[0]).toMatchObject({ w: 1280, h: 720 })
+    expect(r.spec.elements[1]).toMatchObject({ w: 300, h: 400 })
+    expect(r.warnings.filter((w) => w.includes('snapped'))).toEqual([])
+  })
+
+  it('snaps IMAGE:-labeled placeholder shapes but leaves CHART: boxes free-form', () => {
+    const placeholder = (label: string) => ({
+      type: 'shape',
+      shape: 'roundRect',
+      x: 100,
+      y: 60,
+      w: 200,
+      h: 600,
+      fill: '#F1F5F9',
+      paragraphs: [{ runs: [{ text: label, sizePt: 12 }] }],
+    })
+    const r = parsePageSpec(
+      JSON.stringify({
+        elements: [
+          placeholder('IMAGE: harbor cranes at dawn [3:4]'),
+          placeholder('CHART: revenue by year'),
+          textSpec('t'),
+        ],
+      }),
+    )
+    expect(r.ok).toBe(true)
+    if (!r.ok) return
+    expect(r.spec.elements[0]).toMatchObject({ w: 450, h: 600 }) // declared [3:4] wins over nearest
+    expect(r.spec.elements[1]).toMatchObject({ w: 200, h: 600 }) // charts keep free proportions
+    expect(r.warnings.some((w) => w.includes('image placeholder'))).toBe(true)
+  })
+
+  it('holds a placeholder to its declared tag even when the box matches another allowed ratio', () => {
+    const r = parsePageSpec(
+      JSON.stringify({
+        elements: [
+          {
+            type: 'shape',
+            shape: 'roundRect',
+            x: 60,
+            y: 60,
+            w: 480,
+            h: 270, // a valid 16:9 box…
+            fill: '#F1F5F9',
+            paragraphs: [{ runs: [{ text: 'IMAGE: portrait shot [9:16]', sizePt: 12 }] }],
+          },
+          textSpec('t'),
+        ],
+      }),
+    )
+    expect(r.ok).toBe(true)
+    if (!r.ok) return
+    // …but the slot declared 9:16 — the box is reshaped to it, not left at 16:9
+    expect(r.spec.elements[0]).toMatchObject({ w: 152, h: 270 })
+    expect(r.warnings.some((w) => w.includes('at 9:16'))).toBe(true)
+  })
+})
+
 describe('buildPagePptx', () => {
   const noImages = { fetchImage: async () => null }
 

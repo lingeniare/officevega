@@ -11,8 +11,8 @@ import {
 const entry: OutlinePage = {
   title: 'Where the margin went',
   type: 'content',
-  layout: 'three_column_cards',
-  brief: 'Three cards: fuel +31%, wages +18%, spot rates -22%.',
+  layout: 'three_columns',
+  brief: 'Three columns: fuel +31%, wages +18%, spot rates -22%.',
   image_queries: ['container port cranes at dawn'],
 }
 
@@ -41,7 +41,7 @@ function page(extra: Record<string, unknown>, texts: string[], withImage = false
 describe('checkPageAgainstOutline', () => {
   it('passes a page that echoes its entry, carries the title and has the planned photo', () => {
     const p = page(
-      { title: entry.title, type: 'content', layout: 'three_column_cards' },
+      { title: entry.title, type: 'content', layout: 'three_columns' },
       ['Where the margin went', 'Fuel +31%'],
       true,
     )

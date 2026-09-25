@@ -45,7 +45,7 @@ describe('regenerate_slide', () => {
     const r = await skill.executeTool!(
       call('regenerate_slide', {
         slideIndex: 1,
-        brief: 'Redo as three-column cards, keep the title "NEW"',
+        brief: 'Redo as three columns, keep the title "NEW"',
       }),
     )
     expect(r.isError).toBeUndefined()

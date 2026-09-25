@@ -336,6 +336,11 @@ const api: SlidesApi = {
   applyEditScript: (op: ApplyEditScriptOp) => ipcRenderer.invoke('slides:apply-edit-script', op),
   applyTxn: (op: ApplyTxnOp) => ipcRenderer.invoke('slides:apply-txn', op),
   aiSnapshotRestore: (id: number) => ipcRenderer.invoke('slides:ai-snapshot-restore', id),
+  qcSlideCheckpoint: (slideIndex: number) =>
+    ipcRenderer.invoke('slides:qc-slide-checkpoint', slideIndex),
+  qcSlideRestore: (slideIndex: number) =>
+    ipcRenderer.invoke('slides:qc-slide-restore', slideIndex),
+  qcCheckpointsClear: () => ipcRenderer.invoke('slides:qc-checkpoints-clear'),
   undo: () => ipcRenderer.invoke('slides:undo'),
   redo: () => ipcRenderer.invoke('slides:redo'),
   pickExportDir: () => ipcRenderer.invoke('slides:pick-export-dir'),

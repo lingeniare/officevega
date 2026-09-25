@@ -81,8 +81,14 @@ function makeAccess(opts?: {
   const draftCalls: DraftArgs[] = []
   const styleCalls: string[] = []
   const imageGenCalls: string[] = []
+  const imageGenAspects: (string | undefined)[] = []
   const imageSearchCalls: string[] = []
-  const localPageCalls: { pageIndex: number; brief: string; style: string }[] = []
+  const localPageCalls: {
+    pageIndex: number
+    brief: string
+    style: string
+    imageAspects?: Record<string, string>
+  }[] = []
   const regenCalls: number[] = []
   const landed: string[] = []
   const upgradeOffers: { visuals: boolean; style: boolean }[] = []
@@ -116,7 +122,12 @@ function makeAccess(opts?: {
       marker: `cloudpptx:PAGE${args.pageIndex}:${args.title}`,
     }),
     generatePageLocal: async (args) => {
-      localPageCalls.push({ pageIndex: args.pageIndex, brief: args.brief, style: args.style })
+      localPageCalls.push({
+        pageIndex: args.pageIndex,
+        brief: args.brief,
+        style: args.style,
+        ...(args.imageAspects ? { imageAspects: { ...args.imageAspects } } : {}),
+      })
       if (opts?.upgradeGenFails?.includes(args.pageIndex))
         return { ok: false, error: 'mock gen fail' }
       return { ok: true, marker: `localpptx:PAGE${args.pageIndex}:${args.title}` }
@@ -160,6 +171,7 @@ function makeAccess(opts?: {
     imageGenAvailable: () => opts?.imageGenAvailable !== false,
     generateImage: async (a) => {
       imageGenCalls.push(a.prompt)
+      imageGenAspects.push(a.aspectRatio)
       if (opts?.generateImageOk === false) return { ok: false, error: 'no image' }
       return { ok: true, url: `https://gen.img/${imageGenCalls.length}.png` }
     },
@@ -177,6 +189,7 @@ function makeAccess(opts?: {
     draftCalls,
     styleCalls,
     imageGenCalls,
+    imageGenAspects,
     imageSearchCalls,
     localPageCalls,
     regenCalls,
@@ -495,6 +508,20 @@ describe('upgrade_deck', () => {
     expect(res.output).toContain('2/2')
   })
 
+  it('a slot\'s [N:M] tag drives the generation ratio and reaches the page request', async () => {
+    const { access, imageGenCalls, imageGenAspects, localPageCalls } = makeAccess({
+      slides: [slideWith(['City Guide', 'IMAGE: city skyline aerial photo [3:4]'])],
+    })
+    const skill = createSlidesSkill(access)
+    await skill.executeTool(upgradeCall('visuals'))
+    // Tag stripped from the prompt; it picks the generation aspect instead
+    expect(imageGenCalls).toEqual(['city skyline aerial photo'])
+    expect(imageGenAspects).toEqual(['3:4'])
+    // …and the regenerated page request is told the picture's declared ratio
+    expect(localPageCalls[0]!.imageAspects).toEqual({ 'https://gen.img/1.png': '3:4' })
+    expect(localPageCalls[0]!.brief).toContain('(aspect 3:4)')
+  })
+
   it('stage:"style" generates a Style Skill and regenerates pages keeping their placeholders', async () => {
     const { access, styleCalls, imageGenCalls, regenCalls, localPageCalls } = makeAccess({
       slides: draftSlides(),
@@ -541,6 +568,61 @@ describe('upgrade_deck', () => {
     expect(res.output).toContain('1/2')
     expect(res.output).toContain('page 1')
     expect(res.output).toContain('failed')
+  })
+
+  it('visuals resolve all labeled slots concurrently (IMAGE_GEN_POOL, one retry each)', async () => {
+    const slides = Array.from({ length: 6 }, (_, i) =>
+      slideWith([`Page ${i + 1}`, `IMAGE: scene ${i + 1}`]),
+    )
+    const { access, imageGenCalls } = makeAccess({ slides })
+    let concurrent = 0
+    let maxConcurrent = 0
+    const orig = access.generateImage!
+    access.generateImage = async (a) => {
+      concurrent++
+      maxConcurrent = Math.max(maxConcurrent, concurrent)
+      try {
+        await new Promise((r) => setTimeout(r, 15))
+        return await orig(a)
+      } finally {
+        concurrent--
+      }
+    }
+    const skill = createSlidesSkill(access)
+    await skill.executeTool(upgradeCall('visuals'))
+    // 6 unique slots, pool of 8 → all resolve in a single wave
+    expect(imageGenCalls.length).toBe(6)
+    expect(maxConcurrent).toBe(6)
+  })
+
+  it('page regeneration runs wide on cloud (pool 8) and capped at 4 on local', async () => {
+    const slides = Array.from({ length: 6 }, (_, i) => slideWith([`Page ${i + 1} copy`]))
+    const count = () => {
+      let inFlight = 0
+      let max = 0
+      const wrap = <A, R>(fn: (a: A) => Promise<R>) => async (a: A) => {
+        inFlight++
+        max = Math.max(max, inFlight)
+        try {
+          await new Promise((r) => setTimeout(r, 10))
+          return await fn(a)
+        } finally {
+          inFlight--
+        }
+      }
+      return { wrap, max: () => max }
+    }
+    const cloud = count()
+    const acc1 = makeAccess({ slides, cloudEnabled: true })
+    acc1.access.generatePageCloud = cloud.wrap(acc1.access.generatePageCloud!)
+    await createSlidesSkill(acc1.access).executeTool(upgradeCall('style'))
+    expect(cloud.max()).toBe(6) // 6 pages fit under the cloud pool of 8
+
+    const local = count()
+    const acc2 = makeAccess({ slides, cloudEnabled: false })
+    acc2.access.generatePageLocal = local.wrap(acc2.access.generatePageLocal!)
+    await createSlidesSkill(acc2.access).executeTool(upgradeCall('style'))
+    expect(local.max()).toBe(4) // local pool caps the same 6 pages at 4
   })
 
   it('falls back to image search when generation is unavailable', async () => {

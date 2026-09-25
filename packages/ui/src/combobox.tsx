@@ -17,6 +17,14 @@ export interface ComboBoxOption {
   readonly label: string
 }
 
+/**
+ * Cap of rendered rows: live catalogs (VEGA/OpenRouter) hold thousands of
+ * ids — rendering them all on open freezes the settings pane and flashes
+ * the full list before the user types a filter. The filter narrows below
+ * the cap after a few chars; the remainder hint tells how much is hidden.
+ */
+const COMBO_MAX_SHOWN = 100
+
 export function ComboBox({
   value,
   options,
@@ -65,16 +73,20 @@ export function ComboBox({
   }
   useDismissablePopover(open, close, { inside: () => [wrapRef.current] })
 
-  const shown = search
-    ? opts.filter((o) => {
-        const q = search.toLowerCase()
-        return o.label.toLowerCase().includes(q) || o.value.toLowerCase().includes(q)
-      })
-    : opts
+  const shownAll = useMemo(() => {
+    const q = search.trim().toLowerCase()
+    if (!q) return opts
+    return opts.filter(
+      (o) => o.label.toLowerCase().includes(q) || o.value.toLowerCase().includes(q),
+    )
+  }, [opts, search])
+  /** render cap: the full match count stays in `shownAll` for the hint */
+  const shown = shownAll.length > COMBO_MAX_SHOWN ? shownAll.slice(0, COMBO_MAX_SHOWN) : shownAll
+  const hiddenCount = shownAll.length - shown.length
   const ai = shown.length ? Math.min(active, shown.length - 1) : 0
   useEffect(() => {
     if (!open) return
-    popRef.current?.querySelectorAll('.gs-dd-item')[ai]?.scrollIntoView?.({ block: 'nearest' })
+    popRef.current?.querySelectorAll('[role="option"]')[ai]?.scrollIntoView?.({ block: 'nearest' })
   }, [open, ai])
   useEffect(() => {
     if (open && focusSearch) {
@@ -205,6 +217,15 @@ export function ComboBox({
             />
           )}
           <div id={listId} role="listbox" className="gs-combo-list">
+            {hiddenCount > 0 ? (
+              <div className="gs-dd-item" aria-hidden="true" tabIndex={-1}>
+                <span className="gs-combo-label">
+                  {search.trim()
+                    ? `Показаны первые ${shown.length} из ${shownAll.length} — уточните запрос`
+                    : `Показаны первые ${shown.length} из ${shownAll.length} — введите текст для поиска`}
+                </span>
+              </div>
+            ) : null}
             {shown.map((o, i) => (
               <button
                 key={o.value}

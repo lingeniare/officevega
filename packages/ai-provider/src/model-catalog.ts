@@ -40,6 +40,28 @@ const PAGE_LIMIT = 200
 const MAX_PAGES = 20
 const PAGE_TIMEOUT_MS = 15_000
 
+/**
+ * Catalog cache: the settings panes (Модель / Быстрая модель / Генерация
+ * изображений) each trigger a fetch on open — without it every opening
+ * re-pages the whole /models catalog (up to 20×200 rows), which is the
+ * "очень долгий поиск" on repeat visits. Keyed by endpoint+filter (not the
+ * key — the catalog doesn't depend on it), TTL 5 min, concurrent callers
+ * share one inflight request.
+ */
+const CATALOG_TTL_MS = 5 * 60_000
+const catalogCache = new Map<string, { at: number; models: ProviderModel[] }>()
+const catalogInflight = new Map<string, Promise<ProviderModel[]>>()
+
+function catalogKey(baseUrl: string, filter: ModelFilter): string {
+  return `${baseUrl.replace(/\/+$/, '')}|${JSON.stringify(filter)}`
+}
+
+/** test seam: drop cached pages / inflight shares between isolated cases */
+export function clearModelCatalogCache(): void {
+  catalogCache.clear()
+  catalogInflight.clear()
+}
+
 function asRecord(v: unknown): Record<string, unknown> {
   return v && typeof v === 'object' ? (v as Record<string, unknown>) : {}
 }
@@ -66,26 +88,102 @@ export async function listGatewayModels(
   apiKey: string | undefined,
   filter: ModelFilter = {},
 ): Promise<ProviderModel[]> {
+  const key = catalogKey(baseUrl, filter)
+  const cached = catalogCache.get(key)
+  if (cached && Date.now() - cached.at < CATALOG_TTL_MS) return cached.models
+  const inflight = catalogInflight.get(key)
+  if (inflight) return inflight
+  const run = pageGatewayModels(baseUrl, apiKey, filter)
+    .then((models) => {
+      catalogCache.set(key, { at: Date.now(), models })
+      catalogInflight.delete(key)
+      return models
+    })
+    .catch((error) => {
+      catalogInflight.delete(key)
+      throw error
+    })
+  catalogInflight.set(key, run)
+  return run
+}
+
+async function fetchModelsPage(
+  base: string,
+  apiKey: string | undefined,
+  filter: ModelFilter,
+  offset: number,
+): Promise<{ data: unknown[]; total: number } | null> {
+  const url = new URL(`${base}/models`)
+  url.searchParams.set('limit', String(PAGE_LIMIT))
+  url.searchParams.set('offset', String(offset))
+  if (filter.input) url.searchParams.set('input_modalities', filter.input)
+  if (filter.output) url.searchParams.set('output_modalities', filter.output)
+  const resp = await aiFetch(url.toString(), {
+    headers: apiKey ? { Authorization: `Bearer ${apiKey}` } : {},
+    signal: AbortSignal.timeout(PAGE_TIMEOUT_MS),
+  })
+  if (!resp.ok) return null
+  const json = asRecord(await resp.json())
+  const data = Array.isArray(json.data) ? json.data : []
+  const total = typeof json.total_count === 'number' ? json.total_count : 0
+  return { data, total }
+}
+
+/** remaining pages ride in parallel — the catalog is ~440 ids and paging it
+ * strictly sequentially stacks 3+ round-trips on every cold settings open */
+const PAGE_PARALLELISM = 4
+
+async function pageGatewayModels(
+  baseUrl: string,
+  apiKey: string | undefined,
+  filter: ModelFilter = {},
+): Promise<ProviderModel[]> {
   const base = baseUrl.replace(/\/+$/, '')
+  const first = await fetchModelsPage(base, apiKey, filter, 0)
+  if (!first) return []
+  const pages: unknown[][] = [first.data]
+  if (first.data.length > 0 && first.total > first.data.length) {
+    const offsets: number[] = []
+    for (let off = first.data.length; off < first.total; off += PAGE_LIMIT) {
+      if (1 + offsets.length >= MAX_PAGES) break
+      offsets.push(off)
+    }
+    for (let i = 0; i < offsets.length; i += PAGE_PARALLELISM) {
+      const batch = await Promise.all(
+        offsets
+          .slice(i, i + PAGE_PARALLELISM)
+          .map((off) => fetchModelsPage(base, apiKey, filter, off)),
+      )
+      let done = false
+      for (const page of batch) {
+        if (!page || page.data.length === 0) {
+          done = true
+          break
+        }
+        pages.push(page.data)
+      }
+      if (done) break
+    }
+  } else if (first.total <= 0) {
+    // the gateway reports no total — keep the old sequential walk until an
+    // empty page, still bounded by the safety net
+    let offset = first.data.length
+    for (let page = 1; page < MAX_PAGES; page++) {
+      const next = await fetchModelsPage(base, apiKey, filter, offset)
+      if (!next || next.data.length === 0) break
+      pages.push(next.data)
+      offset += next.data.length
+    }
+  }
+  return collectModels(pages, filter)
+}
+
+function collectModels(pages: unknown[][], filter: ModelFilter): ProviderModel[] {
   const excludePrefixes = filter.excludePrefixes ?? []
   const excludeSuffixes = filter.excludeSuffixes ?? []
   const models: ProviderModel[] = []
   const seen = new Set<string>()
-  let offset = 0
-  for (let page = 0; page < MAX_PAGES; page++) {
-    const url = new URL(`${base}/models`)
-    url.searchParams.set('limit', String(PAGE_LIMIT))
-    url.searchParams.set('offset', String(offset))
-    if (filter.input) url.searchParams.set('input_modalities', filter.input)
-    if (filter.output) url.searchParams.set('output_modalities', filter.output)
-    const resp = await aiFetch(url.toString(), {
-      headers: apiKey ? { Authorization: `Bearer ${apiKey}` } : {},
-      signal: AbortSignal.timeout(PAGE_TIMEOUT_MS),
-    })
-    if (!resp.ok) break
-    const json = asRecord(await resp.json())
-    const data = Array.isArray(json.data) ? json.data : []
-    const total = typeof json.total_count === 'number' ? json.total_count : 0
+  for (const data of pages) {
     for (const raw of data) {
       const entry = asRecord(raw)
       const id = typeof entry.id === 'string' ? entry.id : ''
@@ -99,8 +197,6 @@ export async function listGatewayModels(
       seen.add(id)
       models.push({ id, name: displayName(id, entry.name) })
     }
-    offset += data.length
-    if (data.length === 0 || (total > 0 && offset >= total)) break
   }
   return models
 }

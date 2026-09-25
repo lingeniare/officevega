@@ -66,7 +66,7 @@ export {
   setIssuedVegaKeyGetter,
   setLegacyGskKeyGetter,
 } from './vega-key'
-export { listGatewayModels, listProviderModels } from './model-catalog'
+export { clearModelCatalogCache, listGatewayModels, listProviderModels } from './model-catalog'
 export type { ModelFilter, ProviderModel, ProviderModelCatalog } from './model-catalog'
 export {
   analyzeMediaWithProvider,

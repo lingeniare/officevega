@@ -39,11 +39,12 @@ import { createElectronTransport } from './transport'
 import { renderSlidesToPngBase64 } from '../export-render'
 import {
   isQcEnabled,
-  isUnsupportedImageInputError,
   mergeQcPages,
-  qcSlidePage,
+  qcConcurrency,
   QC_MAX_PAGES,
+  runQcPages,
   settingsSupportVision,
+  type QcPageOutcome,
 } from './slide-qc'
 import { useI18n, t as tGlobal, aiLangDirective, type TFunc, type StringKey } from '../i18n/locale'
 import { localizedToolSummary, toolLabel } from './tool-labels'
@@ -822,6 +823,11 @@ export function AiPanel({
   if (!loopRef.current) {
     // The three slides generation steps (style/planning/per-page HTML) force the high-quality model (only with the anthropic provider;
     // other providers keep the user setting, avoiding passing nonexistent model names). Chat/fine-tuning still uses the user's configured model.
+    // Tiered models: opus is reserved for design-quality calls (generateStyleSkill,
+    // generatePageLocal single-page design). Structure-only calls (planDeckOutline,
+    // generateDraftPages) pass useGenModel=false and run on the user's model —
+    // outline/draft JSON needs no art direction, and QC already runs on the user
+    // model via its own transport below.
     const SLIDES_GEN_MODEL = 'claude-opus-4-7'
     // Return on demand a settings copy with the generation model overridden (deep copy, doesn't pollute settingsRef).
     const settingsForGen = (): AiSettings => {
@@ -1112,19 +1118,19 @@ export function AiPanel({
           '- Text: {"type":"text","x":80,"y":60,"w":800,"h":90,"valign":"top","paragraphs":[{"align":"left","lineSpacingPct":110,"spaceAfterPt":6,"bullet":false,"runs":[{"text":"...","sizePt":18,"bold":true,"italic":false,"color":"#RRGGBB","font":"Font Name"}]}]}\n' +
           '  A paragraph may mix runs of different weight/color/size (e.g. a big number run + a small unit run in one line).\n' +
           '  List-like lines are real lists: set "bullet":true on the paragraph — never type •/-/– characters into run text (typed bullets break the hanging indent: wrapped lines slide under the bullet glyph).\n' +
-          '- Image: {"type":"image","url":"<one of the available image URLs>","x":660,"y":80,"w":540,"h":560} — center-cropped to fill its box (object-fit: cover).\n' +
+          '- Image: {"type":"image","url":"<one of the available image URLs>","x":660,"y":80,"w":540,"h":560} — center-cropped to fill its box (object-fit: cover). Every image box\'s w:h is exactly one of the fixed slot aspects — 1:1, 16:9, 9:16, 3:4, 4:3 — the one marked next to its URL (an unmarked URL may take any of the five); never squeeze a picture into a narrow strip.\n' +
           '\n' +
           '## Hard layout rules\n' +
           '- Text boxes have ZERO inner padding: the box top-left is exactly where the first glyph starts. Size every box from its content: one line is about sizePt*1.8 px tall at lineSpacingPct 110; a CJK character is about sizePt*1.35 px wide, a Latin character about sizePt*0.7 px. Text wraps at the box width — count the wrapped lines and make the box tall enough, plus one spare line.\n' +
-          '- Text must never overflow its box or overlap other text. Keep >=8px between text and card edges, >=20px between a big title and its subtitle, >=5px between stacked text blocks in the same column — self-check every pair before output.\n' +
+          '- Text must never overflow its box or overlap other text. Keep >=8px between text and any shape edge, >=20px between a big title and its subtitle, >=5px between stacked text blocks in the same column — self-check every pair before output.\n' +
           '- Font sizes in pt: big titles 32-48, subtitles 18-24, body 12-15, hero KPI numbers up to 80.\n' +
           '- Spread content across the whole page; do not cram it into the top half leaving large blank areas; make text and images as large as the layout allows.\n' +
           '\n' +
           '## Visuals and assets\n' +
-          '- Photos may only use URLs from the "available images" list, at most as many image elements as URLs. With no available images, fill with typography/color blocks/shapes — never fake photos.\n' +
+          '- Photos may only use URLs from the "available images" list, at most as many image elements as URLs. With no available images, fill with typography, open space and shape compositions — never fake photos.\n' +
           '- Icon-like decoration uses the allowed shapes only (at most 4-5 per page, strongly content-related). **Never use emoji**.\n' +
           '- Data visuals: compose bars/rings/timelines from rect/donut/line shapes with sizes proportional to the real values from the brief.\n' +
-          '- Fills: solid "#RRGGBB(AA)", or a linear gradient object {"gradient":{"stops":[{"pos":0,"color":"#A"},{"pos":100,"color":"#B"}],"angle":45}} — pos is 0-100, angle in degrees (0=left→right, 90=top→bottom). Use gradients for large cover/background blocks, not small elements; "background" accepts the same gradient object. **No placeholders of any kind**: all copy comes from the brief’s real content.\n' +
+          '- Fills: solid "#RRGGBB(AA)", or a linear gradient object {"gradient":{"stops":[{"pos":0,"color":"#A"},{"pos":100,"color":"#B"}],"angle":45}} — pos is 0-100, angle in degrees (0=left→right, 90=top→bottom). Use gradients for large cover/background blocks, not small elements; "background" accepts the same gradient object. Prefer layered backgrounds (solid base + one gradient mesh / split block / hairline grid device from the Style Skill) over flat solids. Decor is abstract shapes only (gradient orb, outline circle + line + dot, hairline rules, oversized numeral) — max 4-5 per page, content-related. **No placeholders of any kind**: all copy comes from the brief’s real content; never render technical labels (IMAGE:, [4:3], Option A, file paths) as slide text.\n' +
           '\n' +
           '## Composition (this is what separates designed pages from assembled ones)\n' +
           '- Design bar: art-directed, keynote-stage quality. When images are available, commit to them — one photo carried large (hero panel, full-bleed, a generous split) beats several small thumbnails. Data slots become bespoke infographic compositions — bars/rings/timelines/flows drawn proportionally to the real values — never a labeled box or a default-looking chart.\n' +
@@ -1134,12 +1140,13 @@ export function AiPanel({
           '- Title runs 2-3x the body size; when the Style Skill names a display face, titles use it and body text uses the body face.\n' +
           '\n' +
           '## Anti-AI design rules (violation = unacceptable)\n' +
-          '- No thin vertical accent bar on the left of cards, no colored bar on top of cards, no small bar left of titles — express hierarchy with background color/font weight/size contrast.\n' +
-          '- One primary + one secondary accent color for the whole page; even when comparing multiple entities, do not give each a different color (no rainbow cards).\n' +
+          '- Text is never boxed: do not wrap paragraphs, bullet lists or labels in filled or stroked rectangles (no cards, panels or chips behind text). Body text sits directly on the page background; groups are separated by whitespace, alignment and type scale — not by containers. A filled shape is reserved for the one focal element, a data visual, or a deliberate full-width band.\n' +
+          '- No thin vertical accent bar on the left of a text group, no colored bar on top of a group, no small bar left of titles — express hierarchy with font weight/size/color contrast.\n' +
+          '- One primary + one secondary accent color for the whole page; even when comparing multiple entities, do not give each a different color (no rainbow palette).\n' +
           '- No decorative corner blocks/short lines; decorative elements must be consistent in position and style across the deck.\n' +
           '- Do not turn every page into a "shape + bold subtitle + description" list; the cover must not be a flat one-line title + subtitle layout — it needs a visual anchor (large color block/geometric composition/huge number/hero image).'
         const imgBlock = args.images.length
-          ? `\nAvailable image URLs (put them into image elements; do not invent placeholder blocks):\n${args.images.map((u, i) => `${i + 1}. ${u}`).join('\n')}`
+          ? `\nAvailable image URLs (put them into image elements; do not invent placeholder blocks):\n${args.images.map((u, i) => `${i + 1}. ${u}${args.imageAspects?.[u] ? ` — aspect ${args.imageAspects[u]}` : ''}`).join('\n')}`
           : ''
         const ctxBlock = args.context
           ? `\n\nReference material (all real names/figures/facts come from here; do not invent):\n${args.context.slice(0, 4000)}`
@@ -1193,11 +1200,11 @@ export function AiPanel({
           '- Text: {"type":"text","x":80,"y":60,"w":800,"h":90,"valign":"top","paragraphs":[{"align":"left","lineSpacingPct":110,"spaceAfterPt":6,"bullet":false,"runs":[{"text":"...","sizePt":16,"bold":false,"color":"#1A1A2E","font":"Font Name"}]}]}\n' +
           '\n## Draft design rules (strict)\n' +
           '- Minimal neutral look only: background #FFFFFF, text #1A1A2E, ONE accent #2563EB used sparingly (a thin underline block or one key number). No gradients, no photos, no decorative artwork.\n' +
-          '- Cover page: large title (~36pt bold) + one subtitle line (~18pt). Content pages: title top-left (~26pt bold) + concise bulleted body (~14pt) or simple #F8FAFC roundRect column cards. Closing page: centered short line.\n' +
-          '- Every visual slot listed for a page → a placeholder box: {"type":"shape","shape":"roundRect","fill":"#F1F5F9","stroke":{"color":"#CBD5E1","widthPt":1},"valign":"middle","paragraphs":[{"align":"center","runs":[{"text":"IMAGE: <slot description>","sizePt":12,"color":"#64748B"}]}]} at the slot\'s planned position. For chart/data slots label it "CHART: <description>" instead. NEVER draw real charts, icons or images — placeholders only.\n' +
+          '- Cover page: large title (~36pt bold) + one subtitle line (~18pt) + ONE visual anchor (accent underline block or oversized numeral) — never a flat title-only cover. Content pages: title top-left (~26pt bold) + concise bulleted body (~14pt), optionally split into plain text columns separated by whitespace — never a box or a card behind text (the only filled boxes are the labeled visual placeholders below). Closing page: centered short line.\n' +
+          '- Every visual slot listed for a page → a placeholder box: {"type":"shape","shape":"roundRect","fill":"#F1F5F9","stroke":{"color":"#CBD5E1","widthPt":1},"valign":"middle","paragraphs":[{"align":"center","runs":[{"text":"IMAGE: <slot description, keeping its [N:M] tag>","sizePt":12,"color":"#64748B"}]}]} at the slot\'s planned position AND at the slot\'s fixed aspect — each slot ends with a [N:M] tag (one of 1:1, 16:9, 9:16, 3:4, 4:3; untagged = 16:9): the box\'s w:h must equal it, so a [3:4] slot is a 3:4 box, never a narrow strip. For chart/data slots label it "CHART: <description>" instead (any proportion). NEVER draw real charts, icons or images — placeholders only.\n' +
           '- Text boxes have zero padding: a line is ~sizePt*1.8 px tall at lineSpacingPct 110, a Latin char ~sizePt*0.7 px wide, a CJK char ~sizePt*1.35 px. Size each box for its wrapped lines plus one spare; no text overflow, no text overlapping other elements.\n' +
           '- List-like lines are real lists: set "bullet":true on the paragraph — never type •/-/– characters into run text (typed bullets break the hanging indent: wrapped lines slide under the bullet glyph).\n' +
-          "- Keep each page's real text from its brief. Titles make a claim, not a topic label (\"Costs fell 18%\", not \"Cost overview\"). One idea per page; bullets ≤8 words each with parallel grammar; no filler (\"In conclusion\", \"As we all know\"). Do not invent figures not in the brief/material.\n"
+          "- Keep each page's real text from its brief. Titles make a claim, not a topic label (\"Costs fell 18%\", not \"Cost overview\"). One idea per page; bullets ≤8 words each with parallel grammar; content pages max 4-6 bullets — when the brief carries more, prefer fewer, sharper bullets over cramming; no filler (\"In conclusion\", \"As we all know\"). Do not invent figures not in the brief/material.\n"
         const userMsg =
           `Deck topic: ${args.topic || args.coreHook || 'Presentation'}\nCore hook: ${args.coreHook}\n` +
           (args.context
@@ -1225,7 +1232,8 @@ export function AiPanel({
             attempt === 0
               ? userMsg
               : `${userMsg}\n\nYour previous output was rejected: ${lastErr}. Output the corrected {"pages":[...]} object only.`
-          const r = await runLlmOnce(sys, msg, 120000, true, args.signal, 16384)
+          // Structure-only draft JSON runs on the user's model (tiered models: no opus here)
+          const r = await runLlmOnce(sys, msg, 120000, false, args.signal, 16384)
           if (!r.ok || !r.text) {
             lastErr = r.error ?? tGlobal('aiErrEmptyOutput')
             continue
@@ -1263,11 +1271,18 @@ export function AiPanel({
           const briefParts = [args.brief]
           if (args.layout) briefParts.push(`Layout intent: ${args.layout}`)
           briefParts.push(
-            'Composition: exactly one dominant focal element (hero number, statement, or hero image) — everything else subordinate; asymmetric grid placement encouraged; whitespace is a design element; title runs 2-3x body size; follow the Style Skill strictly. The page should read as art-directed keynote design: carry photos large (hero/full-bleed), format enumerations as real bulleted lists (list markup, never typed • characters), and build data slots as bespoke infographic compositions — not default-looking charts.',
+            'Composition: exactly one dominant focal element (hero number, statement, or hero image) — everything else subordinate; asymmetric grid placement encouraged; whitespace is a design element; title runs 2-3x body size; follow the Style Skill strictly. The page should read as art-directed keynote design: carry photos large (hero/full-bleed), format enumerations as real bulleted lists (list markup, never typed • characters), and build data slots as bespoke infographic compositions — not default-looking charts. Body text sits directly on the page background — never inside filled or stroked boxes, cards or panels; groups are separated by whitespace and typographic contrast, not containers.',
           )
           if (args.context)
             briefParts.push(
               `Reference material (all real names/figures/facts come from here; do not invent):\n${args.context.slice(0, 4000)}`,
+            )
+          const aspectNotes = args.images
+            .map((u) => (args.imageAspects?.[u] ? `${u} → ${args.imageAspects[u]}` : null))
+            .filter(Boolean)
+          if (aspectNotes.length)
+            briefParts.push(
+              `Planned image aspects — each picture's frame keeps its declared ratio: ${aspectNotes.join('; ')}`,
             )
           const res = await window.slidesApi.cloudGeneratePage({
             brief: briefParts.join('\n\n'),
@@ -1296,7 +1311,8 @@ export function AiPanel({
           'You are an award-winning presentation art director. Given the presentation topic and style preferences, author a complete Style Skill — the visual system every page will follow. Output strictly in the structure below, only the Style Skill content, no explanations/markdown/code fences.\n\n' +
           'Design concept (required, comes first)\n' +
           '  Concept: [a named, intentional aesthetic — e.g. "editorial magazine", "Swiss international", "dark cinematic", "neo-brutalist", "minimal museum" — chosen because it fits THIS topic. One sentence: what makes this deck unmistakably designed.]\n' +
-          '  Anti-default rule: if the concept could belong to any interchangeable business deck, it is wrong — commit to a distinctive background tone, deliberate typography, one recurring composition motif.\n\n' +
+          '  Anti-default rule: if the concept could belong to any interchangeable business deck, it is wrong — commit to a distinctive background tone, deliberate typography, one recurring composition motif.\n' +
+          '  Mood mapping (pick by topic emotion): Impressed/Confident → bold dark + sharp orange/red accent; Excited/Energized → high-contrast duotone + neon accent; Calm/Focused → paper/swiss neutral + one deep accent; Inspired/Moved → editorial serif + warm muted accent. Name the mood you picked.\n\n' +
           'Color rules (must use concrete hex values)\n' +
           '  Main background: #hex\n' +
           '  Per-page-type backgrounds:\n    cover: #hex\n    content: #hex\n    data: #hex\n    closing: #hex\n' +
@@ -1304,24 +1320,26 @@ export function AiPanel({
           '   1) Style preference first: when a tone is explicit (dark theme, a brand color family, a certain texture), the background must honor it — do not fall back to a safe light color.\n' +
           "   2) Then topic mood: serve the content's emotion and tone (serious/playful/artistic/tech/traditional); different topics should have clearly different backgrounds. Deep colors, brand colors, and saturated tones are all legitimate — a memorable deck rarely has a plain white cover.\n" +
           '   3) Light neutral backgrounds are only a fallback: use only when the topic is neutral and the style expresses no clear preference.\n' +
-          '   Constraints: content pages share one background within a deck; the main background and main text color must have sufficient contrast. A background may be a solid or a subtle gradient/atmospheric effect — say which.\n' +
+          '   Constraints: content pages share one background within a deck; the main background and main text color must have sufficient contrast. Prefer a layered background over a flat solid: solid base + ONE atmospheric device (subtle linear gradient mesh, 60/40 split color blocks, hairline grid, or duotone overlay for photo covers) — say which device and where it sits. A memorable deck rarely has a plain white cover.\n' +
           '  Main text color: #hex\n  Primary accent (the ONE anchor color of the deck): #hex\n  Secondary accent (muted support; tints/shades of the primary family preferred): #hex\n' +
           '  (Iron rule: one accent color system across the whole deck — even when comparing multiple companies/products/options, do not assign each entity a different color; distinguish entities by name and typography. Never exceed the primary + secondary accents)\n' +
-          '  Card/surface color: #hex\n  Hairline/border color: #hex\n\n' +
+          '  Surface color (used sparingly — a full-width band or one feature panel, never boxes behind text): #hex\n  Hairline/border color: #hex\n\n' +
           'Typography (a deliberate pairing with character — never "generic sans for everything")\n' +
-          '  CJK display font: [font name]\n  Latin display font: [font name — prefer a face with personality for titles: a serif display, a tight grotesque, or an expressive geometric; system-safe names only]\n  Body font: [font name]\n  Meta/accent font (optional — e.g. monospace for labels, page numbers, KPI units): [font name]\n' +
-          '  Title size: [range]px — display titles run 2-3x body size; cover titles may go huge (80px+)\n  Body size: [range]px\n\n' +
+          '  CJK display font: [font name]\n  Latin display font: [font name — commit to a Display+Body pair with personality, e.g. serif display + grotesque body, tight grotesque titles + neutral body, editorial serif + mono accents; system-safe names only]\n  Body font: [font name]\n  Meta/accent font (optional — e.g. monospace for labels, page numbers, KPI units): [font name]\n' +
+          '  Title size: [range]px — display titles run 2-3x body size; cover titles may go huge (80px+)\n  Body size: [range]px\n' +
+          '  DO NOT USE as display face: Inter, Roboto, Arial, generic system sans; no purple-gradient-on-white; no all-centered decks; no identical card grids on every page.\n\n' +
           'Composition rules\n' +
           '  Grid: [e.g. 12-column, ~60px margins; asymmetric placements encouraged]\n' +
           '  Visual rhythm: alternate loud pages (full-bleed image, oversized type, one dominant element) with quiet pages (structured grids, generous whitespace) — never two loud pages in a row.\n' +
           '  Focal point: every page gets exactly ONE dominant element (a hero number, a statement, a hero image) — everything else is subordinate to it.\n' +
           '  Image treatment: [how images live in this system: full-bleed hero / side panel / framed block / duotone — images are first-class design elements, never decorative sprinkles; photography is carried large and cinematic, not thumbnail-sized]\n' +
           '  Quality bar: pages read as art-directed keynote slides — bespoke infographic compositions for data (drawn to the real values, never default-looking charts), photography as hero material, typography doing real hierarchy work.\n' +
-          '  Decoration budget: at most ONE recurring motif (hairline rules | oversized page numeral | contour line | corner crop mark), consistent in position and style across all pages. No card-grid-everything, no rainbow per entity, no corner ornaments, no decorative accent bars.\n\n' +
+          '  Decoration budget: at most ONE recurring motif (hairline rules | oversized page numeral | contour line | corner crop mark | blurred gradient orb | outline-circle-plus-line-plus-dot), consistent in position and style across all pages. Decor is abstract shapes only — no clip-art, no emoji, no glassmorphism without reason. No filled or stroked boxes behind body text — text lives on the page background, grouped by whitespace and type scale, not in cards or panels; no rainbow per entity, no corner ornaments, no decorative accent bars.\n' +
+          '  Signature elements: name 3 concrete recurring details (e.g. oversized page numeral bottom-right, hairline rule under titles, duotone side panel for images) that make this deck recognizable.\n\n' +
           'Layout variants per page type (list at least 2 variants each, format: variant name: description)\n' +
           '  cover variants:\n    cover_typography_hero: pure typography, huge title (100px+), no photo\n    cover_full_image_overlay: full-bleed photo background + dark overlay, centered white title\n    cover_split_image: title block left + hero image right\n    cover_editorial: magazine-style oversized title filling 60% of the page, small metadata block, partial imagery\n    cover_dark_minimal: dark background, centered large title + one accent detail\n    cover_split_color: two color blocks side by side (60/40)\n' +
-          '  content variants:\n    left_text_right_image | three_column_cards | hero_big_number | two_column_comparison | timeline_horizontal | full_image_text_overlay | editorial_pullquote: one big statement + small supporting text | asymmetric_feature: one dominant element + quiet side column (give each a one-line description)\n' +
-          '  data variants:\n    kpi_cards_row: horizontal KPI cards\n    chart_with_insight: chart left + insight right\n    two_by_two_grid: 2x2 quadrants\n    hero_metric: one enormous number + short annotation\n' +
+          '  content variants:\n    left_text_right_image | three_columns: three plain text columns separated by whitespace (no boxes) | hero_big_number | two_column_comparison | timeline_horizontal | full_image_text_overlay | editorial_pullquote: one big statement + small supporting text | asymmetric_feature: one dominant element + quiet side column (give each a one-line description)\n' +
+          '  data variants:\n    kpi_row: a horizontal row of large KPI numbers with short labels, no boxes\n    chart_with_insight: chart left + insight right\n    two_by_two_grid: 2x2 quadrants\n    hero_metric: one enormous number + short annotation\n' +
           '  closing variants:\n    closing_cta: centered title + contact info\n    closing_thank_you: full-bleed thank-you page\n    closing_statement: one bold closing line, lots of air\n\n' +
           'Density: [low = presenter-led: few words, very large type | high = reading-first: structured grids, concise detail — pick what fits the topic]\n' +
           'Overall style: [one sentence describing the overall design language]'
@@ -1332,6 +1350,42 @@ export function AiPanel({
         return r.ok && r.text
           ? { ok: true, styleSkill: r.text.trim() }
           : { ok: false, error: r.error ?? tGlobal('aiErrEmptyOutput') }
+      },
+      // Style directions choice (Q1): ONE fast-model call drafting 3 compact
+      // directions (safe + bold + wildcard) for the user's pick. Compact on
+      // purpose — the full Style Skill is authored afterwards from the winner.
+      generateStyleVariants: async (a) => {
+        const sys =
+          'You are an award-winning presentation art director. Propose 3 distinct visual directions for the deck. ' +
+          'Output only one JSON object, no explanations/markdown/code fences.\n' +
+          'Format: {"variants":[{"name":"","concept":"","palette":"","fonts":"","motif":""}]}\n' +
+          '- The 3 variants are: (1) SAFE — restrained, boardroom-proof, one deep accent; (2) BOLD — confident, high-contrast, sharp accent; (3) WILDCARD — unexpected but coherent, editorial or cinematic.\n' +
+          '- name: 2-3 words. concept: one sentence, what makes it unmistakable. palette: background + text + accent hexes with roles (e.g. "bg #0F0F0F, text #F5F2EA, accent #FF5722"). fonts: Display+Body pair (system-safe names). motif: the ONE recurring abstract decor element.\n' +
+          '- DO NOT USE as display face: Inter, Roboto, Arial, generic system sans; no purple-gradient-on-white.'
+        const hint = a.styleHint ? `\nStyle preference (honor it): ${a.styleHint}` : ''
+        const q = a.questionnaire ? `\nContext: ${a.questionnaire.slice(0, 2000)}` : ''
+        const userMsg = `Topic: ${a.topic}${hint}${q}\nOutput the JSON.`
+        const r = await runLlmOnce(sys, userMsg, undefined, false, a.signal)
+        if (!r.ok || !r.text) return { ok: false, error: r.error ?? tGlobal('aiErrEmptyOutput') }
+        try {
+          const obj = JSON.parse(extractJsonObject(r.text)) as {
+            variants?: { name?: unknown; concept?: unknown; palette?: unknown; fonts?: unknown; motif?: unknown }[]
+          }
+          const variants = (Array.isArray(obj.variants) ? obj.variants : [])
+            .map((v) => ({
+              name: String(v?.name ?? '').trim(),
+              concept: String(v?.concept ?? '').trim(),
+              palette: String(v?.palette ?? '').trim(),
+              fonts: String(v?.fonts ?? '').trim(),
+              motif: String(v?.motif ?? '').trim(),
+            }))
+            .filter((v) => v.name && v.concept)
+            .slice(0, 3)
+          if (variants.length < 2) return { ok: false, error: 'fewer than 2 variants produced' }
+          return { ok: true, variants }
+        } catch (e) {
+          return { ok: false, error: e instanceof Error ? e.message : String(e) }
+        }
       },
       planDeckOutline: async (a) => {
         // style is already produced independently by generateStyleSkill; this function only outputs core_hook + per-page outlines (layout chosen per the Style Skill).
@@ -1352,19 +1406,21 @@ export function AiPanel({
           '\n' +
           "## layout (choose from the Style Skill's per-page-type variant library; within one deck the same variant never repeats)\n" +
           'cover: cover_typography_hero (huge pure typography) | cover_dark_minimal (dark background, centered large title) | cover_split_color (side-by-side color blocks) | cover_full_image_overlay (full-bleed photo + dark overlay) | cover_editorial (magazine oversized title + small metadata + partial imagery) | cover_split_image (text left, image right)\n' +
-          'content: left_text_right_image | three_column_cards | hero_big_number | two_column_comparison | timeline_horizontal | full_image_text_overlay | editorial_pullquote (one big statement + small support text) | asymmetric_feature (dominant element + quiet side column)\n' +
-          'data: kpi_cards_row | chart_with_insight | two_by_two_grid | hero_metric (one enormous number + annotation)\n' +
+          'content: left_text_right_image | three_columns (plain text columns, no boxes) | hero_big_number | two_column_comparison | timeline_horizontal | full_image_text_overlay | editorial_pullquote (one big statement + small support text) | asymmetric_feature (dominant element + quiet side column)\n' +
+          'data: kpi_row (a row of large KPI numbers + short labels) | chart_with_insight | two_by_two_grid | hero_metric (one enormous number + annotation)\n' +
           'closing: closing_cta | closing_thank_you | closing_statement\n' +
-          'Selection criteria: 3 parallel points → three_column_cards; a key number → hero_big_number/hero_metric; comparison/categories → two_column_comparison/two_by_two_grid; sequence → timeline_horizontal; image+text → left_text_right_image/full_image_text_overlay; metrics → kpi_cards_row. Use three_column_cards at most once per deck — it is the most over-used AI layout.\n' +
+          'Selection criteria: 3 parallel points → three_columns; a key number → hero_big_number/hero_metric; comparison/categories → two_column_comparison/two_by_two_grid; sequence → timeline_horizontal; image+text → left_text_right_image/full_image_text_overlay; metrics → kpi_row. Use three_columns at most once per deck — it is the most over-used AI layout.\n' +
           '\n' +
           '## brief\n' +
           'One compact paragraph per page, three beats: (1) PURPOSE — what this page must achieve in the arc; (2) CONTENT — exactly what the audience sees, region by region, with real data/facts from the material (never "XX%" placeholders); (3) VISUAL CONCEPT — what the visual does (anchor the page / prove a point / let it breathe). The cover gives main/sub titles and mood; data pages give metric names + concrete values + direction of change.\n' +
+          'Density limits (exceeded → SPLIT the page in two, never cram): title = 1 heading + 1 subtitle; content = 1 heading + max 4-6 bullets (≤8 words each, parallel grammar) OR 1-2 short paragraphs; feature grid = max 6 items; data = one metric family per page (one unit, one source); quote = max 3 lines + author. Total visual slots per page ≤ 2. Use three_columns at most once per deck.\n' +
           '\n' +
           '## image_queries\n' +
           'Array: one entry per real-world visual slot on the page. If the reference material contains ready image URLs (starting with http), use them directly; otherwise write an English visual description of a concrete scene (e.g. "summer palace kunming lake at sunset, lakeside view", not generic words like "park") — every slot is rendered by an AI image-generation model internally and the real URL is filled back, so write each entry the way an image model wants it (subject + environment + lighting). A stock photo search runs only as a fallback when generation is unavailable or fails. Travel/product/people/brand pages get images by default; give [] only when the page truly needs no visuals (fill with typography/icons; never count on CSS-drawn fake images).\n' +
+          'Every entry ends with the slot\'s fixed aspect tag — "...scene [4:3]" — one of 1:1, 16:9, 9:16, 3:4, 4:3, picked for the slot\'s layout role rather than defaulted to 16:9. Think in page space: the canvas is itself 16:9 and text claims a share of it, so a wide 16:9 picture easily lands as a short, weak strip — prefer the taller formats whenever the layout leaves a side column or a vertical band free (side panel → 3:4 or 9:16 gives the image far more presence), reach for 1:1 for balanced pairs and compact slots, and reserve 16:9 for true full-width hero or full-bleed overlay scenes. A healthy deck mixes ratios — a run of all-16:9 imagery reads flat. The tag is contractual: the picture is generated at that ratio and its box keeps it through every stage — never plan a slot that needs any other shape.\n' +
           '\n' +
           '## image_prompts\n' +
-          'Array: English prompts for AI-GENERATED bespoke visuals, one per generated slot — same internal image-generation mechanism as image_queries (search only as fallback). Split the fields by intent: image_queries for real-world subjects (actual places, products, people, brands), image_prompts where a bespoke visual beats a real-world subject: cover/hero art, conceptual illustrations, abstract or thematic backgrounds, metaphor visuals matching the deck style. Write prompts the way an image model wants them: subject + environment + lighting + style + mood, one flowing sentence. A page may use both fields; total visual slots per page ≤ 2.'
+          'Array: English prompts for AI-GENERATED bespoke visuals, one per generated slot — same internal image-generation mechanism as image_queries (search only as fallback) and the same trailing [N:M] aspect tag. Split the fields by intent: image_queries for real-world subjects (actual places, products, people, brands), image_prompts where a bespoke visual beats a real-world subject: cover/hero art, conceptual illustrations, abstract or thematic backgrounds, metaphor visuals matching the deck style. Write prompts the way an image model wants them: subject + environment + lighting + style + mood, one flowing sentence. A page may use both fields; total visual slots per page ≤ 2.'
         const styleBlock = a.styleSkill
           ? `\n[Confirmed design style Style Skill; choose layout accordingly while planning]:\n${a.styleSkill}`
           : ''
@@ -1389,7 +1445,8 @@ export function AiPanel({
         let lastErr = tGlobal('aiErrEmptyOutput')
         for (let attempt = 0; attempt < maxAttempts; attempt++) {
           if (a.signal?.aborted) return { ok: false, error: tGlobal('aiErrStopped') }
-          const r = await runLlmOnce(sys, userMsg, undefined, true, a.signal)
+          // Outline JSON is structure-only: user's model is enough (tiered models)
+          const r = await runLlmOnce(sys, userMsg, undefined, false, a.signal)
           if (!r.ok || !r.text) {
             lastErr = r.error ?? tGlobal('aiErrEmptyOutput')
             // Empty output/timeout doesn't burn another attempt; request-level errors may retry
@@ -2025,10 +2082,11 @@ export function AiPanel({
 
   /**
    * Post-generation layout QC: each page landed by this run gets one focused pass in a fresh
-   * AgentLoop. Vision models receive screenshot + inventory; text-only models receive only
-   * deterministic geometry evidence. Each page's edits sit in their own history batch; if the
-   * deterministic audit says the page got worse, that batch is rolled back. Progress streams
-   * into one assistant chat entry.
+   * AgentLoop, run through a bounded pool (qcConcurrency). Vision models receive screenshot +
+   * inventory; text-only models receive only deterministic geometry evidence. The whole pass
+   * sits in ONE history batch (one undo step); a page whose deterministic audit got worse is
+   * reverted through its per-slide checkpoint, never the whole-deck snapshot — sibling pages'
+   * concurrent edits are untouched. Progress streams into one assistant chat entry, in page order.
    */
   const runQcPass = async () => {
     const pages = qcPagesRef.current
@@ -2041,8 +2099,32 @@ export function AiPanel({
     const capped = pages.slice(0, QC_MAX_PAGES)
     const transport = createElectronTransport(() => settingsRef.current)
     const header = tGlobal('aiQcStart', { count: capped.length })
-    const lines: string[] = []
-    const renderEntry = () => [header, ...lines].join('\n')
+    // Lines fill by page position, so the transcript stays in page order even
+    // though parallel workers finish out of order.
+    const lines: Array<string | null> = capped.map(() => null)
+    const tail: string[] = []
+    const renderEntry = () =>
+      [header, ...lines.filter((l): l is string => l != null), ...tail].join('\n')
+    const outcomeLine = (o: QcPageOutcome): string => {
+      switch (o.kind) {
+        case 'ok':
+          return tGlobal('aiQcPageOk', { n: o.page + 1 })
+        case 'reverted':
+          return tGlobal('aiQcPageReverted', { n: o.page + 1 })
+        case 'fixed': {
+          const summary =
+            o.summary && o.summary.toUpperCase() !== 'OK'
+              ? o.summary
+              : tGlobal('aiQcPageFixedDefault')
+          return tGlobal('aiQcPageFixed', { n: o.page + 1, summary })
+        }
+        case 'skipped':
+          // QC is optional polish. Keep provider/network details in diagnostics instead of
+          // exposing a noisy raw API error in the completed generation transcript.
+          if (o.error) console.warn(`[slides-qc] page ${o.page + 1} skipped:`, o.error)
+          return tGlobal('aiQcPageSkipped', { n: o.page + 1 })
+      }
+    }
     setBusy(true)
     stickToBottomRef.current = true
     // The QC entry demotes the run's reply to a mid-turn segment, whose action
@@ -2054,72 +2136,39 @@ export function AiPanel({
       ),
       { role: 'assistant', text: header, streaming: true },
     ])
-    // First kept QC batch — the run's own batch takes precedence (it is earlier,
-    // so restoring it rewinds past the QC edits too)
+    // The pass's own batch — the run's own snapshot takes precedence when present
+    // (it is earlier, so restoring it rewinds past the QC edits too)
     let qcSnapshotId: number | null = null
-    // A custom endpoint may claim generic OpenAI-compatible vision support but reject the
-    // first image. Fall back for that page and keep the rest of this pass geometry-only.
-    let forceGeometryOnly = false
     try {
-      for (const page of capped) {
-        if (controller.signal.aborted) break
-        const useScreenshot = !forceGeometryOnly && settingsSupportVision(settingsRef.current)
-        const shot = useScreenshot ? await captureSlideShot(page) : null
-        if (useScreenshot && !shot) {
-          if (slidesRef.current[page]) lines.push(tGlobal('aiQcPageSkipped', { n: page + 1 }))
-          continue
-        }
-        const batchOpened = await window.slidesApi.beginHistoryBatch()
-        let result = await qcSlidePage({
+      const batchOpened = await window.slidesApi.beginHistoryBatch()
+      await window.slidesApi.qcCheckpointsClear()
+      try {
+        await runQcPages({
           access,
           transport,
-          pageIndex: page,
-          screenshot: shot,
+          pages: capped,
+          visionCapable: settingsSupportVision(settingsRef.current),
+          captureShot: captureSlideShot,
+          checkpoint: (p) => window.slidesApi.qcSlideCheckpoint(p),
+          restore: (p) => window.slidesApi.qcSlideRestore(p),
           systemSuffix: aiLangDirective,
           signal: controller.signal,
+          concurrency: qcConcurrency(),
+          onPage: (i, o) => {
+            if (o.kind === 'reverted' && o.slide) applySlideRef.current(o.page, o.slide)
+            lines[i] = outcomeLine(o)
+            patchLastAssistant({ text: renderEntry() })
+          },
         })
-        if (shot && result.error && isUnsupportedImageInputError(result.error)) {
-          forceGeometryOnly = true
-          result = await qcSlidePage({
-            access,
-            transport,
-            pageIndex: page,
-            screenshot: null,
-            systemSuffix: aiLangDirective,
-            signal: controller.signal,
-          })
-        }
-        const batchId = batchOpened ? await window.slidesApi.endHistoryBatch() : null
-        if (controller.signal.aborted) break
-        if (result.error) {
-          // QC is optional polish. Keep provider/network details in diagnostics instead of
-          // exposing a noisy raw API error in the completed generation transcript.
-          console.warn(`[slides-qc] page ${page + 1} skipped:`, result.error)
-          lines.push(tGlobal('aiQcPageSkipped', { n: page + 1 }))
-        } else if (result.edited && result.postIssues > result.preIssues) {
-          // The fix made the deterministic audit worse — undo this page's batch
-          if (typeof batchId === 'number') {
-            const restored = await window.slidesApi.aiSnapshotRestore(batchId)
-            if (restored)
-              applyDeckRef.current(restored, Math.min(currentRef.current, restored.length - 1))
-          }
-          lines.push(tGlobal('aiQcPageReverted', { n: page + 1 }))
-        } else if (result.edited) {
-          const summary =
-            result.reply && result.reply.toUpperCase() !== 'OK'
-              ? result.reply
-              : tGlobal('aiQcPageFixedDefault')
-          lines.push(tGlobal('aiQcPageFixed', { n: page + 1, summary }))
-          if (typeof batchId === 'number' && qcSnapshotId == null) qcSnapshotId = batchId
-        } else {
-          lines.push(tGlobal('aiQcPageOk', { n: page + 1 }))
-        }
-        patchLastAssistant({ text: renderEntry() })
+      } finally {
+        // All per-page QC edits collapse into the single pre-pass undo step.
+        const snapId = batchOpened ? await window.slidesApi.endHistoryBatch() : null
+        if (typeof snapId === 'number') qcSnapshotId = snapId
       }
       if (pages.length > capped.length) {
-        lines.push(tGlobal('aiQcCapped', { count: pages.length - capped.length }))
+        tail.push(tGlobal('aiQcCapped', { count: pages.length - capped.length }))
       }
-      if (controller.signal.aborted) lines.push(tGlobal('aiQcStopped'))
+      if (controller.signal.aborted) tail.push(tGlobal('aiQcStopped'))
     } finally {
       qcRunningRef.current = false
       qcAbortRef.current = null

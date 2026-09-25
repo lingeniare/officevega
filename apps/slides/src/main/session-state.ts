@@ -59,6 +59,12 @@ export interface Session {
     undoStart: number
     before: HistorySnapshot
   }
+  /**
+   * Per-slide rollback copies for the parallel QC pass, keyed by slide index.
+   * Unlike historyBatch (session-global, one undo step), these are independent:
+   * reverting one page can never undo a sibling page's concurrent QC edits.
+   */
+  qcCheckpoints?: Map<number, Slide>
   /** Rollback points for the AI panel's Snapshots list, keyed by id (one per AI run that edited the deck). */
   aiSnapshots?: Map<number, HistorySnapshot>
   /** Edits that only touch archive entries (notes/comments; element-level dirty cannot detect them), reset after save */
@@ -71,6 +77,14 @@ export interface Session {
   historyNotifyScheduled?: boolean
   /** A deck-changed broadcast is already queued for this session (coalesces per task) */
   deckBroadcastScheduled?: boolean
+  /**
+   * Serializes async deck mutations. Handlers whose edit → save → reopen tail
+   * awaits (landGeneratedPages append/insert_at/replace_at) interleave when the
+   * renderer calls them concurrently (upgrade_deck lands a whole batch at once):
+   * a slow savePptx can reopen a deck state that predates a sibling call's
+   * transaction, silently dropping its page. The chain holds the settled tail.
+   */
+  mutationQueue?: Promise<void>
   /** Monotonic sequence of the last journaled op entry (collab groundwork) */
   opSeq?: number
   /** Applied-op journal, capped ring — the attachment point for a future sync transport */
@@ -215,6 +229,21 @@ export function scheduleDeckBroadcast(session: Session): void {
   })
 }
 
+/**
+ * Run `task` after the session's previous queued mutation settles — the chain
+ * never jams (each task runs whether the predecessor resolved or rejected).
+ * Keep the pure reads (marker fetch, spec parse) outside; queue only the
+ * mutate → save → reopen → respond section.
+ */
+export function enqueueSessionMutation<T>(session: Session, task: () => Promise<T>): Promise<T> {
+  const run = (session.mutationQueue ?? Promise.resolve()).then(task, task)
+  session.mutationQueue = run.then(
+    () => undefined,
+    () => undefined,
+  )
+  return run
+}
+
 /** Call before an edit operation: push onto the undo stack and clear the redo stack. */
 export function pushHistory(session: Session): void {
   session.undoStack.push(takeSnapshot(session))
@@ -267,6 +296,9 @@ export function carryHistoryForReplacement(
   replacement.redoStack = previous.redoStack
   replacement.historyBatch = previous.historyBatch
   replacement.aiSnapshots = previous.aiSnapshots
+  // Checkpointed slides belong to the deck being replaced — restoring one into
+  // the new deck would resurrect removed content.
+  replacement.qcCheckpoints = undefined
   scheduleHistoryNotify(replacement)
 }
 
@@ -310,6 +342,45 @@ export function restoreSnapshot(session: Session, snap: HistorySnapshot): void {
     session.opLog.push({ seq, source: 'reset', ops: [] })
     while (session.opLog.length > OP_LOG_MAX) session.opLog.shift()
   }
+}
+
+/**
+ * Keep a private copy of one slide before its QC pass. The parallel QC pool
+ * cannot wrap each page in its own history batch (the batch is session-global
+ * and nested ends would couple unrelated pages), so a page whose auto-fix made
+ * the deterministic audit worse is reverted through this per-slide copy.
+ */
+export function qcSlideCheckpoint(session: Session, slideIndex: number): boolean {
+  const slide = session.opened.deck.slides[slideIndex]
+  if (!slide || session.masterEdit) return false
+  ;(session.qcCheckpoints ??= new Map()).set(slideIndex, structuredClone(slide))
+  return true
+}
+
+/**
+ * Swap the checkpointed slide back into the deck. The revert is itself an undo
+ * step when no batch is open; inside the QC batch it collapses with the rest.
+ * Returns false when no checkpoint exists for the index.
+ */
+export function qcSlideRestore(session: Session, slideIndex: number): boolean {
+  const saved = session.qcCheckpoints?.get(slideIndex)
+  if (!saved || session.masterEdit) return false
+  session.qcCheckpoints!.delete(slideIndex)
+  pushHistory(session)
+  session.opened.deck.slides[slideIndex] = saved
+  // Same journal semantics as restoreSnapshot: a snapshot jump isn't expressible
+  // as ops, so a consumer must full-resync past this marker.
+  if (session.opLog?.length) {
+    const seq = (session.opSeq = (session.opSeq ?? 0) + 1)
+    session.opLog.push({ seq, source: 'reset', ops: [] })
+    while (session.opLog.length > OP_LOG_MAX) session.opLog.shift()
+  }
+  return true
+}
+
+/** Drop leftover checkpoints (called at the start of every QC pass). */
+export function qcSlideCheckpointsClear(session: Session): void {
+  session.qcCheckpoints?.clear()
 }
 
 /**

@@ -27,8 +27,8 @@ const validPage = (text = 'Quarterly wins across regions') => ({
 const entry: OutlinePage = {
   title: 'Where the margin went',
   type: 'content',
-  layout: 'three_column_cards',
-  brief: 'Three cards: fuel up 31 percent, wages up 18 percent, spot rates down 22 percent.',
+  layout: 'three_columns',
+  brief: 'Three columns: fuel up 31 percent, wages up 18 percent, spot rates down 22 percent.',
   image_queries: ['container port cranes at dawn'],
 }
 
@@ -117,7 +117,7 @@ describe('parseDeckSpec refusals', () => {
 describe('staged-deck QA gate: outline agreement', () => {
   it('passes a page that echoes its outline entry', () => {
     const p = stagedPage(
-      { title: entry.title, type: 'content', layout: 'three_column_cards' },
+      { title: entry.title, type: 'content', layout: 'three_columns' },
       ['Where the margin went', 'Fuel up 31 percent'],
       true,
     )

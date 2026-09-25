@@ -11,7 +11,11 @@ import {
   beginHistoryBatch,
   carryHistoryForReplacement,
   endHistoryBatch,
+  enqueueSessionMutation,
   pushHistory,
+  qcSlideCheckpoint,
+  qcSlideCheckpointsClear,
+  qcSlideRestore,
   registerAiSnapshot,
   restoreAiSnapshot,
   restoreSnapshot,
@@ -266,5 +270,118 @@ describe('Slides main-process history batching', () => {
         ) as PictureElement
       ).mediaRef,
     ).toBe(newMedia)
+  })
+})
+
+describe('QC per-slide checkpoints', () => {
+  function twoSlideSession(): Session {
+    const session = sessionWith('first')
+    session.opened.deck.slides.push({ value: 'second' } as never)
+    return session
+  }
+
+  function slideValue(session: Session, index: number): string {
+    return (session.opened.deck.slides[index] as unknown as { value: string }).value
+  }
+
+  function setSlideValue(session: Session, index: number, value: string): void {
+    ;(session.opened.deck.slides[index] as unknown as { value: string }).value = value
+  }
+
+  it('reverts one slide without touching a sibling page', () => {
+    const session = twoSlideSession()
+    expect(qcSlideCheckpoint(session, 1)).toBe(true)
+    setSlideValue(session, 0, 'first edited')
+    setSlideValue(session, 1, 'second edited')
+
+    expect(qcSlideRestore(session, 1)).toBe(true)
+    expect(slideValue(session, 1)).toBe('second')
+    // The sibling's concurrent QC edit survives — the whole point of per-slide copies.
+    expect(slideValue(session, 0)).toBe('first edited')
+  })
+
+  it('returns false for a missing checkpoint and after clear', () => {
+    const session = sessionWith('a')
+    expect(qcSlideRestore(session, 0)).toBe(false)
+
+    qcSlideCheckpoint(session, 0)
+    qcSlideCheckpointsClear(session)
+    expect(qcSlideRestore(session, 0)).toBe(false)
+  })
+
+  it('revert inside the pass batch collapses into the single undo step', () => {
+    const session = sessionWith('before')
+    beginHistoryBatch(session)
+    qcSlideCheckpoint(session, 0)
+    pushHistory(session)
+    setValue(session, 'qc edited')
+    expect(qcSlideRestore(session, 0)).toBe(true)
+    expect(valueOf(session)).toBe('before')
+
+    const collapsed = endHistoryBatch(session)
+    expect(collapsed).not.toBeNull()
+    // Both the edit's and the revert's pushes were spliced — one undo step.
+    expect(session.undoStack).toHaveLength(1)
+    restoreSnapshot(session, session.undoStack.pop()!)
+    expect(valueOf(session)).toBe('before')
+  })
+
+  it('revert outside a batch pushes its own undo step', () => {
+    const session = sessionWith('before')
+    qcSlideCheckpoint(session, 0)
+    setValue(session, 'qc edited')
+    expect(qcSlideRestore(session, 0)).toBe(true)
+
+    expect(session.undoStack).toHaveLength(1)
+    restoreSnapshot(session, session.undoStack.pop()!)
+    expect(valueOf(session)).toBe('qc edited')
+  })
+
+  it('journal gets a reset marker so op replay cannot cross the revert', () => {
+    const session = sessionWith('before')
+    session.opSeq = 0
+    session.opLog = [{ seq: 0, source: 'script', ops: [] }]
+    qcSlideCheckpoint(session, 0)
+    setValue(session, 'qc edited')
+    qcSlideRestore(session, 0)
+
+    expect(session.opLog.at(-1)?.source).toBe('reset')
+    expect(session.opLog.at(-1)?.seq).toBe(1)
+  })
+
+  it('checkpoint stores a private copy — later mutations do not leak into it', () => {
+    const session = sessionWith('before')
+    qcSlideCheckpoint(session, 0)
+    setValue(session, 'mutated twice')
+    setValue(session, 'mutated thrice')
+    qcSlideRestore(session, 0)
+    expect(valueOf(session)).toBe('before')
+  })
+})
+
+describe('enqueueSessionMutation', () => {
+  it('serializes queued tails — concurrent landings never interleave', async () => {
+    const session = sessionWith('a')
+    const order: string[] = []
+    const slow = (name: string, delay: number) =>
+      enqueueSessionMutation(session, async () => {
+        order.push(`${name}:start`)
+        await new Promise((r) => setTimeout(r, delay))
+        order.push(`${name}:end`)
+        return name
+      })
+    const [ra, rb, rc] = await Promise.all([slow('a', 20), slow('b', 5), slow('c', 0)])
+    expect([ra, rb, rc]).toEqual(['a', 'b', 'c'])
+    expect(order).toEqual(['a:start', 'a:end', 'b:start', 'b:end', 'c:start', 'c:end'])
+  })
+
+  it('a rejected task does not jam the queue', async () => {
+    const session = sessionWith('a')
+    await expect(
+      enqueueSessionMutation(session, async () => {
+        throw new Error('boom')
+      }),
+    ).rejects.toThrow('boom')
+    await expect(enqueueSessionMutation(session, async () => 'ok')).resolves.toBe('ok')
   })
 })

@@ -22,13 +22,15 @@ Run `officevega capabilities --json` once. It reads OfficeVega's own settings an
 
 Decide the design system before any content and write it to `deck/style.md`; re-read that file before every page. Use this shape, with concrete values:
 
-- **Backgrounds**: main background; one per page type (cover, content, data, closing). Honor an explicit tone (dark theme, brand colors) before falling back to a light neutral. Content pages share one background.
-- **Colors**: main text, primary accent, secondary accent, card background, border, written as `#RRGGBB` values. One accent system for the whole deck: even when comparing several companies or options, do not give each its own color. Never more than the two accents. The page check reports every color a page uses that the style sheet does not name (`detail.style.offPalette`); white and black are always allowed.
-- **Fonts**: title font (Latin and CJK if the deck mixes scripts), body font, title size range, body size range. Use fonts that exist on the target machine; when unsure, leave `font` out and let the engine's default apply.
+- **Backgrounds**: main background; one per page type (cover, content, data, closing). Honor an explicit tone (dark theme, brand colors) before falling back to a light neutral. Content pages share one background. Prefer a layered background over a flat solid: solid base + ONE atmospheric device (subtle gradient mesh, 60/40 split blocks, hairline grid, or duotone photo overlay) — name the device in the style sheet.
+- **Colors**: main text, primary accent, secondary accent, surface (used sparingly — a full-width band or one feature panel, never per-item boxes), border, written as `#RRGGBB` values. One accent system for the whole deck: even when comparing several companies or options, do not give each its own color. Never more than the two accents. Dominant colors + one sharp accent beat timid even distribution. The page check reports every color a page uses that the style sheet does not name (`detail.style.offPalette`); white and black are always allowed.
+- **Fonts**: title font (Latin and CJK if the deck mixes scripts), body font, title size range, body size range. Commit to a Display+Body pair with personality (serif display + grotesque body, tight grotesque + neutral body, editorial serif + mono accents). DO NOT USE Inter, Roboto, Arial or generic system sans as the display face. Use fonts that exist on the target machine; when unsure, leave `font` out and let the engine's default apply.
+- **Mood**: name the topic emotion and honor it — Impressed/Confident → bold dark + sharp accent; Excited/Energized → high-contrast duotone + neon accent; Calm/Focused → paper/swiss neutral + one deep accent; Inspired/Moved → editorial serif + warm muted accent.
+- **Signature elements**: 3 concrete recurring details (e.g. oversized page numeral bottom-right, hairline rule under titles, duotone side panel) + at most ONE abstract decor motif (hairline rules, oversized numeral, contour line, crop mark, gradient orb, outline-circle-plus-line-plus-dot), consistent in position and style. Decor is abstract shapes only.
 - **Layout library** (at least two variants per page type):
   - cover: `cover_typography_hero` (huge type, no image), `cover_dark_minimal`, `cover_split_color` (60/40 color blocks), `cover_full_image_overlay` (photo plus dark overlay), `cover_magazine`, `cover_split_image` (text left, image right)
-  - content: `left_text_right_image`, `three_column_cards`, `hero_big_number`, `two_column_comparison`, `timeline_horizontal`, `full_image_text_overlay`
-  - data: `kpi_cards_row`, `chart_with_insight`, `two_by_two_grid`
+  - content: `left_text_right_image`, `three_columns` (plain text columns, no boxes), `hero_big_number`, `two_column_comparison`, `timeline_horizontal`, `full_image_text_overlay`
+  - data: `kpi_row` (a row of large KPI numbers + labels), `chart_with_insight`, `two_by_two_grid`
   - closing: `closing_cta`, `closing_thank_you`
 - **Overall style**: one sentence describing the design language.
 
@@ -46,7 +48,7 @@ Write `deck/outline.json`:
       "type": "cover | content | data | closing",
       "layout": "one variant from the style sheet's library for that type",
       "brief": "what goes in each region, with the real facts and figures",
-      "image_queries": ["English scene query or http(s) URL", "…"]
+      "image_queries": ["English scene query or http(s) URL + the slot's aspect tag — \"harbor cranes at dawn [4:3]\"", "…"]
     }
   ]
 }
@@ -56,9 +58,10 @@ Then `officevega slides check deck/outline.json --json`: errors (unknown layout,
 
 - A core hook for the whole deck: one sentence with tension, a number or a counter-intuitive contrast.
 - Content pages in one deck must not repeat the same layout variant back to back, and the deck should use at least three different variants.
-- Pick the variant from the content: three parallel points → `three_column_cards`; one key number → `hero_big_number`; comparison → `two_column_comparison` or `two_by_two_grid`; a sequence → `timeline_horizontal`; metrics → `kpi_cards_row`.
-- No placeholders ("XX%", "lorem"): every figure and name comes from the material you have. With web search configured, look up the facts and figures the brief needs before writing pages (`officevega search "<query>" --json`). Without material and without search, tell the user which figures are illustrative; never present invented numbers as facts.
-- Photos: with image search configured, give each photo slot an English query for a concrete scene ("harbor cranes at dawn", not "logistics") and fetch candidates with `officevega search --images "<query>" --max 6 --json`; put a result's `imageUrl` straight into the page's image element (the builder downloads it), and keep its `sourceUrl` (the page the picture came from) for the closing page's credits: the `imageUrl` is often a search-provider proxy that says nothing about origin or license. Give the image box roughly the picture's aspect ratio; a portrait shot squeezed into a flat strip is center-cropped to a sliver and reported by `slides check`. With image generation configured, `officevega image "<prompt>" --aspect 16:9 --out assets/p3.jpg` makes a photo or illustration in the deck's palette. With neither, plan pages that need no photo.
+- Pick the variant from the content: three parallel points → `three_columns`; one key number → `hero_big_number`; comparison → `two_column_comparison` or `two_by_two_grid`; a sequence → `timeline_horizontal`; metrics → `kpi_row`.
+- No placeholders ("XX%", "lorem"): every figure and name comes from the material you have. Never render technical labels (IMAGE:, [4:3], Option A, file paths, template names) as slide copy. With web search configured, look up the facts and figures the brief needs before writing pages (`officevega search "<query>" --json`). Without material and without search, tell the user which figures are illustrative; never present invented numbers as facts.
+- Density limits (exceeded → SPLIT the page in two, never cram or shrink to unreadability): title = 1 heading + 1 subtitle; content = 1 heading + max 4-6 bullets (≤8 words each) or 1-2 short paragraphs; feature grid = max 6 items; data = one metric family per page (one unit, one source); quote = max 3 lines + author. Total visual slots per page ≤ 2; `three_columns` at most once per deck.
+- Photos: with image search configured, give each photo slot an English query for a concrete scene ("harbor cranes at dawn", not "logistics") and fetch candidates with `officevega search --images "<query>" --max 6 --json`; put a result's `imageUrl` straight into the page's image element (the builder downloads it), and keep its `sourceUrl` (the page the picture came from) for the closing page's credits: the `imageUrl` is often a search-provider proxy that says nothing about origin or license. Every slot ends with its fixed aspect tag — `1:1`, `16:9`, `9:16`, `3:4` or `4:3`, picked for the slot's layout role rather than defaulted to `16:9`: the canvas is itself 16:9 and text takes a share of it, so a wide picture easily lands as a short strip — prefer `9:16`/`3:4` when the layout leaves a side column or a vertical band free, `1:1` for balanced pairs and compact slots, `16:9` for true full-width hero or overlay scenes, and aim for a varied mix across the deck — and the page's image box keeps exactly that ratio; a box that misses is snapped to the nearest allowed ratio and reported by `slides check`, and a portrait shot squeezed into a flat strip is center-cropped to a sliver. With image generation configured, `officevega image "<prompt>" --aspect <the slot's tag> --out assets/p3.jpg` makes a photo or illustration in the deck's palette. With neither, plan pages that need no photo.
 
 ## 3. Write each page spec, one file at a time
 
@@ -73,7 +76,7 @@ Canvas is 1280 × 720 px, origin top-left, integers only; nothing may cross the 
 - text wraps at the box width: count the wrapped lines, make the box that tall plus one spare line
 - the builder re-measures every plain text box and grows it to fit; it never shrinks, so undersized boxes push into what sits below them. Size correctly instead of relying on the fix.
 
-**Spacing**: ≥ 8 px between text and a card edge, ≥ 20 px between a title and its subtitle, ≥ 5 px between stacked text blocks. Check every pair before output.
+**Spacing**: ≥ 8 px between text and any shape edge, ≥ 20 px between a title and its subtitle, ≥ 5 px between stacked text blocks. Check every pair before output.
 
 **Type scale (pt)**: big titles 32 to 48, subtitles 18 to 24, body 12 to 15, hero numbers up to 80.
 
@@ -83,12 +86,13 @@ Canvas is 1280 × 720 px, origin top-left, integers only; nothing may cross the 
 
 ## 4. Anti-patterns (treat as defects)
 
-- A thin vertical accent bar on the left of every card, a colored bar on top of cards, a small bar left of titles. Express hierarchy with background, weight and size contrast.
-- Rainbow cards: a different accent per item.
+- Body text boxed in filled or stroked rectangles — no cards, panels or chips behind paragraphs or bullet lists. Text lives on the page background; groups are separated by whitespace, alignment and type scale. A filled shape is reserved for the page's focal element, a data visual or a full-width band.
+- A thin vertical accent bar on the left of every text group, a colored bar on top of a group, a small bar left of titles. Express hierarchy with background, weight and size contrast.
+- Rainbow items: a different accent per item.
 - Decorative corner blocks or short lines; decoration that moves around from page to page.
 - Every page as "shape + bold subtitle + description" list. The cover must not be a flat title plus subtitle: give it a visual anchor (a large color block, a geometric composition, a huge number, a hero image).
 - A deck-wide header bar with the page title on every page. Vary the composition.
-- Sibling cards whose hero numbers mix metrics (a market share next to a price next to a count): one row, one unit, one source. A number's label must say exactly what the source measured (bone-conduction share is not sports-headphone share).
+- Sibling KPI items whose hero numbers mix metrics (a market share next to a price next to a count): one row, one unit, one source. A number's label must say exactly what the source measured (bone-conduction share is not sports-headphone share).
 - Two lines that say the same thing: a subtitle that restates the chart caption, a takeaway that repeats a bullet.
 
 ## 5. Build, look, audit, fix

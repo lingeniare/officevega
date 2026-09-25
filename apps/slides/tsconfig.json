@@ -22,6 +22,9 @@
       "@genoffice/pipelines/slides/layout-audit": [
         "../../packages/pipelines/src/slides/layout-audit.ts"
       ],
+      "@genoffice/pipelines/slides/aspect-ratio": [
+        "../../packages/pipelines/src/slides/aspect-ratio.ts"
+      ],
       "@genoffice/docx-engine/metafile": ["../../packages/docx-engine/src/metafile.ts"],
       "@genoffice/docx-engine/math": ["../../packages/docx-engine/src/math.ts"]
     }

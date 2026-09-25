@@ -6,9 +6,9 @@ const HARBOR = String.fromCharCode(0x6e2f, 0x53e3)
 const page = (over: Record<string, unknown> = {}) => ({
   title: 'Why logistics margins fell 40% in two years',
   type: 'content',
-  layout: 'three_column_cards',
+  layout: 'three_columns',
   brief:
-    'Three cards: fuel cost up 31% (2024 vs 2022), driver wages up 18%, spot rates down 22%; source line under each card.',
+    'Three columns: fuel cost up 31% (2024 vs 2022), driver wages up 18%, spot rates down 22%; source line under each column.',
   image_queries: [],
   ...over,
 })
@@ -23,7 +23,7 @@ describe('parseOutline', () => {
         page({ type: 'cover', layout: 'cover_typography_hero', title: 'The 40% squeeze' }),
         page(),
         page({ layout: 'hero_big_number' }),
-        page({ type: 'data', layout: 'kpi_cards_row' }),
+        page({ type: 'data', layout: 'kpi_row' }),
         page({ type: 'closing', layout: 'closing_cta' }),
       ]),
     )
@@ -44,7 +44,7 @@ describe('parseOutline', () => {
             brief: 'Revenue grew XX% year over year across all regions, per the deck brief.',
           }),
           page({ layout: 'hero_big_number' }),
-          page({ type: 'data', layout: 'three_column_cards' }),
+          page({ type: 'data', layout: 'three_columns' }),
           page({ type: 'closing', layout: 'closing_cta' }),
         ],
       }),
@@ -58,7 +58,7 @@ describe('parseOutline', () => {
       expect.arrayContaining([
         expect.stringContaining('1: placeholder "XX%"'),
         expect.stringContaining('2: layout hero_big_number repeats'),
-        expect.stringContaining('3: "layout" three_column_cards is not a data variant'),
+        expect.stringContaining('3: "layout" three_columns is not a data variant'),
         expect.stringContaining('-: "core_hook" is missing'),
       ]),
     )
@@ -87,6 +87,36 @@ describe('parseOutline', () => {
       ]),
     )
     expect(r.outline.pages[0]!.image_queries).toEqual([HARBOR])
+  })
+
+  it('warns when a visual slot has no aspect tag or a tag outside the allowed set', () => {
+    const r = parseOutline(
+      deck([
+        page({
+          image_queries: [
+            'harbor cranes at dawn',
+            'hero artwork [21:9]',
+            'portrait shot [9:16]',
+            'https://cdn.example/pic.png [4:3]',
+          ],
+        }),
+      ]),
+    )
+    expect(r.ok).toBe(true)
+    if (!r.ok) return
+    const warnings = r.issues.map((i) => i.message)
+    expect(warnings).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining('"harbor cranes at dawn" has no aspect tag'),
+        expect.stringContaining('"hero artwork [21:9]" tags a non-slot aspect'),
+      ]),
+    )
+    // Valid tags stay quiet — including a tagged ready URL
+    expect(
+      warnings.filter((w) => w.includes('"portrait shot') || w.includes('"https://cdn.example')),
+    ).toEqual([])
+    // Entries are kept verbatim — the tag rides along to the image stage
+    expect(r.outline.pages[0]!.image_queries).toHaveLength(4)
   })
 
   it('rejects documents that are not an outline', () => {

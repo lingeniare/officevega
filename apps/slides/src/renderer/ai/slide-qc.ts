@@ -16,6 +16,7 @@ import {
   type AiSettings,
 } from '@genoffice/ai-provider/browser'
 import { auditSlideLayout } from '@genoffice/pipelines/slides/layout-audit'
+import type { RenderSlide } from '@genoffice/pptx-render'
 import { createSlidesSkill, formatSlideDump, type DeckAccess } from './slides-skill'
 import qcVisualPrompt from './prompts/qc-visual.md?raw'
 import qcGeometryPrompt from './prompts/qc-geometry.md?raw'
@@ -226,4 +227,149 @@ export function qcSlidePage(opts: QcPageOptions): Promise<QcPageResult> {
     signal?.addEventListener('abort', onAbort, { once: true })
     loop.run(instruction, screenshot ? [screenshot] : undefined)
   })
+}
+
+// ── Parallel pass orchestration ─────────────────────────────────────────
+// History batches are session-global and nested ends couple unrelated pages, so
+// a QC pool cannot give each page its own batch. Instead the caller wraps the
+// whole pass in ONE batch (the pass = one undo step) and per-page reverts go
+// through main-process slide checkpoints (slides:qc-slide-checkpoint/restore).
+
+/** Pages checked at once. localStorage 'ai-slides-qc-parallel' overrides (1-8). */
+export const QC_PAGE_CONCURRENCY = 4
+
+export function qcConcurrency(): number {
+  const n = Number(localStorage.getItem('ai-slides-qc-parallel'))
+  if (Number.isFinite(n) && n >= 1) return Math.min(8, Math.floor(n))
+  return QC_PAGE_CONCURRENCY
+}
+
+export interface QcPageOutcome {
+  /** 0-based slide index */
+  page: number
+  kind: 'ok' | 'fixed' | 'reverted' | 'skipped'
+  /** model one-liner for 'fixed' */
+  summary?: string
+  /** rebuilt slide for 'reverted' — the caller applies it to the renderer deck */
+  slide?: RenderSlide
+  /** diagnostics for 'skipped' (provider/network error details) */
+  error?: string
+}
+
+export interface QcRunHooks {
+  /** pixelRatio-1 PNG of the page's current rendering; null → geometry-only page */
+  captureShot: (pageIndex: number) => Promise<AgentImage | null>
+  /** store a private copy of the slide in main for a possible page-level revert */
+  checkpoint?: (pageIndex: number) => Promise<unknown>
+  /** swap the checkpointed slide back in; returns the rebuilt slide (null on failure) */
+  restore?: (pageIndex: number) => Promise<RenderSlide | null>
+}
+
+export interface QcRunOptions extends QcRunHooks {
+  access: DeckAccess
+  transport: AgentTransport
+  /** ascending 0-based page indexes, already capped by the caller */
+  pages: number[]
+  /** whether the configured model accepts image input */
+  visionCapable: boolean
+  systemSuffix?: () => string
+  signal?: AbortSignal
+  concurrency?: number
+  /** test seam — defaults to qcSlidePage */
+  runPage?: (opts: QcPageOptions) => Promise<QcPageResult>
+  /** called as each page settles; idx is the page's position in `pages` (stable ordering) */
+  onPage?: (idx: number, outcome: QcPageOutcome) => void
+}
+
+/**
+ * Run the per-page QC loops through a bounded worker pool. Returns outcomes in
+ * `pages` order (sparse — aborted/unstarted pages stay undefined).
+ */
+export async function runQcPages(
+  opts: QcRunOptions,
+): Promise<Array<QcPageOutcome | undefined>> {
+  const {
+    access,
+    transport,
+    pages,
+    visionCapable,
+    systemSuffix,
+    signal,
+    captureShot,
+    checkpoint,
+    restore,
+    onPage,
+    concurrency = QC_PAGE_CONCURRENCY,
+    runPage = qcSlidePage,
+  } = opts
+  const outcomes: Array<QcPageOutcome | undefined> = new Array(pages.length)
+  let cursor = 0
+  // A custom endpoint may claim generic OpenAI-compatible vision support but reject the
+  // first image. Fall back for that page and keep the rest of this pass geometry-only.
+  let forceGeometryOnly = false
+  const settle = (i: number, o: QcPageOutcome) => {
+    outcomes[i] = o
+    onPage?.(i, o)
+  }
+  const worker = async () => {
+    while (!signal?.aborted) {
+      const i = cursor++
+      if (i >= pages.length) return
+      const page = pages[i]!
+      try {
+        const useShot = visionCapable && !forceGeometryOnly
+        const shot = useShot ? await captureShot(page) : null
+        if (useShot && !shot) {
+          if (access.getSlides()[page]) settle(i, { page, kind: 'skipped' })
+          continue
+        }
+        await checkpoint?.(page)
+        let result = await runPage({
+          access,
+          transport,
+          pageIndex: page,
+          screenshot: shot,
+          systemSuffix,
+          signal,
+        })
+        if (shot && result.error && isUnsupportedImageInputError(result.error)) {
+          forceGeometryOnly = true
+          result = await runPage({
+            access,
+            transport,
+            pageIndex: page,
+            screenshot: null,
+            systemSuffix,
+            signal,
+          })
+        }
+        // A mid-flight abort leaves the page's line empty — only the stop notice is added.
+        if (signal?.aborted) return
+        if (result.error) {
+          settle(i, { page, kind: 'skipped', error: result.error })
+        } else if (result.edited && result.postIssues > result.preIssues) {
+          // The fix made the deterministic audit worse — swap this page's
+          // checkpoint back in. Sibling pages' edits stay untouched.
+          const slide = (await restore?.(page)) ?? null
+          if (slide) {
+            settle(i, { page, kind: 'reverted', slide })
+          } else {
+            console.warn(`[slides-qc] page ${page + 1}: revert failed, edits kept`)
+            settle(i, { page, kind: 'fixed', summary: result.reply })
+          }
+        } else if (result.edited) {
+          settle(i, { page, kind: 'fixed', summary: result.reply })
+        } else {
+          settle(i, { page, kind: 'ok' })
+        }
+      } catch (e) {
+        // Infrastructure-level failure (IPC down, render crash): report the page,
+        // keep the pool alive for the remaining ones.
+        settle(i, { page, kind: 'skipped', error: e instanceof Error ? e.message : String(e) })
+      }
+    }
+  }
+  const n = Math.max(1, Math.min(Math.floor(concurrency), pages.length))
+  await Promise.all(Array.from({ length: n }, worker))
+  return outcomes
 }

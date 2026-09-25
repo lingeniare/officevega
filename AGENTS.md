@@ -14,6 +14,18 @@ not pnpm). Run the binaries directly from the root `node_modules` instead:
 ../../node_modules/.bin/tsc --noEmit          # typecheck
 ```
 
+## Running `npm run dev`
+
+The shell step goes through `tools/dev-shell.mjs`, which deletes
+`ELECTRON_RUN_AS_NODE` before spawning electron-vite. Electron-hosted
+terminals (IDE/agent shells such as Devin Desktop) export `ELECTRON_RUN_AS_NODE=1`;
+an electron binary that inherits it boots as plain Node.js, so the bundled
+`require('electron')` resolves to the npm package shim (the executable path
+string) and the main process crashes on the first `ipcMain` access —
+`concurrently -k` then kills every dev server. Deleting is required: Electron
+treats even an empty value as set. The same trap applies to `electron .`-style
+launches (`npm run shell`, `npm start -w @officevega/shell`) from such terminals.
+
 ## Slides AI pipeline notes
 
 - `generate_deck` runs its stages inside the tool (AgentLoop executes tool calls
@@ -21,10 +33,15 @@ not pnpm). Run the binaries directly from the root `node_modules` instead:
   style ∥ internal `research` web searches ∥ batched outline planning
   (first batch yields the Core Hook, the rest run in parallel via `continueFrom`),
   then imagery resolution: **every** non-URL visual slot (`image_queries` and
-  `image_prompts` alike) is AI-generated first (`ai:generate-image`, pool of 3);
-  image search is only a fallback — for slots the generator missed, or for all
-  slots when generation is unavailable — then page generation (GEN_BATCH 4
-  cloud / 2 local) with ordered landing.
+  `image_prompts` alike) is AI-generated first (`ai:generate-image`, one eager
+  pool of `IMAGE_GEN_POOL` = 8 — `DeckAccess.imageGenConcurrency` overrides —
+  started on all unique slots in page order the moment the plan is final, one
+  retry per slot); image search is only a fallback — for slots the generator
+  missed, or for all slots when generation is unavailable — then page
+  generation (GEN_BATCH = PAGE_GEN_BATCH, 8 cloud / 4 local) with ordered
+  landing, each chunk awaiting only its own slots' deferreds (late images
+  overlap early pages).
+  `upgrade_deck` visuals resolves its pending slots with the same pool.
 - `dataSource:'search'` is satisfied by the internal research — no separate
   `web_search` turn is needed first.
 - Local page specs (`packages/pipelines/src/slides/page-spec.ts`) accept
@@ -35,16 +52,33 @@ not pnpm). Run the binaries directly from the root `node_modules` instead:
   file reads).
 - A gradient page background stays a full-bleed rect element — `promoteSlideBackground`
   only promotes opaque solids; the render layer marks it background-like instead.
+- Visual slots carry a fixed aspect tag — `"scene [4:3]"`, one of `1:1, 16:9,
+  9:16, 3:4, 4:3` (untagged = 16:9; helpers live in
+  `packages/pipelines/src/slides/aspect-ratio.ts`). The tag picks the
+  `generateImage` ratio, sizes the draft placeholder box, and `parsePageSpecObject`
+  snaps image elements and `IMAGE:`/`VISUAL:`-labeled shapes to the declared or
+  nearest allowed ratio (`CHART:`/`INFOGRAPHIC:` stay free-form).
 - Staged flow state (`SkillState`): `draftImageSlots` keeps each page's visual
   slot descriptions (for a `detail:"full"` run it stores the resolved URLs);
   `draftResolvedSlots` maps normKey(slot text) → resolved image URL so a later
   `upgrade_deck(stage:"style")` re-feeds the same imagery instead of losing it
   or resurrecting placeholder boxes; `draftPageImages` records the URLs last
-  fed into each regenerated page (covers non-draft decks too).
+  fed into each regenerated page (covers non-draft decks too);
+  `draftImageAspects` maps URL → declared aspect so a restyle keeps the ratio
+  after the slot text was replaced by bare URLs.
 - `ai:store-image-data` persists a picture's embedded `data:` URL into the
   generated-image store and returns its `file://` URL — used by upgrade passes
   to re-feed canvas pictures whose original URL was lost at landing (local
   path only; the cloud service can't reach local bytes).
+- Post-generation layout QC (`slide-qc.ts` `runQcPages`, orchestrated by
+  `AiPanel.runQcPass`) checks pages through a bounded pool
+  (`QC_PAGE_CONCURRENCY` = 4, `localStorage 'ai-slides-qc-parallel'` overrides
+  1-8, `'ai-slides-qc'='0'` disables the pass). History batches are
+  session-global, so the pass runs inside ONE batch (one undo step) and a page
+  whose deterministic audit got worse is reverted through per-slide main
+  checkpoints (`slides:qc-slide-checkpoint`/`qc-slide-restore` /
+  `qc-checkpoints-clear`, `Session.qcCheckpoints`) — never the whole-deck
+  `aiSnapshotRestore`, which would wipe sibling pages' concurrent edits.
 - `apps/*/src/main` changes compile into the **shell** build — rebuild the shell
   or they silently do not run.
 

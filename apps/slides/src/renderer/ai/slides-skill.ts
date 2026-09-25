@@ -9,6 +9,7 @@ import type {
 import type { AgentToolCall, AgentToolDef } from '../../shared/ipc'
 import { OP_GROUPS, opGuide, opGuideCatalog, opSignatureIndex } from '@genoffice/pptx-ops/op-docs'
 import { auditSlideLayout, formatAudit } from '@genoffice/pipelines/slides/layout-audit'
+import { DEFAULT_IMAGE_ASPECT, splitSlotAspect } from '@genoffice/pipelines/slides/aspect-ratio'
 import { runLayoutScript, type LayoutScriptElement } from './layout-script'
 import { t } from '../i18n/locale'
 import systemPrompt from './prompts/system.md?raw'
@@ -110,6 +111,23 @@ export interface DeckAccess {
   /** Survey: shows a card with options and waits for the user's choices, returning an answer summary. */
   askClarification?(questions: ClarifyQuestion[]): Promise<{ answers: string; cancelled?: boolean }>
   /**
+   * One fast-model call producing 3 compact style directions (safe + bold +
+   * wildcard) for the user's pick BEFORE the full Style Skill is authored. Only
+   * used by generate_deck's full-replace path without an explicit style_template;
+   * the chosen direction is fed into generateStyleSkill as styleHint. Absent →
+   * single-style path (no choice card).
+   */
+  generateStyleVariants?(args: {
+    topic: string
+    styleHint?: string
+    questionnaire?: string
+    signal?: AbortSignal
+  }): Promise<{
+    ok: boolean
+    variants?: { name: string; concept: string; palette: string; fonts: string; motif: string }[]
+    error?: string
+  }>
+  /**
    * In-tool image search (embedded in the tool):
    * given English keywords, returns an array of real image URLs (at most N).
    * In the deck pipeline this is the FALLBACK resolver — it runs for slots AI image
@@ -165,6 +183,8 @@ export interface DeckAccess {
     brief: string
     layout: string
     images: string[]
+    /** URL → the slot's declared aspect tag ('16:9', '4:3', …); unmarked URLs may take any allowed ratio. */
+    imageAspects?: Record<string, string>
     context?: string
     topic?: string
     canvasW: number
@@ -186,6 +206,8 @@ export interface DeckAccess {
     brief: string
     layout: string
     images: string[]
+    /** URL → the slot's declared aspect tag ('16:9', '4:3', …); unmarked URLs may take any allowed ratio. */
+    imageAspects?: Record<string, string>
     context?: string
     topic?: string
     canvasW: number
@@ -292,6 +314,14 @@ export interface DeckAccess {
   /** Base retry backoff in ms for single-page generation failures (default 2000; tests pass 0 to disable backoff) */
   retryBackoffMs?: number
   /**
+   * Concurrent in-tool AI image generations during the deck imagery passes
+   * (generate_deck's slot resolution and upgrade_deck's visuals stage). Default
+   * IMAGE_GEN_POOL (8); each call is a separate provider request / gsk child
+   * process, so the cap exists to avoid tripping provider rate limits — misses
+   * still fall back to image search.
+   */
+  imageGenConcurrency?: number
+  /**
    * Names of text attachments in the current conversation that were never read with
    * read_attachment. When non-empty, generate_deck refuses to run until they are read
    * (decks must be built from attachment content, not generic filler).
@@ -324,6 +354,21 @@ export function attachmentRefName(url: string): string | null {
     return raw
   }
 }
+
+/** Pool of concurrent AI image generations in the deck imagery passes — each
+ *  call is a separate provider request / gsk child process. 8 keeps a ~10-slot
+ *  deck at ~2 waves without flooding the provider into rate limits; misses
+ *  still fall back to image search (fail-open). */
+const IMAGE_GEN_POOL = 8
+
+/** Concurrent per-page generations in the page passes (generate_deck's GEN_BATCH
+ *  and upgrade_deck's pages stage). Cloud is one server-side call per page —
+ *  running wide is safe; the local path streams through the user's AI proxy
+ *  (opus-class output, several long streams at once time out more easily), so
+ *  it stays narrower — the per-page retry with backoff absorbs the occasional
+ *  transient timeout. */
+const PAGE_GEN_BATCH_CLOUD = 8
+const PAGE_GEN_BATCH_LOCAL = 4
 
 /** Fixed minimal style for draft-mode pages (staged generation): the skeleton is
  *  deliberately plain — design comes later via upgrade_deck(stage:"style"). */
@@ -591,7 +636,7 @@ const TOOLS: AgentToolDef[] = [
         brief: {
           type: 'string',
           description:
-            'Content and layout brief for the new page: what goes in each region (copy the real copy/data to keep into the brief), and the layout to use (e.g. three_column_cards/hero_big_number/two_column/timeline).',
+            'Content and layout brief for the new page: what goes in each region (copy the real copy/data to keep into the brief), and the layout to use (e.g. three_columns/hero_big_number/two_column_comparison/timeline_horizontal).',
         },
         title: { type: 'string', description: 'Page title' },
         layout: { type: 'string', description: 'Layout intent name (optional)' },
@@ -651,7 +696,7 @@ const TOOLS: AgentToolDef[] = [
         style: {
           type: 'string',
           description:
-            'Unified design system: primary/secondary colors, fonts, content margins, card corners (required with pages; optional as a style hint with topic)',
+            'Unified design system: background/text/accent colors, fonts, content margins (required with pages; optional as a style hint with topic)',
         },
         pages: {
           type: 'array',
@@ -671,13 +716,13 @@ const TOOLS: AgentToolDef[] = [
                 type: 'array',
                 items: { type: 'string' },
                 description:
-                  "English description of each real-world visual slot on this page (actual places, products, people, brands) — the system AI-GENERATES each internally and fills real URLs back (a stock photo search runs only as fallback when generation is unavailable or misses); if you already know real http(s) URLs pass them directly (respected, not re-resolved); [] for no images",
+                  "English description of each real-world visual slot on this page (actual places, products, people, brands) — the system AI-GENERATES each internally and fills real URLs back (a stock photo search runs only as fallback when generation is unavailable or misses); if you already know real http(s) URLs pass them directly (respected, not re-resolved); [] for no images. End each entry with the slot's aspect tag \"[N:M]\" — 1:1, 16:9, 9:16, 3:4 or 4:3 (untagged = 16:9) — picked for the layout role: prefer 9:16/3:4 when the page leaves a side column or vertical band free (a tall image holds far more area than a squeezed 16:9 strip), 1:1 for balanced/paired slots, 16:9 for true full-width heroes — vary ratios across the deck",
               },
               image_prompts: {
                 type: 'array',
                 items: { type: 'string' },
                 description:
-                  'Optional: English prompts for AI-GENERATED bespoke visuals (hero/cover art, conceptual illustrations, abstract backgrounds) — the system generates each one internally and fills real URLs back (search only as fallback). Same mechanism as image_queries; split them only by intent — real-world subjects in image_queries, bespoke art here.',
+                  'Optional: English prompts for AI-GENERATED bespoke visuals (hero/cover art, conceptual illustrations, abstract backgrounds) — the system generates each one internally and fills real URLs back (search only as fallback). Same mechanism as image_queries; split them only by intent — real-world subjects in image_queries, bespoke art here. Same trailing [N:M] aspect tag and ratio choice as image_queries.',
               },
             },
             required: ['title', 'brief', 'layout'],
@@ -1254,6 +1299,10 @@ interface SkillState {
    *  had draft slots (imports, manual decks) and canvas pictures materialized to file://
    *  by a previous upgrade, so a re-restyle doesn't rematerialize or lose them. */
   draftPageImages?: string[][]
+  /** Image URL → the aspect ratio its slot declared ([N:M] tag, default 16:9 for
+   *  generated pictures). Kept so a later upgrade pass re-feeds the ratio the
+   *  page geometry was planned around. */
+  draftImageAspects?: Record<string, string>
   /** Canvas-index offset of draftImageSlots: planned pages align with the deck 1:1 for
    *  replace/full runs, but for insert_mode:"append" slots[0] is the first APPENDED
    *  page — it lands at canvas index = number of pre-existing slides. */
@@ -1985,10 +2034,11 @@ async function executeTool(
       const canvasW = 1280
       const canvasH = 720
       const PLAN_BATCH = 12 // Per-batch planning cap (kept slightly conservative against truncation)
-      // Cloud generation is a server-side call (gsk slide_generate) — higher concurrency is
+      // Cloud generation is a server-side call (gsk slide_generate) — wide concurrency is
       // safe there. The local path streams through the user's AI proxy (opus large output +
-      // concurrent streams time out easily) — keep it at 2, stability first.
-      const GEN_BATCH = useCloud ? 4 : 2
+      // concurrent streams time out more easily) — a smaller pool; the per-page retry
+      // with backoff rides out the occasional proxy timeout.
+      const GEN_BATCH = useCloud ? PAGE_GEN_BATCH_CLOUD : PAGE_GEN_BATCH_LOCAL
       const BACKOFF_MS = access.retryBackoffMs ?? 2000 // Retry backoff base (rate limits/overload are mostly transient; immediate retries would hit them again)
 
       let coreHook = String(call.input.core_hook ?? '').trim()
@@ -2109,6 +2159,9 @@ async function executeTool(
         !draftMode && !styleSkill && access.generateStyleSkill && (topic || pages.length === 0 || !style)
       // Style track: resolves to the final Style Skill (or the user-passed style / '').
       // Draft mode skips it entirely — the skeleton uses one fixed minimal style.
+      // styleChoiceCancelled never rejects styleP (a rejection would sink the
+      // Promise.all below and orphan the sibling tracks) — it is checked after.
+      let styleChoiceCancelled = false
       const styleP: Promise<string> = draftMode
         ? Promise.resolve(DRAFT_STYLE)
         : (async () => {
@@ -2121,9 +2174,66 @@ async function executeTool(
         })
         const styleTopic =
           topic || coreHook || (pages[0] ? String(pages[0].title ?? '') : 'Presentation')
+        // Style choice card (full-replace decks without an explicit template only):
+        // one fast-model call drafts 3 compact directions (safe + bold + wildcard),
+        // the user picks via the existing clarification card, and the pick steers
+        // the full Style Skill below. Every failure falls back to the single-style
+        // path — the choice is polish, never a blocker.
+        let choiceHint = ''
+        if (
+          insertMode === 'replace' &&
+          !styleTemplateName &&
+          access.generateStyleVariants &&
+          access.askClarification &&
+          !cancelled()
+        ) {
+          try {
+            const vr = await access.generateStyleVariants({
+              topic: styleTopic,
+              ...(style ? { styleHint: style } : {}),
+              ...(context ? { questionnaire: context } : {}),
+              ...(signal ? { signal } : {}),
+            })
+            const variants = vr.ok ? (vr.variants ?? []).filter((v) => v?.name && v?.concept) : []
+            if (variants.length >= 2) {
+              const options = variants.slice(0, 3).map(
+                (v) =>
+                  `${v.name} — ${v.concept} Palette: ${v.palette || '—'}. Fonts: ${v.fonts || '—'}. Motif: ${v.motif || '—'}`,
+              )
+              const picked = await access.askClarification([
+                {
+                  id: 'style',
+                  label: `Pick a visual direction for "${styleTopic}"`,
+                  description:
+                    'Three art-directed options — the deck is then designed end-to-end in the winner. Skip to let the AI decide.',
+                  options,
+                },
+              ])
+              if (cancelled()) {
+                styleChoiceCancelled = true
+                return styleSkill || style
+              }
+              // Card dismissed without a pick → "AI decides": continue on the
+              // single-style path (same as ask_clarification's skip precedent).
+              if (!picked.cancelled) {
+                const answer = picked.answers || ''
+                const idx = variants
+                  .slice(0, 3)
+                  .findIndex(
+                    (v) => answer.includes(v.name) || answer.includes(v.concept.slice(0, 24)),
+                  )
+                const chosen = idx >= 0 ? variants[idx]! : variants[0]!
+                choiceHint = `\nUser-picked direction "${chosen.name}": ${chosen.concept} Palette: ${chosen.palette || '—'}. Fonts: ${chosen.fonts || '—'}. Motif: ${chosen.motif || '—'}. Honor this pick strictly.`
+              }
+            }
+          } catch (e) {
+            // fail-open: fall through to the single-style path
+            void e
+          }
+        }
         const sr = await access.generateStyleSkill!({
           topic: styleTopic,
-          ...(style ? { styleHint: style } : {}),
+          ...((style || choiceHint) ? { styleHint: (style ? style + '\n' : '') + choiceHint } : {}),
           ...(context ? { questionnaire: context } : {}),
           ...(signal ? { signal } : {}),
         })
@@ -2250,7 +2360,8 @@ async function executeTool(
       if (styleOut) styleSkill = styleOut
       else if (!styleSkill) styleSkill = style // Fallback: the user-passed style, or empty
       if (planOut.error) return fail(t('aiFailGenDeck'), planOut.error)
-      if (cancelled()) return cancelResult(0, approxForProgress)
+      // Style-choice card dismissed: stop before any page is generated (nothing landed yet)
+      if (styleChoiceCancelled || cancelled()) return cancelResult(0, approxForProgress)
       const pageContext =
         mergedContext && mergedContext.length > PAGE_CONTEXT_MAX
           ? mergedContext.slice(0, PAGE_CONTEXT_MAX)
@@ -2339,135 +2450,213 @@ async function executeTool(
         }
       }
 
-      // ── Step 1.5: in-tool imagery. AI generation is the PRIMARY resolver for every
-      //   visual slot — the image model renders each slot's description (image_queries
-      //   and image_prompts alike), a real-photo search runs only as fallback: for the
-      //   slots the generator missed, or for all of them when generation is unavailable.
-      //   Entries that are already URLs (http(s), or file:// for BYOK-generated images)
-      //   are respected, not re-resolved; unresolvable slots stay empty (fail-open).
-      //   Draft mode skips this stage entirely — slots become labeled placeholder boxes.
+      // ── Step 1.5: in-tool imagery, EAGER pool overlapping page generation.
+      //   AI generation stays the PRIMARY resolver for every visual slot
+      //   (image_queries and image_prompts alike); each slot the generator
+      //   misses (after one retry — transient rate limits are common at higher
+      //   concurrency) falls back to a real-photo search IMMEDIATELY
+      //   (overlapping still-running generations), or search resolves everything
+      //   when generation is unavailable. Entries that are already URLs
+      //   (http(s), or file:// for BYOK-generated images) are respected, not
+      //   re-resolved; unresolvable slots stay empty (fail-open). Draft mode
+      //   skips this stage entirely — slots become labeled placeholder boxes.
+      //   One global worker pool starts resolving every unique slot as soon as
+      //   the plan is final (in page order), so late-chunk images generate while
+      //   early pages generate — a chunk only awaits its own slots' deferreds.
+      //   Dedup is preserved via the shared caches below: each unique slot
+      //   resolves once no matter which chunk first needs it.
       const isUrl = (s: string) => /^(https?|file):\/\//i.test(s)
       const normKw = (s: string) => s.toLowerCase().replace(/\s+/g, ' ')
       const unresolvedImageSlots: { page: number; slot: string }[] = []
-      if (!draftMode && (access.searchImages || access.generateImage)) {
-        const uniqueSlots: string[] = []
-        const seenSlot = new Set<string>()
-        for (const p of pages) {
-          for (const field of ['image_queries', 'image_prompts'] as const) {
-            for (const q of (Array.isArray(p[field]) ? p[field] : []) as unknown[]) {
-              const s = String(q).trim()
-              if (!s || isUrl(s)) continue
-              const k = normKw(s)
-              if (!seenSlot.has(k)) {
-                seenSlot.add(k)
-                uniqueSlots.push(s)
-              }
-            }
-          }
-        }
-        const candidatesByKw = new Map<string, string[]>()
-        const genByPrompt = new Map<string, string>()
-        const canGenerate = !!access.generateImage && access.imageGenAvailable?.() !== false
-        const totalSearches = uniqueSlots.length
-        if (totalSearches > 0) {
-          access.onProgress?.({
-            stage: 'images',
-            label: t('aiStageImages'),
-            done: 0,
-            total: totalSearches,
-            status: 'running',
-            summary: t('aiStageImagesRunning', { done: 0, total: totalSearches }),
-          })
-          let imagesDone = 0
-          const tick = () => {
-            imagesDone++
-            const shown = Math.min(imagesDone, totalSearches)
-            access.onProgress?.({
-              stage: 'images',
-              label: t('aiStageImages'),
-              done: shown,
-              total: totalSearches,
-              status: 'running',
-              summary: t('aiStageImagesRunning', { done: shown, total: totalSearches }),
-            })
-          }
-          const missedPrompts: string[] = []
-          const jobs: Promise<void>[] = []
-          if (canGenerate) {
-            // Pool of 3 concurrent generations — image calls are slow, but flooding the
-            // provider trips rate limits; a missed slot falls back to an image search.
-            let cursor = 0
-            jobs.push(
-              ...Array.from({ length: Math.min(3, uniqueSlots.length) }, async () => {
-                while (cursor < uniqueSlots.length && !cancelled()) {
-                  const pr = uniqueSlots[cursor++]!
-                  try {
-                    const r = await access.generateImage!({ prompt: pr, aspectRatio: '16:9' })
-                    if (r.ok && r.url) genByPrompt.set(normKw(pr), r.url)
-                    else missedPrompts.push(pr)
-                  } catch {
-                    missedPrompts.push(pr)
-                  }
-                  tick()
-                }
-              }),
-            )
-          } else if (access.searchImages) {
-            // Generation unavailable: every slot resolves through image search
-            // (each searched once, several candidates so cross-page dedup can pick unused images)
-            jobs.push(
-              ...uniqueSlots.map(async (kw) => {
-                if (cancelled()) return
-                try {
-                  candidatesByKw.set(normKw(kw), await access.searchImages!(kw, 5))
-                } catch {
-                  /* fail-open */
-                }
-                tick()
-              }),
-            )
-          }
-          await Promise.all(jobs)
-          // Fallback: slots the generator missed → a real-photo search on the slot text
-          if (missedPrompts.length && access.searchImages) {
-            await Promise.all(
-              missedPrompts.map(async (pr) => {
-                if (cancelled()) return
-                try {
-                  const urls = await access.searchImages!(pr, 5)
-                  if (urls.length) candidatesByKw.set(normKw(pr), urls)
-                } catch {
-                  /* fail-open */
-                }
-              }),
-            )
-          }
-        }
-        // Allocate page by page in order: explicit URLs are kept as-is (and counted as used);
-        // keywords/prompts pick from candidates preferring images the deck hasn't used yet.
-        // Slots that resolve to nothing are reported in the tool output (a blank image
-        // slot must never go unmentioned).
-        const usedUrls = new Set<string>()
+      // Resolved image URL → the slot's declared aspect ratio (from its [N:M]
+      // tag); the page generators keep each picture's box at that ratio.
+      const aspectByUrl = new Map<string, string>()
+      const candidatesByKw = new Map<string, string[]>()
+      const genByPrompt = new Map<string, string>()
+      const seenSlot = new Set<string>()
+      const usedUrls = new Set<string>()
+      const canGenerateImages = !!access.generateImage && access.imageGenAvailable?.() !== false
+      const imagesEnabled = !draftMode && !!(access.searchImages || access.generateImage)
+      // Seed cross-page dedup with explicit URLs up front (all pages — cheap, no network)
+      if (imagesEnabled) {
         for (const p of pages) {
           for (const field of ['image_queries', 'image_prompts'] as const) {
             const arr = p[field]
             if (!Array.isArray(arr)) continue
             for (const q of arr as unknown[]) {
               const s = String(q).trim()
-              if (isUrl(s)) usedUrls.add(s)
+              const core = splitSlotAspect(s).text
+              if (isUrl(core)) usedUrls.add(core)
             }
           }
         }
-        for (const [pi, p] of pages.entries()) {
+      }
+      // Global unique-slot count for the progress bar (computed without network)
+      const totalImageSlots = imagesEnabled
+        ? (() => {
+            const seen = new Set<string>()
+            for (const p of pages) {
+              for (const field of ['image_queries', 'image_prompts'] as const) {
+                for (const q of (Array.isArray(p[field]) ? p[field] : []) as unknown[]) {
+                  const s = String(q).trim()
+                  // A trailing [N:M] aspect tag belongs to the slot's identity (it
+                  // picks the generation ratio) but is not search/generation text —
+                  // strip it before the URL check so a tagged URL isn't queued.
+                  const core = splitSlotAspect(s).text
+                  if (!core || isUrl(core)) continue
+                  seen.add(normKw(s))
+                }
+              }
+            }
+            return seen.size
+          })()
+        : 0
+      let imagesDone = 0
+      const tickImages = () => {
+        imagesDone++
+        const shown = Math.min(imagesDone, totalImageSlots)
+        access.onProgress?.({
+          stage: 'images',
+          label: t('aiStageImages'),
+          done: shown,
+          total: totalImageSlots,
+          status: 'running',
+          summary: t('aiStageImagesRunning', { done: shown, total: totalImageSlots }),
+        })
+      }
+      const searchFallback = async (slot: string): Promise<void> => {
+        if (!access.searchImages) return
+        try {
+          const urls = await access.searchImages(splitSlotAspect(slot).text || slot, 5)
+          if (urls.length) candidatesByKw.set(normKw(slot), urls)
+        } catch {
+          /* fail-open */
+        }
+      }
+      // Resolve one fresh slot: AI generation first (one retry on failure),
+      // then the photo-search fallback. Records into the shared caches and
+      // releases the slot's deferred so a waiting page chunk unblocks.
+      const runImageSlot = async (key: string, slotText: string): Promise<void> => {
+        try {
+          let resolved = false
+          if (canGenerateImages) {
+            for (let attempt = 0; attempt < 2 && !resolved && !cancelled(); attempt++) {
+              if (attempt > 0 && BACKOFF_MS > 0)
+                await new Promise((r) => setTimeout(r, BACKOFF_MS))
+              try {
+                const { text: genPrompt, aspect } = splitSlotAspect(slotText)
+                const r = await access.generateImage!({
+                  prompt: genPrompt || slotText,
+                  aspectRatio: aspect ?? DEFAULT_IMAGE_ASPECT,
+                })
+                if (r.ok && r.url) {
+                  genByPrompt.set(key, r.url)
+                  resolved = true
+                }
+              } catch {
+                /* fail-open → retry / fallback below */
+              }
+            }
+          }
+          if (!resolved) await searchFallback(slotText)
+        } finally {
+          slotResolve.get(key)?.()
+          tickImages()
+        }
+      }
+      // Eager global resolution: every unique visual slot of the deck is queued
+      // once (page order, deduped) and a worker pool starts on it immediately —
+      // before any page generates — so late-chunk slots overlap earlier pages.
+      const imgPool = Math.max(
+        1,
+        Math.min(32, Math.trunc(access.imageGenConcurrency ?? IMAGE_GEN_POOL)),
+      )
+      const freshSlots: { key: string; text: string }[] = []
+      const slotReady = new Map<string, Promise<void>>()
+      const slotResolve = new Map<string, () => void>()
+      if (imagesEnabled && totalImageSlots > 0) {
+        for (const p of pages) {
+          for (const field of ['image_queries', 'image_prompts'] as const) {
+            for (const q of (Array.isArray(p[field]) ? p[field] : []) as unknown[]) {
+              const s = String(q).trim()
+              if (!s || isUrl(splitSlotAspect(s).text)) continue
+              const k = normKw(s)
+              if (seenSlot.has(k)) continue
+              seenSlot.add(k)
+              freshSlots.push({ key: k, text: s })
+              slotReady.set(k, new Promise<void>((res) => slotResolve.set(k, res)))
+            }
+          }
+        }
+      }
+      if (freshSlots.length) {
+        access.onProgress?.({
+          stage: 'images',
+          label: t('aiStageImages'),
+          done: 0,
+          total: totalImageSlots,
+          status: 'running',
+          summary: t('aiStageImagesRunning', { done: 0, total: totalImageSlots }),
+        })
+        let cursor = 0
+        const workers = Array.from(
+          { length: Math.min(imgPool, freshSlots.length) },
+          async () => {
+            while (cursor < freshSlots.length && !cancelled()) {
+              const { key, text } = freshSlots[cursor++]!
+              await runImageSlot(key, text)
+            }
+          },
+        )
+        // On cancel the workers stop pulling and in-flight calls settle on their
+        // own — never leave a chunk await hanging on an unstarted slot.
+        void Promise.all(workers).then(() => {
+          for (const res of slotResolve.values()) res()
+        })
+      }
+      // Await only the given chunk's slots — they already resolve inside the
+      // shared pool above; repeat slots across chunks ride the same deferred.
+      const resolveImageChunk = async (idxs: number[]): Promise<void> => {
+        if (!freshSlots.length) return
+        const waits: Promise<void>[] = []
+        for (const idx of idxs) {
+          const p = pages[idx]
+          if (!p) continue
+          for (const field of ['image_queries', 'image_prompts'] as const) {
+            for (const q of (Array.isArray(p[field]) ? p[field] : []) as unknown[]) {
+              const s = String(q).trim()
+              if (!s) continue
+              const d = slotReady.get(normKw(s))
+              if (d) waits.push(d)
+            }
+          }
+        }
+        if (waits.length) await Promise.all(waits)
+      }
+      // Allocate resolved URLs back into the given pages' fields (slot texts →
+      // URL arrays), page by page in order: explicit URLs are kept as-is (and
+      // counted as used); keywords/prompts pick from candidates preferring
+      // images the deck hasn't used yet. Slots that resolve to nothing are
+      // reported in the tool output (a blank image slot must never go unmentioned).
+      const allocateImageChunk = (idxs: number[]): void => {
+        if (!imagesEnabled) return
+        for (const idx of idxs) {
+          const p = pages[idx]
+          if (!p) continue
           for (const field of ['image_queries', 'image_prompts'] as const) {
             const arr = p[field]
             if (!Array.isArray(arr) || arr.length === 0) continue
+            // Already allocated on an earlier pass (pure URL arrays, e.g. retry
+            // paths) — never re-resolve.
+            if ((arr as unknown[]).every((q) => isUrl(splitSlotAspect(String(q)).text))) continue
             const resolvedUrls: string[] = []
             for (const q of arr as unknown[]) {
               const s = String(q).trim()
               if (!s) continue
-              if (isUrl(s)) {
-                resolvedUrls.push(s)
+              const { text: core, aspect } = splitSlotAspect(s)
+              if (isUrl(core)) {
+                resolvedUrls.push(core)
+                if (aspect) aspectByUrl.set(core, aspect)
                 continue
               }
               const k = normKw(s)
@@ -2479,29 +2668,23 @@ async function executeTool(
               if (pick) {
                 usedUrls.add(pick)
                 resolvedUrls.push(pick)
+                // A generated picture carries the slot's ratio (default 16:9);
+                // a searched photo's real ratio is unknown — only the tag applies.
+                const a = aspect ?? (pick === gen ? DEFAULT_IMAGE_ASPECT : undefined)
+                if (a) aspectByUrl.set(pick, a)
               } else {
-                unresolvedImageSlots.push({ page: pi + 1, slot: s })
+                unresolvedImageSlots.push({ page: idx + 1, slot: s })
               }
             }
             p[field] = resolvedUrls
           }
-        }
-        if (totalSearches > 0) {
-          access.onProgress?.({
-            stage: 'images',
-            label: t('aiStageImages'),
-            done: totalSearches,
-            total: totalSearches,
-            status: 'done',
-            summary: t('aiStageImagesDone', { n: totalSearches }),
-          })
         }
       }
 
       if (!coreHook) coreHook = topic || 'Presentation'
       if (!styleSkill)
         styleSkill =
-          'Unified clean modern style: main background #FFFFFF, main text #1A1A2E, primary accent #2563EB, secondary accent #F59E0B, cards #F8FAFC, borders #E2E8F0; sans-serif fonts; titles 40-56px, body 16-20px'
+          'Unified clean modern style: main background #FFFFFF, main text #1A1A2E, primary accent #2563EB, secondary accent #F59E0B, hairline #E2E8F0; sans-serif fonts; titles 40-56px, body 16-20px; body text sits directly on the background — no filled boxes or cards behind text'
       const total = pages.length
       if (total === 0) return fail(t('aiFailGenDeck'), 'No pages to generate (the plan is empty).')
 
@@ -2516,8 +2699,10 @@ async function executeTool(
         // Staged flow: remember the per-page visual slots so upgrade_deck can resolve
         // them later. For a draft these are the keyword/prompt descriptions (placeholder
         // labels on the canvas carry the same text as a backup source of truth); for a
-        // full run the slots were already resolved above, so this stores the image URLs —
-        // enough for a later style restyle to keep the same imagery.
+        // full run the pipelined imagery replaces them with image URLs chunk by
+        // chunk during the page loop — the snapshot below is refreshed with the
+        // final URLs + aspects after the loop, so a later style restyle keeps
+        // the same imagery.
         state.draftDeck = draftMode
         state.draftVisualsDone = false
         // Append keeps the pre-existing pages' remembered imagery (their canvas
@@ -2526,6 +2711,7 @@ async function executeTool(
         if (insertMode !== 'append') {
           state.draftResolvedSlots = undefined
           state.draftPageImages = undefined
+          state.draftImageAspects = undefined
         }
         state.draftSlotsOffset = insertMode === 'append' ? slides.length : 0
         state.draftImageSlots = pages.map((p) =>
@@ -2533,6 +2719,14 @@ async function executeTool(
             (Array.isArray(p[f]) ? (p[f] as unknown[]) : []).map((x) => String(x).trim()).filter(Boolean),
           ),
         )
+        // Remember each resolved picture's declared aspect — the slot text is
+        // replaced by plain URLs above, so without this a later style upgrade
+        // would lose the ratio the page geometry was planned around.
+        if (aspectByUrl.size)
+          state.draftImageAspects = {
+            ...(state.draftImageAspects ?? {}),
+            ...Object.fromEntries(aspectByUrl),
+          }
       }
 
       // Presentation name: prefer the cover (page 1) title, then the user-entered topic / coreHook.
@@ -2622,15 +2816,23 @@ async function executeTool(
         // explicit URLs passed through. file:// (BYOK-generated) only works on the local
         // build path — the cloud service cannot reach the local image store.
         // Draft mode resolves nothing: slots go to the draft page as placeholder labels.
+        // Slots resolved above are clean URLs; an entry may still carry its
+        // [N:M] tag (explicit URLs when no image tools ran) — strip it for the
+        // request and keep the declared ratio in imageAspects so the page
+        // builder sizes the box to match.
+        const imageAspects: Record<string, string> = {}
         const images = draftMode
           ? []
           : (['image_queries', 'image_prompts'] as const).flatMap((field) =>
               Array.isArray(p[field])
-                ? (p[field] as unknown[])
-                    .map((x) => String(x))
-                    .filter((x) =>
-                      useCloud ? /^https?:\/\//.test(x) : /^(https?|file):\/\//.test(x),
-                    )
+                ? (p[field] as unknown[]).flatMap((x) => {
+                    const { text: u, aspect } = splitSlotAspect(String(x))
+                    const ok = useCloud ? /^https?:\/\//.test(u) : /^(https?|file):\/\//.test(u)
+                    if (!ok) return []
+                    const a = aspect ?? aspectByUrl.get(u)
+                    if (a) imageAspects[u] = a
+                    return [u]
+                  })
                 : [],
             )
         let lastErr = ''
@@ -2643,6 +2845,7 @@ async function executeTool(
           brief: String(p.brief ?? ''),
           layout: String(p.layout ?? ''),
           images,
+          ...(Object.keys(imageAspects).length ? { imageAspects } : {}),
           ...(pageContext ? { context: pageContext } : {}),
           ...(topic ? { topic } : {}),
           canvasW,
@@ -2673,7 +2876,7 @@ async function executeTool(
                   : { ok: false, error: r.error ?? t('aiErrUnknown') }
               }
               const slotHint = slotDescsOf(p).length
-                ? `\nDraft page: render each visual slot as a light-gray labeled placeholder box — ${slotDescsOf(p).map((s) => `"IMAGE: ${s}"`).join(', ')}.`
+                ? `\nDraft page: render each visual slot as a light-gray labeled placeholder box at its declared [N:M] aspect (untagged = 16:9) — ${slotDescsOf(p).map((s) => `"IMAGE: ${s}"`).join(', ')}.`
                 : ''
               return access.generatePageLocal!({ ...args, brief: args.brief + slotHint })
             }
@@ -2800,6 +3003,11 @@ async function executeTool(
           if (cancelled()) break
           const batchIdxs = []
           for (let k = start; k < Math.min(start + GEN_BATCH, total); k++) batchIdxs.push(k)
+          // Pipelined imagery: this chunk's unseen slots resolve (shared caches
+          // dedup across chunks) right before its pages generate — slot-less
+          // early chunks don't wait for late image work.
+          await resolveImageChunk(batchIdxs)
+          allocateImageChunk(batchIdxs)
           const results = await Promise.all(
             batchIdxs.map(async (idx) => ({ idx, marker: await genOne(pages[idx], idx + 1) })),
           )
@@ -2885,6 +3093,34 @@ async function executeTool(
             }
           }
         }
+      }
+
+      // Pipelined imagery settled during the page loop above: close the images
+      // progress and refresh the staged-flow state so a later style upgrade
+      // re-feeds the same imagery (resolved URLs + aspects) instead of losing
+      // it. The pre-loop snapshot held raw slot texts; the loop replaced them
+      // with URLs page by page.
+      if (!draftMode && totalImageSlots > 0) {
+        access.onProgress?.({
+          stage: 'images',
+          label: t('aiStageImages'),
+          done: totalImageSlots,
+          total: totalImageSlots,
+          status: 'done',
+          summary: t('aiStageImagesDone', { n: totalImageSlots }),
+        })
+      }
+      if (state && !draftMode) {
+        state.draftImageSlots = pages.map((p) =>
+          (['image_queries', 'image_prompts'] as const).flatMap((f) =>
+            (Array.isArray(p[f]) ? (p[f] as unknown[]) : []).map((x) => String(x).trim()).filter(Boolean),
+          ),
+        )
+        if (aspectByUrl.size)
+          state.draftImageAspects = {
+            ...(state.draftImageAspects ?? {}),
+            ...Object.fromEntries(aspectByUrl),
+          }
       }
 
       // User stopped midway: keep landed pages and finish honestly (no more retries / no failed-page reporting)
@@ -3112,6 +3348,13 @@ async function executeTool(
       const isUrlStr = (s: string) => /^(https?|file):\/\//i.test(s)
       const normKey = (s: string) => s.toLowerCase().replace(/\s+/g, ' ')
       const resolvedByKey = new Map<string, string>()
+      // Resolved image URL → the slot's declared aspect ratio ([N:M] tag), so a
+      // regenerated page keeps each picture's box at the planned geometry.
+      // Resolved image URL → the slot's declared aspect ratio ([N:M] tag), so a
+      // regenerated page keeps each picture's box at the planned geometry.
+      // Seeded with the aspects remembered by the generating pass — full-run
+      // slots hold bare URLs whose tag only survives in this state map.
+      const aspectByUrl = new Map<string, string>(Object.entries(state?.draftImageAspects ?? {}))
       const unresolvedSlots: { page: number; slot: string }[] = []
       if (wantVisuals && (access.generateImage || access.searchImages)) {
         const uniqueSlots = [
@@ -3120,10 +3363,15 @@ async function executeTool(
         const original = new Map<string, string>() // normKey → original text
         for (const i of targets)
           for (const s of pageSlots[i] ?? []) if (!original.has(normKey(s))) original.set(normKey(s), s)
-        const pending = uniqueSlots.filter((k) => !isUrlStr(original.get(k) ?? ''))
+        const pending = uniqueSlots.filter(
+          (k) => !isUrlStr(splitSlotAspect(original.get(k) ?? k).text),
+        )
         for (const k of uniqueSlots) {
-          const o = original.get(k) ?? k
-          if (isUrlStr(o)) resolvedByKey.set(k, o)
+          const { text: o, aspect } = splitSlotAspect(original.get(k) ?? k)
+          if (isUrlStr(o)) {
+            resolvedByKey.set(k, o)
+            if (aspect) aspectByUrl.set(o, aspect)
+          }
         }
         const canGenerate = !!access.generateImage && access.imageGenAvailable?.() !== false
         if (pending.length) {
@@ -3149,21 +3397,45 @@ async function executeTool(
           }
           const missed: string[] = []
           if (canGenerate) {
+            // Same pool size as generate_deck's imagery stage (IMAGE_GEN_POOL /
+            // access.imageGenConcurrency); one retry rides out transient rate
+            // limits before the slot degrades to the search fallback.
+            const imgPool = Math.max(
+              1,
+              Math.min(32, Math.trunc(access.imageGenConcurrency ?? IMAGE_GEN_POOL)),
+            )
             let cur = 0
             await Promise.all(
-              Array.from({ length: Math.min(3, pending.length) }, async () => {
+              Array.from({ length: Math.min(imgPool, pending.length) }, async () => {
                 while (cur < pending.length && !cancelled()) {
                   const k = pending[cur++]!
-                  try {
-                    const r = await access.generateImage!({
-                      prompt: original.get(k) ?? k,
-                      aspectRatio: '16:9',
-                    })
-                    if (r.ok && r.url) resolvedByKey.set(k, r.url)
-                    else missed.push(k)
-                  } catch {
-                    missed.push(k)
+                  const raw = original.get(k) ?? k
+                  const { text: genPrompt, aspect } = splitSlotAspect(raw)
+                  let ok = false
+                  for (
+                    let attempt = 0;
+                    attempt < 2 && !ok && !cancelled();
+                    attempt++
+                  ) {
+                    if (attempt > 0 && (access.retryBackoffMs ?? 2000) > 0)
+                      await new Promise((r) =>
+                        setTimeout(r, access.retryBackoffMs ?? 2000),
+                      )
+                    try {
+                      const r = await access.generateImage!({
+                        prompt: genPrompt || raw,
+                        aspectRatio: aspect ?? DEFAULT_IMAGE_ASPECT,
+                      })
+                      if (r.ok && r.url) {
+                        resolvedByKey.set(k, r.url)
+                        aspectByUrl.set(r.url, aspect ?? DEFAULT_IMAGE_ASPECT)
+                        ok = true
+                      }
+                    } catch {
+                      /* fail-open → retry / search fallback */
+                    }
                   }
+                  if (!ok) missed.push(k)
                   tick()
                 }
               }),
@@ -3174,9 +3446,14 @@ async function executeTool(
             await Promise.all(
               toSearch.map(async (k) => {
                 if (cancelled()) return
+                const raw = original.get(k) ?? k
+                const { text: query, aspect } = splitSlotAspect(raw)
                 try {
-                  const urls = await access.searchImages!(original.get(k) ?? k, 3)
-                  if (urls.length) resolvedByKey.set(k, urls[0]!)
+                  const urls = await access.searchImages!(query || raw, 3)
+                  if (urls.length) {
+                    resolvedByKey.set(k, urls[0]!)
+                    if (aspect) aspectByUrl.set(urls[0]!, aspect)
+                  }
                 } catch {
                   /* fail-open */
                 }
@@ -3201,9 +3478,14 @@ async function executeTool(
         for (const [k, u] of resolvedByKey) merged[k] = u
         state.draftResolvedSlots = merged
       }
+      if (state && aspectByUrl.size)
+        state.draftImageAspects = {
+          ...(state.draftImageAspects ?? {}),
+          ...Object.fromEntries(aspectByUrl),
+        }
 
       // ── Regenerate the target pages in place (batched, ordered by index).
-      const GEN_BATCH = upCloud ? 4 : 2
+      const GEN_BATCH = upCloud ? PAGE_GEN_BATCH_CLOUD : PAGE_GEN_BATCH_LOCAL
       const upTotal = targets.length
       const upItems: PageProgressItem[] = targets.map((i) => ({
         title: pageTexts[i]?.split('\n')[0]?.slice(0, 40) || t('aiPageN', { n: i + 1 }),
@@ -3246,12 +3528,15 @@ async function executeTool(
               ]),
             ]
             const preserved = slotDescs
-              .map(
-                (s) =>
+              .map((s) => {
+                const { text: core, aspect } = splitSlotAspect(s)
+                const url =
                   resolvedByKey.get(normKey(s)) ??
                   state?.draftResolvedSlots?.[normKey(s)] ??
-                  (isUrlStr(s) ? s : ''),
-              )
+                  (isUrlStr(core) ? core : '')
+                if (url && aspect) aspectByUrl.set(url, aspect)
+                return url
+              })
               .filter(Boolean) as string[]
             // Images recorded for this page by an earlier upgrade pass (covers decks
             // with no draft slots at all).
@@ -3284,17 +3569,20 @@ async function executeTool(
             }
             const keepPlaceholders =
               !wantVisuals && slotList.length
-                ? '\nBoxes labeled "IMAGE:"/"CHART:" are intentional visual placeholders — recreate them as light-gray labeled boxes in the new style (same labels).'
+                ? '\nBoxes labeled "IMAGE:"/"CHART:" are intentional visual placeholders — recreate them as light-gray labeled boxes in the new style (same labels, each "IMAGE:" box keeping the [N:M] aspect its label declares).'
                 : ''
+            const urlList = imageUrls
+              .map((u) => (aspectByUrl.get(u) ? `${u} (aspect ${aspectByUrl.get(u)})` : u))
+              .join(', ')
             const fillSlots =
               wantVisuals && slotList.length
                 ? imageUrls.length
-                  ? `\nThis page has labeled visual placeholders ("IMAGE:"/"CHART:" boxes). Replace each with a real visual: use these images where they fit — ${imageUrls.join(', ')} — and render "CHART:"/"INFOGRAPHIC:" slots as real composed visuals (bars/timeline/diagram shapes from the described data). Remove the placeholder boxes and labels.`
+                  ? `\nThis page has labeled visual placeholders ("IMAGE:"/"CHART:" boxes). Replace each with a real visual: use these images where they fit — ${urlList} — sized to the slot's declared aspect (an unmarked image takes any of 1:1, 16:9, 9:16, 3:4, 4:3), and render "CHART:"/"INFOGRAPHIC:" slots as real composed visuals (bars/timeline/diagram shapes from the described data). Remove the placeholder boxes and labels.`
                   : '\nThis page has labeled visual placeholders ("IMAGE:"/"CHART:" boxes). No images resolved — render each slot as a real composed visual from shapes (bars/timeline/diagram matching the described content), or as a clean styled box without the "IMAGE:"/"CHART:" label. Remove the placeholder labels.'
                 : ''
             const keepImages =
               !fillSlots && imageUrls.length
-                ? `\nThis page already has imagery — reuse these exact images as its real visuals: ${imageUrls.join(', ')}. Do not swap them for placeholder boxes or different pictures.`
+                ? `\nThis page already has imagery — reuse these exact images as its real visuals: ${urlList} (each box keeps its marked aspect). Do not swap them for placeholder boxes or different pictures.`
                 : ''
             const brief =
               `Rewrite this page${wantStyle ? " applying the deck's new unified style" : ''}. ` +
@@ -3304,6 +3592,11 @@ async function executeTool(
               keepImages +
               keepPlaceholders +
               '\nKeep the same general layout structure and page role (cover/content/closing).'
+            const imageAspects: Record<string, string> = {}
+            for (const u of imageUrls) {
+              const a = aspectByUrl.get(u)
+              if (a) imageAspects[u] = a
+            }
             const genArgs = {
               pageIndex: idx + 1,
               totalPages: slidesNow.length,
@@ -3313,6 +3606,7 @@ async function executeTool(
               brief,
               layout: '',
               images: imageUrls,
+              ...(Object.keys(imageAspects).length ? { imageAspects } : {}),
               canvasW: 1280,
               canvasH: 720,
               ...(signal ? { signal } : {}),

@@ -5,6 +5,13 @@
  * agent gets them as findings instead of relying on having read them.
  */
 import { MAX_DECK_PAGES } from './deck-spec'
+import {
+  DEFAULT_IMAGE_ASPECT,
+  IMAGE_ASPECT_LIST,
+  SLOT_ASPECT_TAG,
+  isImageAspect,
+  nearestImageAspect,
+} from './aspect-ratio'
 
 export const PAGE_TYPES = ['cover', 'content', 'data', 'closing'] as const
 export type PageType = (typeof PAGE_TYPES)[number]
@@ -20,13 +27,13 @@ export const LAYOUT_VARIANTS: Readonly<Record<PageType, readonly string[]>> = {
   ],
   content: [
     'left_text_right_image',
-    'three_column_cards',
+    'three_columns',
     'hero_big_number',
     'two_column_comparison',
     'timeline_horizontal',
     'full_image_text_overlay',
   ],
-  data: ['kpi_cards_row', 'chart_with_insight', 'two_by_two_grid'],
+  data: ['kpi_row', 'chart_with_insight', 'two_by_two_grid'],
   closing: ['closing_cta', 'closing_thank_you'],
 }
 
@@ -127,6 +134,8 @@ function normalizePage(raw: unknown, i: number, issues: OutlineIssue[]): Outline
   if (!brief) err('"brief" is missing: what goes in each region, with the real facts and figures')
   else if (brief.length < MIN_BRIEF)
     warn(`"brief" is thin (${brief.length} chars); name the content of every region`)
+  else if (brief.length > 1200)
+    warn(`"brief" is dense (${brief.length} chars); split the page in two instead of cramming`)
   const placeholder = PLACEHOLDER.exec(brief) ?? PLACEHOLDER.exec(title)
   if (placeholder)
     err(
@@ -150,7 +159,23 @@ function normalizePage(raw: unknown, i: number, issues: OutlineIssue[]): Outline
     if (!/^https?:\/\//i.test(s) && HAS_CJK.test(s)) {
       warn(`image query "${s}" should be an English phrase naming a concrete scene`)
     }
+    const tag = SLOT_ASPECT_TAG.exec(s)
+    if (!tag) {
+      warn(
+        `image query "${s.slice(0, 60)}" has no aspect tag; append [${IMAGE_ASPECT_LIST.split(', ').join('] [')}] — untagged slots default to ${DEFAULT_IMAGE_ASPECT}`,
+      )
+    } else {
+      const ratio = Number(tag[1]) / Number(tag[2])
+      if (!ratio || !isImageAspect(ratio)) {
+        warn(
+          `image query "${s.slice(0, 60)}" tags a non-slot aspect; it snaps to ${nearestImageAspect(ratio)} — use one of ${IMAGE_ASPECT_LIST}`,
+        )
+      }
+    }
     image_queries.push(s)
+  }
+  if (image_queries.length > 2) {
+    warn(`"image_queries" has ${image_queries.length} visual slots; prefer ≤ 2 per page — split the page instead of cramming`)
   }
   return { title, type, layout, brief, image_queries }
 }
@@ -182,6 +207,13 @@ function checkDeck(pages: OutlinePage[], issues: OutlineIssue[]): void {
     issues.push({
       level: 'warning',
       message: `only ${distinct.size} layout variant(s) across ${body.length} body pages; use at least three`,
+    })
+  }
+  const threeCols = body.filter(({ p }) => p.layout === 'three_columns').length
+  if (threeCols > 1) {
+    issues.push({
+      level: 'warning',
+      message: `three_columns used ${threeCols} times; it is the most over-used AI layout — use at most once per deck`,
     })
   }
 }
