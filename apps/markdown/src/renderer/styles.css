@@ -393,6 +393,11 @@ html.officevega-popover-open .ribbon-tabs {
   -webkit-app-region: no-drag;
 }
 
+/* pushes the collapse tail button to the row's right edge (docs/slides pattern) */
+.ribbon-tabs-spacer {
+  flex: 1;
+}
+
 /* the toolbar row below the QAT row (old single-row ribbon) */
 .ribbon-body {
   display: flex;

@@ -5,7 +5,6 @@ import { useEditorState } from '@tiptap/react'
 import {
   Dropdown,
   RibbonCollapseButton,
-  RibbonExpandButton,
   useDismissablePopover,
   useRibbonCollapse,
 } from '@genoffice/ui'
@@ -427,7 +426,11 @@ export function Ribbon({
             onChange={(e) => onToggleAutoSave(e.target.checked)}
           />
         </label>
-        <RibbonExpandButton state={collapse} label={t('ribbonExpand')} />
+        <span className="ribbon-tabs-spacer" />
+        <RibbonCollapseButton
+          state={collapse}
+          labels={{ collapse: t('ribbonCollapse'), pin: t('ribbonPin') }}
+        />
       </div>
 
       <div className="ribbon-body" data-ribbon-body="">
@@ -638,10 +641,6 @@ export function Ribbon({
           </div>
         </div>
       </div>
-      <RibbonCollapseButton
-        state={collapse}
-        labels={{ collapse: t('ribbonCollapse'), pin: t('ribbonPin') }}
-      />
     </div>
   )
 }

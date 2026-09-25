@@ -1871,6 +1871,10 @@ export function Ribbon({
           </button>
         )}
         <span className="ribbon-tabs-spacer" />
+        <RibbonCollapseButton
+          state={collapse}
+          labels={{ collapse: t('ribbonCollapse'), pin: t('ribbonPin') }}
+        />
       </div>
 
       <div className="ribbon-body" data-ribbon-body="" ref={bodyRef}>
@@ -3453,10 +3457,6 @@ export function Ribbon({
           </>
         ) : null}
       </div>
-      <RibbonCollapseButton
-        state={collapse}
-        labels={{ collapse: t('ribbonCollapse'), pin: t('ribbonPin') }}
-      />
     </div>
   )
 }

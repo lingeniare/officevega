@@ -6,8 +6,8 @@
  * collapsed state, which persists per app in localStorage.
  *
  * Markup contract: the ribbon root carries `rootRef` + `rootClass`, the band
- * element carries `data-ribbon-body`, and `RibbonCollapseButton` renders as a
- * sibling of the band (ribbon-collapse.css anchors it to the band's corner).
+ * element carries `data-ribbon-body`, and `RibbonCollapseButton` renders as the
+ * last item of the `.ribbon-tabs` row so it stays visible while collapsed.
  */
 import { useCallback, useEffect, useRef, useState, type MouseEvent, type RefObject } from 'react'
 import { subscribeChromePressed } from './popover-dismiss'
@@ -124,7 +124,12 @@ export function useRibbonCollapse(storageKey: string): RibbonCollapse {
   const onTabsDoubleClick = useCallback(
     (e: MouseEvent) => {
       const btn = (e.target as Element | null)?.closest('button')
-      if (!btn || btn.classList.contains('qa-btn') || btn.classList.contains('ribbon-tab-file'))
+      if (
+        !btn ||
+        btn.classList.contains('qa-btn') ||
+        btn.classList.contains('ribbon-tab-file') ||
+        btn.classList.contains('ribbon-collapse-btn')
+      )
         return
       toggle()
     },
@@ -202,7 +207,7 @@ function Pin() {
   )
 }
 
-/** Corner button of the band: "Collapse the Ribbon" when expanded, "Pin the ribbon" while peeking. */
+/** Tab-row tail button: "Collapse the Ribbon" when expanded, "Pin the ribbon" while collapsed. */
 export function RibbonCollapseButton({
   state,
   labels,
@@ -210,7 +215,6 @@ export function RibbonCollapseButton({
   state: RibbonCollapse
   labels: RibbonCollapseLabels
 }) {
-  if (state.collapsed && !state.peek) return null
   const label = `${state.collapsed ? labels.pin : labels.collapse} (${RIBBON_TOGGLE_SHORTCUT})`
   return (
     <button
@@ -221,25 +225,7 @@ export function RibbonCollapseButton({
       onMouseDown={(e) => e.preventDefault()}
       onClick={state.toggle}
     >
-      {state.collapsed ? <Pin /> : <ChevronUp />}
-    </button>
-  )
-}
-
-/** Tab-row button for ribbons without tabs (nothing to press to peek): shown only while collapsed. */
-export function RibbonExpandButton({ state, label }: { state: RibbonCollapse; label: string }) {
-  if (!state.collapsed) return null
-  const tip = `${label} (${RIBBON_TOGGLE_SHORTCUT})`
-  return (
-    <button
-      type="button"
-      className="ribbon-expand-btn"
-      data-tip={tip}
-      aria-label={tip}
-      onMouseDown={(e) => e.preventDefault()}
-      onClick={state.toggle}
-    >
-      <ChevronDown />
+      {state.collapsed ? state.peek ? <Pin /> : <ChevronDown /> : <ChevronUp />}
     </button>
   )
 }

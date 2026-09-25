@@ -725,6 +725,10 @@ export function ExcelShell({
           <span className="workbook-status" role="status" aria-live="polite">
             {statusMessage}
           </span>
+          <RibbonCollapseButton
+            state={collapse}
+            labels={{ collapse: t('appRibbonCollapse'), pin: t('appRibbonPin') }}
+          />
         </nav>
 
         <Ribbon
@@ -784,10 +788,6 @@ export function ExcelShell({
           }}
           aiOpen={isCopilotOpen}
           onAiToggle={() => setIsCopilotOpen((open) => !open)}
-        />
-        <RibbonCollapseButton
-          state={collapse}
-          labels={{ collapse: t('appRibbonCollapse'), pin: t('appRibbonPin') }}
         />
       </header>
 

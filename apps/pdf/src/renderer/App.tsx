@@ -6334,6 +6334,10 @@ export default function App() {
               XFA
             </span>
           )}
+          <RibbonCollapseButton
+            state={collapse}
+            labels={{ collapse: t('ribbonCollapse'), pin: t('ribbonPin') }}
+          />
         </div>
         <div className="ribbon-body" data-ribbon-body="">
           {ribbonTab === 'home' && (
@@ -6991,10 +6995,6 @@ export default function App() {
             </>
           )}
         </div>
-        <RibbonCollapseButton
-          state={collapse}
-          labels={{ collapse: t('ribbonCollapse'), pin: t('ribbonPin') }}
-        />
       </div>
       <input
         ref={imageFileRef}

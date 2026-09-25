@@ -2083,6 +2083,10 @@ function RibbonInner({
           ))}
         <span className="ribbon-tabs-spacer" />
         {trailingActions}
+        <RibbonCollapseButton
+          state={collapse}
+          labels={{ collapse: t('ribbonCollapse'), pin: t('ribbonPin') }}
+        />
       </div>
 
       <div className="ribbon-body" data-ribbon-body="">
@@ -3938,10 +3942,6 @@ function RibbonInner({
           />
         )}
       </div>
-      <RibbonCollapseButton
-        state={collapse}
-        labels={{ collapse: t('ribbonCollapse'), pin: t('ribbonPin') }}
-      />
 
       {pictureDialog === 'cutout' && imageDataUrl && (
         <CutoutDialog

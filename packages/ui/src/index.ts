@@ -44,7 +44,6 @@ export { findInText, foldCase, isWordChar, type FindOptions } from './find-text'
 export {
   useRibbonCollapse,
   RibbonCollapseButton,
-  RibbonExpandButton,
   installRibbonPeekDismiss,
   isRibbonToggleShortcut,
   readRibbonCollapsed,

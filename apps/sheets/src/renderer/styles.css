@@ -445,7 +445,7 @@ html.officevega-popover-open .ribbon-tabs {
   padding-right: 150px;
 }
 
-.ribbon-tabs > button:not(.qa-btn) {
+.ribbon-tabs > button:not(.qa-btn):not(.ribbon-collapse-btn) {
   -webkit-app-region: no-drag;
   position: relative;
   border: 0;
@@ -642,18 +642,18 @@ html.officevega-popover-open .ribbon-tabs {
 }
 
 /* Hovering a tab tints the label, it doesn't paint a box */
-.ribbon-tabs > button:not(.qa-btn):hover {
+.ribbon-tabs > button:not(.qa-btn):not(.ribbon-collapse-btn):hover {
   color: var(--accent-dark);
 }
 
-.ribbon-tabs > button:not(.qa-btn).active {
+.ribbon-tabs > button:not(.qa-btn):not(.ribbon-collapse-btn).active {
   color: var(--accent-dark);
   font-weight: 600;
 }
 
 /* active underline: about the label's width (insets past the tab padding),
  * ends slightly rounded — same as the slides ribbon */
-.ribbon-tabs > button:not(.qa-btn).active::after {
+.ribbon-tabs > button:not(.qa-btn):not(.ribbon-collapse-btn).active::after {
   position: absolute;
   right: 13px;
   bottom: -2.5px;
@@ -666,7 +666,7 @@ html.officevega-popover-open .ribbon-tabs {
 
 /* Contextual tabs (Chart Design) stand out even while inactive, with a
    colored caption. */
-.ribbon-tabs > button:not(.qa-btn).contextual {
+.ribbon-tabs > button:not(.qa-btn):not(.ribbon-collapse-btn).contextual {
   color: var(--accent-dark);
   font-weight: 600;
 }

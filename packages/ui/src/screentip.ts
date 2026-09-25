@@ -53,7 +53,9 @@ function ensureTip(doc: Document): TipState {
   const detail = doc.createElement('div')
   detail.className = 'ui-screentip-detail'
   el.append(name, kbd, detail)
-  doc.body.appendChild(el)
+  // ribbon chrome when present (the tab row — collapse button lives there too);
+  // body fallback covers ribbon-less surfaces (pdf placeholders, audience view)
+  ;(doc.querySelector('.ribbon-tabs') ?? doc.body).appendChild(el)
   tip = { el, name, kbd, detail }
   return tip
 }
