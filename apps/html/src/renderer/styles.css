@@ -143,6 +143,10 @@ body,
   align-items: center;
   gap: 2px;
   padding: 5px 10px 0;
+  /* border-box: this stylesheet has no global box-sizing reset, so without it
+     min-height excluded the 5px top padding and the row rendered 44px tall
+     instead of the 39px every other app's tab row measures */
+  box-sizing: border-box;
   min-height: 39px;
   -webkit-app-region: drag;
 }
@@ -167,6 +171,10 @@ html.officevega-popover-open .ribbon-tabs {
   /* single weight for the whole band, same as the other apps' ribbons */
   font-weight: 400;
   padding: 6px 12px;
+  /* border-box: without it height excluded the vertical padding and the band
+     rendered 92px tall instead of the shared 80px (same missing global
+     box-sizing reset as .ribbon-tabs above) */
+  box-sizing: border-box;
   height: 80px;
   overflow-x: auto;
   overflow-y: hidden;

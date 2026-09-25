@@ -415,6 +415,10 @@ button {
      no bottom padding — the active tab's underline sits on the row's edge */
   padding: 5px 10px 0;
   gap: 2px;
+  /* hard floor shared with the sheets/slides/pdf/html/markdown tab rows, so the
+     ribbon's bottom edge lands on the same y in every app regardless of
+     per-platform font metrics (the 13px semibold tabs already measure ~39px) */
+  min-height: 39px;
   /* the title-bar row was removed; the tab row doubles as the frameless-window drag area */
   -webkit-app-region: drag;
   user-select: none;

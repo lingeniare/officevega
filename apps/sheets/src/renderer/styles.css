@@ -423,6 +423,10 @@ textarea:disabled {
   /* same tab-row metrics as PowerPoint's ribbon (slides app): 5px top inset, no
      bottom padding, no divider line — the row blends into the band below */
   padding: 5px 10px 0;
+  /* hard floor shared with the docs/slides/pdf/html/markdown tab rows — the
+     13px semibold tabs already measure ~39px, this keeps the row identical
+     across apps regardless of per-platform font metrics */
+  min-height: 39px;
   background: var(--surface);
   /* the tab row doubles as the frameless-window drag region */
   -webkit-app-region: drag;

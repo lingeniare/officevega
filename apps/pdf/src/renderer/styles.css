@@ -206,11 +206,12 @@ button {
 .ribbon-tabs {
   display: flex;
   align-items: center;
-  /* Same 35px total row as the slides menu row (5px top padding + 30px tab line),
-     so the ribbon bottom divider lands on the same y across tabs */
+  /* Same 39px total row as the docs/slides tab rows (5px top padding + the
+     13px semibold tab line), so the ribbon bottom divider lands on the same
+     y across apps */
   /* 10px inset + 2px gap: QAT buttons land at the same x as slides */
   padding: 5px 10px 0;
-  min-height: 35px;
+  min-height: 39px;
   gap: 2px;
 }
 

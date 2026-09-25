@@ -451,6 +451,10 @@ button {
   align-items: center;
   padding: 5px 10px 0;
   gap: 2px;
+  /* hard floor shared with the docs/sheets/pdf/html/markdown tab rows — the
+     13px semibold tabs already measure ~39px, this keeps the row identical
+     across apps regardless of per-platform font metrics */
+  min-height: 39px;
   /* Title bar row removed; the tab row doubles as the frameless-window drag region */
   -webkit-app-region: drag;
   user-select: none;
