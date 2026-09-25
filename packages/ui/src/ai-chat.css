@@ -20,24 +20,35 @@
   font-weight: 600;
 }
 
-/* pulsing accent dot — the DocsChatPanel signature next to the title */
+/* twinkling brand star — the DocsChatPanel signature next to the title
+   (the sparkle from the VegaMark badge, masked so it follows --accent) */
 .ai-panel-title::after {
   content: '';
-  width: 6px;
-  height: 6px;
+  width: 1em;
+  height: 1em;
   margin-left: 2px;
-  border-radius: 50%;
+  flex-shrink: 0;
   background: var(--accent);
-  animation: ai-pulse-dot 2.4s ease-in-out infinite;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='14.4 22.3 65 65'%3E%3Cpath d='M16.5178%2054.8077C16.5178%2054.1023%2017.0286%2053.4941%2017.7341%2053.3968C40.1388%2050.0154%2042.1093%2047.9963%2045.4907%2025.5672C45.588%2024.8861%2046.1961%2024.3509%2046.9016%2024.3509C47.6071%2024.3509%2048.191%2024.8617%2048.3126%2025.5672C51.694%2047.9963%2053.6887%2050.0154%2076.0691%2053.3968C76.7503%2053.4941%2077.2855%2054.1023%2077.2855%2054.8077C77.2855%2055.5132%2076.7746%2056.1214%2076.0691%2056.2187C53.5914%2059.6244%2051.6696%2061.6192%2048.2639%2084.3645C48.1909%2084.8754%2047.7287%2085.2889%2047.2179%2085.2889C46.707%2085.2889%2046.2448%2084.8997%2046.1718%2084.3645C42.7418%2061.6435%2040.2604%2059.6244%2017.7584%2056.2187C17.0772%2056.1214%2016.542%2055.5132%2016.542%2054.8077H16.5178Z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='14.4 22.3 65 65'%3E%3Cpath d='M16.5178%2054.8077C16.5178%2054.1023%2017.0286%2053.4941%2017.7341%2053.3968C40.1388%2050.0154%2042.1093%2047.9963%2045.4907%2025.5672C45.588%2024.8861%2046.1961%2024.3509%2046.9016%2024.3509C47.6071%2024.3509%2048.191%2024.8617%2048.3126%2025.5672C51.694%2047.9963%2053.6887%2050.0154%2076.0691%2053.3968C76.7503%2053.4941%2077.2855%2054.1023%2077.2855%2054.8077C77.2855%2055.5132%2076.7746%2056.1214%2076.0691%2056.2187C53.5914%2059.6244%2051.6696%2061.6192%2048.2639%2084.3645C48.1909%2084.8754%2047.7287%2085.2889%2047.2179%2085.2889C46.707%2085.2889%2046.2448%2084.8997%2046.1718%2084.3645C42.7418%2061.6435%2040.2604%2059.6244%2017.7584%2056.2187C17.0772%2056.1214%2016.542%2055.5132%2016.542%2054.8077H16.5178Z'/%3E%3C/svg%3E");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  animation: ai-star-twinkle 2.4s ease-in-out infinite;
 }
 
-@keyframes ai-pulse-dot {
+@keyframes ai-star-twinkle {
   0%,
   100% {
     opacity: 1;
+    transform: scale(1);
   }
   50% {
-    opacity: 0.35;
+    opacity: 0.55;
+    transform: scale(0.85);
   }
 }
 
@@ -47,6 +58,9 @@
 
 .ai-header-btn:hover {
   background: var(--accent-soft);
+}
+
+.ai-header-btn:not(.ai-panel-collapse):hover {
   color: var(--accent);
 }
 
@@ -101,7 +115,7 @@
   width: 100%;
   box-sizing: border-box;
   padding: 6px 12px;
-  border: 1px solid var(--accent);
+  border: 1px solid currentColor;
   border-radius: var(--radius-30);
   background: none;
   font-size: 13px;
@@ -142,8 +156,8 @@
 
 .ai-starter:hover,
 .ai-quick-btn:hover {
+  border-color: currentColor;
   background: var(--accent-soft);
-  color: var(--accent);
 }
 
 .ai-starter:hover::after,

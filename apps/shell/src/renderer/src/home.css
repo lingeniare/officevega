@@ -111,17 +111,12 @@ body.vib .home {
   margin-bottom: 20px;
 }
 
-/* brand mark: the svg plate follows --text (currentColor), the paper sheets
- * inside follow --surface — the pair inverts itself across themes */
+/* brand mark: the Vega sparkle follows --text (currentColor) in both themes */
 .logo-mark {
   width: 20px;
   height: 20px;
   flex: 0 0 auto;
   color: var(--text);
-}
-
-.logo-mark-paper {
-  fill: var(--surface);
 }
 
 /* wordmark as text — bundled Google Sans (--gs-font-sans) covers the

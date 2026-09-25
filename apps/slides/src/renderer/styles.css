@@ -1623,7 +1623,6 @@ body.vib .slide-list {
 
 .ai-header-btn:hover {
   background: var(--hover);
-  color: var(--text);
 }
 
 .ai-header-btn.ai-undo-btn {

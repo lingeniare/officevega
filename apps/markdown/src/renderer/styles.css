@@ -1123,7 +1123,6 @@ html.officevega-popover-open .ribbon-tabs {
 
 .ai-header-btn:hover {
   background: var(--color-bg-subtle);
-  color: var(--color-text-primary);
 }
 
 .ai-chat {

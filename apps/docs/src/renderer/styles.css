@@ -6559,7 +6559,6 @@ body.docs-crop-active
 
 .ai-header-btn:hover {
   background: var(--color-bg-subtle);
-  color: var(--color-text-primary);
 }
 
 /* collapsed AI sidebar: thin rail on the left edge */

@@ -2950,14 +2950,11 @@ export function Home() {
     <div className="home">
       <aside className="sidebar">
         <div className="sidebar-logo">
-          {/* same mark as officevega-logo.svg, inline so it tracks the theme
-           * via currentColor/--surface instead of the --logo-invert filter */}
-          <svg className="logo-mark" viewBox="0 0 240 240" aria-hidden="true">
-            <rect width="240" height="240" rx="54" fill="currentColor" />
-            <rect x="51" y="46" width="90" height="108" rx="16" className="logo-mark-paper" />
-            <rect x="99" y="86" width="90" height="108" rx="16" className="logo-mark-paper" />
+          {/* the Vega sparkle — same path as the VegaMark component in the
+           * editors, inline so it tracks the theme via currentColor */}
+          <svg className="logo-mark" viewBox="14.4 22.3 65 65" aria-hidden="true">
             <path
-              d="M99 102C99 93.1634 106.163 86 115 86H141V138C141 146.837 133.837 154 125 154H99V102Z"
+              d="M16.5178 54.8077C16.5178 54.1023 17.0286 53.4941 17.7341 53.3968C40.1388 50.0154 42.1093 47.9963 45.4907 25.5672C45.588 24.8861 46.1961 24.3509 46.9016 24.3509C47.6071 24.3509 48.191 24.8617 48.3126 25.5672C51.694 47.9963 53.6887 50.0154 76.0691 53.3968C76.7503 53.4941 77.2855 54.1023 77.2855 54.8077C77.2855 55.5132 76.7746 56.1214 76.0691 56.2187C53.5914 59.6244 51.6696 61.6192 48.2639 84.3645C48.1909 84.8754 47.7287 85.2889 47.2179 85.2889C46.707 85.2889 46.2448 84.8997 46.1718 84.3645C42.7418 61.6435 40.2604 59.6244 17.7584 56.2187C17.0772 56.1214 16.542 55.5132 16.542 54.8077H16.5178Z"
               fill="currentColor"
             />
           </svg>

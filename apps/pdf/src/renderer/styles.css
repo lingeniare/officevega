@@ -3482,7 +3482,6 @@ button {
 
 .ai-header-btn:hover {
   background: var(--hover);
-  color: var(--text);
 }
 
 .ai-chat {

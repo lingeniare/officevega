@@ -1996,7 +1996,6 @@ button.check-item:hover {
 
 .ai-header-btn:hover {
   background: var(--color-bg-subtle);
-  color: var(--color-text-primary);
 }
 
 .ai-notice {
