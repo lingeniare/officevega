@@ -102,11 +102,20 @@ override for tests).
 Same conventions as the auth spec: JSON, Bearer-less for activate (the key
 *is* the credential), `net.fetch`-compatible.
 
-- `POST /api/v1/licenses/activate` `{key, install_id, app_version}` →
-  `200 {token}` or `401 invalid_key` / `409 seats_exceeded` /
-  `410 license_expired`.
+- `POST /api/v1/licenses/activate` `{key, install_id, app_version,
+  transfer?}` → `200 {token}` or `401 invalid_key` /
+  `409 seats_exceeded` / `410 license_expired`.
+  - Idempotent per `install_id`: re-activating an already-activated
+    `install_id` re-issues the token and consumes no extra seat — this is
+    what makes **"Restore license"** (re-enter/re-submit the key) safe.
+  - `transfer: true` (sent only after the user confirms a seat transfer in
+    the UI on `seats_exceeded`): the server deactivates the *oldest*
+    activation of that license and activates the new `install_id`. Covers
+    OS reinstalls and PC replacement without a support call. Without the
+    flag, `seats_exceeded` is a hard error.
 - `POST /api/v1/licenses/refresh` `{install_id, token}` → `200 {token}`
-  (new `iat`/`exp`) or `403 revoked` / `410 license_expired`.
+  (new `iat`/`exp`) or `403 revoked` / `410 license_expired` /
+  `404 install_id` (seat was transferred away → relock locally).
 - `POST /api/v1/licenses/deactivate` `{key, install_id}` → `204`
   (best-effort; frees the seat for reinstalls/hardware swaps).
 - Admin: a `mint-license` script/endpoint creates `{key, org, seats,
@@ -123,10 +132,22 @@ Same conventions as the auth spec: JSON, Bearer-less for activate (the key
 
 ## 4. Flows
 
-**Activation**: Settings → Corporate → paste `VEGA-ENT-…` → main calls
-`activate` → stores `{key, token, install_id}` → entitlements flip → UI
-unlocks. Errors map to messages: invalid key / all seats used / expired /
-network.
+**Purchase (server/ops side, out of app scope)**: the buyer pays online or
+by invoice; ops mints `{key, seats, expiresAt, features}` and emails the
+`VEGA-ENT-…` key. One key per purchase — a 100-seat business license is a
+single key with `seats: 100`, distributed to employees as text.
+
+**Activation**: Settings → Corporate → paste `VEGA-ENT-…` → "Активировать"
+→ main calls `activate` → stores `{key, token, install_id}` → entitlements
+flip → UI unlocks. Errors map to messages: invalid key / all seats used /
+expired / network. On `seats_exceeded` the UI offers "Перенести лицензию
+на это устройство" → retries with `transfer: true`.
+
+**Restore**: "Восстановить лицензию" re-submits the stored key through
+`activate` — restores a corrupted/deleted token file, recovers from a
+missed refresh window, and (via `transfer` on `seats_exceeded`) rebinds
+the seat after an OS reinstall or hardware swap. Also runs automatically
+at boot when `license.json` holds a key but no valid token.
 
 **Runtime**: every AI request passes `assertProviderAllowed(provider)`;
 `plan:'corp'` allows all providers, `free` allows `vega` only (and VEGA-only
@@ -154,7 +175,9 @@ so re-licensing restores it in place.
 2. `license:activate` with a valid key stores `{key, token, install_id}`
    (0600) and `hasFeature('byok')` becomes true without restart.
 3. Re-activating the same `install_id` consumes no extra seat; activating
-   past `seats` returns `seats_exceeded` and the UI explains the limit.
+   past `seats` returns `seats_exceeded` and the UI explains the limit and
+   offers the `transfer` path; a business key (`seats: 100`) activates 100
+   distinct `install_id`s and rejects the 101st.
 4. A `403` from `refresh` (revoked/expired subscription) wipes the token and
    relocks features at runtime; UI returns to locked state.
 5. Forged, tampered, or expired tokens fail `verifyToken` — covered by
@@ -165,9 +188,12 @@ so re-licensing restores it in place.
    forces re-activation (consuming a seat), not silent unlocking.
 8. The renderer process never receives the license key, token internals, or
    signing material — only `{plan, features[], org, expiresAt}`.
-9. `pnpm`-free verification path per AGENTS.md:
-   `node_modules/.bin/vitest run` covers `ee/licensing` and the gate tests;
-   `node_modules/.bin/tsc --noEmit` clean.
+9. "Restore license" with a stored key re-issues the token after the
+   license file is deleted/corrupted; on a fresh machine it consumes a seat
+   or (after confirmation) transfers one.
+10. `pnpm`-free verification path per AGENTS.md:
+    `node_modules/.bin/vitest run` covers `ee/licensing` and the gate
+    tests; `node_modules/.bin/tsc --noEmit` clean.
 
 ## 6. Open questions for the VEGA side
 
@@ -177,9 +203,9 @@ so re-licensing restores it in place.
    — admin endpoint or ops script?
 3. Should `GET /api/v1/account` surface `license`/`plan` for signed-in users
    as a display nicety (optional, not a gate)?
-4. Deactivate on app uninstall is unreachable — is stale-seat cleanup
-   acceptable via support/admin, or do you want a `last_seen` TTL that
-   auto-frees seats inactive > 90 days?
+4. Deactivate on app uninstall is unreachable — the `transfer` flag is the
+   proposed self-serve reclaim path. OK, or do you prefer an explicit
+   device list in the app (show activations, pick which to drop)?
 
 ## 7. Out of scope
 
