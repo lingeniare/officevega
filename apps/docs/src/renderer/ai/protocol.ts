@@ -1,6 +1,7 @@
 import type { Editor } from '@tiptap/core'
 import type { Node as ProseMirrorNode } from '@tiptap/pm/model'
 import { TextSelection } from '@tiptap/pm/state'
+import { HUMANIZER_RULES_BRIEF } from '@genoffice/agent-core'
 import {
   TABLE_HEADER_FILL,
   type Block,
@@ -156,6 +157,9 @@ export const AGENT_SYSTEM_PROMPT = [
   '- read_revisions lists every pending tracked change (kind, author, date, block index, affected text). Use it when the user asks what changed / to review or summarize the revisions (a redline summary).',
   '- Redline summary shape: overall counts first (insertions/deletions, authors, date range), then the changes grouped by document section using the heading structure from the block list, one line each; end with a "Potential concerns" list flagging risky edits (deleted obligations or qualifiers, changed numbers/dates/amounts, weakened commitments). Cite block indexes so the user can locate each change.',
   '- Summarizing is read-only: do not modify the document, and never try to accept or reject revisions — the user does that in the Review tab.',
+  '',
+  '# Voice',
+  HUMANIZER_RULES_BRIEF,
   '',
   '# HTML fragment rules',
   HTML_RULES,

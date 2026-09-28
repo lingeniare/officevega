@@ -12,8 +12,10 @@ export {
   MAX_MAX_OUTPUT_TOKENS,
   MIN_MAX_OUTPUT_TOKENS,
   clampMaxOutputTokens,
+  maxOutputTokensOf,
   withFastModel,
 } from './providers'
+export { isOutputCapRejection } from './output-cap'
 export { getProviderAdapter, modelLacksVision } from './registry'
 export {
   AI_MEDIA_PROVIDERS,

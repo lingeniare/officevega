@@ -11,6 +11,8 @@ import {
 } from '@genoffice/agent-core'
 import {
   imageGenerationAvailable,
+  isOutputCapRejection,
+  maxOutputTokensOf,
   mediaAnalysisAvailable,
   withFastModel,
 } from '@genoffice/ai-provider/browser'
@@ -33,6 +35,7 @@ import {
   buildDocWriterRequest,
   countFragmentBlocks,
   DOC_MAX_CHARS,
+  DOC_OUTPUT_TOKEN_FLOOR,
   extractFragment,
   type DocWriteResult,
   type DocWriteSpec,
@@ -742,12 +745,17 @@ export function AiPanel({
         ),
       }))
     }
-    const attempt = () =>
+    // long-form writes request the output floor — the 32K settings default
+    // truncates long documents into the keep/discard card
+    const docBudget = () =>
+      Math.max(DOC_OUTPUT_TOKEN_FLOOR, maxOutputTokensOf(settingsRef.current))
+    const attempt = (maxTokens?: number) =>
       streamText({
         transport: transportRef.current!,
         system,
         user,
         signal,
+        ...(maxTokens !== undefined ? { maxTokens } : {}),
         maxChars: DOC_MAX_CHARS,
         extract: (raw) => ({ text: extractFragment(raw) }),
         onProgress: (html) => {
@@ -757,8 +765,14 @@ export function AiPanel({
           if (chipTimer === null) chipTimer = setTimeout(updateChip, CHIP_UPDATE_MS)
         },
       })
-    let outcome = await attempt()
-    if (outcome.status === 'empty' && !signal?.aborted) outcome = await attempt()
+    let outcome = await attempt(docBudget())
+    if (outcome.status === 'empty' && !signal?.aborted) {
+      // A rejected raised cap (unparseable ceiling) retries at the settings
+      // default; a plain empty stream retries at the same budget.
+      outcome = isOutputCapRejection(outcome.error)
+        ? await attempt()
+        : await attempt(docBudget())
+    }
     closed = true
     if (chipTimer !== null) clearTimeout(chipTimer)
     if (outcome.status === 'complete') return { ok: true, html: outcome.text }

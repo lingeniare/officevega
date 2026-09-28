@@ -102,6 +102,13 @@ export interface AgentStreamRequest {
   system: string
   messages: AgentMessage[]
   tools: AgentToolDef[]
+  /**
+   * Per-request output cap override (artifact-sized generations like a whole
+   * page need more than the settings default). Absent = the provider layer's
+   * configured cap; a finite positive value is forwarded verbatim — providers
+   * with a lower ceiling reject it and the output-cap fallback retries there.
+   */
+  maxTokens?: number | undefined
 }
 
 export interface AgentStreamCallbacks {

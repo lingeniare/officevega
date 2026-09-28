@@ -1505,3 +1505,44 @@ describe('composeSkills', () => {
     expect(clean.verifyResponse?.('text', [])).toBeNull()
   })
 })
+
+describe('tool-call markup in the text stream', () => {
+  it('strips leaked <tool_call> markup, even split across deltas', async () => {
+    const transport = scriptedTransport([
+      (cb) => {
+        cb.onDelta('Sure!<tool_')
+        cb.onDelta('call>{"name":"x"}</tool_call>Done.')
+        cb.onDone()
+      },
+    ])
+    const onDone = vi.fn()
+    const onText = vi.fn()
+    const loop = new AgentLoop({ transport, skill: makeSkill(), events: { onDone, onText } })
+    loop.run('q')
+    await flush()
+    expect(onDone).toHaveBeenCalledWith({
+      text: 'Sure!Done.',
+      cancelled: false,
+      turnLimit: false,
+    })
+    expect(loop.messages[1]).toEqual({ role: 'assistant', text: 'Sure!Done.' })
+  })
+
+  it('keeps a held-back tail that never became markup', async () => {
+    const transport = scriptedTransport([
+      (cb) => {
+        cb.onDelta('a < b and')
+        cb.onDone()
+      },
+    ])
+    const onDone = vi.fn()
+    const loop = new AgentLoop({ transport, skill: makeSkill(), events: { onDone } })
+    loop.run('q')
+    await flush()
+    expect(onDone).toHaveBeenCalledWith({
+      text: 'a < b and',
+      cancelled: false,
+      turnLimit: false,
+    })
+  })
+})

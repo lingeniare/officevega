@@ -176,4 +176,34 @@ describe('streamText', () => {
     expect(outcome).toMatchObject({ status: 'partial', reason: 'max_tokens' })
     expect(cancelled).toBe(true)
   })
+
+  it('forwards a maxTokens override on the request and omits it otherwise', async () => {
+    const seen: Array<number | undefined> = []
+    const transport: AgentTransport = {
+      stream: (req, cb) => {
+        seen.push(req.maxTokens)
+        queueMicrotask(() => {
+          cb.onDelta('x')
+          cb.onDone()
+        })
+        return { cancel: () => undefined }
+      },
+    }
+    await streamText({
+      transport,
+      system: 's',
+      user: 'u',
+      maxChars: 1000,
+      maxTokens: 64000,
+      extract: passthrough,
+    })
+    await streamText({
+      transport,
+      system: 's',
+      user: 'u',
+      maxChars: 1000,
+      extract: passthrough,
+    })
+    expect(seen).toEqual([64000, undefined])
+  })
 })

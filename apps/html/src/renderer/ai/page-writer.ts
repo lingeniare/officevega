@@ -1,4 +1,9 @@
-import { streamText, type AgentTransport } from '@genoffice/agent-core'
+import {
+  HUMANIZER_RULES,
+  HUMANIZER_RULES_BRIEF,
+  streamText,
+  type AgentTransport,
+} from '@genoffice/agent-core'
 import type { Brief } from '../document/brief'
 
 /**
@@ -9,6 +14,14 @@ import type { Brief } from '../document/brief'
  * Genspark gateway's idle cutoff and arrived as an empty stream.)
  */
 export const PAGE_MAX_CHARS = 200_000
+/**
+ * Minimum output budget requested for a whole-page generation. A 200K-char
+ * page is ~50–65K tokens, so the 32K settings default guarantees a truncated
+ * page and the keep/discard card on long designs — code-generation floors in
+ * chat products use 64K for the same reason. Providers with a lower ceiling
+ * reject the value and the output-cap fallback retries there.
+ */
+export const PAGE_OUTPUT_TOKEN_FLOOR = 64_000
 const CONTEXT_CAP = 8000
 
 export type PageWriteSpec =
@@ -44,6 +57,15 @@ const DESIGN_SYSTEM = [
   '- Never crop away part of a user-supplied image (logo, screenshot, product shot, chart): size its container to the image (height auto, aspect-ratio) or use object-fit: contain. Reserve object-fit: cover and fixed-height overflow-hidden frames for decorative photos where losing the edges is acceptable.',
   '- Fields the user edited on the brief are kept exactly.',
   '',
+  '## Voice on the page',
+  HUMANIZER_RULES_BRIEF,
+  '',
+  '## Interaction & code quality',
+  '- Interactive elements are real elements: <a> for navigation, <button> for actions — never a clickable <div> or <span>. They are keyboard-reachable, show a visible :focus-visible style, and icon-only controls get an aria-label.',
+  '- Motion is cheap and optional: transform/opacity transitions and keyframes only, no layout-animating effects or heavy blurs; wrap animations in @media (prefers-reduced-motion: no-preference).',
+  '- Forms label every control (<label> or aria-label); tap targets stay at least 40px.',
+  '- The page stays fast as one file: inline <svg> for icons and charts, scroll-triggered reveals via IntersectionObserver rather than scroll handlers, and exactly one version of every section — no alternative takes or duplicated blocks.',
+  '',
   '## Word-export friendly HTML (only when the brief has docx_friendly=true)',
   '- Linear block flow with semantic tags; side-by-side content as a table with <colgroup> percentages. Avoid position: absolute/fixed, transforms and vw/vh for structure. Page breaks via break-before: page; break-inside: avoid on cards, figures and table rows.',
   '',
@@ -57,6 +79,8 @@ const CONTENT_SYSTEM = [
   '- Write the requested text in full as a clean, readable single-column document: semantic <h1>/<h2>, paragraphs, lists and tables as the content needs.',
   '- Restrained typography: system font stack, ~680px measure, generous line height, no hero sections, cards or marketing layout.',
   '- Put the substance in the prose; the page is the document, not a showcase for it. Never invent facts beyond the request and the reference material.',
+  '',
+  HUMANIZER_RULES,
   '',
   OUTPUT_CONTRACT,
 ].join('\n')
@@ -100,6 +124,8 @@ export interface StreamPageOptions {
   system: string
   user: string
   signal?: AbortSignal
+  /** output-token cap override; callers pass at least PAGE_OUTPUT_TOKEN_FLOOR for whole pages */
+  maxTokens?: number
   /** cumulative extracted HTML, throttled by the caller */
   onProgress?(html: string): void
 }
@@ -117,6 +143,7 @@ export async function streamPage(opts: StreamPageOptions): Promise<StreamPageOut
     user: opts.user,
     signal: opts.signal,
     maxChars: PAGE_MAX_CHARS,
+    ...(opts.maxTokens !== undefined ? { maxTokens: opts.maxTokens } : {}),
     extract: (raw) => {
       const { html, complete } = extractPageHtml(raw)
       return { text: html, complete }

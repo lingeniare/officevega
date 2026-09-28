@@ -512,11 +512,12 @@ const RECHECK_INTERVAL_MS = 4 * 60 * 60 * 1000
 // code-signing identity (Apple Team ID) change, which Squirrel.Mac rejects
 // on every retry while the error looks like a download failure to the user.
 const MANUAL_FALLBACK_AFTER = 2
-// Last-resort manual link only: the GitHub Latest release tracks one channel
-// and signing track, so a stable/legacy-track user could land on the wrong
-// build. Preferred is the CDN installer derived from the user's own update
-// feed (see manualDownloadUrlFor), which matches channel, track, and arch.
-const DOWNLOAD_PAGE_URL = 'https://github.com/lingeniare/getoffice/releases/latest'
+// Last-resort manual link only: preferred is always the installer URL
+// derived from the user's own update feed (see manualDownloadUrlFor), which
+// matches channel, track, and arch. This is where users land when that
+// derivation fails — the site root until a dedicated download page exists;
+// swap in the real download-page URL when it does.
+const DOWNLOAD_PAGE_URL = 'https://officevega.com/'
 
 /// Trusted HTTPS base URL baked into resources/app-update.yml. Manual download
 /// links are always rebuilt from this base rather than trusting URLs supplied

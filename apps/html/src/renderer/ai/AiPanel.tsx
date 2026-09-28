@@ -4,7 +4,11 @@ import type { PointerEvent as ReactPointerEvent, ReactElement } from 'react'
 import { AgentLoop, composeSkills, generateSuggestedQuestions } from '@genoffice/agent-core'
 import type { AgentImage } from '@genoffice/agent-core'
 import type { AiSettings } from '@genoffice/ai-provider'
-import { withFastModel } from '@genoffice/ai-provider/browser'
+import {
+  isOutputCapRejection,
+  maxOutputTokensOf,
+  withFastModel,
+} from '@genoffice/ai-provider/browser'
 import { ATTACHMENT_IMAGE_EXTS } from '../../shared/ipc'
 import type { AttachmentAddResult, AttachmentMeta } from '../../shared/ipc'
 import {
@@ -32,6 +36,7 @@ import { createFilesSkill } from './files-skill'
 import { createIntentSkill, type PageIntent } from './intent'
 import {
   buildPageWriterRequest,
+  PAGE_OUTPUT_TOKEN_FLOOR,
   streamPage,
   type PageWriteResult,
   type PageWriteSpec,
@@ -616,20 +621,32 @@ export function AiPanel({
         ),
       }))
     }
-    const attempt = () =>
+    // whole pages request the code-generation output floor — the 32K settings
+    // default truncates long designs into the partial-page card
+    const pageBudget = () =>
+      Math.max(PAGE_OUTPUT_TOKEN_FLOOR, maxOutputTokensOf(settingsRef.current))
+    const attempt = (maxTokens?: number) =>
       streamPage({
         transport: transportRef.current!,
         system,
         user,
         signal,
+        ...(maxTokens !== undefined ? { maxTokens } : {}),
         onProgress: (html) => {
           if (closed) return
           draft = html
           if (timer === null) timer = window.setTimeout(flush, DRAFT_PREVIEW_MS)
         },
       })
-    let outcome = await attempt()
-    if (outcome.status === 'empty' && !signal?.aborted) outcome = await attempt()
+    let outcome = await attempt(pageBudget())
+    if (outcome.status === 'empty' && !signal?.aborted) {
+      // The provider rejected the raised cap and its ceiling didn't parse, so
+      // the main-process fallback couldn't rescue it: retry at the settings
+      // default. A plain empty stream retries at the same budget.
+      outcome = isOutputCapRejection(outcome.error)
+        ? await attempt()
+        : await attempt(pageBudget())
+    }
     // nothing may touch the mirror after this point, or the overlay would outlive the landed page
     closed = true
     if (timer !== null) window.clearTimeout(timer)

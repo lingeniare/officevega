@@ -213,4 +213,24 @@ describe('createIpcTransport', () => {
     expect(cb.onError).toHaveBeenCalledWith('no handler registered')
     expect(cb.onDone).not.toHaveBeenCalled()
   })
+
+  it('forwards a positive maxTokens into the start payload and drops invalid values', () => {
+    const payloads: IpcStreamStart<FakeSettings>[] = []
+    const transport = createIpcTransport<FakeSettings>({
+      onStream: () => () => undefined,
+      start: (request) => {
+        payloads.push(request)
+      },
+      cancel: () => undefined,
+      getSettings: () => ({ provider: 'genspark' }),
+      unknownErrorText: () => 'e',
+      timeoutErrorText: () => 'e',
+    })
+    const cb = { onDelta: () => {}, onToolCall: () => {}, onDone: () => {}, onError: () => {} }
+    transport.stream({ system: 's', messages: [], tools: [], maxTokens: 64000.9 }, cb)
+    transport.stream({ system: 's', messages: [], tools: [], maxTokens: -5 }, cb)
+    transport.stream({ system: 's', messages: [], tools: [], maxTokens: Number.NaN }, cb)
+    transport.stream({ system: 's', messages: [], tools: [] }, cb)
+    expect(payloads.map((p) => p.maxTokens)).toEqual([64000, undefined, undefined, undefined])
+  })
 })

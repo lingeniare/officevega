@@ -13,6 +13,7 @@ export type {
 } from './types'
 export { composeSkills } from './skill'
 export type { AgentSkill, ExecutedToolCall } from './skill'
+export { HUMANIZER_RULES, HUMANIZER_RULES_BRIEF } from './humanizer'
 export {
   AgentLoop,
   COMPLETED_VIA_TOOLS_TEXT,
@@ -32,4 +33,6 @@ export { streamText } from './stream-text'
 export type { StreamTextOptions, StreamTextOutcome } from './stream-text'
 export { generateSuggestedQuestions, parseSuggestedQuestions } from './suggest'
 export type { SuggestAppKind, SuggestQuestionsInput } from './suggest'
+export { createToolCallMarkupStripper } from './tool-markup'
+export type { ToolMarkupStripper } from './tool-markup'
 export type { IpcStreamChunk, IpcStreamStart, IpcTransportOptions } from './electron-transport'

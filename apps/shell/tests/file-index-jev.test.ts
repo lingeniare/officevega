@@ -63,10 +63,10 @@ describe('prepare', () => {
     expect(parsed.questions.d0.type).toBe('score')
   })
 
-  it('sends the VEGA catalog alias and keeps the TypeSafe route pin', () => {
+  it('sends the VEGA router model and keeps the TypeSafe route pin', () => {
     const { body } = prepare('q', docs, 'vega')
     const parsed = JSON.parse(body)
-    expect(parsed.model).toBe('~typesafe/jev-latest')
+    expect(parsed.model).toBe('typesafe/jev-router')
     expect(parsed.provider.only).toEqual(['typesafe'])
   })
 
@@ -95,7 +95,8 @@ describe('validate', () => {
     expect(r.cost).toBe(0.00001)
   })
 
-  it('accepts the VEGA alias echo and any resolved jev snapshot', () => {
+  it('accepts the VEGA router echo and any resolved jev snapshot', () => {
+    expect(validate(JSON.parse(answer([1], 'typesafe/jev-router')), 1, 'vega').scores).toEqual([1])
     expect(validate(JSON.parse(answer([1], '~typesafe/jev-latest')), 1, 'vega').scores).toEqual([1])
     expect(
       validate(JSON.parse(answer([1], 'typesafe/jev-1.14-20990101')), 1, 'vega').scores,

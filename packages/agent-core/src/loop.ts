@@ -1,4 +1,5 @@
 import type { AgentSkill, ExecutedToolCall } from './skill'
+import { createToolCallMarkupStripper, type ToolMarkupStripper } from './tool-markup'
 import type {
   AgentImage,
   AgentMessage,
@@ -245,6 +246,8 @@ export class AgentLoop<TSnapshot = unknown> {
   private allErrorTurns = 0
   private turnStopReason: string | null = null
   private turnText = ''
+  /** strips raw tool-call markup leaked into the text stream (see tool-markup.ts) */
+  private markupStripper: ToolMarkupStripper = createToolCallMarkupStripper()
   private turnReasoning = ''
   private toolCalls: AgentToolCall[] = []
   /** read-only tool calls started while the model was still streaming (keyed by the call object); awaited in call order at turn end */
@@ -650,6 +653,7 @@ export class AgentLoop<TSnapshot = unknown> {
     const generation = this.generation
     this.turnText = ''
     this.turnReasoning = ''
+    this.markupStripper = createToolCallMarkupStripper()
     this.toolCalls = []
     this.earlyRuns.clear()
     this.mutatingCallSeen = false
@@ -666,8 +670,10 @@ export class AgentLoop<TSnapshot = unknown> {
         tools: this.finalizing ? [] : this.options.skill.tools,
       },
       {
-        onDelta: (text) => {
+        onDelta: (raw) => {
           if (generation !== this.generation || settled) return
+          const text = this.markupStripper.feed(raw)
+          if (!text) return
           this.turnText += text
           this.options.events?.onText?.(this.turnText)
         },
@@ -730,6 +736,8 @@ export class AgentLoop<TSnapshot = unknown> {
   private async finishTurn(): Promise<void> {
     const { events, skill, captureSnapshot } = this.options
     const toolCalls = this.toolCalls
+    // drain the markup stripper: a tail that never became a tag is real text
+    this.turnText += this.markupStripper.flush()
 
     // Claimed-action guard: before accepting a final text turn, let the skill
     // check the claims in it against the tools that actually ran this run.

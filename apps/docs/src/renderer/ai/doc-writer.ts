@@ -1,6 +1,7 @@
 import type { Editor } from '@tiptap/core'
 import type { Node as ProseMirrorNode } from '@tiptap/pm/model'
 import type { Transaction } from '@tiptap/pm/state'
+import { HUMANIZER_RULES } from '@genoffice/agent-core'
 import { TABLE_TRAILING_SKIP } from '../editor/extensions'
 import { TRACK_IGNORE } from '../editor/revisions'
 import { blockRangePositions, HTML_RULES, parseHtmlFragment, type NumIds } from './protocol'
@@ -13,6 +14,12 @@ import { blockRangePositions, HTML_RULES, parseHtmlFragment, type NumIds } from 
  * complete; a document-sized argument exceeds gateway idle cutoffs).
  */
 export const DOC_MAX_CHARS = 200_000
+/**
+ * Minimum output budget requested for a long-form write. A 200K-char document
+ * is ~50–65K tokens, so the 32K settings default guarantees truncated drafts;
+ * providers with a lower ceiling reject the value and retry at that ceiling.
+ */
+export const DOC_OUTPUT_TOKEN_FLOOR = 64_000
 const CONTEXT_CAP = 8000
 const DRAFT_TICK_MS = 300
 
@@ -49,6 +56,8 @@ const WRITER_SYSTEM = [
   '- Write the requested content in full: every section in the plan, real prose, no placeholders, no "[to be added]" notes.',
   '- Real data only: use the facts, figures, names and quotes from the reference material and the plan; never invent facts or numbers beyond them.',
   '- Follow the length the plan asks for; when it gives none, write what the content genuinely needs.',
+  '',
+  HUMANIZER_RULES,
   '',
   '## Output',
   'Reply with the restricted HTML fragment only: it starts with the first block tag and ends with the last closing tag. No markdown code fences, no commentary before or after, no <html>/<body> wrapper.',

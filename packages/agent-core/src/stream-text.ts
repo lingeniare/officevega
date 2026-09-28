@@ -14,6 +14,8 @@ export interface StreamTextOptions {
   signal?: AbortSignal
   /** the stream is cancelled and reported as partial once the raw reply exceeds this */
   maxChars: number
+  /** output-token cap override forwarded to the provider (whole-artifact generations need more than the settings default) */
+  maxTokens?: number
   /**
    * Maps the raw reply so far to the artifact. `complete` says the format's own
    * terminator arrived (e.g. `</html>`); omit it for formats without one, and
@@ -65,7 +67,12 @@ export function streamText(opts: StreamTextOptions): Promise<StreamTextOutcome> 
         : { status: 'partial', text: extracted.text, reason, error: resolvedError }
     }
     const handle = opts.transport.stream(
-      { system: opts.system, messages: [{ role: 'user', text: opts.user }], tools: [] },
+      {
+        system: opts.system,
+        messages: [{ role: 'user', text: opts.user }],
+        tools: [],
+        ...(opts.maxTokens !== undefined ? { maxTokens: opts.maxTokens } : {}),
+      },
       {
         onDelta: (delta) => {
           if (settled) return

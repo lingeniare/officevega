@@ -60,6 +60,8 @@ describe('buildPageWriterRequest', () => {
     )
     expect(system).toContain('--brief-primary')
     expect(system).toContain('start at <!doctype html>')
+    expect(system).toContain('prefers-reduced-motion')
+    expect(system).toContain('aria-label')
     expect(system.endsWith('Answer in French.')).toBe(true)
     expect(user).toContain('"core_hook": "Hook"')
     expect(user).not.toContain('soft')
@@ -72,6 +74,7 @@ describe('buildPageWriterRequest', () => {
       '',
     )
     expect(system).toContain('single-column')
+    expect(system).toContain('write like a person')
     expect(user).toContain('Title: Guide')
     expect(user).toContain('steps')
   })
@@ -182,5 +185,24 @@ describe('streamPage', () => {
       user: 'u',
     })
     expect(outcome).toMatchObject({ status: 'partial', reason: 'max_tokens' })
+  })
+  it('forwards a maxTokens override on the stream request', async () => {
+    let sent: number | undefined
+    await streamPage({
+      transport: {
+        stream: (req, cb) => {
+          sent = req.maxTokens
+          queueMicrotask(() => {
+            cb.onDelta(PAGE)
+            cb.onDone()
+          })
+          return { cancel: () => undefined }
+        },
+      },
+      system: 's',
+      user: 'u',
+      maxTokens: 64000,
+    })
+    expect(sent).toBe(64000)
   })
 })

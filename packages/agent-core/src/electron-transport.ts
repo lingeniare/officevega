@@ -35,6 +35,8 @@ export interface IpcStreamStart<S> {
   system: string
   messages: AgentMessage[]
   tools: AgentToolDef[]
+  /** per-request output cap override (see AgentStreamRequest.maxTokens) */
+  maxTokens?: number
 }
 
 /**
@@ -139,6 +141,11 @@ export function createIpcTransport<S>(options: IpcTransportOptions<S>): AgentTra
             system: request.system,
             messages: request.messages,
             tools: request.tools,
+            ...(typeof request.maxTokens === 'number' &&
+            Number.isFinite(request.maxTokens) &&
+            request.maxTokens > 0
+              ? { maxTokens: Math.floor(request.maxTokens) }
+              : {}),
           }),
         ).catch((err: unknown) => {
           fail(err instanceof Error ? err.message : options.unknownErrorText())

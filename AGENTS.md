@@ -26,6 +26,22 @@ string) and the main process crashes on the first `ipcMain` access —
 treats even an empty value as set. The same trap applies to `electron .`-style
 launches (`npm run shell`, `npm start -w @officevega/shell`) from such terminals.
 
+## Release update feed
+
+- Auto-update uses electron-updater's **generic** provider; the feed lives on
+  the project site (`OFFICEVEGA_UPDATE_URL` → `apps/shell/electron-builder.env`,
+  gitignored — currently `https://updates.officevega.com`). Without the env
+  var no publish config is emitted and packaged builds have no updater.
+- `scripts/stage-update-feed.cjs` assembles the upload-ready `release-feed/`
+  dir from `apps/shell/release/` (or given dirs): copies only
+  manifest-referenced installers, sha512-verifies them, merges same-name
+  `latest*.yml`/`beta*.yml` from separate arch passes, and enforces
+  forward-only versions (`--force` to roll back). Upload installers first,
+  `*.yml` last — the full site-side runbook is `docs/update-feed-officevega.md`.
+- `DOWNLOAD_PAGE_URL` in `apps/shell/src/main/updater.ts` is the last-resort
+  manual fallback (`https://officevega.com/`); the feed-derived installer
+  link always wins when derivable.
+
 ## Slides AI pipeline notes
 
 - `generate_deck` runs its stages inside the tool (AgentLoop executes tool calls

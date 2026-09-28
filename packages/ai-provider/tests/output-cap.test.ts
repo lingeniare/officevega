@@ -1,5 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { parseOutputCapRejection, resetOutputCaps } from '../src/output-cap'
+import {
+  isOutputCapRejection,
+  parseOutputCapRejection,
+  resetOutputCaps,
+} from '../src/output-cap'
 import { streamForProvider } from '../src/stream'
 import { errorResponse, okResponse, sseStream } from './test-utils'
 
@@ -48,6 +52,29 @@ describe('parseOutputCapRejection', () => {
     expect(parseOutputCapRejection('HTTP 400: max_output_tokens must be <= 65536', 32768)).toBe(
       null,
     )
+  })
+})
+
+describe('isOutputCapRejection', () => {
+  it('recognizes output/context cap phrasings across vendors', () => {
+    expect(isOutputCapRejection('HTTP 400: max_tokens is too large: 64000')).toBe(true)
+    expect(
+      isOutputCapRejection(
+        'HTTP 400: {"error":{"message":"max_completion_tokens exceeds the model limit"}}',
+      ),
+    ).toBe(true)
+    expect(isOutputCapRejection('HTTP 422: prompt exceeds context length')).toBe(true)
+    expect(isOutputCapRejection('HTTP 400: too many tokens requested')).toBe(true)
+    expect(isOutputCapRejection('HTTP 400: maximum context window exceeded')).toBe(true)
+  })
+
+  it('rejects non-cap errors, other statuses and non-strings', () => {
+    expect(isOutputCapRejection('HTTP 400: invalid api key')).toBe(false)
+    expect(isOutputCapRejection('HTTP 429: rate limit, max_tokens 8192')).toBe(false)
+    expect(isOutputCapRejection('HTTP 500: max_tokens blew up')).toBe(false)
+    expect(isOutputCapRejection('')).toBe(false)
+    expect(isOutputCapRejection(undefined)).toBe(false)
+    expect(isOutputCapRejection(null)).toBe(false)
   })
 })
 

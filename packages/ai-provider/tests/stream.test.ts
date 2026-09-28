@@ -334,6 +334,28 @@ describe('streamForProvider: anthropic', () => {
     ])
   })
 
+  it('repairs raw control characters inside tool input string values', async () => {
+    const partial = JSON.stringify({
+      type: 'content_block_delta',
+      index: 1,
+      delta: {
+        type: 'input_json_delta',
+        partial_json: '{"old": "line1\nline2", "new": "x\ty"}',
+      },
+    })
+    const body = sseStream([
+      'data: {"type":"content_block_start","index":1,"content_block":{"type":"tool_use","id":"t1","name":"gen"}}',
+      `data: ${partial}`,
+      'data: {"type":"content_block_stop","index":1}',
+    ])
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue(okResponse(body)))
+    const { toolCalls, cb } = collector()
+    await streamForProvider('anthropic', { apiKey: 'k', model: 'm' }, 'sys', [], [], 100, cb)
+    expect(toolCalls).toEqual([
+      { id: 't1', name: 'gen', input: { old: 'line1\nline2', new: 'x\ty' } },
+    ])
+  })
+
   it('unparseable tool input becomes inputError instead of killing the stream', async () => {
     const partial = JSON.stringify({
       type: 'content_block_delta',

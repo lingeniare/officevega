@@ -1,4 +1,4 @@
-import type { AgentSkill } from '@genoffice/agent-core'
+import { HUMANIZER_RULES_BRIEF, type AgentSkill } from '@genoffice/agent-core'
 import type { Editor } from '@tiptap/core'
 import type { AiDocWriter } from './doc-writer'
 import {
@@ -58,6 +58,9 @@ const AGENT_SYSTEM_PROMPT = [
   '- Long new content (a whole document, a chapter, a full report/article/translation — anything beyond a few paragraphs) goes through write_document: you pass the plan and the reference material, and the system writer streams the markdown into the document while the user watches; never paste long content into insertContent. When the document is blank and the user asks for content, use write_document.',
   '- The plan: a single `#` title, `##` sections with the key points of each, tone and target length; tables for comparisons, task lists for actionable items, blockquotes for important notes.',
   '- Never invent facts or numbers; use web_search when the topic needs current information, put the findings into context, and attribute sources.',
+  '',
+  '## Voice',
+  HUMANIZER_RULES_BRIEF,
   '',
   '## Conversation',
   '- Answer questions about the document directly, without editing it.',

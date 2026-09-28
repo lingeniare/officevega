@@ -91,7 +91,7 @@ export { chatForProvider } from './chat'
 export { setAiUserAgent, setRescueFetch, warmAiConnections } from './fetch'
 export { isAiNetworkError } from './network-error'
 export { isAiOverloadedError } from './overload-error'
-export { parseOutputCapRejection } from './output-cap'
+export { isOutputCapRejection, parseOutputCapRejection } from './output-cap'
 export { AiCreditsError, sseLines, streamForProvider } from './stream'
 export type { StreamCallbacks } from './stream'
 export {

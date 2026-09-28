@@ -93,8 +93,12 @@ export interface StreamCallbacks {
 }
 
 /**
- * Models occasionally emit unescaped " inside string values (e.g. English quotes in Chinese copy).
- * Single-pass scan: a " inside a string whose next non-whitespace char is not structural gets escaped.
+ * Models occasionally emit unescaped " inside string values (e.g. English
+ * quotes in Chinese copy) or raw control characters (a literal newline/tab
+ * inside a multiline `old`/`new` value is invalid JSON and the most common
+ * tool-argument failure after bad quotes). Single-pass scan: inside a string,
+ * a control char is escaped and a " whose next non-whitespace char is not
+ * structural gets escaped.
  */
 function repairUnescapedQuotes(json: string): string {
   let out = ''
@@ -108,6 +112,18 @@ function repairUnescapedQuotes(json: string): string {
     }
     if (c === '\\') {
       out += c + (json[++i] ?? '')
+      continue
+    }
+    const code = c.charCodeAt(0)
+    if (code < 0x20) {
+      out +=
+        c === '\n'
+          ? '\\n'
+          : c === '\r'
+            ? '\\r'
+            : c === '\t'
+              ? '\\t'
+              : `\\u${code.toString(16).padStart(4, '0')}`
       continue
     }
     if (c === '"') {
