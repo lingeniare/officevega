@@ -34,6 +34,7 @@ import {
 import { createI18n, getUiLang } from '@genoffice/i18n'
 import { generateImageTool } from '@genoffice/ai-search'
 import { PDF_CHANNELS } from '../shared/ipc'
+import { buildExportImagePaths, hasValidExportPageNumbers } from './export-images'
 import type {
   ExportImagesRequest,
   ExportImagesResult,
@@ -128,6 +129,24 @@ const tDlg = createI18n({
     btnSave: 'Save',
     btnDontSave: "Don't Save",
     btnCancel: 'Cancel',
+  },
+  vi: {
+    dlgExportImages: 'Xuất hình ảnh vào thư mục',
+    dlgExtract: 'Trích xuất các trang dưới dạng PDF',
+    dlgInsert: 'Chọn một tệp PDF để nhập',
+    dlgSplit: 'Tách PDF vào thư mục',
+    dlgMerge: 'Chọn các tệp PDF để ghép',
+    dlgMergeSave: 'Lưu tệp PDF đã ghép dưới dạng',
+    dlgMergePages: 'Lưu các trang đã ghép dưới dạng',
+    dlgReplace: 'Chọn một tệp PDF thay thế',
+    dlgSplitPages: 'Lưu các trang đã tách dưới dạng',
+    dlgRedactCopy: 'Lưu bản sao đã che thông tin dưới dạng',
+    filterPdf: 'Tài liệu PDF',
+    closeUnsavedMsg: 'Tệp PDF này có những thay đổi chưa được lưu.',
+    closeUnsavedDetail: 'Bạn có muốn lưu các thay đổi trước khi đóng không?',
+    btnSave: 'Lưu',
+    btnDontSave: 'Không lưu',
+    btnCancel: 'Hủy',
   },
   ja: {
     dlgExportImages: '画像をフォルダに書き出す',
@@ -1617,6 +1636,8 @@ function registerPdfIpc(): void {
       const { images, pageNumbers, baseName } = request ?? {}
       if (!Array.isArray(images) || images.length === 0)
         return { ok: false, error: 'pdf: no images' }
+      if (!hasValidExportPageNumbers(pageNumbers, images.length))
+        return { ok: false, error: 'pdf: invalid page numbers' }
       const win =
         BrowserWindow.fromWebContents(e.sender) ?? BrowserWindow.getFocusedWindow() ?? undefined
       const picked = await showOpenDialogWithMemory(dialog, win, {
@@ -1626,13 +1647,12 @@ function registerPdfIpc(): void {
       const dir = picked.filePaths[0]
       if (picked.canceled || !dir) return { ok: true, canceled: true }
       try {
-        const safeBase = String(baseName || 'page').replace(/[/\\:*?"<>|]/g, '_')
+        const outputPaths = buildExportImagePaths(dir, baseName, pageNumbers)
         for (const [i, b64] of images.entries()) {
-          const no = pageNumbers?.[i] ?? i + 1
-          await writeFile(join(dir, `${safeBase}-p${no}.png`), Buffer.from(b64, 'base64'))
+          await writeFile(outputPaths[i]!, Buffer.from(b64, 'base64'))
         }
         // Reveal the exported images so success is never silent
-        shell.showItemInFolder(join(dir, `${safeBase}-p${pageNumbers?.[0] ?? 1}.png`))
+        shell.showItemInFolder(outputPaths[0]!)
         return { ok: true, savedDir: dir, count: images.length }
       } catch (err) {
         return { ok: false, error: err instanceof Error ? err.message : String(err) }

@@ -1363,4 +1363,6 @@ export const tk = {
   appReplaceTip: 'Teksti tapyň we çalşyryň',
   appScreenshotTip: 'Ekran suratyny goşuň',
   appSymbolTip: 'Nyşan goý',
+  appOpeningWorkbook: 'Opening workbook…',
+  appRibbonExpand: 'Expand the Ribbon',
 } satisfies Record<keyof typeof zh, string>

@@ -105,4 +105,6 @@ export const zhTW = {
   aiScopeColumns: '已選取 {names} 共 {count} 欄',
   aiScopeRangeTip: 'AI 會把「這一欄 / 這些列 / 選取部分」理解為該範圍；送出後本輪固定不變',
   aiScopeClearTitle: '取消該範圍，本次針對整張工作表',
+  aiGensparkAccount: 'Genspark 帳號',
+  aiLoginGenspark: '登入 Genspark',
 } satisfies Record<keyof typeof zh, string>

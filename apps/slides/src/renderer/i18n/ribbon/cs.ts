@@ -14,7 +14,7 @@ export const cs = {
   ribbonTabSlideShow: 'Prezentace',
   ribbonTabReview: 'Revize',
   ribbonCollapse: 'Sbalit pás karet',
-  ribbonPin: 'Připnout pás karet',
+  ribbonExpand: 'Rozbalit pás karet',
   ribbonTabView: 'Zobrazení',
   ribbonTabTableDesign: 'Návrh tabulky',
   ribbonTabChartDesign: 'Návrh grafu',
@@ -759,4 +759,5 @@ export const cs = {
   ribbonZoomSectionItem: 'Snímek {n} Oddíl {k}: {name}',
   ribbonZoomSelectedSlides: 'Vybráno snímků: {n}',
   ribbonZoomSelectedSections: 'Vybráno oddílů: {n}',
+  ribbonPin: 'Připnout pás karet',
 } satisfies Record<keyof typeof zh, string>

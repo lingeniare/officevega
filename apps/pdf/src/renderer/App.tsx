@@ -8,7 +8,11 @@ import type { PDFDocumentProxy } from 'pdfjs-dist'
 import workerUrl from 'pdfjs-dist/legacy/build/pdf.worker.min.mjs?url'
 import { AiPanel, VegaMark } from './ai/AiPanel'
 import { AiAskPopover, type AskAnchorRect } from './AiAskPopover'
-import { loadSavedAnnots } from './annotation-catalog'
+import {
+  createSavedAnnotCountsLoader,
+  loadSavedAnnots,
+  type SavedAnnotCounts,
+} from './annotation-catalog'
 import {
   OcrTextLayer,
   buildOcrPageData,
@@ -54,7 +58,7 @@ import { CropDialog, CutoutDialog, cropImagePng } from './ImageDialogs'
 import { cropRect, flipPixels, multiplyAlpha } from './image-bake'
 import type { CropFractions, ImageBakeOp } from './image-bake'
 import { removeBackground, type PixelImage } from './cutout'
-import { navAction } from './keyNav'
+import { navAction, shouldHandleDocumentUndo } from './keyNav'
 import { rowOfVisIdx, spreadRows, stepPage } from './spread'
 import {
   captureViewState,
@@ -775,28 +779,21 @@ export default function App() {
   } | null>(null)
   /** Ask-AI popover opened from the markup bar; the anchor rect is captured at open */
   const [askPop, setAskPop] = useState<{ rect: AskAnchorRect; excerpt: string } | null>(null)
-  /** Whole-document saved-annotation counts per original page for the AI context
-      (scanned once per doc; kept per-page so deleted pages can be excluded) */
-  const [aiAnnotCounts, setAiAnnotCounts] = useState<{
-    threads: number[]
-    markups: number[]
+  /** Whole-document saved-annotation counts per original page for the AI context.
+      The scan starts on first AI use, not when the document opens. */
+  const [aiAnnotCounts, setAiAnnotCounts] = useState<SavedAnnotCounts | null>(null)
+  const aiAnnotCountsLoaderRef = useRef<{
+    doc: PDFDocumentProxy
+    controller: AbortController
+    load: () => Promise<SavedAnnotCounts>
   } | null>(null)
   useEffect(() => {
     setAiAnnotCounts(null)
-    if (!doc) return
-    let stale = false
-    void (async () => {
-      const threads: number[] = []
-      const markupCounts: number[] = []
-      for (let i = 0; i < doc.numPages && !stale; i++) {
-        const a = await loadSavedAnnots(doc, i)
-        threads.push(a.notes.filter((n) => n.inReplyTo === null).length)
-        markupCounts.push(a.markups.length)
-      }
-      if (!stale) setAiAnnotCounts({ threads, markups: markupCounts })
-    })()
+    aiAnnotCountsLoaderRef.current?.controller.abort()
+    aiAnnotCountsLoaderRef.current = null
     return () => {
-      stale = true
+      aiAnnotCountsLoaderRef.current?.controller.abort()
+      aiAnnotCountsLoaderRef.current = null
     }
   }, [doc])
   const [selected, setSelected] = useState<AnnotSelection | null>(null)
@@ -3640,6 +3637,10 @@ export default function App() {
       setStatus('loading')
       try {
         await loadDoc(targetPath, doc)
+        // loadDoc leaves the text index and hits alone; both still hold the removed text
+        searchIndexRef.current = null
+        setSearchMatches([])
+        setSearchCur(0)
         setStatus('ready')
         requestAnimationFrame(() => {
           if (scrollRef.current) scrollRef.current.scrollTop = scrollTop
@@ -5300,6 +5301,22 @@ export default function App() {
     // scan still running: "unknown" must not read as "none" — a run started right
     // after open would otherwise never hear the file carries review feedback
     if (!aiAnnotCounts) {
+      if (doc) {
+        let entry = aiAnnotCountsLoaderRef.current
+        if (entry?.doc !== doc) {
+          const controller = new AbortController()
+          entry = {
+            doc,
+            controller,
+            load: createSavedAnnotCountsLoader(doc, loadSavedAnnots, controller.signal),
+          }
+          aiAnnotCountsLoaderRef.current = entry
+          const active = entry
+          void active.load().then((counts) => {
+            if (aiAnnotCountsLoaderRef.current === active) setAiAnnotCounts(counts)
+          })
+        }
+      }
       return 'Whether the file contains notes/markups has not been determined yet; use read_annotations to check when the user asks about review feedback.'
     }
     let savedThreads = 0
@@ -5712,6 +5729,7 @@ export default function App() {
           target.tagName === 'TEXTAREA' ||
           target.tagName === 'SELECT' ||
           target.isContentEditable)
+      if (!shouldHandleDocumentUndo(e.target, e.key, e.metaKey || e.ctrlKey)) return
       if (e.metaKey || e.ctrlKey) {
         const k = e.key.toLowerCase()
         if (k === 's') {
@@ -5741,6 +5759,8 @@ export default function App() {
         return
       }
       if (e.key === 'Escape') {
+        // Modal dialogs own Escape; the states behind them must not react too
+        if (signDlg || stampDlg || propsDlg) return
         if (askPop) setAskPop(null)
         else if (textDraft) setTextDraft(null)
         else if (pendingTextInsert) setPendingTextInsert(null)
@@ -6294,7 +6314,7 @@ export default function App() {
           {RIBBON_TABS.map(({ id, labelKey }) => (
             <button
               key={id}
-              className={`ribbon-tab${ribbonTab === id ? ' active' : ''}`}
+              className={`ribbon-tab ${ribbonTab === id ? 'active' : ''}`}
               onClick={() => {
                 collapse.onTabPress(ribbonTab === id)
                 setRibbonTab(id)
@@ -6305,7 +6325,7 @@ export default function App() {
           ))}
           {!readOnly && (
             <button
-              className={`ribbon-tab ribbon-tab-context${ribbonTab === 'fillForm' ? ' active' : ''}`}
+              className={`ribbon-tab ribbon-tab-context ${ribbonTab === 'fillForm' ? 'active' : ''}`}
               onClick={() => {
                 collapse.onTabPress(ribbonTab === 'fillForm')
                 setRibbonTab('fillForm')

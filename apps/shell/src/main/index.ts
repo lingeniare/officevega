@@ -24,6 +24,7 @@ import {
   webContents,
 } from 'electron'
 import type { MenuItemConstructorOptions, NativeImage, WebContents } from 'electron'
+import { atomicWriteFile } from './atomic-write'
 import { tabStripOverlay } from './title-bar-overlay'
 import menuDocxIcon1x from './assets/menu-docx.png?asset'
 import menuDocxIcon2x from './assets/menu-docx@2x.png?asset'
@@ -80,11 +81,17 @@ import {
   themedSurfaceColor,
   forwardRendererConsole,
 } from '@genoffice/electron-utils'
-import { readAppSettings, writeAppSetting, writeAppSettings } from './app-settings'
+import {
+  readAppSettings,
+  writeAppSetting,
+  writeAppSettings,
+  writeAppSettingThen,
+} from './app-settings'
 import { OPEN_DOCUMENTS_FILE, clearOpenDocuments, publishOpenDocuments } from './open-documents'
 import { startControlServer, type ControlServer } from './control-server'
 import { controlHandler } from './control-handlers'
 import { installCliLinkBestEffort } from './cli-link'
+import { createDefaultAppService, execFileRunner } from './default-app'
 import { registerIntegrationsIpc } from './integrations-ipc'
 import {
   LAST_RUN_VERSION_KEY,
@@ -99,6 +106,7 @@ import {
   withShown,
 } from './star-prompt'
 import { handleDroppedFiles } from './dropped-files'
+import { collectLaunchPaths } from './launch-paths'
 import {
   officeVegaLogout,
   loadOfficeVegaAuth,
@@ -281,7 +289,7 @@ import {
   pageRecentPaths,
   statPathEntries,
 } from './recent-files'
-import { isSameFile, isValidRawRenameName } from './rename-validation'
+import { isSameFile, pdfSaveAsTarget, isValidRawRenameName } from './rename-validation'
 import {
   FolderWatcher,
   createFolder,
@@ -489,9 +497,12 @@ function currentLang(): Lang {
 }
 
 function persistLang(lang: Lang): void {
-  uiLang = lang
-  setUiLang(lang)
-  writeAppSetting(APP_SETTINGS_PATH(), 'language', lang)
+  // write first: app-settings.json can be unwritable, and a language committed to
+  // memory before the write survives only until the next launch
+  writeAppSettingThen(APP_SETTINGS_PATH(), 'language', lang, (persisted) => {
+    uiLang = persisted
+    setUiLang(persisted)
+  })
 }
 
 let cachedUpdateChannel: UpdateChannel | null = null
@@ -659,6 +670,7 @@ const tMain = createI18n({
     errMissing: '文件不存在',
     errExists: '同名文件已存在',
     errRenameFailed: '重命名失败',
+    errPdfSaveAsFailed: '另存为 PDF 失败',
     errNewTabFailed: '新建文档失败',
     errUnsupportedExt: '暂不支持 .{ext} 类型',
     copySuffix: '副本',
@@ -745,6 +757,7 @@ const tMain = createI18n({
     errMissing: 'File not found',
     errExists: 'A file with that name already exists',
     errRenameFailed: 'Rename failed',
+    errPdfSaveAsFailed: 'Could not save the PDF copy',
     errNewTabFailed: 'Could not create the new document',
     errUnsupportedExt: '.{ext} files are not supported',
     copySuffix: 'copy',
@@ -794,6 +807,101 @@ const tMain = createI18n({
     errSaveDirUnusable:
       'The selected folder is not writable and cannot be used as the default save location',
   },
+  vi: {
+    dlgAddFolderRoot: 'Thêm thư mục vào Trang chủ',
+    errFolderRootUnusable: 'Không thể đọc thư mục đã chọn',
+    menuFile: 'Tệp',
+    menuSectionNew: 'Mới',
+    menuOpenInNewWindow: 'Mở trong cửa sổ mới',
+    menuNewDoc: 'AI Docs',
+    menuNewSheet: 'AI Sheets',
+    untitledSheet: 'Bảng tính chưa có tiêu đề',
+    untitledDoc: 'Tài liệu chưa có tiêu đề',
+    untitledDeck: 'Bản trình bày chưa có tiêu đề',
+    untitledMarkdown: 'Markdown chưa có tiêu đề',
+    untitledHtml: 'HTML chưa có tiêu đề',
+    untitledPdf: 'PDF chưa có tiêu đề',
+    menuNewSlide: 'AI Slides',
+    menuNewMarkdown: 'AI Markdown',
+    menuNewHtml: 'AI HTML',
+    menuNewPdf: 'AI PDF',
+    menuExportPdf: 'Xuất dưới dạng PDF…',
+    menuExportImages: 'Xuất dưới dạng hình ảnh…',
+    menuExportHtml: 'Xuất dưới dạng HTML một tệp…',
+    menuOpenInDocs: 'Chuyển đổi và mở trong Docs',
+    menuPrint: 'In…',
+    menuOpen: 'Mở…',
+    menuSave: 'Lưu',
+    menuSaveAs: 'Lưu dưới dạng…',
+    menuClose: 'Đóng',
+    menuEdit: 'Chỉnh sửa',
+    menuWindow: 'Cửa sổ',
+    menuHome: 'Trang chủ',
+    backToHome: 'Quay lại Trang chủ',
+    dlgOpenTitle: 'Mở tệp',
+    filterSupported: 'Các tệp được hỗ trợ',
+    filterWord: 'Tài liệu Word',
+    filterExcel: 'Sổ làm việc Excel',
+    filterPpt: 'Bản trình bày PowerPoint',
+    filterMarkdown: 'Tài liệu Markdown',
+    filterHtml: 'Tài liệu HTML',
+    filterPdf: 'Tài liệu PDF',
+    errBadArgs: 'Đối số không hợp lệ',
+    errBadName: 'Tên tệp không hợp lệ',
+    errMissing: 'Không tìm thấy tệp',
+    errExists: 'Một tệp có tên đó đã tồn tại',
+    errRenameFailed: 'Đổi tên thất bại',
+    errNewTabFailed: 'Không thể tạo tài liệu mới',
+    errUnsupportedExt: 'Tệp .{ext} không được hỗ trợ',
+    copySuffix: 'bản sao',
+    menuHelp: 'Trợ giúp',
+    thirdPartyNotices: 'Thông báo của bên thứ ba',
+    menuExportDocx: 'Xuất dưới dạng Word…',
+    btnCancel: 'Hủy',
+    pdfDocxFailedMsg: 'Xuất dưới dạng Word thất bại',
+    pdfDocxBusyMsg: 'Một tác vụ xuất Word đang được tiến hành. Vui lòng đợi tác vụ hoàn tất.',
+    menuExportPptx: 'Xuất dưới dạng PowerPoint…',
+    pdfPptxFailedMsg: 'Xuất dưới dạng PowerPoint thất bại',
+    pdfPptxBusyMsg: 'Một tác vụ xuất đang được tiến hành. Vui lòng đợi tác vụ hoàn tất.',
+    pdfPptxLocalScannedDetail:
+      'Mỗi trang đã được xuất dưới dạng hình ảnh toàn trang; văn bản trên các trang trình bày không thể chỉnh sửa.',
+    menuExportXlsx: 'Xuất dưới dạng Excel…',
+    pdfXlsxFailedMsg: 'Xuất dưới dạng Excel thất bại',
+    pdfXlsxBusyMsg: 'Một tác vụ xuất đang được tiến hành. Vui lòng đợi tác vụ hoàn tất.',
+    pdfXlsxLocalScannedDetail:
+      'Các trang quét không thể chuyển đổi thành các ô; thay vào đó, trang tính của mỗi trang có một hàng thông báo.',
+    pdfXlsxLocalSkippedMsg: 'Một số trang không được chuyển đổi thành ô',
+    pdfXlsxLocalSkippedDetail:
+      'Các trang {pages} không thể chuyển đổi thành ô; thay vào đó bảng tính của chúng có một hàng thông báo.',
+    pdfDocxLocalScannedMsg: 'Phát hiện tài liệu quét',
+    pdfDocxLocalScannedDetail:
+      'Các trang được xuất dưới dạng hình ảnh để bảo toàn giao diện; không nhận dạng được văn bản có thể chỉnh sửa.',
+    pdfDocxLocalDegradedMsg: 'Một số trang được xuất dưới dạng hình ảnh',
+    pdfDocxLocalDegradedDetail:
+      '(Các) trang {pages} không thể tái cấu trúc đáng tin cậy và đã được xuất dưới dạng hình ảnh toàn trang.',
+    pdfDocxLocalOcrMsg: 'Các trang quét đã được chuyển đổi thành văn bản có thể chỉnh sửa',
+    pdfDocxLocalOcrDetail:
+      '(Các) trang {pages} là bản quét; văn bản của chúng đã được phục hồi bằng OCR trên thiết bị. Vui lòng kiểm tra lại kết quả.',
+    pdfDocxLocalEncryptedDetail:
+      'Tệp PDF này đã được mã hóa và không thể mở nếu không có mật khẩu chính xác.',
+    pdfDocxLocalUnsupportedEncDetail:
+      'Tệp PDF này sử dụng mã hóa dựa trên chứng thư số hoặc mã hóa không được hỗ trợ khác và không thể chuyển đổi.',
+    pdfPwdTitle: 'Nhập mật khẩu',
+    pdfPwdPrompt: 'Tệp PDF này đã được mã hóa. Nhập mật khẩu để mở:',
+    pdfPwdRetryPrompt: 'Mật khẩu không chính xác. Vui lòng thử lại.',
+    pdfPwdOk: 'OK',
+    pdfPwdVerifying: 'Đang xác minh mật khẩu…',
+    pdfPwdLabel: 'Mật khẩu',
+    pdfPwdPlaceholder: 'Nhập mật khẩu để mở',
+    pdfPwdShow: 'Hiện mật khẩu',
+    pdfPwdHide: 'Ẩn mật khẩu',
+    pdfDocxLocalCorruptDetail:
+      'Tệp bị hỏng hoặc không phải là tệp PDF hợp lệ và không thể chuyển đổi.',
+    dlgPickSaveDir: 'Chọn vị trí lưu mặc định',
+    errSaveDirUnusable: 'Thư mục đã chọn không thể ghi và không thể dùng làm vị trí lưu mặc định',
+    menuSettings: 'Settings…',
+    errPdfSaveAsFailed: 'Could not save the PDF copy',
+  },
   ja: {
     dlgAddFolderRoot: 'フォルダーをホームに追加',
     errFolderRootUnusable: '選択したフォルダーを読み取れません',
@@ -839,6 +947,7 @@ const tMain = createI18n({
     errMissing: 'ファイルが見つかりません',
     errExists: '同名のファイルが既に存在します',
     errRenameFailed: '名前の変更に失敗しました',
+    errPdfSaveAsFailed: 'PDF のコピーを保存できませんでした',
     errNewTabFailed: '新規ドキュメントを作成できませんでした',
     errUnsupportedExt: '.{ext} 形式には対応していません',
     copySuffix: 'コピー',
@@ -933,6 +1042,7 @@ const tMain = createI18n({
     errMissing: '파일을 찾을 수 없습니다',
     errExists: '같은 이름의 파일이 이미 있습니다',
     errRenameFailed: '이름 바꾸기에 실패했습니다',
+    errPdfSaveAsFailed: 'PDF 복사본을 저장할 수 없습니다',
     errNewTabFailed: '새 문서를 만들지 못했습니다',
     errUnsupportedExt: '.{ext} 형식은 지원되지 않습니다',
     copySuffix: '복사본',
@@ -1026,6 +1136,7 @@ const tMain = createI18n({
     errMissing: 'Fichier introuvable',
     errExists: 'Un fichier du même nom existe déjà',
     errRenameFailed: 'Échec du renommage',
+    errPdfSaveAsFailed: 'Impossible d’enregistrer la copie du PDF',
     errNewTabFailed: 'Impossible de créer le nouveau document',
     errUnsupportedExt: 'les fichiers .{ext} ne sont pas pris en charge',
     copySuffix: 'copie',
@@ -1121,6 +1232,7 @@ const tMain = createI18n({
     errMissing: 'Datei nicht gefunden',
     errExists: 'Eine Datei mit diesem Namen existiert bereits',
     errRenameFailed: 'Umbenennen fehlgeschlagen',
+    errPdfSaveAsFailed: 'Die PDF-Kopie konnte nicht gespeichert werden',
     errNewTabFailed: 'Neues Dokument konnte nicht erstellt werden',
     errUnsupportedExt: '.{ext}-Dateien werden nicht unterstützt',
     copySuffix: 'Kopie',
@@ -1216,6 +1328,7 @@ const tMain = createI18n({
     errMissing: 'Archivo no encontrado',
     errExists: 'Ya existe un archivo con ese nombre',
     errRenameFailed: 'No se pudo cambiar el nombre',
+    errPdfSaveAsFailed: 'No se pudo guardar la copia del PDF',
     errNewTabFailed: 'No se pudo crear el nuevo documento',
     errUnsupportedExt: 'los archivos .{ext} no son compatibles',
     copySuffix: 'copia',
@@ -1311,6 +1424,7 @@ const tMain = createI18n({
     errMissing: 'ไม่พบไฟล์',
     errExists: 'มีไฟล์ชื่อเดียวกันอยู่แล้ว',
     errRenameFailed: 'เปลี่ยนชื่อไม่สำเร็จ',
+    errPdfSaveAsFailed: 'บันทึกสำเนา PDF ไม่สำเร็จ',
     errNewTabFailed: 'สร้างเอกสารใหม่ไม่สำเร็จ',
     errUnsupportedExt: 'ไม่รองรับไฟล์ .{ext}',
     copySuffix: 'สำเนา',
@@ -1402,6 +1516,7 @@ const tMain = createI18n({
     errMissing: 'File tidak ditemukan',
     errExists: 'File dengan nama tersebut sudah ada',
     errRenameFailed: 'Gagal mengganti nama',
+    errPdfSaveAsFailed: 'Gagal menyimpan salinan PDF',
     errNewTabFailed: 'Gagal membuat dokumen baru',
     errUnsupportedExt: 'file .{ext} tidak didukung',
     copySuffix: 'salinan',
@@ -1497,6 +1612,7 @@ const tMain = createI18n({
     errMissing: 'Файл не найден',
     errExists: 'Файл с таким именем уже существует',
     errRenameFailed: 'Не удалось переименовать',
+    errPdfSaveAsFailed: 'Не удалось сохранить копию PDF',
     errNewTabFailed: 'Не удалось создать новый документ',
     errUnsupportedExt: 'файлы .{ext} не поддерживаются',
     copySuffix: 'копия',
@@ -1592,6 +1708,7 @@ const tMain = createI18n({
     errMissing: 'الملف غير موجود',
     errExists: 'يوجد ملف بالاسم نفسه بالفعل',
     errRenameFailed: 'فشلت إعادة التسمية',
+    errPdfSaveAsFailed: 'تعذّر حفظ نسخة PDF',
     errNewTabFailed: 'تعذّر إنشاء المستند الجديد',
     errUnsupportedExt: 'ملفات .{ext} غير مدعومة',
     copySuffix: 'نسخة',
@@ -1683,6 +1800,7 @@ const tMain = createI18n({
     errMissing: 'Arquivo não encontrado',
     errExists: 'Já existe um arquivo com esse nome',
     errRenameFailed: 'Falha ao renomear',
+    errPdfSaveAsFailed: 'Falha ao salvar a cópia do PDF',
     errNewTabFailed: 'Falha ao criar o novo documento',
     errUnsupportedExt: 'arquivos .{ext} não são suportados',
     copySuffix: 'cópia',
@@ -1778,6 +1896,7 @@ const tMain = createI18n({
     errMissing: 'File non trovato',
     errExists: 'Esiste già un file con questo nome',
     errRenameFailed: 'Impossibile rinominare',
+    errPdfSaveAsFailed: 'Impossibile salvare la copia del PDF',
     errNewTabFailed: 'Impossibile creare il nuovo documento',
     errUnsupportedExt: 'i file .{ext} non sono supportati',
     copySuffix: 'copia',
@@ -1873,6 +1992,7 @@ const tMain = createI18n({
     errMissing: 'Nie znaleziono pliku',
     errExists: 'Plik o tej nazwie już istnieje',
     errRenameFailed: 'Nie udało się zmienić nazwy',
+    errPdfSaveAsFailed: 'Nie udało się zapisać kopii PDF',
     errNewTabFailed: 'Nie udało się utworzyć nowego dokumentu',
     errUnsupportedExt: 'pliki .{ext} nie są obsługiwane',
     copySuffix: 'kopia',
@@ -1968,6 +2088,7 @@ const tMain = createI18n({
     errMissing: 'Soubor nebyl nalezen',
     errExists: 'Soubor s tímto názvem už existuje',
     errRenameFailed: 'Přejmenování se nezdařilo',
+    errPdfSaveAsFailed: 'Kopii PDF se nepodařilo uložit',
     errNewTabFailed: 'Nový dokument se nepodařilo vytvořit',
     errUnsupportedExt: 'Soubory .{ext} nejsou podporovány',
     copySuffix: 'kopie',
@@ -2061,6 +2182,7 @@ const tMain = createI18n({
     errMissing: 'Bestand niet gevonden',
     errExists: 'Er bestaat al een bestand met die naam',
     errRenameFailed: 'Naam wijzigen mislukt',
+    errPdfSaveAsFailed: 'PDF-kopie kon niet worden opgeslagen',
     errNewTabFailed: 'Kan het nieuwe document niet maken',
     errUnsupportedExt: '.{ext}-bestanden worden niet ondersteund',
     copySuffix: 'kopie',
@@ -2156,6 +2278,7 @@ const tMain = createI18n({
     errMissing: 'Fail tidak ditemui',
     errExists: 'Fail dengan nama yang sama sudah wujud',
     errRenameFailed: 'Gagal menamakan semula',
+    errPdfSaveAsFailed: 'Gagal menyimpan salinan PDF',
     errNewTabFailed: 'Gagal mencipta dokumen baharu',
     errUnsupportedExt: 'fail .{ext} tidak disokong',
     copySuffix: 'salinan',
@@ -2250,6 +2373,7 @@ const tMain = createI18n({
     errMissing: 'הקובץ לא נמצא',
     errExists: 'כבר קיים קובץ באותו שם',
     errRenameFailed: 'שינוי השם נכשל',
+    errPdfSaveAsFailed: 'לא ניתן לשמור את עותק ה-PDF',
     errNewTabFailed: 'יצירת המסמך החדש נכשלה',
     errUnsupportedExt: 'קובצי .{ext} אינם נתמכים',
     copySuffix: 'עותק',
@@ -2342,6 +2466,7 @@ const tMain = createI18n({
     errMissing: 'फ़ाइल नहीं मिली',
     errExists: 'इस नाम की फ़ाइल पहले से मौजूद है',
     errRenameFailed: 'नाम बदलने में विफल',
+    errPdfSaveAsFailed: 'PDF की प्रति सहेजी नहीं जा सकी',
     errNewTabFailed: 'नया दस्तावेज़ बनाने में विफल',
     errUnsupportedExt: '.{ext} फ़ाइलें समर्थित नहीं हैं',
     copySuffix: 'प्रतिलिपि',
@@ -2437,6 +2562,7 @@ const tMain = createI18n({
     errMissing: '檔案不存在',
     errExists: '同名檔案已存在',
     errRenameFailed: '重新命名失敗',
+    errPdfSaveAsFailed: '另存為 PDF 失敗',
     errNewTabFailed: '新建文件失敗',
     errUnsupportedExt: '暫不支援 .{ext} 類型',
     copySuffix: '副本',
@@ -2506,6 +2632,7 @@ const tMain = createI18n({
     menuHome: 'Bosh sahifa',
     backToHome: 'Bosh sahifaga qaytish',
     menuSettings: 'Sozlamalar…',
+    errPdfSaveAsFailed: 'Could not save the PDF copy',
     dlgOpenTitle: 'Faylni ochish',
     filterSupported: 'Qo‘llab-quvvatlanadigan fayllar',
     filterWord: 'Word hujjatlari',
@@ -2600,6 +2727,7 @@ const tMain = createI18n({
     menuHome: 'Басты',
     backToHome: 'Басты бетке оралу',
     menuSettings: 'Параметрлер…',
+    errPdfSaveAsFailed: 'Could not save the PDF copy',
     dlgOpenTitle: 'Файлды ашу',
     filterSupported: 'Қолдау көрсетілетін файлдар',
     filterWord: 'Word құжаттары',
@@ -2694,6 +2822,7 @@ const tMain = createI18n({
     menuHome: 'Əsas',
     backToHome: 'Əsas səhifəyə qayıt',
     menuSettings: 'Ayarlar…',
+    errPdfSaveAsFailed: 'Could not save the PDF copy',
     dlgOpenTitle: 'Faylı aç',
     filterSupported: 'Dəstəklənən fayllar',
     filterWord: 'Word sənədləri',
@@ -2787,6 +2916,7 @@ const tMain = createI18n({
     menuHome: 'Baş sahypa',
     backToHome: 'Baş sahypa dolan',
     menuSettings: 'Sazlamalar…',
+    errPdfSaveAsFailed: 'Could not save the PDF copy',
     dlgOpenTitle: 'Faýly aç',
     filterSupported: 'Goldanýan faýllar',
     filterWord: 'Word resminamalary',
@@ -2880,6 +3010,7 @@ const tMain = createI18n({
     menuHome: 'Башкы бет',
     backToHome: 'Башкы бетке кайтуу',
     menuSettings: 'Жөндөөлөр…',
+    errPdfSaveAsFailed: 'Could not save the PDF copy',
     dlgOpenTitle: 'Файлды ачуу',
     filterSupported: 'Колдоого алынган файлдар',
     filterWord: 'Word документтери',
@@ -2973,6 +3104,7 @@ const tMain = createI18n({
     menuHome: 'Баш бит',
     backToHome: 'Баш биткә кайтырга',
     menuSettings: 'Көйләүләр…',
+    errPdfSaveAsFailed: 'Could not save the PDF copy',
     dlgOpenTitle: 'Файл ачарга',
     filterSupported: 'Ярдәм ителгән файллар',
     filterWord: 'Word документлары',
@@ -3132,6 +3264,7 @@ const tMain = createI18n({
     errFolderRootUnusable: 'არჩეული საქაღალდე ვერ იკითხება',
     menuExportImages: 'სურათებად ექსპორტი…',
     menuOpenInNewWindow: 'ახალ ფანჯარაში გახსნა',
+    errPdfSaveAsFailed: 'Could not save the PDF copy',
 },
 })
 
@@ -3306,7 +3439,7 @@ function ensureFileIndexer(): FileIndexer | null {
 
 const SEARCH_EXT_FAMILY: Record<string, readonly string[]> = {
   docx: ['docx', 'doc'],
-  xlsx: ['xlsx', 'xlsm', 'xls', 'csv'],
+  xlsx: ['xlsx', 'xlsm', 'xls', 'csv', 'tsv'],
   pptx: ['pptx', 'ppt'],
   md: ['md', 'markdown'],
   html: ['html', 'htm'],
@@ -3629,14 +3762,11 @@ function createShellWindow(): void {
 // ---- routing: one dispatch function for every open path ----
 
 const DOCX_RE = /\.docx$/i
-const XLSX_RE = /\.(xlsx|xlsm|xls|csv)$/i
+const XLSX_RE = /\.(xlsx|xlsm|xls|csv|tsv)$/i
 const PPTX_RE = /\.pptx$/i
 const PDF_RE = /\.pdf$/i
 const MD_RE = /\.(md|markdown)$/i
 const HTML_RE = /\.html?$/i
-
-/** document formats we recognize but don't open — surfaced as a dialog, not silently dropped */
-const UNSUPPORTED_DOC_RE = /\.(doc|rtf|odt|ppt|pps|odp|ods|xlsb|pages|key|numbers)$/i
 
 /**
  * Single source of truth for the open-dialog filter. Includes the
@@ -3650,6 +3780,7 @@ const OPEN_DIALOG_EXTENSIONS = [
   'xlsm',
   'xls',
   'csv',
+  'tsv',
   'pptx',
   'ppt',
   'pdf',
@@ -3658,25 +3789,6 @@ const OPEN_DIALOG_EXTENSIONS = [
   'html',
   'htm',
 ]
-
-function supportedFileIn(argv: string[]): string | null {
-  return (
-    argv.find(
-      (arg) =>
-        (DOCX_RE.test(arg) ||
-          XLSX_RE.test(arg) ||
-          PPTX_RE.test(arg) ||
-          PDF_RE.test(arg) ||
-          MD_RE.test(arg) ||
-          HTML_RE.test(arg)) &&
-        existsSync(arg),
-    ) ?? null
-  )
-}
-
-function unsupportedFileIn(argv: string[]): string | null {
-  return argv.find((arg) => UNSUPPORTED_DOC_RE.test(arg) && existsSync(arg)) ?? null
-}
 
 function notifyUnsupportedFile(filePath: string): void {
   const ext = extname(filePath).slice(1).toLowerCase() || basename(filePath)
@@ -3810,7 +3922,7 @@ function routeDocumentPath(filePath: string): boolean {
 async function newSheetTab(): Promise<void> {
   try {
     const filePath = uniquePathIn(newFileDir('sheet'), `${tm('untitledSheet')}.xlsx`)
-    writeFileSync(filePath, await blankXlsxBuffer())
+    await atomicWriteFile(filePath, await blankXlsxBuffer())
     // eligible for content-derived auto-rename after the first AI generation
     markSheetsUntitledPath(filePath)
     if (routeDocumentPath(filePath)) recordStarPromptDocOpen()
@@ -3976,7 +4088,7 @@ function newHtmlTab(): void {
 async function newPdfTab(): Promise<void> {
   try {
     const filePath = uniquePathIn(newFileDir('pdf'), `${tm('untitledPdf')}.pdf`)
-    writeFileSync(filePath, await blankPdfBuffer())
+    await atomicWriteFile(filePath, await blankPdfBuffer())
     // Opt the file into content-derived auto-naming on its first save
     markPdfUntitledPath(filePath)
     // route directly (not via openDocumentPath) so creating a pdf counts one
@@ -4180,7 +4292,7 @@ function registerHomeIpc(): void {
       filters: [
         { name: tm('filterSupported'), extensions: OPEN_DIALOG_EXTENSIONS },
         { name: tm('filterWord'), extensions: ['docx', 'doc'] },
-        { name: tm('filterExcel'), extensions: ['xlsx', 'xlsm', 'xls', 'csv'] },
+        { name: tm('filterExcel'), extensions: ['xlsx', 'xlsm', 'xls', 'csv', 'tsv'] },
         { name: tm('filterPpt'), extensions: ['pptx', 'ppt'] },
         { name: tm('filterPdf'), extensions: ['pdf'] },
         { name: tm('filterMarkdown'), extensions: ['md', 'markdown'] },
@@ -4263,7 +4375,7 @@ function registerHomeIpc(): void {
     },
   )
 
-  ipcMain.handle(HOME_CHANNELS.duplicateFile, (_event, path: unknown) => {
+  ipcMain.handle(HOME_CHANNELS.duplicateFile, async (_event, path: unknown) => {
     if (typeof path !== 'string' || !existsSync(path)) return
     const ext = extname(path)
     const base = basename(path, ext)
@@ -4271,7 +4383,12 @@ function registerHomeIpc(): void {
     for (let i = 1; ; i++) {
       const target = join(dir, `${base} ${tm('copySuffix')}${i === 1 ? '' : ` ${i}`}${ext}`)
       if (existsSync(target)) continue
-      copyFileSync(path, target)
+      try {
+        await atomicWriteFile(target, readFileSync(path))
+      } catch (err) {
+        showErrorDialog(shellWindow, tm('errNewTabFailed'), err)
+        return
+      }
       recordRecentFile(target)
       return
     }
@@ -4617,6 +4734,16 @@ function registerHomeIpc(): void {
   })
 
   ipcMain.handle(HOME_CHANNELS.getDefaultSaveDir, (): string => defaultSaveDir())
+
+  const defaultApp = createDefaultAppService({
+    platform: process.platform,
+    packaged: app.isPackaged,
+    exePath: app.getPath('exe'),
+    run: execFileRunner,
+    openExternal: (url) => shell.openExternal(url),
+  })
+  ipcMain.handle(HOME_CHANNELS.getDefaultAppStatus, () => defaultApp.status())
+  ipcMain.handle(HOME_CHANNELS.setDefaultApp, () => defaultApp.set())
 
   ipcMain.handle(HOME_CHANNELS.pickDefaultSaveDir, async (): Promise<string | null> => {
     const result = await showOpenDialogWithMemory(dialog, shellWindow, {
@@ -5310,16 +5437,20 @@ async function savePdfAs(): Promise<void> {
       defaultPath: tab.filePath,
       filters: [{ name: tm('filterPdf'), extensions: ['pdf'] }],
     })
-    if (picked.canceled || !picked.filePath || picked.filePath === tab.filePath) return
+    const target = pdfSaveAsTarget(picked, tab.filePath)
+    if (!target) return
     if (pdfIsDirty(tab.webContents.id)) {
       // Renderer applies its pending edits onto the source bytes; the pdf main
       // process writes the result to the picked path only
-      if (!(await requestPdfSaveAs(tab.webContents, picked.filePath))) return
+      if (!(await requestPdfSaveAs(tab.webContents, target))) return
     } else {
       // No pending edits → a byte-identical copy
-      copyFileSync(tab.filePath, picked.filePath)
+      copyFileSync(tab.filePath, target)
     }
-    openDocumentPath(picked.filePath)
+    openDocumentPath(target)
+  } catch (err) {
+    console.error('[shell] pdf save as failed:', err)
+    showErrorDialog(shellWindow, tm('errPdfSaveAsFailed'), err)
   } finally {
     savingPdfAs = false
     setPdfSaveAsInFlight(tab.webContents, false)
@@ -5396,7 +5527,7 @@ async function exportPdfAsDocxLocal(): Promise<void> {
       },
     )
     if (result === null) return
-    writeFileSync(picked.filePath, result.docx)
+    await atomicWriteFile(picked.filePath, result.docx)
 
     // degrade transparency (plan §7.6 dual-track split): whole scan → say so
     // once; individual image-fallback pages → name them;
@@ -5534,7 +5665,7 @@ async function exportPdfAsPptxLocal(): Promise<void> {
       },
     )
     if (result === null) return
-    writeFileSync(picked.filePath, result.pptx)
+    await atomicWriteFile(picked.filePath, result.pptx)
 
     // degrade transparency (same split as the Word export): whole scan vs
     // individual image-fallback pages
@@ -5644,7 +5775,7 @@ async function exportPdfAsXlsxLocal(): Promise<void> {
       },
     )
     if (result === null) return
-    writeFileSync(picked.filePath, result.xlsx)
+    await atomicWriteFile(picked.filePath, result.xlsx)
 
     // degrade transparency: pages that could not become cells got a notice
     // row on their worksheet instead of an image (a spreadsheet has none)
@@ -5795,7 +5926,7 @@ async function installMainProcessProxy(): Promise<void> {
 
 // ---- lifecycle (the shell is the only owner) ----
 
-let pendingLaunchPath = supportedFileIn(process.argv) ?? unsupportedFileIn(process.argv)
+let pendingLaunchPaths = collectLaunchPaths(process.argv)
 let controlServer: ControlServer | null = null
 
 // show() does not un-minimize, and on macOS ⌘W destroys the shell window while the
@@ -5807,6 +5938,12 @@ function revealShellWindow(): void {
   shellWindow?.focus()
 }
 
+function openLaunchPaths(paths: readonly string[]): void {
+  let opened = false
+  for (const filePath of paths) opened = openDocumentPath(filePath) || opened
+  if (!opened) tabManager?.openHomeTab()
+}
+
 // On macOS a file opened from Finder is not in argv; it arrives via the open-file event (before ready).
 // If another instance already holds the lock, this process exits, and the path must ride along in
 // the lock request's additionalData to the surviving instance — so the lock request is deferred
@@ -5814,20 +5951,17 @@ function revealShellWindow(): void {
 app.on('open-file', (event, filePath) => {
   event.preventDefault()
   if (!app.isReady()) {
-    pendingLaunchPath = filePath
+    if (!pendingLaunchPaths.includes(filePath)) pendingLaunchPaths.push(filePath)
     return
   }
   revealShellWindow()
-  if (!openDocumentPath(filePath)) tabManager?.openHomeTab()
+  openLaunchPaths([filePath])
 })
 
 app.on('second-instance', (_event, argv, _cwd, additionalData) => {
-  const file =
-    supportedFileIn(argv) ??
-    unsupportedFileIn(argv) ??
-    (additionalData as { launchPath?: string } | null)?.launchPath
+  const paths = collectLaunchPaths(argv, additionalData)
   revealShellWindow()
-  if (!file || !openDocumentPath(file)) tabManager?.openHomeTab()
+  openLaunchPaths(paths)
 })
 
 installNavigationGuard(app)
@@ -5912,7 +6046,10 @@ app.whenReady().then(async () => {
     await runHeadlessExportEntry(headlessArgv)
     return
   }
-  const lockData = () => (pendingLaunchPath ? { launchPath: pendingLaunchPath } : {})
+  const lockData = () =>
+    pendingLaunchPaths.length > 0
+      ? { launchPath: pendingLaunchPaths[0], launchPaths: pendingLaunchPaths }
+      : {}
   let hasLock = app.requestSingleInstanceLock(lockData())
   if (!hasLock && !app.isPackaged) {
     // Dev watch restart: electron-vite SIGTERMs the previous instance and spawns this
@@ -6094,8 +6231,8 @@ app.whenReady().then(async () => {
   setUpdateCheckInvoker(() => void checkForUpdatesNow())
   initAutoUpdater(() => shellWindow, currentUpdateChannel())
 
-  if (!pendingLaunchPath || !openDocumentPath(pendingLaunchPath)) tabManager?.openHomeTab()
-  pendingLaunchPath = null
+  openLaunchPaths(pendingLaunchPaths)
+  pendingLaunchPaths = []
 
   startControlServer(
     app.getPath('userData'),

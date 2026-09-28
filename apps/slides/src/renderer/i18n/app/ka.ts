@@ -258,4 +258,5 @@ export const ka = {
   appStatusSlidesUnhidden: '{count} სლაიდი გამოჩნდა',
   appStatusSummaryZoomInserted: '{count} ფილით შემაჯამებელი Zoom სლაიდი ჩაემატა',
   appStatusZoomsInserted: '{count} ზუმი ჩაემატა: შოუს დროს დააწკაპუნეთ შესაბამის სლაიდებზე გადასასვლელად',
+  appStatusPasteTruncated: 'Pasted text was too long and has been truncated',
 } satisfies Record<keyof typeof zh, string>

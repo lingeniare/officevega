@@ -65,6 +65,7 @@ const DATE_LOCALES: Record<Lang, string> = {
   he: 'he-IL',
   hi: 'hi-IN',
   'zh-TW': 'zh-TW',
+  vi: 'vi-VN',
   uz: 'uz-UZ',
   kk: 'kk-KZ',
   az: 'az-AZ',

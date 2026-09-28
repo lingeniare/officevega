@@ -223,6 +223,7 @@ export const ms = {
   aiSumSaveTemplate: 'Menyimpan templat gaya "{name}"',
   aiSumTemplatesEmpty: 'Templat gaya (kosong)',
   aiSumListTemplates: 'Menyenaraikan {count} templat gaya',
+  aiPageCloudToLocal: 'Awan tidak tersedia — dijana secara setempat',
   aiStageResearch: 'Penyelidikan web',
   aiStageResearchRunning: 'Mencari {n} topik…',
   aiStageResearchDone: '{n} topik dikaji',

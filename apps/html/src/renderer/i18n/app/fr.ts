@@ -7,6 +7,7 @@ export const fr = {
   saveFailed: "Échec de l'enregistrement : {error}",
   saveFailedStatus: "Échec de l'enregistrement",
   exportFailed: "Échec de l'export",
+  exportHtmlSkipped: 'Exporté, mais {count} ressource(s) n’ont pas pu être intégrées (ex. {first})',
   viewPreview: 'Aperçu',
   viewSplit: 'Scindé',
   viewSource: 'Source',
@@ -55,7 +56,6 @@ export const fr = {
   save: 'Enregistrer (⌘S)',
   saveAs: 'Enregistrer sous…',
   ribbonCollapse: 'Réduire le ruban',
-  ribbonPin: 'Épingler le ruban',
   ribbonExpand: 'Développer le ruban',
   ribbonGroupInsert: 'Insertion',
   editText: 'Modifier le texte',
@@ -164,4 +164,5 @@ export const fr = {
   insertImageTip: 'Insérer une image',
   insertTableTip: 'Insérer un tableau',
   insertMoreTip: 'Autres options d’insertion',
+  ribbonPin: 'Épingler le ruban',
 } satisfies Record<keyof typeof zh, string>

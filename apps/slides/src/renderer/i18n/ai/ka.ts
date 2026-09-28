@@ -266,4 +266,5 @@ export const ka = {
   aiStylePresetMinimalHint: 'ღია მინიმალიზმი — ჰაეროვანი თეთრი სივრცეები, თითქმის მონოქრომული პალიტრა ერთი თავშეკავებული აქცენტით, მშვიდი ზუსტი ტიპოგრაფია',
 
   aiClarifyPrev: 'წინა',
+  aiPageCloudToLocal: 'cloud unavailable — generated locally',
 } satisfies Record<keyof typeof zh, string>

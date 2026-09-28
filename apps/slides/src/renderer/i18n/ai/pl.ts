@@ -223,6 +223,7 @@ export const pl = {
   aiSumSaveTemplate: 'Zapisano szablon stylu „{name}”',
   aiSumTemplatesEmpty: 'Szablony stylu (pusto)',
   aiSumListTemplates: 'Wyświetlono szablony stylu: {count}',
+  aiPageCloudToLocal: 'Chmura niedostępna — wygenerowano lokalnie',
   aiStageResearch: 'Wyszukiwanie w sieci',
   aiStageResearchRunning: 'Szukam {n} temat(ów)…',
   aiStageResearchDone: 'Zbadano {n} temat(ów)',

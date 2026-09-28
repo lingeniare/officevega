@@ -14,7 +14,7 @@ export const pt = {
   ribbonTabSlideShow: 'Apresentação de Slides',
   ribbonTabReview: 'Revisão',
   ribbonCollapse: 'Recolher a Faixa de Opções',
-  ribbonPin: 'Fixar a Faixa de Opções',
+  ribbonExpand: 'Expandir a Faixa de Opções',
   ribbonTabView: 'Exibir',
   ribbonTabTableDesign: 'Design da Tabela',
   ribbonTabChartDesign: 'Design do Gráfico',
@@ -767,4 +767,5 @@ export const pt = {
   ribbonZoomSectionItem: 'Slide {n} Seção {k}: {name}',
   ribbonZoomSelectedSlides: '{n} slides selecionados',
   ribbonZoomSelectedSections: '{n} seções selecionadas',
+  ribbonPin: 'Fixar a Faixa de Opções',
 } satisfies Record<keyof typeof zh, string>

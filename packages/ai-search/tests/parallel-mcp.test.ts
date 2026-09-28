@@ -4,14 +4,15 @@ import { webSearch } from '../src/index'
 import { searchOptionsFromSettings, testSearchProvider } from '../src/search-tools'
 
 const endpoint = 'https://search.parallel.ai/mcp'
-const source = { title: 'GenOffice', url: 'https://example.com', excerpts: ['First.', 'Second.'] }
+const source = { title: 'OfficeVega', url: 'https://example.com', excerpts: ['First.', 'Second.'] }
 const payload = { results: [source, { ...source, title: 'Extra' }] }
 const fallback = () =>
   new Response('<a class="result__a" href="https://fallback.example.com">Fallback</a>')
 
 beforeEach(() => {
   vi.stubEnv('AI_SEARCH_DISABLE_GSK', '1')
-  for (const key of ['SERPER_API_KEY', 'TAVILY_API_KEY', 'PARALLEL_API_KEY']) vi.stubEnv(key, '')
+  for (const key of ['SERPER_API_KEY', 'SERPLY_API_KEY', 'TAVILY_API_KEY', 'PARALLEL_API_KEY'])
+    vi.stubEnv(key, '')
 })
 
 afterEach(() => {
@@ -68,7 +69,7 @@ describe('Parallel free Search MCP', () => {
     })
     expect(r).toEqual({
       method: 'parallel',
-      results: [{ title: 'GenOffice', url: 'https://example.com', snippet: 'First.\nSecond.' }],
+      results: [{ title: 'OfficeVega', url: 'https://example.com', snippet: 'First.\nSecond.' }],
     })
     expect(requests.find((r) => r.body.method === 'tools/call')?.body.params).toEqual({
       name: 'web_search',
@@ -106,10 +107,24 @@ describe('Parallel free Search MCP', () => {
     expect(requests.every((r) => r.url === endpoint)).toBe(true)
   })
 
-  it('does not add anonymous MCP requests to the unselected default chain', async () => {
+  it('answers the unconfigured default chain anonymously before DuckDuckGo', async () => {
     const { requests } = mockServer({ content: [], structuredContent: payload })
-    expect((await webSearch('office')).method).toBe('duckduckgo')
-    expect(requests.some((r) => r.url === endpoint)).toBe(false)
+    expect((await webSearch('office')).method).toBe('parallel')
+    expect(requests.every((r) => r.url === endpoint)).toBe(true)
+  })
+
+  it('runs after a failing keyed provider and ahead of DuckDuckGo', async () => {
+    vi.stubEnv('TAVILY_API_KEY', 'tavily-key')
+    const { requests, fetch } = mockServer({ content: [], structuredContent: payload })
+    const respond = fetch.getMockImplementation()!
+    fetch.mockImplementation((url, init) =>
+      String(url) === 'https://api.tavily.com/search'
+        ? Promise.resolve(new Response('', { status: 401 }))
+        : respond(url, init),
+    )
+    expect((await webSearch('office')).method).toBe('parallel')
+    expect(String(fetch.mock.calls[0]?.[0])).toBe('https://api.tavily.com/search')
+    expect(requests.some((r) => r.url.includes('duckduckgo.com'))).toBe(false)
   })
 
   it.each([

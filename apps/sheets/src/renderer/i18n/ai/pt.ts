@@ -111,4 +111,6 @@ export const pt = {
   aiScopeRangeTip:
     'A IA interpreta "esta coluna / estas linhas / a parte selecionada" como este intervalo, que fica fixo durante toda a execução ao enviar',
   aiScopeClearTitle: 'Remover o escopo do intervalo e usar a planilha inteira',
+  aiGensparkAccount: 'Conta Genspark',
+  aiLoginGenspark: 'Entrar no Genspark',
 } satisfies Record<keyof typeof zh, string>

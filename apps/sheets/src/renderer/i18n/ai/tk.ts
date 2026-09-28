@@ -112,4 +112,6 @@ export const tk = {
   aiScopeRangeTip:
     'AI "şu sütüni / şu setirleri / saýlanan bölümi" şu aralyk hökmünde kabul edýär we ibereniňizden soň işiň dowamynda üýtgemeýär',
   aiScopeClearTitle: 'Aralyk çägini aýyr we tutuş sahypany nyşana al',
+  aiGensparkAccount: 'Genspark account',
+  aiLoginGenspark: 'Sign in to Genspark',
 } satisfies Record<keyof typeof zh, string>

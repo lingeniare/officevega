@@ -7,7 +7,7 @@ import { imageSearch, webSearch } from '../src/index'
 import { searchOptionsFromSettings, testSearchProvider, webSearchTool } from '../src/search-tools'
 
 const endpoint = 'https://api.parallel.ai/v1/search'
-const result = { title: 'GenOffice', url: 'https://example.com', excerpts: ['First.', 'Second.'] }
+const result = { title: 'OfficeVega', url: 'https://example.com', excerpts: ['First.', 'Second.'] }
 const response = () =>
   Response.json({ search_id: 'test-search', session_id: 'test-session', results: [result] })
 const fallback = () =>
@@ -16,8 +16,9 @@ let dir: string
 
 beforeEach(() => {
   vi.stubEnv('AI_SEARCH_DISABLE_GSK', '1')
-  for (const key of ['SERPER_API_KEY', 'TAVILY_API_KEY', 'PARALLEL_API_KEY']) vi.stubEnv(key, '')
-  dir = mkdtempSync(join(tmpdir(), 'genoffice-parallel-'))
+  for (const key of ['SERPER_API_KEY', 'SERPLY_API_KEY', 'TAVILY_API_KEY', 'PARALLEL_API_KEY'])
+    vi.stubEnv(key, '')
+  dir = mkdtempSync(join(tmpdir(), 'officevega-parallel-'))
 })
 
 afterEach(() => {
@@ -44,7 +45,7 @@ describe('Parallel search', () => {
       }),
     ).toEqual({
       method: 'parallel',
-      results: [{ title: 'GenOffice', url: 'https://example.com', snippet: 'First.\nSecond.' }],
+      results: [{ title: 'OfficeVega', url: 'https://example.com', snippet: 'First.\nSecond.' }],
     })
     expect(fetch).toHaveBeenCalledTimes(1)
     const [url, init] = fetch.mock.calls[0] as unknown as [string, RequestInit]
@@ -133,6 +134,33 @@ describe('Parallel search', () => {
     expect((await webSearch('office', 1, { parallelKey: 'key' })).results).toEqual([
       { title: 'https://example.com', url: 'https://example.com', snippet: 'Useful.' },
     ])
+  })
+
+  it('stops mapping results once the caller limit is filled', async () => {
+    const mapped = new Set<number>()
+    const many = Array.from({ length: 40 }, (_, i) => ({
+      title: `Result ${i}`,
+      url: `https://example.com/${i}`,
+      // A getter so the test can see which results were mapped; Response.json would
+      // have flattened this into a plain value before the search ever saw it.
+      get excerpts() {
+        mapped.add(i)
+        return [`Excerpt ${i}.`]
+      },
+    }))
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(
+        async () => ({ ok: true, json: async () => ({ results: many }) }) as unknown as Response,
+      ),
+    )
+    const found = await webSearch('office', 3, { parallelKey: 'key', prefer: 'parallel' })
+    expect(found.method).toBe('parallel')
+    expect(found.results).toHaveLength(3)
+    expect(found.results[0]?.snippet).toBe('Excerpt 0.')
+    // v1 search returns everything it has, so the 37 results past the limit used to
+    // have their excerpts concatenated and then thrown away
+    expect([...mapped]).toEqual([0, 1, 2])
   })
 
   it('aborts a stalled request and continues to the fallback', async () => {

@@ -73,6 +73,7 @@ export type AiMediaProviderId =
   | 'xai'
   | 'qwen'
   | 'minimax'
+  | 'deepseek'
   | 'custom'
 
 /** wire shape of the image endpoint */
@@ -130,8 +131,14 @@ export interface AiMediaSettings {
   provider?: AiMediaProviderId | undefined
 }
 
-/** web/image search backends: VEGA, account sign-in (gsk), or a user key for Serper / Tavily / Parallel (Parallel also runs keyless) */
-export type AiSearchProviderId = 'genspark' | 'vega' | 'serper' | 'tavily' | 'parallel'
+/** web/image search backends: VEGA, account sign-in (gsk), or a user key for Serper / Serply / Tavily / Parallel (Parallel also runs keyless) */
+export type AiSearchProviderId =
+  | 'genspark'
+  | 'vega'
+  | 'serper'
+  | 'serply'
+  | 'tavily'
+  | 'parallel'
 
 export interface AiSearchProviderMeta {
   id: AiSearchProviderId

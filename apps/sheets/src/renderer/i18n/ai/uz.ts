@@ -112,4 +112,6 @@ export const uz = {
   aiScopeRangeTip:
     'AI "ushbu ustun / ushbu qatorlar / tanlangan qism"ni mana shu oraliq sifatida qabul qiladi va yuborganingizdan so‘ng bajarilish davomida u o‘zgarmaydi',
   aiScopeClearTitle: 'Oraliq doirasini olib tashlab, butun varaqni nishonga oling',
+  aiGensparkAccount: 'Genspark account',
+  aiLoginGenspark: 'Sign in to Genspark',
 } satisfies Record<keyof typeof zh, string>

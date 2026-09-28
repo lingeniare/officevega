@@ -1,4 +1,4 @@
-import type { AgentTransport } from './types'
+import type { AgentStreamHandle, AgentTransport } from './types'
 
 /**
  * One tool-less streaming request whose reply body IS the artifact (a page, a
@@ -37,6 +37,9 @@ export function streamText(opts: StreamTextOptions): Promise<StreamTextOutcome> 
     let raw = ''
     let stopReason: string | undefined
     let settled = false
+    let handle: AgentStreamHandle | null = null
+    let onAbort: () => void = () => undefined
+    let cancelRequested = false
     // Fallback cap when the caller passes NaN, Infinity, zero, or a negative limit.
     const FALLBACK_MAX_CHARS = 200000
     const maxChars =
@@ -66,7 +69,20 @@ export function streamText(opts: StreamTextOptions): Promise<StreamTextOutcome> 
         ? { status: 'partial', text: extracted.text, reason }
         : { status: 'partial', text: extracted.text, reason, error: resolvedError }
     }
-    const handle = opts.transport.stream(
+    const cancelTransport = () => {
+      cancelRequested = true
+      handle?.cancel()
+    }
+    onAbort = () => {
+      if (settled) return
+      finish(partialOrEmpty('stopped'))
+      cancelTransport()
+    }
+    if (opts.signal?.aborted) {
+      onAbort()
+      return
+    }
+    handle = opts.transport.stream(
       {
         system: opts.system,
         messages: [{ role: 'user', text: opts.user }],
@@ -78,8 +94,8 @@ export function streamText(opts: StreamTextOptions): Promise<StreamTextOutcome> 
           if (settled) return
           raw += delta
           if (raw.length > maxChars) {
-            handle.cancel()
             finish(partialOrEmpty('max_tokens', `output exceeded ${maxChars} chars`))
+            cancelTransport()
             return
           }
           try {
@@ -111,11 +127,9 @@ export function streamText(opts: StreamTextOptions): Promise<StreamTextOutcome> 
         onError: (error) => finish(partialOrEmpty('error', error)),
       },
     )
-    const onAbort = () => {
-      handle.cancel()
-      finish(partialOrEmpty('stopped'))
-    }
-    if (opts.signal?.aborted) onAbort()
+    if (settled) {
+      if (cancelRequested) handle.cancel()
+    } else if (opts.signal?.aborted) onAbort()
     else opts.signal?.addEventListener('abort', onAbort, { once: true })
   })
 }

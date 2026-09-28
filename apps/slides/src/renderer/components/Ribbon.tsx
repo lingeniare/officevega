@@ -16,8 +16,8 @@ import type { ChartStyleInfo } from '@genoffice/pptx-render'
 import {
   useDismissablePopover,
   useRibbonCollapse,
-  Dropdown,
   RibbonCollapseButton,
+  Dropdown,
   THEME_COLORS,
   THEME_COLOR_SHADES,
   STANDARD_COLORS,

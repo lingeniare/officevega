@@ -109,4 +109,6 @@ export const id = {
   aiScopeRangeTip:
     'AI membaca "kolom ini / baris ini / bagian yang dipilih" sebagai rentang ini, dan dikunci selama proses berjalan setelah Anda mengirim',
   aiScopeClearTitle: 'Hapus cakupan rentang dan gunakan seluruh lembar',
+  aiGensparkAccount: 'Akun Genspark',
+  aiLoginGenspark: 'Masuk ke Genspark',
 } satisfies Record<keyof typeof zh, string>

@@ -7,6 +7,8 @@ export const it = {
   saveFailed: 'Salvataggio non riuscito: {error}',
   saveFailedStatus: 'Salvataggio non riuscito',
   exportFailed: 'Esportazione non riuscita',
+  exportHtmlSkipped:
+    'Esportato, ma {count} risorsa/e non è stato possibile incorporarle (es. {first})',
   viewPreview: 'Anteprima',
   viewSplit: 'Diviso',
   viewSource: 'Sorgente',
@@ -55,7 +57,6 @@ export const it = {
   save: 'Salva (⌘S)',
   saveAs: 'Salva con nome…',
   ribbonCollapse: 'Riduci a icona la barra multifunzione',
-  ribbonPin: 'Aggiungi la barra multifunzione',
   ribbonExpand: 'Espandi la barra multifunzione',
   ribbonGroupInsert: 'Inserisci',
   editText: 'Modifica testo',
@@ -164,4 +165,5 @@ export const it = {
   insertImageTip: "Inserisci un'immagine",
   insertTableTip: 'Inserisci una tabella',
   insertMoreTip: 'Altre opzioni di inserimento',
+  ribbonPin: 'Aggiungi la barra multifunzione',
 } satisfies Record<keyof typeof zh, string>

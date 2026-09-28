@@ -1,6 +1,15 @@
 import { spawnSync } from 'node:child_process'
-import { accessSync, constants, lstatSync, readlinkSync, symlinkSync, unlinkSync } from 'node:fs'
-import { join, win32 } from 'node:path'
+import {
+  accessSync,
+  constants,
+  existsSync,
+  lstatSync,
+  readlinkSync,
+  realpathSync,
+  symlinkSync,
+  unlinkSync,
+} from 'node:fs'
+import { basename, dirname, isAbsolute, join, resolve, win32 } from 'node:path'
 
 /**
  * Making `officevega` reachable from a terminal. The launcher ships inside the app
@@ -65,6 +74,7 @@ export function installCliLink(opts: InstallOptions): InstallOutcome {
     }
     if (!writable(dir)) continue
     try {
+      // ours from another install dir, or a dead link nobody can run
       if (state !== 'missing') unlinkSync(link)
       symlinkSync(opts.launcher, link)
       return { status: 'linked', location: link }
@@ -105,20 +115,44 @@ function manualCommand(launcher: string): string {
   return `sudo mkdir -p /usr/local/bin && sudo ln -sf "${launcher}" /usr/local/bin/officevega`
 }
 
-function linkState(path: string, launcher: string): 'missing' | 'ours' | 'file' | 'foreign' {
+function linkState(
+  path: string,
+  launcher: string,
+): 'missing' | 'ours' | 'dangling' | 'file' | 'foreign' {
   try {
     const st = lstatSync(path)
     if (!st.isSymbolicLink()) return 'file'
     const target = readlinkSync(path)
-    return target === launcher || isOurLauncher(target) ? 'ours' : 'foreign'
+    if (target === launcher) return 'ours'
+    const resolved = isAbsolute(target) ? target : resolve(dirname(path), target)
+    if (!existsSync(resolved)) return 'dangling'
+    return isOurLauncher(resolved, launcher) ? 'ours' : 'foreign'
   } catch {
     return 'missing'
   }
 }
 
-/** Only launchers we shipped (<app resources>/cli/officevega, any version or install dir) may be replaced. */
-function isOurLauncher(target: string): boolean {
-  return /[\\/]cli[\\/]officevega$/.test(target)
+/**
+ * A link is ours when it resolves to the launcher we are installing, or to an
+ * `officevega`/`vegaoffice` launcher shipped by another copy of the app (an
+ * earlier version, a second install dir, or the pre-rename build): one that has
+ * our CLI bundle or the Windows twin beside it. A path that merely ends in
+ * `/cli/officevega` belongs to whoever put it there.
+ */
+export function isOurLauncher(target: string, launcher: string): boolean {
+  let real: string
+  try {
+    real = realpathSync(target)
+  } catch {
+    return false
+  }
+  try {
+    if (real === realpathSync(launcher)) return true
+  } catch {}
+  const base = basename(real)
+  if (base !== 'officevega' && base !== 'vegaoffice') return false
+  const dir = dirname(real)
+  return existsSync(join(dir, `${base}.cjs`)) || existsSync(join(dir, `${base}.cmd`))
 }
 
 function writable(dir: string): boolean {

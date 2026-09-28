@@ -768,4 +768,5 @@ export const tk = {
   ribbonZoomSelectedSlides: '{n} slayd saýlandy',
   ribbonZoomSlide: 'Slayd Zoom',
   ribbonZoomSummary: 'Gysgaça Zoom',
+  ribbonExpand: 'Expand the Ribbon',
 } satisfies Record<keyof typeof zh, string>

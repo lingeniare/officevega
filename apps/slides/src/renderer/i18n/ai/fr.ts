@@ -225,6 +225,7 @@ export const fr = {
   aiSumSaveTemplate: 'Modèle de style « {name} » enregistré',
   aiSumTemplatesEmpty: 'Modèles de style (vide)',
   aiSumListTemplates: '{count} modèles de style listés',
+  aiPageCloudToLocal: 'Cloud indisponible — généré localement',
   aiStageResearch: 'Recherche sur le web',
   aiStageResearchRunning: 'Recherche de {n} sujet(s)…',
   aiStageResearchDone: '{n} sujet(s) documenté(s)',

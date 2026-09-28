@@ -164,4 +164,5 @@ export const ka = {
   insertTableTip: 'ცხრილის ჩასმა',
   insertMoreTip: 'ჩასმის დამატებითი პარამეტრები',
   elementPath: 'ელემენტის გზა',
+  exportHtmlSkipped: 'Exported, but {count} asset(s) could not be inlined (e.g. {first})',
 } satisfies Record<keyof typeof zh, string>

@@ -763,4 +763,5 @@ export const az = {
   ribbonZoomSelectedSlides: '{n} slayd seçildi',
   ribbonZoomSlide: 'Slayd Zoom',
   ribbonZoomSummary: 'Xülasə Zoom',
+  ribbonExpand: 'Expand the Ribbon',
 } satisfies Record<keyof typeof zh, string>

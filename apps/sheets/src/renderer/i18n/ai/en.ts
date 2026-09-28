@@ -111,4 +111,6 @@ export const en = {
   aiScopeRangeTip:
     'AI reads "this column / these rows / the selected part" as this range, and it stays fixed for the run once you send',
   aiScopeClearTitle: 'Drop the range scope and target the whole sheet',
+  aiGensparkAccount: 'Genspark account',
+  aiLoginGenspark: 'Sign in to Genspark',
 } satisfies Record<keyof typeof zh, string>

@@ -1364,4 +1364,6 @@ export const tt = {
   appReplaceTip: 'Текстны табу һәм алыштыру',
   appScreenshotTip: 'Экран сурәте кую',
   appSymbolTip: 'Символ кертү',
+  appOpeningWorkbook: 'Opening workbook…',
+  appRibbonExpand: 'Expand the Ribbon',
 } satisfies Record<keyof typeof zh, string>

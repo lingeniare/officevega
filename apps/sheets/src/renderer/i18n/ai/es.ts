@@ -113,4 +113,6 @@ export const es = {
   aiScopeRangeTip:
     'La IA interpreta «esta columna / estas filas / la parte seleccionada» como este rango, y al enviar queda fijo durante toda la ejecución',
   aiScopeClearTitle: 'Quitar el ámbito del rango y usar toda la hoja',
+  aiGensparkAccount: 'Cuenta de Genspark',
+  aiLoginGenspark: 'Iniciar sesión en Genspark',
 } satisfies Record<keyof typeof zh, string>

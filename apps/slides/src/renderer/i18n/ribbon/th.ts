@@ -15,7 +15,7 @@ export const th = {
   ribbonTabSlideShow: 'การนำเสนอสไลด์',
   ribbonTabReview: 'รีวิว',
   ribbonCollapse: 'ยุบ Ribbon',
-  ribbonPin: 'ปักหมุด Ribbon',
+  ribbonExpand: 'ขยาย Ribbon',
   ribbonTabView: 'มุมมอง',
   ribbonTabTableDesign: 'การออกแบบตาราง',
   ribbonTabChartDesign: 'การออกแบบแผนภูมิ',
@@ -749,4 +749,5 @@ export const th = {
   ribbonZoomSectionItem: 'สไลด์ {n} ส่วน {k}: {name}',
   ribbonZoomSelectedSlides: 'เลือกแล้ว {n} สไลด์',
   ribbonZoomSelectedSections: 'เลือกแล้ว {n} ส่วน',
+  ribbonPin: 'ปักหมุด Ribbon',
 } satisfies Record<keyof typeof zh, string>

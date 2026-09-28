@@ -253,4 +253,5 @@ export const tk = {
   appStatusSlidesUnhidden: '{count} slayd görkezildi',
   appStatusSummaryZoomInserted: '{count} plitkaly Gysgaça Zoom slaydy goşuldy',
   appStatusZoomsInserted: '{count} masshtab goşuldy: slayd-şouda basyp şol slaydlara geçiň',
+  appStatusPasteTruncated: 'Pasted text was too long and has been truncated',
 } satisfies Record<keyof typeof zh, string>

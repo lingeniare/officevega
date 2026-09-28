@@ -164,4 +164,5 @@ export const ky = {
   insertTableTip: 'Таблица кыстаруу',
   insertMoreTip: 'Кошумча киргизүү параметрлери',
   elementPath: 'Элемент жолу',
+  exportHtmlSkipped: 'Exported, but {count} asset(s) could not be inlined (e.g. {first})',
 } satisfies Record<keyof typeof zh, string>

@@ -14,7 +14,7 @@ export const pl = {
   ribbonTabSlideShow: 'Pokaz slajdów',
   ribbonTabReview: 'Recenzja',
   ribbonCollapse: 'Zwiń Wstążkę',
-  ribbonPin: 'Przypnij Wstążkę',
+  ribbonExpand: 'Rozwiń Wstążkę',
   ribbonTabView: 'Widok',
   ribbonTabTableDesign: 'Projekt tabeli',
   ribbonTabChartDesign: 'Projekt wykresu',
@@ -768,4 +768,5 @@ export const pl = {
   ribbonZoomSectionItem: 'Slajd {n} Sekcja {k}: {name}',
   ribbonZoomSelectedSlides: 'Wybrano slajdów: {n}',
   ribbonZoomSelectedSections: 'Wybrano sekcji: {n}',
+  ribbonPin: 'Przypnij Wstążkę',
 } satisfies Record<keyof typeof zh, string>

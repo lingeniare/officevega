@@ -488,6 +488,7 @@ export const id = {
   appColumnLabel: 'Kolom {col}',
   appBridgeUnavailable: 'Jembatan file desktop tidak tersedia. Mulai ulang aplikasi Electron.',
   appOpenCanceled: 'Pemilihan buku kerja dibatalkan.',
+  appOpeningWorkbook: 'Membuka buku kerja…',
   appOpened: '{name} dibuka — pengeditan sel disimpan kembali dengan ⌘S.',
   appOpenFailed: 'Tidak dapat membuka buku kerja.',
   appPageSetupNeedsFile: 'Buka file XLSX dahulu — pengaturan halaman disimpan ke file.',
@@ -659,7 +660,7 @@ export const id = {
   appTabData: 'Data',
   appTabReview: 'Tinjau',
   appRibbonCollapse: 'Ciutkan Pita',
-  appRibbonPin: 'Sematkan Pita',
+  appRibbonExpand: 'Perluas Pita',
   appTabView: 'Tampilan',
   appTabAi: 'AI',
   appTabChartDesign: 'Desain Bagan',
@@ -1355,4 +1356,5 @@ export const id = {
   appReplaceTip: 'Cari dan ganti teks',
   appScreenshotTip: 'Sisipkan cuplikan layar',
   appSymbolTip: 'Sisipkan simbol',
+  appRibbonPin: 'Sematkan Pita',
 } satisfies Record<keyof typeof zh, string>

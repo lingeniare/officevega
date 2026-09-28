@@ -14,7 +14,7 @@ export const nl = {
   ribbonTabSlideShow: 'Diavoorstelling',
   ribbonTabReview: 'Controleren',
   ribbonCollapse: 'Het lint samenvouwen',
-  ribbonPin: 'Het lint vastmaken',
+  ribbonExpand: 'Het lint uitvouwen',
   ribbonTabView: 'Beeld',
   ribbonTabTableDesign: 'Tabelontwerp',
   ribbonTabChartDesign: 'Grafiekontwerp',
@@ -772,4 +772,5 @@ export const nl = {
   ribbonZoomSectionItem: 'Dia {n} Sectie {k}: {name}',
   ribbonZoomSelectedSlides: "{n} dia's geselecteerd",
   ribbonZoomSelectedSections: '{n} secties geselecteerd',
+  ribbonPin: 'Het lint vastmaken',
 } satisfies Record<keyof typeof zh, string>

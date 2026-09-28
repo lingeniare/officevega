@@ -15,7 +15,7 @@ export const de = {
   ribbonTabSlideShow: 'Bildschirmpräsentation',
   ribbonTabReview: 'Überprüfen',
   ribbonCollapse: 'Menüband reduzieren',
-  ribbonPin: 'Menüband anheften',
+  ribbonExpand: 'Menüband erweitern',
   ribbonTabView: 'Ansicht',
   ribbonTabTableDesign: 'Tabellenentwurf',
   ribbonTabChartDesign: 'Diagrammentwurf',
@@ -773,4 +773,5 @@ export const de = {
   ribbonZoomSectionItem: 'Folie {n} Abschnitt {k}: {name}',
   ribbonZoomSelectedSlides: '{n} Folien ausgewählt',
   ribbonZoomSelectedSections: '{n} Abschnitte ausgewählt',
+  ribbonPin: 'Menüband anheften',
 } satisfies Record<keyof typeof zh, string>

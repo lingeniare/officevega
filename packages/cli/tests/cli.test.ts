@@ -114,8 +114,15 @@ describe('officevega cli', () => {
   })
 
   it('open fails with exit code 4 when no app binary is available', async () => {
+    // A OfficeVega already running on this machine publishes its control endpoint in the
+    // user-data dir; `open` would then hand the file to that live instance and exit 0,
+    // never reaching the missing-binary path. Isolate the lookup like control.test.ts does.
     const r = await run(['open', DOCX, '--json'], {
-      env: { OFFICEVEGA_APP_BIN: '/nonexistent/OfficeVega' },
+      env: {
+        OFFICEVEGA_APP_BIN: '/nonexistent/OfficeVega',
+        OFFICEVEGA_USER_DATA: tempDir(),
+        OFFICEVEGA_AUDIT_LOG: 'off',
+      },
     })
     expect(r.code).toBe(4)
   })

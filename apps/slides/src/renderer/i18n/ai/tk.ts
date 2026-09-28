@@ -264,4 +264,5 @@ export const tk = {
   aiStylePresetMinimalHint: 'ýagty minimal — giň boş ýerler, bir çäklendiriji akýsentli ýakyn monoxrom palitra, ýumşak takyk tipografiýa',
 
   aiClarifyPrev: 'Öňki',
+  aiPageCloudToLocal: 'cloud unavailable — generated locally',
 } satisfies Record<keyof typeof zh, string>

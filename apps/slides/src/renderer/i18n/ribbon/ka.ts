@@ -766,4 +766,5 @@ export const ka = {
   ribbonZoomSelectedSlides: '{n} სლაიდი მონიშნულია',
   ribbonZoomSlide: 'სლაიდის Zoom',
   ribbonZoomSummary: 'შემაჯამებელი Zoom',
+  ribbonExpand: 'Expand the Ribbon',
 } satisfies Record<keyof typeof zh, string>

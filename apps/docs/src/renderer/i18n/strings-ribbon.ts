@@ -19,6 +19,7 @@ import { ms } from './ribbon/ms'
 import { he } from './ribbon/he'
 import { hi } from './ribbon/hi'
 import { zhTW } from './ribbon/zh-TW'
+import { vi } from './ribbon/vi'
 import { uz } from './ribbon/uz'
 import { kk } from './ribbon/kk'
 import { az } from './ribbon/az'
@@ -49,6 +50,7 @@ export const ribbonStrings = defineStrings({
   he,
   hi,
   'zh-TW': zhTW,
+  vi,
   uz,
   kk,
   az,

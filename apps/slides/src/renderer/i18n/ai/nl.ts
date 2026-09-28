@@ -225,6 +225,7 @@ export const nl = {
   aiSumSaveTemplate: 'Stijlsjabloon "{name}" opgeslagen',
   aiSumTemplatesEmpty: 'Stijlsjablonen (leeg)',
   aiSumListTemplates: '{count} stijlsjablonen weergegeven',
+  aiPageCloudToLocal: 'Cloud niet beschikbaar — lokaal gegenereerd',
   aiStageResearch: 'Zoeken op het web',
   aiStageResearchRunning: 'Zoeken naar {n} onderwerp(en)…',
   aiStageResearchDone: '{n} onderwerp(en) onderzocht',

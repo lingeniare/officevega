@@ -15,7 +15,7 @@ export const ja = {
   ribbonTabSlideShow: 'スライドショー',
   ribbonTabReview: '校閲',
   ribbonCollapse: 'リボンを折りたたむ',
-  ribbonPin: 'リボンの固定',
+  ribbonExpand: 'リボンを展開する',
   ribbonTabView: '表示',
   ribbonTabTableDesign: 'テーブルデザイン',
   ribbonTabChartDesign: 'グラフのデザイン',
@@ -779,4 +779,5 @@ export const ja = {
   ribbonZoomSectionItem: 'スライド {n} セクション {k}: {name}',
   ribbonZoomSelectedSlides: '{n} 枚のスライドを選択中',
   ribbonZoomSelectedSections: '{n} 個のセクションを選択中',
+  ribbonPin: 'リボンの固定',
 } satisfies Record<keyof typeof zh, string>

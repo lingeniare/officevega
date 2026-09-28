@@ -19,6 +19,7 @@ export type Lang =
   | 'he'
   | 'hi'
   | 'zh-TW'
+  | 'vi'
   | 'uz'
   | 'kk'
   | 'az'
@@ -48,6 +49,7 @@ export const LANGS: readonly Lang[] = [
   'he',
   'hi',
   'zh-TW',
+  'vi',
   'uz',
   'kk',
   'az',
@@ -99,6 +101,7 @@ const HTML_LANGS: Record<Lang, string> = {
   he: 'he-IL',
   hi: 'hi-IN',
   'zh-TW': 'zh-TW',
+  vi: 'vi-VN',
   uz: 'uz-UZ',
   kk: 'kk-KZ',
   az: 'az-AZ',
@@ -227,5 +230,5 @@ export function onUiLangChange(listener: (lang: Lang) => void): () => void {
  */
 export function createI18n<D extends Record<string, string>>(dicts: LangDicts<D>) {
   return (lang: Lang, key: keyof D, params?: Params): string =>
-    platformShortcuts(format(dicts[lang][key], params))
+    format(platformShortcuts(dicts[lang][key]), params)
 }

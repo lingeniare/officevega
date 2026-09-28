@@ -216,6 +216,7 @@ export const zhTW = {
   aiSumSaveTemplate: '儲存風格範本"{name}"',
   aiSumTemplatesEmpty: '風格範本清單（空）',
   aiSumListTemplates: '列出 {count} 個風格範本',
+  aiPageCloudToLocal: '雲端不可用,已本地生成',
   aiStageResearch: '聯網搜尋資料',
   aiStageResearchRunning: '正在搜尋 {n} 個主題…',
   aiStageResearchDone: '已搜尋 {n} 個主題',

@@ -264,4 +264,5 @@ export const kk = {
   aiStylePresetMinimalHint: 'жарық минимализм — ауадай бос кеңістік, бір ұстамды акценті бар дерлік монохром палитра, тыныш дәл типографика',
 
   aiClarifyPrev: 'Алдыңғы',
+  aiPageCloudToLocal: 'cloud unavailable — generated locally',
 } satisfies Record<keyof typeof zh, string>

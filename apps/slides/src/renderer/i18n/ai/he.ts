@@ -218,6 +218,7 @@ export const he = {
   aiSumSaveTemplate: 'תבנית הסגנון "{name}" נשמרה',
   aiSumTemplatesEmpty: 'תבניות סגנון (ריק)',
   aiSumListTemplates: 'הוצגו {count} תבניות סגנון',
+  aiPageCloudToLocal: 'הענן לא זמין — נוצר מקומית',
   aiStageResearch: 'חיפוש באינטרנט',
   aiStageResearchRunning: 'מחפש {n} נושאים…',
   aiStageResearchDone: 'נחקרו {n} נושאים',

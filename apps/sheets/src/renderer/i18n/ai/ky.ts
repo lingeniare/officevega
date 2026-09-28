@@ -113,4 +113,6 @@ export const ky = {
   aiScopeRangeTip:
     'AI «бул тилке / бул саптар / тандалган бөлүк» дегенди ушул диапазон катары окуйт жана жөнөткөндөн кийин аткаруу учурунда өзгөрбөйт',
   aiScopeClearTitle: 'Диапазондун чегин алып салып, бүтүндөй жадыбалга багыттоо',
+  aiGensparkAccount: 'Genspark account',
+  aiLoginGenspark: 'Sign in to Genspark',
 } satisfies Record<keyof typeof zh, string>

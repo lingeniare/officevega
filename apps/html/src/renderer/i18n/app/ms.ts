@@ -7,6 +7,7 @@ export const ms = {
   saveFailed: 'Gagal menyimpan: {error}',
   saveFailedStatus: 'Gagal menyimpan',
   exportFailed: 'Eksport gagal',
+  exportHtmlSkipped: 'Dieksport, tetapi {count} aset tidak dapat disisipkan (cth. {first})',
   viewPreview: 'Pratonton',
   viewSplit: 'Terbelah',
   viewSource: 'Sumber',
@@ -52,7 +53,6 @@ export const ms = {
   save: 'Simpan (⌘S)',
   saveAs: 'Simpan Sebagai…',
   ribbonCollapse: 'Runtuhkan Reben',
-  ribbonPin: 'Semat Reben',
   ribbonExpand: 'Kembangkan Reben',
   ribbonGroupInsert: 'Sisip',
   editText: 'Edit teks',
@@ -161,4 +161,5 @@ export const ms = {
   insertImageTip: 'Sisipkan imej',
   insertTableTip: 'Sisipkan jadual',
   insertMoreTip: 'Lebih banyak pilihan sisipan',
+  ribbonPin: 'Semat Reben',
 } satisfies Record<keyof typeof zh, string>

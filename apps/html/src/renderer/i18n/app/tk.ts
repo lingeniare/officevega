@@ -164,4 +164,5 @@ export const tk = {
   insertTableTip: 'Tablisa goş',
   insertMoreTip: 'Goşmak üçin has köp opsiýa',
   elementPath: 'Element ýoly',
+  exportHtmlSkipped: 'Exported, but {count} asset(s) could not be inlined (e.g. {first})',
 } satisfies Record<keyof typeof zh, string>

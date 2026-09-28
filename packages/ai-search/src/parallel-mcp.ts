@@ -2,12 +2,12 @@ import { Client } from '@modelcontextprotocol/sdk/client/index.js'
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js'
 import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js'
 
-/** Anonymous Search MCP: only used when the user selects Parallel with no key. */
+/** Anonymous Search MCP: the keyless Parallel path, also the default fallback before DuckDuckGo. */
 export async function parallelMcpSearch(query: string): Promise<unknown> {
   const controller = new AbortController()
   // Bound the entire handshake + tool call, including streamed response bodies.
   const timer = setTimeout(() => controller.abort(), 15000)
-  const client = new Client({ name: 'genoffice', version: '0.1.0' })
+  const client = new Client({ name: 'officevega', version: '0.1.0' })
   const transport = new StreamableHTTPClientTransport(new URL('https://search.parallel.ai/mcp'), {
     fetch: (input, init) =>
       fetch(input, {

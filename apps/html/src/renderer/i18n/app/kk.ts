@@ -164,4 +164,5 @@ export const kk = {
   insertTableTip: 'Кесте кірістіру',
   insertMoreTip: 'Қосымша кірістіру параметрлері',
   elementPath: 'Элемент жолы',
+  exportHtmlSkipped: 'Exported, but {count} asset(s) could not be inlined (e.g. {first})',
 } satisfies Record<keyof typeof zh, string>

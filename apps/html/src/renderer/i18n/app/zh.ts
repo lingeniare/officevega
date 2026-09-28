@@ -6,6 +6,7 @@ export const zh = {
   saveFailed: '保存失败：{error}',
   saveFailedStatus: '保存失败',
   exportFailed: '导出失败',
+  exportHtmlSkipped: '已导出，但有 {count} 个资源无法内嵌（如 {first}）',
   viewPreview: '预览',
   viewSplit: '分栏',
   viewSource: '源码',
@@ -50,7 +51,6 @@ export const zh = {
   save: '保存 (⌘S)',
   saveAs: '另存为…',
   ribbonCollapse: '折叠功能区',
-  ribbonPin: '固定功能区',
   ribbonExpand: '展开功能区',
   ribbonGroupInsert: '插入',
   editText: '编辑文字',
@@ -158,4 +158,5 @@ export const zh = {
   insertImageTip: '插入图片',
   insertTableTip: '插入表格',
   insertMoreTip: '更多插入选项',
+  ribbonPin: '固定功能区',
 }

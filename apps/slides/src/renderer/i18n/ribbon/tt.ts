@@ -765,4 +765,5 @@ export const tt = {
   ribbonZoomSelectedSlides: '{n} слайд сайланды',
   ribbonZoomSlide: 'Слайд Zoom',
   ribbonZoomSummary: 'Йомгаклау Zoom',
+  ribbonExpand: 'Expand the Ribbon',
 } satisfies Record<keyof typeof zh, string>

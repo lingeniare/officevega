@@ -1,10 +1,10 @@
 import { chmodSync, lstatSync, mkdirSync, readlinkSync, symlinkSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
+import { defaultCandidateDirs, inspectCliLink, installCliLink, isOurLauncher } from '../src/install'
 
 // symlinkSync needs elevated privileges on Windows — the POSIX link tests skip there
 const posix = process.platform !== 'win32'
-import { defaultCandidateDirs, inspectCliLink, installCliLink } from '../src/install'
 import { tempDir } from './helpers'
 
 describe('installCliLink', () => {
@@ -47,28 +47,30 @@ describe('installCliLink', () => {
       )
       expect(readlinkSync(join(bin, 'officevega'))).toBe(launcher)
 
-      const npm = join(dir, 'npm-bin')
-      mkdirSync(npm)
-      const npmTarget = join(dir, 'lib', 'node_modules', 'officevega', 'bin', 'officevega.js')
-      symlinkSync(npmTarget, join(npm, 'officevega'))
-      expect(installCliLink({ launcher, platform: 'linux', candidateDirs: [npm] }).status).toBe(
-        'occupied',
-      )
-      expect(readlinkSync(join(npm, 'officevega'))).toBe(npmTarget)
-      expect(inspectCliLink({ launcher, platform: 'linux', candidateDirs: [npm] }).status).toBe(
-        'occupied',
-      )
-      const spare = join(dir, 'spare-bin')
-      mkdirSync(spare)
-      expect(inspectCliLink({ launcher, platform: 'linux', candidateDirs: [npm, spare] })).toEqual({
-        status: 'missing',
-        location: join(spare, 'officevega'),
-        manual: expect.any(String),
-      })
-      expect(installCliLink({ launcher, platform: 'linux', candidateDirs: [npm, spare] })).toEqual({
-        status: 'linked',
-        location: join(spare, 'officevega'),
-      })
+    const npm = join(dir, 'npm-bin')
+    mkdirSync(npm)
+    const npmTarget = join(dir, 'lib', 'node_modules', 'officevega', 'bin', 'officevega.js')
+    mkdirSync(join(npmTarget, '..'), { recursive: true })
+    writeFileSync(npmTarget, '')
+    symlinkSync(npmTarget, join(npm, 'officevega'))
+    expect(installCliLink({ launcher, platform: 'linux', candidateDirs: [npm] }).status).toBe(
+      'occupied',
+    )
+    expect(readlinkSync(join(npm, 'officevega'))).toBe(npmTarget)
+    expect(inspectCliLink({ launcher, platform: 'linux', candidateDirs: [npm] }).status).toBe(
+      'occupied',
+    )
+    const spare = join(dir, 'spare-bin')
+    mkdirSync(spare)
+    expect(inspectCliLink({ launcher, platform: 'linux', candidateDirs: [npm, spare] })).toEqual({
+      status: 'missing',
+      location: join(spare, 'officevega'),
+      manual: expect.any(String),
+    })
+    expect(installCliLink({ launcher, platform: 'linux', candidateDirs: [npm, spare] })).toEqual({
+      status: 'linked',
+      location: join(spare, 'officevega'),
+    })
 
       const taken = join(dir, 'taken')
       mkdirSync(taken)
@@ -95,6 +97,65 @@ describe('installCliLink', () => {
       }
     },
   )
+
+  it.skipIf(!posix)(
+    'owns only launchers shipped with the app, not any path ending in /cli/officevega (genoffice#895)',
+    () => {
+    const dir = tempDir()
+    const launcher = join(dir, 'OfficeVega.app', 'Contents', 'Resources', 'cli', 'officevega')
+    mkdirSync(join(launcher, '..'), { recursive: true })
+    writeFileSync(launcher, '#!/bin/sh\n')
+    writeFileSync(join(launcher, '..', 'officevega.cjs'), '')
+
+    const vendor = join(dir, 'opt', 'vendor', 'cli', 'officevega')
+    mkdirSync(join(vendor, '..'), { recursive: true })
+    writeFileSync(vendor, '#!/bin/sh\necho vendor\n')
+    expect(isOurLauncher(vendor, launcher)).toBe(false)
+    const bin = join(dir, 'bin')
+    mkdirSync(bin)
+    symlinkSync(vendor, join(bin, 'officevega'))
+    expect(installCliLink({ launcher, platform: 'linux', candidateDirs: [bin] })).toEqual({
+      status: 'occupied',
+      location: join(bin, 'officevega'),
+      manual: expect.any(String),
+    })
+    expect(readlinkSync(join(bin, 'officevega'))).toBe(vendor)
+    expect(inspectCliLink({ launcher, platform: 'linux', candidateDirs: [bin] }).status).toBe(
+      'occupied',
+    )
+
+    const dead = join(dir, 'dead-bin')
+    mkdirSync(dead)
+    symlinkSync(join(dir, 'gone', 'cli', 'officevega'), join(dead, 'officevega'))
+    expect(installCliLink({ launcher, platform: 'linux', candidateDirs: [dead] }).status).toBe(
+      'linked',
+    )
+    expect(readlinkSync(join(dead, 'officevega'))).toBe(launcher)
+
+    const older = join(dir, 'opt', 'OfficeVega', 'resources', 'cli', 'officevega')
+    mkdirSync(join(older, '..'), { recursive: true })
+    writeFileSync(older, '#!/bin/sh\n')
+    writeFileSync(join(older, '..', 'officevega.cjs'), '')
+    expect(isOurLauncher(older, launcher)).toBe(true)
+    const upgraded = join(dir, 'upgraded-bin')
+    mkdirSync(upgraded)
+    symlinkSync(older, join(upgraded, 'officevega'))
+    expect(installCliLink({ launcher, platform: 'linux', candidateDirs: [upgraded] }).status).toBe(
+      'linked',
+    )
+    expect(readlinkSync(join(upgraded, 'officevega'))).toBe(launcher)
+
+    const alias = join(dir, 'Applications')
+    symlinkSync(join(dir, 'OfficeVega.app'), alias, 'dir')
+    const viaAlias = join(alias, 'Contents', 'Resources', 'cli', 'officevega')
+    expect(isOurLauncher(viaAlias, launcher)).toBe(true)
+    const relative = join(dir, 'relative-bin')
+    mkdirSync(relative)
+    symlinkSync(join('..', 'opt', 'vendor', 'cli', 'officevega'), join(relative, 'officevega'))
+    expect(installCliLink({ launcher, platform: 'linux', candidateDirs: [relative] }).status).toBe(
+      'occupied',
+    )
+  })
 
   it('reports a missing /usr/local/bin as unwritable instead of skipping it', () => {
     const dir = tempDir()

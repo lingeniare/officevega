@@ -14,7 +14,7 @@ export const en = {
   ribbonTabSlideShow: 'Slide Show',
   ribbonTabReview: 'Review',
   ribbonCollapse: 'Collapse the Ribbon',
-  ribbonPin: 'Pin the ribbon',
+  ribbonExpand: 'Expand the Ribbon',
   ribbonTabView: 'View',
   ribbonTabTableDesign: 'Table Design',
   ribbonTabChartDesign: 'Chart Design',
@@ -753,4 +753,5 @@ export const en = {
   ribbonZoomSectionItem: 'Slide {n} Section {k}: {name}',
   ribbonZoomSelectedSlides: '{n} slides selected',
   ribbonZoomSelectedSections: '{n} sections selected',
+  ribbonPin: 'Pin the ribbon',
 } satisfies Record<keyof typeof zh, string>

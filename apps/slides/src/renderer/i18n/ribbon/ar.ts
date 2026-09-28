@@ -15,7 +15,7 @@ export const ar = {
   ribbonTabSlideShow: 'عرض الشرائح',
   ribbonTabReview: 'مراجعة',
   ribbonCollapse: 'طي الشريط',
-  ribbonPin: 'تثبيت الشريط',
+  ribbonExpand: 'توسيع الشريط',
   ribbonTabView: 'عرض',
   ribbonTabTableDesign: 'تصميم الجدول',
   ribbonTabChartDesign: 'تصميم المخطط',
@@ -751,4 +751,5 @@ export const ar = {
   ribbonZoomSectionItem: 'الشريحة {n} المقطع {k}: {name}',
   ribbonZoomSelectedSlides: 'تم تحديد {n} شرائح',
   ribbonZoomSelectedSections: 'تم تحديد {n} مقاطع',
+  ribbonPin: 'تثبيت الشريط',
 } satisfies Record<keyof typeof zh, string>

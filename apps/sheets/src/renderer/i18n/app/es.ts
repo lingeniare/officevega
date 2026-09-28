@@ -522,6 +522,7 @@ export const es = {
   appBridgeUnavailable:
     'El puente de archivos de escritorio no está disponible. Reinicie la aplicación Electron.',
   appOpenCanceled: 'Selección de libro cancelada.',
+  appOpeningWorkbook: 'Abriendo libro…',
   appOpened: 'Se abrió {name} — las ediciones de celdas se vuelven a guardar con ⌘S.',
   appOpenFailed: 'No se puede abrir el libro.',
   appPageSetupNeedsFile:
@@ -698,7 +699,7 @@ export const es = {
   appTabData: 'Datos',
   appTabReview: 'Revisar',
   appRibbonCollapse: 'Contraer la cinta de opciones',
-  appRibbonPin: 'Anclar la cinta de opciones',
+  appRibbonExpand: 'Expandir la cinta de opciones',
   appTabView: 'Vista',
   appTabAi: 'IA',
   appTabChartDesign: 'Diseño de gráfico',
@@ -1396,4 +1397,5 @@ export const es = {
   appReplaceTip: 'Buscar y reemplazar texto',
   appScreenshotTip: 'Insertar una captura de pantalla',
   appSymbolTip: 'Insertar un símbolo',
+  appRibbonPin: 'Anclar la cinta de opciones',
 } satisfies Record<keyof typeof zh, string>

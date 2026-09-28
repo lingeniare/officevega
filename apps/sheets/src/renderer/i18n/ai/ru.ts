@@ -111,4 +111,6 @@ export const ru = {
   aiScopeRangeTip:
     'ИИ понимает «этот столбец / эти строки / выделенную часть» как этот диапазон; после отправки он фиксируется на весь запуск',
   aiScopeClearTitle: 'Снять область диапазона и работать со всем листом',
+  aiGensparkAccount: 'Учётная запись Genspark',
+  aiLoginGenspark: 'Войти в Genspark',
 } satisfies Record<keyof typeof zh, string>

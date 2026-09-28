@@ -222,6 +222,7 @@ export const ja = {
   aiSumSaveTemplate: 'スタイル テンプレート「{name}」を保存',
   aiSumTemplatesEmpty: 'スタイル テンプレート一覧（空）',
   aiSumListTemplates: '{count} 個のスタイル テンプレートを一覧表示',
+  aiPageCloudToLocal: 'クラウド生成不可効 — ローカルで生成',
   aiStageResearch: 'ウェブ調査',
   aiStageResearchRunning: '{n} 件のトピックを検索中…',
   aiStageResearchDone: '{n} 件のトピックを調査',

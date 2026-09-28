@@ -15,7 +15,7 @@ export const ko = {
   ribbonTabSlideShow: '슬라이드 쇼',
   ribbonTabReview: '검토',
   ribbonCollapse: '리본 축소',
-  ribbonPin: '리본 고정',
+  ribbonExpand: '리본 확장',
   ribbonTabView: '보기',
   ribbonTabTableDesign: '테이블 디자인',
   ribbonTabChartDesign: '차트 디자인',
@@ -770,4 +770,5 @@ export const ko = {
   ribbonZoomSectionItem: '슬라이드 {n} 구역 {k}: {name}',
   ribbonZoomSelectedSlides: '슬라이드 {n}개 선택됨',
   ribbonZoomSelectedSections: '구역 {n}개 선택됨',
+  ribbonPin: '리본 고정',
 } satisfies Record<keyof typeof zh, string>

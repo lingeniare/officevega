@@ -14,7 +14,7 @@ export const zhTW = {
   ribbonTabSlideShow: '投影片放映',
   ribbonTabReview: '校閱',
   ribbonCollapse: '摺疊功能區',
-  ribbonPin: '固定功能區',
+  ribbonExpand: '展開功能區',
   ribbonTabView: '檢視',
   ribbonTabTableDesign: '表格設計',
   ribbonTabChartDesign: '圖表設計',
@@ -735,4 +735,5 @@ export const zhTW = {
   ribbonZoomSectionItem: '第 {n} 頁　第 {k} 節：{name}',
   ribbonZoomSelectedSlides: '已選取 {n} 張投影片',
   ribbonZoomSelectedSections: '已選取 {n} 個節',
+  ribbonPin: '固定功能區',
 } satisfies Record<keyof typeof zh, string>

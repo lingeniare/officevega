@@ -428,6 +428,7 @@ export const zhTW = {
   appColumnLabel: '欄 {col}',
   appBridgeUnavailable: '桌面檔案橋接不可用。請重新啟動 Electron 應用程式。',
   appOpenCanceled: '已取消選擇活頁簿。',
+  appOpeningWorkbook: '正在開啟活頁簿…',
   appOpened: '已開啟 {name}——儲存格編輯用 ⌘S 儲存回檔案。',
   appOpenFailed: '無法開啟活頁簿。',
   appPageSetupNeedsFile: '請先開啟 XLSX 檔案——版面設定會儲存進檔案。',
@@ -575,7 +576,7 @@ export const zhTW = {
   appTabData: '資料',
   appTabReview: '校閱',
   appRibbonCollapse: '摺疊功能區',
-  appRibbonPin: '固定功能區',
+  appRibbonExpand: '展開功能區',
   appTabView: '檢視',
   appTabAi: 'AI',
   appTabChartDesign: '圖表設計',
@@ -1268,4 +1269,5 @@ export const zhTW = {
   appReplaceTip: '尋找及取代文字',
   appScreenshotTip: '插入螢幕擷取畫面',
   appSymbolTip: '插入符號',
+  appRibbonPin: '固定功能區',
 } satisfies Record<keyof typeof zh, string>

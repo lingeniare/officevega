@@ -15,7 +15,7 @@ export const es = {
   ribbonTabSlideShow: 'Presentación con diapositivas',
   ribbonTabReview: 'Revisar',
   ribbonCollapse: 'Contraer la cinta de opciones',
-  ribbonPin: 'Anclar la cinta de opciones',
+  ribbonExpand: 'Expandir la cinta de opciones',
   ribbonTabView: 'Vista',
   ribbonTabTableDesign: 'Diseño de tabla',
   ribbonTabChartDesign: 'Diseño de gráfico',
@@ -778,4 +778,5 @@ export const es = {
   ribbonZoomSectionItem: 'Diapositiva {n} Sección {k}: {name}',
   ribbonZoomSelectedSlides: '{n} diapositivas seleccionadas',
   ribbonZoomSelectedSections: '{n} secciones seleccionadas',
+  ribbonPin: 'Anclar la cinta de opciones',
 } satisfies Record<keyof typeof zh, string>

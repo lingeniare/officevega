@@ -355,7 +355,7 @@ describe('alignTableGapFills', () => {
   })
 })
 
-describe('page frames and sheets (differing-width documents, officevega#246)', () => {
+describe('page frames and sheets (differing-width documents, genoffice#246)', () => {
   const rect = (top: number, height: number, left = 0, width = 1056) =>
     ({ top, height, left, width, bottom: top + height, right: left + width }) as DOMRect
   /** wrap holding a paper and two gaps: page 0 (portrait) → page 1 (landscape) → page 2 (portrait) */
@@ -844,5 +844,15 @@ describe('rowFillAttrs', () => {
     expect(rowFillAttrs(310.4, 10.4)).toEqual({ style: 'height:310px', 'data-split-extra': '10.0' })
     expect(rowFillAttrs(309.6, 9.6)).toEqual({ style: 'height:310px', 'data-split-extra': '10.0' })
     expect(rowFillAttrs(310.4)).toEqual({ style: 'height:310px' })
+  })
+
+  // border-spacing 2px: the measured pitch is tr height + 2, so the tr gets the
+  // pitch less the gap and the extra is measured against the pitch it renders
+  it('takes the border-spacing gap out of a separate-borders row height', () => {
+    expect(rowFillAttrs(310.4, 10.4, 2)).toEqual({
+      style: 'height:308px',
+      'data-split-extra': '10.0',
+    })
+    expect(rowFillAttrs(310.4, 0, 2)).toEqual({ style: 'height:308px' })
   })
 })

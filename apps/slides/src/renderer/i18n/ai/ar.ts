@@ -221,6 +221,7 @@ export const ar = {
   aiSumSaveTemplate: 'حفظ قالب النمط "{name}"',
   aiSumTemplatesEmpty: 'قوالب الأنماط (فارغ)',
   aiSumListTemplates: 'سرد {count} من قوالب الأنماط',
+  aiPageCloudToLocal: 'السحابة غير متاحة — تم التوليد محليًا',
   aiStageResearch: 'البحث في الويب',
   aiStageResearchRunning: 'جارٍ البحث في {n} موضوع…',
   aiStageResearchDone: 'تم البحث في {n} موضوع',

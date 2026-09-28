@@ -486,4 +486,22 @@ export const zoteroStrings = defineStrings({
       'ამ დოკუმენტში სქოლიოებში ან ბოლო შენიშვნებში Zotero-ს ციტატებია, რომელთა განახლებაც OfficeVega-ს ჯერ არ შეუძლია. აქ Zotero-ს ბრძანებები გამორთულია, რათა ბიბლიოგრაფია უცვლელი დარჩეს.',
     zoteroGroup: 'Zotero',
   },
+  vi: {
+    zoteroCitation: 'Trích dẫn Zotero',
+    zoteroCitationTip: 'Thêm trích dẫn bằng Zotero; đặt con trỏ vào trích dẫn để chỉnh sửa',
+    zoteroBibliography: 'Danh mục tài liệu tham khảo Zotero',
+    zoteroBibliographyTip: 'Thêm hoặc chỉnh sửa danh mục tài liệu tham khảo bằng Zotero',
+    zoteroRefresh: 'Làm mới',
+    zoteroRefreshTip: 'Làm mới tất cả trích dẫn và danh mục tài liệu tham khảo Zotero',
+    zoteroDocumentSettings: 'Cài đặt tài liệu',
+    zoteroDocumentSettingsTip: 'Cài đặt tài liệu Zotero',
+    zoteroDocumentPreferences: 'Tùy chọn tài liệu',
+    zoteroRemoveCodes: 'Xóa mã trường',
+    zoteroConnectionError:
+      'Không thể kết nối với Zotero. Hãy khởi động Zotero và giữ ứng dụng luôn chạy.',
+    zoteroOperationError: 'Thao tác Zotero thất bại.',
+    zoteroNoteFieldsUnsupported:
+      'Tài liệu này có chứa trích dẫn Zotero trong chú thích cuối trang hoặc chú thích cuối tài liệu mà OfficeVega. Các lệnh Zotero đã bị tắt tại đây để giữ nguyên danh mục tài liệu tham khảo.',
+    zoteroGroup: 'Zotero',
+  },
 })

@@ -257,4 +257,5 @@ export const tt = {
   appStatusSlidesUnhidden: '{count} слайд күрсәтелде',
   appStatusSummaryZoomInserted: '{count} плитка белән Йомгаклау Zoom слайды кертелде',
   appStatusZoomsInserted: '{count} масштаб кертелде: слайд-шоуда басып шул слайдларга күчегез',
+  appStatusPasteTruncated: 'Pasted text was too long and has been truncated',
 } satisfies Record<keyof typeof zh, string>

@@ -111,4 +111,6 @@ export const ka = {
   aiScopeRangeTip:
     'AI „ამ სვეტს / ამ მწკრივებს / არჩეულ ნაწილს“ ამ დიაპაზონად აღიქვამს და გაგზავნის შემდეგ გაშვების განმავლობაში უცვლელი რჩება',
   aiScopeClearTitle: 'გააუქმეთ დიაპაზონის ფარგლები და მიმართეთ მთელ ფურცელს',
+  aiGensparkAccount: 'Genspark account',
+  aiLoginGenspark: 'Sign in to Genspark',
 } satisfies Record<keyof typeof zh, string>

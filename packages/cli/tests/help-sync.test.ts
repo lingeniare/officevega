@@ -61,10 +61,7 @@ async function helpFor(argv: string[]): Promise<string> {
  * the CLI README. Enforced in both directions below, so extending the skill (or
  * dropping a command) fails loudly instead of silently changing coverage.
  */
-const SKILL_COMMAND_OMISSIONS = new Map([
-  ['install-cli', 'host setup, not a document workflow'],
-  ['mcp', 'MCP transport for MCP clients, not a CLI document workflow'],
-])
+const SKILL_COMMAND_OMISSIONS = new Map([['install-cli', 'host setup, not a document workflow']])
 
 /**
  * Flags the README example fences legitimately omit: the fences show one common

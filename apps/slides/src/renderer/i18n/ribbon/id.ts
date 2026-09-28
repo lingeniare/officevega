@@ -15,7 +15,7 @@ export const id = {
   ribbonTabSlideShow: 'Peragaan Slide',
   ribbonTabReview: 'Tinjau',
   ribbonCollapse: 'Ciutkan Pita',
-  ribbonPin: 'Sematkan Pita',
+  ribbonExpand: 'Perluas Pita',
   ribbonTabView: 'Tampilan',
   ribbonTabTableDesign: 'Desain Tabel',
   ribbonTabChartDesign: 'Desain Bagan',
@@ -766,4 +766,5 @@ export const id = {
   ribbonZoomSectionItem: 'Slide {n} Bagian {k}: {name}',
   ribbonZoomSelectedSlides: '{n} slide dipilih',
   ribbonZoomSelectedSections: '{n} bagian dipilih',
+  ribbonPin: 'Sematkan Pita',
 } satisfies Record<keyof typeof zh, string>

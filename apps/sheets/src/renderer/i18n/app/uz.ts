@@ -1388,4 +1388,6 @@ export const uz = {
   appReplaceTip: 'Matnni topish va almashtirish',
   appScreenshotTip: 'Skrinshot kiritish',
   appSymbolTip: 'Belgi kiritish',
+  appOpeningWorkbook: 'Opening workbook…',
+  appRibbonExpand: 'Expand the Ribbon',
 } satisfies Record<keyof typeof zh, string>

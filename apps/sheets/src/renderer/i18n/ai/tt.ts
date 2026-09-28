@@ -112,4 +112,6 @@ export const tt = {
   aiScopeRangeTip:
     'AI "бу багана / бу юллар / сайланган өлеш" дигәнне шушы аралык дип аңлый, һәм сез җибәргәч, ул эш барышында үзгәрешсез кала',
   aiScopeClearTitle: 'Аралык чикләвен алып, бөтен битне максат итеп ал',
+  aiGensparkAccount: 'Genspark account',
+  aiLoginGenspark: 'Sign in to Genspark',
 } satisfies Record<keyof typeof zh, string>

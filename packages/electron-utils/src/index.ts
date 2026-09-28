@@ -2,7 +2,9 @@ export {
   buildContextMenuItems,
   contextMenuLabels,
   installContextMenu,
+  setContextMenuInterceptor,
   VIEW_IMAGE_CHANNEL,
+  type ContextMenuInterceptor,
   type ContextMenuItem,
   type ContextMenuLabels,
 } from './context-menu'
@@ -103,3 +105,4 @@ export {
   type RendererHost,
 } from './renderer-scheme'
 export { installRendererProtocol, registerRendererScheme } from './renderer-protocol'
+export { atomicWriteFile, writeJsonAtomic } from './atomic-write'

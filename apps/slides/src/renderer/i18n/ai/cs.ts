@@ -224,6 +224,7 @@ export const cs = {
   aiSumSaveTemplate: 'Uložena šablona stylu „{name}“',
   aiSumTemplatesEmpty: 'Šablony stylu (prázdné)',
   aiSumListTemplates: 'Vypsáno šablon stylu: {count}',
+  aiPageCloudToLocal: 'Cloud není dostupný — vygenerováno lokálně',
   aiStageResearch: 'Vyhledávání na webu',
   aiStageResearchRunning: 'Hledám {n} téma(t)…',
   aiStageResearchDone: 'Zpracováno {n} téma(t)',

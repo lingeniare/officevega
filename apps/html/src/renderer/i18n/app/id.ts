@@ -7,6 +7,7 @@ export const id = {
   saveFailed: 'Gagal menyimpan: {error}',
   saveFailedStatus: 'Gagal menyimpan',
   exportFailed: 'Ekspor gagal',
+  exportHtmlSkipped: 'Diekspor, tetapi {count} aset tidak dapat disematkan (mis. {first})',
   viewPreview: 'Pratinjau',
   viewSplit: 'Terpisah',
   viewSource: 'Sumber',
@@ -53,7 +54,6 @@ export const id = {
   save: 'Simpan (⌘S)',
   saveAs: 'Simpan Sebagai…',
   ribbonCollapse: 'Ciutkan Pita',
-  ribbonPin: 'Sematkan Pita',
   ribbonExpand: 'Perluas Pita',
   ribbonGroupInsert: 'Sisipkan',
   editText: 'Edit teks',
@@ -162,4 +162,5 @@ export const id = {
   insertImageTip: 'Sisipkan gambar',
   insertTableTip: 'Sisipkan tabel',
   insertMoreTip: 'Opsi penyisipan lainnya',
+  ribbonPin: 'Sematkan Pita',
 } satisfies Record<keyof typeof zh, string>

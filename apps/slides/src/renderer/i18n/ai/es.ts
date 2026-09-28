@@ -226,6 +226,7 @@ export const es = {
   aiSumSaveTemplate: 'Plantilla de estilo "{name}" guardada',
   aiSumTemplatesEmpty: 'Plantillas de estilo (vacío)',
   aiSumListTemplates: 'Se enumeraron {count} plantillas de estilo',
+  aiPageCloudToLocal: 'Nube no disponible — generado localmente',
   aiStageResearch: 'Búsqueda en la web',
   aiStageResearchRunning: 'Buscando {n} tema(s)…',
   aiStageResearchDone: '{n} tema(s) investigados',

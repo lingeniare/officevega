@@ -1385,4 +1385,6 @@ export const ky = {
   appReplaceTip: 'Текстти табуу жана алмаштыруу',
   appScreenshotTip: 'Экрандын сүрөтүн киргизүү',
   appSymbolTip: 'Символ кыстаруу',
+  appOpeningWorkbook: 'Opening workbook…',
+  appRibbonExpand: 'Expand the Ribbon',
 } satisfies Record<keyof typeof zh, string>

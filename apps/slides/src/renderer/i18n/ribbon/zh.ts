@@ -14,7 +14,7 @@ export const zh = {
   ribbonTabSlideShow: '幻灯片放映',
   ribbonTabReview: '审阅',
   ribbonCollapse: '折叠功能区',
-  ribbonPin: '固定功能区',
+  ribbonExpand: '展开功能区',
   ribbonTabView: '视图',
   ribbonTabTableDesign: '表格设计',
   ribbonTabChartDesign: '图表设计',
@@ -757,4 +757,5 @@ export const zh = {
   ribbonZoomSectionItem: '第 {n} 页　第 {k} 节：{name}',
   ribbonZoomSelectedSlides: '已选择 {n} 张幻灯片',
   ribbonZoomSelectedSections: '已选择 {n} 个节',
+  ribbonPin: '固定功能区',
 }

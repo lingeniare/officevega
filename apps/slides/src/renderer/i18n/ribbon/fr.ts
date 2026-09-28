@@ -15,7 +15,7 @@ export const fr = {
   ribbonTabSlideShow: 'Diaporama',
   ribbonTabReview: 'Révision',
   ribbonCollapse: 'Réduire le ruban',
-  ribbonPin: 'Épingler le ruban',
+  ribbonExpand: 'Développer le ruban',
   ribbonTabView: 'Affichage',
   ribbonTabTableDesign: 'Création de tableau',
   ribbonTabChartDesign: 'Création de graphique',
@@ -781,4 +781,5 @@ export const fr = {
   ribbonZoomSectionItem: 'Diapositive {n} Section {k} : {name}',
   ribbonZoomSelectedSlides: '{n} diapositives sélectionnées',
   ribbonZoomSelectedSections: '{n} sections sélectionnées',
+  ribbonPin: 'Épingler le ruban',
 } satisfies Record<keyof typeof zh, string>

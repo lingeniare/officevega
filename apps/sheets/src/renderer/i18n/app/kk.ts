@@ -1381,4 +1381,6 @@ export const kk = {
   appReplaceTip: 'Мәтінді табу және ауыстыру',
   appScreenshotTip: 'Скриншотты кірістіру',
   appSymbolTip: 'Таңба кірістіру',
+  appOpeningWorkbook: 'Opening workbook…',
+  appRibbonExpand: 'Expand the Ribbon',
 } satisfies Record<keyof typeof zh, string>

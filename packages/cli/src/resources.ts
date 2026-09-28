@@ -114,10 +114,16 @@ export function appLaunch(env: NodeJS.ProcessEnv = process.env): AppLaunch | nul
 
 // new-name installs first, then the pre-rename "VegaOffice" locations so a
 // machine that only ever ran the old build still resolves an app to launch
-function installedAppBinaries(env: NodeJS.ProcessEnv): string[] {
-  switch (process.platform) {
+function installedAppBinaries(
+  env: NodeJS.ProcessEnv,
+  platform: NodeJS.Platform = process.platform,
+  resources: string | null = packagedResourcesDir(),
+): string[] {
+  const shipped = resources ? appBinaryForResources(resources, platform) : null
+  switch (platform) {
     case 'darwin':
       return [
+        ...(shipped ? [shipped] : []),
         '/Applications/OfficeVega.app/Contents/MacOS/OfficeVega',
         join(homedir(), 'Applications/OfficeVega.app/Contents/MacOS/OfficeVega'),
         '/Applications/VegaOffice.app/Contents/MacOS/VegaOffice',
@@ -125,6 +131,7 @@ function installedAppBinaries(env: NodeJS.ProcessEnv): string[] {
       ]
     case 'win32':
       return [
+        ...(shipped ? [shipped] : []),
         env.LOCALAPPDATA ? join(env.LOCALAPPDATA, 'Programs', 'OfficeVega', 'OfficeVega.exe') : '',
         env.ProgramFiles ? join(env.ProgramFiles, 'OfficeVega', 'OfficeVega.exe') : '',
         env.LOCALAPPDATA ? join(env.LOCALAPPDATA, 'Programs', 'VegaOffice', 'VegaOffice.exe') : '',
@@ -132,12 +139,20 @@ function installedAppBinaries(env: NodeJS.ProcessEnv): string[] {
       ].filter(Boolean)
     default:
       return [
+        ...(shipped ? [shipped] : []),
         '/opt/OfficeVega/officevega',
         '/usr/bin/officevega',
         '/opt/VegaOffice/vegaoffice',
         '/usr/bin/vegaoffice',
       ]
   }
+}
+
+export function appBinaryForResources(resources: string, platform: NodeJS.Platform): string {
+  const install = dirname(resources)
+  if (platform === 'darwin') return join(install, 'MacOS', 'OfficeVega')
+  if (platform === 'win32') return join(install, 'OfficeVega.exe')
+  return join(install, 'officevega')
 }
 
 /**

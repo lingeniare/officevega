@@ -256,4 +256,5 @@ export const ky = {
   appStatusSlidesUnhidden: '{count} слайд көрсөтүлдү',
   appStatusSummaryZoomInserted: '{count} плитка менен Жыйынтык Zoom слайды кошулду',
   appStatusZoomsInserted: '{count} масштаб кошулду: слайд-шоуда чыкылдатып ошол слайддарга өтүңүз',
+  appStatusPasteTruncated: 'Pasted text was too long and has been truncated',
 } satisfies Record<keyof typeof zh, string>

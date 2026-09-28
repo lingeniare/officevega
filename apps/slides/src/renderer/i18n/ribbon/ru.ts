@@ -15,7 +15,7 @@ export const ru = {
   ribbonTabSlideShow: 'Слайд-шоу',
   ribbonTabReview: 'Рецензирование',
   ribbonCollapse: 'Свернуть ленту',
-  ribbonPin: 'Закрепить ленту',
+  ribbonExpand: 'Развернуть ленту',
   ribbonTabView: 'Вид',
   ribbonTabTableDesign: 'Конструктор таблиц',
   ribbonTabChartDesign: 'Конструктор диаграмм',
@@ -765,4 +765,5 @@ export const ru = {
   ribbonZoomSectionItem: 'Слайд {n} Раздел {k}: {name}',
   ribbonZoomSelectedSlides: 'Выбрано слайдов: {n}',
   ribbonZoomSelectedSections: 'Выбрано разделов: {n}',
+  ribbonPin: 'Закрепить ленту',
 } satisfies Record<keyof typeof zh, string>

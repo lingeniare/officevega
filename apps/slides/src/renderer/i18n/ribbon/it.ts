@@ -14,7 +14,7 @@ export const it = {
   ribbonTabSlideShow: 'Presentazione',
   ribbonTabReview: 'Revisione',
   ribbonCollapse: 'Riduci a icona la barra multifunzione',
-  ribbonPin: 'Aggiungi la barra multifunzione',
+  ribbonExpand: 'Espandi la barra multifunzione',
   ribbonTabView: 'Visualizza',
   ribbonTabTableDesign: 'Progettazione Tabella',
   ribbonTabChartDesign: 'Progettazione Grafico',
@@ -779,4 +779,5 @@ export const it = {
   ribbonZoomSectionItem: 'Diapositiva {n} Sezione {k}: {name}',
   ribbonZoomSelectedSlides: '{n} diapositive selezionate',
   ribbonZoomSelectedSections: '{n} sezioni selezionate',
+  ribbonPin: 'Aggiungi la barra multifunzione',
 } satisfies Record<keyof typeof zh, string>

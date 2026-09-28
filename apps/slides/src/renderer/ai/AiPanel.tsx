@@ -10,6 +10,7 @@ import {
 } from '@genoffice/agent-core'
 import type { RenderSlide } from '@genoffice/pptx-render'
 import {
+  cloudToolsEnabled,
   imageGenerationAvailable,
   mediaAnalysisAvailable,
   withFastModel,
@@ -1092,6 +1093,14 @@ export function AiPanel({
         setUpgradeOffer(pending.visuals || pending.style ? pending : null)
       },
       isCloudPageGenEnabled: async () => {
+        // Cloud page generation runs on Genspark's own slide model and spends
+        // Genspark credits, so it is gated by the "Genspark cloud tools" toggle
+        // plus the main-process account status only — the chat provider does not
+        // gate it (search/media gate per capability, not per chat provider). A
+        // free-plan or credits-exhausted account is covered by the mid-run
+        // fallback to the local pipeline instead of disabling cloud up front.
+        const cur = settingsRef.current
+        if (!cloudToolsEnabled(cur)) return false
         try {
           return !!(await window.slidesApi.cloudGenStatus())?.enabled
         } catch {

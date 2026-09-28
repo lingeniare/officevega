@@ -112,4 +112,6 @@ export const kk = {
   aiScopeRangeTip:
     'AI «осы бағанды / осы жолдарды / таңдалған бөлікті» осы ауқым ретінде қабылдайды және жібергеннен кейін орындалу барысында ол өзгермейді',
   aiScopeClearTitle: 'Ауқым шектеуін алып тастап, бүкіл парақты нысанаға алу',
+  aiGensparkAccount: 'Genspark account',
+  aiLoginGenspark: 'Sign in to Genspark',
 } satisfies Record<keyof typeof zh, string>

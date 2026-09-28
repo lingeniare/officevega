@@ -224,6 +224,7 @@ export const ru = {
   aiSumSaveTemplate: 'Сохранён шаблон стиля «{name}»',
   aiSumTemplatesEmpty: 'Шаблоны стиля (пусто)',
   aiSumListTemplates: 'Показано шаблонов стиля: {count}',
+  aiPageCloudToLocal: 'Облако недоступно — создано локально',
   aiStageResearch: 'Поиск в интернете',
   aiStageResearchRunning: 'Ищу по {n} теме(ам)…',
   aiStageResearchDone: 'Найдено по {n} теме(ам)',

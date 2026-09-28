@@ -227,6 +227,7 @@ export const de = {
   aiSumSaveTemplate: 'Stilvorlage „{name}“ gespeichert',
   aiSumTemplatesEmpty: 'Stilvorlagen (leer)',
   aiSumListTemplates: '{count} Stilvorlagen aufgelistet',
+  aiPageCloudToLocal: 'Cloud nicht verfügbar — lokal generiert',
   aiStageResearch: 'Webrecherche',
   aiStageResearchRunning: 'Suche zu {n} Thema/Themen…',
   aiStageResearchDone: '{n} Thema/Themen recherchiert',

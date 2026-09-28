@@ -224,6 +224,7 @@ export const it = {
   aiSumSaveTemplate: 'Modello di stile "{name}" salvato',
   aiSumTemplatesEmpty: 'Modelli di stile (vuoto)',
   aiSumListTemplates: '{count} modelli di stile elencati',
+  aiPageCloudToLocal: 'Cloud non disponibile — generato localmente',
   aiStageResearch: 'Ricerca sul web',
   aiStageResearchRunning: 'Ricerca di {n} argomento/i…',
   aiStageResearchDone: '{n} argomento/i documentato/i',

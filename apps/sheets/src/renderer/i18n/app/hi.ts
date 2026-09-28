@@ -486,6 +486,7 @@ export const hi = {
   appColumnLabel: 'स्तंभ {col}',
   appBridgeUnavailable: 'डेस्कटॉप फ़ाइल ब्रिज उपलब्ध नहीं है। Electron ऐप पुनः प्रारंभ करें।',
   appOpenCanceled: 'कार्यपुस्तिका चयन रद्द किया गया।',
+  appOpeningWorkbook: 'कार्यपुस्तिका खोली जा रही है…',
   appOpened: '{name} खोला गया — सेल संपादन ⌘S से फ़ाइल में वापस सहेजे जाते हैं।',
   appOpenFailed: 'कार्यपुस्तिका खोली नहीं जा सकी।',
   appPageSetupNeedsFile: 'पहले एक XLSX फ़ाइल खोलें — पृष्ठ सेटअप फ़ाइल में सहेजा जाता है।',
@@ -657,7 +658,7 @@ export const hi = {
   appTabData: 'डेटा',
   appTabReview: 'समीक्षा',
   appRibbonCollapse: 'रिबन संक्षिप्त करें',
-  appRibbonPin: 'रिबन पिन करें',
+  appRibbonExpand: 'रिबन विस्तृत करें',
   appTabView: 'दृश्य',
   appTabAi: 'AI',
   appTabChartDesign: 'चार्ट डिज़ाइन',
@@ -1352,4 +1353,5 @@ export const hi = {
   appReplaceTip: 'पाठ ढूँढें और बदलें',
   appScreenshotTip: 'स्क्रीनशॉट डालें',
   appSymbolTip: 'प्रतीक डालें',
+  appRibbonPin: 'रिबन पिन करें',
 } satisfies Record<keyof typeof zh, string>

@@ -19,6 +19,7 @@ import { ms } from './dialogs/ms'
 import { he } from './dialogs/he'
 import { hi } from './dialogs/hi'
 import { zhTW } from './dialogs/zh-TW'
+import { vi } from './dialogs/vi'
 import { uz } from './dialogs/uz'
 import { kk } from './dialogs/kk'
 import { az } from './dialogs/az'
@@ -49,6 +50,7 @@ export const dialogStrings = defineStrings({
   he,
   hi,
   'zh-TW': zhTW,
+  vi,
   uz,
   kk,
   az,

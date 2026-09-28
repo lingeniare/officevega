@@ -7,7 +7,11 @@ case "$1" in
   0|remove|purge) ;;
   *) exit 0 ;;
 esac
-if [ -L /usr/bin/officevega ] && [ "$(readlink /usr/bin/officevega)" = "/opt/OfficeVega/resources/cli/officevega" ]; then
-  rm -f /usr/bin/officevega
+link="/usr/bin/officevega"
+# same ownership rule as the post-install: only a link into our install dir is ours
+if [ -L "$link" ]; then
+  case "$(readlink "$link")" in
+    /opt/OfficeVega/*) rm -f "$link" ;;
+  esac
 fi
 exit 0

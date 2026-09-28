@@ -266,4 +266,5 @@ export const uz = {
   aiStylePresetMinimalHint: 'yengil minimal — keng bo‘sh joylar, bitta tortinchoq urg‘u bilan deyarli monoxrom palitra, sokin aniq tipografiya',
 
   aiClarifyPrev: 'Oldingi',
+  aiPageCloudToLocal: 'cloud unavailable — generated locally',
 } satisfies Record<keyof typeof zh, string>

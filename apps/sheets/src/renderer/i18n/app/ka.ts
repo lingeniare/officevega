@@ -1366,4 +1366,6 @@ export const ka = {
   appReplaceTip: 'ტექსტის პოვნა და ჩანაცვლება',
   appScreenshotTip: 'ეკრანის ანაბეჭდის ჩასმა',
   appSymbolTip: 'სიმბოლოს ჩასმა',
+  appOpeningWorkbook: 'Opening workbook…',
+  appRibbonExpand: 'Expand the Ribbon',
 } satisfies Record<keyof typeof zh, string>

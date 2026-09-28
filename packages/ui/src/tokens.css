@@ -74,6 +74,8 @@
   --icon-muted: #b9bfc7;
   --danger: #d13438;
   --danger-bg: #fdf3f3;
+  /* Word's changed-line bar (Simple Markup): fixed red, tuned per theme */
+  --docs-revision-bar: #c00000;
   --search-hit-bg: #ffe28a;
   --search-hit-active-bg: #ff9632;
   --search-hit-active-ink: #fff;
@@ -159,6 +161,7 @@
   --icon-muted: #666;
   --danger: #d13438;
   --danger-bg: #3a2020;
+  --docs-revision-bar: #ff6b6b;
   --search-hit-bg: #745a1e;
   --search-hit-active-bg: #d4781f;
   --search-hit-active-ink: #1e1e1e;
@@ -217,6 +220,7 @@
     --icon-muted: #666;
     --danger: #d13438;
     --danger-bg: #3a2020;
+    --docs-revision-bar: #ff6b6b;
     --search-hit-bg: #745a1e;
     --search-hit-active-bg: #d4781f;
     --search-hit-active-ink: #1e1e1e;

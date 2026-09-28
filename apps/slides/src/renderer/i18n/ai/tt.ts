@@ -265,4 +265,5 @@ export const tt = {
   aiStylePresetMinimalHint: 'якты минимализм — киң буш урыннар, бер тыйнак акцентлы диярлек монохром палитра, тынч төгәл типография',
 
   aiClarifyPrev: 'Алдагы',
+  aiPageCloudToLocal: 'cloud unavailable — generated locally',
 } satisfies Record<keyof typeof zh, string>

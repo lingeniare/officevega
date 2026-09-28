@@ -25,7 +25,7 @@ type Content = {
   resource?: { uri: string; blob?: string }
 }
 
-describe('genoffice mcp --http', () => {
+describe('officevega mcp --http', () => {
   let handle: HttpHandle
   let client: Client
   let dir: string
@@ -93,6 +93,7 @@ describe('genoffice mcp --http', () => {
     const names = tools.map((t) => t.name)
     expect(names).toContain('docs_apply')
     expect(names).not.toContain('open')
+    expect(names).not.toContain('selection')
     const create = tools.find((t) => t.name === 'create_docx')!
     expect(create.inputSchema.required ?? []).not.toContain('out')
     const props = create.inputSchema.properties as Record<string, { description?: string }>
@@ -100,6 +101,10 @@ describe('genoffice mcp --http', () => {
     const info = tools.find((t) => t.name === 'info')!
     const infoProps = info.inputSchema.properties as Record<string, { description?: string }>
     expect(infoProps.file?.description).toContain('http(s) URL')
+    const apply = tools.find((t) => t.name === 'docs_apply')!
+    const ops = (apply.inputSchema.properties as Record<string, { items?: { anyOf?: unknown[] } }>)
+      .ops!
+    expect(ops.items?.anyOf?.length).toBeGreaterThan(40)
   })
 
   it('reads an uploaded file through its URL', async () => {
@@ -116,7 +121,7 @@ describe('genoffice mcp --http', () => {
     const first = (before.json().detail.items[0].text as string).split(' ')[0]!
     const r = await call('docs_apply', {
       file: url,
-      ops: [{ op: 'findReplace', find: first, replace: 'GENOFFICE' }],
+      ops: [{ op: 'findReplace', find: first, replace: 'OFFICEVEGA' }],
     })
     expect(r.isError).toBe(false)
     const ok = r.json()

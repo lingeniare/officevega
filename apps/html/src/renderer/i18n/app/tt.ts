@@ -163,4 +163,5 @@ export const tt = {
   insertTableTip: 'Таблица кертү',
   insertMoreTip: 'Күбрәк кую параметрлары',
   elementPath: 'Элемент юлы',
+  exportHtmlSkipped: 'Exported, but {count} asset(s) could not be inlined (e.g. {first})',
 } satisfies Record<keyof typeof zh, string>

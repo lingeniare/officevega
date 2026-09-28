@@ -770,4 +770,5 @@ export const ky = {
   ribbonZoomSelectedSlides: '{n} слайд тандалды',
   ribbonZoomSlide: 'Слайд Zoom',
   ribbonZoomSummary: 'Жыйынтык Zoom',
+  ribbonExpand: 'Expand the Ribbon',
 } satisfies Record<keyof typeof zh, string>

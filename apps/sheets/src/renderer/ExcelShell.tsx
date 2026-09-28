@@ -39,6 +39,7 @@ import { categoryOptionForPattern, numberFormatCategories } from './number-forma
 import { type SelectionFormat } from './selection-format'
 import { fontFamilyGroups, useSystemFontFamilies } from './system-fonts'
 import { isGridKeyTarget, shouldInterceptClearSelection } from './clear-selection-keyboard'
+import { isModalOpen, resolveGlobalShortcut } from './global-shortcuts'
 
 import type { ChartSeriesVisualState } from '@genoffice/xlsx-gateway/domain/chart-visual'
 import type { ChangePlan } from '@genoffice/xlsx-gateway/domain/workbook.types'
@@ -60,6 +61,7 @@ import { ConsolidateDialog } from './ConsolidateDialog'
 import type { ConsolidateConfig } from './consolidate'
 import { HeaderFooterDialog, type HeaderFooterResult } from './HeaderFooterDialog'
 import type { HeaderFooterParts } from './edit-journal'
+import { useModalDialog } from './modal-dialog'
 
 // The File dropdown sits in front of the tabs on Windows/Linux (docs/slides
 // parity); on macOS the application menu owns File → Open/Save/Save As.
@@ -161,6 +163,7 @@ function ToolSymbol({ symbol }: { readonly symbol: string }): React.JSX.Element 
 }
 
 interface ExcelShellProps {
+  readonly openingWorkbook: boolean
   readonly prompt: string
   readonly preview: ChangePlan | null
   readonly selectionFormat: SelectionFormat | null
@@ -215,6 +218,9 @@ interface ExcelShellProps {
   readonly onIsCellEditing: () => boolean
   /// Left side of the status bar (ready / streaming / AI progress messages).
   readonly statusMessage: string
+  readonly emptyCsvNotice: boolean
+  readonly onOpenWorkbook: () => void
+  readonly onDismissEmptyCsvNotice: () => void
   /// Zoom of the active sheet in percent, echoed by the status-bar slider.
   readonly zoomPercent: number
   /// True when the edit journal has unsaved changes (enables the QAT Save).
@@ -375,7 +381,11 @@ export function ExcelShell({
   onAiCitation,
   onCommand,
   onIsCellEditing,
+  openingWorkbook,
   statusMessage,
+  emptyCsvNotice,
+  onOpenWorkbook,
+  onDismissEmptyCsvNotice,
   zoomPercent,
   canSave,
   onSave,
@@ -438,77 +448,31 @@ export function ExcelShell({
   const [chartTextTarget, setChartTextTarget] = useState<ChartTextTarget | null>(null)
   const onCommandRef = useRef(onCommand)
   const onIsCellEditingRef = useRef(onIsCellEditing)
+  const openingWorkbookRef = useRef(openingWorkbook)
   onCommandRef.current = onCommand
   onIsCellEditingRef.current = onIsCellEditing
+  openingWorkbookRef.current = openingWorkbook
   useEffect(() => {
     // Shortcuts that write to the sheet must not fire from a text field —
     // neither app fields (AI chat, dialogs) nor Univer's own (find/replace,
     // rule panels, formula bar), which are native inputs INSIDE the Univer
     // container. isGridKeyTarget tells the grid's hidden focus host apart
     // from all of those; only Univer knows whether a cell is being edited.
-    const canEditSheet = (event: KeyboardEvent): boolean =>
-      !onIsCellEditingRef.current() && isGridKeyTarget(event.target)
     const onKeyDown = (event: KeyboardEvent): void => {
-      if ((event.metaKey || event.ctrlKey) && event.key === '1') {
-        event.preventDefault()
-        setShowFormatCells(true)
+      if (openingWorkbookRef.current) return
+      const action = resolveGlobalShortcut(event, {
+        modalOpen: isModalOpen(),
+        cellEditing: onIsCellEditingRef.current(),
+        gridTarget: isGridKeyTarget(event.target),
+      })
+      if (!action) return
+      event.preventDefault()
+      if (action.kind === 'dialog') {
+        if (action.dialog === 'formatCells') setShowFormatCells(true)
+        else setShowGoTo(true)
+        return
       }
-      // Excel's Go To shortcut (⌘G / Ctrl+G).
-      if ((event.metaKey || event.ctrlKey) && event.key === 'g') {
-        event.preventDefault()
-        setShowGoTo(true)
-      }
-      // Excel's Show Formulas shortcut (⌘` / Ctrl+`).
-      if ((event.metaKey || event.ctrlKey) && event.key === '`') {
-        event.preventDefault()
-        onCommand('toggle-show-formulas')
-      }
-      // Excel's strikethrough toggle (⌘5 / Ctrl+5). While a cell is being
-      // edited the range-level toggle would hit the wrong target (Excel
-      // strikes the selected text instead), so it only acts on the grid.
-      if ((event.metaKey || event.ctrlKey) && !event.shiftKey && event.key === '5') {
-        if (canEditSheet(event)) {
-          event.preventDefault()
-          onCommand('strike')
-        }
-      }
-      // Excel's AutoSum (Alt+= / ⌥⌘= is reserved by macOS, Excel-mac uses ⇧⌘T;
-      // plain Alt+= covers win/linux and most mac keyboards).
-      if (event.altKey && !event.metaKey && !event.ctrlKey && event.key === '=') {
-        if (canEditSheet(event)) {
-          event.preventDefault()
-          onCommand('autofn:SUM')
-        }
-      }
-      // Excel's insert current date / time (Ctrl+; / Ctrl+Shift+;).
-      if ((event.metaKey || event.ctrlKey) && event.code === 'Semicolon') {
-        if (canEditSheet(event)) {
-          event.preventDefault()
-          onCommand(event.shiftKey ? 'insert-now:time' : 'insert-now:date')
-        }
-      }
-      // Excel's manual recalculation (F9 workbook, Shift+F9 active sheet).
-      if (event.key === 'F9' && !event.metaKey && !event.ctrlKey && !event.altKey) {
-        if (!onIsCellEditingRef.current()) {
-          event.preventDefault()
-          onCommand(event.shiftKey ? 'calculate-sheet' : 'calculate-now')
-        }
-      }
-      // Excel's PageUp/PageDown; Alt+ pages horizontally. In-cell editing is
-      // checked in the command handler via the workbook's own editing state.
-      if (
-        (event.key === 'PageDown' || event.key === 'PageUp') &&
-        !event.metaKey &&
-        !event.ctrlKey &&
-        !event.shiftKey &&
-        !event.defaultPrevented
-      ) {
-        if (isGridKeyTarget(event.target)) {
-          event.preventDefault()
-          const axis = event.altKey ? 'page-col' : 'page-row'
-          onCommand(`${axis}:${event.key === 'PageDown' ? 1 : -1}`)
-        }
-      }
+      onCommand(action.command)
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
@@ -520,6 +484,7 @@ export function ExcelShell({
   // mounted once: re-binding after Univer starts would lose capture order.
   useEffect(() => {
     const onKeyDownCapture = (event: KeyboardEvent): void => {
+      if (openingWorkbookRef.current) return
       if (!shouldInterceptClearSelection(event, onIsCellEditingRef.current())) return
       event.preventDefault()
       event.stopImmediatePropagation()
@@ -578,7 +543,11 @@ export function ExcelShell({
   const saveAsTitle = `${t('appSaveAs')} (${platformShortcuts('⇧⌘S')})`
 
   return (
-    <main className={`app-shell ${isCopilotOpen ? '' : 'copilot-collapsed'}`}>
+    <main
+      className={`app-shell ${isCopilotOpen ? '' : 'copilot-collapsed'}`}
+      inert={openingWorkbook}
+      aria-busy={openingWorkbook}
+    >
       <header className={`excel-header ${collapse.rootClass}`} ref={collapse.rootRef}>
         <nav
           className={`ribbon-tabs ${IN_TAB ? '' : IS_MAC ? 'ribbon-tabs-mac' : 'ribbon-tabs-win'}`}
@@ -826,6 +795,22 @@ export function ExcelShell({
         <div className="sheet-main">
           <section className="workbook-area">
             <div id="univer-container" className="spreadsheet" />
+            {emptyCsvNotice && (
+              <div className="csv-empty-notice" role="status">
+                <span>{t('appCsvEmpty')}</span>
+                <button type="button" onClick={onOpenWorkbook}>
+                  {t('appOpenWorkbookTitle')}
+                </button>
+                <button
+                  type="button"
+                  className="csv-empty-notice-close"
+                  aria-label={t('appClose')}
+                  onClick={onDismissEmptyCsvNotice}
+                >
+                  ×
+                </button>
+              </div>
+            )}
           </section>
           {aiSelectionAskAnchor && aiScopeRange && !aiBusy && (
             <AiSelectionAsk
@@ -1050,11 +1035,13 @@ function SortDialog({
       previous.map((level, at) => (at === index ? { ...level, ...patch } : level)),
     )
   }
+  const modal = useModalDialog(onClose)
   return (
     <div className="dialog-backdrop" onClick={onClose}>
       <div
         className="format-cells-dialog sort-dialog"
         role="dialog"
+        {...modal}
         aria-label={t('appCustomSort')}
         onClick={(event) => event.stopPropagation()}
       >
@@ -1118,11 +1105,13 @@ function RemoveDuplicatesDialog({
 }): React.JSX.Element {
   const { t } = useI18n()
   const [hasHeader, setHasHeader] = useState(true)
+  const modal = useModalDialog(onClose)
   return (
     <div className="dialog-backdrop" onClick={onClose}>
       <div
         className="format-cells-dialog sort-dialog"
         role="dialog"
+        {...modal}
         aria-label={t('appRemoveDuplicates')}
         onClick={(event) => event.stopPropagation()}
       >
@@ -1175,11 +1164,13 @@ function ChartTextDialog({
     onCommand(`${command}:${value.trim()}`)
     onClose()
   }
+  const modal = useModalDialog(onClose)
   return (
     <div className="dialog-backdrop" onClick={onClose}>
       <div
         className="format-cells-dialog link-dialog"
         role="dialog"
+        {...modal}
         aria-label={t(heading)}
         onClick={(event) => event.stopPropagation()}
       >
@@ -1195,7 +1186,6 @@ function ChartTextDialog({
               onChange={(event) => setValue(event.target.value)}
               onKeyDown={(event) => {
                 if (event.key === 'Enter') apply()
-                if (event.key === 'Escape') onClose()
               }}
             />
           </label>
@@ -1232,11 +1222,13 @@ function AxisSizeDialog({
     onCommand(`${axis === 'row' ? 'row-height' : 'col-width'}:${parsed}`)
     onClose()
   }
+  const modal = useModalDialog(onClose)
   return (
     <div className="dialog-backdrop" onClick={onClose}>
       <div
         className="format-cells-dialog link-dialog"
         role="dialog"
+        {...modal}
         aria-label={t(axis === 'row' ? 'appRowHeight' : 'appColWidth')}
         onClick={(event) => event.stopPropagation()}
       >
@@ -1252,7 +1244,6 @@ function AxisSizeDialog({
               onChange={(event) => setValue(event.target.value)}
               onKeyDown={(event) => {
                 if (event.key === 'Enter') apply()
-                if (event.key === 'Escape') onClose()
               }}
             />
           </label>
@@ -1283,11 +1274,13 @@ function LinkDialog({
     if (value.trim()) onCommand(`link-set:${encodeURIComponent(value)}`)
     onClose()
   }
+  const modal = useModalDialog(onClose)
   return (
     <div className="dialog-backdrop" onClick={onClose}>
       <div
         className="format-cells-dialog link-dialog"
         role="dialog"
+        {...modal}
         aria-label={t(currentTarget ? 'appEditLinkTitle' : 'appInsertLinkTitle')}
         onClick={(event) => event.stopPropagation()}
       >
@@ -1303,7 +1296,6 @@ function LinkDialog({
               onChange={(event) => setValue(event.target.value)}
               onKeyDown={(event) => {
                 if (event.key === 'Enter') apply()
-                if (event.key === 'Escape') onClose()
               }}
             />
           </label>

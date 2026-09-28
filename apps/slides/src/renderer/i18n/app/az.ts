@@ -257,4 +257,5 @@ export const az = {
   appStatusSlidesUnhidden: '{count} slayd göstərildi',
   appStatusSummaryZoomInserted: '{count} plitka ilə Xülasə Zoom slaydı əlavə edildi',
   appStatusZoomsInserted: '{count} zoom əlavə edildi: slayd-şou zamanı klikləyib həmin slaydlara keçin',
+  appStatusPasteTruncated: 'Pasted text was too long and has been truncated',
 } satisfies Record<keyof typeof zh, string>

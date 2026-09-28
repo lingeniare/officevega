@@ -14,7 +14,7 @@ export const ms = {
   ribbonTabSlideShow: 'Tayangan Slaid',
   ribbonTabReview: 'Semakan',
   ribbonCollapse: 'Runtuhkan Reben',
-  ribbonPin: 'Semat Reben',
+  ribbonExpand: 'Kembangkan Reben',
   ribbonTabView: 'Pandangan',
   ribbonTabTableDesign: 'Reka Bentuk Jadual',
   ribbonTabChartDesign: 'Reka Bentuk Carta',
@@ -771,4 +771,5 @@ export const ms = {
   ribbonZoomSectionItem: 'Slaid {n} Seksyen {k}: {name}',
   ribbonZoomSelectedSlides: '{n} slaid dipilih',
   ribbonZoomSelectedSections: '{n} seksyen dipilih',
+  ribbonPin: 'Semat Reben',
 } satisfies Record<keyof typeof zh, string>

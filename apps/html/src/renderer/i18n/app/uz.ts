@@ -163,4 +163,5 @@ export const uz = {
   insertTableTip: 'Jadval qo‘shish',
   insertMoreTip: 'Qo‘shimcha kiritish parametrlari',
   elementPath: 'Element yoʻli',
+  exportHtmlSkipped: 'Exported, but {count} asset(s) could not be inlined (e.g. {first})',
 } satisfies Record<keyof typeof zh, string>

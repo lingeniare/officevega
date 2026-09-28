@@ -2,10 +2,10 @@
  * ai:web-search / ai:image-search for the editors' main processes: reads
  * ai-settings.json live and turns the search provider choice into
  * SearchOptions — VEGA runs first on its key (gsk stays the logged-in
- * fallback), a user Serper / Tavily / Parallel key runs alone, and the account
- * provider keeps the historic chain (gsk when signed in and cloud tools are
- * on, then env keys, then DuckDuckGo). Parallel uses its free MCP when no key
- * is saved.
+ * fallback), a user Serper / Serply / Tavily / Parallel key runs alone, and the
+ * account provider keeps the historic chain (gsk when signed in and cloud tools
+ * are on, then env keys, then free Parallel MCP, then DuckDuckGo). Parallel uses
+ * its free MCP when no key is saved.
  */
 
 import {
@@ -27,6 +27,7 @@ export function searchOptionsFromSettings(settings: AiSettings): SearchOptions {
   if (provider === 'genspark') return { useGsk: true }
   const key = settings.search!.providers?.[provider]?.apiKey?.trim() ?? ''
   if (provider === 'parallel') return { useGsk: false, parallelKey: key, prefer: 'parallel' }
+  if (provider === 'serply') return { useGsk: false, serplyKey: key, prefer: 'serply' }
   return provider === 'tavily'
     ? { useGsk: false, tavilyKey: key, prefer: 'tavily' }
     : { useGsk: false, serperKey: key }
@@ -63,6 +64,7 @@ export async function testSearchProvider(
   const options: SearchOptions = {
     useGsk: false,
     serperKey: provider === 'serper' ? apiKey : '',
+    serplyKey: provider === 'serply' ? apiKey : '',
     tavilyKey: provider === 'tavily' ? apiKey : '',
     parallelKey: provider === 'parallel' ? apiKey : '',
     prefer: provider,

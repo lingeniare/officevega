@@ -220,6 +220,7 @@ export const th = {
   aiSumSaveTemplate: 'บันทึกเทมเพลตสไตล์ "{name}"',
   aiSumTemplatesEmpty: 'รายการเทมเพลตสไตล์ (ว่าง)',
   aiSumListTemplates: 'แสดงเทมเพลตสไตล์ {count} รายการ',
+  aiPageCloudToLocal: 'คลาวด์ไม่พร้อมใช้ — สร้างในเครื่อง',
   aiStageResearch: 'ค้นหาข้อมูลจากเว็บ',
   aiStageResearchRunning: 'กำลังค้นหา {n} หัวข้อ…',
   aiStageResearchDone: 'ค้นหา {n} หัวข้อแล้ว',

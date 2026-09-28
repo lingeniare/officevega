@@ -163,4 +163,5 @@ export const az = {
   insertTableTip: 'Cədvəl daxil et',
   insertMoreTip: 'Əlavə daxiletmə seçimləri',
   elementPath: 'Element yolu',
+  exportHtmlSkipped: 'Exported, but {count} asset(s) could not be inlined (e.g. {first})',
 } satisfies Record<keyof typeof zh, string>

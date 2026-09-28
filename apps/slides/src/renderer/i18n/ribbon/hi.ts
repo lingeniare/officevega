@@ -14,7 +14,7 @@ export const hi = {
   ribbonTabSlideShow: 'स्लाइड शो',
   ribbonTabReview: 'समीक्षा',
   ribbonCollapse: 'रिबन संक्षिप्त करें',
-  ribbonPin: 'रिबन पिन करें',
+  ribbonExpand: 'रिबन विस्तृत करें',
   ribbonTabView: 'दृश्य',
   ribbonTabTableDesign: 'तालिका डिज़ाइन',
   ribbonTabChartDesign: 'चार्ट डिज़ाइन',
@@ -764,4 +764,5 @@ export const hi = {
   ribbonZoomSectionItem: 'स्लाइड {n} अनुभाग {k}: {name}',
   ribbonZoomSelectedSlides: '{n} स्लाइड चयनित',
   ribbonZoomSelectedSections: '{n} अनुभाग चयनित',
+  ribbonPin: 'रिबन पिन करें',
 } satisfies Record<keyof typeof zh, string>

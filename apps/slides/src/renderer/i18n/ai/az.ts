@@ -263,4 +263,5 @@ export const az = {
   aiStylePresetMinimalHint: 'işıqlı minimal — geniş boş sahələr, bir təmkinli vurğu ilə demək olar ki, monoxrom palitra, sakit dəqiq tipoqrafiya',
 
   aiClarifyPrev: 'Əvvəlki',
+  aiPageCloudToLocal: 'cloud unavailable — generated locally',
 } satisfies Record<keyof typeof zh, string>

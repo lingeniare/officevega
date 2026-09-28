@@ -1193,7 +1193,7 @@ const CONTENT_NOTES: Record<(typeof CONTENT_OPS)[number], string> = {
     'a superscript reference mark goes into blockIndex (right after afterText, else at the block end) and the note text prints at the page bottom; `officevega docs read --notes` lists notes',
   insert_endnote: 'like insert_footnote, but the note text collects at the end of the document',
   edit_note:
-    'findReplace inside one footnote or endnote (id from `genoffice docs read --notes`; kind only when a footnote and an endnote share the id): every occurrence of find becomes replace, the note keeps its id, reference mark and formatting; matchCase defaults to true',
+    'findReplace inside one footnote or endnote (id from `officevega docs read --notes`; kind only when a footnote and an endnote share the id): every occurrence of find becomes replace, the note keeps its id, reference mark and formatting; matchCase defaults to true',
   delete_note:
     'kind footnote|endnote and an id from `officevega docs read --notes`; removes the reference mark too',
   delete_comment:

@@ -215,6 +215,7 @@ export const zh = {
   aiSumSaveTemplate: '保存风格模板"{name}"',
   aiSumTemplatesEmpty: '风格模板列表（空）',
   aiSumListTemplates: '列出 {count} 个风格模板',
+  aiPageCloudToLocal: '云端不可用,已本地生成',
   aiStageResearch: '联网检索资料',
   aiStageResearchRunning: '正在检索 {n} 个主题…',
   aiStageResearchDone: '已检索 {n} 个主题',

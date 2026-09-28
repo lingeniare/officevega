@@ -20,7 +20,7 @@
  */
 
 const { execFileSync } = require('node:child_process')
-const { existsSync, rmSync } = require('node:fs')
+const { existsSync, readFileSync, rmSync } = require('node:fs')
 const { join } = require('node:path')
 
 function normalizeHttpsBaseUrl(name, value) {
@@ -66,29 +66,29 @@ if (winArm64 && !process.env.ELECTRON_BUILDER_7Z_FILTER) {
 }
 const winArch = winArm64 ? 'arm64' : 'x64'
 const winSidecarTarget = winArm64 ? 'aarch64-pc-windows-msvc' : 'x86_64-pc-windows-gnu'
-const WIN_SIDECAR = `../sheets/native/xlsx-engine/target/${winSidecarTarget}/release/xlsx-sidecar.exe`
+const WIN_SIDECAR = existsSync(
+  join(
+    __dirname,
+    `../sheets/native/xlsx-engine/target/${winSidecarTarget}/release/xlsx-sidecar.exe`,
+  ),
+)
+  ? `../sheets/native/xlsx-engine/target/${winSidecarTarget}/release/xlsx-sidecar.exe`
+  : `../sheets/native/xlsx-engine/target/release/xlsx-sidecar.exe`
 
-// The gsk CLI tree below is copied verbatim from node_modules, and the
-// nested commander path depends on npm's current hoisting layout — fail the
-// build with a clear message if an install ever changes it, instead of
-// shipping an installer with a broken gsk runtime.
-// LICENSES.chromium.html only exists after the Electron binary download —
-// since Electron 42 that no longer happens during `npm ci` (the postinstall
-// script was replaced by the lazy `install-electron` bin), and electron-builder
-// exits 0 on a missing extraResources source, so without this check the
-// installer would silently ship without the Chromium license.
-for (const rel of [
-  '../../node_modules/@genspark/cli',
-  '../../node_modules/@genspark/cli/node_modules/commander',
-  '../../node_modules/ws',
-  '../../node_modules/electron/dist/LICENSES.chromium.html',
-  '../../node_modules/@embedpdf/pdfium/dist/pdfium.wasm',
-  '../pdf/node_modules/harfbuzzjs/hb-subset.wasm',
-]) {
-  if (!existsSync(join(__dirname, rel))) {
-    throw new Error(
-      `electron-builder extraResources source missing: ${rel} (npm hoisting changed?)`,
-    )
+function assertExtraResourceSources() {
+  for (const rel of [
+    '../../node_modules/@genspark/cli',
+    '../../node_modules/@genspark/cli/node_modules/commander',
+    '../../node_modules/ws',
+    '../../node_modules/electron/dist/LICENSES.chromium.html',
+    '../../node_modules/@embedpdf/pdfium/dist/pdfium.wasm',
+    '../pdf/node_modules/harfbuzzjs/hb-subset.wasm',
+  ]) {
+    if (!existsSync(join(__dirname, rel))) {
+      throw new Error(
+        `electron-builder extraResources source missing: ${rel} (npm hoisting changed?)`,
+      )
+    }
   }
 }
 
@@ -124,23 +124,22 @@ function compileVisionOcr({ universalOnly } = { universalOnly: false }) {
   }
 }
 
-if (process.platform === 'darwin' && !existsSync(join(__dirname, VISION_OCR_HELPER))) {
-  compileVisionOcr()
-}
-
-// Windows local-OCR helper (Windows.Media.Ocr): compiled by the in-box .NET
-// Framework csc via build-win.mjs — same on-demand policy as the mac helper,
-// and Windows installers must not silently ship without it.
 const WIN_OCR_HELPER = '../../packages/pdf2docx/ocr-helper/win-ocr.exe'
-if (process.platform === 'win32' && !existsSync(join(__dirname, WIN_OCR_HELPER))) {
-  try {
-    execFileSync(
-      process.execPath,
-      [join(__dirname, '../../packages/pdf2docx/ocr-helper/build-win.mjs')],
-      { stdio: 'inherit' },
-    )
-  } catch (err) {
-    throw new Error(`win-ocr helper compile failed: ${err}`, { cause: err })
+
+function ensurePlatformHelpers() {
+  if (process.platform === 'darwin' && !existsSync(join(__dirname, VISION_OCR_HELPER))) {
+    compileVisionOcr()
+  }
+  if (process.platform === 'win32' && !existsSync(join(__dirname, WIN_OCR_HELPER))) {
+    try {
+      execFileSync(
+        process.execPath,
+        [join(__dirname, '../../packages/pdf2docx/ocr-helper/build-win.mjs')],
+        { stdio: 'inherit' },
+      )
+    } catch (err) {
+      throw new Error(`win-ocr helper compile failed: ${err}`, { cause: err })
+    }
   }
 }
 
@@ -218,6 +217,78 @@ function assertModuleTreesPresent() {
         `electron-builder extraResources source missing: ${rel} (run npm run build:all first)`,
       )
     }
+  }
+}
+
+const CLI_BUNDLE_REL = '../../packages/cli/dist/officevega.cjs'
+const CLI_BUILD_REL = '../../packages/cli/build.mjs'
+const CLI_VERSION_ENV = 'OFFICEVEGA_APP_VERSION'
+const CLI_VERSION_BANNER = /^const __cliAppVersion = ("(?:[^"\\]|\\.)*");$/m
+
+/**
+ * The version the packaged app reports: CI's -c.extraMetadata.version deep-merges
+ * into the block below, and without it electron-builder ships apps/shell/package.json.
+ */
+function packagedAppVersion() {
+  const injected = config.extraMetadata && config.extraMetadata.version
+  if (typeof injected === 'string' && injected.trim()) return injected.trim()
+  return require('./package.json').version
+}
+
+function bundledCliVersion(bundlePath) {
+  const baked = CLI_VERSION_BANNER.exec(readFileSync(bundlePath, 'utf-8'))
+  if (!baked) return null
+  try {
+    return JSON.parse(baked[1])
+  } catch {
+    return null
+  }
+}
+
+/**
+ * `officevega --version` is baked into the CLI bundle, which is built before
+ * electron-builder runs and therefore before a release version is known. Rebuild
+ * it here with the app version whenever the two disagree, so the packaged
+ * command line can never answer with the workspace CLI version.
+ */
+function ensureCliBundleCarriesAppVersion() {
+  const bundlePath = join(__dirname, CLI_BUNDLE_REL)
+  const appVersion = packagedAppVersion()
+  if (bundledCliVersion(bundlePath) === appVersion) return
+  execFileSync(process.execPath, [join(__dirname, CLI_BUILD_REL)], {
+    stdio: 'inherit',
+    env: { ...process.env, [CLI_VERSION_ENV]: appVersion },
+  })
+  const baked = bundledCliVersion(bundlePath)
+  if (baked !== appVersion) {
+    throw new Error(
+      `packaged officevega CLI reports ${baked ?? 'no version'} but the app ships ${appVersion} ` +
+        `(rebuild it with ${CLI_VERSION_ENV}=${appVersion})`,
+    )
+  }
+}
+
+const NOTICE_PATH = join(__dirname, 'build/THIRD-PARTY-NOTICES.txt')
+const PDFIUM_NOTICE_TERMS = ['@embedpdf/pdfium', 'Copyright 2014 PDFium Authors', 'Apache License']
+
+function hasValidThirdPartyNotice() {
+  if (!existsSync(NOTICE_PATH)) return false
+  try {
+    const text = readFileSync(NOTICE_PATH, 'utf8')
+    return PDFIUM_NOTICE_TERMS.every((term) => text.includes(term))
+  } catch {
+    return false
+  }
+}
+
+function ensureThirdPartyNotices() {
+  if (!hasValidThirdPartyNotice()) {
+    execFileSync(process.execPath, [join(__dirname, '../../tools/gen-third-party-notices.mjs')], {
+      stdio: 'inherit',
+    })
+  }
+  if (!hasValidThirdPartyNotice()) {
+    throw new Error('third-party notice missing PDFium redistribution terms')
   }
 }
 
@@ -398,6 +469,14 @@ const config = {
       mimeType: 'text/csv',
     },
     {
+      // opens as a converted copy and saves as .xlsx (officevega#1146)
+      ext: 'tsv',
+      name: 'TSV Document',
+      role: 'Editor',
+      icon: 'xlsx',
+      mimeType: 'text/tab-separated-values',
+    },
+    {
       ext: 'pdf',
       name: 'PDF Document',
       role: 'Editor',
@@ -507,7 +586,7 @@ const config = {
     // not resize a lone png, so deb/rpm would install only
     // hicolor/1024x1024/apps/officevega.png — a size absent from the hicolor
     // theme index, leaving GNOME/KDE launchers on the generic fallback icon
-    // (genspark-ai/genoffice#90). The set ships every standard raster size.
+    // (genspark-ai/officevega#90). The set ships every standard raster size.
     icon: 'build/icons',
     // mac and win name the binary from productName; linux instead derives it
     // from package.json "name", and "@officevega/shell" sanitizes to the
@@ -567,6 +646,13 @@ const config = {
     publish: null,
     afterInstall: 'build/linux-after-install.sh',
     afterRemove: 'build/linux-after-remove.sh',
+    // rpmbuild links every packaged ELF file into /usr/lib/.build-id/<hash>.
+    // Two Electron apps built on the same Electron release ship identical
+    // binaries, so the links are identical too and dnf refuses the install
+    // with a file conflict against the other app (#1145). The links exist only
+    // to locate detached debuginfo, which this package does not ship, so turn
+    // them off. rpm-level `fpm` (not linux-level) keeps it away from the deb.
+    fpm: ['--rpm-rpmbuild-define=_build_id_links none'],
   },
   nsis: {
     oneClick: false,
@@ -576,7 +662,11 @@ const config = {
     displayLanguageSelector: true,
   },
   beforePack: async (context) => {
+    ensurePlatformHelpers()
+    assertExtraResourceSources()
+    ensureThirdPartyNotices()
     assertModuleTreesPresent()
+    ensureCliBundleCarriesAppVersion()
     if (context.electronPlatformName === 'darwin' && includeMacX64) {
       assertUniversalSidecar()
       assertUniversalVisionOcr()

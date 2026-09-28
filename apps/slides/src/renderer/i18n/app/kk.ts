@@ -258,4 +258,5 @@ export const kk = {
   appStatusSlidesUnhidden: '{count} слайд көрсетілді',
   appStatusSummaryZoomInserted: '{count} плиткамен Жиынтық Zoom слайды қосылды',
   appStatusZoomsInserted: '{count} масштаб қосылды: слайд-шоуда нұқып слайдтарға өтіңіз',
+  appStatusPasteTruncated: 'Pasted text was too long and has been truncated',
 } satisfies Record<keyof typeof zh, string>

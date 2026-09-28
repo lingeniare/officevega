@@ -1,3 +1,4 @@
+import { mcpLaunch, type McpLaunch } from '@genoffice/cli/mcp-launch'
 import { useCallback, useEffect, useState } from 'react'
 import type { TFunc } from './locale'
 import { McpServerSection } from './McpServerSection'
@@ -35,29 +36,7 @@ export const skillUpdateDue = (s: IntegrationsStatus): boolean =>
 
 const EXAMPLE_KEYS = ['intgExample1', 'intgExample2', 'intgExample3'] as const
 
-export interface McpLaunch {
-  command: string
-  args: string[]
-  env?: Record<string, string>
-}
-
-/**
- * How an MCP client starts `officevega mcp`. Clients spawn without a shell, so on Windows
- * neither officevega.cmd nor cmd /c is safe (a path with a space splits); the snippet does
- * what officevega.cmd does: the app binary as Node on the bundled CLI. Elsewhere it is the
- * bare name once it is on the PATH, else the launcher itself.
- */
-export function mcpLaunch(cli: { status: string; launcherDir: string }): McpLaunch {
-  const dir = cli.launcherDir
-  if (dir.includes('\\')) {
-    return {
-      command: `${dir}\\..\\..\\OfficeVega.exe`,
-      args: [`${dir}\\officevega.cjs`, 'mcp'],
-      env: { ELECTRON_RUN_AS_NODE: '1' },
-    }
-  }
-  return { command: cli.status === 'present' ? 'officevega' : `${dir}/officevega`, args: ['mcp'] }
-}
+export { mcpLaunch, type McpLaunch }
 
 const shellWord = (w: string) => (/\s/.test(w) ? `"${w}"` : w)
 

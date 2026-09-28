@@ -109,4 +109,6 @@ export const ar = {
   aiScopeRangeTip:
     'يفهم الذكاء الاصطناعي "هذا العمود / هذه الصفوف / الجزء المحدد" على أنه هذا النطاق، ويُثبَّت طوال التشغيل بعد الإرسال',
   aiScopeClearTitle: 'إلغاء نطاق التحديد واستهداف الورقة بأكملها',
+  aiGensparkAccount: 'حساب Genspark',
+  aiLoginGenspark: 'تسجيل الدخول إلى Genspark',
 } satisfies Record<keyof typeof zh, string>

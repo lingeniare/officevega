@@ -10,6 +10,7 @@ import {
 const emptyKeys = {
   vega: { apiKey: '' },
   serper: { apiKey: '' },
+  serply: { apiKey: '' },
   tavily: { apiKey: '' },
   parallel: { apiKey: '' },
 }
@@ -109,6 +110,23 @@ describe('search settings', () => {
       activeSearchProvider({
         search: { provider: 'vega', providers: { ...emptyKeys, vega: { apiKey: 'k' } } },
         gskToolsEnabled: false,
+      }),
+    ).toBe('genspark')
+  })
+})
+
+describe('Serply search settings', () => {
+  it('restores and trims a saved Serply key and activates it only with a key', () => {
+    const settings = resolveAiSearchSettings({
+      provider: 'serply',
+      providers: { serply: { apiKey: ' serply-key ' } } as never,
+    })
+    expect(settings.provider).toBe('serply')
+    expect(settings.providers.serply.apiKey).toBe('serply-key')
+    expect(activeSearchProvider({ search: settings })).toBe('serply')
+    expect(
+      activeSearchProvider({
+        search: { ...settings, providers: { ...settings.providers, serply: { apiKey: '  ' } } },
       }),
     ).toBe('genspark')
   })

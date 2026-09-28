@@ -113,4 +113,6 @@ export const az = {
   aiScopeRangeTip:
     'AI "bu sütun / bu sətirlər / seçilmiş hissə" ifadəsini bu diapazon kimi oxuyur və göndərdikdən sonra icra müddətində sabit qalır',
   aiScopeClearTitle: 'Diapazon əhatəsini ləğv et və bütün vərəqi hədəflə',
+  aiGensparkAccount: 'Genspark account',
+  aiLoginGenspark: 'Sign in to Genspark',
 } satisfies Record<keyof typeof zh, string>
