@@ -5,7 +5,7 @@
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "types": ["node"],
     // Pin resolution to this repo's workspace sources (avoids stale types when node_modules links point elsewhere)
-    "baseUrl": ".",
+    // (no baseUrl: `paths` are relative to this file, and baseUrl is deprecated in TS 6+)
     "paths": {
       "@genoffice/pptx-engine": ["../../packages/pptx-engine/src/index.ts"],
       "@genoffice/pptx-engine/table-grid": ["../../packages/pptx-engine/src/table-grid.ts"],
