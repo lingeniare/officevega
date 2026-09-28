@@ -641,8 +641,8 @@ const config = {
     artifactName: 'officevega-${version}.${arch}.rpm',
     packageName: 'officevega',
     // Obsoletes+Conflicts+Provides: `dnf install` removes the pre-rename
-    // "vegaoffice" package rather than coexisting with it
-    fpm: ['--obsoletes', 'vegaoffice', '--conflicts', 'vegaoffice', '--provides', 'vegaoffice'],
+    // "vegaoffice" package rather than coexisting with it (merged into the
+    // single fpm array below)
     publish: null,
     afterInstall: 'build/linux-after-install.sh',
     afterRemove: 'build/linux-after-remove.sh',
@@ -652,7 +652,16 @@ const config = {
     // with a file conflict against the other app (#1145). The links exist only
     // to locate detached debuginfo, which this package does not ship, so turn
     // them off. rpm-level `fpm` (not linux-level) keeps it away from the deb.
-    fpm: ['--rpm-rpmbuild-define=_build_id_links none'],
+    // NOTE: a single `fpm` array — a duplicate key would silently drop these.
+    fpm: [
+      '--obsoletes',
+      'vegaoffice',
+      '--conflicts',
+      'vegaoffice',
+      '--provides',
+      'vegaoffice',
+      '--rpm-rpmbuild-define=_build_id_links none',
+    ],
   },
   nsis: {
     oneClick: false,

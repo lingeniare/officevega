@@ -60,7 +60,7 @@ const unquote = (v) => {
   return s
 }
 
-const quote = (v) => (/[:#'"\[\]{}>|&*!%@`]/.test(v) || v !== v.trim() ? `'${v.replace(/'/g, "''")}'` : v)
+const quote = (v) => (/[:#'"[\]{}>|&*!%@`]/.test(v) || v !== v.trim() ? `'${v.replace(/'/g, "''")}'` : v)
 
 function parseFeedYml(text) {
   const items = [] // top-level layout: scalar keys plus the 'files' marker

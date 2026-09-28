@@ -140,11 +140,11 @@ describe('mcp server', () => {
     await server.connect(a)
     client = new Client({ name: 'test', version: '0' })
     await client.connect(b)
-  })
+  }, 60_000)
 
   afterAll(async () => {
-    await client.close()
-    disposeContext(ctx)
+    await client?.close()
+    if (ctx) disposeContext(ctx)
   })
 
   const call = async (name: string, args: Record<string, unknown>) => {

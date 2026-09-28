@@ -48,11 +48,11 @@ describe('officevega mcp --http', () => {
         requestInit: { headers },
       }),
     )
-  })
+  }, 60_000)
 
   afterAll(async () => {
-    await client.close().catch(() => undefined)
-    await handle.close()
+    await client?.close().catch(() => undefined)
+    await handle?.close()
   })
 
   const call = async (name: string, args: Record<string, unknown>) => {

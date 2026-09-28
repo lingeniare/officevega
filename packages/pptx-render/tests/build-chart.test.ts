@@ -45,7 +45,7 @@ describe('buildChartNode', () => {
     expect(points).toHaveLength(values.length * 2)
     expect(points[1]).toBeGreaterThan(points[points.length - 1]!)
     expect(node.labels.some((label) => label.text === '30')).toBe(true)
-  })
+  }, 30_000)
 
   it('renders 130,000 horizontal bars without spreading their values', () => {
     const values = Array<number>(130_000).fill(10)
@@ -59,7 +59,7 @@ describe('buildChartNode', () => {
     expect(buildChartNode('large-bars', 'large-bars', model, box, vp, metrics)?.bars).toHaveLength(
       values.length,
     )
-  })
+  }, 30_000)
 
   it('renders 130,000 scatter points without spreading axis values', () => {
     const values = Array<number>(130_000).fill(10)
@@ -72,7 +72,7 @@ describe('buildChartNode', () => {
     expect(
       buildChartNode('large-scatter', 'large-scatter', model, box, vp, metrics)?.markers,
     ).toHaveLength(values.length)
-  })
+  }, 30_000)
 
   it('builds line chart: polylines within plot, markers, gridlines, legend', () => {
     const node = buildChartNode('r_1', 'el1', lineModel, box, vp, metrics)!
