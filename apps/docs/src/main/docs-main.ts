@@ -180,7 +180,7 @@ import {
 } from './docx-encryption'
 import { isExternallyModified, type DiskFileState } from './external-change'
 import { copyImageDisplaySize, validCopyImageDataUrl } from './copy-image-guard'
-import { printScaleOption, validPrintDim, validPrintScale } from './print-args'
+import { printScaleOption, validPrintGeometry } from './print-args'
 import { initDocsAutoUpdater } from './updater'
 import { registerZoteroIpc, teardownZoteroIpc } from './zotero-ipc'
 import menuPlusIcon1x from './assets/menu-plus.png?asset'
@@ -523,10 +523,10 @@ const tMain = createI18n({
     menuPaste: 'Dán',
     menuPasteMatch: 'Dán và khớp kiểu định dạng',
     menuFindReplace: 'Tìm kiếm và thay thế…',
-    menuGoTo: 'Go To…',
+    menuGoTo: 'Đi tới…',
     menuSelectAll: 'Chọn tất cả',
     menuView: 'Xem',
-    menuZoom: 'Zoom',
+    menuZoom: 'Thu phóng',
     menuZoomIn: 'Phóng to',
     menuZoomOut: 'Thu nhỏ',
     menuZoom100: 'Kích thước thực tế (100%)',
@@ -536,7 +536,7 @@ const tMain = createI18n({
     menuDarkMode: 'Chế độ tối',
     menuFullscreen: 'Vào chế độ toàn màn hình',
     menuInsert: 'Chèn',
-    menuInsertTable: 'Bảng (3×3)',
+    menuInsertTable: 'Bảng…',
     menuInsertImage: 'Hình ảnh…',
     menuInsertPageBreak: 'Ngắt trang',
     menuInsertLink: 'Siêu liên kết…',
@@ -554,38 +554,38 @@ const tMain = createI18n({
     menuFont: 'Phông chữ…',
     menuParagraph: 'Đoạn văn…',
     menuTools: 'Công cụ',
-    menuTable: 'Table',
-    menuTableInsert: 'Insert',
-    menuTableInsertTable: 'Table…',
-    menuTableColsLeft: 'Columns to the Left',
-    menuTableColsRight: 'Columns to the Right',
-    menuTableRowsAbove: 'Rows Above',
-    menuTableRowsBelow: 'Rows Below',
-    menuTableCells: 'Cells…',
-    menuTableDelete: 'Delete',
-    menuTableDeleteTable: 'Table',
-    menuTableDeleteColumns: 'Columns',
-    menuTableDeleteRows: 'Rows',
-    menuTableSelect: 'Select',
-    menuTableSelectCell: 'Cell',
-    menuTableSelectColumn: 'Column',
-    menuTableSelectRow: 'Row',
-    menuTableSelectTable: 'Table',
-    menuTableMergeCells: 'Merge Cells',
-    menuTableSplitCells: 'Split Cells…',
-    menuTableSplitTable: 'Split Table',
-    menuTableAutoFit: 'AutoFit and Distribute',
-    menuTableAutoFitContents: 'AutoFit to Contents',
-    menuTableAutoFitWindow: 'AutoFit to Window',
-    menuTableFixedWidth: 'Fixed Column Width',
-    menuTableDistributeRows: 'Distribute Rows Evenly',
-    menuTableDistributeColumns: 'Distribute Columns Evenly',
-    menuTableRepeatHeader: 'Repeat Header Rows',
-    menuTableGridlines: 'View Gridlines',
-    menuTableProperties: 'Table Properties…',
+    menuTable: 'Bảng',
+    menuTableInsert: 'Chèn',
+    menuTableInsertTable: 'Bảng…',
+    menuTableColsLeft: 'Chèn cột bên trái',
+    menuTableColsRight: 'Chèn cột bên phải',
+    menuTableRowsAbove: 'Chèn hàng phía trên',
+    menuTableRowsBelow: 'Chèn hàng phía dưới',
+    menuTableCells: 'Ô…',
+    menuTableDelete: 'Xóa',
+    menuTableDeleteTable: 'Bảng',
+    menuTableDeleteColumns: 'Cột',
+    menuTableDeleteRows: 'Hàng',
+    menuTableSelect: 'Chọn',
+    menuTableSelectCell: 'Ô',
+    menuTableSelectColumn: 'Cột',
+    menuTableSelectRow: 'Hàng',
+    menuTableSelectTable: 'Bảng',
+    menuTableMergeCells: 'Hợp nhất các ô',
+    menuTableSplitCells: 'Tách ô…',
+    menuTableSplitTable: 'Tách bảng',
+    menuTableAutoFit: 'Tự động điều chỉnh',
+    menuTableAutoFitContents: 'Tự động điều chỉnh theo nội dung',
+    menuTableAutoFitWindow: 'Tự động điều chỉnh theo cửa sổ',
+    menuTableFixedWidth: 'Chiều rộng cột cố định',
+    menuTableDistributeRows: 'Phân bố hàng đều nhau',
+    menuTableDistributeColumns: 'Phân bố cột đều nhau',
+    menuTableRepeatHeader: 'Lặp lại hàng tiêu đề',
+    menuTableGridlines: 'Xem đường lưới',
+    menuTableProperties: 'Thuộc tính bảng…',
     menuWordCount: 'Đếm từ…',
-    menuAutoCorrect: 'AutoCorrect Options…',
-    menuPreferences: 'Preferences…',
+    menuAutoCorrect: 'Tùy chọn tự sửa lỗi…',
+    menuPreferences: 'Tùy chọn…',
     menuAiProofread: 'Hiệu đính bằng AI',
     menuWindow: 'Cửa sổ',
     menuHelp: 'Trợ giúp',
@@ -5222,6 +5222,9 @@ export function registerProjectIpc(): void {
 /** A4 at 96dpi, as the HTML app exports */
 const ALT_CHUNK_VIEWPORT = { width: 794, height: 1123, deviceScaleFactor: 2 }
 const ALT_CHUNK_HTML_MAX_CHARS = 64 * 1024 * 1024
+// An AI-generated page whose scripts never yield must not strand the hidden
+// conversion window; the slides export path uses the same shape.
+const ALT_CHUNK_TIMEOUT_MS = 120_000
 
 /** an encrypted save leaves no plain file to serve lazy pictures from: the
  *  renderer takes the materialized document back and leaves lazy mode */
@@ -5279,9 +5282,26 @@ export function registerDocsIpc(): void {
       // the BOM outranks a stale <meta charset> left in the decoded markup
       await writeFile(htmlPath, `\ufeff${html}`, 'utf8')
       driver = await ElectronBrowserDriver.create(ALT_CHUNK_VIEWPORT)
-      const { docx } = await convertHtmlToDocx({ url: pathToFileURL(htmlPath).href }, driver, {
+      // The markup is an unsanitised AI artifact: a script that never yields
+      // would otherwise keep executeJavaScript pending forever, and the
+      // finally below would never run (the hidden window and workDir leak for
+      // good). Race a watchdog and destroy the window on timeout, matching
+      // the slides export guard.
+      const conversion = convertHtmlToDocx({ url: pathToFileURL(htmlPath).href }, driver, {
         naturalTableWidth: true,
-      })
+      }).then(({ docx }) => docx)
+      let watchdog: ReturnType<typeof setTimeout> | undefined
+      const docx = await Promise.race([
+        conversion,
+        new Promise<null>((resolve) => {
+          watchdog = setTimeout(() => {
+            if (driver && !driver.isWindowDestroyed()) driver.destroyNow()
+            driver = null
+            console.warn('[docs] altChunk conversion timed out; window destroyed')
+            resolve(null)
+          }, ALT_CHUNK_TIMEOUT_MS)
+        }),
+      ]).finally(() => clearTimeout(watchdog))
       return docx
     } catch (err) {
       console.warn('[docs] altChunk conversion failed:', err)
@@ -5979,6 +5999,13 @@ export function registerDocsIpc(): void {
       outPath?: string,
       scale?: number,
     ) => {
+      // Renderer-supplied page geometry reaches Chromium printToPDF verbatim:
+      // reject non-finite/out-of-range sizes (0.1in..50in) and scales (0.1..5),
+      // same guard as docs:print-pdf-buffer (a malformed w:pgSz in a doc would
+      // otherwise hand Chromium a page thousands of inches wide).
+      if (!validPrintGeometry(pageWidthTwips, pageHeightTwips, scale)) {
+        return { ok: false, error: 'invalid page size or scale' }
+      }
       // renderer-supplied outPath is only honored when a save dialog authorized it before
       let filePath = outPath ?? null
       if (filePath && !canPdfWrite(event.sender.id, filePath)) {
@@ -6117,11 +6144,7 @@ export function registerDocsIpc(): void {
     async (event, pageWidthTwips: number, pageHeightTwips: number, scale?: number) => {
       // Renderer-supplied page geometry reaches Chromium printToPDF verbatim:
       // reject non-finite/out-of-range sizes (0.5in..50in) and scales (0.1..5).
-      if (
-        !validPrintDim(pageWidthTwips) ||
-        !validPrintDim(pageHeightTwips) ||
-        !validPrintScale(scale)
-      ) {
+      if (!validPrintGeometry(pageWidthTwips, pageHeightTwips, scale)) {
         return { ok: false, error: 'invalid page size or scale' }
       }
       try {

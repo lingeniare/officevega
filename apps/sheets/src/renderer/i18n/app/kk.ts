@@ -1383,4 +1383,18 @@ export const kk = {
   appSymbolTip: 'Таңба кірістіру',
   appOpeningWorkbook: 'Opening workbook…',
   appRibbonExpand: 'Expand the Ribbon',
+  appStatAverage: 'Орташа',
+  appStatCount: 'Саны',
+  appStatNumericalCount: 'Сандық саны',
+  appStatMin: 'Минимум',
+  appStatMax: 'Максимум',
+  appStatSum: 'Қосынды',
+  appZoomLevel: 'Масштаб деңгейі',
+  appNormalViewTip: 'Қалыпты көрініс',
+  appPageBreakPreviewTip: 'Бет үзілімдерін алдын ала көру',
+  appFormatPainterTip: 'Пішім суретші — Esc-ке дейін қосулы ұстау үшін қос нұқыңыз',
+  appFormatPainterLocked:
+    'Пішім суретші құлыпталды — аумақтарды таңдаңыз; тоқтату үшін Esc немесе батырманы басыңыз.',
+  appInsertCells: 'Ұяшықтарды кірістіру…',
+  appDeleteCells: 'Ұяшықтарды жою…',
 } satisfies Record<keyof typeof zh, string>

@@ -114,6 +114,7 @@ export const vi = {
   appPasteOptSource: 'Giữ định dạng nguồn',
   appPasteOptTheme: 'Dùng chủ đề đích',
   appStatusPasteOptionsExpired: 'Tùy chọn dán không còn khả dụng',
+  appStatusPasteTruncated: 'Văn bản dán quá dài và đã bị cắt bớt',
   appCtxHideSlide: 'Ẩn trang chiếu',
   appCtxUnhideSlide: 'Bỏ ẩn trang chiếu',
   appCtxAddSectionBefore: 'Thêm phần (trước trang chiếu này)',
@@ -252,5 +253,4 @@ export const vi = {
   appStatusSummaryZoomInserted: 'Đã chèn trang chiếu Thu phóng tóm tắt với {count} ô thu nhỏ',
   appSectionSummary: 'Phần tóm tắt',
   appSectionN: 'Phần {n}',
-  appStatusPasteTruncated: 'Pasted text was too long and has been truncated',
 } satisfies Record<keyof typeof zh, string>

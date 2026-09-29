@@ -307,6 +307,7 @@ async function anthropicTurn(
     emitted = true
     cb.onToolCall(call)
   }
+  pendingTools.clear()
   const lastTool = completedTools.at(-1)
   if (stopReason === 'max_tokens' && lastTool) lastTool.truncated = true
   // A stream with no content AND no message framing (no stop_reason ever seen)

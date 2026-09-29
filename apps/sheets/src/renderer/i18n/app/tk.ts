@@ -1365,4 +1365,18 @@ export const tk = {
   appSymbolTip: 'Nyşan goý',
   appOpeningWorkbook: 'Opening workbook…',
   appRibbonExpand: 'Expand the Ribbon',
+  appStatAverage: 'Ortaça',
+  appStatCount: 'Sany',
+  appStatNumericalCount: 'Sanly sany',
+  appStatMin: 'Minimum',
+  appStatMax: 'Maksimum',
+  appStatSum: 'Jemi',
+  appZoomLevel: 'Masshtab derejesi',
+  appNormalViewTip: 'Adaty görnüş',
+  appPageBreakPreviewTip: 'Sahifa bölümlerini öňünden görme',
+  appFormatPainterTip: 'Format nusgaçy — Esc basylança açyk galmagy üçin iki gezek basyň',
+  appFormatPainterLocked:
+    'Format nusgaçy gulplandy — nusgalanmaly aralyklary saýlaň; saklatmak üçin Esc ýa-da düwmeni basyň.',
+  appInsertCells: 'Ýacheýkalary goş…',
+  appDeleteCells: 'Ýacheýkalary poz…',
 } satisfies Record<keyof typeof zh, string>

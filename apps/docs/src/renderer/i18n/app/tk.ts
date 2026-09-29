@@ -178,10 +178,6 @@ export const tk = {
   appEvenOddOn:
     '"Jübüt we täk sahypalar başgaça" işledildi; jübüt sahypanyň ýokarky we aşaky kolontitullaryny redaktirlemek üçin sahypanyň ýokarsynda geçiň',
   appEvenOddOff: '"Jübüt we täk sahypalar başgaça" öçürildi',
-  appFirstPage: 'Birinji sahypa',
-  appOddPage: 'Täk sahypalar',
-  appEvenPage: 'Jübüt sahypalar',
-  appDefaultPage: 'Adaty',
   appDblclickEditHeader: 'Ýokarky kolontituly redaktirlemek üçin iki gezek basyň',
   appDblclickEditFooter: 'Aşaky kolontituly redaktirlemek üçin iki gezek basyň',
   appHfPageNumHint: ' (# awtomatiki sahypa belgisini aňladýar)',

@@ -1390,4 +1390,18 @@ export const uz = {
   appSymbolTip: 'Belgi kiritish',
   appOpeningWorkbook: 'Opening workbook…',
   appRibbonExpand: 'Expand the Ribbon',
+  appStatAverage: 'Oʻrtacha',
+  appStatCount: 'Soni',
+  appStatNumericalCount: 'Raqamli soni',
+  appStatMin: 'Minimal',
+  appStatMax: 'Maksimal',
+  appStatSum: 'Yigʻindi',
+  appZoomLevel: 'Masshtab darajasi',
+  appNormalViewTip: 'Oddiy koʻrinish',
+  appPageBreakPreviewTip: 'Sahifa uzilishlari koʻrinishi',
+  appFormatPainterTip: 'Format Painter — Esc bosilguncha faol saqlash uchun ikki marta bosing',
+  appFormatPainterLocked:
+    'Format Painter qulflangan — boʻyash uchun diapazonlarni tanlang; toʻxtatish uchun Esc yoki tugmani bosing.',
+  appInsertCells: 'Yacheykalarni qoʻshish…',
+  appDeleteCells: 'Yacheykalarni oʻchirish…',
 } satisfies Record<keyof typeof zh, string>

@@ -173,6 +173,8 @@ export const strings = {
     setDefaultAppOpenSettings: '打开系统设置',
     setDefaultAppFailed: '设置失败，请在系统设置中手动更改。',
     setAiSpellcheckDesc: '在 AI 对话输入框中输入时标出拼写错误的单词。',
+    setAiOpenInNewDocs: '新文档中打开 AI 面板',
+    setAiOpenInNewDocsDesc: '关闭后，新打开的文档默认收起 AI 面板；需要时点一下即可展开。',
     settings: '设置',
     setSecAccount: '账户',
     setSecGeneral: '通用',
@@ -575,6 +577,9 @@ export const strings = {
     setDefaultAppOpenSettings: 'Open system settings',
     setDefaultAppFailed: 'Could not change it. Please set it in the system settings.',
     setAiSpellcheckDesc: 'Underline misspelled words while typing in the AI chat input.',
+    setAiOpenInNewDocs: 'Open the AI panel in new documents',
+    setAiOpenInNewDocsDesc:
+      'When off, newly opened documents start with the AI panel collapsed; it is one click away when needed.',
     settings: 'Settings',
     setSecAccount: 'Account',
     setSecGeneral: 'General',
@@ -982,14 +987,17 @@ export const strings = {
     aiFontSizeXLarge: 'Rất lớn',
     aiFontSizeCustom: 'Tùy chỉnh',
     setAiSpellcheck: 'Kiểm tra chính tả trong trò chuyện AI',
-    setDefaultApp: 'Default app for Office documents',
-    setDefaultAppDesc: 'Open .docx, .xlsx and .pptx files in OfficeVega when double-clicked.',
-    setDefaultAppIs: 'OfficeVega is already the default.',
-    setDefaultAppOther: 'Current default: {app}',
-    setDefaultAppSet: 'Make default',
-    setDefaultAppOpenSettings: 'Open system settings',
-    setDefaultAppFailed: 'Could not change it. Please set it in the system settings.',
+    setDefaultApp: 'Ứng dụng mặc định cho tài liệu Office',
+    setDefaultAppDesc: 'Mở các tệp .docx, .xlsx và .pptx bằng OfficeVega khi bấm đúp.',
+    setDefaultAppIs: 'OfficeVega đã là ứng dụng mặc định.',
+    setDefaultAppOther: 'Mặc định hiện tại: {app}',
+    setDefaultAppSet: 'Đặt làm mặc định',
+    setDefaultAppOpenSettings: 'Mở cài đặt hệ thống',
+    setDefaultAppFailed: 'Không thể thay đổi. Vui lòng đặt trong cài đặt hệ thống.',
     setAiSpellcheckDesc: 'Gạch chân các từ sai chính tả khi nhập vào ô trò chuyện AI.',
+    setAiOpenInNewDocs: 'Mở bảng AI trong tài liệu mới',
+    setAiOpenInNewDocsDesc:
+      'Khi tắt, tài liệu mới mở sẽ thu gọn bảng AI; chỉ cần một lần bấm để mở lại khi cần.',
     settings: 'Cài đặt',
     setSecAccount: 'Tài khoản',
     setSecGeneral: 'Chung',
@@ -1144,7 +1152,7 @@ export const strings = {
     setAiSearchAccountHint:
       'Web and image search use your VEGA sign-in; signed out or with cloud tools off they fall back to free sources.',
     setAiSearchSerperHint: 'Serper cung cấp cả tìm kiếm web và hình ảnh bằng khóa của bạn.',
-    setAiSearchSerplyHint: 'Serply serves both web and image search with your key.',
+    setAiSearchSerplyHint: 'Serply cung cấp cả tìm kiếm web và hình ảnh bằng key của bạn.',
     setAiSearchTavilyHint:
       'Tavily cung cấp tìm kiếm web bằng khóa của bạn; tìm kiếm hình ảnh sẽ chuyển sang dùng các nguồn miễn phí.',
     setAiSearchParallelHint:
@@ -1419,6 +1427,9 @@ export const strings = {
     setDefaultAppOpenSettings: 'システム設定を開く',
     setDefaultAppFailed: '変更できませんでした。システム設定で設定してください。',
     setAiSpellcheckDesc: 'AI チャットの入力欄で入力中にスペルミスの単語に下線を表示します。',
+    setAiOpenInNewDocs: '新しいドキュメントで AI パネルを開く',
+    setAiOpenInNewDocsDesc:
+      'オフにすると、新しく開いたドキュメントは AI パネルを折りたたんだ状態で始まります。必要なときはワンクリックで開けます。',
     settings: '設定',
     setSecAccount: 'アカウント',
     setSecGeneral: '一般',
@@ -1846,6 +1857,9 @@ export const strings = {
     setDefaultAppOpenSettings: '시스템 설정 열기',
     setDefaultAppFailed: '변경할 수 없습니다. 시스템 설정에서 직접 설정해 주세요.',
     setAiSpellcheckDesc: 'AI 채팅 입력란에 입력할 때 잘못된 단어에 밑줄을 표시합니다.',
+    setAiOpenInNewDocs: '새 문서에서 AI 패널 열기',
+    setAiOpenInNewDocsDesc:
+      '끄면 새로 여는 문서는 AI 패널이 접힌 상태로 시작합니다. 필요할 때 한 번 클릭하면 열립니다.',
     settings: '설정',
     setSecAccount: '계정',
     setSecGeneral: '일반',
@@ -2273,6 +2287,9 @@ export const strings = {
     setDefaultAppOpenSettings: 'Ouvrir les réglages système',
     setDefaultAppFailed: 'Modification impossible. Définissez-la dans les réglages système.',
     setAiSpellcheckDesc: 'Souligne les mots mal orthographiés pendant la saisie dans le chat IA.',
+    setAiOpenInNewDocs: 'Ouvrir le panneau IA dans les nouveaux documents',
+    setAiOpenInNewDocsDesc:
+      "Désactivé : les documents nouvellement ouverts démarrent avec le panneau IA replié ; un clic suffit pour l'afficher.",
     settings: 'Paramètres',
     setSecAccount: 'Compte',
     setSecGeneral: 'Général',
@@ -2715,6 +2732,9 @@ export const strings = {
     setDefaultAppFailed: 'Änderung nicht möglich. Bitte in den Systemeinstellungen festlegen.',
     setAiSpellcheckDesc:
       'Unterstreicht falsch geschriebene Wörter beim Tippen im KI-Chat-Eingabefeld.',
+    setAiOpenInNewDocs: 'KI-Panel in neuen Dokumenten öffnen',
+    setAiOpenInNewDocsDesc:
+      'Wenn aus, starten neu geöffnete Dokumente mit eingeklapptem KI-Panel; ein Klick genügt, um es zu öffnen.',
     settings: 'Einstellungen',
     setSecAccount: 'Konto',
     setSecGeneral: 'Allgemein',
@@ -3154,6 +3174,9 @@ export const strings = {
     setDefaultAppFailed: 'No se pudo cambiar. Configúralo en los ajustes del sistema.',
     setAiSpellcheckDesc:
       'Subraya las palabras mal escritas al escribir en el cuadro del chat de IA.',
+    setAiOpenInNewDocs: 'Abrir el panel de IA en documentos nuevos',
+    setAiOpenInNewDocsDesc:
+      'Si está desactivado, los documentos recién abiertos empiezan con el panel de IA plegado; se abre con un clic cuando lo necesites.',
     settings: 'Configuración',
     setSecAccount: 'Cuenta',
     setSecGeneral: 'General',
@@ -3583,6 +3606,9 @@ export const strings = {
     setDefaultAppOpenSettings: 'เปิดการตั้งค่าระบบ',
     setDefaultAppFailed: 'เปลี่ยนไม่สำเร็จ โปรดตั้งค่าในการตั้งค่าระบบ',
     setAiSpellcheckDesc: 'ขีดเส้นใต้คำที่สะกดผิดขณะพิมพ์ในช่องแชท AI',
+    setAiOpenInNewDocs: 'เปิดแผง AI ในเอกสารใหม่',
+    setAiOpenInNewDocsDesc:
+      'เมื่อปิด เอกสารที่เปิดใหม่จะเริ่มโดยพับแผง AI ไว้ คลิกครั้งเดียวเพื่อเปิดเมื่อต้องการ',
     settings: 'การตั้งค่า',
     setSecAccount: 'บัญชี',
     setSecGeneral: 'ทั่วไป',
@@ -4007,6 +4033,9 @@ export const strings = {
     setDefaultAppOpenSettings: 'Buka pengaturan sistem',
     setDefaultAppFailed: 'Tidak dapat mengubahnya. Atur di pengaturan sistem.',
     setAiSpellcheckDesc: 'Garis bawahi kata yang salah eja saat mengetik di kotak obrolan AI.',
+    setAiOpenInNewDocs: 'Buka panel AI di dokumen baru',
+    setAiOpenInNewDocsDesc:
+      'Jika nonaktif, dokumen yang baru dibuka dimulai dengan panel AI terlipat; cukup satu klik saat dibutuhkan.',
     settings: 'Pengaturan',
     setSecAccount: 'Akun',
     setSecGeneral: 'Umum',
@@ -4435,6 +4464,9 @@ export const strings = {
     setDefaultAppOpenSettings: 'Открыть системные настройки',
     setDefaultAppFailed: 'Не удалось изменить. Задайте в системных настройках.',
     setAiSpellcheckDesc: 'Подчёркивать слова с ошибками при вводе в поле чата ИИ.',
+    setAiOpenInNewDocs: 'Открывать панель ИИ в новых документах',
+    setAiOpenInNewDocsDesc:
+      'Если выключено, новые документы открываются со свёрнутой панелью ИИ; она доступна в один клик.',
     settings: 'Настройки',
     setSecAccount: 'Аккаунт',
     setSecGeneral: 'Общие',
@@ -4864,6 +4896,9 @@ export const strings = {
     setDefaultAppFailed: 'تعذّر التغيير. يرجى تعيينه من إعدادات النظام.',
     setAiSpellcheckDesc:
       'وضع خط تحت الكلمات الخاطئة إملائيًا أثناء الكتابة في حقل محادثة الذكاء الاصطناعي.',
+    setAiOpenInNewDocs: 'فتح لوحة الذكاء الاصطناعي في المستندات الجديدة',
+    setAiOpenInNewDocsDesc:
+      'عند الإيقاف، تبدأ المستندات المفتوحة حديثًا بلوحة الذكاء الاصطناعي مطوية؛ تكفي نقرة واحدة لفتحها عند الحاجة.',
     settings: 'الإعدادات',
     setSecAccount: 'الحساب',
     setSecGeneral: 'عام',
@@ -5280,6 +5315,9 @@ export const strings = {
     setDefaultAppFailed: 'Não foi possível alterar. Defina nas configurações do sistema.',
     setAiSpellcheckDesc:
       'Sublinha palavras com erros ortográficos ao digitar na caixa do chat de IA.',
+    setAiOpenInNewDocs: 'Abrir o painel de IA em novos documentos',
+    setAiOpenInNewDocsDesc:
+      'Quando desativado, os documentos recém-abertos começam com o painel de IA recolhido; basta um clique quando precisar.',
     settings: 'Configurações',
     setSecAccount: 'Conta',
     setSecGeneral: 'Geral',
@@ -5705,6 +5743,9 @@ export const strings = {
     setDefaultAppOpenSettings: 'Apri impostazioni di sistema',
     setDefaultAppFailed: 'Impossibile modificare. Impostala nelle impostazioni di sistema.',
     setAiSpellcheckDesc: 'Sottolinea le parole errate durante la digitazione nella chat IA.',
+    setAiOpenInNewDocs: 'Apri il pannello IA nei nuovi documenti',
+    setAiOpenInNewDocsDesc:
+      'Se disattivato, i documenti appena aperti iniziano con il pannello IA ridotto; basta un clic quando serve.',
     settings: 'Impostazioni',
     setSecAccount: 'Account',
     setSecGeneral: 'Generale',
@@ -6129,6 +6170,9 @@ export const strings = {
     setDefaultAppOpenSettings: 'Otwórz ustawienia systemu',
     setDefaultAppFailed: 'Nie udało się zmienić. Ustaw w ustawieniach systemu.',
     setAiSpellcheckDesc: 'Podkreśla błędnie napisane słowa podczas pisania w polu czatu AI.',
+    setAiOpenInNewDocs: 'Otwieraj panel AI w nowych dokumentach',
+    setAiOpenInNewDocsDesc:
+      'Gdy wyłączone, nowo otwarte dokumenty zaczynają ze zwiniętym panelem AI; wystarczy jedno kliknięcie, gdy jest potrzebny.',
     settings: 'Ustawienia',
     setSecAccount: 'Konto',
     setSecGeneral: 'Ogólne',
@@ -6794,6 +6838,9 @@ export const strings = {
     setAiGskToolsDesc:
       'Webové vyhledávání, generování obrázků a analýza médií běží přes Genspark a čerpají kredity, pokud je jejich poskytovatel nastaven na Genspark; při vypnutí vyhledávání používá bezplatné zdroje a obrázkové nástroje Genspark nejsou dostupné.',
     onbJoinGenTeam: 'Připojit se ke GenTeam',
+    setAiOpenInNewDocs: 'Otevírat panel AI v nových dokumentech',
+    setAiOpenInNewDocsDesc:
+      'Když je vypnuto, nově otevřené dokumenty začínají se sbaleným panelem AI; v případě potřeby stačí jedno kliknutí.',
   },
   nl: {
     addFolderRoot: 'Map toevoegen…',
@@ -6966,6 +7013,9 @@ export const strings = {
     setDefaultAppFailed: 'Wijzigen is niet gelukt. Stel dit in via de systeeminstellingen.',
     setAiSpellcheckDesc:
       'Onderstreept verkeerd gespelde woorden tijdens het typen in het AI-chatveld.',
+    setAiOpenInNewDocs: 'AI-paneel openen in nieuwe documenten',
+    setAiOpenInNewDocsDesc:
+      'Indien uit, starten nieuw geopende documenten met een ingeklapt AI-paneel; één klik volstaat wanneer je het nodig hebt.',
     settings: 'Instellingen',
     setSecAccount: 'Account',
     setSecGeneral: 'Algemeen',
@@ -7389,6 +7439,9 @@ export const strings = {
     setDefaultAppFailed: 'Tidak dapat mengubahnya. Tetapkan dalam tetapan sistem.',
     setAiSpellcheckDesc:
       'Gariskan perkataan yang salah ejaan semasa menaip dalam kotak sembang AI.',
+    setAiOpenInNewDocs: 'Buka panel AI dalam dokumen baharu',
+    setAiOpenInNewDocsDesc:
+      'Jika dimatikan, dokumen yang baru dibuka bermula dengan panel AI dilipat; cukup satu klik apabila diperlukan.',
     settings: 'Tetapan',
     setSecAccount: 'Akaun',
     setSecGeneral: 'Umum',
@@ -7810,6 +7863,9 @@ export const strings = {
     setDefaultAppOpenSettings: 'פתיחת הגדרות המערכת',
     setDefaultAppFailed: 'לא ניתן לשנות. יש להגדיר בהגדרות המערכת.',
     setAiSpellcheckDesc: 'סימון מילים עם שגיאות כתיב בעת הקלדה בתיבת הצ׳אט של ה-AI.',
+    setAiOpenInNewDocs: 'פתיחת לוח ה-AI במסמכים חדשים',
+    setAiOpenInNewDocsDesc:
+      'כאשר כבוי, מסמכים שנפתחו זה עתה מתחילים עם לוח ה-AI מקופל; לחיצה אחת מספיקה כשצריך.',
     settings: 'הגדרות',
     setSecAccount: 'חשבון',
     setSecGeneral: 'כללי',
@@ -8218,6 +8274,9 @@ export const strings = {
     setDefaultAppOpenSettings: 'सिस्टम सेटिंग खोलें',
     setDefaultAppFailed: 'बदला नहीं जा सका। कृपया सिस्टम सेटिंग में सेट करें।',
     setAiSpellcheckDesc: 'AI चैट इनपुट में टाइप करते समय गलत वर्तनी वाले शब्दों को रेखांकित करें।',
+    setAiOpenInNewDocs: 'नए दस्तावेज़ों में AI पैनल खोलें',
+    setAiOpenInNewDocsDesc:
+      'बंद होने पर, नए खोले गए दस्तावेज़ AI पैनल संक्षिप्त अवस्था में शुरू होते हैं; ज़रूरत पड़ने पर एक क्लिक में खुल जाता है।',
     settings: 'सेटिंग्स',
     setSecAccount: 'खाता',
     setSecGeneral: 'सामान्य',
@@ -8634,6 +8693,8 @@ export const strings = {
     setDefaultAppOpenSettings: '開啟系統設定',
     setDefaultAppFailed: '設定失敗，請在系統設定中手動更改。',
     setAiSpellcheckDesc: '在 AI 對話輸入框中輸入時標示拼錯的單字。',
+    setAiOpenInNewDocs: '在新文件中開啟 AI 面板',
+    setAiOpenInNewDocsDesc: '關閉後，新開啟的文件預設收合 AI 面板；需要時點一下即可展開。',
     settings: '設定',
     setSecAccount: '帳戶',
     setSecGeneral: '一般',
@@ -9244,6 +9305,9 @@ export const strings = {
     setSearchRerank: 'Jev qidiruvini qayta saralash',
     setSearchRerankDesc: 'Mahalliy qidiruvning dastlabki 20 natijasi parchalarini TypeSafe Jev modeliga yuboradi va dolzarlik boʻyicha qayta saralaydi. Sukut boʻyicha oʻchiq; yoqilganda parchalar bu qurilmadan chiqadi.',
     setSearchRerankEndpoint: 'Jev nuqtasi',
+    setAiOpenInNewDocs: 'Yangi hujjatlarda AI panelini ochish',
+    setAiOpenInNewDocsDesc:
+      'Oʻchirilganda yangi ochilgan hujjatlarda AI paneli yigʻiq boʻladi; kerak boʻlganda bir bosish kifoya.',
 },
   kk: {
     addFolderRoot: 'Add folder…',
@@ -9625,6 +9689,9 @@ export const strings = {
     setSearchRerank: 'Jev іздеуін қайта реттеу',
     setSearchRerankDesc: 'Жергілікті іздеудің алғашқы 20 нәтижесінің үзінділерін TypeSafe Jev моделіне жібереді және сәйкестік бойынша қайта реттейді. Әдепкі бойынша өшірулі; қосылғанда үзінділер осы құрылғыдан шығады.',
     setSearchRerankEndpoint: 'Jev нүктесі',
+    setAiOpenInNewDocs: 'Жаңа құжаттарда AI панелін ашу',
+    setAiOpenInNewDocsDesc:
+      'Өшірілгенде жаңа ашылған құжаттар AI панелі жиырылған күйде басталады; қажет кезде бір шерту жеткілікті.',
 },
   az: {
     addFolderRoot: 'Add folder…',
@@ -10006,6 +10073,9 @@ export const strings = {
     setSearchRerank: 'Jev axtarış sıralaması',
     setSearchRerankDesc: 'Yerli axtarışın ilk 20 nəticəsinin fraqmentlərini TypeSafe Jev modelinə göndərir və uyğunluğa görə yenidən sıralayır. Susmaya görə söndürülüb; yandıqda fraqmentlər bu cihazdan çıxır.',
     setSearchRerankEndpoint: 'Jev endpointi',
+    setAiOpenInNewDocs: 'Yeni sənədlərdə AI panelini aç',
+    setAiOpenInNewDocsDesc:
+      'Söndürüldükdə yeni açılan sənədlər AI paneli yığcam vəziyyətdə başlayır; lazım olduqda bir klik kifayətdir.',
 },
   tk: {
     addFolderRoot: 'Add folder…',
@@ -10387,6 +10457,9 @@ export const strings = {
     setSearchRerank: 'Jev gözleginiň tertiplemesi',
     setSearchRerankDesc: 'Ýerli gözlegiň ilkinji 20 netijesiniň böleklerini TypeSafe Jev modeline iberýär we degişlilik boýunça täzeden tertipleýär. Gaýybana öçürilen; açylanda bölekler bu enjamdan çykýar.',
     setSearchRerankEndpoint: 'Jev nokady',
+    setAiOpenInNewDocs: 'Täze resminamalarda AI panelini aç',
+    setAiOpenInNewDocsDesc:
+      'Öçürilende täze açylan resminamalar AI paneli ýygnaýyk ýagdaýda açylýar; gerek bolsa bir basmak ýeterlik.',
 },
   ky: {
     addFolderRoot: 'Add folder…',
@@ -10768,6 +10841,9 @@ export const strings = {
     setSearchRerank: 'Jev издөөнү кайра иреттөө',
     setSearchRerankDesc: 'Жергиликтүү издөөнүн алгачкы 20 жыйынтыгынын үзүндүлөрүн TypeSafe Jev моделине жиберет жана ылайыкташтык боюнча кайра иреттейт. Демейки боюнча өчүк; күйгүзүлгөндө үзүндүлөр бул түзмөктөн чыгат.',
     setSearchRerankEndpoint: 'Jev чекити',
+    setAiOpenInNewDocs: 'Жаңа документтерде AI панелин ачуу',
+    setAiOpenInNewDocsDesc:
+      'Өчүрүлгөндө жаңы ачылган документтер AI панели жыйналып башталат; керек болсо бир баскыч жетиштүү.',
 },
   tt: {
     addFolderRoot: 'Add folder…',
@@ -11149,6 +11225,9 @@ export const strings = {
     setSearchRerank: 'Jev эзләүен яңадан тәртипкә кую',
     setSearchRerankDesc: 'Җирле эзләнешнең беренче 20 нәтиҗәсенең өзекләрен TypeSafe Jev моделенә җибәрә һәм турыдантурылык буенча яңадан тәртипли. Килешү буенча сүндерелгән; кабылганда өзекләр бу җайланмадан чыга.',
     setSearchRerankEndpoint: 'Jev ноктасы',
+    setAiOpenInNewDocs: 'Яңа документларда AI панелен ачу',
+    setAiOpenInNewDocsDesc:
+      'Сүндерелгәндә яңа ачылган документлар AI панеле җыелган килеш башлана; кирәк булса бер баскыч җитә.',
 },
   ka: {
     addFolderRoot: 'Add folder…',
@@ -11530,5 +11609,8 @@ export const strings = {
     setSearchRerank: 'Jev ძიების რერანკინგი',
     setSearchRerankDesc: 'აგზავნის ლოკალური ძიების პირველი 20 შედეგის ფრაგმენტებს TypeSafe-ის Jev მოდელში და ალაგებს მათ შესაბამისობის მიხედვით. ნაგულისხმებად გამორთულია; ჩართვისას ფრაგმენტები ტოვებს ამ მოწყობილობას.',
     setSearchRerankEndpoint: 'Jev ენდპოინტი',
+    setAiOpenInNewDocs: 'AI პანელის გახსნა ახალ დოკუმენტებში',
+    setAiOpenInNewDocsDesc:
+      'გამორთვისას ახალი დოკუმენტები იწყება ჩაკეცილი AI პანელით; საჭიროებისას ერთი დაწკაპუნება საკმარისია.',
 },
 } as const

@@ -1387,4 +1387,18 @@ export const ky = {
   appSymbolTip: 'Символ кыстаруу',
   appOpeningWorkbook: 'Opening workbook…',
   appRibbonExpand: 'Expand the Ribbon',
+  appStatAverage: 'Орточо',
+  appStatCount: 'Саны',
+  appStatNumericalCount: 'Сандык саны',
+  appStatMin: 'Минимум',
+  appStatMax: 'Максимум',
+  appStatSum: 'Суммасы',
+  appZoomLevel: 'Масштаб деңгээли',
+  appNormalViewTip: 'Кадимки көрүнүш',
+  appPageBreakPreviewTip: 'Бет бөлүүнү алдын ала көрүү',
+  appFormatPainterTip: 'Форматты көчүрүүчү — Esc басканча күйүк тургандыгы үчүн эки жолу басыңыз',
+  appFormatPainterLocked:
+    'Форматты көчүрүүчү кулпуланды — боёлуучу диапазонду тандаңыз; токтотуу үчүн Esc же баскычты басыңыз.',
+  appInsertCells: 'Клеткаларды кошуу…',
+  appDeleteCells: 'Клеткаларды өчүрүү…',
 } satisfies Record<keyof typeof zh, string>

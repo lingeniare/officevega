@@ -179,10 +179,6 @@ export const az = {
   appEvenOddOn:
     '"Fərqli tək və cüt səhifələr" aktiv edildi; cüt səhifənin yuxarı və aşağı kolontitullarını redaktə etmək üçün səhifənin yuxarısında keçid edin',
   appEvenOddOff: '"Fərqli tək və cüt səhifələr" deaktiv edildi',
-  appFirstPage: 'İlk səhifə',
-  appOddPage: 'Tək səhifələr',
-  appEvenPage: 'Cüt səhifələr',
-  appDefaultPage: 'Defolt',
   appDblclickEditHeader: 'Yuxarı kolontitulu redaktə etmək üçün iki dəfə klikləyin',
   appDblclickEditFooter: 'Aşağı kolontitulu redaktə etmək üçün iki dəfə klikləyin',
   appHfPageNumHint: ' (# avtomatik səhifə nömrəsini göstərir)',

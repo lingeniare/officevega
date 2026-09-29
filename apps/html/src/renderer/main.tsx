@@ -32,7 +32,7 @@ void (async () => {
   document.documentElement.lang = htmlLang(lang as Lang)
   applyTheme(theme)
   window.htmlApi.onThemeChanged(applyTheme)
-  void window.htmlApi
+  await window.htmlApi
     ?.getAiPanelPrefs?.()
     .then(applyAiPanelPrefs)
     .catch(() => {})

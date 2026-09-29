@@ -1368,4 +1368,18 @@ export const ka = {
   appSymbolTip: 'სიმბოლოს ჩასმა',
   appOpeningWorkbook: 'Opening workbook…',
   appRibbonExpand: 'Expand the Ribbon',
+  appStatAverage: 'საშუალო',
+  appStatCount: 'რაოდენობა',
+  appStatNumericalCount: 'რიცხვითი რაოდენობა',
+  appStatMin: 'მინიმუმი',
+  appStatMax: 'მაქსიმუმი',
+  appStatSum: 'ჯამი',
+  appZoomLevel: 'მასშტაბის დონე',
+  appNormalViewTip: 'ჩვეულებრივი ხედი',
+  appPageBreakPreviewTip: 'გვერდის წრეთების წინასწარი ხედი',
+  appFormatPainterTip: 'ფორმატის კოპირება — Esc-მდე ჩართულად დასატოვებლად ორჯერ დააწკაპუნეთ',
+  appFormatPainterLocked:
+    'ფორმატის კოპირება დაბლოკილია — აირჩიეთ დიაპაზონები; შესაჩერებლად დააჭირეთ Esc ან ღილაკს.',
+  appInsertCells: 'უჯრების ჩამატება…',
+  appDeleteCells: 'უჯრების წაშლა…',
 } satisfies Record<keyof typeof zh, string>

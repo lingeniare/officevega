@@ -1372,4 +1372,18 @@ export const az = {
   appSymbolTip: 'Simvol daxil et',
   appOpeningWorkbook: 'Opening workbook…',
   appRibbonExpand: 'Expand the Ribbon',
+  appStatAverage: 'Orta',
+  appStatCount: 'Sayı',
+  appStatNumericalCount: 'Rəqəmli sayı',
+  appStatMin: 'Minimum',
+  appStatMax: 'Maksimum',
+  appStatSum: 'Cəmi',
+  appZoomLevel: 'Miqyas səviyyəsi',
+  appNormalViewTip: 'Normal görünüş',
+  appPageBreakPreviewTip: 'Səhifə sonu önizləməsi',
+  appFormatPainterTip: 'Format rəssamı — Esc basılana qədər aktiv qalması üçün iki dəfə klikləyin',
+  appFormatPainterLocked:
+    'Format rəssamı kilidləndi — rənglənəcək diapazonları seçin; dayandırmaq üçün Esc və ya düyməni basın.',
+  appInsertCells: 'Xanaları əlavə et…',
+  appDeleteCells: 'Xanaları sil…',
 } satisfies Record<keyof typeof zh, string>

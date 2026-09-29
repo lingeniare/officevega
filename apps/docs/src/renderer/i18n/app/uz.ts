@@ -181,10 +181,6 @@ export const uz = {
   appEvenOddOn:
     '“Toq va juft sahifalar boshqacha” yoqildi; juft sahifa yuqori va pastki kolontitullarini tahrirlash uchun sahifaning yuqorisida almashtiring',
   appEvenOddOff: '“Toq va juft sahifalar boshqacha” o‘chirildi',
-  appFirstPage: 'Birinchi sahifa',
-  appOddPage: 'Toq sahifalar',
-  appEvenPage: 'Juft sahifalar',
-  appDefaultPage: 'Standart',
   appDblclickEditHeader: 'Yuqori kolontitulni tahrirlash uchun ikki marta bosing',
   appDblclickEditFooter: 'Pastki kolontitulni tahrirlash uchun ikki marta bosing',
   appHfPageNumHint: ' (# avtomatik sahifa raqamini bildiradi)',

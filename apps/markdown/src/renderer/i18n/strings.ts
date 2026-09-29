@@ -505,6 +505,7 @@ export const strings = {
     savedOk: 'Đã lưu',
     saveFailed: 'Lưu thất bại',
     imageNeedsSavedDocument: 'Vui lòng lưu tài liệu trước, sau đó mới dán hình ảnh',
+    imageTooLarge: 'Ảnh lớn hơn {mb} MB, không thể chèn',
     viewImage: 'Xem hình ảnh',
     saveImageAs: 'Lưu hình ảnh dưới dạng…',
     imageActualSize: 'Kích thước thực tế',
@@ -537,7 +538,6 @@ export const strings = {
     replaceAll: 'Thay thế tất cả',
     findTip: 'Tìm kiếm và Thay thế (⌘F)',
     ribbonCollapse: 'Thu gọn Ribbon',
-    ribbonPin: 'Ghim Ribbon',
     ribbonExpand: 'Mở rộng Ribbon',
     autoSaveTip: 'Tự động lưu (mỗi 30 giây và khi cửa sổ mất tiêu điểm)',
     bold: 'In đậm',
@@ -643,7 +643,7 @@ export const strings = {
     fileExportDocx: 'Xuất DOCX',
     filePrint: 'In',
     saveAsTip: 'Lưu bản sao với tên mới',
-    imageTooLarge: 'Ảnh vượt quá {mb} MB, không thể chèn',
+    ribbonPin: 'Ghim Ribbon',
 
   },
   ja: {
