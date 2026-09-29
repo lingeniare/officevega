@@ -3310,6 +3310,7 @@ th.cell-rev-del {
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow-wrap: anywhere;
 }
@@ -10126,6 +10127,7 @@ body.docs-crop-active
 
 .rb-editing {
   justify-content: center;
+  align-items: stretch;
 }
 
 .find-action:disabled {
