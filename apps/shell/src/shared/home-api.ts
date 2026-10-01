@@ -323,8 +323,10 @@ export interface HomeApi {
   onLicenseChanged(handler: (status: LicenseStatus) => void): () => void
   /** open the public GitHub repository in the default browser */
   openGitHubRepo(): Promise<void>
-  /** current stargazer count of the public repo (null while offline / rate-limited) */
-  githubStars(): Promise<number | null>
+  /** open officevega.com in the default browser (Settings → About) */
+  openWebsite(): Promise<void>
+  /** open api.vega.chat in the default browser (Settings → About) */
+  openAiProvider(): Promise<void>
   /** whether the one-time "star us" prompt should show now (show:true also counts as shown);
    * docOpens personalizes the card copy ("you've opened N documents") */
   starPromptShouldShow(): Promise<StarPromptShow>
@@ -563,7 +565,8 @@ export const HOME_CHANNELS = {
   openSettings: 'home:open-settings',
   openCreditUsage: 'home:open-credit-usage',
   openGitHubRepo: 'home:open-github-repo',
-  githubStars: 'home:github-stars',
+  openWebsite: 'home:open-website',
+  openAiProvider: 'home:open-ai-provider',
   starPromptShouldShow: 'home:star-prompt-should-show',
   starPromptAction: 'home:star-prompt-action',
   licenseStatus: 'license:status',

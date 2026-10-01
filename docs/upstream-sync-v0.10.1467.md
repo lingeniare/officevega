@@ -109,7 +109,7 @@
   атомарные записи userData JSON + fsync перед rename документа; folded search hits → original text.
 - project-store: identity по canonical path (`91006aad`), миграция чатов из удалённого проекта,
   сохранение полных чатов при rebind, не перезаписывать нечитаемый default project (пост-релиз).
-- `updater.ts` апстрим **не трогал** — наш кастомный feed (updates.officevega.com) в безопасности;
+- `updater.ts` апстрим **не трогал** — наш кастомный feed (officevega.com/updates/) в безопасности;
   но `electron-builder.cjs` тронут (dfe2a6d9, `afa459fb`, `b2f0e884` PDFium notices) — мержить аккуратно,
   сохранить `OFFICEVEGA_UPDATE_URL` generic-provider конфиг.
 

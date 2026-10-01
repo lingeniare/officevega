@@ -592,6 +592,9 @@ function currentAiPanelPrefs(): AiPanelPrefs {
 // VEGA keys/deposit dashboard opened from the account menu's deposit row.
 // Kept main-side so the renderer never supplies the URL.
 const CREDIT_USAGE_URL = 'https://api.vega.chat/dashboard'
+// Settings → About link rows; kept main-side so the renderer never supplies the URL.
+const OFFICEVEGA_SITE_URL = 'https://officevega.com'
+const VEGA_API_URL = 'https://api.vega.chat'
 
 // ---- "star us on GitHub" prompt (see star-prompt.ts for the rules) ----
 
@@ -617,29 +620,6 @@ function recordStarPromptDocOpen(): void {
     if (next !== state) writeStarPrompt(next)
   } catch {
     // settings write failures must never break opening a document
-  }
-}
-
-// Stargazer count for the settings About pane; fetched main-side (the
-// renderer CSP has no api.github.com) and cached per session — the exact
-// number is decoration, staleness is fine.
-let cachedGithubStars: number | null = null
-
-async function fetchGithubStars(): Promise<number | null> {
-  if (cachedGithubStars !== null) return cachedGithubStars
-  try {
-    const response = await fetch('https://api.github.com/repos/lingeniare/getoffice', {
-      headers: { Accept: 'application/vnd.github+json' },
-      signal: AbortSignal.timeout(5000),
-    })
-    if (!response.ok) return null
-    const body: unknown = await response.json()
-    const count = (body as { stargazers_count?: unknown }).stargazers_count
-    if (typeof count !== 'number' || !Number.isFinite(count)) return null
-    cachedGithubStars = count
-    return count
-  } catch {
-    return null
   }
 }
 
@@ -5037,7 +5017,17 @@ function registerHomeIpc(): void {
     })
   })
 
-  ipcMain.handle(HOME_CHANNELS.githubStars, () => fetchGithubStars())
+  ipcMain.handle(HOME_CHANNELS.openWebsite, () => {
+    shell.openExternal(OFFICEVEGA_SITE_URL).catch(() => {
+      // no browser handler available; nothing actionable for the user here
+    })
+  })
+
+  ipcMain.handle(HOME_CHANNELS.openAiProvider, () => {
+    shell.openExternal(VEGA_API_URL).catch(() => {
+      // no browser handler available; nothing actionable for the user here
+    })
+  })
 
   // returning true also counts as "shown": the renderer displays it
   // unconditionally, so no separate mark-shown round-trip is needed

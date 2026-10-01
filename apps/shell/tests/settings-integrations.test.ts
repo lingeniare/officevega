@@ -28,7 +28,16 @@ beforeEach(() => {
     getAiPanelPrefs: async () => ({ fontSize: 'default', spellcheck: true }),
     getUpdateChannel: async () => 'stable',
     getAppVersion: async () => '1.0.0',
-    githubStars: async () => null,
+    getLicenseStatus: async () => ({
+      licensed: true,
+      state: 'active',
+      holderEmail: '',
+      accountType: '',
+      expiresAt: '',
+      graceUntil: '',
+      keyHint: '',
+    }),
+    onLicenseChanged: () => () => {},
   } as unknown as HomeApi
 })
 

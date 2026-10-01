@@ -30,7 +30,7 @@ launches (`npm run shell`, `npm start -w @officevega/shell`) from such terminals
 
 - Auto-update uses electron-updater's **generic** provider; the feed lives on
   the project site (`OFFICEVEGA_UPDATE_URL` → `apps/shell/electron-builder.env`,
-  gitignored — currently `https://updates.officevega.com`). Without the env
+  gitignored — currently `https://officevega.com/updates/`). Without the env
   var no publish config is emitted and packaged builds have no updater.
 - `scripts/stage-update-feed.cjs` assembles the upload-ready `release-feed/`
   dir from `apps/shell/release/` (or given dirs): copies only

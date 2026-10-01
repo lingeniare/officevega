@@ -453,9 +453,11 @@ const homeApi: HomeApi = {
   async openGitHubRepo() {
     await ipcRenderer.invoke(HOME_CHANNELS.openGitHubRepo)
   },
-  async githubStars() {
-    const result: unknown = await ipcRenderer.invoke(HOME_CHANNELS.githubStars)
-    return typeof result === 'number' && Number.isFinite(result) ? result : null
+  async openWebsite() {
+    await ipcRenderer.invoke(HOME_CHANNELS.openWebsite)
+  },
+  async openAiProvider() {
+    await ipcRenderer.invoke(HOME_CHANNELS.openAiProvider)
   },
   async starPromptShouldShow() {
     const result: unknown = await ipcRenderer.invoke(HOME_CHANNELS.starPromptShouldShow)

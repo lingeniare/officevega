@@ -1,4 +1,4 @@
-# Хостинг фида обновлений на updates.officevega.com
+# Хостинг фида обновлений на officevega.com/updates/
 
 Инструкция по размещению и обновлению файлов автообновления приложения на
 сайте. Обновления работают через `electron-updater` с generic-провайдером:
@@ -8,7 +8,7 @@
 ## Как это работает
 
 Приложение периодически (через 15 сек после старта, затем каждые 4 часа)
-скачивает из корня `https://updates.officevega.com/` файл-манифест своего
+скачивает из корня `https://officevega.com/updates/` файл-манифест своего
 канала и платформы:
 
 | Канал  | Windows        | macOS               | Linux                 |
@@ -23,7 +23,7 @@
 
 ## Структура папки на сайте
 
-В корне `updates.officevega.com` — плоский список файлов:
+В корне `officevega.com/updates/` — плоский список файлов:
 
 ```
 /
@@ -70,7 +70,7 @@
    (forward-only и `allowDowngrade = false`).
 
    `apps/shell/electron-builder.env` уже содержит
-   `OFFICEVEGA_UPDATE_URL=https://updates.officevega.com` — с ним
+   `OFFICEVEGA_UPDATE_URL=https://officevega.com/updates/` — с ним
    electron-builder сгенерирует yml-манифесты рядом с инсталлерами в
    `apps/shell/release/`. В CI задайте ту же переменную окружения.
 
@@ -88,7 +88,7 @@
    ```
 
 3. Залейте **всё содержимое** `release-feed/` в корень
-   `updates.officevega.com` по FTP/через панель хостинга **в таком порядке**:
+   `officevega.com/updates/` по FTP/через панель хостинга **в таком порядке**:
    сначала инсталлеры (exe/dmg/zip/AppImage/deb), затем — **в последнюю
    очередь** — файлы `*.yml`. Иначе часть пользователей увидит манифест без
    файлов и получит ошибку загрузки (само восстановится через 4 часа, но
@@ -149,9 +149,9 @@ forward-only; при переводе beta-сборки в stable просто �
 - [ ] Поднята `version` в `apps/shell/package.json`
 - [ ] `dist:*` собраны на всех поддерживаемых ОС
 - [ ] `node scripts/stage-update-feed.cjs <папки...>` собрал `release-feed/` без ошибок
-- [ ] Инсталлеры залиты на `updates.officevega.com`
+- [ ] Инсталлеры залиты на `officevega.com/updates/`
 - [ ] `*.yml` залиты последними
-- [ ] `https://updates.officevega.com/latest.yml` отдаёт новую версию (проверить в браузере с обходом кэша)
+- [ ] `https://officevega.com/updates/latest.yml` отдаёт новую версию (проверить в браузере с обходом кэша)
 - [ ] Клиент с прошлой версией видит окно обновления (`Help → Check for Updates` ускоряет проверку)
 
 ## Траблшутинг

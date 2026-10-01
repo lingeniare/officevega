@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * scripts/stage-update-feed.cjs — assemble the update-feed directory that is
- * uploaded to the update host (updates.officevega.com) from electron-builder
+ * uploaded to the update host (officevega.com/updates/) from electron-builder
  * output folders.
  *
  *   node scripts/stage-update-feed.cjs [srcDir ...] [--out dir] [--force]
