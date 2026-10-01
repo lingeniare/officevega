@@ -8605,30 +8605,7 @@ body.docs-crop-active
   margin-left: auto;
 }
 
-/* attach — brand-supplied paperclip art, 20×20 (5/9 of the 36px enter button), same as the sheets panel */
-.ai-attach-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  padding: 0;
-  transition: all var(--transition-fast);
-}
-
-.ai-attach-btn img {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-.ai-attach-btn:hover {
-  filter: brightness(0.7);
-}
+/* attach — styled by the shared ai-chat.css (16px glyph, fades in on hover) */
 
 /* track-changes pill: quiet gray when off, guide-blue tinted when on */
 .ai-track-btn {

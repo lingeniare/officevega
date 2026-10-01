@@ -5081,30 +5081,7 @@ textarea:focus {
 
 /* ─── Chat attachments (📎 button + chips, same structure as docs/slides AI panels) ── */
 
-/* attach — brand-supplied paperclip art, 20×20 (5/9 of the 36px enter button) */
-.ai-attach-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  padding: 0;
-  transition: all var(--transition-fast);
-}
-
-.ai-attach-btn img {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-.ai-attach-btn:hover {
-  filter: brightness(0.7);
-}
+/* attach — styled by the shared ai-chat.css (16px glyph, fades in on hover) */
 
 /* Selection-scope chip above the composer: shown only for a deliberate
    multi-cell selection, so the resting single-cell state adds no chrome. */

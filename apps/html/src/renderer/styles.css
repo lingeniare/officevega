@@ -1692,29 +1692,8 @@ html.officevega-popover-open .ribbon-tabs {
 }
 
 /* attachments (same contract as the docs panel): paperclip in the composer footer,
-   chips above the textarea, read-only echo on the sent bubble */
-.ai-attach-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  flex-shrink: 0;
-  padding: 0;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-}
-
-.ai-attach-btn img {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-.ai-attach-btn:hover {
-  filter: brightness(0.7);
-}
+   chips above the textarea, read-only echo on the sent bubble — the button itself
+   is styled by the shared ai-chat.css (16px glyph, fades in on hover) */
 
 .ai-attachments {
   display: flex;
