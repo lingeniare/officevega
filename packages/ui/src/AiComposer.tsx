@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import { IconArrowUp, IconSend, IconStop } from './icons'
 import { useAiPanelPrefs } from './ai-panel-prefs-store'
+import { AiShieldBadge } from './AiShieldBadge'
 
 // Keep in sync with the CSS `max-height` on `.ai-input-box textarea` (7 lines à 20px)
 const MAX_TEXTAREA_HEIGHT = 140
@@ -84,6 +85,7 @@ export function AiComposer({
 
   return (
     <div className="ai-input-box">
+      <AiShieldBadge />
       {header}
       <textarea
         ref={ref}

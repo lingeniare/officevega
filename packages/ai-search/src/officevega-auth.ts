@@ -1,14 +1,14 @@
 /**
  * OfficeVega's VEGA identity (api.vega.chat, better-auth): OAuth device
- * authorization (RFC 8628) minting one sk-apivega-… API key named "vegaoffice"
+ * authorization (RFC 8628) minting one sk-apivega-… API key named "officevega"
  * — usage_logs.api_key_id attributes all traffic to OfficeVega. Stored in
  * ~/.officevega/auth.json.
  *
  * Flow: POST /api/auth/device/code → browser approve at verification_uri →
  * poll POST /api/auth/device/token for a session Bearer →
- * POST /api/v1/keys/vegaoffice. The session token is dropped after key
+ * POST /api/v1/keys/officevega. The session token is dropped after key
  * issuance; the API key self-revokes on logout
- * (POST /api/v1/keys/vegaoffice/revoke) and GET /api/v1/account reads the
+ * (POST /api/v1/keys/officevega/revoke) and GET /api/v1/account reads the
  * deposit for the account UI.
  */
 
@@ -38,11 +38,10 @@ export interface GskLoginProgress {
 }
 
 // Server-registered wire identity. api.vega.chat whitelists client_id
-// "vegaoffice" and serves /api/v1/keys/vegaoffice only; anything else gets
-// 400 invalid_client / 404. The value predates the OfficeVega rebrand —
-// flip to "officevega" only once the backend registers it.
-const CLIENT_ID = 'vegaoffice'
-const KEY_NAME = 'vegaoffice'
+// "officevega" and serves /api/v1/keys/officevega; the PII shield is enabled
+// per API-key name, so the key must be minted under exactly this name.
+const CLIENT_ID = 'officevega'
+const KEY_NAME = 'officevega'
 const HTTP_TIMEOUT_MS = 30_000
 /** RFC 8628: a slow_down answer adds 5 s to the poll interval */
 const SLOW_DOWN_EXTRA_MS = 5_000
@@ -230,7 +229,7 @@ function emitAuthChanged(auth: OfficeVegaAuth | null): void {
   }
 }
 
-/** The app-issued VEGA key (server key name "vegaoffice"); '' when not signed in. Cached (invalidated by login/logout). */
+/** The app-issued VEGA key (server key name "officevega"); '' when not signed in. Cached (invalidated by login/logout). */
 export function officeVegaApiKey(): string {
   return loadOfficeVegaAuth()?.apiKey ?? ''
 }
@@ -363,7 +362,7 @@ function sleep(ms: number, signal: AbortSignal): Promise<void> {
 /**
  * VEGA device authorization (better-auth deviceAuthorization plugin, RFC 8628):
  * request a code, let the user approve it in the browser, poll for the session
- * token, then mint the single "vegaoffice" API key (the server deletes any
+ * token, then mint the single "officevega" API key (the server deletes any
  * previous key of the same name before inserting — re-login rotates it).
  */
 async function runDeviceLogin(
@@ -508,7 +507,7 @@ export function ensureOfficeVegaLogin(openUrl: (url: string) => void): void {
 }
 
 /**
- * Signs out: best-effort server-side self-revocation of the vegaoffice key
+ * Signs out: best-effort server-side self-revocation of the officevega key
  * (the API key itself is the Bearer — no session needed), then local removal.
  */
 export async function officeVegaLogout(): Promise<void> {

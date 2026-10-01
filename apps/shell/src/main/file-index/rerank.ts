@@ -1,4 +1,5 @@
 import { basename, dirname } from 'node:path'
+import { isLicensed } from '@genoffice/ai-provider'
 import { officeVegaApiKey } from '@genoffice/ai-search'
 import type { FileSearchRerank, FileSearchSettings, JevEndpoint } from '../../shared/home-api'
 import { evaluate, MAX_DOCS, type JevTransport } from './jev'
@@ -34,11 +35,16 @@ export function normalizeFileSearchSettings(raw: unknown): FileSearchSettings {
   }
 }
 
+/** no licence: the stored BYOK endpoint collapses back to VEGA */
+function effectiveEndpoint(settings: FileSearchSettings): JevEndpoint {
+  return settings.jevEndpoint === 'vega' || isLicensed() ? settings.jevEndpoint : 'vega'
+}
+
 /** the configured key, or — for the VEGA endpoint — the key the sign-in issued */
-function jevKey(settings: FileSearchSettings): string {
-  const own = settings.jevKeys[settings.jevEndpoint]
+function jevKey(endpoint: JevEndpoint, settings: FileSearchSettings): string {
+  const own = settings.jevKeys[endpoint]
   if (own) return own
-  return settings.jevEndpoint === 'vega' ? officeVegaApiKey() : ''
+  return endpoint === 'vega' ? officeVegaApiKey() : ''
 }
 
 /**
@@ -63,16 +69,17 @@ export class SearchReranker {
     paths: readonly string[],
     settings: FileSearchSettings,
   ): Promise<FileSearchRerank | null> {
-    const key = jevKey(settings)
+    const endpoint = effectiveEndpoint(settings)
+    const key = jevKey(endpoint, settings)
     if (!settings.rerank || !key) return null
     const hits = this.store.excerptsFor(paths.slice(0, MAX_DOCS), q, EXCERPT_CHARS)
     if (hits.length < 2) return null
-    const cacheKey = [settings.jevEndpoint, q, ...hits.map((h) => h.path)].join('\n')
+    const cacheKey = [endpoint, q, ...hits.map((h) => h.path)].join('\n')
     const cached = this.cache.get(cacheKey)
     if (cached && Date.now() - cached.at < CACHE_TTL_MS) return cached.result
     const pending = this.inflight.get(cacheKey)
     if (pending) return pending
-    const call = this.judge(q, hits, settings.jevEndpoint, key, cacheKey).finally(() =>
+    const call = this.judge(q, hits, endpoint, key, cacheKey).finally(() =>
       this.inflight.delete(cacheKey),
     )
     this.inflight.set(cacheKey, call)
@@ -126,6 +133,8 @@ export async function probeJev(
   key: string,
   send?: JevTransport,
 ): Promise<{ ok: boolean; error?: string }> {
+  // the settings-UI probe honors the same licence gate as the live path
+  if (endpoint !== 'vega' && !isLicensed()) endpoint = 'vega'
   key = key.trim() || (endpoint === 'vega' ? officeVegaApiKey() : '')
   if (!key) {
     return {

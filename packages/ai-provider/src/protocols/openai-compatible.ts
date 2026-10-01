@@ -1,7 +1,11 @@
 import type { AgentMessage, AgentToolCall, AgentToolDef } from '@genoffice/agent-core'
 import { aiFetch } from '../fetch'
-import { httpBodyDetail } from '../http-error'
-import { gensparkAttributionHeaders, opencodeSessionHeaders } from '../providers'
+import { httpBodyDetail, piiShieldError } from '../http-error'
+import {
+  gensparkAttributionHeaders,
+  opencodeSessionHeaders,
+  vegaSessionHeaders,
+} from '../providers'
 import { modelEchoesReasoning } from '../registry'
 import type { AiChatResponse, AiProviderConfig } from '../types'
 import { createStreamWatchdog, type StreamWatchdog } from '../watchdog'
@@ -43,6 +47,23 @@ function wantsPromptCache(model: string, baseUrl: string): boolean {
 }
 
 const EPHEMERAL_CACHE = { type: 'ephemeral' } as const
+
+const PII_UNAVAILABLE_RETRIES = 2
+
+function abortableSleep(ms: number, signal: AbortSignal): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (signal.aborted) return reject(signal.reason)
+    const timer = setTimeout(() => {
+      signal.removeEventListener('abort', onAbort)
+      resolve()
+    }, ms)
+    const onAbort = () => {
+      clearTimeout(timer)
+      reject(signal.reason)
+    }
+    signal.addEventListener('abort', onAbort, { once: true })
+  })
+}
 
 function cacheableContent(content: unknown): unknown {
   if (typeof content === 'string') {
@@ -213,7 +234,7 @@ async function openAiCompatibleTurn(
     wd.touch()
     cb.onActivity?.()
   }
-  const response = await aiFetch(endpointUrl(baseUrl, 'chat/completions'), {
+  const request: RequestInit = {
     method: 'POST',
     signal: wd.signal,
     headers: {
@@ -221,6 +242,7 @@ async function openAiCompatibleTurn(
       ...(config.apiKey ? { Authorization: `Bearer ${config.apiKey}` } : {}),
       ...gensparkAttributionHeaders(baseUrl),
       ...opencodeSessionHeaders(baseUrl, cb.sessionId),
+      ...vegaSessionHeaders(baseUrl, cb.sessionId),
     },
     body: JSON.stringify({
       model: config.model,
@@ -245,11 +267,22 @@ async function openAiCompatibleTurn(
       ...options.bodyExtras,
       stream: true,
     }),
-  })
+  }
+  const url = endpointUrl(baseUrl, 'chat/completions')
+  let response = await aiFetch(url, request)
+  let body: string | undefined
+  // The PII shield failed closed (nothing was forwarded): a resend is safe, so retry with backoff
+  for (let attempt = 1; attempt <= PII_UNAVAILABLE_RETRIES && response.status === 503; attempt++) {
+    body = await readCappedResponseText(response, onBytes)
+    if (piiShieldError(body)?.code !== 'pii_unavailable') break
+    await abortableSleep(1500 * 2 ** (attempt - 1), wd.signal)
+    response = await aiFetch(url, request)
+    body = undefined
+  }
   // headers arrived: ping the renderer watchdog too, or a slow first chunk could trip it
   onBytes()
   if (!response.ok || !response.body) {
-    const body = await readCappedResponseText(response, onBytes)
+    body ??= await readCappedResponseText(response, onBytes)
     throwIfPaymentRequired(response.status, body)
     throw new Error(`HTTP ${response.status}: ${httpErrorDetail(response.status, body)}`)
   }
@@ -424,6 +457,7 @@ export async function chatOpenAiCompatible(
       ...(config.apiKey ? { Authorization: `Bearer ${config.apiKey}` } : {}),
       ...gensparkAttributionHeaders(baseUrl),
       ...opencodeSessionHeaders(baseUrl),
+      ...vegaSessionHeaders(baseUrl),
     },
     body: JSON.stringify({
       model: config.model,

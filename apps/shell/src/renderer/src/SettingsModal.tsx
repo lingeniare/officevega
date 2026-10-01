@@ -30,6 +30,7 @@ import type {
 import { useI18n } from './locale'
 import type { StringKey, TFunc } from './locale'
 import type { AccountStatus, AiCatalogEntry, UiTheme } from '../../shared/home-api'
+import { LicenseBlock } from './LicenseBlock'
 import { ProviderLogo } from './provider-logos'
 import { IntegrationsPane, skillUpdateDue } from './IntegrationsPane'
 import './settings.css'
@@ -393,6 +394,12 @@ function AiModelPane({
   const [testResult, setTestResult] = useState<{ ok: boolean; error?: string } | null>(null)
   /** free-typed value of the output-cap field; committed (and clamped) on blur */
   const [maxTokensDraft, setMaxTokensDraft] = useState<string | null>(null)
+  /** without a license only the VEGA provider is selectable */
+  const [licensed, setLicensed] = useState(false)
+  useEffect(() => {
+    void window.aiOffice.getLicenseStatus().then((s) => setLicensed(s.licensed))
+    return window.aiOffice.onLicenseChanged((s) => setLicensed(s.licensed))
+  }, [])
 
   const refreshCodexModels = useCallback(async (cliPath = '', selectedModel = '') => {
     if (!window.aiOffice.getCodexModels) return
@@ -643,6 +650,7 @@ function AiModelPane({
             .map((c) => ({
               value: c.id,
               label: c.label,
+              disabled: !licensed && c.id !== 'vega' && c.id !== 'genspark',
               render: (
                 <>
                   <ProviderLogo id={c.id} />
@@ -653,6 +661,7 @@ function AiModelPane({
           onPick={(v) => selectProvider(v as AiSettings['provider'])}
         />
       </div>
+      {!licensed && <div className="set-field-desc set-ai-note">{t('licProviderLocked')}</div>}
       <div className="set-field-desc set-ai-note">
         {isAccountSignIn
           ? t('setAiAccountHint')
@@ -910,6 +919,12 @@ function AiMediaPane({
   )
   /** live VEGA image→image catalog for the image-generation picker; empty = static meta fallback */
   const [vegaImageModels, setVegaImageModels] = useState<ProviderModel[]>([])
+  /** without a license every capability sticks to the VEGA provider */
+  const [licensed, setLicensed] = useState(false)
+  useEffect(() => {
+    void window.aiOffice.getLicenseStatus().then((s) => setLicensed(s.licensed))
+    return window.aiOffice.onLicenseChanged((s) => setLicensed(s.licensed))
+  }, [])
   const focused = useRef(false)
   const scrollToFocused = (el: HTMLDivElement | null) => {
     if (!el || focused.current) return
@@ -1149,6 +1164,7 @@ function AiMediaPane({
           .map((c) => ({
             value: c.id,
             label: c.label,
+            disabled: !licensed && c.id !== 'vega' && c.id !== 'genspark',
             render: (
               <>
                 <ProviderLogo id={c.id} />
@@ -1365,6 +1381,7 @@ function AiMediaPane({
         </div>
       </div>
       <div className="set-field-desc set-ai-note">{t('setAiSharedKeyHint')}</div>
+      {!licensed && <div className="set-field-desc set-ai-note">{t('licProviderLocked')}</div>}
       <section>
         {subhead('search', t('setAiCapSearch'))}
         {providerRow(t('setAiCapSearch'), search.provider, searchCatalog, (v) =>
@@ -1418,15 +1435,18 @@ function AiMediaPane({
                 </div>
                 <Dropdown
                   className="set-dd"
-                  value={fileSearch.jevEndpoint}
+                  value={licensed ? fileSearch.jevEndpoint : 'vega'}
                   ariaLabel={t('setSearchRerankEndpoint')}
-                  options={JEV_ENDPOINTS}
+                  options={JEV_ENDPOINTS.map((o) => ({
+                    ...o,
+                    disabled: !licensed && o.value !== 'vega',
+                  }))}
                   onPick={(v) =>
                     setFileSearch({ ...fileSearch, jevEndpoint: v as JevEndpoint })
                   }
                 />
               </div>
-              {fileSearch.jevEndpoint === 'vega' ? (
+              {(licensed ? fileSearch.jevEndpoint : 'vega') === 'vega' ? (
                 // VEGA reranks on the sign-in key — no API key field, same as
                 // the search/media providers above
                 <div className="set-field-desc set-ai-note">{t('setAiAccountHint')}</div>
@@ -1750,6 +1770,7 @@ export function SettingsModal({
                     }
                   />
                 )}
+                <LicenseBlock t={t} />
                 <div className="set-pane-footer">
                   {loggedIn ? (
                     <button className="set-btn danger" disabled={loggingOut} onClick={onLogout}>

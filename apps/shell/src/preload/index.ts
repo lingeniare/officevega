@@ -30,6 +30,7 @@ import type {
   FileSearchSettings,
 } from '../shared/home-api'
 import { HOME_CHANNELS } from '../shared/home-api'
+import type { LicenseActionResult, LicenseStatus } from '../shared/license-api'
 import { INTEGRATIONS_CHANNELS } from '../shared/integrations-api'
 import type {
   IntegrationsApi,
@@ -428,6 +429,26 @@ const homeApi: HomeApi = {
   },
   async openCreditUsage() {
     await ipcRenderer.invoke(HOME_CHANNELS.openCreditUsage)
+  },
+  async getLicenseStatus() {
+    return (await ipcRenderer.invoke(HOME_CHANNELS.licenseStatus)) as LicenseStatus
+  },
+  async activateLicense(key) {
+    return (await ipcRenderer.invoke(HOME_CHANNELS.licenseActivate, key)) as LicenseActionResult
+  },
+  async deactivateLicense() {
+    return (await ipcRenderer.invoke(HOME_CHANNELS.licenseDeactivate)) as LicenseActionResult
+  },
+  async refreshLicense() {
+    return (await ipcRenderer.invoke(HOME_CHANNELS.licenseRefresh)) as LicenseActionResult
+  },
+  async openLicenseDashboard() {
+    await ipcRenderer.invoke(HOME_CHANNELS.licenseOpenDashboard)
+  },
+  onLicenseChanged(handler) {
+    const listener = (_event: Electron.IpcRendererEvent, status: LicenseStatus) => handler(status)
+    ipcRenderer.on(HOME_CHANNELS.licenseChanged, listener)
+    return () => ipcRenderer.removeListener(HOME_CHANNELS.licenseChanged, listener)
   },
   async openGitHubRepo() {
     await ipcRenderer.invoke(HOME_CHANNELS.openGitHubRepo)

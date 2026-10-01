@@ -12,6 +12,7 @@ import type {
   ProviderModelCatalog,
 } from '@genoffice/ai-provider'
 import type { UpdateChannel } from './update-api'
+import type { LicenseActionResult, LicenseStatus } from './license-api'
 import type { AiPanelPrefs } from '@genoffice/ui/ai-panel-prefs'
 
 /** UI language; kept self-contained here (mirrors Lang in @genoffice/i18n) */
@@ -308,6 +309,18 @@ export interface HomeApi {
   onOpenSettings(handler: () => void): () => void
   /** open the VEGA keys/deposit dashboard in the default browser */
   openCreditUsage(): Promise<void>
+  /** license state (Settings → Account); without a license only the VEGA provider is selectable */
+  getLicenseStatus(): Promise<LicenseStatus>
+  /** activate this device with a key (any case, dashes optional) */
+  activateLicense(key: string): Promise<LicenseActionResult>
+  /** release this device's seat on the server and forget the key */
+  deactivateLicense(): Promise<LicenseActionResult>
+  /** re-check the license now (/validate) */
+  refreshLicense(): Promise<LicenseActionResult>
+  /** open the officevega.com dashboard (device_limit hint) */
+  openLicenseDashboard(): Promise<void>
+  /** license state changed anywhere (activation, daily check, revocation) */
+  onLicenseChanged(handler: (status: LicenseStatus) => void): () => void
   /** open the public GitHub repository in the default browser */
   openGitHubRepo(): Promise<void>
   /** current stargazer count of the public repo (null while offline / rate-limited) */
@@ -553,4 +566,10 @@ export const HOME_CHANNELS = {
   githubStars: 'home:github-stars',
   starPromptShouldShow: 'home:star-prompt-should-show',
   starPromptAction: 'home:star-prompt-action',
+  licenseStatus: 'license:status',
+  licenseActivate: 'license:activate',
+  licenseDeactivate: 'license:deactivate',
+  licenseRefresh: 'license:refresh',
+  licenseOpenDashboard: 'license:open-dashboard',
+  licenseChanged: 'license:changed',
 } as const

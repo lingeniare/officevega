@@ -30,6 +30,28 @@ export function setAiUserAgent(ua: string): void {
   userAgent = ua || AI_DEFAULT_USER_AGENT
 }
 
+export function isVegaGatewayUrl(url: string | undefined): boolean {
+  if (!url) return false
+  try {
+    return new URL(url).hostname === 'api.vega.chat'
+  } catch {
+    return false
+  }
+}
+
+/**
+ * Every request to the VEGA gateway carries X-Vega-Session (its PII shield
+ * keeps a token dictionary per session). Chat protocols set a stable per-chat
+ * id; anything that reaches here without one (media, one-shot calls) is its
+ * own session.
+ */
+function withVegaSession(url: string, init: RequestInit): RequestInit {
+  if (!isVegaGatewayUrl(url)) return init
+  const headers = init.headers as Record<string, string>
+  if (Object.keys(headers).some((n) => n.toLowerCase() === 'x-vega-session')) return init
+  return { ...init, headers: { ...headers, 'X-Vega-Session': crypto.randomUUID() } }
+}
+
 /** protocols pass plain header records; keep that shape so callers can read the request back */
 export function withUserAgent(init: RequestInit): RequestInit {
   const given = init.headers
@@ -70,7 +92,7 @@ export function warmAiConnections(): void {
 }
 
 export async function aiFetch(url: string, rawInit: RequestInit): Promise<Response> {
-  const init = withUserAgent(rawInit)
+  const init = withVegaSession(url, withUserAgent(rawInit))
   const signal = init.signal as AbortSignal | null | undefined
   let response: Response
   try {

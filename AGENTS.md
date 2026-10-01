@@ -118,3 +118,17 @@ launches (`npm run shell`, `npm start -w @officevega/shell`) from such terminals
   inside the generated-image store via `fetchRemoteImage`.
 - Never pass image base64 through tool arguments — only URLs; the main
   process downloads.
+
+## License (client)
+
+- Client lives in `apps/shell/src/main/license/` (`token.ts` Ed25519 verify, `client.ts`
+  HTTP, `manager.ts` state/grace/clock-rollback, `store.ts` safeStorage file
+  `userData/license.json`, `service.ts` IPC + daily `/validate`, `mock-server.ts`).
+  Contract: `LICENSE_ACTIVATION.md` + the agreed decisions (1 device per key,
+  30-day offline grace, no trial, free app — without a license only the VEGA
+  provider is usable; enforced in `activeProvider`/`requestProvider` via
+  `@genoffice/ai-provider` `setLicenseGetter`).
+- `LICENSE_PUBLIC_KEYS` in `license/keys.ts` holds kid `2026-10` (rotate by adding a kid; an empty ring fails closed).
+  Dev without a server: `OFFICEVEGA_LICENSE_MOCK=1`
+  (keys in `mock-server.ts`); `OFFICEVEGA_LICENSE_URL` overrides the endpoint
+  (dev only).

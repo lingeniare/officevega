@@ -163,7 +163,12 @@ export function validate(raw: unknown, count: number, endpoint: JevEndpoint): Je
 export const fetchTransport: JevTransport = async (url, body, key, signal) => {
   const res = await fetch(url, {
     method: 'POST',
-    headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+    headers: {
+      Authorization: `Bearer ${key}`,
+      'Content-Type': 'application/json',
+      // the VEGA gateway's PII shield keys its token dictionary by session; one request = one session
+      ...(new URL(url).hostname === 'api.vega.chat' ? { 'X-Vega-Session': crypto.randomUUID() } : {}),
+    },
     body,
     signal,
   })

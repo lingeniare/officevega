@@ -58,7 +58,7 @@ interface FlowOpts {
   keyResponse?: { body: unknown; status?: number }
 }
 
-/** fetch stub for the VEGA device flow: device/code → device/token polls → keys/vegaoffice */
+/** fetch stub for the VEGA device flow: device/code → device/token polls → keys/officevega */
 function stubFlow(opts: FlowOpts = {}) {
   let tokenPolls = 0
   const fetchMock = vi.fn(async (input: string | URL, _init?: RequestInit) => {
@@ -79,8 +79,8 @@ function stubFlow(opts: FlowOpts = {}) {
       if (scripted) return jsonResponse(scripted, { status: 400 })
       return jsonResponse({ access_token: 'vega-session-token' })
     }
-    if (url.includes('/api/v1/keys/vegaoffice/revoke')) return jsonResponse({ ok: true })
-    if (url.includes('/api/v1/keys/vegaoffice')) {
+    if (url.includes('/api/v1/keys/officevega/revoke')) return jsonResponse({ ok: true })
+    if (url.includes('/api/v1/keys/officevega')) {
       const r = opts.keyResponse ?? { body: { id: 'kid-1', key: API_KEY } }
       return jsonResponse(r.body, { status: r.status })
     }
@@ -93,7 +93,7 @@ function stubFlow(opts: FlowOpts = {}) {
         currency: 'USD',
         totalUsage: 45.67,
         limit: null,
-        keyName: 'vegaoffice',
+        keyName: 'officevega',
       })
     }
     throw new Error(`unexpected fetch: ${url}`)
@@ -142,7 +142,7 @@ describe('startOfficeVegaLogin (VEGA device flow)', () => {
     const codeCall = fetchMock.mock.calls.find(([u]) =>
       String(u).includes('/api/auth/device/code'),
     )!
-    expect(JSON.parse(String(codeCall[1]!.body))).toMatchObject({ client_id: 'vegaoffice' })
+    expect(JSON.parse(String(codeCall[1]!.body))).toMatchObject({ client_id: 'officevega' })
 
     // polls carry the RFC 8628 grant fields
     const pollCall = fetchMock.mock.calls.find(([u]) =>
@@ -151,16 +151,16 @@ describe('startOfficeVegaLogin (VEGA device flow)', () => {
     expect(JSON.parse(String(pollCall[1]!.body))).toEqual({
       grant_type: 'urn:ietf:params:oauth:grant-type:device_code',
       device_code: DEVICE_CODE,
-      client_id: 'vegaoffice',
+      client_id: 'officevega',
     })
 
     // key issuance rides on the session Bearer, never on a cookie
     const keyCall = fetchMock.mock.calls.find(([u]) =>
-      String(u).includes('/api/v1/keys/vegaoffice'),
+      String(u).includes('/api/v1/keys/officevega'),
     )!
     const init = keyCall[1]!
     expect((init.headers as Record<string, string>).Authorization).toBe('Bearer vega-session-token')
-    expect(JSON.parse(String(init.body))).toEqual({ name: 'vegaoffice' })
+    expect(JSON.parse(String(init.body))).toEqual({ name: 'officevega' })
   })
 
   it('keeps the issued VEGA key out of gskApiKey() — it must never reach Genspark endpoints', async () => {
@@ -358,7 +358,7 @@ describe('officeVegaLogout', () => {
     expect(existsSync(officeVegaAuthPath())).toBe(false)
     expect(officeVegaApiKey()).toBe('')
     const revokeCall = fetchMock.mock.calls.find(([u]) =>
-      String(u).includes('/keys/vegaoffice/revoke'),
+      String(u).includes('/keys/officevega/revoke'),
     )!
     // self-revocation: the API key itself is the Bearer
     expect((revokeCall[1]!.headers as Record<string, string>).Authorization).toBe(
@@ -456,7 +456,7 @@ describe('vegaAccountInfo', () => {
       currency: 'USD',
       totalUsage: 45.67,
       limit: null,
-      keyName: 'vegaoffice',
+      keyName: 'officevega',
     })
     const call = fetchMock.mock.calls.find(([u]) => String(u).includes('/api/v1/account'))!
     expect((call[1]!.headers as Record<string, string>).Authorization).toBe(`Bearer ${API_KEY}`)

@@ -493,6 +493,29 @@
   color: var(--danger);
 }
 
+.set-lic-title {
+  margin-top: 28px;
+}
+
+.set-lic-key {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-mono, monospace);
+  letter-spacing: 0.04em;
+}
+
+.set-lic-error {
+  color: var(--danger);
+  margin-top: 6px;
+}
+
+.set-lic-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 12px;
+}
+
 .set-pane-footer {
   position: relative; /* anchor for the centered .set-ai-status pill */
   margin-top: auto;

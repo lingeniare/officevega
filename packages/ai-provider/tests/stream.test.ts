@@ -1402,6 +1402,102 @@ describe('streamForProvider: genspark', () => {
   })
 })
 
+describe('streamForProvider: VEGA gateway PII shield', () => {
+  const piiBody = (code: string, message = '') =>
+    JSON.stringify({ error: { code, message, type: 'pii_shield_error' } })
+
+  it('sends the renderer session id as X-Vega-Session on every turn', async () => {
+    const fetchMock = vi.fn().mockImplementation(async () => okResponse(sseStream([])))
+    vi.stubGlobal('fetch', fetchMock)
+    for (let turn = 0; turn < 2; turn++) {
+      await streamForProvider('vega', { apiKey: 'k', model: 'openai/gpt-6-sol' }, 'sys', [], [], 100, {
+        ...collector().cb,
+        sessionId: 'chat-7',
+      }).catch(() => {})
+    }
+    for (const call of fetchMock.mock.calls) {
+      expect((call[1].headers as Record<string, string>)['X-Vega-Session']).toBe('chat-7')
+    }
+  })
+
+  it('never sends X-Vega-Session to other gateways', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(okResponse(sseStream([])))
+    vi.stubGlobal('fetch', fetchMock)
+    await streamForProvider('kimi', { apiKey: 'k', model: 'kimi-k3' }, 'sys', [], [], 100, {
+      ...collector().cb,
+      sessionId: 'chat-7',
+    }).catch(() => {})
+    expect((fetchMock.mock.calls[0]![1].headers as Record<string, string>)['X-Vega-Session']).toBeUndefined()
+  })
+
+  it('pii_unavailable (503) is retried and then succeeds', async () => {
+    vi.useFakeTimers()
+    try {
+      const fetchMock = vi
+        .fn()
+        .mockResolvedValueOnce(new Response(piiBody('pii_unavailable'), { status: 503 }))
+        .mockResolvedValueOnce(okResponse(sseStream([])))
+      vi.stubGlobal('fetch', fetchMock)
+      const run = streamForProvider('vega', { apiKey: 'k', model: 'm' }, 'sys', [], [], 100, {
+        ...collector().cb,
+        sessionId: 's',
+      }).catch(() => {})
+      await vi.runAllTimersAsync()
+      await run
+      expect(fetchMock).toHaveBeenCalledTimes(2)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('pii_unavailable surfaces the gateway message after the retries are exhausted', async () => {
+    vi.useFakeTimers()
+    try {
+      const fetchMock = vi
+        .fn()
+        .mockImplementation(async () => new Response(piiBody('pii_unavailable'), { status: 503 }))
+      vi.stubGlobal('fetch', fetchMock)
+      const run = streamForProvider('vega', { apiKey: 'k', model: 'm' }, 'sys', [], [], 100, {
+        ...collector().cb,
+        sessionId: 's',
+      })
+      const assertion = expect(run).rejects.toThrow(/Защита персональных данных/)
+      await vi.runAllTimersAsync()
+      await assertion
+      expect(fetchMock).toHaveBeenCalledTimes(3)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it.each([
+    [400, 'pii_attachment_not_allowed', 'Вложения этого типа'],
+    [413, 'pii_too_large', 'Слишком большой объём'],
+    [422, 'pii_image_no_text', 'без текста'],
+    [422, 'pii_extract_failed', 'Не удалось прочитать файл'],
+  ])('%s %s is not retried and shows a readable message', async (status, code, text) => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response(piiBody(code), { status }))
+    vi.stubGlobal('fetch', fetchMock)
+    await expect(
+      streamForProvider('vega', { apiKey: 'k', model: 'm' }, 'sys', [], [], 100, {
+        ...collector().cb,
+        sessionId: 's',
+      }),
+    ).rejects.toThrow(new RegExp(text))
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+  })
+
+  it('prefers the gateway-provided message', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue(new Response(piiBody('pii_too_large', 'Слишком большой файл'), { status: 413 })),
+    )
+    await expect(
+      streamForProvider('vega', { apiKey: 'k', model: 'm' }, 'sys', [], [], 100, collector().cb),
+    ).rejects.toThrow('HTTP 413: Слишком большой файл')
+  })
+})
+
 describe('streamForProvider: 200 + non-stream JSON instead of SSE', () => {
   const creditsNotice =
     'Your Genspark credits have been exhausted. Please visit https://www.genspark.ai/pricing to purchase more credits.'

@@ -312,6 +312,25 @@
   box-shadow: none;
 }
 
+/* PII shield indicator: a muted icon row at the top-right of the composer, above the textarea */
+.ai-shield-row {
+  display: flex;
+  justify-content: flex-end;
+  padding: 6px 10px 0;
+  line-height: 0;
+}
+
+.ai-shield-badge {
+  display: inline-flex;
+  color: var(--color-text-secondary);
+  opacity: 0.7;
+  cursor: help;
+}
+
+.ai-shield-badge:hover {
+  opacity: 1;
+}
+
 /* send: 36×36 emerald rounded-xl with the ArrowUp glyph; stop: muted square */
 .ai-send-btn {
   width: 36px;

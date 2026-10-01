@@ -1,3 +1,4 @@
+import { isFreeProvider, isLicensed } from './license-gate'
 import { issuedVegaKey } from './vega-key'
 import type {
   AiMediaProviderConfig,
@@ -375,6 +376,8 @@ export function activeMediaProvider(
         ? media.videoAnalysisProvider
         : media.analysisProvider
   if (!id || id === 'genspark') return 'genspark'
+  // no licence: every media capability sticks to VEGA (or the signed-in default)
+  if (!isFreeProvider(id) && !isLicensed()) return 'genspark'
   const meta = getMediaProviderMeta(id)
   if (!meta || !providerHasCapability(meta, capability)) return 'genspark'
   if (id === 'vega' && !cloudToolsEnabled(settings)) return 'genspark'

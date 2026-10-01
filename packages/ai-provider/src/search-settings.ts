@@ -1,3 +1,4 @@
+import { isFreeProvider, isLicensed } from './license-gate'
 import { cloudToolsEnabled } from './media'
 import { issuedVegaKey } from './vega-key'
 import type {
@@ -75,6 +76,8 @@ export function activeSearchProvider(
 ): AiSearchProviderId {
   const search = settings.search
   if (!search || search.provider === 'genspark') return 'genspark'
+  // no licence: any non-VEGA pick (incl. keyless parallel) degrades to the signed-in default
+  if (!isFreeProvider(search.provider) && !isLicensed()) return 'genspark'
   if (!AI_SEARCH_PROVIDERS.some((m) => m.id === search.provider)) return 'genspark'
   if (search.provider === 'vega') {
     if (!cloudToolsEnabled(settings)) return 'genspark'

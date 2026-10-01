@@ -60,6 +60,7 @@ export {
   resolveAiSearchSettings,
   vegaSearchKey,
 } from './search-settings'
+export { isFreeProvider, isLicensed, setLicenseGetter } from './license-gate'
 export {
   issuedVegaKey,
   legacyGskKey,

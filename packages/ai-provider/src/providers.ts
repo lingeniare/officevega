@@ -1,5 +1,7 @@
+import { isVegaGatewayUrl } from './fetch'
 import { defaultAiMediaSettings, resolveAiMediaSettings } from './media'
 import { defaultAiSearchSettings, resolveAiSearchSettings } from './search-settings'
+import { isFreeProvider, isLicensed } from './license-gate'
 import { issuedVegaKey } from './vega-key'
 import type {
   AiProviderConfig,
@@ -44,6 +46,20 @@ export function opencodeSessionHeaders(
 ): Record<string, string> {
   return baseUrl?.startsWith('https://opencode.ai/')
     ? { 'x-opencode-session': sessionId || crypto.randomUUID() }
+    : {}
+}
+
+/**
+ * The VEGA gateway (api.vega.chat) keeps its PII token dictionary per session:
+ * the same id on every turn of a chat keeps `#PERSON_1#` stable. The id is
+ * the renderer's opaque transport uuid — never a name, path or document text.
+ */
+export function vegaSessionHeaders(
+  baseUrl: string | undefined,
+  sessionId?: string,
+): Record<string, string> {
+  return isVegaGatewayUrl(baseUrl)
+    ? { 'X-Vega-Session': (sessionId || crypto.randomUUID()).slice(0, 200) }
     : {}
 }
 
@@ -379,7 +395,9 @@ export { cloudToolsEnabled } from './media'
  * to the signed-in default instead of silently disabling AI.
  */
 export function activeProvider(settings: AiSettings): AiProviderId {
-  const provider = settings.provider
+  // no licence: any non-VEGA pick degrades to the signed-in default
+  const provider: AiProviderId =
+    isFreeProvider(settings.provider) || isLicensed() ? settings.provider : 'genspark'
   if (provider === 'genspark') {
     // Legacy sign-in pick: a VEGA credential (the app's login flow now issues
     // VEGA keys) silently upgrades it — VEGA is the default; without one the
@@ -423,7 +441,10 @@ export function requestProvider(settings: {
   provider: AiProviderId
   config: AiProviderConfig | undefined
 } {
-  const provider = settings.provider as AiProviderId
+  // no licence: any non-VEGA pick is served through the signed-in default
+  const provider = (
+    isFreeProvider(settings.provider) || isLicensed() ? settings.provider : 'genspark'
+  ) as AiProviderId
   const config = settings.providers?.[provider]
   if (provider !== 'genspark') return { provider, config }
   const vega = settings.providers?.vega
