@@ -1,11 +1,12 @@
-/* Quote block on a user bubble: the document selection the message targeted */
+/* Quote block on a user bubble: the document selection the message targeted.
+   VEGA One: a thin unified-accent rail, no box, no dot. */
 .ai-msg-scope {
   display: flex;
   flex-direction: column;
   gap: 3px;
   margin-bottom: 6px;
-  padding-left: 9px;
-  border-left: 2px solid var(--accent);
+  padding-inline-start: 9px;
+  border-inline-start: 2px solid var(--accent);
   white-space: normal;
 }
 
@@ -16,14 +17,6 @@
   font-size: var(--text-caption);
   font-weight: 500;
   color: var(--accent);
-}
-
-.ai-msg-scope-label::before {
-  content: '';
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: currentColor;
 }
 
 .ai-msg-scope-text {

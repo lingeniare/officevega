@@ -58,7 +58,7 @@ export const AI_MEDIA_PROVIDERS: AiMediaProviderMeta[] = [
     id: 'vega',
     label: 'VEGA',
     description:
-      'OpenRouter-routed image generation and image/video analysis on one VEGA key (api.vega.chat)',
+      'Генерация изображений и анализ фото/видео идет через ВЕГА провайдер.',
     keyPlaceholder: 'sk-apivega-...',
     defaultBaseUrl: VEGA_BASE_URL,
     liveCatalog: true,

@@ -1841,8 +1841,9 @@ export function AiPanel({
     stickToBottomRef.current = el.scrollHeight - el.scrollTop - el.clientHeight < 48
   }
 
-  // Input box auto-sizes, up to seven lines (keep in sync with the CSS max-height);
-  // empty clears the inline height outright so the CSS min-height governs
+  // Input box auto-sizes from 3 rows up to 6 (keep in sync with the shared
+  // ai-chat.css band: 6×20px + 12px padding = 132px); empty clears the inline
+  // height outright so the CSS min-height governs
   // (a hidden-at-measure pass can leave a stale value), same as the shared AiComposer.
   useEffect(() => {
     const ta = inputRef.current
@@ -1852,7 +1853,7 @@ export function AiPanel({
       return
     }
     ta.style.height = 'auto'
-    ta.style.height = `${Math.min(ta.scrollHeight, 168)}px`
+    ta.style.height = `${Math.min(ta.scrollHeight, 132)}px`
     // `open` dep: re-measure after expand restores a draft
   }, [input, open])
 
@@ -2770,7 +2771,7 @@ export function AiPanel({
                 e.preventDefault()
                 void onPasteFiles(files)
               }}
-              rows={1}
+              rows={3}
             />
             <div className="ai-input-footer">
               {settings.provider === 'vega' && <AiShieldBadge />}

@@ -1,73 +1,127 @@
-/* VEGA-chat skin — the shared look of the .ai-* class family, after the
-   api.vega.chat AIChatDrawer design (see ai-chat-modal-design.md): tailed
-   bubbles, borderless suggestion links, thin scrollbar, dark input band.
-   The accent follows the host tool: every rule references the per-app
-   --accent / --accent-dark / --accent-soft tokens (word-blue in docs,
-   excel-green in sheets, ppt-orange in slides/pdf, neutral in html).
-   Button glyph color uses --color-bg-page (white on dark accents in the
-   light theme, near-black on light accents in the dark theme).
-   Each app's main.tsx imports this AFTER ./styles.css, so it wins the
-   cascade at equal specificity; per-app rules it doesn't redeclare still
-   apply (markdown typography, tool groups, resizers, …). */
+/* VEGA One — the single unified look of every .ai-dock in the suite.
+   Loaded AFTER each app's styles.css (see apps/*/renderer/main.tsx), so rules
+   here win the cascade at equal specificity and per-app .ai-* copies only
+   provide layout (dock width, resizer, grid). Do not reintroduce per-app
+   chat skins: every visual choice belongs here.
+   Principles: one accent, flat messages, quiet chrome, one memorable detail
+   (the orange send button). Light + dark adapt through the shared tokens. */
 
-/* ---------- panel header: soft hairline, round icon buttons, accent hover ---------- */
+/* ---------- unified accent: the chat ignores per-app --accent ---------- */
+.ai-dock,
+.ai-panel,
+aside.copilot,
+.ai-ask-pop,
+.ai-ask-trigger {
+  --accent: var(--ai-accent);
+  --accent-dark: var(--ai-accent-dark);
+  --accent-soft: var(--ai-accent-soft);
+}
+
+/* ---------- panel frame ---------- */
+.ai-dock,
+.ai-panel,
+aside.copilot {
+  font-family: var(--gs-font-sans);
+  color: var(--color-text-primary);
+  background: var(--color-bg-page);
+}
+
+.ai-panel,
+aside.copilot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* ---------- header: 48px, title + two quiet round buttons ---------- */
 .ai-panel-header {
-  padding: 12px 14px;
-  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 48px;
+  box-sizing: border-box;
+  padding: 10px 10px 10px 16px;
+  border-bottom: 1px solid var(--color-border-default);
 }
 
 .ai-panel-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--gs-font-display);
+  font-size: 13px;
   font-weight: 600;
+  font-optical-sizing: auto;
+  white-space: nowrap;
 }
 
-/* twinkling brand star — the DocsChatPanel signature next to the title
-   (the sparkle from the VegaMark badge, masked so it follows --accent) */
+/* the twinkling brand star is retired: one accent lives on the send button */
 .ai-panel-title::after {
-  content: '';
-  width: 1em;
-  height: 1em;
-  margin-left: 2px;
-  flex-shrink: 0;
-  background: var(--accent);
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='14.4 22.3 65 65'%3E%3Cpath d='M16.5178%2054.8077C16.5178%2054.1023%2017.0286%2053.4941%2017.7341%2053.3968C40.1388%2050.0154%2042.1093%2047.9963%2045.4907%2025.5672C45.588%2024.8861%2046.1961%2024.3509%2046.9016%2024.3509C47.6071%2024.3509%2048.191%2024.8617%2048.3126%2025.5672C51.694%2047.9963%2053.6887%2050.0154%2076.0691%2053.3968C76.7503%2053.4941%2077.2855%2054.1023%2077.2855%2054.8077C77.2855%2055.5132%2076.7746%2056.1214%2076.0691%2056.2187C53.5914%2059.6244%2051.6696%2061.6192%2048.2639%2084.3645C48.1909%2084.8754%2047.7287%2085.2889%2047.2179%2085.2889C46.707%2085.2889%2046.2448%2084.8997%2046.1718%2084.3645C42.7418%2061.6435%2040.2604%2059.6244%2017.7584%2056.2187C17.0772%2056.1214%2016.542%2055.5132%2016.542%2054.8077H16.5178Z'/%3E%3C/svg%3E");
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='14.4 22.3 65 65'%3E%3Cpath d='M16.5178%2054.8077C16.5178%2054.1023%2017.0286%2053.4941%2017.7341%2053.3968C40.1388%2050.0154%2042.1093%2047.9963%2045.4907%2025.5672C45.588%2024.8861%2046.1961%2024.3509%2046.9016%2024.3509C47.6071%2024.3509%2048.191%2024.8617%2048.3126%2025.5672C51.694%2047.9963%2053.6887%2050.0154%2076.0691%2053.3968C76.7503%2053.4941%2077.2855%2054.1023%2077.2855%2054.8077C77.2855%2055.5132%2076.7746%2056.1214%2076.0691%2056.2187C53.5914%2059.6244%2051.6696%2061.6192%2048.2639%2084.3645C48.1909%2084.8754%2047.7287%2085.2889%2047.2179%2085.2889C46.707%2085.2889%2046.2448%2084.8997%2046.1718%2084.3645C42.7418%2061.6435%2040.2604%2059.6244%2017.7584%2056.2187C17.0772%2056.1214%2016.542%2055.5132%2016.542%2054.8077H16.5178Z'/%3E%3C/svg%3E");
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
-  -webkit-mask-size: contain;
-  mask-size: contain;
-  animation: ai-star-twinkle 2.4s ease-in-out infinite;
+  content: none;
 }
 
-@keyframes ai-star-twinkle {
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.55;
-    transform: scale(0.85);
-  }
+.ai-panel-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
 }
 
 .ai-header-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
   border-radius: 50%;
+  background: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast);
 }
 
 .ai-header-btn:hover {
   background: var(--accent-soft);
-}
-
-.ai-header-btn:not(.ai-panel-collapse):hover {
   color: var(--accent);
 }
 
-/* ---------- message list: 20px rhythm, thin scrollbar ---------- */
+.ai-header-btn:active {
+  color: var(--accent-dark);
+}
+
+/* collapsed rail */
+.ai-rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 2px;
+  border: none;
+  background: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  border-radius: var(--radius-8);
+}
+
+.ai-rail:hover {
+  background: var(--color-bg-subtle);
+  color: var(--accent);
+}
+
+/* ---------- message list ---------- */
 .ai-chat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+  overflow-y: auto;
   padding: 16px;
-  gap: 20px;
   scrollbar-width: thin;
   scrollbar-color: var(--border) transparent;
 }
@@ -85,24 +139,53 @@
   background: var(--text-tertiary);
 }
 
-/* ---------- empty state: full-width suggestion rows with accent outline ----------
-   every chip keeps identical metrics — same width, same height, same label
-   alignment; long labels ellipsize instead of wrapping
-   (.ai-quick-actions/.ai-quick-btn is the pdf app's name for the same block) */
+/* restored transcript boundary */
+.ai-history-sep {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--text-caption);
+  color: var(--color-text-tertiary);
+  white-space: nowrap;
+}
+
+.ai-history-sep::before,
+.ai-history-sep::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--color-border-default);
+}
+
+/* ---------- empty state: centered, one column of equal pills ---------- */
 .ai-chat-empty {
-  text-align: right;
+  margin: 32px auto 0;
+  padding: 0 8px;
+  max-width: 280px;
+  text-align: center;
 }
 
 .ai-chat-empty-title {
+  font-family: var(--gs-font-display);
+  font-size: 16px;
+  font-weight: 600;
+  font-optical-sizing: auto;
+  color: var(--color-text-primary);
+  margin-bottom: 8px;
   text-wrap: balance;
 }
 
 .ai-chat-empty-body {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
   text-wrap: pretty;
 }
 
 .ai-starter-list,
 .ai-quick-actions {
+  display: flex;
+  flex-direction: column;
   align-items: stretch;
   gap: 6px;
   margin-top: 20px;
@@ -114,12 +197,11 @@
   align-items: center;
   width: 100%;
   box-sizing: border-box;
-  padding: 6px 12px;
-  border: 1px solid currentColor;
+  padding: 8px 14px;
+  border: 1px solid var(--color-border-default);
   border-radius: var(--radius-30);
   background: none;
   font-size: 13px;
-  font-weight: 400;
   line-height: 1.4;
   color: var(--color-text-secondary);
   cursor: pointer;
@@ -129,7 +211,6 @@
     border-color var(--transition-fast);
 }
 
-/* label slot: single line, ellipsized — so every chip has the same height */
 .ai-starter-text {
   flex: 1;
   min-width: 0;
@@ -142,10 +223,10 @@
 .ai-starter::after,
 .ai-quick-btn::after {
   content: '→';
-  display: inline-block;
   flex-shrink: 0;
   max-width: 0;
   margin-inline-start: 0;
+  overflow: hidden;
   color: var(--accent);
   opacity: 0;
   transition:
@@ -156,8 +237,9 @@
 
 .ai-starter:hover,
 .ai-quick-btn:hover {
-  border-color: currentColor;
+  border-color: var(--accent);
   background: var(--accent-soft);
+  color: var(--color-text-primary);
 }
 
 .ai-starter:hover::after,
@@ -169,22 +251,16 @@
 
 .ai-starter:active,
 .ai-quick-btn:active {
-  transform: none;
-  filter: none;
   color: var(--accent-dark);
 }
 
-/* ---------- suggested follow-ups: 3 quiet rows under the last reply ----------
-   borderless right-aligned links — the questions read as continuations of the
-   user's next message, so they sit on the user-message side of the thread */
+/* ---------- follow-ups: quiet centered rows under the last reply ---------- */
 .ai-suggest {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
   gap: 2px;
-  margin: 8px 0 10px;
-  /* same gutter as .ai-chat so the right-aligned text lines up with the
-     bubble edges and stays clear of the thin scrollbar */
+  margin: 4px 0 2px;
   padding: 0 16px;
 }
 
@@ -195,11 +271,10 @@
   border: none;
   background: none;
   font-size: 13px;
-  font-weight: 400;
   line-height: 1.4;
   color: var(--color-text-secondary);
   cursor: pointer;
-  text-align: end;
+  text-align: center;
   transition: color var(--transition-fast);
 }
 
@@ -218,15 +293,26 @@
   color: var(--accent-dark);
 }
 
-/* ---------- message bubbles: 12px radius with a 6px tail corner ---------- */
+/* ---------- messages: flat rows, no bubbles, no tails ---------- */
 .ai-msg {
-  animation: ai-msg-appear 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+  position: relative;
+  margin: 0;
+  max-width: 100%;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: none;
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+  animation: ai-msg-appear 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @keyframes ai-msg-appear {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(6px);
   }
   to {
     opacity: 1;
@@ -234,92 +320,395 @@
   }
 }
 
-/* user: muted bubble, hairline border, tail on the trailing bottom corner
-   (logical radius → mirrors correctly in RTL panels) */
+/* user: right-aligned flat row on a subtle wash */
 .ai-msg-user {
+  align-self: flex-end;
   max-width: 92%;
-  padding: 10px 16px;
-  border: 1px solid var(--border);
+  padding: 8px 14px;
   border-radius: var(--radius-12);
-  border-end-end-radius: 6px;
   background: var(--color-bg-subtle);
+  line-height: 1.5;
 }
 
-/* assistant: content-tone card on the page surface, tail leading bottom */
+/* assistant: plain full-width text */
 .ai-msg-assistant {
+  align-self: stretch;
   max-width: 100%;
-  padding: 12px 16px;
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-12);
-  border-end-start-radius: 6px;
-  background: var(--bg-content);
+  padding: 0;
+  border: none;
+  background: none;
 }
 
-/* inline code chip inside markdown: bordered card-tone pill (VEGA code style) */
+.ai-msg-assistant .ai-md,
+.ai-msg .ai-md {
+  white-space: normal;
+}
+
+.ai-md p,
+.ai-md ul,
+.ai-md ol {
+  margin: 0 0 10px;
+}
+
+.ai-md :last-child {
+  margin-bottom: 0;
+}
+
+.ai-md p:empty {
+  display: none;
+}
+
+/* inline code: neutral chip */
 .ai-md code {
   padding: 1px 7px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--color-border-default);
   border-radius: var(--radius-8);
-  background: var(--color-bg-page);
+  background: var(--color-bg-subtle);
   color: var(--color-text-primary);
+  font-family: var(--gs-font-mono);
+  font-size: 12.5px;
 }
 
-/* ---------- activity indicators: emerald instead of per-app blue ---------- */
+/* ---------- work group: one quiet row, timeline steps inside ---------- */
+.ai-work-group {
+  margin: 6px 0 2px;
+}
+
+.ai-work-group-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 0;
+  border: none;
+  background: none;
+  font-size: var(--text-caption);
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+}
+
+.ai-work-group-summary:hover {
+  color: var(--accent);
+}
+
+.ai-work-group-summary.running {
+  color: var(--color-text-secondary);
+}
+
+.ai-work-group-label {
+  line-height: 1.4;
+}
+
+.ai-tool-chip-caret {
+  font-size: 13px;
+  line-height: 1;
+  transition: transform var(--transition-fast);
+}
+
+.ai-tool-chip-caret.open {
+  transform: rotate(90deg);
+}
+
+.ai-tool-chip-spinner {
+  display: inline-flex;
+}
+
+.ai-tool-chip-spinner::before,
+.ai-tool-chip-spinner::after {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.ai-work-group-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--transition-fast);
+}
+
+.ai-work-group-body.open {
+  grid-template-rows: 1fr;
+}
+
+.ai-work-group-body-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.ai-step-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 3px 0 3px 2px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--color-text-secondary);
+}
+
+.ai-step-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--color-text-tertiary);
+}
+
+.ai-step-icon.done {
+  color: var(--accent);
+}
+
+.ai-step-icon.error {
+  color: var(--danger);
+}
+
+.ai-step-icon.running {
+  color: var(--accent);
+}
+
+.ai-step-content {
+  min-width: 0;
+  flex: 1;
+}
+
+.ai-step-title {
+  color: inherit;
+}
+
+button.ai-step-title.clickable {
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-align: start;
+}
+
+button.ai-step-title.clickable:hover {
+  color: var(--accent);
+}
+
+.ai-step-detail {
+  margin-top: 4px;
+}
+
+.ai-tool-output {
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-8);
+  background: var(--color-bg-subtle);
+  overflow: hidden;
+}
+
+.ai-tool-output-pre {
+  margin: 0;
+  padding: 8px 10px;
+  overflow-x: auto;
+  font-family: var(--gs-font-mono);
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ---------- typing: single accent pulse ---------- */
+.ai-typing-row {
+  display: flex;
+  padding: 2px 0;
+}
+
 .ai-typing-dot-grow,
 .ai-typing-dot-shrink {
   background: var(--accent);
 }
 
-.ai-tool-chip-spinner::before,
-.ai-tool-chip-spinner::after {
-  background: var(--accent);
+/* ---------- reply toolbar: hidden until hover/focus ---------- */
+.ai-msg-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-top: 6px;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
 }
 
-/* ---------- error: soft destructive card ---------- */
-.ai-msg-error {
-  padding: 10px 14px;
-  border: 1px solid var(--danger-border);
-  border-radius: var(--radius-12);
-  background: var(--danger-bg);
-  color: var(--danger);
-  font-size: 13px;
-  line-height: 1.5;
+.ai-msg:hover .ai-msg-toolbar,
+.ai-msg:focus-within .ai-msg-toolbar {
+  opacity: 1;
 }
 
-/* retry on an undelivered message follows the same destructive tone */
-.ai-retry-btn {
-  border-color: var(--danger-border);
+.ai-msg-tool-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  min-width: 28px;
+  padding: 4px;
+  border: none;
   border-radius: var(--radius-8);
+  background: transparent;
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.ai-msg-tool-btn:hover:not(:disabled) {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.ai-msg-tool-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.ai-rollback-sep {
+  width: 1px;
+  height: 16px;
+  margin: 0 4px;
+  background: var(--color-border-default);
+}
+
+.ai-rollback-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  border: none;
+  border-radius: var(--radius-8);
+  background: none;
+  font-size: var(--text-caption);
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+}
+
+.ai-rollback-btn:hover:not(:disabled) {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* ---------- primary chat actions: the single accent ---------- */
+.ai-continue-btn,
+.ai-login-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 8px;
+  padding: 7px 16px;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-30);
+  background: var(--accent);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.ai-continue-btn:hover,
+.ai-login-btn:hover {
+  background: var(--accent-dark);
+}
+
+.ai-retry-btn {
+  margin-inline-start: 8px;
+  padding: 3px 12px;
+  border: 1px solid var(--danger-border);
+  border-radius: var(--radius-30);
+  background: none;
   color: var(--danger);
+  font-size: var(--text-caption);
+  cursor: pointer;
 }
 
 .ai-retry-btn:hover {
   background: var(--danger-bg);
 }
 
-/* ---------- composer: dark footer band edge-to-edge, bare textarea ----------
-   (AIChatDrawer footer: border-t + bg-background/80; no box, no focus ring) */
+/* ---------- error: soft destructive row ---------- */
+.ai-msg-error {
+  padding: 10px 14px;
+  border: none;
+  border-inline-start: 2px solid var(--danger);
+  border-radius: 0 var(--radius-8) var(--radius-8) 0;
+  background: var(--danger-bg);
+  color: var(--danger);
+  font-size: 13px;
+  line-height: 1.5;
+  white-space: normal;
+}
+
+/* ---------- scope quote: thin accent rail, no box ---------- */
+.ai-msg-scope {
+  margin-bottom: 6px;
+}
+
+/* ---------- composer: one floating pill ---------- */
 .ai-composer {
-  border-top: 1px solid var(--border-subtle);
-  background: var(--bg-content);
-  padding: 10px 14px 6px;
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--color-border-default);
+  background: var(--color-bg-page);
 }
 
 .ai-input-box {
-  border: none;
-  border-radius: 0;
-  background: none;
+  border: 1px solid var(--color-border-default);
+  border-radius: 20px;
+  background: var(--surface, var(--color-bg-page));
   box-shadow: none;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
-/* PII shield indicator: a muted icon docked into the composer footer's right
-   cluster, immediately left of the attach button (or of send when there is
-   none) — rendered only while the effective provider is VEGA */
+.ai-input-box:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.ai-input-box textarea {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 10px 14px 2px;
+  border: none;
+  background: none;
+  outline: none;
+  resize: none;
+  font: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--color-text-primary);
+  /* 3 rows at rest (3×20 + 12 padding), grows to 6 rows, then scrolls inside */
+  min-height: 72px;
+  max-height: 132px;
+  overflow-y: auto;
+}
+
+.ai-input-box textarea::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.ai-input-footer {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px 6px 10px;
+}
+
+/* the Enter hint is noise in the pill: the tooltip keeps the shortcut */
+.ai-input-hint {
+  display: none;
+}
+
+/* privacy shield docks left of the send cluster */
 .ai-shield-badge {
   display: inline-flex;
   align-items: center;
   flex-shrink: 0;
-  color: var(--color-text-secondary);
+  margin-inline-start: 2px;
+  color: var(--color-text-tertiary);
   opacity: 0.7;
   cursor: help;
 }
@@ -328,9 +717,6 @@
   opacity: 1;
 }
 
-/* same order group as attach, but the badge's own auto margin carries the
-   cluster's rightward push — a following attach/send must not re-split the
-   free space, or the badge would drift apart from them */
 .ai-input-footer .ai-shield-badge {
   order: 2;
   margin-left: auto;
@@ -341,62 +727,97 @@
   margin-left: 0;
 }
 
-/* send: 36×36 emerald rounded-xl with the ArrowUp glyph; stop: muted square */
-.ai-send-btn {
-  width: 36px;
-  height: 36px;
+/* attach + track: quiet 28px targets, accent on hover/on */
+.ai-attach-btn {
+  order: 2;
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
   padding: 0;
   border: none;
-  border-radius: var(--radius-12);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.ai-attach-btn svg,
+.ai-attach-btn img {
+  display: block;
+}
+
+.ai-composer .ai-attach-btn {
+  border-radius: 50%;
+  color: var(--color-text-secondary);
+}
+
+.ai-attach-btn:hover,
+.ai-composer .ai-attach-btn:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.ai-track-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-30);
+  background: none;
+  font-size: var(--text-caption);
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.ai-track-btn:hover {
+  color: var(--accent);
+}
+
+.ai-track-btn.on {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.ai-track-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.ai-track-btn.on .ai-track-dot {
   background: var(--accent);
-  color: var(--color-bg-page);
+}
+
+/* send: the one memorable detail — 32px accent circle, arrow glyph */
+.ai-send-btn {
+  order: 3;
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
   cursor: pointer;
   transition:
     background-color var(--transition-fast),
     transform var(--transition-fast),
     opacity var(--transition-fast);
-}
-
-.ai-send-btn svg {
-  display: block;
-}
-
-.ai-send-btn:hover:not(:disabled) {
-  background: var(--accent-dark);
-  transform: translateY(-1px);
-  filter: none;
-}
-
-.ai-send-btn:active:not(:disabled) {
-  transform: scale(0.95);
-  filter: none;
-}
-
-.ai-send-btn:disabled {
-  opacity: 0.5;
-  cursor: default;
-}
-
-.ai-send-btn.ai-stop-btn {
-  background: var(--color-bg-subtle);
-  color: var(--color-text-primary);
-}
-
-.ai-send-btn.ai-stop-btn:hover {
-  background: var(--bg-hover-strong);
-  filter: none;
-}
-
-/* footer row: attach docks immediately left of send (order beats DOM order);
-   the auto margin sits on attach so the pair stays glued on the right —
-   with no attach rendered, send's own auto margin keeps it right */
-.ai-input-footer {
-  padding: 4px 8px 4px 10px;
-}
-
-.ai-input-footer .ai-attach-btn {
-  order: 2;
-  margin-left: auto;
 }
 
 .ai-input-footer .ai-send-btn {
@@ -408,78 +829,370 @@
   margin-left: 0;
 }
 
-/* attach / track pills: quiet at rest, accent-tinted on hover/on */
-.ai-attach-btn {
-  border-radius: var(--radius-8);
-  color: var(--color-text-secondary);
-}
-
-.ai-attach-btn svg,
-.ai-attach-btn img {
+.ai-send-btn svg {
   display: block;
 }
 
-.ai-attach-btn:hover {
-  background: var(--accent-soft);
-  color: var(--accent);
-  filter: none;
+.ai-send-btn:hover:not(:disabled) {
+  background: var(--accent-dark);
+  transform: translateY(-1px);
 }
 
-/* slides overrides the attach button inside .ai-composer (higher specificity) */
-.ai-composer .ai-attach-btn {
+.ai-send-btn:active:not(:disabled) {
+  transform: scale(0.94);
+}
+
+.ai-send-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.ai-send-btn.ai-stop-btn {
+  background: var(--color-bg-subtle);
+  color: var(--color-text-primary);
+}
+
+.ai-send-btn.ai-stop-btn:hover {
+  background: var(--bg-hover-strong);
+}
+
+/* ---------- composer header: scope row + attachments ---------- */
+.ai-scope-row {
+  padding: 8px 12px 0;
+}
+
+.ai-scope-preview {
+  margin-top: 6px;
+  padding: 6px 10px;
   border-radius: var(--radius-8);
+  background: var(--color-bg-subtle);
+  font-size: var(--text-caption);
+  line-height: 1.5;
   color: var(--color-text-secondary);
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
-.ai-composer .ai-attach-btn:hover {
-  background: var(--accent-soft);
-  color: var(--accent);
-  filter: none;
+.ai-attachments {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 8px 12px 0;
+  scrollbar-width: thin;
 }
 
-.ai-track-btn.on {
-  border-color: var(--accent);
-  background: var(--accent-soft);
-  color: var(--accent);
+.ai-msg-attachments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 6px;
 }
 
-.ai-track-btn.on .ai-track-dot {
-  background: var(--accent);
-}
-
-/* message toolbar + primary chat actions follow the accent */
-.ai-msg-tool-btn:hover:not(:disabled) {
-  background: var(--accent-soft);
-  color: var(--accent);
-}
-
-.ai-continue-btn {
-  border-color: var(--accent);
+.ai-attachment-thumb {
+  position: relative;
+  display: inline-flex;
+  width: 48px;
+  height: 48px;
   border-radius: var(--radius-8);
-  background: var(--accent);
-  color: var(--color-bg-page);
+  overflow: hidden;
+  background: var(--color-bg-subtle);
 }
 
-.ai-continue-btn:hover {
-  background: var(--accent-dark);
-  filter: none;
+.ai-attachment-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.ai-login-btn {
-  border-color: var(--accent);
+.ai-attachment-card {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 190px;
+  padding: 6px 8px;
+  border: 1px solid var(--color-border-default);
   border-radius: var(--radius-8);
-  background: var(--accent);
-  color: var(--color-bg-page);
+  background: var(--color-bg-subtle);
 }
 
-.ai-login-btn:hover {
-  background: var(--accent-dark);
+.ai-attachment-card-meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.3;
+}
+
+.ai-attachment-card-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--text-caption);
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.ai-attachment-card-size {
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+}
+
+.ai-attachment-thumb-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgb(0 0 0 / 45%);
+  color: #fff;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.ai-attachment-thumb:hover .ai-attachment-thumb-remove,
+.ai-attachment-card:hover .ai-attachment-thumb-remove {
   opacity: 1;
 }
 
+.ai-attach-notice {
+  margin: 0 4px 6px;
+  font-size: var(--text-caption);
+  color: var(--danger);
+}
+
+/* queued edits + partial-write cards ride above the pill */
+.ai-queue {
+  margin: 0 0 8px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-12);
+  background: none;
+}
+
+/* drag-over wash */
+.ai-panel-dragover {
+  outline: 2px dashed var(--accent);
+  outline-offset: -2px;
+}
+
+/* ---------- Ask AI popover: one floating mini-composer ----------
+   Same VEGA One language as the dock: quiet 12px card, pill input with the
+   accent focus ring, pill chips, one orange confirm. Covers docs, slides,
+   pdf, html, markdown and sheets (AiSelectionAsk). */
+.ai-ask-pop {
+  position: fixed;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-sizing: border-box;
+  padding: 12px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-16);
+  background: var(--color-bg-page);
+  box-shadow: var(--shadow-menu);
+  font-family: var(--gs-font-sans);
+  color: var(--color-text-primary);
+}
+
+.ai-ask-pop-close {
+  position: absolute;
+  top: 8px;
+  inset-inline-end: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.ai-ask-pop-close:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.ai-ask-pop-close:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.ai-ask-pop-title {
+  padding-inline-end: 28px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.ai-ask-pop-sub {
+  margin-top: -4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--text-caption);
+  color: var(--color-text-secondary);
+}
+
+.ai-ask-pop-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 12px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-30);
+  background: var(--color-bg-subtle);
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.4;
+  outline: none;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.ai-ask-pop-input::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.ai-ask-pop-input:focus {
+  border-color: var(--accent);
+  background: var(--color-bg-page);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.ai-ask-pop-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ai-ask-chip {
+  padding: 4px 12px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-30);
+  background: none;
+  color: var(--color-text-secondary);
+  font-size: var(--text-caption);
+  line-height: 1.4;
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.ai-ask-chip:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--color-text-primary);
+}
+
+.ai-ask-chip:active {
+  color: var(--accent-dark);
+}
+
+.ai-ask-pop-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 2px;
+}
+
+.ai-ask-cancel {
+  padding: 6px 14px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-30);
+  background: none;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.ai-ask-cancel:hover {
+  background: var(--color-bg-subtle);
+  color: var(--color-text-primary);
+}
+
+.ai-ask-confirm {
+  padding: 6px 16px;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-30);
+  background: var(--accent);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.ai-ask-confirm:hover:not(:disabled) {
+  background: var(--accent-dark);
+}
+
+.ai-ask-confirm:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* floating entry trigger near the selection: quiet pill, accent on hover */
+.ai-ask-trigger {
+  position: fixed;
+  z-index: 59;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-30);
+  background: var(--color-bg-page);
+  box-shadow: var(--shadow-menu);
+  color: var(--color-text-secondary);
+  font-family: var(--gs-font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.ai-ask-trigger:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ---------- small screens ---------- */
+@media (max-width: 420px) {
+  .ai-chat {
+    padding: 12px;
+  }
+
+  .ai-composer {
+    padding: 8px 8px calc(8px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .ai-chat-empty {
+    max-width: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .ai-msg,
-  .ai-panel-title::after {
+  .ai-msg {
     animation: none;
   }
 
@@ -488,7 +1201,14 @@
   .ai-quick-btn,
   .ai-quick-btn::after,
   .ai-suggest-item,
-  .ai-send-btn {
+  .ai-send-btn,
+  .ai-msg-toolbar,
+  .ai-ask-pop-input,
+  .ai-ask-chip,
+  .ai-ask-cancel,
+  .ai-ask-confirm,
+  .ai-ask-trigger,
+  .ai-work-group-body {
     transition: none;
   }
 

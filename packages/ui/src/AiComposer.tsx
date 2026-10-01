@@ -3,8 +3,9 @@ import { IconArrowUp, IconSend, IconStop } from './icons'
 import { useAiPanelPrefs } from './ai-panel-prefs-store'
 import { AiShieldBadge } from './AiShieldBadge'
 
-// Keep in sync with the CSS `max-height` on `.ai-input-box textarea` (7 lines à 20px)
-const MAX_TEXTAREA_HEIGHT = 140
+// Keep in sync with the CSS band on `.ai-input-box textarea` (3 rows at rest,
+// grows to 6 rows, then scrolls inside): 6 lines à 20px + 12px vertical padding
+const MAX_TEXTAREA_HEIGHT = 132
 
 /**
  * The AI panel input box shared by docs and sheets: auto-growing textarea
@@ -73,8 +74,8 @@ export function AiComposer({
   const canSend = value.trim().length > 0 && !busy
   const { spellcheck } = useAiPanelPrefs()
 
-  // auto-grow up to ~6 lines; empty clears the inline height outright so the
-  // CSS min-height governs (a hidden-at-measure pass can leave a stale value).
+  // auto-grow from 3 rows up to 6; empty clears the inline height outright
+  // so the CSS min-height governs (a hidden-at-measure pass can leave a stale value).
   useEffect(() => {
     const ta = ref.current
     if (!ta) return
@@ -94,7 +95,7 @@ export function AiComposer({
         value={value}
         placeholder={placeholder}
         aria-label={ariaLabel}
-        rows={1}
+        rows={3}
         dir="auto"
         spellCheck={spellcheck}
         onChange={(e) => onChange(e.target.value)}

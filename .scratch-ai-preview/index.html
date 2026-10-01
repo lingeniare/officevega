@@ -32,38 +32,39 @@
         resize: none;
         border: none;
         background: none;
-        padding: 0 14px;
-        margin: 12px 0 4px;
+        padding: 10px 14px 2px;
         font-size: 14px;
         line-height: 20px;
         outline: none;
         color: var(--color-text-primary);
-        min-height: 40px;
+        min-height: 72px;
+        max-height: 132px;
+        overflow-y: auto;
         box-sizing: border-box;
         font-family: inherit;
       }
       .ai-input-footer {
         display: flex;
         align-items: center;
-        gap: 8px;
-        padding: 4px 8px 8px 10px;
+        gap: 4px;
+        padding: 2px 8px 6px 10px;
       }
       .ai-attach-btn {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        width: 20px;
-        height: 20px;
+        width: 28px;
+        height: 28px;
         border: none;
         background: transparent;
         cursor: pointer;
         padding: 0;
         color: var(--color-text-secondary);
         font-size: 14px;
+        margin-left: auto;
       }
       .ai-input-hint {
-        font-size: 12px;
-        color: var(--color-text-tertiary);
+        display: none;
       }
       .ai-send-btn {
         display: inline-flex;
@@ -101,8 +102,13 @@
       }
       .ai-msg-toolbar {
         display: flex;
-        gap: 4px;
-        margin-top: 8px;
+        gap: 2px;
+        margin-top: 6px;
+        opacity: 0;
+        transition: opacity 150ms;
+      }
+      .ai-msg:hover .ai-msg-toolbar {
+        opacity: 1;
       }
       .ai-msg-tool-btn {
         display: inline-flex;
@@ -220,63 +226,29 @@
       .ai-starter {
         max-width: 100%;
       }
-      /* demo accents — in the apps these live in each app's styles.css :root/dark blocks */
+      /* VEGA One: single unified accent — the apps no longer tint the chat */
       :root {
-        --accent: #185abd;
-        --accent-dark: #124a9e;
-        --accent-soft: #e8f1fb;
+        --accent: #e8663f;
+        --accent-dark: #d4552f;
+        --accent-soft: rgb(232 102 63 / 12%);
       }
       [data-theme='dark'] {
-        --accent: #4a9eff;
-        --accent-dark: #3a8eef;
-        --accent-soft: #1e3a5f;
+        --accent: #f07a55;
+        --accent-dark: #e8663f;
+        --accent-soft: rgb(232 102 63 / 16%);
       }
     </style>
     <script>
-      const ACCENTS = {
-        word: { l: ['#185abd', '#124a9e', '#e8f1fb'], d: ['#4a9eff', '#3a8eef', '#1e3a5f'] },
-        excel: { l: ['#217346', '#185c37', '#e9f3ed'], d: ['#34a853', '#58b380', '#1d3328'] },
-        pdf: { l: ['#c43e1c', '#a33517', '#fbeae5'], d: ['#e8663f', '#d4552f', '#43261d'] },
-        markdown: { l: ['#8b5cf6', '#7c4ddb', '#f1eafe'], d: ['#a78bfa', '#c4b5fd', '#2d2645'] },
-        html: {
-          l: ['#0fa3a3', '#0c8383', 'rgba(15,163,163,.1)'],
-          d: ['#2dd4bf', '#5eead4', 'rgba(45,212,191,.14)'],
-        },
-      }
-      let tool = 'word'
-      function applyTool() {
-        const dark = document.documentElement.getAttribute('data-theme') === 'dark'
-        const [a, d, s] = ACCENTS[tool][dark ? 'd' : 'l']
-        const st = document.documentElement.style
-        st.setProperty('--accent', a)
-        st.setProperty('--accent-dark', d)
-        st.setProperty('--accent-soft', s)
-        document
-          .querySelectorAll('.theme-switch button[data-tool]')
-          .forEach((b) => b.classList.toggle('on', b.dataset.tool === tool))
-      }
       function setTheme(t) {
         if (t === 'dark') document.documentElement.setAttribute('data-theme', 'dark')
         else document.documentElement.removeAttribute('data-theme')
-        applyTool()
       }
-      function setTool(k) {
-        tool = k
-        applyTool()
-      }
-      window.addEventListener('DOMContentLoaded', applyTool)
     </script>
   </head>
   <body>
     <div class="theme-switch">
       <button onclick="setTheme('light')">light</button>
       <button onclick="setTheme('dark')">dark</button>
-      <span style="width: 8px"></span>
-      <button data-tool="word" onclick="setTool('word')">word</button>
-      <button data-tool="excel" onclick="setTool('excel')">excel</button>
-      <button data-tool="pdf" onclick="setTool('pdf')">pdf/slides</button>
-      <button data-tool="markdown" onclick="setTool('markdown')">markdown</button>
-      <button data-tool="html" onclick="setTool('html')">html</button>
     </div>
 
     <div class="panel">
@@ -339,7 +311,7 @@
 
       <div class="ai-composer">
         <div class="ai-input-box">
-          <textarea rows="1" placeholder="Спросите что-нибудь"></textarea>
+          <textarea rows="3" placeholder="Спросите что-нибудь"></textarea>
           <div class="ai-input-footer">
             <button class="ai-attach-btn" aria-label="Прикрепить">
               <svg
