@@ -269,15 +269,18 @@ import {
   IconCrop,
   IconCutout,
   IconOpacity,
-  IconAiSummarize,
-  IconAiKeyPoints,
 } from './icons'
 
 GlobalWorkerOptions.workerSrc = workerUrl
 
 const DRAW_TOOLS = [
   { tool: 'ink' as const, icon: IconInk, key: 'drawInk' as const, tipKey: 'drawInkTip' as const },
-  { tool: 'rect' as const, icon: IconRect, key: 'drawRect' as const, tipKey: 'drawRectTip' as const },
+  {
+    tool: 'rect' as const,
+    icon: IconRect,
+    key: 'drawRect' as const,
+    tipKey: 'drawRectTip' as const,
+  },
   {
     tool: 'ellipse' as const,
     icon: IconEllipse,
@@ -290,7 +293,12 @@ const DRAW_TOOLS = [
     key: 'drawArrow' as const,
     tipKey: 'drawArrowTip' as const,
   },
-  { tool: 'note' as const, icon: IconNote, key: 'drawNote' as const, tipKey: 'drawNoteTip' as const },
+  {
+    tool: 'note' as const,
+    icon: IconNote,
+    key: 'drawNote' as const,
+    tipKey: 'drawNoteTip' as const,
+  },
 ]
 
 // ── ribbon tabs (docs-style tab strip over a fixed 80px band) ──
@@ -6416,7 +6424,21 @@ export default function App() {
                   >
                     <span className="rb-big-icon">
                       <span className="ai-feature-icon" aria-hidden="true">
-                        <IconAiSummarize />
+                        {/* lucide: file-text */}
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+                          <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+                          <path d="M10 9H8" />
+                          <path d="M16 13H8" />
+                          <path d="M16 17H8" />
+                        </svg>
                       </span>
                     </span>
                     <span>{t('aiSummarizeBtn')}</span>
@@ -6435,7 +6457,22 @@ export default function App() {
                   >
                     <span className="rb-big-icon">
                       <span className="ai-feature-icon" aria-hidden="true">
-                        <IconAiKeyPoints />
+                        {/* lucide: list */}
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M3 12h.01" />
+                          <path d="M3 18h.01" />
+                          <path d="M3 6h.01" />
+                          <path d="M8 12h13" />
+                          <path d="M8 18h13" />
+                          <path d="M8 6h13" />
+                        </svg>
                       </span>
                     </span>
                     <span>{t('aiKeyPointsBtn')}</span>
@@ -6534,7 +6571,21 @@ export default function App() {
                   >
                     <span className="rb-big-icon">
                       <span className="ai-feature-icon" aria-hidden="true">
-                        <IconAiSummarize />
+                        {/* lucide: file-text */}
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+                          <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+                          <path d="M10 9H8" />
+                          <path d="M16 13H8" />
+                          <path d="M16 17H8" />
+                        </svg>
                       </span>
                     </span>
                     <span>{t('aiReviewSummaryBtn')}</span>
@@ -6548,7 +6599,22 @@ export default function App() {
                   >
                     <span className="rb-big-icon">
                       <span className="ai-feature-icon" aria-hidden="true">
-                        <VegaMark size={20} />
+                        {/* lucide: notebook-pen */}
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M13.4 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7.4" />
+                          <path d="M2 6h4" />
+                          <path d="M2 10h4" />
+                          <path d="M2 14h4" />
+                          <path d="M2 18h4" />
+                          <path d="M21.378 5.626a1 1 0 1 0-3.004-3.004l-5.01 5.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z" />
+                        </svg>
                       </span>
                     </span>
                     <span>{t('aiProcessNotesBtn')}</span>
@@ -6734,7 +6800,19 @@ export default function App() {
                   >
                     <span className="rb-big-icon">
                       <span className="ai-feature-icon" aria-hidden="true">
-                        <VegaMark size={20} />
+                        {/* lucide: file-pen */}
+                        <svg
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M12.5 22H18a2 2 0 0 0 2-2V7l-5-5H6a2 2 0 0 0-2 2v9.5" />
+                          <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+                          <path d="M13.378 15.626a1 1 0 1 0-3.004-3.004l-5.01 5.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z" />
+                        </svg>
                       </span>
                     </span>
                     <span>{t('aiFillFormBtn')}</span>

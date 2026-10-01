@@ -99,6 +99,44 @@ export function sameBlockRole(old: ProseMirrorNode, next: PmNode): boolean {
 }
 
 /**
+ * The paragraph mark's pending font (w:pPr/w:rPr, resolved to the Latin face)
+ * is what typing into an empty block produces, so a template with no live runs
+ * lends it; with runs present it only fills the slots the dominant run left
+ * unset — still the paragraph's own face, not the theme default.
+ */
+function emptyRunStyle(node: ProseMirrorNode): Record<string, unknown> {
+  const picked: Record<string, unknown> = {}
+  if (node.attrs.emptyRunFont) picked.fontAscii = String(node.attrs.emptyRunFont)
+  if (node.attrs.emptyRunSize) picked.sizeHalfPoints = Number(node.attrs.emptyRunSize)
+  return picked
+}
+
+/**
+ * The run-style half of inheritFrom: the old block's dominant docTextStyle,
+ * backed by its paragraph-mark font, merged under each text node's own style.
+ * Shared by inserts, whose new blocks keep no paragraph identity.
+ */
+export function inheritRunStyle(old: ProseMirrorNode, next: PmNode): PmNode {
+  const inherited = { ...emptyRunStyle(old), ...dominantTextStyle(old) }
+  if (Object.keys(inherited).length === 0) return next
+  const content = next.content?.map((child) => {
+    if (child.type !== 'text') return child
+    const marks = child.marks ?? []
+    const ownStyle = marks.find((m) => m.type === 'docTextStyle')?.attrs ?? {}
+    const merged: Record<string, unknown> = { ...inherited }
+    for (const [key, value] of Object.entries(ownStyle)) if (value != null) merged[key] = value
+    return {
+      ...child,
+      marks: [
+        ...marks.filter((m) => m.type !== 'docTextStyle'),
+        { type: 'docTextStyle', attrs: merged },
+      ],
+    }
+  })
+  return { ...next, ...(content ? { content } : {}) }
+}
+
+/**
  * The new block's own formatting (from <pre>/<blockquote>/list parsing) wins
  * over inherited values. `first` = this is the first new block formatted from
  * `old`: the page break before the old paragraph belongs to that one block
@@ -131,24 +169,8 @@ export function inheritFrom(
   }
   attrs.aiChanged = true
 
-  const inherited = dominantTextStyle(old)
-  const content = inherited
-    ? next.content?.map((child) => {
-        if (child.type !== 'text') return child
-        const marks = child.marks ?? []
-        const ownStyle = marks.find((m) => m.type === 'docTextStyle')?.attrs ?? {}
-        const merged: Record<string, unknown> = { ...inherited }
-        for (const [key, value] of Object.entries(ownStyle)) if (value != null) merged[key] = value
-        return {
-          ...child,
-          marks: [
-            ...marks.filter((m) => m.type !== 'docTextStyle'),
-            { type: 'docTextStyle', attrs: merged },
-          ],
-        }
-      })
-    : next.content
-  return { ...next, attrs, ...(content ? { content } : {}) }
+  const styled = inheritRunStyle(old, next)
+  return { ...styled, attrs }
 }
 
 // ---- tables ----

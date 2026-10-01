@@ -1741,6 +1741,7 @@ export function AiPanel({
           sendLabel={t('aiSend')}
           stopLabel={t('aiStop')}
           iconOnly
+          privacyBadge={settings.provider === 'vega'}
           textareaRef={inputRef}
           onChange={setInput}
           onSend={run}

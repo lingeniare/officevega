@@ -386,3 +386,131 @@ describe('replace_blocks keeps the replaced blocks formatting (issue #175)', () 
     })
   })
 })
+
+describe('insert_content inherits the neighbouring formatting', () => {
+  async function insertContent(
+    editor: Editor,
+    html: string,
+    afterBlockIndex: number,
+    track?: typeof TRACK,
+  ) {
+    const r = await executeTool(
+      editor,
+      { id: 't', name: 'insert_content', input: { html, afterBlockIndex } },
+      NUM_IDS,
+      track,
+    )
+    expect(r.isError).toBeFalsy()
+    return r
+  }
+
+  it('an inserted paragraph takes the block above it: attrs and run style, no anchor, no cloned page break', async () => {
+    const { editor } = await createEditor([
+      para('Anchor.', { ...BODY_ATTRS, pageBreakBefore: true }, BODY_STYLE, 6),
+    ])
+    await insertContent(editor, '<p>Appended text.</p>', 0)
+    const all = blocks(editor)
+    expect(all).toHaveLength(2)
+    const p = all[1]
+    expect(p.attrs).toMatchObject({ ...BODY_ATTRS, docxIndex: null, aiChanged: true })
+    expect(p.attrs.pageBreakBefore).toBeFalsy()
+    expect(textStyle(p)).toMatchObject(BODY_STYLE)
+  })
+
+  it('an insert at the document start takes the first block below', async () => {
+    const { editor } = await createEditor([para('First.', BODY_ATTRS, BODY_STYLE, 0)])
+    await insertContent(editor, '<p>New opener.</p>', -1)
+    const all = blocks(editor)
+    expect(all).toHaveLength(2)
+    expect(all[0].attrs).toMatchObject({ ...BODY_ATTRS, docxIndex: null })
+    expect(textStyle(all[0])).toMatchObject(BODY_STYLE)
+  })
+
+  it('a paragraph with no same-role neighbour still takes the closest run font, but no paragraph identity', async () => {
+    const { editor } = await createEditor([
+      {
+        type: 'docHeading',
+        attrs: { level: 1, docxIndex: 0, spaceBefore: 240, styleId: '1' },
+        content: [
+          {
+            type: 'text',
+            text: 'Title',
+            marks: [
+              {
+                type: 'docTextStyle',
+                attrs: { fontAscii: 'Times New Roman', sizeHalfPoints: 32 },
+              },
+            ],
+          },
+        ],
+      },
+    ])
+    await insertContent(editor, '<p>Body after the title.</p>', 0)
+    const p = blocks(editor)[1]
+    expect(p.type).toBe('docParagraph')
+    expect(textStyle(p)).toMatchObject({ fontAscii: 'Times New Roman', sizeHalfPoints: 32 })
+    expect(p.attrs.styleId).toBeNull()
+    expect(p.attrs.spaceBefore).toBeNull()
+  })
+
+  it('an inserted heading does not borrow paragraph formatting', async () => {
+    const { editor } = await createEditor([para('Body.', BODY_ATTRS, BODY_STYLE, 0)])
+    await insertContent(editor, '<h2>New section</h2>', 0)
+    const h = blocks(editor)[1]
+    expect(h.type).toBe('docHeading')
+    expect(textStyle(h)).toBeUndefined()
+  })
+
+  it('a tracked insert marks the new blocks but keeps the inherited formatting', async () => {
+    const { editor } = await createEditor([para('Base.', BODY_ATTRS, BODY_STYLE, 2)])
+    await insertContent(editor, '<p>Inserted.</p>', 0, TRACK)
+    const p = blocks(editor)[1]
+    expect(p.content?.[0].marks?.some((m) => m.type === 'ins')).toBe(true)
+    expect(textStyle(p)).toMatchObject(BODY_STYLE)
+    expect(p.attrs.aiChanged).toBeFalsy()
+    expect(p.attrs.docxIndex).toBeNull()
+  })
+})
+
+describe('the paragraph-mark font backs a rewrite with no live runs', () => {
+  it('replace_blocks on an empty paragraph takes the mark font and size', async () => {
+    const { editor } = await createEditor([
+      {
+        type: 'docParagraph',
+        attrs: {
+          docxIndex: 3,
+          emptyRunFont: 'Times New Roman',
+          emptyRunSize: 24,
+          align: 'center',
+        },
+        content: [],
+      },
+    ])
+    await replaceBlocks(editor, 0, 0, '<p>Now filled.</p>')
+    const p = blocks(editor)[0]
+    expect(p.attrs).toMatchObject({ docxIndex: 3, align: 'center' })
+    expect(textStyle(p)).toMatchObject({ fontAscii: 'Times New Roman', sizeHalfPoints: 24 })
+  })
+
+  it('the mark font fills only the slots the dominant run leaves unset', async () => {
+    const { editor } = await createEditor([
+      {
+        type: 'docParagraph',
+        attrs: { docxIndex: 0, emptyRunFont: 'Times New Roman', emptyRunSize: 24 },
+        content: [
+          {
+            type: 'text',
+            text: 'Red text.',
+            marks: [{ type: 'docTextStyle', attrs: { color: 'FF0000' } }],
+          },
+        ],
+      },
+    ])
+    await replaceBlocks(editor, 0, 0, '<p>Rewritten.</p>')
+    expect(textStyle(blocks(editor)[0])).toMatchObject({
+      color: 'FF0000',
+      fontAscii: 'Times New Roman',
+      sizeHalfPoints: 24,
+    })
+  })
+})

@@ -4,7 +4,13 @@ import type { Transaction } from '@tiptap/pm/state'
 import { HUMANIZER_RULES } from '@genoffice/agent-core'
 import { TABLE_TRAILING_SKIP } from '../editor/extensions'
 import { TRACK_IGNORE } from '../editor/revisions'
-import { blockRangePositions, HTML_RULES, parseHtmlFragment, type NumIds } from './protocol'
+import {
+  blockRangePositions,
+  HTML_RULES,
+  inheritInsertedBlocks,
+  parseHtmlFragment,
+  type NumIds,
+} from './protocol'
 
 /**
  * Long-form writing runs as its own tool-less request whose reply body IS the
@@ -198,9 +204,13 @@ export class DraftLanding {
     this.pending = null
     let next: ProseMirrorNode[]
     try {
-      next = parseHtmlFragment(html, this.numIds).map((n) =>
-        this.editor.schema.nodeFromJSON({ ...n, attrs: { ...n.attrs, aiChanged: false } }),
-      )
+      // the draft previews what the final insert lands: same formatting
+      // inheritance, so streamed text shows the document's font, not the theme's
+      next = inheritInsertedBlocks(
+        this.editor,
+        this.indexBefore(),
+        parseHtmlFragment(html, this.numIds),
+      ).map((n) => this.editor.schema.nodeFromJSON({ ...n, attrs: { ...n.attrs, aiChanged: false } }))
     } catch {
       return // a half-received formula or table is retried on the next tick
     }

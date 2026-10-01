@@ -5,6 +5,7 @@ import { AgentLoop, generateSuggestedQuestions } from '@genoffice/agent-core'
 import {
   imageGenerationAvailable,
   withFastModel,
+  type AiProviderId,
   type AiSettings,
 } from '@genoffice/ai-provider/browser'
 import {
@@ -259,6 +260,8 @@ export function AiPanel({
     dock?.style.setProperty('--ai-panel-width', `${panelWidth}px`)
   }, [panelWidth])
   const settingsRef = useRef<AiSettings | null>(null)
+  /** the effective provider from the last settings read — drives the composer's VEGA privacy badge */
+  const [aiProvider, setAiProvider] = useState<AiProviderId | null>(null)
 
   /** gsk login state for the cloud-tools gate (refreshed on mount and window focus) */
   const gskLoggedInRef = useRef(false)
@@ -269,6 +272,15 @@ export function AiPanel({
         ?.gskStatus()
         .then((s) => {
           if (alive) gskLoggedInRef.current = !!s?.loggedIn
+        })
+        .catch(() => {})
+      // keep the cached settings warm so send() never waits on the IPC read
+      void window.pdfApi
+        ?.getAiSettings?.()
+        .then((s) => {
+          if (!alive || !s) return
+          settingsRef.current = s
+          setAiProvider(s.provider)
         })
         .catch(() => {})
     }
@@ -539,6 +551,7 @@ export function AiPanel({
     void (async () => {
       try {
         settingsRef.current = await window.pdfApi.getAiSettings()
+        setAiProvider(settingsRef.current.provider)
         await loop.run(instruction)
       } catch (err) {
         patchLast({
@@ -849,6 +862,7 @@ export function AiPanel({
           sendLabel={t('aiSend')}
           stopLabel={t('aiStop')}
           iconOnly
+          privacyBadge={aiProvider === 'vega'}
           onChange={setPrompt}
           onSend={() => send(prompt)}
           onStop={stop}

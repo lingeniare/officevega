@@ -24,6 +24,7 @@ export function AiComposer({
   ariaLabel,
   header,
   footerStart,
+  privacyBadge = false,
   iconOnly = false,
   sendIconEnabled,
   sendIconDisabled,
@@ -48,6 +49,8 @@ export function AiComposer({
   readonly header?: React.ReactNode
   /** extra controls at the left of the footer (attach button, toggles, …) */
   readonly footerStart?: React.ReactNode
+  /** show the VEGA PII-shield badge in the footer (only while the effective provider is VEGA) */
+  readonly privacyBadge?: boolean | undefined
   /** compact variant: no hint text, icon-only enter/stop button (Genspark composer style) */
   readonly iconOnly?: boolean | undefined
   /** custom art for the icon-only send button; falls back to IconArrowUp */
@@ -85,7 +88,6 @@ export function AiComposer({
 
   return (
     <div className="ai-input-box">
-      <AiShieldBadge />
       {header}
       <textarea
         ref={ref}
@@ -118,6 +120,7 @@ export function AiComposer({
         }}
       />
       <div className="ai-input-footer">
+        {privacyBadge && <AiShieldBadge />}
         {footerStart}
         {!iconOnly && (
           <span className="ai-input-hint" title={busy ? undefined : hintIdleTitle}>

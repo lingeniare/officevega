@@ -1,5 +1,6 @@
 export { AiPanelSideButton } from './AiPanelSideButton'
 export { AiComposer } from './AiComposer'
+export { AiShieldBadge } from './AiShieldBadge'
 export { AiSuggestedQuestions, useSuggestedQuestions } from './ai-suggested-questions'
 export { AiScopeQuote, type AiScopeQuoteData } from './AiScopeQuote'
 export {

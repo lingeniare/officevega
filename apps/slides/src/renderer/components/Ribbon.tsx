@@ -95,10 +95,6 @@ import {
   IconRotateLeft,
   IconRotateRight,
 } from './icons'
-// brand-supplied Review AI icon art (44px = 22px @2x), color baked in
-import iconSpelling from '../assets/icon-spelling.png'
-import iconTranslate from '../assets/icon-translate.png'
-import iconTransparency from '../assets/icon-transparency.png'
 import texPaper from '../assets/textures/paper.png'
 import texCanvas from '../assets/textures/canvas.png'
 import texWood from '../assets/textures/wood.png'
@@ -107,7 +103,6 @@ import texGranite from '../assets/textures/granite.png'
 import texDenim from '../assets/textures/denim.png'
 import texCork from '../assets/textures/cork.png'
 import texParchment from '../assets/textures/parchment.png'
-import iconCrop from '../assets/icon-crop.png'
 import { ChartTypeDialog } from './ChartTypeDialog'
 import {
   BIG,
@@ -2496,7 +2491,19 @@ export function Ribbon({
               >
                 <span className="rb-big-icon">
                   <span className="ai-feature-icon" aria-hidden="true">
-                    <img src={iconSpelling} width={22} height={22} alt="" />
+                    {/* lucide: spell-check */}
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="m6 16 6-12 6 12" />
+                      <path d="M8 12h8" />
+                      <path d="m16 20 2 2 4-4" />
+                    </svg>
                   </span>
                 </span>
                 <span>{t('ribbonSpellCheck')}</span>
@@ -2514,7 +2521,22 @@ export function Ribbon({
                 >
                   <span className="rb-big-icon">
                     <span className="ai-feature-icon" aria-hidden="true">
-                      <img src={iconTranslate} width={22} height={22} alt="" />
+                      {/* lucide: languages */}
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="m5 8 6 6" />
+                        <path d="m4 14 6-6 2-3" />
+                        <path d="M2 5h12" />
+                        <path d="M7 2h1" />
+                        <path d="m22 22-5-10-5 10" />
+                        <path d="M14 18h6" />
+                      </svg>
                     </span>
                     <RbCaret />
                   </span>
@@ -3096,9 +3118,19 @@ export function Ribbon({
                   data-tip-detail={t('ribbonTransparencyTip')}
                 >
                   <span className="rb-big-icon">
-                    {/* 28px box around the 22px art so the icon row matches the SVG glyphs' height */}
                     <span className="ai-feature-icon" aria-hidden="true">
-                      <img src={iconTransparency} width={22} height={22} alt="" />
+                      {/* lucide: blend */}
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <circle cx="15" cy="15" r="6" />
+                        <circle cx="9" cy="9" r="6" />
+                      </svg>
                     </span>
                     <RbCaret />
                   </span>
@@ -3199,7 +3231,18 @@ export function Ribbon({
               >
                 <span className="rb-big-icon">
                   <span className="ai-feature-icon" aria-hidden="true">
-                    <img src={iconCrop} width={22} height={22} alt="" />
+                    {/* lucide: crop */}
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M6 2v14a2 2 0 0 0 2 2h14" />
+                      <path d="M18 22V8a2 2 0 0 0-2-2H2" />
+                    </svg>
                   </span>
                 </span>
                 <span>{t('ribbonCrop')}</span>

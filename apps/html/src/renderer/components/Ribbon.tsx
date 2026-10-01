@@ -1,9 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import {
-  RibbonCollapseButton,
-  useDismissablePopover,
-  useRibbonCollapse,
-} from '@genoffice/ui'
+import { RibbonCollapseButton, useDismissablePopover, useRibbonCollapse } from '@genoffice/ui'
 import { useI18n } from '../i18n/locale'
 import type { StringKey } from '../i18n/locale'
 import type { ExportFormat } from '../../shared/ipc'
@@ -19,7 +15,6 @@ import {
   IconGlobe,
   IconHeading,
   IconPlay,
-  IconPalette,
   IconPicture,
   IconPilcrow,
   IconPlus,
@@ -29,10 +24,8 @@ import {
   IconSearch,
   IconSection,
   IconSplitView,
-  IconSummarize,
   IconTable,
   IconUndo,
-  IconWand,
 } from './icons'
 
 export type ViewMode = 'preview' | 'split' | 'source'
@@ -404,7 +397,24 @@ export function Ribbon(p: Props) {
             >
               <span className="rb-big-icon">
                 <span className="ai-feature-icon" aria-hidden="true">
-                  <IconWand size={24} />
+                  {/* lucide: wand-sparkles */}
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72" />
+                    <path d="m14 7 3 3" />
+                    <path d="M5 6v4" />
+                    <path d="M19 14v4" />
+                    <path d="M10 2v2" />
+                    <path d="M7 8H3" />
+                    <path d="M21 16h-4" />
+                    <path d="M11 3H9" />
+                  </svg>
                 </span>
               </span>
               <span>{t('aiRestyleBtn')}</span>
@@ -423,7 +433,21 @@ export function Ribbon(p: Props) {
               >
                 <span className="rb-big-icon">
                   <span className="ai-feature-icon" aria-hidden="true">
-                    <IconPalette size={24} />
+                    {/* lucide: palette */}
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <circle cx="13.5" cy="6.5" r=".5" fill="currentColor" />
+                      <circle cx="17.5" cy="10.5" r=".5" fill="currentColor" />
+                      <circle cx="8.5" cy="7.5" r=".5" fill="currentColor" />
+                      <circle cx="6.5" cy="12.5" r=".5" fill="currentColor" />
+                      <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z" />
+                    </svg>
                   </span>
                 </span>
                 <span>{t('aiThemeBtn')}</span>
@@ -458,7 +482,21 @@ export function Ribbon(p: Props) {
             >
               <span className="rb-big-icon">
                 <span className="ai-feature-icon" aria-hidden="true">
-                  <IconSummarize size={24} />
+                  {/* lucide: file-text */}
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+                    <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+                    <path d="M10 9H8" />
+                    <path d="M16 13H8" />
+                    <path d="M16 17H8" />
+                  </svg>
                 </span>
               </span>
               <span>{t('aiSummarizeBtn')}</span>

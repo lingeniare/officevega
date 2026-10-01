@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import type { PointerEvent as ReactPointerEvent, ReactElement } from 'react'
 import { AgentLoop, composeSkills, generateSuggestedQuestions } from '@genoffice/agent-core'
 import type { AgentImage } from '@genoffice/agent-core'
-import type { AiSettings } from '@genoffice/ai-provider'
+import type { AiProviderId, AiSettings } from '@genoffice/ai-provider'
 import {
   isOutputCapRejection,
   maxOutputTokensOf,
@@ -506,6 +506,8 @@ export function AiPanel({
   }, [panelWidth])
 
   const settingsRef = useRef<AiSettings | null>(null)
+  /** the effective provider from the last settings read — drives the composer's VEGA privacy badge */
+  const [aiProvider, setAiProvider] = useState<AiProviderId | null>(null)
   const langRef = useRef(lang)
   langRef.current = lang
   const depsRef = useRef(deps)
@@ -861,6 +863,24 @@ export function AiPanel({
     }
   }, [])
 
+  // keep the cached settings warm so send() never waits on the IPC read;
+  // the provider id also feeds the composer's privacy badge
+  useEffect(() => {
+    const refresh = () => {
+      void window.htmlApi
+        ?.getAiSettings?.()
+        .then((s) => {
+          if (!mountedRef.current || !s) return
+          settingsRef.current = s
+          setAiProvider(s.provider)
+        })
+        .catch(() => {})
+    }
+    refresh()
+    window.addEventListener('focus', refresh)
+    return () => window.removeEventListener('focus', refresh)
+  }, [])
+
   // ── chat-history persistence: bind to the file, restore prior transcript ──
   useEffect(() => {
     const api = window.projectApi
@@ -1002,6 +1022,7 @@ export function AiPanel({
     void (async () => {
       try {
         settingsRef.current = await window.htmlApi.getAiSettings()
+        setAiProvider(settingsRef.current.provider)
         const images = sentAtts.length > 0 ? await collectImages(sentAtts) : []
         if (!mountedRef.current || seq !== sendSeqRef.current) return
         await loop.run(instruction, images.length > 0 ? images : undefined)
@@ -1584,6 +1605,7 @@ export function AiPanel({
           sendLabel={t('aiSend')}
           stopLabel={t('aiStop')}
           iconOnly
+          privacyBadge={aiProvider === 'vega'}
           textareaRef={inputRef}
           onChange={setPrompt}
           onSend={() => send(prompt)}

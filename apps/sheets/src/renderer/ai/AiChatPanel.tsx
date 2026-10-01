@@ -227,6 +227,7 @@ export function AiChatPanel({
   onAddPastedImage,
   onRemoveAttachment,
   prompt,
+  privacyBadge,
   preview,
   aiBusy,
   onPromptChange,
@@ -261,6 +262,8 @@ export function AiChatPanel({
   readonly onAddPastedImage: (data: ArrayBuffer, ext: string) => void
   readonly onRemoveAttachment: (path: string) => void
   readonly prompt: string
+  /// true while the effective AI provider is VEGA — shows the PII-shield badge in the composer footer
+  readonly privacyBadge?: boolean | undefined
   readonly preview: ChangePlan | null
   readonly aiBusy: boolean
   readonly onPromptChange: (prompt: string) => void
@@ -834,6 +837,7 @@ export function AiChatPanel({
           stopLabel={t('aiStop')}
           ariaLabel={t('aiInstructionAria')}
           iconOnly
+          privacyBadge={privacyBadge}
           footerStart={
             <button
               className="ai-attach-btn"

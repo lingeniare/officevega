@@ -28,8 +28,6 @@ import { isStraightLineKind } from '../editor/shape-svg'
 import type { InkTool } from '../editor/ink'
 import { appTitle } from '@genoffice/i18n'
 import { t, useI18n, type StringKey } from '../i18n/locale'
-import iconEditor from '../assets/icon-editor.png'
-import iconTranslate from '../assets/icon-translate.png'
 import type { RevisionDisplayMode } from '../editor/revision-view'
 import {
   IconAccept,
@@ -871,7 +869,19 @@ export function ReviewTab({
           >
             <span className="rb-big-icon">
               <span className="ai-feature-icon" aria-hidden="true">
-                <img src={iconEditor} width={22} height={22} alt="" />
+                {/* lucide: book-open-check */}
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M12 21V7" />
+                  <path d="m16 12 2 2 4-4" />
+                  <path d="M22 6V4a1 1 0 0 0-1-1h-5a4 4 0 0 0-4 4 4 4 0 0 0-4-4H3a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h6a3 3 0 0 1 3 3 3 3 0 0 1 3-3h6a1 1 0 0 0 1-1v-1.3" />
+                </svg>
               </span>
             </span>
             <span>{t('ribbonEditorBtn')}</span>
@@ -904,7 +914,22 @@ export function ReviewTab({
             >
               <span className="rb-big-icon">
                 <span className="ai-feature-icon" aria-hidden="true">
-                  <img src={iconTranslate} width={22} height={22} alt="" />
+                  {/* lucide: languages */}
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="m5 8 6 6" />
+                    <path d="m4 14 6-6 2-3" />
+                    <path d="M2 5h12" />
+                    <path d="M7 2h1" />
+                    <path d="m22 22-5-10-5 10" />
+                    <path d="M14 18h6" />
+                  </svg>
                 </span>
                 <IconCaret />
               </span>
@@ -1034,6 +1059,7 @@ export function ReviewTab({
           >
             <span className="rb-big-icon">
               <span className="ai-feature-icon" aria-hidden="true">
+                {/* lucide: message-square-text */}
                 <svg
                   viewBox="0 0 24 24"
                   fill="none"
@@ -1042,11 +1068,9 @@ export function ReviewTab({
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 >
-                  <path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H6l-3 3V11.5a7.5 7.5 0 0 1 7.5-7.5h2A7.5 7.5 0 0 1 20 11.5z" />
-                  <path
-                    d="M17 14l.26.7c.34.91.5 1.37.84 1.7.33.33.79.5 1.7.84l.7.26-.7.26c-.91.34-1.37.5-1.7.84-.34.33-.5.79-.84 1.7L17 21l-.26-.7c-.34-.91-.5-1.37-.84-1.7-.33-.34-.79-.5-1.7-.84l-.7-.26.7-.26c.91-.34 1.37-.5 1.7-.84.34-.33.5-.79.84-1.7L17 14z"
-                    strokeLinejoin="round"
-                  />
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                  <path d="M13 8H7" />
+                  <path d="M17 12H7" />
                 </svg>
               </span>
             </span>
@@ -1206,6 +1230,7 @@ export function ReviewTab({
           >
             <span className="rb-big-icon">
               <span className="ai-feature-icon" aria-hidden="true">
+                {/* lucide: file-diff */}
                 <svg
                   viewBox="0 0 24 24"
                   fill="none"
@@ -1214,12 +1239,10 @@ export function ReviewTab({
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 >
-                  <path d="M4 5h16M4 9h12M4 13h9M4 17h7" />
-                  <path
-                    d="M17 14l.26.7c.34.91.5 1.37.84 1.7.33.33.79.5 1.7.84l.7.26-.7.26c-.91.34-1.37.5-1.7.84-.34.33-.5.79-.84 1.7L17 21l-.26-.7c-.34-.91-.5-1.37-.84-1.7-.33-.34-.79-.5-1.7-.84l-.7-.26.7-.26c.91-.34 1.37-.5 1.7-.84.34-.33.5-.79.84-1.7L17 14z"
-                    strokeLinejoin="round"
-                  />
-                  <path d="M19.5 4.5l-7 7-2 .5.5-2 7-7z" />
+                  <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+                  <path d="M9 10h6" />
+                  <path d="M12 13V7" />
+                  <path d="M9 17h6" />
                 </svg>
               </span>
             </span>

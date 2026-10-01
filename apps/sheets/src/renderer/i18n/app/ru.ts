@@ -1262,7 +1262,7 @@ export const ru = {
   appGroupClipboard: 'Буфер обмена',
   appPaste: 'Вставить',
   appPasteTitle: 'Вставить ⌘V',
-  appPasteSpecial: 'Специальная вставка',
+  appPasteSpecial: 'Спец. вставка',
   appPasteSpecialTitle: 'Вставить только значения, формулы или форматы',
   appPasteValuesOnly: 'Только значения',
   appPasteFormulasOnly: 'Только формулы',

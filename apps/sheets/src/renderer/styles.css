@@ -865,16 +865,55 @@ html.officevega-popover-open .ribbon-tabs {
   min-width: 96px;
 }
 
-/* AI feature buttons next to the entry: purple glyphs, label below */
-.ribbon-tool.ai-entry .ai-feature-icon {
+/* AI entry group: icon-only chips. The text label stays in the DOM for
+   assistive tech and DOM-text lookups but is clipped out of view — the name
+   is carried by the data-tip tooltip. All chips share one 34px square so the
+   group reads as a uniform row with equal padding around each glyph. */
+.ribbon-tool.ai-entry {
+  flex-shrink: 0;
+  min-width: 0;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  gap: 0;
+  justify-content: center;
+}
+
+.ribbon-tool.ai-entry > span:not(.tool-icon-row) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+}
+
+.ribbon-tool.ai-entry .tool-icon-row {
+  min-height: 0;
+  padding: 0;
+  margin: 0;
+}
+
+/* VegaMark renders at 24px to match the feature glyphs beside it */
+.ribbon-tool.ai-entry .tool-icon-row > svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* AI feature glyphs inside ribbon groups wear the same neutral ink as the
+   regular icons — theme-aware: dark in the light theme, light in the dark
+   one — instead of the purple brand tint */
+.ribbon-group-content .ai-feature-icon {
   display: grid;
   place-items: center;
   width: 28px;
   height: 28px;
-  color: var(--color-brand-secondary);
+  color: var(--text-primary);
 }
 
-.ribbon-tool.ai-entry .ai-feature-icon svg {
+.ribbon-group-content .ai-feature-icon svg {
   /* 24px renders the 24-unit viewBox 1:1, so the 1.5 stroke paints 1.5px,
      keeping the 1:16 stroke standard */
   width: 24px;

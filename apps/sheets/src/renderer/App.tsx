@@ -4760,6 +4760,7 @@ export function App({
         onRemoveAttachment={handleRemoveAttachment}
         onPromptChange={setPrompt}
         onSend={handleSend}
+        privacyBadge={aiSettings?.provider === 'vega'}
         suggestedQuestions={suggested.questions}
         onSuggestionPick={(q) => {
           suggested.clear()

@@ -1,6 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 /**
+ * Feature flag for the suggested-follow-up-questions strip. `false` disables
+ * the whole feature: `refresh` becomes a no-op, no helper model call is made
+ * and `AiSuggestedQuestions` always renders null. All the wiring (per-app
+ * fast-model transports, `generateSuggestedQuestions`, the Settings "fast
+ * model" pick) stays in place — flip back to `true` to re-enable.
+ */
+export const AI_SUGGESTED_QUESTIONS_ENABLED = false
+
+/**
  * State owner for the suggested-follow-up-questions strip that every AI panel
  * shows after a finished reply. `generate` is the app's wiring to its model
  * call (agent-core's generateSuggestedQuestions over the IPC transport).
@@ -33,6 +42,10 @@ export function useSuggestedQuestions(
   }, [])
 
   const refresh = useCallback((user: string, assistant: string) => {
+    if (!AI_SUGGESTED_QUESTIONS_ENABLED) {
+      clear()
+      return
+    }
     const u = user.trim()
     const a = assistant.trim()
     abortRef.current?.abort()
@@ -53,7 +66,7 @@ export function useSuggestedQuestions(
         if (seq === seqRef.current && !ctl.signal.aborted && qs.length > 0) setQuestions(qs)
       })
       .catch(() => undefined)
-  }, [])
+  }, [clear])
 
   // unmount: kill an in-flight call so it can't setState on a dead panel
   useEffect(() => () => abortRef.current?.abort(), [])

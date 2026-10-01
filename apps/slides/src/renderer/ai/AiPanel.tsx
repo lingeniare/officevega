@@ -51,6 +51,7 @@ import { useI18n, t as tGlobal, aiLangDirective, type TFunc, type StringKey } fr
 import { localizedToolSummary, toolLabel } from './tool-labels'
 import {
   AiScopeQuote,
+  AiShieldBadge,
   AiSuggestedQuestions,
   IconArrowUp,
   IconPlus,
@@ -2772,6 +2773,7 @@ export function AiPanel({
               rows={1}
             />
             <div className="ai-input-footer">
+              {settings.provider === 'vega' && <AiShieldBadge />}
               <button
                 className="ai-attach-btn"
                 onClick={pickAttachments}

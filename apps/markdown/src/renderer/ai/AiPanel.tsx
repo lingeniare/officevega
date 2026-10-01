@@ -12,6 +12,7 @@ import {
   isOutputCapRejection,
   maxOutputTokensOf,
   withFastModel,
+  type AiProviderId,
   type AiSettings,
 } from '@genoffice/ai-provider/browser'
 import {
@@ -206,6 +207,8 @@ export function AiPanel({
   }, [panelWidth])
 
   const settingsRef = useRef<AiSettings | null>(null)
+  /** the effective provider from the last settings read — drives the composer's VEGA privacy badge */
+  const [aiProvider, setAiProvider] = useState<AiProviderId | null>(null)
   /** gsk login state for the generate_image gate (refreshed on mount, window focus and auth pushes) */
   const gskLoggedInRef = useRef(false)
   useEffect(() => {
@@ -221,7 +224,9 @@ export function AiPanel({
       void window.markdownApi
         .getAiSettings?.()
         .then((s) => {
-          if (alive) settingsRef.current = s
+          if (!alive || !s) return
+          settingsRef.current = s
+          setAiProvider(s.provider)
         })
         .catch(() => {})
     }
@@ -679,11 +684,13 @@ export function AiPanel({
       try {
         if (!settingsRef.current) {
           settingsRef.current = await window.markdownApi.getAiSettings()
+          setAiProvider(settingsRef.current.provider)
         } else {
           // refresh for the next run without delaying this one's first request
           void window.markdownApi.getAiSettings().then(
             (s) => {
               settingsRef.current = s
+              setAiProvider(s.provider)
             },
             () => {},
           )
@@ -1148,6 +1155,7 @@ export function AiPanel({
           sendLabel={t('aiSend')}
           stopLabel={t('aiStop')}
           iconOnly
+          privacyBadge={aiProvider === 'vega'}
           textareaRef={inputRef}
           onChange={setPrompt}
           onSend={() => send(prompt)}

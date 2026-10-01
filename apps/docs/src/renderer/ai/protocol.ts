@@ -11,7 +11,12 @@ import {
 } from '@genoffice/docx-engine'
 import { pmTableToModel, tableModelToPmNode, type PmMark, type PmNode } from '../editor/convert'
 import { equationBlockJson, inlineEquationNodeJson } from '../editor/equation'
-import { inheritFrom, inheritTableFormatting, sameBlockRole } from './inherit-formatting'
+import {
+  inheritFrom,
+  inheritRunStyle,
+  inheritTableFormatting,
+  sameBlockRole,
+} from './inherit-formatting'
 import { TRACK_IGNORE, type RevisionRange } from '../editor/revisions'
 import { countWords } from '../word-count'
 import { blockRangePositions, isTrackedDeleted, liveText } from './doc-utils'
@@ -1207,6 +1212,40 @@ export function inheritBlockFormatting(
 }
 
 /**
+ * Inserted blocks take the formatting of the nearest block of the same role —
+ * the block above the insertion point first, else the block below — like Word
+ * continuing the paragraph format on Enter: model HTML carries no font, so an
+ * unstyled insert resets to the theme face. The neighbours stay in the
+ * document, so nothing is anchored and the neighbour's page break is not
+ * cloned. A paragraph with no same-role neighbour still takes the dominant
+ * run style of the closest text block (a body paragraph landing next to a
+ * heading or list keeps the document's font).
+ */
+export function inheritInsertedBlocks(editor: Editor, index: number, nodes: PmNode[]): PmNode[] {
+  const doc = editor.state.doc
+  const before: ProseMirrorNode[] = []
+  for (let i = Math.min(index, doc.childCount - 1); i >= 0; i--) {
+    const node = doc.child(i)
+    if (!isTrackedDeleted(node) && TRACKABLE_TYPES.has(node.type.name)) before.push(node)
+  }
+  const after: ProseMirrorNode[] = []
+  for (let i = Math.max(index + 1, 0); i < doc.childCount; i++) {
+    const node = doc.child(i)
+    if (!isTrackedDeleted(node) && TRACKABLE_TYPES.has(node.type.name)) after.push(node)
+  }
+  const any = before[0] ?? after[0]
+  if (!any) return nodes
+  const template = (next: PmNode) =>
+    before.find((t) => sameBlockRole(t, next)) ?? after.find((t) => sameBlockRole(t, next))
+  return nodes.map((next) => {
+    if (!TRACKABLE_TYPES.has(next.type)) return next
+    const match = template(next)
+    if (match) return inheritFrom(match, next, { anchor: false, first: false })
+    return next.type === 'docParagraph' ? inheritRunStyle(any, next) : next
+  })
+}
+
+/**
  * Replace the top-level block range with the parsed nodes (marked aiChanged).
  * The new blocks inherit the replaced blocks' formatting (see
  * inheritBlockFormatting). With `track`, and when both sides are plain text
@@ -1327,7 +1366,8 @@ export function replaceInlineRange(
   editor.view.dispatch(tr)
 }
 
-/** insert the parsed nodes after the given top-level block index */
+/** insert the parsed nodes after the given top-level block index; the new
+ *  blocks inherit the neighbouring blocks' formatting (inheritInsertedBlocks) */
 export function insertBlocksAfter(
   editor: Editor,
   index: number,
@@ -1336,7 +1376,7 @@ export function insertBlocksAfter(
 ): boolean {
   if (nodes.length === 0) return false
   const { to } = blockRangePositions(editor, index, index)
-  const pmNodes = nodes.map((n) =>
+  const pmNodes = inheritInsertedBlocks(editor, index, nodes).map((n) =>
     editor.schema.nodeFromJSON(track ? { ...n, attrs: { ...n.attrs, aiChanged: false } } : n),
   )
   const tr = editor.state.tr.insert(to, pmNodes)
