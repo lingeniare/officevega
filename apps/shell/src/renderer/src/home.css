@@ -111,7 +111,7 @@ body.vib .home {
   margin-bottom: 20px;
 }
 
-/* brand mark: the Vega sparkle follows --text (currentColor) in both themes */
+/* brand mark: theme-aware square (white in light, black in dark) with the star centered */
 .logo-mark {
   width: 20px;
   height: 20px;

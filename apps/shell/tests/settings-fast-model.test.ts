@@ -10,6 +10,8 @@ import type { HomeApi } from '../src/shared/home-api'
 import { LocaleProvider } from '../src/renderer/src/locale'
 import { SettingsModal } from '../src/renderer/src/SettingsModal'
 
+vi.mock('../src/renderer/src/featureFlags', () => ({ SHOW_FAST_MODEL: true }))
+
 const actEnvironment = globalThis as typeof globalThis & {
   IS_REACT_ACT_ENVIRONMENT?: boolean
 }

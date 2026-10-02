@@ -33,6 +33,7 @@ import type { AccountStatus, AiCatalogEntry, UiTheme } from '../../shared/home-a
 import { LicenseBlock } from './LicenseBlock'
 import { ProviderLogo } from './provider-logos'
 import { IntegrationsPane, skillUpdateDue } from './IntegrationsPane'
+import { SHOW_FAST_MODEL } from './featureFlags'
 import './settings.css'
 
 // ── Settings modal (opened from the account menu) ─────────
@@ -700,6 +701,7 @@ function AiModelPane({
           />
         )}
       </div>
+      {SHOW_FAST_MODEL ? (
       <div className="set-field">
         <div className="set-field-text">
           <div className="set-field-stack">
@@ -744,6 +746,7 @@ function AiModelPane({
           />
         )}
       </div>
+      ) : null}
       {isCodex ? (
         <div className="set-field">
           <div className="set-field-text">

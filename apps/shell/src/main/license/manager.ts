@@ -54,7 +54,13 @@ export function createLicenseManager(deps: LicenseManagerDeps) {
 
   function persist(): void {
     savedAt = now()
-    deps.store.save(state)
+    try {
+      deps.store.save(state)
+    } catch (error) {
+      // userData may be unwritable (sandboxed dev, AV lock): keep running on
+      // in-memory state, the next throttled persist retries the write.
+      console.warn('[license] persist failed, continuing in memory:', (error as Error)?.message ?? error)
+    }
   }
   persist()
 
