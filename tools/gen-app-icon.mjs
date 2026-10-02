@@ -1,18 +1,14 @@
 /**
- * Regenerates the application icon from the brand star: a black rounded
- * square (the previous silhouette, kept pixel-identical so platform masks,
- * margins and taskbar treatments do not change) with the white star centered.
+ * Regenerates the application icon from vega.png (repo root) — the approved
+ * artwork: white 12-ray star with a soft glow, centered on a black square.
  *
- * Source of truth for the star is STAR_D below (the same path as the
- * in-app VegaMark logo); STAR_BOX is its measured bounds in the 300x300
- * box after the .1/-.1 flip (see tools/measure-star.mjs history).
+ * vega.png is the single source of truth; everything below is derived:
+ * - build/icon.png + renderer app-icon.png + build/icons set (opaque square)
+ * - build/icon.ico (PNG-entry container, like gen-file-association-icons.mjs)
+ * - build/icon-mac.png (824/1024 content on transparent, mac grid convention)
+ * - build/icon.iconset/ for the macOS .icns (needs `iconutil` on a Mac)
  *
- * Rasterization uses @napi-rs/canvas (already in node_modules); the .ico is
- * a hand-rolled PNG-entry container like tools/gen-file-association-icons.mjs.
- * The .icns still needs macOS `iconutil` — on darwin this script builds it
- * directly, elsewhere it leaves build/icon.iconset/ and prints the command.
- *
- * Regenerate after changing STAR_D:
+ * Regenerate after changing vega.png:
  *   node tools/gen-app-icon.mjs
  * On a Mac, finish with:
  *   iconutil -c icns apps/shell/build/icon.iconset -o apps/shell/build/icon.icns
@@ -21,31 +17,30 @@
 import { execFileSync } from 'node:child_process'
 import {
   copyFileSync,
-  mkdtempSync,
+  existsSync,
   mkdirSync,
+  mkdtempSync,
   rmSync,
   writeFileSync,
 } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { Path2D, createCanvas, loadImage } from '@napi-rs/canvas'
+import { createCanvas, loadImage } from '@napi-rs/canvas'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 const buildDir = join(root, 'apps/shell/build')
 const assetsDir = join(root, 'apps/shell/src/renderer/src/assets')
+const SRC = join(root, 'vega.png')
 
-const STAR_D =
-  'M1477 2653c-10-120-26-330-37-468-11-137-24-263-28-278l-7-28-110 214c-60 119-111 214-112 213s29-96 66-211c38-116 72-225 76-244l7-34-163 144c-90 79-230 206-311 281-81 76-150 138-153 138-9 0 15-30 163-204 216-254 361-430 358-434-2-2-102 31-222 72-207 72-266 88-192 51 75-38 368-208 365-212-4-4-275-28-702-63-137-11-270-23-295-27l-45-7 20-3c21-3 473-42 813-70 111-9 202-19 202-22s-88-57-195-120c-108-63-194-115-192-117s69 20 148 50 181 68 227 85l82 30-19-27c-10-15-63-79-116-142s-160-194-238-290L726 755l45 40c25 22 163 149 307 283 144 133 262 239 262 235 0-5-33-111-74-236-40-125-72-227-70-227s49 90 105 201c55 111 103 199 106 196 6-6 45-489 63-782 7-104 15-219 19-255l7-65 17 215c9 118 29 364 43 545 15 182 30 333 34 338l6 7 100-194c54-107 100-193 102-191 2 1-29 100-68 220-40 119-70 218-68 220s118-102 258-231 278-254 305-277l50-42-45 55c-24 30-110 134-190 230-157 188-261 318-273 337l-8 12 68-25c164-62 392-144 399-144 5 0-68 44-161 98-94 54-188 110-210 123l-40 24 20 2c26 4 792 70 908 79 48 4 87 10 87 13s-206 23-457 44c-252 22-480 41-506 44l-49 6 44 27c24 14 119 68 211 119 92 52 166 95 165 97-2 2-35-8-73-22-39-14-146-53-239-85l-169-59 39 47c44 55 191 228 354 418 62 72 122 144 133 160l21 30-49-41c-28-23-102-90-165-149-134-126-416-375-424-375-3 0 31 106 74 234 44 129 83 243 86 253s-25-40-64-112c-38-71-92-172-120-224l-51-95-5 25c-3 13-15 143-26 289s-27 344-35 440-15 190-15 208v32h-16l-17-217z'
-// measured bounds of the star in the 300x300 box (pixel scan of the
-// flipped path: x 13.5-282.9, y 14.6-287.0)
-const STAR_BOX = { minX: 13.5, minY: 14.6, maxX: 282.9, maxY: 287.0 }
-// star width relative to the black square width (same 0.64 as the in-app logo)
-const STAR_RATIO = 0.64
+if (!existsSync(SRC)) {
+  throw new Error(`artwork source missing: ${SRC}`)
+}
 
 const WIN_SIZES = [16, 24, 32, 48, 64, 128, 256]
 const LINUX_SIZES = [16, 32, 48, 64, 128, 256, 512, 1024]
-// canvas px -> .iconset entry names (same convention as gen-file-association-icons.mjs)
+// mac grid margin: content is 824/1024 of the canvas (same as before)
+const MAC_CONTENT_RATIO = 824 / 1024
 const MAC_CANVAS_SIZES = [16, 32, 64, 128, 256, 512, 1024]
 const ICONSET_ENTRIES = [
   ['icon_16x16.png', 16],
@@ -83,26 +78,31 @@ function buildIco(entries) {
   return Buffer.concat([header, dir, ...entries.map((e) => e.png)])
 }
 
+const srcImg = await loadImage(SRC)
+
 /**
- * Renders the new master artwork at `size` px from the previous master file:
- * the old silhouette (alpha mask) painted black, star painted white centered.
- * Geometry (margins, corner radius) stays pixel-identical to the old icon.
+ * Star core extracted from vega.png: pixels brighter than CORE_THRESHOLD
+ * (the white star body without the soft glow tail), cropped to its bbox.
+ * Small icon entries (title bars, installer dialogs, tree views) physically
+ * cannot reproduce the glow — a faithful downscale reads as a dark smudge —
+ * so they get this simplified high-contrast mark instead.
  */
-async function renderMaster(srcPath, size) {
-  const img = await loadImage(srcPath)
-  const w = img.width
-  const h = img.height
-  const base = createCanvas(w, h)
-  const bx = base.getContext('2d')
-  bx.drawImage(img, 0, 0)
-  const { data } = bx.getImageData(0, 0, w, h)
+const CORE_THRESHOLD = 110
+const starCore = (() => {
+  const w = srcImg.width
+  const h = srcImg.height
+  const c = createCanvas(w, h)
+  const ctx = c.getContext('2d')
+  ctx.drawImage(srcImg, 0, 0)
+  const { data } = ctx.getImageData(0, 0, w, h)
   let x0 = w
   let y0 = h
   let x1 = 0
   let y1 = 0
   for (let j = 0; j < h; j++) {
     for (let i = 0; i < w; i++) {
-      if (data[(j * w + i) * 4 + 3] > 8) {
+      const o = (j * w + i) * 4
+      if (data[o] > CORE_THRESHOLD && data[o + 1] > CORE_THRESHOLD && data[o + 2] > CORE_THRESHOLD) {
         if (i < x0) x0 = i
         if (i > x1) x1 = i
         if (j < y0) y0 = j
@@ -110,67 +110,80 @@ async function renderMaster(srcPath, size) {
       }
     }
   }
-  const cx = (x0 + x1) / 2
-  const cy = (y0 + y1) / 2
-  const silW = x1 - x0 + 1
-  const k = size / w // source masters are 1024px
+  const crop = createCanvas(x1 - x0 + 1, y1 - y0 + 1)
+  const cx = crop.getContext('2d')
+  cx.drawImage(c, x0, y0, crop.width, crop.height, 0, 0, crop.width, crop.height)
+  console.log(`star core ${crop.width}x${crop.height} at threshold ${CORE_THRESHOLD}`)
+  return crop
+})()
 
+/**
+ * Small-size entry: solid black square + the star core redrawn large
+ * (74% of the canvas) in pure white. Same star, optimized for tiny pixels.
+ */
+async function renderSmall(size) {
   const c = createCanvas(size, size)
   const ctx = c.getContext('2d')
-  // black silhouette: reuse the old shape via its alpha mask
-  ctx.drawImage(img, 0, 0, size, size)
-  ctx.globalCompositeOperation = 'source-in'
   ctx.fillStyle = '#000000'
   ctx.fillRect(0, 0, size, size)
-  ctx.globalCompositeOperation = 'source-over'
-  // white star centered on the silhouette
-  const starW = STAR_BOX.maxX - STAR_BOX.minX
-  const starCX = (STAR_BOX.minX + STAR_BOX.maxX) / 2
-  const starCY = (STAR_BOX.minY + STAR_BOX.maxY) / 2
-  const s = ((STAR_RATIO * silW) / starW) * k
-  // raw path coords are 10x the measured 300-box (the in-app SVG applies
-  // matrix(.1 0 0 -.1 0 300)), so the 0.1 flip is folded into the transform
-  ctx.setTransform(0.1 * s, 0, 0, -0.1 * s, cx * k - s * starCX, cy * k + s * starCY)
-  ctx.fillStyle = '#ffffff'
-  ctx.fill(new Path2D(STAR_D))
-  ctx.setTransform(1, 0, 0, 1, 0, 0)
+  const side = Math.round(size * 0.74)
+  const pad = Math.round((size - side) / 2)
+  ctx.imageSmoothingQuality = 'high'
+  ctx.drawImage(starCore, pad, pad, side, side)
   return c.toBuffer('image/png')
 }
 
-async function downscale(masterPng, size) {
-  const img = await loadImage(masterPng)
+// canvas sizes at/below this get the simplified high-contrast star
+const SMALL_MAX = 48
+
+/** vega.png scaled to `size` px, full-bleed (opaque black square). */
+async function renderFull(size) {
   const c = createCanvas(size, size)
   const ctx = c.getContext('2d')
   ctx.imageSmoothingQuality = 'high'
-  ctx.drawImage(img, 0, 0, size, size)
+  ctx.drawImage(srcImg, 0, 0, size, size)
   return c.toBuffer('image/png')
 }
 
-// full-bleed master (win / linux / dev / onboarding)
-const master = await renderMaster(join(buildDir, 'icon.png'), 1024)
+/** vega.png at the mac grid margin, centered on a transparent canvas. */
+async function renderMac(size) {
+  const c = createCanvas(size, size)
+  const ctx = c.getContext('2d')
+  ctx.imageSmoothingQuality = 'high'
+  const content = Math.round(size * MAC_CONTENT_RATIO)
+  const pad = Math.round((size - content) / 2)
+  ctx.drawImage(srcImg, pad, pad, content, content)
+  return c.toBuffer('image/png')
+}
+
+// full-bleed master (win / linux / dev / onboarding); 1024 is a 2x upscale
+const master = await renderFull(1024)
 writeFileSync(join(buildDir, 'icon.png'), master)
 copyFileSync(join(buildDir, 'icon.png'), join(assetsDir, 'app-icon.png'))
 for (const size of LINUX_SIZES) {
   if (size === 1024) continue
-  writeFileSync(join(buildDir, 'icons', `${size}x${size}.png`), await downscale(master, size))
+  const png = size <= SMALL_MAX ? await renderSmall(size) : await renderFull(size)
+  writeFileSync(join(buildDir, 'icons', `${size}x${size}.png`), png)
 }
 writeFileSync(join(buildDir, 'icons', '1024x1024.png'), master)
 console.log('generated icon.png + app-icon.png + build/icons set')
 
-// windows .ico from the same master
+// windows .ico from the same artwork
 const winEntries = []
 for (const size of WIN_SIZES) {
-  winEntries.push({ size, png: await downscale(master, size) })
+  winEntries.push({ size, png: size <= SMALL_MAX ? await renderSmall(size) : await renderFull(size) })
 }
 writeFileSync(join(buildDir, 'icon.ico'), buildIco(winEntries))
 console.log('generated icon.ico')
 
-// mac master keeps its own grid margin; iconset for iconutil
-const macMaster = await renderMaster(join(buildDir, 'icon-mac.png'), 1024)
+// mac master keeps its grid margin; iconset for iconutil
+const macMaster = await renderMac(1024)
 writeFileSync(join(buildDir, 'icon-mac.png'), macMaster)
 const macPngs = new Map()
 for (const size of MAC_CANVAS_SIZES) {
-  macPngs.set(size, await downscale(macMaster, size))
+  // tiny mac canvases go full-bleed: the grid margin would leave 3px of
+  // artwork at 16px, and macOS masks the squircle itself anyway
+  macPngs.set(size, size <= SMALL_MAX ? await renderSmall(size) : await renderMac(size))
 }
 console.log('generated icon-mac.png')
 

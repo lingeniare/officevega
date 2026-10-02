@@ -459,6 +459,9 @@ const homeApi: HomeApi = {
   async openAiProvider() {
     await ipcRenderer.invoke(HOME_CHANNELS.openAiProvider)
   },
+  async openFeedback() {
+    await ipcRenderer.invoke(HOME_CHANNELS.openFeedback)
+  },
   async starPromptShouldShow() {
     const result: unknown = await ipcRenderer.invoke(HOME_CHANNELS.starPromptShouldShow)
     const raw = (result ?? {}) as { show?: unknown; docOpens?: unknown }

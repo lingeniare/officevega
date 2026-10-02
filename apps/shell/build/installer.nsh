@@ -37,6 +37,20 @@
   ${EndIf}
 !macroend
 
+; Second legal screen: "Privacy Policy" right after the folder choice, before
+; any file is copied. The first screen (EULA) is shown automatically by
+; electron-builder (build/EULA.txt is auto-detected as the NSIS license).
+; NSIS license pages require acceptance to continue, so both documents are
+; accepted before installation. Shipped text lives in
+; build/PRIVACY-POLICY.txt (must stay UTF-8 WITH BOM, like the converted
+; EULA, or Cyrillic breaks in the Unicode installer) and is also packaged
+; into resources/ for Help > Privacy Policy.
+; skipPageIfUpdated mirrors the neighboring pages: updates don't re-ask.
+!macro customPageAfterChangeDir
+  !insertmacro skipPageIfUpdated
+  !insertmacro MUI_PAGE_LICENSE "${__FILEDIR__}\PRIVACY-POLICY.txt"
+!macroend
+
 !macro customInstall
   Push "$INSTDIR\resources\cli"
   Call OfficeVegaAddToUserPath

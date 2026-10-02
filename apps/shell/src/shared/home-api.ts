@@ -327,6 +327,8 @@ export interface HomeApi {
   openWebsite(): Promise<void>
   /** open api.vega.chat in the default browser (Settings → About) */
   openAiProvider(): Promise<void>
+  /** open officevega.com/feedback in the default browser (Settings → About) */
+  openFeedback(): Promise<void>
   /** whether the one-time "star us" prompt should show now (show:true also counts as shown);
    * docOpens personalizes the card copy ("you've opened N documents") */
   starPromptShouldShow(): Promise<StarPromptShow>
@@ -567,6 +569,7 @@ export const HOME_CHANNELS = {
   openGitHubRepo: 'home:open-github-repo',
   openWebsite: 'home:open-website',
   openAiProvider: 'home:open-ai-provider',
+  openFeedback: 'home:open-feedback',
   starPromptShouldShow: 'home:star-prompt-should-show',
   starPromptAction: 'home:star-prompt-action',
   licenseStatus: 'license:status',

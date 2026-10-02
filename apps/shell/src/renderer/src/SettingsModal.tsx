@@ -2001,6 +2001,30 @@ export function SettingsModal({
                     </button>
                   }
                 />
+                <Field
+                  label={t('setReportBug')}
+                  value="officevega.com/feedback"
+                  action={
+                    <button
+                      className="set-btn"
+                      onClick={() => void window.aiOffice.openFeedback?.()}
+                    >
+                      {t('setOpen')}
+                    </button>
+                  }
+                />
+                <Field
+                  label={t('setSuggestIdea')}
+                  value="officevega.com/feedback"
+                  action={
+                    <button
+                      className="set-btn"
+                      onClick={() => void window.aiOffice.openFeedback?.()}
+                    >
+                      {t('setOpen')}
+                    </button>
+                  }
+                />
               </>
             )}
           </div>
