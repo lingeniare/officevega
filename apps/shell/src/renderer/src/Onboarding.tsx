@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import appIcon from './assets/app-icon.png'
 import { useI18n } from './locale'
 import type { StringKey } from './locale'
 import './onboarding.css'
@@ -17,65 +16,18 @@ interface Slide {
   bodyKey?: StringKey
   /** render the body in the dimmer footnote gray (slide 3's payment disclaimer) */
   bodyDim?: boolean
-  art: 'logo' | 'gift' | 'check'
 }
 
 const SLIDES: readonly Slide[] = [
-  { titleKey: 'onbTitle1', subtitleKey: 'onbSubtitle1', bodyKey: 'onbBody1', art: 'logo' },
-  { titleKey: 'onbTitle2', subtitleKey: 'onbBody2', art: 'gift' },
+  { titleKey: 'onbTitle1', subtitleKey: 'onbSubtitle1', bodyKey: 'onbBody1' },
+  { titleKey: 'onbTitle2', subtitleKey: 'onbBody2' },
   {
     titleKey: 'onbTitle3',
     subtitleKey: 'onbBody3',
     bodyKey: 'onbNote3',
     bodyDim: true,
-    art: 'check',
   },
 ]
-
-/* exact vectors from the design spec:
- * 60px canvas, 4px strokes — same visual mass as the 60px app icon */
-function SlideArt({ kind }: { kind: Slide['art'] }) {
-  if (kind === 'logo') {
-    return <img className="onb-art onb-art-logo" src={appIcon} alt="" />
-  }
-  if (kind === 'gift') {
-    // hand-drawn gift kept over the spec vector deliberately; 48 canvas at
-    // strokeWidth 3.2 renders the same 4px strokes at 60px as the check icon
-    return (
-      <span className="onb-art onb-art-badge onb-art-gift" aria-hidden="true">
-        <svg
-          viewBox="0 0 48 48"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="3.2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <rect x="6" y="14" width="36" height="9" rx="2" />
-          <path d="M9.5 23v15a4 4 0 0 0 4 4h21a4 4 0 0 0 4-4V23" />
-          <path d="M24 14v28" />
-          <path d="M24 14c-7 0-10.5-2.6-10.5-6 0-2.5 2-4.5 4.5-4.5 4.2 0 6 5.3 6 10.5Z" />
-          <path d="M24 14c7 0 10.5-2.6 10.5-6 0-2.5-2-4.5-4.5-4.5-4.2 0-6 5.3-6 10.5Z" />
-        </svg>
-      </span>
-    )
-  }
-  return (
-    <span className="onb-art onb-art-badge onb-art-check" aria-hidden="true">
-      <svg viewBox="0 0 60 60" fill="none" stroke="currentColor" strokeWidth="4">
-        <path
-          d="M29.9883 5.5C43.5194 5.5 54.4883 16.469 54.4883 30C54.4883 43.5311 43.5194 54.5 29.9883 54.5C16.4573 54.5 5.48828 43.5311 5.48828 30C5.48828 16.469 16.4573 5.5 29.9883 5.5Z"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M18.125 33.75L24.7764 40.4014C25.8727 41.4977 27.6924 41.342 28.5865 40.0753L41.875 21.25"
-          strokeLinecap="round"
-        />
-      </svg>
-    </span>
-  )
-}
 
 export function Onboarding({ onDone }: OnboardingProps) {
   const { t } = useI18n()
@@ -171,7 +123,9 @@ export function Onboarding({ onDone }: OnboardingProps) {
               key={s.titleKey}
               inert={i !== index}
             >
-              <SlideArt kind={s.art} />
+              <span className="onb-art onb-art-num" aria-hidden="true">
+                {i + 1}
+              </span>
               <h2 className="onb-title">{t(s.titleKey)}</h2>
               <p className="onb-subtitle">{t(s.subtitleKey)}</p>
               {s.bodyKey && (

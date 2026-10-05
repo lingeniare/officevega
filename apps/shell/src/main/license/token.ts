@@ -61,7 +61,7 @@ export function verifyToken(token: string, keys: PublicKeyRing, deviceId: string
   if (!payload) return { ok: false, reason: 'malformed' }
   const pem = keys[payload.kid]
   if (!pem) return { ok: false, reason: 'unknown_kid' }
-  let valid = false
+  let valid: boolean
   try {
     valid = verify(null, Buffer.from(body, 'utf8'), createPublicKey(pem), b64urlDecode(sig))
   } catch {

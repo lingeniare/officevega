@@ -3,6 +3,7 @@ out/
 dist/
 release/
 release-feed/
+.cache/
 *.log
 .DS_Store
 .refs/

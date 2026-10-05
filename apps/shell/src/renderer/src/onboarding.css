@@ -98,38 +98,14 @@
   color: var(--onb-text-primary);
 }
 
-.onb-art-logo {
-  width: 60px;
+/* step numeral: keeps the old pictograms' 60px slot so the text rhythm below
+ * stays put; the glyph's left edge sits on the text axis */
+.onb-art-num {
   height: 60px;
-  border-radius: 13.5px;
-}
-
-/* decorative glyphs: exact design-spec vectors — 60px box, 4px strokes, bare
- * black line art matching the app icon's visual mass */
-.onb-art-badge {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 60px;
-  height: 60px;
-  color: var(--onb-text-primary);
-}
-
-/* glyph drawn a notch smaller inside the fixed 60px slot (box size unchanged,
- * so the text rhythm below stays put) */
-.onb-art-badge svg {
-  width: 58px;
-  height: 58px;
-}
-
-/* each glyph carries different padding inside its canvas; pull it out so the
- * visible left edge of the artwork sits on the text axis below */
-.onb-art-gift {
-  margin-left: -6px;
-}
-
-.onb-art-check {
-  margin-left: -4px;
+  font-size: 44px;
+  font-weight: 700;
+  letter-spacing: -2px;
+  line-height: 60px;
 }
 
 .onb-title {

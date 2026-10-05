@@ -63,10 +63,10 @@ describe('prepare', () => {
     expect(parsed.questions.d0.type).toBe('score')
   })
 
-  it('sends the VEGA router model and keeps the TypeSafe route pin', () => {
+  it('sends the pinned Jev model and keeps the TypeSafe route pin', () => {
     const { body } = prepare('q', docs, 'vega')
     const parsed = JSON.parse(body)
-    expect(parsed.model).toBe('typesafe/jev-router')
+    expect(parsed.model).toBe('typesafe/jev-1.13')
     expect(parsed.provider.only).toEqual(['typesafe'])
   })
 

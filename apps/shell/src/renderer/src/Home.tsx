@@ -673,8 +673,9 @@ function ConflictPrompt({ names, onChoose }: ConflictPromptProps) {
 
 // ── Account entry (bottom-left) ──────────────────────────
 // The VEGA sign-in entry (device flow on api.vega.chat).
-// Clicking it opens the settings modal directly (SettingsModal.tsx), which hosts
-// login/logout plus preferences (language, theme, save location, update channel).
+// Signed out: clicking launches the sign-in flow straight away (browser window);
+// signed in: clicking opens the settings modal directly (SettingsModal.tsx),
+// which hosts logout plus preferences (language, theme, save location, update channel).
 
 const LOGIN_POLL_MS = 2500
 /** fallback deadline when the CLI does not report expires_in (device codes live ~300s) */
@@ -895,7 +896,9 @@ function AccountEntry({
     setTarget(to)
     setSettingsOpen(true)
   }, [])
-  const handleClick = () => openSettings(null)
+  // signed out starts the device-flow sign-in directly; a repeat click while
+  // waiting relaunches it (matches the waitingLogin / *Failed tips)
+  const handleClick = () => (loggedIn ? openSettings(null) : startLogin())
   useEffect(() => {
     if (openRequest) openSettings(openRequest)
   }, [openRequest, openSettings])
@@ -978,7 +981,7 @@ function AccountEntry({
               ? t('waitingLogin')
               : (errorText ?? t('loginVega'))
         }
-        aria-label={t('settings')}
+        aria-label={loggedIn ? t('settings') : t('loginVega')}
       >
         <span
           className={`account-avatar${loggedIn ? ' logged-in' : ''}${waiting ? ' waiting' : ''}`}

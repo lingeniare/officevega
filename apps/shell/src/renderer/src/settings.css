@@ -688,7 +688,13 @@
   margin: 0;
 }
 
+/* the base .set-ai-status is absolutely centered for the pane footer; its
+   containing block here would be the fixed .set-overlay (nothing between the
+   scrolling .set-pane and the overlay is positioned), so the pill would stay
+   glued to the window instead of its block — inline it next to the title */
 .set-pane-subhead .set-ai-status {
+  position: static;
+  transform: none;
   margin-right: 0;
   padding: 2px 8px 2px 6px;
   font-size: 12px;

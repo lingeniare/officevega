@@ -97,6 +97,7 @@ import { createDefaultAppService, execFileRunner } from './default-app'
 import { registerIntegrationsIpc } from './integrations-ipc'
 import {
   LAST_RUN_VERSION_KEY,
+  STAR_PROMPT_ENABLED,
   STAR_PROMPT_KEY,
   asStarPromptState,
   isUpgradeLaunch,
@@ -5046,6 +5047,7 @@ function registerHomeIpc(): void {
     // dev preview of the card without waiting out the value thresholds
     // (same pattern as OFFICEVEGA_FAKE_UPDATE); nothing is recorded
     if (!app.isPackaged && process.env.OFFICEVEGA_FORCE_STAR_PROMPT) return { show: true, docOpens }
+    if (!STAR_PROMPT_ENABLED) return { show: false, docOpens }
     const grant = (): StarPromptShow => {
       writeStarPrompt(withShown(state, now))
       starPromptSessionGrant = { show: true, docOpens }

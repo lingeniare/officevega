@@ -46,9 +46,21 @@
 ; EULA, or Cyrillic breaks in the Unicode installer) and is also packaged
 ; into resources/ for Help > Privacy Policy.
 ; skipPageIfUpdated mirrors the neighboring pages: updates don't re-ask.
+; NOTE: the template arms MUI_PAGE_CUSTOMFUNCTION_PRE=instFilesPre for the
+; page right after the directory page, so our own skipPageIfUpdated would
+; fail with "!define already defined". Release the slot first, then re-arm
+; instFilesPre for the instfiles page (MUI_PAGE_LICENSE consumes the slot).
 !macro customPageAfterChangeDir
+  !ifdef MUI_PAGE_CUSTOMFUNCTION_PRE
+    !undef MUI_PAGE_CUSTOMFUNCTION_PRE
+  !endif
   !insertmacro skipPageIfUpdated
-  !insertmacro MUI_PAGE_LICENSE "${__FILEDIR__}\PRIVACY-POLICY.txt"
+  ; BUILD_RESOURCES_DIR (not ${__FILEDIR__}: the macro expands inside the
+  ; template, so __FILEDIR__ would point at electron-builder's nsis dir).
+  !insertmacro MUI_PAGE_LICENSE "${BUILD_RESOURCES_DIR}\PRIVACY-POLICY.txt"
+  !ifdef allowToChangeInstallationDirectory
+    !define MUI_PAGE_CUSTOMFUNCTION_PRE instFilesPre
+  !endif
 !macroend
 
 !macro customInstall

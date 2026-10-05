@@ -1,9 +1,9 @@
 import React from 'react'
 
 const SHIELD_TEXT: Record<string, string> = {
-  ru: 'Персональные данные документов и файлов анонимизируются через сервис ВЕГА перед отправкой в LLM. Промпты (ваши запросы) — нет. Не указывайте в промпте персональную информацию',
-  en: 'Personal data in documents and files is anonymized via the VEGA service before being sent to the LLM. Prompts (your requests) are not. Do not include personal information in your prompt',
-  zh: '文档和文件中的个人数据在发送至 LLM 前会经由 VEGA 服务进行匿名化处理。提示词（您的请求）不会。请勿在提示词中填写个人信息',
+  ru: 'Персональные данные документов, файлов и промптов анонимизируются через сервис ВЕГА перед отправкой в LLM. Остальное содержимое передаётся в модель без изменений — не отправляйте сведения ограниченного доступа',
+  en: 'Personal data in documents, files and prompts is anonymized via the VEGA service before being sent to the LLM. Other content reaches the model unchanged — do not submit restricted information',
+  zh: '文档、文件和提示词中的个人数据在发送至 LLM 前会经由 VEGA 服务进行匿名化处理。其余内容将原样发送至模型——请勿提交受限信息',
 }
 
 function shieldText(): string {

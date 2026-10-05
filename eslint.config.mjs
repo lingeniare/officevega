@@ -13,6 +13,7 @@ export default tseslint.config(
       '**/out/**',
       '**/.build/**',
       '**/release/**',
+      '**/release-*/**',
       '**/target/**',
       '**/coverage/**',
       'scripts/drivers/**',

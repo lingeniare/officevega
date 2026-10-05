@@ -285,6 +285,19 @@ function ensureThirdPartyNotices() {
   }
 }
 
+// The NSIS license pages (EULA + the customPageAfterChangeDir privacy screen)
+// decode these files by BOM: a BOM-less UTF-8 file is read as ANSI and
+// Cyrillic renders as mojibake on the license screen (installer.nsh documents
+// the same requirement). Both also ship in resources/ as UTF-8 text.
+function assertLicenseFilesHaveBom() {
+  for (const rel of ['build/EULA.txt', 'build/PRIVACY-POLICY.txt']) {
+    const head = readFileSync(join(__dirname, rel)).subarray(0, 3)
+    if (!head.equals(Buffer.from([0xef, 0xbb, 0xbf]))) {
+      throw new Error(`${rel} lost its UTF-8 BOM — the NSIS license page would show mojibake`)
+    }
+  }
+}
+
 /** @type {import('electron-builder').Configuration} */
 const config = {
   appId: 'com.officevega.app',
@@ -667,6 +680,7 @@ const config = {
     ensurePlatformHelpers()
     assertExtraResourceSources()
     ensureThirdPartyNotices()
+    assertLicenseFilesHaveBom()
     assertModuleTreesPresent()
     ensureCliBundleCarriesAppVersion()
     if (context.electronPlatformName === 'darwin' && includeMacX64) {

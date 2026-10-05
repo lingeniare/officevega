@@ -11,6 +11,12 @@
  */
 
 export const STAR_PROMPT_KEY = 'starPrompt'
+
+/** Master switch for the "star us" nudge. False = the prompt never displays;
+ * the state machine and persisted counters keep working so re-enabling later
+ * resumes where the user left off. OFFICEVEGA_FORCE_STAR_PROMPT still
+ * overrides it for dev previews of the card. */
+export const STAR_PROMPT_ENABLED = false
 /** app-settings key remembering which version last ran (upgrade detection) */
 export const LAST_RUN_VERSION_KEY = 'lastRunVersion'
 

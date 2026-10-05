@@ -176,6 +176,21 @@ for (const size of WIN_SIZES) {
 writeFileSync(join(buildDir, 'icon.ico'), buildIco(winEntries))
 console.log('generated icon.ico')
 
+// NSIS wizard icons (build/installerIcon.ico + uninstallerIcon.ico are picked
+// up by electron-builder automatically — MUI_ICON/MUI_UNICON/UNINSTALLER_ICON).
+// The wizard shows the icon at 32-55 px in the MUI header, where the
+// simplified star-core loses the glow and reads as a broken mark, so installer
+// icons keep the full vega.png artwork at every size except 16 px (title bar),
+// where the glow downscales to noise and the star core stays legible.
+const installerEntries = []
+for (const size of WIN_SIZES) {
+  installerEntries.push({ size, png: size <= 16 ? await renderSmall(size) : await renderFull(size) })
+}
+const installerIco = buildIco(installerEntries)
+writeFileSync(join(buildDir, 'installerIcon.ico'), installerIco)
+writeFileSync(join(buildDir, 'uninstallerIcon.ico'), installerIco)
+console.log('generated installerIcon.ico + uninstallerIcon.ico')
+
 // mac master keeps its grid margin; iconset for iconutil
 const macMaster = await renderMac(1024)
 writeFileSync(join(buildDir, 'icon-mac.png'), macMaster)

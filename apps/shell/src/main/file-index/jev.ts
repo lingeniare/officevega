@@ -9,8 +9,10 @@ export type JevEndpoint = 'vega' | 'openrouter' | 'direct'
 
 const ENDPOINTS: Record<JevEndpoint, { url: string; model: string }> = {
   // api.vega.chat proxies OpenRouter — the decisions alpha rides the same path;
-  // jev-router is the VEGA router row that resolves to the current Jev server-side
-  vega: { url: 'https://api.vega.chat/api/alpha/decisions', model: 'typesafe/jev-router' },
+  // the `jev-router` alias row was dropped server-side (answers 400), so the
+  // pinned versioned id is sent like on the OpenRouter endpoint — the gateway
+  // resolves it to the dated snapshot
+  vega: { url: 'https://api.vega.chat/api/alpha/decisions', model: 'typesafe/jev-1.13' },
   openrouter: { url: 'https://openrouter.ai/api/alpha/decisions', model: 'typesafe/jev-1.13' },
   direct: { url: 'https://api.typesafe.ai/v1/systemone', model: 'jev-1.13.0' },
 }
