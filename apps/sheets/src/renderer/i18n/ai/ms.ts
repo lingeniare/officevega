@@ -112,4 +112,10 @@ export const ms = {
   aiScopeClearTitle: 'Buang skop julat dan gunakan seluruh helaian',
   aiGensparkAccount: 'Akaun Genspark',
   aiLoginGenspark: 'Log masuk ke Genspark',
+  aiStarterBudget: 'Penjejak bajet',
+  aiStarterBudgetPrompt: 'Bina penjejak bajet bulanan: lajur kategori, rancangan, sebenar dan beza, satu baris jumlah dan beberapa baris contoh',
+  aiStarterSales: 'Laporan jualan',
+  aiStarterSalesPrompt: 'Bina laporan jualan suku tahunan: lajur produk, wilayah, unit, harga dan hasil dengan baris contoh dan baris jumlah',
+  aiStarterTasks: 'Pelan tugas',
+  aiStarterTasksPrompt: 'Bina pelan tugas projek: lajur tugas, pemilik, tarikh mula, tarikh akhir dan status dengan sedozen tugas contoh',
 } satisfies Record<keyof typeof zh, string>

@@ -49,6 +49,9 @@ export type UiLanguage =
 /** UI theme preference */
 export type UiTheme = 'light' | 'dark' | 'system'
 
+/** UI design (skin) preference: 'standard', retro 'Ретро ВЕГА', digital 'Цифровая ВЕГА' */
+export type UiDesign = 'standard' | 'retro' | 'digital'
+
 /** shell-wide AutoSave default for every editor; updatedAt is 0 until first set */
 export interface AutoSaveDefault {
   on: boolean
@@ -272,6 +275,10 @@ export interface HomeApi {
   getTheme(): Promise<UiTheme>
   /** switch + persist the UI theme; broadcasts 'app:theme-changed' to all web contents */
   setTheme(theme: UiTheme): Promise<void>
+  /** current UI design (persisted in userData/app-settings.json) */
+  getDesign(): Promise<UiDesign>
+  /** switch + persist the UI design; broadcasts 'app:design-changed' to all web contents */
+  setDesign(design: UiDesign): Promise<void>
   /** AutoSave default applied by every editor window (persisted in userData/app-settings.json) */
   getAutoSaveDefault(): Promise<AutoSaveDefault>
   /** persist the AutoSave default; broadcasts 'app:auto-save-default-changed' to all web contents */
@@ -305,6 +312,8 @@ export interface HomeApi {
   setDefaultApp(): Promise<DefaultAppStatus>
   /** theme switched anywhere (broadcast from the main process) */
   onThemeChanged(handler: (theme: UiTheme) => void): () => void
+  /** design switched anywhere (broadcast from the main process) */
+  onDesignChanged(handler: (design: UiDesign) => void): () => void
   /** the app menu's Settings item: main activates the home tab, then pushes this */
   onOpenSettings(handler: () => void): () => void
   /** open the VEGA keys/deposit dashboard in the default browser */
@@ -551,6 +560,8 @@ export const HOME_CHANNELS = {
   setOnboardingSeen: 'home:set-onboarding-seen',
   getTheme: 'home:get-theme',
   setTheme: 'home:set-theme',
+  getDesign: 'home:get-design',
+  setDesign: 'home:set-design',
   getAutoSaveDefault: 'home:get-auto-save-default',
   setAutoSaveDefault: 'home:set-auto-save-default',
   getMcpStatus: 'home:get-mcp-status',

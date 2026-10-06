@@ -113,4 +113,10 @@ export const pt = {
   aiScopeClearTitle: 'Remover o escopo do intervalo e usar a planilha inteira',
   aiGensparkAccount: 'Conta Genspark',
   aiLoginGenspark: 'Entrar no Genspark',
+  aiStarterBudget: 'Controlo de orçamento',
+  aiStarterBudgetPrompt: 'Cria um controlo de orçamento mensal: colunas categoria, previsto, real e diferença, uma linha de totais e algumas linhas de exemplo',
+  aiStarterSales: 'Relatório de vendas',
+  aiStarterSalesPrompt: 'Cria um relatório de vendas trimestral: colunas produto, região, unidades, preço e receita, linhas de exemplo e uma linha de totais',
+  aiStarterTasks: 'Plano de tarefas',
+  aiStarterTasksPrompt: 'Cria um plano de tarefas do projeto: colunas tarefa, responsável, data de início, prazo e estado com uma dúzia de tarefas de exemplo',
 } satisfies Record<keyof typeof zh, string>

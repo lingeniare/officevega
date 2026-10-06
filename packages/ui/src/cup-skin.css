@@ -1,0 +1,630 @@
+/* Нейтральный ЦУП-скин: стартовый экран, AI-чат и ribbon-group-items
+ * в том же стиле, что и настройки (settings.css): скругления 6/8px,
+ * жёсткие офсет-тени, моно-лейблы uppercase, нейтральные белый/чёрный.
+ * Подключается ПОСЛЕ app styles.css и ai-chat.css, поэтому при равной
+ * специфичности побеждает. Цвета — только через существующие токены
+ * (raw hex лишь на строках определений, по CLAUDE.md). */
+
+:root[data-design='retro'] {
+  --cup-shadow: 6px 6px 0 #111111;
+  --cup-shadow-sm: 4px 4px 0 #111111;
+  --cup-shadow-xs: 2px 2px 0 #111111;
+}
+
+:root[data-design='retro'][data-theme='dark'] {
+  --cup-shadow: 6px 6px 0 #000000;
+  --cup-shadow-sm: 4px 4px 0 #000000;
+  --cup-shadow-xs: 2px 2px 0 #000000;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-design='retro']:not([data-theme='light']):not([data-theme='dark']) {
+    --cup-shadow: 6px 6px 0 #000000;
+    --cup-shadow-sm: 4px 4px 0 #000000;
+    --cup-shadow-xs: 2px 2px 0 #000000;
+  }
+}
+
+/* ── Риббон: docs / slides / html / markdown / pdf ── */
+
+html[data-design='retro'] .rb-big,
+html[data-design='retro'] .rb-small,
+html[data-design='retro'] .rb-big-split-caret {
+  border-radius: 6px;
+}
+
+html[data-design='retro'] .rb-big .rb-big-icon {
+  border-radius: 6px;
+}
+
+html[data-design='retro'] .rb-big:hover:not(:disabled),
+html[data-design='retro'] .rb-small:hover:not(:disabled),
+html[data-design='retro'] .rb-big-split-caret:hover:not(:disabled) {
+  outline: 2px solid var(--text);
+  outline-offset: -2px;
+}
+
+/* активное — плашка тушью */
+html[data-design='retro'] .rb-small.active,
+html[data-design='retro'] .rb-big-split-caret.active {
+  background: var(--text);
+  color: var(--surface);
+}
+
+html[data-design='retro'] .rb-small.active svg {
+  color: var(--surface);
+}
+
+/* разделитель групп — линия отрыва */
+html[data-design='retro'] .ribbon-sep {
+  width: 0;
+  margin: 2px 6px;
+  border-left: 2px dashed var(--border-strong);
+  background: none;
+}
+
+html[data-design='retro'] .ribbon-group-label {
+  font-family: var(--gs-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ── Риббон: sheets (.ribbon-tool) ── */
+
+html[data-design='retro'] .ribbon-tool {
+  border-radius: 6px;
+}
+
+html[data-design='retro'] .ribbon-tool:not(.large):hover {
+  outline: 2px solid var(--text);
+  outline-offset: -2px;
+}
+
+html[data-design='retro'] .ribbon-tool.large:hover {
+  outline: 2px solid var(--text);
+  outline-offset: -2px;
+}
+
+html[data-design='retro'] .ribbon-group::after {
+  width: 0;
+  border-left: 2px dashed var(--border-strong);
+  background: none;
+}
+
+/* общий дропдаун в риббоне — прямые углы */
+html[data-design='retro'] .gs-dd-pop {
+  border-radius: 8px;
+}
+
+html[data-design='retro'] .gs-dd-btn {
+  border-radius: 6px;
+}
+
+/* ── AI-чат (VEGA One поверх): квадрат, тушь, вдавливание ── */
+
+html[data-design='retro'] .ai-panel-header {
+  border-bottom: 2px solid var(--color-text-primary);
+}
+
+html[data-design='retro'] .ai-panel-title {
+  font-family: var(--gs-font-mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+html[data-design='retro'] .ai-header-btn {
+  border-radius: 6px;
+}
+
+html[data-design='retro'] .ai-header-btn:hover {
+  background: none;
+  outline: 2px solid var(--color-text-primary);
+  outline-offset: -2px;
+  color: var(--color-text-primary);
+}
+
+html[data-design='retro'] .ai-header-btn:active {
+  color: var(--color-text-primary);
+}
+
+html[data-design='retro'] .ai-rail:hover {
+  color: var(--color-text-primary);
+}
+
+html[data-design='retro'] .ai-history-sep {
+  font-family: var(--gs-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+html[data-design='retro'] .ai-history-sep::before,
+html[data-design='retro'] .ai-history-sep::after {
+  height: 0;
+  border-top: 2px dashed var(--color-border-default);
+  background: none;
+}
+
+html[data-design='retro'] .ai-chat-empty-title {
+  font-family: var(--gs-font-mono);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+html[data-design='retro'] .ai-starter,
+html[data-design='retro'] .ai-quick-btn {
+  border: 2px solid var(--color-text-primary);
+  border-radius: 6px;
+}
+
+html[data-design='retro'] .ai-starter:hover,
+html[data-design='retro'] .ai-quick-btn:hover {
+  border-color: var(--color-text-primary);
+  background: var(--color-bg-subtle);
+  color: var(--color-text-primary);
+  box-shadow: var(--cup-shadow-sm);
+}
+
+html[data-design='retro'] .ai-starter:active,
+html[data-design='retro'] .ai-quick-btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: none;
+}
+
+html[data-design='retro'] .ai-starter::after,
+html[data-design='retro'] .ai-quick-btn::after {
+  color: var(--color-text-primary);
+}
+
+html[data-design='retro'] .ai-suggest-item:hover {
+  color: var(--color-text-primary);
+}
+
+/* сообщение пользователя — карточка-бланк */
+html[data-design='retro'] .ai-msg-user {
+  border: 2px solid var(--color-text-primary);
+  border-radius: 8px;
+  box-shadow: var(--cup-shadow-xs);
+}
+
+html[data-design='retro'] .ai-md code {
+  border-radius: 6px;
+}
+
+html[data-design='retro'] .ai-msg-tool-btn {
+  border-radius: 6px;
+}
+
+html[data-design='retro'] .ai-msg-tool-btn:hover:not(:disabled) {
+  outline: 2px solid var(--color-text-primary);
+  outline-offset: -2px;
+}
+
+html[data-design='retro'] .ai-track-btn {
+  border-radius: 6px;
+}
+
+html[data-design='retro'] .ai-track-btn:hover {
+  color: var(--color-text-primary);
+}
+
+html[data-design='retro'] .ai-track-btn.on {
+  border: 2px solid var(--color-text-primary);
+  background: var(--color-bg-subtle);
+  color: var(--color-text-primary);
+}
+
+html[data-design='retro'] .ai-track-btn.on .ai-track-dot {
+  background: var(--color-text-primary);
+}
+
+/* композер и отправка */
+html[data-design='retro'] .ai-composer {
+  border-top: 2px solid var(--color-text-primary);
+}
+
+/* поле ввода — минималистично во всю ширину композера, без блока в блоке.
+ * Селекторы с родителем специально тяжелее per-app копий, чтобы плоский вид
+ * побеждал независимо от порядка подключения стилей. Индикатор фокуса —
+ * подсветка композера, а не рамка (рамка обрезала текст). */
+html[data-design='retro'] .ai-dock .ai-input-box,
+html[data-design='retro'] .ai-panel .ai-input-box,
+html[data-design='retro'] aside.copilot .ai-input-box {
+  border: none;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+html[data-design='retro'] .ai-dock .ai-input-box:focus-within,
+html[data-design='retro'] .ai-panel .ai-input-box:focus-within,
+html[data-design='retro'] aside.copilot .ai-input-box:focus-within {
+  border-color: transparent;
+  box-shadow: none;
+  outline: none;
+}
+
+html[data-design='retro'] .ai-dock .ai-composer:focus-within,
+html[data-design='retro'] .ai-panel .ai-composer:focus-within,
+html[data-design='retro'] aside.copilot .ai-composer:focus-within {
+  background: var(--color-bg-subtle);
+}
+
+html[data-design='retro'] .ai-dock .ai-input-box textarea,
+html[data-design='retro'] .ai-panel .ai-input-box textarea,
+html[data-design='retro'] aside.copilot .ai-input-box textarea {
+  padding: 10px 0;
+  border: none;
+  border-radius: 0;
+  outline: none;
+  box-shadow: none;
+}
+
+html[data-design='retro'] .ai-dock .ai-input-box textarea:focus,
+html[data-design='retro'] .ai-dock .ai-input-box textarea:focus-visible,
+html[data-design='retro'] .ai-panel .ai-input-box textarea:focus,
+html[data-design='retro'] .ai-panel .ai-input-box textarea:focus-visible,
+html[data-design='retro'] aside.copilot .ai-input-box textarea:focus,
+html[data-design='retro'] aside.copilot .ai-input-box textarea:focus-visible {
+  outline: none;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+html[data-design='retro'] .ai-dock .ai-input-footer,
+html[data-design='retro'] .ai-panel .ai-input-footer,
+html[data-design='retro'] aside.copilot .ai-input-footer {
+  padding: 8px 0 0;
+}
+
+html[data-design='retro'] .ai-scope-preview {
+  border: 2px dashed var(--color-border-default);
+  border-radius: 6px;
+}
+
+html[data-design='retro'] .ai-send-btn {
+  border: 2px solid var(--color-text-primary);
+  border-radius: 6px;
+  background: var(--color-text-primary);
+  color: var(--color-bg-page);
+}
+
+html[data-design='retro'] .ai-send-btn:hover:not(:disabled) {
+  background: var(--color-text-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--cup-shadow-sm);
+}
+
+html[data-design='retro'] .ai-send-btn:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+html[data-design='retro'] .ai-send-btn.ai-stop-btn {
+  background: var(--color-bg-subtle);
+  color: var(--color-text-primary);
+}
+
+/* ── Стартовый экран shell (.home) ── */
+
+html[data-design='retro'] .home .section-label,
+html[data-design='retro'] .home .file-count {
+  font-family: var(--gs-font-mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+html[data-design='retro'] .home .quick-card,
+html[data-design='retro'] .home .recent-table,
+html[data-design='retro'] .home .timeline-list {
+  border: 2px solid var(--text);
+  border-radius: 8px;
+}
+
+html[data-design='retro'] .home .quick-card:hover {
+  border-color: var(--text);
+  transform: translate(-2px, -2px);
+  box-shadow: var(--cup-shadow);
+}
+
+html[data-design='retro'] .home .quick-folder {
+  border: 2px solid var(--text);
+  border-radius: 6px;
+}
+
+html[data-design='retro'] .home .recent-list li + li {
+  border-top: 2px dashed var(--border-strong);
+}
+
+html[data-design='retro'] .home .timeline-list .timeline-item + .timeline-item {
+  border-top: 2px dashed var(--border-strong);
+}
+
+html[data-design='retro'] .home .btn,
+html[data-design='retro'] .home .selection-action {
+  border-radius: 6px;
+}
+
+html[data-design='retro'] .home .btn-secondary,
+html[data-design='retro'] .home .selection-action {
+  border: 2px solid var(--text);
+}
+
+html[data-design='retro'] .home .btn-primary {
+  border: 2px solid var(--text);
+}
+
+html[data-design='retro'] .home .btn-primary:hover:not(:disabled),
+html[data-design='retro'] .home .selection-action:hover {
+  box-shadow: var(--cup-shadow-sm);
+}
+
+html[data-design='retro'] .home .selection-action:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+html[data-design='retro'] .home .nav-item {
+  border: 2px solid transparent;
+  border-radius: 6px;
+}
+
+html[data-design='retro'] .home .nav-item.active {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--surface);
+}
+
+html[data-design='retro'] .home .nav-item.active svg {
+  color: var(--surface);
+}
+
+html[data-design='retro'] .home .nav-item.active .nav-count {
+  color: inherit;
+  opacity: 0.7;
+}
+
+html[data-design='retro'] .home .filter-pill {
+  border-radius: 6px;
+  border: 2px solid transparent;
+}
+
+html[data-design='retro'] .home .filter-pill:hover {
+  box-shadow: var(--cup-shadow-xs);
+}
+
+html[data-design='retro'] .home .filter-pill.active {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--surface);
+}
+
+html[data-design='retro'] .home .file-search,
+html[data-design='retro'] .home .picker-search,
+html[data-design='retro'] .home .picker-tree,
+html[data-design='retro'] .home .rename-input,
+html[data-design='retro'] .home .folder-rename-input {
+  border: 2px solid var(--text);
+  border-radius: 6px;
+}
+
+html[data-design='retro'] .home .row-menu,
+html[data-design='retro'] .home .folder-menu,
+html[data-design='retro'] .home .file-sort-menu,
+html[data-design='retro'] .home .modal,
+html[data-design='retro'] .home .login-hint {
+  border: 2px solid var(--text);
+  border-radius: 8px;
+  box-shadow: var(--cup-shadow);
+}
+
+html[data-design='retro'] .home .home-drop-card {
+  border: 2px dashed var(--text);
+  border-radius: 8px;
+  box-shadow: var(--cup-shadow);
+  color: var(--text);
+}
+
+html[data-design='retro'] .home .account-btn,
+html[data-design='retro'] .home .tree-row,
+html[data-design='retro'] .home .search-row,
+html[data-design='retro'] .home .picker-row {
+  border-radius: 6px;
+}
+
+/* доступность: видимый фокус только на кнопках и контролах —
+ * НЕ на textarea (там индикатор — подсветка композера, рамка резала текст) */
+html[data-design='retro'] .ai-panel .ai-header-btn:focus-visible,
+html[data-design='retro'] .ai-panel .ai-send-btn:focus-visible,
+html[data-design='retro'] .ai-panel .ai-attach-btn:focus-visible,
+html[data-design='retro'] .ai-panel .ai-starter:focus-visible,
+html[data-design='retro'] .ai-panel .ai-quick-btn:focus-visible,
+html[data-design='retro'] .ai-panel .ai-suggest-item:focus-visible,
+html[data-design='retro'] .ai-panel .ai-msg-tool-btn:focus-visible,
+html[data-design='retro'] .ai-panel .ai-track-btn:focus-visible,
+html[data-design='retro'] .rb-big:focus-visible,
+html[data-design='retro'] .rb-small:focus-visible,
+html[data-design='retro'] .ribbon-tool:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-design='retro'] .home .quick-card:hover,
+  html[data-design='retro'] .home .selection-action:active,
+  html[data-design='retro'] .ai-starter:active,
+  html[data-design='retro'] .ai-quick-btn:active,
+  html[data-design='retro'] .ai-send-btn:hover:not(:disabled),
+  html[data-design='retro'] .ai-send-btn:active:not(:disabled) {
+    transform: none;
+  }
+}
+
+/* ── Дизайн «Цифровая ВЕГА» ──
+ * По дизайн-системе api.vega.chat: emerald-акцент поверх neutral-базы,
+ * радиус 12px, стекло, жёсткие тени при наведении, eyebrow-метки `//`.
+ * Ремэппит общий --accent/--ai-accent в зелёный, поэтому чат, риббон
+ * и главная зеленеют сами; ниже — только точечные дельты. */
+
+html[data-design='digital'] {
+  --accent: #059669;
+  --accent-hover: #047857;
+  --accent-soft: rgba(5, 150, 105, 0.12);
+  --ai-accent: #059669;
+  --ai-accent-dark: #047857;
+  --ai-accent-soft: rgba(5, 150, 105, 0.12);
+  --dg-ink: #FFFFFF;
+  --dg-hard: #000000;
+  --dg-pop: 0 8px 30px -6px rgba(9, 9, 11, 0.18);
+}
+
+html[data-design='digital'][data-theme='dark'] {
+  --accent: #34D399;
+  --accent-hover: #10B981;
+  --accent-soft: rgba(52, 211, 153, 0.16);
+  --ai-accent: #34D399;
+  --ai-accent-dark: #10B981;
+  --ai-accent-soft: rgba(52, 211, 153, 0.16);
+  --dg-ink: #000000;
+  --dg-hard: #CBEEF3;
+  --dg-pop: 0 8px 30px -6px rgba(0, 0, 0, 0.55);
+}
+
+@media (prefers-color-scheme: dark) {
+  html[data-design='digital']:not([data-theme='light']):not([data-theme='dark']) {
+    --accent: #34D399;
+    --accent-hover: #10B981;
+    --accent-soft: rgba(52, 211, 153, 0.16);
+    --ai-accent: #34D399;
+    --ai-accent-dark: #10B981;
+    --ai-accent-soft: rgba(52, 211, 153, 0.16);
+    --dg-ink: #000000;
+    --dg-hard: #CBEEF3;
+    --dg-pop: 0 8px 30px -6px rgba(0, 0, 0, 0.55);
+  }
+}
+
+/* риббон: ховер ведёт к акценту, активный — залитая плашка */
+html[data-design='digital'] .rb-big,
+html[data-design='digital'] .rb-small,
+html[data-design='digital'] .rb-big-split-caret,
+html[data-design='digital'] .ribbon-tool {
+  border-radius: 8px;
+}
+
+html[data-design='digital'] .rb-big:hover:not(:disabled) .rb-big-icon,
+html[data-design='digital'] .rb-small:hover:not(:disabled),
+html[data-design='digital'] .rb-big-split-caret:hover:not(:disabled),
+html[data-design='digital'] .ribbon-tool:not(.large):hover,
+html[data-design='digital'] .ribbon-tool.large:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+  outline: none;
+}
+
+html[data-design='digital'] .rb-small.active,
+html[data-design='digital'] .rb-big-split-caret.active {
+  background: var(--accent);
+  color: var(--dg-ink);
+}
+
+html[data-design='digital'] .rb-small.active svg {
+  color: var(--dg-ink);
+}
+
+html[data-design='digital'] .gs-dd-pop {
+  border-radius: 12px;
+}
+
+html[data-design='digital'] .gs-dd-btn {
+  border-radius: 8px;
+}
+
+html[data-design='digital'] .gs-dd-btn:hover {
+  border-color: var(--accent);
+}
+
+html[data-design='digital'] .gs-dd-item.selected {
+  background: var(--accent-soft);
+}
+
+/* чат: заголовок с eyebrow, остальное зеленеет через --ai-accent */
+html[data-design='digital'] .ai-panel-title::before {
+  content: '// ';
+  font-family: var(--gs-font-mono);
+  color: var(--accent);
+}
+
+html[data-design='digital'] .ai-panel .ai-header-btn:focus-visible,
+html[data-design='digital'] .ai-panel .ai-send-btn:focus-visible,
+html[data-design='digital'] .ai-panel .ai-attach-btn:focus-visible,
+html[data-design='digital'] .ai-panel .ai-starter:focus-visible,
+html[data-design='digital'] .ai-panel .ai-quick-btn:focus-visible,
+html[data-design='digital'] .ai-panel .ai-suggest-item:focus-visible,
+html[data-design='digital'] .ai-panel .ai-msg-tool-btn:focus-visible,
+html[data-design='digital'] .ai-panel .ai-track-btn:focus-visible,
+html[data-design='digital'] .rb-big:focus-visible,
+html[data-design='digital'] .rb-small:focus-visible,
+html[data-design='digital'] .ribbon-tool:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* главная: карточки с жёсткой тенью и лифтом, primary — акцент */
+html[data-design='digital'] .home .section-label::before {
+  content: '// ';
+  font-family: var(--gs-font-mono);
+  color: var(--accent);
+}
+
+html[data-design='digital'] .home .quick-card:hover {
+  border-color: var(--accent);
+  translate: 0 -4px;
+  box-shadow: 5px 5px 0 var(--dg-hard);
+}
+
+html[data-design='digital'] .home .btn-primary {
+  background: var(--accent);
+  border-color: transparent;
+  color: var(--dg-ink);
+}
+
+html[data-design='digital'] .home .btn-primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+  color: var(--dg-ink);
+  transform: translateY(-1px);
+  box-shadow: 5px 5px 0 var(--dg-hard);
+}
+
+html[data-design='digital'] .home .nav-item.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+html[data-design='digital'] .home .nav-item.active svg {
+  color: var(--accent);
+}
+
+html[data-design='digital'] .home .nav-item.active .nav-count {
+  color: inherit;
+}
+
+html[data-design='digital'] .home .filter-pill.active {
+  color: var(--accent);
+}
+
+html[data-design='digital'] .home .modal {
+  border-radius: 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-design='digital'] .home .quick-card:hover,
+  html[data-design='digital'] .home .btn-primary:hover:not(:disabled) {
+    transform: none;
+    translate: none;
+  }
+}

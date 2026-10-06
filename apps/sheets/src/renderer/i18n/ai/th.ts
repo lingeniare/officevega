@@ -111,4 +111,10 @@ export const th = {
   aiScopeClearTitle: 'ยกเลิกขอบเขตช่วงนี้และใช้ทั้งแผ่นงาน',
   aiGensparkAccount: 'บัญชี Genspark',
   aiLoginGenspark: 'ลงชื่อเข้าใช้ Genspark',
+  aiStarterBudget: 'ตารางติดตามงบประมาณ',
+  aiStarterBudgetPrompt: 'สร้างตารางติดตามงบประมาณรายเดือน: คอลัมน์หมวดหมู่ แผน จริง และส่วนต่าง แถวผลรวม และแถวตัวอย่างสองสามแถว',
+  aiStarterSales: 'รายงานยอดขาย',
+  aiStarterSalesPrompt: 'สร้างรายงานยอดขายรายไตรมาส: คอลัมน์สินค้า ภูมิภาค จำนวน ราคา และรายได้ พร้อมแถวตัวอย่างและแถวผลรวม',
+  aiStarterTasks: 'แผนงานโครงการ',
+  aiStarterTasksPrompt: 'สร้างแผนงานโครงการ: คอลัมน์งาน ผู้รับผิดชอบ วันที่เริ่ม กำหนดส่ง และสถานะ พร้อมตัวอย่างงานสิบกว่ารายการ',
 } satisfies Record<keyof typeof zh, string>

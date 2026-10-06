@@ -108,4 +108,10 @@ export const he = {
   aiScopeClearTitle: 'ביטול טווח הבחירה ומיקוד בגיליון כולו',
   aiGensparkAccount: 'חשבון Genspark',
   aiLoginGenspark: 'כניסה ל-Genspark',
+  aiStarterBudget: 'מעקב תקציב',
+  aiStarterBudgetPrompt: 'צור מעקב תקציב חודשי: עמודות קטגוריה, מתוכנן, בפועל והפרש, שורת סיכום וכמה שורות לדוגמה',
+  aiStarterSales: 'דוח מכירות',
+  aiStarterSalesPrompt: 'צור דוח מכירות רבעוני: עמודות מוצר, אזור, יחידות, מחיר והכנסה עם שורות לדוגמה ושורת סיכום',
+  aiStarterTasks: 'תוכנית משימות',
+  aiStarterTasksPrompt: 'צור תוכנית משימות לפרויקט: עמודות משימה, אחראי, תאריך התחלה, תאריך יעד וסטטוס עם תריסר משימות לדוגמה',
 } satisfies Record<keyof typeof zh, string>

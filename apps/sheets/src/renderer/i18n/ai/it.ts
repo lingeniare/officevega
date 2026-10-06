@@ -112,4 +112,10 @@ export const it = {
   aiScopeClearTitle: "Rimuovi l'ambito dell'intervallo e usa tutto il foglio",
   aiGensparkAccount: 'Account Genspark',
   aiLoginGenspark: 'Accedi a Genspark',
+  aiStarterBudget: 'Tracker del budget',
+  aiStarterBudgetPrompt: 'Crea un tracker del budget mensile: colonne categoria, previsto, effettivo e differenza, una riga di totali e alcune righe di esempio',
+  aiStarterSales: 'Report vendite',
+  aiStarterSalesPrompt: 'Crea un report delle vendite trimestrale: colonne prodotto, regione, unità, prezzo e ricavo con righe di esempio e una riga di totali',
+  aiStarterTasks: 'Piano attività',
+  aiStarterTasksPrompt: 'Crea un piano attività del progetto: colonne attività, responsabile, data di inizio, scadenza e stato con una dozzina di attività di esempio',
 } satisfies Record<keyof typeof zh, string>

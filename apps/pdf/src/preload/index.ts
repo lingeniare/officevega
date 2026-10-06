@@ -7,7 +7,7 @@ import {
   OPEN_FILE_DIALOG_CHANNEL,
 } from '@genoffice/electron-utils/drop-open'
 import { AI_CHANNELS, PDF_CHANNELS } from '../shared/ipc'
-import type { PdfApi, UiTheme } from '../shared/ipc'
+import type { PdfApi, UiDesign, UiTheme } from '../shared/ipc'
 
 const api: PdfApi = {
   consumePending: () => ipcRenderer.invoke(PDF_CHANNELS.consumePending),
@@ -87,6 +87,12 @@ const api: PdfApi = {
     const listener = (_e: Electron.IpcRendererEvent, theme: UiTheme) => handler(theme)
     ipcRenderer.on(PDF_CHANNELS.themeChanged, listener)
     return () => ipcRenderer.removeListener(PDF_CHANNELS.themeChanged, listener)
+  },
+  getDesign: () => ipcRenderer.invoke('app:get-design'),
+  onDesignChanged: (handler) => {
+    const listener = (_e: Electron.IpcRendererEvent, design: UiDesign) => handler(design)
+    ipcRenderer.on('app:design-changed', listener)
+    return () => ipcRenderer.removeListener('app:design-changed', listener)
   },
   getAiPanelPrefs: () => ipcRenderer.invoke(PDF_CHANNELS.getAiPanelPrefs),
   setAiPanelPrefs: (patch) => ipcRenderer.invoke('app:set-ai-panel-prefs', patch),

@@ -11,7 +11,7 @@ import {
 import { VegaMark } from '../ribbon-icons'
 import type { ChangePlan } from '@genoffice/xlsx-gateway/domain/workbook.types'
 import { ATTACHMENT_IMAGE_EXTS, type AttachmentMeta } from '../../shared/desktop-api'
-import { useI18n, type TFunc } from '../i18n/locale'
+import { useI18n, type StringKey, type TFunc } from '../i18n/locale'
 import { Markdown } from '@genoffice/ui'
 import { SHEET_NAV_SCHEME } from './sheet-nav'
 import attachIcon from '../assets/attach-icon.png'
@@ -181,6 +181,18 @@ function loadPanelWidth(): number | null {
     ? Math.min(Math.max(saved, PANEL_WIDTH_MIN), 720)
     : null
 }
+
+/** Empty-chat starter pills [label key, prompt key]: a click stages the prompt
+ *  in the composer (same as the ribbon AI buttons), it never auto-sends */
+const EDIT_STARTERS: readonly (readonly [StringKey, StringKey])[] = [
+  ['aiCheckBtn', 'aiCheckPrompt'],
+  ['aiAnalyzeBtn', 'aiAnalyzePrompt'],
+]
+const BUILD_STARTERS: readonly (readonly [StringKey, StringKey])[] = [
+  ['aiStarterBudget', 'aiStarterBudgetPrompt'],
+  ['aiStarterSales', 'aiStarterSalesPrompt'],
+  ['aiStarterTasks', 'aiStarterTasksPrompt'],
+]
 
 export interface AiToolChip {
   readonly summary: string
@@ -588,6 +600,20 @@ export function AiChatPanel({
             </div>
             <div className="ai-chat-empty-body">
               {t(hasContent ? 'aiEmptyBodyLine1' : 'aiEmptyBuildBody')}
+            </div>
+            <div className="ai-starter-list">
+              {(hasContent ? EDIT_STARTERS : BUILD_STARTERS).map(([label, promptKey]) => (
+                <button
+                  key={label}
+                  className="ai-starter"
+                  onClick={() => {
+                    onPromptChange(t(promptKey))
+                    inputRef.current?.focus()
+                  }}
+                >
+                  <span className="ai-starter-text">{t(label)}</span>
+                </button>
+              ))}
             </div>
           </div>
         )}

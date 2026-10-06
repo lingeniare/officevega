@@ -114,4 +114,10 @@ export const kk = {
   aiScopeClearTitle: 'Ауқым шектеуін алып тастап, бүкіл парақты нысанаға алу',
   aiGensparkAccount: 'Genspark account',
   aiLoginGenspark: 'Sign in to Genspark',
+  aiStarterBudget: 'Бюджет трекері',
+  aiStarterBudgetPrompt: 'Айлық бюджет трекерін жаса: санат, жоспарланған, нақты және айырма бағандары, қорытынды жол және бірнеше мысал жолдар',
+  aiStarterSales: 'Сату есебі',
+  aiStarterSalesPrompt: 'Тоқсандық сату есебін жаса: өнім, аймақ, дана, баға және түсім бағандары, мысал жолдар және қорытынды жол',
+  aiStarterTasks: 'Жоба тапсырмалар жоспары',
+  aiStarterTasksPrompt: 'Жоба тапсырмалар жоспарын жаса: тапсырма, жауапты, басталу күні, мерзімі және мәртебе бағандары, оншама мысал тапсырмалармен',
 } satisfies Record<keyof typeof zh, string>

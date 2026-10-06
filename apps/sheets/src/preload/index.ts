@@ -19,6 +19,7 @@ import type {
   ScreenCaptureResult,
   ScreenSourcesResult,
   AutoSaveDefault,
+  UiDesign,
   UiTheme,
   WorkbookCellStyle,
   WorkbookConditionalRule,
@@ -70,6 +71,12 @@ const desktopApi: DesktopApi = {
     const listener = (_event: Electron.IpcRendererEvent, theme: UiTheme) => handler(theme)
     ipcRenderer.on('app:theme-changed', listener)
     return () => ipcRenderer.removeListener('app:theme-changed', listener)
+  },
+  getDesign: () => ipcRenderer.invoke('app:get-design'),
+  onDesignChanged(handler) {
+    const listener = (_event: Electron.IpcRendererEvent, design: UiDesign) => handler(design)
+    ipcRenderer.on('app:design-changed', listener)
+    return () => ipcRenderer.removeListener('app:design-changed', listener)
   },
   getAutoSaveDefault: () => ipcRenderer.invoke('app:get-auto-save-default'),
   onAutoSaveDefaultChanged(handler) {

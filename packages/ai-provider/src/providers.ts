@@ -73,9 +73,9 @@ export const AI_PROVIDERS: AiProviderMeta[] = [
     // Live catalog: GET {base}/models lists every OpenRouter-routed model
     // (~440 ids); the picker filters to text-capable ones. `openrouter/auto`
     // is the catalog's own router id and stays pickable; the default pins
-    // Claude Sonnet 5.5, with Luna as the fast-model default (2026-10).
+    // GLM 5.3 Flash, with Luna as the fast-model default (2026-10).
     models: [],
-    defaultModel: 'anthropic/claude-sonnet-5.5',
+    defaultModel: 'z-ai/glm-5.3-flash',
     defaultFastModel: 'openai/gpt-6-luna',
     keyPlaceholder: 'sk-apivega-...',
     liveCatalog: true,

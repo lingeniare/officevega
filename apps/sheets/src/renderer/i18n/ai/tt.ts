@@ -114,4 +114,10 @@ export const tt = {
   aiScopeClearTitle: 'Аралык чикләвен алып, бөтен битне максат итеп ал',
   aiGensparkAccount: 'Genspark account',
   aiLoginGenspark: 'Sign in to Genspark',
+  aiStarterBudget: 'Бюджет трекеры',
+  aiStarterBudgetPrompt: 'Айлык бюджет трекерын төзе: төркем, планлаштырылган, чын һәм аерма баганалары, җәмгы юл һәм берничә үрнәк юл',
+  aiStarterSales: 'Сату хисабы',
+  aiStarterSalesPrompt: 'Кварталь сату хисабын төзе: продукт, төбәк, берәмлек, бәя һәм керем баганалары, үрнәк юллар һәм җәмгы юл',
+  aiStarterTasks: 'Проект биремнәр планы',
+  aiStarterTasksPrompt: 'Проект биремнәр планын төзе: бирем, җаваплы, башлану көне, тәмамлану көне һәм халәт баганалары белән унлап үрнәк биремнәр',
 } satisfies Record<keyof typeof zh, string>

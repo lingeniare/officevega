@@ -113,4 +113,10 @@ export const ru = {
   aiScopeClearTitle: 'Снять область диапазона и работать со всем листом',
   aiGensparkAccount: 'Учётная запись Genspark',
   aiLoginGenspark: 'Войти в Genspark',
+  aiStarterBudget: 'Трекер бюджета',
+  aiStarterBudgetPrompt: 'Создай помесячный трекер бюджета: колонки категория, план, факт и разница, строка итогов и несколько примеров строк',
+  aiStarterSales: 'Отчёт по продажам',
+  aiStarterSalesPrompt: 'Создай квартальный отчёт по продажам: колонки товар, регион, количество, цена и выручка, примеры строк и строка итогов',
+  aiStarterTasks: 'План задач проекта',
+  aiStarterTasksPrompt: 'Создай план задач проекта: колонки задача, ответственный, дата начала, срок и статус — с десятком примеров задач',
 } satisfies Record<keyof typeof zh, string>

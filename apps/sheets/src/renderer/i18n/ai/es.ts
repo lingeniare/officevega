@@ -115,4 +115,10 @@ export const es = {
   aiScopeClearTitle: 'Quitar el ámbito del rango y usar toda la hoja',
   aiGensparkAccount: 'Cuenta de Genspark',
   aiLoginGenspark: 'Iniciar sesión en Genspark',
+  aiStarterBudget: 'Control de presupuesto',
+  aiStarterBudgetPrompt: 'Crea un control de presupuesto mensual: columnas categoría, previsto, real y diferencia, una fila de totales y algunas filas de ejemplo',
+  aiStarterSales: 'Informe de ventas',
+  aiStarterSalesPrompt: 'Crea un informe de ventas trimestral: columnas producto, región, unidades, precio e ingresos, filas de ejemplo y una fila de totales',
+  aiStarterTasks: 'Plan de tareas',
+  aiStarterTasksPrompt: 'Crea un plan de tareas del proyecto: columnas tarea, responsable, fecha de inicio, fecha límite y estado con una docena de tareas de ejemplo',
 } satisfies Record<keyof typeof zh, string>

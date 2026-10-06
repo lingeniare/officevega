@@ -55,6 +55,7 @@ export { AI_PROVIDERS } from '@genoffice/ai-provider/browser'
 export type { AgentToolCall, AgentToolDef } from '@genoffice/agent-core'
 
 export type UiTheme = 'light' | 'dark' | 'system'
+export type UiDesign = 'standard' | 'retro' | 'digital'
 
 /** shell-wide AutoSave default; updatedAt is 0 until the user has ever set it */
 export interface AutoSaveDefault {
@@ -1275,6 +1276,9 @@ export interface SlidesApi {
   getTheme: () => Promise<UiTheme>
   /** theme switched from the shell home page */
   onThemeChanged: (handler: (theme: UiTheme) => void) => () => void
+  getDesign: () => Promise<UiDesign>
+  /** design switched from the shell home page */
+  onDesignChanged: (handler: (design: UiDesign) => void) => () => void
   /** shell-wide AutoSave default (see useAutoSavePref) */
   getAutoSaveDefault: () => Promise<AutoSaveDefault>
   onAutoSaveDefaultChanged: (handler: (value: AutoSaveDefault) => void) => () => void

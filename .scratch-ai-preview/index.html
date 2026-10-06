@@ -232,9 +232,9 @@
       }
       /* VEGA One: single unified accent — the apps no longer tint the chat */
       :root {
-        --accent: #e8663f;
-        --accent-dark: #d4552f;
-        --accent-soft: rgb(232 102 63 / 12%);
+        --accent: #343a40;
+        --accent-dark: #212529;
+        --accent-soft: rgb(52 58 64 / 12%);
       }
       [data-theme='dark'] {
         --accent: #f07a55;
@@ -258,8 +258,13 @@
     <div class="panel">
       <div class="ai-panel-header">
         <span class="ai-panel-title">
-          <svg width="18" height="18" viewBox="0 0 16 16">
-            <circle cx="8" cy="8" r="7" fill="var(--accent)" />
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round">
+            <line x1="12" y1="1.3" x2="12" y2="22.7" />
+            <line x1="12" y1="1.3" x2="12" y2="22.7" transform="rotate(30 12 12)" />
+            <line x1="12" y1="1.3" x2="12" y2="22.7" transform="rotate(60 12 12)" />
+            <line x1="12" y1="1.3" x2="12" y2="22.7" transform="rotate(90 12 12)" />
+            <line x1="12" y1="1.3" x2="12" y2="22.7" transform="rotate(120 12 12)" />
+            <line x1="12" y1="1.3" x2="12" y2="22.7" transform="rotate(150 12 12)" />
           </svg>
           VEGA
         </span>

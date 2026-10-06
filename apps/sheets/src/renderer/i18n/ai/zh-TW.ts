@@ -107,4 +107,10 @@ export const zhTW = {
   aiScopeClearTitle: '取消該範圍，本次針對整張工作表',
   aiGensparkAccount: 'Genspark 帳號',
   aiLoginGenspark: '登入 Genspark',
+  aiStarterBudget: '預算追蹤表',
+  aiStarterBudgetPrompt: '建立每月預算追蹤表：包含類別、預算金額、實際金額和差額欄位，加一列合計，並填幾列範例資料',
+  aiStarterSales: '銷售報表',
+  aiStarterSalesPrompt: '建立季度銷售報表：包含產品、地區、數量、單價和銷售額欄位，附範例資料和合計列',
+  aiStarterTasks: '專案任務計畫',
+  aiStarterTasksPrompt: '建立專案任務計畫表：包含任務、負責人、開始日期、截止日期和狀態欄位，並填十幾個範例任務',
 } satisfies Record<keyof typeof zh, string>

@@ -111,4 +111,10 @@ export const ko = {
   aiScopeClearTitle: '범위 지정을 해제하고 시트 전체를 대상으로 하기',
   aiGensparkAccount: 'Genspark 계정',
   aiLoginGenspark: 'Genspark 로그인',
+  aiStarterBudget: '예산 추적표',
+  aiStarterBudgetPrompt: '월간 예산 추적표를 만들어 주세요: 항목, 계획, 실적, 차액 열과 합계 행, 몇 개의 예시 행 포함',
+  aiStarterSales: '매출 보고서',
+  aiStarterSalesPrompt: '분기별 매출 보고서를 만들어 주세요: 제품, 지역, 수량, 단가, 매출 열과 예시 행, 합계 행 포함',
+  aiStarterTasks: '프로젝트 작업 계획',
+  aiStarterTasksPrompt: '프로젝트 작업 계획을 만들어 주세요: 작업, 담당자, 시작일, 마감일, 상태 열과 12개 정도의 예시 작업 포함',
 } satisfies Record<keyof typeof zh, string>

@@ -112,4 +112,10 @@ export const vi = {
   aiToolMergeNoSources: 'No spreadsheet attachments to merge',
   aiToolMergeDone: 'Merged {count} sheets',
   aiToolMergeFailed: 'Merge failed',
+  aiStarterBudget: 'Bảng theo dõi ngân sách',
+  aiStarterBudgetPrompt: 'Tạo bảng theo dõi ngân sách hàng tháng: các cột danh mục, dự kiến, thực tế và chênh lệch, một hàng tổng và vài hàng mẫu',
+  aiStarterSales: 'Báo cáo bán hàng',
+  aiStarterSalesPrompt: 'Tạo báo cáo bán hàng theo quý: các cột sản phẩm, khu vực, số lượng, đơn giá và doanh thu với các hàng mẫu và hàng tổng',
+  aiStarterTasks: 'Kế hoạch công việc',
+  aiStarterTasksPrompt: 'Tạo kế hoạch công việc dự án: các cột công việc, người phụ trách, ngày bắt đầu, hạn chót và trạng thái với khoảng một chục công việc mẫu',
 } satisfies Record<keyof typeof zh, string>

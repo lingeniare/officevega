@@ -106,4 +106,10 @@ export const zh = {
   aiScopeClearTitle: '取消该区域范围，本次针对整张表',
   aiGensparkAccount: 'Genspark 账号',
   aiLoginGenspark: '登录 Genspark',
+  aiStarterBudget: '预算跟踪表',
+  aiStarterBudgetPrompt: '创建一个每月预算跟踪表：包含类别、预算金额、实际金额和差额列，加一行合计，并填几行示例数据',
+  aiStarterSales: '销售报表',
+  aiStarterSalesPrompt: '创建一个季度销售报表：包含产品、地区、数量、单价和销售额列，附示例数据和合计行',
+  aiStarterTasks: '项目任务计划',
+  aiStarterTasksPrompt: '创建一个项目任务计划表：包含任务、负责人、开始日期、截止日期和状态列，并填十几个示例任务',
 }

@@ -113,4 +113,10 @@ export const en = {
   aiScopeClearTitle: 'Drop the range scope and target the whole sheet',
   aiGensparkAccount: 'Genspark account',
   aiLoginGenspark: 'Sign in to Genspark',
+  aiStarterBudget: 'Budget tracker',
+  aiStarterBudgetPrompt: 'Create a monthly budget tracker: category, planned amount, actual amount and difference columns, a totals row and a few sample rows',
+  aiStarterSales: 'Sales report',
+  aiStarterSalesPrompt: 'Create a quarterly sales report: product, region, units, price and revenue columns, sample rows and a totals row',
+  aiStarterTasks: 'Project task plan',
+  aiStarterTasksPrompt: 'Create a project task plan: task, owner, start date, due date and status columns with a dozen sample tasks',
 } satisfies Record<keyof typeof zh, string>

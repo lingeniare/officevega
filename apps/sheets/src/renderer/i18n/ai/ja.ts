@@ -112,4 +112,10 @@ export const ja = {
   aiScopeClearTitle: '範囲指定を解除してシート全体を対象にする',
   aiGensparkAccount: 'Genspark アカウント',
   aiLoginGenspark: 'Genspark にサインイン',
+  aiStarterBudget: '予算トラッカー',
+  aiStarterBudgetPrompt: '月間予算トラッカーを作成してください：カテゴリ、予定額、実績額、差額の列、合計行、数行のサンプルデータを含める',
+  aiStarterSales: '売上レポート',
+  aiStarterSalesPrompt: '四半期売上レポートを作成してください：製品、地域、数量、単価、売上の列とサンプル行、合計行を含める',
+  aiStarterTasks: 'プロジェクトタスク計画',
+  aiStarterTasksPrompt: 'プロジェクトのタスク計画を作成してください：タスク、担当者、開始日、期限、ステータスの列と十数件のサンプルタスクを含める',
 } satisfies Record<keyof typeof zh, string>

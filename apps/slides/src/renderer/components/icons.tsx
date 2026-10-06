@@ -767,11 +767,12 @@ export function IconSpellcheck(props: IconProps) {
 export function IconSparkle(props: IconProps) {
   return (
     <Svg {...props}>
-      <path
-        d="M 12 4.55 C 12 8.67 15.33 12 19.45 12 C 15.33 12 12 15.33 12 19.45 C 12 15.33 8.67 12 4.55 12 C 8.67 12 12 8.67 12 4.55 Z"
-        fill="currentColor"
-        stroke="none"
-      />
+      <line x1="12" y1="1.4" x2="12" y2="22.6" />
+      <line x1="12" y1="1.4" x2="12" y2="22.6" transform="rotate(30 12 12)" />
+      <line x1="12" y1="1.4" x2="12" y2="22.6" transform="rotate(60 12 12)" />
+      <line x1="12" y1="1.4" x2="12" y2="22.6" transform="rotate(90 12 12)" />
+      <line x1="12" y1="1.4" x2="12" y2="22.6" transform="rotate(120 12 12)" />
+      <line x1="12" y1="1.4" x2="12" y2="22.6" transform="rotate(150 12 12)" />
     </Svg>
   )
 }
@@ -803,16 +804,22 @@ export function IconWand(props: IconProps) {
   return (
     <Svg {...props}>
       <path d="M 5.4 18.6 14.4 9.6" />
-      <path
-        d="M 16.56 4.2 l 0.84 2.28 2.28 0.84 -2.28 0.84 -0.84 2.28 -0.84 -2.28 -2.28 -0.84 2.28 -0.84 z"
-        fill="currentColor"
-        stroke="none"
-      />
-      <path
-        d="M 18.6 12.6 l 0.48 1.32 1.32 0.48 -1.32 0.48 -0.48 1.32 -0.48 -1.32 -1.32 -0.48 1.32 -0.48 z"
-        fill="currentColor"
-        stroke="none"
-      />
+      <g strokeWidth="0.9">
+        <line x1="16.56" y1="4.2" x2="16.56" y2="10.44" />
+        <line x1="16.56" y1="4.2" x2="16.56" y2="10.44" transform="rotate(30 16.56 7.32)" />
+        <line x1="16.56" y1="4.2" x2="16.56" y2="10.44" transform="rotate(60 16.56 7.32)" />
+        <line x1="16.56" y1="4.2" x2="16.56" y2="10.44" transform="rotate(90 16.56 7.32)" />
+        <line x1="16.56" y1="4.2" x2="16.56" y2="10.44" transform="rotate(120 16.56 7.32)" />
+        <line x1="16.56" y1="4.2" x2="16.56" y2="10.44" transform="rotate(150 16.56 7.32)" />
+      </g>
+      <g strokeWidth="0.6">
+        <line x1="18.6" y1="12.6" x2="18.6" y2="16.2" />
+        <line x1="18.6" y1="12.6" x2="18.6" y2="16.2" transform="rotate(30 18.6 14.4)" />
+        <line x1="18.6" y1="12.6" x2="18.6" y2="16.2" transform="rotate(60 18.6 14.4)" />
+        <line x1="18.6" y1="12.6" x2="18.6" y2="16.2" transform="rotate(90 18.6 14.4)" />
+        <line x1="18.6" y1="12.6" x2="18.6" y2="16.2" transform="rotate(120 18.6 14.4)" />
+        <line x1="18.6" y1="12.6" x2="18.6" y2="16.2" transform="rotate(150 18.6 14.4)" />
+      </g>
     </Svg>
   )
 }
@@ -947,11 +954,14 @@ export function IconAiPanel(props: IconProps) {
     <Svg {...props}>
       <rect x="4.49" y="5.65" width="15.02" height="12.71" rx="0.92" />
       <path d="M 14.08 5.65 v 12.71" />
-      <path
-        d="M 15.47 9.92 l 0.58 1.5 1.5 0.58 -1.5 0.58 -0.58 1.5 -0.58 -1.5 -1.5 -0.58 1.5 -0.58 z"
-        fill="currentColor"
-        stroke="none"
-      />
+      <g strokeWidth="0.7">
+        <line x1="15.47" y1="9.92" x2="15.47" y2="14.08" />
+        <line x1="15.47" y1="9.92" x2="15.47" y2="14.08" transform="rotate(30 15.47 12)" />
+        <line x1="15.47" y1="9.92" x2="15.47" y2="14.08" transform="rotate(60 15.47 12)" />
+        <line x1="15.47" y1="9.92" x2="15.47" y2="14.08" transform="rotate(90 15.47 12)" />
+        <line x1="15.47" y1="9.92" x2="15.47" y2="14.08" transform="rotate(120 15.47 12)" />
+        <line x1="15.47" y1="9.92" x2="15.47" y2="14.08" transform="rotate(150 15.47 12)" />
+      </g>
     </Svg>
   )
 }
@@ -2144,25 +2154,28 @@ export function IconAiImage(props: IconProps) {
   )
 }
 
-/** Vega brand mark: theme-aware square (white in light, black in dark) with
- * the star centered, inline so it renders crisply at device resolution */
+/** Vega brand mark: 12-ray asterisk, inline so it renders crisply at
+ * device resolution */
 export function VegaMark({ size = 30 }: { size?: number }) {
   return (
     <svg
       className="vega-mark"
       width={size}
       height={size}
-      viewBox="0 0 300 300"
+      viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
       aria-hidden
     >
-      <rect x="14" y="14" width="272" height="272" rx="60" fill="#ffffff" style={{ fill: 'light-dark(#ffffff, #000000)', stroke: 'light-dark(#111111, #ffffff)', strokeWidth: 12 }} />
-      <g transform="translate(63 63) scale(0.58)">
-        <g transform="matrix(.1 0 0 -.1 0 300)" fill="#111111" style={{ fill: 'light-dark(#111111, #ffffff)' }}>
-          <path d="M1477 2653c-10-120-26-330-37-468-11-137-24-263-28-278l-7-28-110 214c-60 119-111 214-112 213s29-96 66-211c38-116 72-225 76-244l7-34-163 144c-90 79-230 206-311 281-81 76-150 138-153 138-9 0 15-30 163-204 216-254 361-430 358-434-2-2-102 31-222 72-207 72-266 88-192 51 75-38 368-208 365-212-4-4-275-28-702-63-137-11-270-23-295-27l-45-7 20-3c21-3 473-42 813-70 111-9 202-19 202-22s-88-57-195-120c-108-63-194-115-192-117s69 20 148 50 181 68 227 85l82 30-19-27c-10-15-63-79-116-142s-160-194-238-290L726 755l45 40c25 22 163 149 307 283 144 133 262 239 262 235 0-5-33-111-74-236-40-125-72-227-70-227s49 90 105 201c55 111 103 199 106 196 6-6 45-489 63-782 7-104 15-219 19-255l7-65 17 215c9 118 29 364 43 545 15 182 30 333 34 338l6 7 100-194c54-107 100-193 102-191 2 1-29 100-68 220-40 119-70 218-68 220s118-102 258-231 278-254 305-277l50-42-45 55c-24 30-110 134-190 230-157 188-261 318-273 337l-8 12 68-25c164-62 392-144 399-144 5 0-68 44-161 98-94 54-188 110-210 123l-40 24 20 2c26 4 792 70 908 79 48 4 87 10 87 13s-206 23-457 44c-252 22-480 41-506 44l-49 6 44 27c24 14 119 68 211 119 92 52 166 95 165 97-2 2-35-8-73-22-39-14-146-53-239-85l-169-59 39 47c44 55 191 228 354 418 62 72 122 144 133 160l21 30-49-41c-28-23-102-90-165-149-134-126-416-375-424-375-3 0 31 106 74 234 44 129 83 243 86 253s-25-40-64-112c-38-71-92-172-120-224l-51-95-5 25c-3 13-15 143-26 289s-27 344-35 440-15 190-15 208v32h-16l-17-217z" />
-        </g>
-      </g>
+      <line x1="12" y1="1.3" x2="12" y2="22.7" />
+      <line x1="12" y1="1.3" x2="12" y2="22.7" transform="rotate(30 12 12)" />
+      <line x1="12" y1="1.3" x2="12" y2="22.7" transform="rotate(60 12 12)" />
+      <line x1="12" y1="1.3" x2="12" y2="22.7" transform="rotate(90 12 12)" />
+      <line x1="12" y1="1.3" x2="12" y2="22.7" transform="rotate(120 12 12)" />
+      <line x1="12" y1="1.3" x2="12" y2="22.7" transform="rotate(150 12 12)" />
     </svg>
   )
 }

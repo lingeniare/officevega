@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="760" viewBox="0 0 760 760" fill="none">
+  <g stroke="currentColor" stroke-width="20" stroke-linecap="round">
+    <line x1="380" y1="12" x2="380" y2="748"/>
+    <line x1="380" y1="12" x2="380" y2="748" transform="rotate(30 380 380)"/>
+    <line x1="380" y1="12" x2="380" y2="748" transform="rotate(60 380 380)"/>
+    <line x1="380" y1="12" x2="380" y2="748" transform="rotate(90 380 380)"/>
+    <line x1="380" y1="12" x2="380" y2="748" transform="rotate(120 380 380)"/>
+    <line x1="380" y1="12" x2="380" y2="748" transform="rotate(150 380 380)"/>
+  </g>
+</svg>

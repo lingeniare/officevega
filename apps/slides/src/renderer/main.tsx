@@ -4,7 +4,7 @@ import { htmlLang, type Lang } from '@genoffice/i18n'
 import { App } from './App'
 import { AudienceView } from './components/AudienceView'
 import { LocaleProvider, setModuleLang } from './i18n/locale'
-import type { UiTheme } from '../shared/ipc'
+import type { UiDesign, UiTheme } from '../shared/ipc'
 import '@genoffice/ui/tokens.css'
 import '@genoffice/ui/screentip.css'
 import '@genoffice/ui/color-picker.css'
@@ -15,6 +15,7 @@ import '@genoffice/ui/ai-panel-prefs.css'
 import '@genoffice/ui/ai-scope-quote.css'
 import './styles.css'
 import '@genoffice/ui/ai-chat.css'
+import '@genoffice/ui/cup-skin.css'
 import { applyAiPanelPrefs, installScreenTips } from '@genoffice/ui'
 
 installScreenTips()
@@ -39,15 +40,22 @@ function applyTheme(theme: UiTheme): void {
   else document.documentElement.setAttribute('data-theme', theme)
 }
 
+function applyDesign(design: UiDesign): void {
+  if (design === 'standard') document.documentElement.removeAttribute('data-design')
+  else document.documentElement.setAttribute('data-design', design)
+}
+
 async function bootstrap(): Promise<void> {
   let lang: Lang = 'zh'
   let theme: UiTheme = 'system'
+  let design: UiDesign = 'standard'
   try {
     // per-promise catch: standalone runs have no app:get-theme handler, and
     // that rejection must not drop a resolved language
-    ;[lang, theme] = await Promise.all([
+    ;[lang, theme, design] = await Promise.all([
       window.slidesApi.getLanguage().catch(() => 'zh' as const),
       window.slidesApi.getTheme().catch(() => 'system' as const),
+      window.slidesApi.getDesign().catch(() => 'standard' as const),
     ])
   } catch {
     /* dev renderer without the preload bridge */
@@ -58,6 +66,8 @@ async function bootstrap(): Promise<void> {
   if (mode !== 'audience') {
     applyTheme(theme)
     window.slidesApi?.onThemeChanged(applyTheme)
+    applyDesign(design)
+    window.slidesApi?.onDesignChanged(applyDesign)
     await window.slidesApi
       ?.getAiPanelPrefs?.()
       .then(applyAiPanelPrefs)

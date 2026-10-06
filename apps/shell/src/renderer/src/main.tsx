@@ -8,6 +8,7 @@ import '@genoffice/ui/screentip.css'
 import '@genoffice/ui/dropdown.css'
 import './home.css'
 import './tabbar.css'
+import '@genoffice/ui/cup-skin.css'
 import { installScreenTips } from '@genoffice/ui'
 
 installScreenTips()
@@ -26,15 +27,23 @@ void Promise.all([
   // if the flag is unreadable, skip onboarding rather than block the home screen
   window.aiOffice.onboardingSeen().catch(() => true),
   window.aiOffice.getTheme().catch(() => 'system' as const),
-]).then(([lang, onboardingSeen, theme]) => {
+  window.aiOffice.getDesign().catch(() => 'standard' as const),
+]).then(([lang, onboardingSeen, theme, design]) => {
   document.documentElement.lang = htmlLang(lang)
   // apply theme attribute before first paint to avoid flash
   if (theme !== 'system') {
     document.documentElement.setAttribute('data-theme', theme)
   }
+  if (design === 'retro') {
+    document.documentElement.setAttribute('data-design', 'retro')
+  }
   window.aiOffice.onThemeChanged((next) => {
     if (next === 'system') document.documentElement.removeAttribute('data-theme')
     else document.documentElement.setAttribute('data-theme', next)
+  })
+  window.aiOffice.onDesignChanged((next) => {
+    if (next === 'standard') document.documentElement.removeAttribute('data-design')
+    else document.documentElement.setAttribute('data-design', next)
   })
   createRoot(document.getElementById('root')!).render(
     <React.StrictMode>

@@ -318,6 +318,15 @@ const homeApi: HomeApi = {
       throw new Error('Invalid theme.')
     await ipcRenderer.invoke(HOME_CHANNELS.setTheme, theme)
   },
+  async getDesign() {
+    const result: unknown = await ipcRenderer.invoke(HOME_CHANNELS.getDesign)
+    return result === 'retro' || result === 'digital' ? result : 'standard'
+  },
+  async setDesign(design) {
+    if (design !== 'standard' && design !== 'retro' && design !== 'digital')
+      throw new Error('Invalid design.')
+    await ipcRenderer.invoke(HOME_CHANNELS.setDesign, design)
+  },
   async getAutoSaveDefault() {
     const result: unknown = await ipcRenderer.invoke(HOME_CHANNELS.getAutoSaveDefault)
     const r = result as { on?: unknown; updatedAt?: unknown } | null
@@ -421,6 +430,13 @@ const homeApi: HomeApi = {
     }
     ipcRenderer.on('app:theme-changed', listener)
     return () => ipcRenderer.removeListener('app:theme-changed', listener)
+  },
+  onDesignChanged(handler) {
+    const listener = (_event: Electron.IpcRendererEvent, design: unknown) => {
+      if (design === 'standard' || design === 'retro' || design === 'digital') handler(design)
+    }
+    ipcRenderer.on('app:design-changed', listener)
+    return () => ipcRenderer.removeListener('app:design-changed', listener)
   },
   onOpenSettings(handler) {
     const listener = () => handler()

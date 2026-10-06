@@ -8,7 +8,7 @@ import {
   OPEN_FILE_DIALOG_CHANNEL,
 } from '@genoffice/electron-utils/drop-open'
 import { AI_CHANNELS, MARKDOWN_CHANNELS } from '../shared/ipc'
-import type { AutoSaveDefault, ExportFormat, MarkdownApi, SaveMode, UiTheme } from '../shared/ipc'
+import type { AutoSaveDefault, ExportFormat, MarkdownApi, SaveMode, UiDesign, UiTheme } from '../shared/ipc'
 
 const api: MarkdownApi = {
   consumePending: () => ipcRenderer.invoke(MARKDOWN_CHANNELS.consumePending),
@@ -80,6 +80,12 @@ const api: MarkdownApi = {
     const listener = (_e: Electron.IpcRendererEvent, theme: UiTheme) => handler(theme)
     ipcRenderer.on(MARKDOWN_CHANNELS.themeChanged, listener)
     return () => ipcRenderer.removeListener(MARKDOWN_CHANNELS.themeChanged, listener)
+  },
+  getDesign: () => ipcRenderer.invoke('app:get-design'),
+  onDesignChanged: (handler) => {
+    const listener = (_e: Electron.IpcRendererEvent, design: UiDesign) => handler(design)
+    ipcRenderer.on('app:design-changed', listener)
+    return () => ipcRenderer.removeListener('app:design-changed', listener)
   },
   getAutoSaveDefault: () => ipcRenderer.invoke(MARKDOWN_CHANNELS.getAutoSaveDefault),
   onAutoSaveDefaultChanged: (handler) => {

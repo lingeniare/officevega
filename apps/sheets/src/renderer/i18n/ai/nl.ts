@@ -114,4 +114,10 @@ export const nl = {
   aiScopeClearTitle: 'Bereikbereik wissen en het hele blad gebruiken',
   aiGensparkAccount: 'Genspark-account',
   aiLoginGenspark: 'Aanmelden bij Genspark',
+  aiStarterBudget: 'Budgettracker',
+  aiStarterBudgetPrompt: 'Maak een maandelijkse budgettracker: kolommen categorie, gepland, werkelijk en verschil, een totaalrij en een paar voorbeeldrijen',
+  aiStarterSales: 'Verkooprapport',
+  aiStarterSalesPrompt: 'Maak een kwartaalverkooprapport: kolommen product, regio, aantallen, prijs en omzet met voorbeeldrijen en een totaalrij',
+  aiStarterTasks: 'Takenplan',
+  aiStarterTasksPrompt: 'Maak een projecttakenplan: kolommen taak, eigenaar, startdatum, deadline en status met een dozijn voorbeeldtaken',
 } satisfies Record<keyof typeof zh, string>

@@ -114,4 +114,10 @@ export const uz = {
   aiScopeClearTitle: 'Oraliq doirasini olib tashlab, butun varaqni nishonga oling',
   aiGensparkAccount: 'Genspark account',
   aiLoginGenspark: 'Sign in to Genspark',
+  aiStarterBudget: 'Byudjet trekkeri',
+  aiStarterBudgetPrompt: 'Oylik byudjet trekkerini yarating: toifa, rejalashtirilgan, haqiqiy va farq ustunlari, jami qatori va bir nechta namunaviy qatorlar',
+  aiStarterSales: 'Sotuv hisoboti',
+  aiStarterSalesPrompt: 'Choraklik sotuv hisobotini yarating: mahsulot, hudud, birlik, narx va tushum ustunlari, namunaviy qatorlar va jami qatori bilan',
+  aiStarterTasks: 'Loyiha vazifalar rejasi',
+  aiStarterTasksPrompt: 'Loyiha vazifalar rejasini yarating: vazifa, mas’ul, boshlanish sanasi, muddat va holat ustunlari bilan o‘nta namunaviy vazifalar',
 } satisfies Record<keyof typeof zh, string>

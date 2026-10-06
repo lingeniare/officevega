@@ -11,6 +11,7 @@ import type {
   MenuCommand,
   AutoSaveDefault,
   ContextMenuRequest,
+  UiDesign,
   UiTheme,
   ZoteroRendererRequest,
 } from '../shared/ipc'
@@ -33,6 +34,12 @@ const api: DesktopApi = {
     const listener = (_event: IpcRendererEvent, theme: UiTheme) => handler(theme)
     ipcRenderer.on('app:theme-changed', listener)
     return () => ipcRenderer.removeListener('app:theme-changed', listener)
+  },
+  getDesign: () => ipcRenderer.invoke('app:get-design'),
+  onDesignChanged: (handler) => {
+    const listener = (_event: IpcRendererEvent, design: UiDesign) => handler(design)
+    ipcRenderer.on('app:design-changed', listener)
+    return () => ipcRenderer.removeListener('app:design-changed', listener)
   },
   getAutoSaveDefault: () => ipcRenderer.invoke('app:get-auto-save-default'),
   onAutoSaveDefaultChanged: (handler) => {

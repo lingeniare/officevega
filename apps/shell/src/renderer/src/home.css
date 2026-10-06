@@ -158,7 +158,7 @@ body.vib .home {
 }
 
 .nav-item.active {
-  background: var(--bg-hover);
+  background: var(--bg-selected);
   font-weight: 600;
 }
 
@@ -704,7 +704,7 @@ body.vib .home {
 
 /* checked rows keep the same gray as the sidebar's active item */
 .recent-row:has(.row-check:checked) .recent-item {
-  background: var(--bg-hover);
+  background: var(--bg-selected);
 }
 
 .recent-item:focus-visible {

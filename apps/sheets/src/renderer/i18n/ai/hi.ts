@@ -113,4 +113,10 @@ export const hi = {
   aiScopeClearTitle: 'श्रेणी दायरा हटाएँ और पूरी शीट पर काम करें',
   aiGensparkAccount: 'Genspark खाता',
   aiLoginGenspark: 'Genspark में साइन इन करें',
+  aiStarterBudget: 'बजट ट्रैकर',
+  aiStarterBudgetPrompt: 'मासिक बजट ट्रैकर बनाएँ: श्रेणी, नियोजित, वास्तविक और अंतर कॉलम, एक कुल पंक्ति और कुछ उदाहरण पंक्तियाँ',
+  aiStarterSales: 'बिक्री रिपोर्ट',
+  aiStarterSalesPrompt: 'त्रैमासिक बिक्री रिपोर्ट बनाएँ: उत्पाद, क्षेत्र, इकाइयाँ, मूल्य और आय कॉलम, उदाहरण पंक्तियाँ और एक कुल पंक्ति',
+  aiStarterTasks: 'परियोजना कार्य योजना',
+  aiStarterTasksPrompt: 'परियोजना कार्य योजना बनाएँ: कार्य, स्वामी, आरंभ तिथि, नियत तिथि और स्थिति कॉलम के साथ एक दर्जन उदाहरण कार्य',
 } satisfies Record<keyof typeof zh, string>

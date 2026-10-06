@@ -94,6 +94,7 @@ import type {
   OpenResult,
   SlidesApi,
   AutoSaveDefault,
+  UiDesign,
   UiTheme,
   SetEffectsPatch,
 } from '../shared/ipc'
@@ -113,6 +114,12 @@ const api: SlidesApi = {
     const listener = (_event: IpcRendererEvent, theme: UiTheme) => handler(theme)
     ipcRenderer.on('app:theme-changed', listener)
     return () => ipcRenderer.removeListener('app:theme-changed', listener)
+  },
+  getDesign: () => ipcRenderer.invoke('app:get-design'),
+  onDesignChanged: (handler) => {
+    const listener = (_event: IpcRendererEvent, design: UiDesign) => handler(design)
+    ipcRenderer.on('app:design-changed', listener)
+    return () => ipcRenderer.removeListener('app:design-changed', listener)
   },
   getAutoSaveDefault: () => ipcRenderer.invoke('app:get-auto-save-default'),
   onAutoSaveDefaultChanged: (handler) => {

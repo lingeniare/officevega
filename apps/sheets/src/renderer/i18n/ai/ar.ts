@@ -111,4 +111,10 @@ export const ar = {
   aiScopeClearTitle: 'إلغاء نطاق التحديد واستهداف الورقة بأكملها',
   aiGensparkAccount: 'حساب Genspark',
   aiLoginGenspark: 'تسجيل الدخول إلى Genspark',
+  aiStarterBudget: 'متعقب الميزانية',
+  aiStarterBudgetPrompt: 'أنشئ متعقب ميزانية شهريًا: أعمدة الفئة والمخطط والفعلي والفرق، وصفًا للإجماليات وبضعة صفوف تجريبية',
+  aiStarterSales: 'تقرير المبيعات',
+  aiStarterSalesPrompt: 'أنشئ تقرير مبيعات ربع سنوي: أعمدة المنتج والمنطقة والوحدات والسعر والإيرادات مع صفوف تجريبية وصف إجماليات',
+  aiStarterTasks: 'خطة مهام المشروع',
+  aiStarterTasksPrompt: 'أنشئ خطة مهام المشروع: أعمدة المهمة والمسؤول وتاريخ البدء وتاريخ الاستحقاق والحالة مع نحو اثنتي عشرة مهمة تجريبية',
 } satisfies Record<keyof typeof zh, string>

@@ -113,4 +113,10 @@ export const cs = {
   aiScopeClearTitle: 'Zrušit omezení na oblast a pracovat s celým listem',
   aiGensparkAccount: 'Účet Genspark',
   aiLoginGenspark: 'Přihlásit se ke Genspark',
+  aiStarterBudget: 'Sledování rozpočtu',
+  aiStarterBudgetPrompt: 'Vytvoř měsíční sledování rozpočtu: sloupce kategorie, plánované, skutečné a rozdíl, řádek součtů a několik ukázkových řádků',
+  aiStarterSales: 'Report prodeje',
+  aiStarterSalesPrompt: 'Vytvoř čtvrtletní report prodeje: sloupce produkt, region, počet kusů, cena a tržby s ukázkovými řádky a řádkem součtů',
+  aiStarterTasks: 'Plán úkolů',
+  aiStarterTasksPrompt: 'Vytvoř plán úkolů projektu: sloupce úkol, vlastník, datum zahájení, termín a stav s tuctem ukázkových úkolů',
 } satisfies Record<keyof typeof zh, string>

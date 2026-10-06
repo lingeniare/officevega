@@ -115,4 +115,10 @@ export const ky = {
   aiScopeClearTitle: 'Диапазондун чегин алып салып, бүтүндөй жадыбалга багыттоо',
   aiGensparkAccount: 'Genspark account',
   aiLoginGenspark: 'Sign in to Genspark',
+  aiStarterBudget: 'Бюджет трекери',
+  aiStarterBudgetPrompt: 'Айлык бюджет трекерин түз: категория, пландаштырылган, чыныгы жана айырма мамылары, жыйынтык сабы жана бир нече үлгү саптары',
+  aiStarterSales: 'Сатуу отчету',
+  aiStarterSalesPrompt: 'Чейрек жылдык сатуу отчетун түз: продукт, аймак, саны, баасы жана киреше мамылары, үлгү саптары жана жыйынтык сабы менен',
+  aiStarterTasks: 'Долбоор тапшырма планы',
+  aiStarterTasksPrompt: 'Долбоордун тапшырма планын түз: тапшырма, жоопкер, башталуу күнү, мөөнөтү жана абалы мамылары менен ондан ашык үлгү тапшырмалары',
 } satisfies Record<keyof typeof zh, string>

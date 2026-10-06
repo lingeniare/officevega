@@ -1,6 +1,6 @@
 /**
  * Regenerates the application icon from vega.png (repo root) — the approved
- * artwork: white 12-ray star with a soft glow, centered on a black square.
+ * artwork: white 12-ray asterisk centered on a black square.
  *
  * vega.png is the single source of truth; everything below is derived:
  * - build/icon.png + renderer app-icon.png + build/icons set (opaque square)
@@ -81,55 +81,35 @@ function buildIco(entries) {
 const srcImg = await loadImage(SRC)
 
 /**
- * Star core extracted from vega.png: pixels brighter than CORE_THRESHOLD
- * (the white star body without the soft glow tail), cropped to its bbox.
- * Small icon entries (title bars, installer dialogs, tree views) physically
- * cannot reproduce the glow — a faithful downscale reads as a dark smudge —
- * so they get this simplified high-contrast mark instead.
+ * The asterisk redrawn vector-crisp at `size`. The source PNG's spokes are
+ * ~2.6% of the canvas, so a faithful downscale to ≤48px produces sub-pixel
+ * lines — small entries draw the mark with a heavier relative stroke instead.
  */
-const CORE_THRESHOLD = 110
-const starCore = (() => {
-  const w = srcImg.width
-  const h = srcImg.height
-  const c = createCanvas(w, h)
-  const ctx = c.getContext('2d')
-  ctx.drawImage(srcImg, 0, 0)
-  const { data } = ctx.getImageData(0, 0, w, h)
-  let x0 = w
-  let y0 = h
-  let x1 = 0
-  let y1 = 0
-  for (let j = 0; j < h; j++) {
-    for (let i = 0; i < w; i++) {
-      const o = (j * w + i) * 4
-      if (data[o] > CORE_THRESHOLD && data[o + 1] > CORE_THRESHOLD && data[o + 2] > CORE_THRESHOLD) {
-        if (i < x0) x0 = i
-        if (i > x1) x1 = i
-        if (j < y0) y0 = j
-        if (j > y1) y1 = j
-      }
-    }
+function drawAsterisk(ctx, size) {
+  const c = size / 2
+  const r = size * 0.42
+  ctx.strokeStyle = '#ffffff'
+  ctx.lineWidth = size * 0.1
+  ctx.lineCap = 'round'
+  for (const deg of [0, 30, 60, 90, 120, 150]) {
+    const a = (deg * Math.PI) / 180
+    ctx.beginPath()
+    ctx.moveTo(c - r * Math.sin(a), c + r * Math.cos(a))
+    ctx.lineTo(c + r * Math.sin(a), c - r * Math.cos(a))
+    ctx.stroke()
   }
-  const crop = createCanvas(x1 - x0 + 1, y1 - y0 + 1)
-  const cx = crop.getContext('2d')
-  cx.drawImage(c, x0, y0, crop.width, crop.height, 0, 0, crop.width, crop.height)
-  console.log(`star core ${crop.width}x${crop.height} at threshold ${CORE_THRESHOLD}`)
-  return crop
-})()
+}
 
 /**
- * Small-size entry: solid black square + the star core redrawn large
- * (74% of the canvas) in pure white. Same star, optimized for tiny pixels.
+ * Small-size entry: solid black square + the asterisk redrawn large with a
+ * heavier stroke. Same mark, optimized for tiny pixels.
  */
 async function renderSmall(size) {
   const c = createCanvas(size, size)
   const ctx = c.getContext('2d')
   ctx.fillStyle = '#000000'
   ctx.fillRect(0, 0, size, size)
-  const side = Math.round(size * 0.74)
-  const pad = Math.round((size - side) / 2)
-  ctx.imageSmoothingQuality = 'high'
-  ctx.drawImage(starCore, pad, pad, side, side)
+  drawAsterisk(ctx, size)
   return c.toBuffer('image/png')
 }
 

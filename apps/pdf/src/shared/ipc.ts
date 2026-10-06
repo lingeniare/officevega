@@ -107,6 +107,7 @@ export interface CreateDocumentResult {
 }
 
 export type UiTheme = 'light' | 'dark' | 'system'
+export type UiDesign = 'standard' | 'retro' | 'digital'
 
 export type MarkupType = 'highlight' | 'underline' | 'strikeout'
 
@@ -801,6 +802,8 @@ export interface PdfApi {
   onLanguageChanged(handler: (lang: Lang) => void): () => void
   getTheme(): Promise<UiTheme>
   onThemeChanged(handler: (theme: UiTheme) => void): () => void
+  getDesign(): Promise<UiDesign>
+  onDesignChanged(handler: (design: UiDesign) => void): () => void
   /** AI panel text size + chat-input spellcheck (Settings → General in the shell) */
   getAiPanelPrefs(): Promise<AiPanelPrefs>
   setAiPanelPrefs(patch: Partial<AiPanelPrefs>): Promise<AiPanelPrefs>

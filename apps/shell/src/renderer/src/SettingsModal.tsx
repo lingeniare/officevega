@@ -29,7 +29,7 @@ import type {
 } from '@genoffice/ai-provider'
 import { useI18n } from './locale'
 import type { StringKey, TFunc } from './locale'
-import type { AccountStatus, AiCatalogEntry, UiTheme } from '../../shared/home-api'
+import type { AccountStatus, AiCatalogEntry, UiDesign, UiTheme } from '../../shared/home-api'
 import { LicenseBlock } from './LicenseBlock'
 import { ProviderLogo } from './provider-logos'
 import { IntegrationsPane, skillUpdateDue } from './IntegrationsPane'
@@ -79,6 +79,12 @@ const THEME_OPTIONS = [
   { value: 'light', labelKey: 'themeLight' },
   { value: 'dark', labelKey: 'themeDark' },
 ] as const satisfies readonly { value: UiTheme; labelKey: StringKey }[]
+
+const DESIGN_OPTIONS = [
+  { value: 'standard', labelKey: 'designStandard' },
+  { value: 'retro', labelKey: 'designRetro' },
+  { value: 'digital', labelKey: 'designDigital' },
+] as const satisfies readonly { value: UiDesign; labelKey: StringKey }[]
 
 const AI_FONT_SIZE_OPTIONS = [
   { value: 'default', labelKey: 'aiFontSizeDefault' },
@@ -1558,6 +1564,7 @@ export function SettingsModal({
   const [section, setSection] = useState<SectionId>(target?.section ?? 'account')
   const [displayName, setDisplayName] = useState('')
   const [theme, setTheme] = useState<UiTheme>('system')
+  const [design, setDesign] = useState<UiDesign>('standard')
   const [saveDir, setSaveDir] = useState('')
   const [autoSaveOn, setAutoSaveOn] = useState(false)
   const [defaultApp, setDefaultApp] = useState<DefaultAppStatus | null>(null)
@@ -1571,6 +1578,9 @@ export function SettingsModal({
     let alive = true
     void window.aiOffice.getTheme?.().then((th) => {
       if (alive) setTheme(th)
+    })
+    void window.aiOffice.getDesign?.().then((d) => {
+      if (alive) setDesign(d)
     })
     void window.aiOffice.getDisplayName?.().then((name) => {
       if (alive) setDisplayName(name)
@@ -1611,6 +1621,13 @@ export function SettingsModal({
     void window.aiOffice.setTheme(next)
     if (next === 'system') document.documentElement.removeAttribute('data-theme')
     else document.documentElement.setAttribute('data-theme', next)
+  }
+
+  const applyDesign = (next: UiDesign) => {
+    setDesign(next)
+    void window.aiOffice.setDesign(next)
+    if (next === 'standard') document.documentElement.removeAttribute('data-design')
+    else document.documentElement.setAttribute('data-design', next)
   }
 
   const updateAiPrefs = (patch: Partial<AiPanelPrefs>) => {
@@ -1828,6 +1845,21 @@ export function SettingsModal({
                 </div>
                 <div className="set-field">
                   <div className="set-field-text">
+                    <label className="set-field-label">{t('design')}</label>
+                  </div>
+                  <Dropdown
+                    className="set-dd"
+                    value={design}
+                    ariaLabel={t('design')}
+                    options={DESIGN_OPTIONS.map((opt) => ({
+                      value: opt.value,
+                      label: t(opt.labelKey),
+                    }))}
+                    onPick={(v) => applyDesign(v as UiDesign)}
+                  />
+                </div>
+                <div className="set-field">
+                  <div className="set-field-text">
                     <label className="set-field-label">{t('setAiPanelSide')}</label>
                   </div>
                   <Dropdown
@@ -2002,19 +2034,7 @@ export function SettingsModal({
                   }
                 />
                 <Field
-                  label={t('setReportBug')}
-                  value="officevega.com/feedback"
-                  action={
-                    <button
-                      className="set-btn"
-                      onClick={() => void window.aiOffice.openFeedback?.()}
-                    >
-                      {t('setOpen')}
-                    </button>
-                  }
-                />
-                <Field
-                  label={t('setSuggestIdea')}
+                  label={`${t('setReportBug')} / ${t('setSuggestIdea')}`}
                   value="officevega.com/feedback"
                   action={
                     <button

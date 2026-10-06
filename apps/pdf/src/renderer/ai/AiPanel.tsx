@@ -110,6 +110,7 @@ export function AiPanel({
   /** the scope chip's expandable preview of the selected text */
   const [scopePreviewOpen, setScopePreviewOpen] = useState(false)
   const chatRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLTextAreaElement>(null)
   const stickToBottomRef = useRef(true)
 
   // ── Chat-history persistence (r142): same shared store Docs/Sheets use ──
@@ -707,19 +708,23 @@ export function AiPanel({
             <div className="ai-quick-actions">
               <button
                 className="ai-quick-btn"
-                onClick={() =>
-                  send(t(hasScopeSelection ? 'aiQuickSummarySelPrompt' : 'aiQuickSummaryPrompt'))
-                }
+                onClick={() => {
+                  setPrompt(
+                    t(hasScopeSelection ? 'aiQuickSummarySelPrompt' : 'aiQuickSummaryPrompt'),
+                  )
+                  inputRef.current?.focus()
+                }}
               >
                 <span className="ai-starter-text">{t('aiQuickSummary')}</span>
               </button>
               <button
                 className="ai-quick-btn"
-                onClick={() =>
-                  send(
+                onClick={() => {
+                  setPrompt(
                     t(hasScopeSelection ? 'aiQuickKeyPointsSelPrompt' : 'aiQuickKeyPointsPrompt'),
                   )
-                }
+                  inputRef.current?.focus()
+                }}
               >
                 <span className="ai-starter-text">{t('aiQuickKeyPoints')}</span>
               </button>
@@ -863,6 +868,7 @@ export function AiPanel({
           stopLabel={t('aiStop')}
           iconOnly
           privacyBadge={aiProvider === 'vega'}
+          textareaRef={inputRef}
           onChange={setPrompt}
           onSend={() => send(prompt)}
           onStop={stop}
@@ -1026,24 +1032,27 @@ function IconCollapse(): ReactElement {
   )
 }
 
-/** Vega brand mark: theme-aware square (white in light, black in dark) with
- * the star centered, inline so it renders crisply at device resolution */
+/** Vega brand mark: 12-ray asterisk, inline so it renders crisply at
+ * device resolution */
 export function VegaMark({ size = 18 }: { size?: number }): React.JSX.Element {
   return (
     <svg
       width={size}
       height={size}
-      viewBox="0 0 300 300"
+      viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
       aria-hidden
     >
-      <rect x="14" y="14" width="272" height="272" rx="60" fill="#ffffff" style={{ fill: 'light-dark(#ffffff, #000000)', stroke: 'light-dark(#111111, #ffffff)', strokeWidth: 12 }} />
-      <g transform="translate(63 63) scale(0.58)">
-        <g transform="matrix(.1 0 0 -.1 0 300)" fill="#111111" style={{ fill: 'light-dark(#111111, #ffffff)' }}>
-          <path d="M1477 2653c-10-120-26-330-37-468-11-137-24-263-28-278l-7-28-110 214c-60 119-111 214-112 213s29-96 66-211c38-116 72-225 76-244l7-34-163 144c-90 79-230 206-311 281-81 76-150 138-153 138-9 0 15-30 163-204 216-254 361-430 358-434-2-2-102 31-222 72-207 72-266 88-192 51 75-38 368-208 365-212-4-4-275-28-702-63-137-11-270-23-295-27l-45-7 20-3c21-3 473-42 813-70 111-9 202-19 202-22s-88-57-195-120c-108-63-194-115-192-117s69 20 148 50 181 68 227 85l82 30-19-27c-10-15-63-79-116-142s-160-194-238-290L726 755l45 40c25 22 163 149 307 283 144 133 262 239 262 235 0-5-33-111-74-236-40-125-72-227-70-227s49 90 105 201c55 111 103 199 106 196 6-6 45-489 63-782 7-104 15-219 19-255l7-65 17 215c9 118 29 364 43 545 15 182 30 333 34 338l6 7 100-194c54-107 100-193 102-191 2 1-29 100-68 220-40 119-70 218-68 220s118-102 258-231 278-254 305-277l50-42-45 55c-24 30-110 134-190 230-157 188-261 318-273 337l-8 12 68-25c164-62 392-144 399-144 5 0-68 44-161 98-94 54-188 110-210 123l-40 24 20 2c26 4 792 70 908 79 48 4 87 10 87 13s-206 23-457 44c-252 22-480 41-506 44l-49 6 44 27c24 14 119 68 211 119 92 52 166 95 165 97-2 2-35-8-73-22-39-14-146-53-239-85l-169-59 39 47c44 55 191 228 354 418 62 72 122 144 133 160l21 30-49-41c-28-23-102-90-165-149-134-126-416-375-424-375-3 0 31 106 74 234 44 129 83 243 86 253s-25-40-64-112c-38-71-92-172-120-224l-51-95-5 25c-3 13-15 143-26 289s-27 344-35 440-15 190-15 208v32h-16l-17-217z" />
-        </g>
-      </g>
+      <line x1="12" y1="1.3" x2="12" y2="22.7" />
+      <line x1="12" y1="1.3" x2="12" y2="22.7" transform="rotate(30 12 12)" />
+      <line x1="12" y1="1.3" x2="12" y2="22.7" transform="rotate(60 12 12)" />
+      <line x1="12" y1="1.3" x2="12" y2="22.7" transform="rotate(90 12 12)" />
+      <line x1="12" y1="1.3" x2="12" y2="22.7" transform="rotate(120 12 12)" />
+      <line x1="12" y1="1.3" x2="12" y2="22.7" transform="rotate(150 12 12)" />
     </svg>
   )
 }

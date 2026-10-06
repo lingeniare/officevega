@@ -55,6 +55,7 @@ export const HTML_CHANNELS = {
 } as const
 
 export type UiTheme = 'light' | 'dark' | 'system'
+export type UiDesign = 'standard' | 'retro' | 'digital'
 
 /** shell-wide AutoSave default; updatedAt is 0 until the user has ever set it */
 export interface AutoSaveDefault {
@@ -275,6 +276,8 @@ export interface HtmlApi {
   onLanguageChanged(handler: (lang: Lang) => void): () => void
   getTheme(): Promise<UiTheme>
   onThemeChanged(handler: (theme: UiTheme) => void): () => void
+  getDesign(): Promise<UiDesign>
+  onDesignChanged(handler: (design: UiDesign) => void): () => void
   getAutoSaveDefault(): Promise<AutoSaveDefault>
   onAutoSaveDefaultChanged(handler: (value: AutoSaveDefault) => void): () => void
   /** AI panel text size + chat-input spellcheck (Settings → General in the shell) */

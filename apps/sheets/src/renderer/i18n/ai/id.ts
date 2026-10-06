@@ -111,4 +111,10 @@ export const id = {
   aiScopeClearTitle: 'Hapus cakupan rentang dan gunakan seluruh lembar',
   aiGensparkAccount: 'Akun Genspark',
   aiLoginGenspark: 'Masuk ke Genspark',
+  aiStarterBudget: 'Pelacak anggaran',
+  aiStarterBudgetPrompt: 'Buat pelacak anggaran bulanan: kolom kategori, rencana, aktual dan selisih, satu baris total dan beberapa baris contoh',
+  aiStarterSales: 'Laporan penjualan',
+  aiStarterSalesPrompt: 'Buat laporan penjualan triwulanan: kolom produk, wilayah, unit, harga dan pendapatan dengan baris contoh dan baris total',
+  aiStarterTasks: 'Rencana tugas',
+  aiStarterTasksPrompt: 'Buat rencana tugas proyek: kolom tugas, penanggung jawab, tanggal mulai, tenggat dan status dengan selusin tugas contoh',
 } satisfies Record<keyof typeof zh, string>

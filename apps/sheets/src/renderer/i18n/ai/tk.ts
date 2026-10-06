@@ -114,4 +114,10 @@ export const tk = {
   aiScopeClearTitle: 'Aralyk çägini aýyr we tutuş sahypany nyşana al',
   aiGensparkAccount: 'Genspark account',
   aiLoginGenspark: 'Sign in to Genspark',
+  aiStarterBudget: 'Büjet yzarlaýjy',
+  aiStarterBudgetPrompt: 'Aýlyk büjet yzarlaýjy döret: kategoriýa, meýilnamalaýyn, hakyky we tapawut sütünleri, jemi hatary we birnäçe mysal hatary',
+  aiStarterSales: 'Satuw hasabaty',
+  aiStarterSalesPrompt: 'Çärýeklik satuw hasabatyny döret: önüm, sebit, birlik, baha we girdeji sütünleri bilen mysal hatary we jemi hatary',
+  aiStarterTasks: 'Taslama wezipe meýilnamasy',
+  aiStarterTasksPrompt: 'Taslamanyň wezipe meýilnamasyny döret: wezipe, jogapkär, başlanýan senesi, möhleti we ýagdaýy sütünleri bilen bir düzine mysal wezipeler',
 } satisfies Record<keyof typeof zh, string>

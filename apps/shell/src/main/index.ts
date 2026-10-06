@@ -277,6 +277,7 @@ import type {
   RecentPage,
   RenameResult,
   StarPromptShow,
+  UiDesign,
   UiTheme,
   FileSearchPage,
   FileSearchQuery,
@@ -540,6 +541,15 @@ function currentTheme(): UiTheme {
   const saved = readAppSettings(APP_SETTINGS_PATH()).theme
   cachedTheme = saved === 'light' || saved === 'dark' ? saved : 'system'
   return cachedTheme
+}
+
+let cachedDesign: UiDesign | null = null
+
+function currentDesign(): UiDesign {
+  if (cachedDesign) return cachedDesign
+  const saved = readAppSettings(APP_SETTINGS_PATH()).design
+  cachedDesign = saved === 'retro' || saved === 'digital' ? saved : 'standard'
+  return cachedDesign
 }
 
 /** user-chosen name for the home greeting; '' = derive it from the account email */
@@ -4708,6 +4718,18 @@ function registerHomeIpc(): void {
     nativeTheme.themeSource = theme
     refreshTitleBarOverlay()
     for (const wc of webContents.getAllWebContents()) wc.send('app:theme-changed', theme)
+  })
+
+  ipcMain.handle(HOME_CHANNELS.getDesign, (): UiDesign => currentDesign())
+  // editor tabs ask via the app-wide channel (symmetric with app:get-theme)
+  ipcMain.handle('app:get-design', (): UiDesign => currentDesign())
+
+  ipcMain.handle(HOME_CHANNELS.setDesign, (_event, design: unknown) => {
+    if (design !== 'standard' && design !== 'retro' && design !== 'digital') return
+    if (design === currentDesign()) return
+    cachedDesign = design
+    writeAppSetting(APP_SETTINGS_PATH(), 'design', design)
+    for (const wc of webContents.getAllWebContents()) wc.send('app:design-changed', design)
   })
 
   ipcMain.handle(HOME_CHANNELS.getDisplayName, (): string => currentDisplayName())

@@ -114,4 +114,10 @@ export const de = {
   aiScopeClearTitle: 'Bereichsvorgabe aufheben und das ganze Blatt verwenden',
   aiGensparkAccount: 'Genspark-Konto',
   aiLoginGenspark: 'Bei Genspark anmelden',
+  aiStarterBudget: 'Budget-Tracker',
+  aiStarterBudgetPrompt: 'Erstelle einen monatlichen Budget-Tracker: Spalten Kategorie, geplant, tatsächlich und Differenz, eine Summenzeile und ein paar Beispielzeilen',
+  aiStarterSales: 'Umsatzbericht',
+  aiStarterSalesPrompt: 'Erstelle einen Quartals-Umsatzbericht: Spalten Produkt, Region, Stückzahl, Preis und Umsatz mit Beispielzeilen und einer Summenzeile',
+  aiStarterTasks: 'Projekt-Aufgabenplan',
+  aiStarterTasksPrompt: 'Erstelle einen Projekt-Aufgabenplan: Spalten Aufgabe, Verantwortlicher, Startdatum, Fälligkeitsdatum und Status mit einem Dutzend Beispielaufgaben',
 } satisfies Record<keyof typeof zh, string>

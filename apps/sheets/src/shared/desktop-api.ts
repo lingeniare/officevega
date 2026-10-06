@@ -2532,6 +2532,7 @@ export interface AttachmentImageResult {
 }
 
 export type UiTheme = 'light' | 'dark' | 'system'
+export type UiDesign = 'standard' | 'retro' | 'digital'
 
 /** shell-wide AutoSave default; updatedAt is 0 until the user has ever set it */
 export interface AutoSaveDefault {
@@ -2579,6 +2580,10 @@ export interface DesktopApi {
   getTheme(): Promise<UiTheme>
   /** theme switched from the shell home page */
   onThemeChanged(handler: (theme: UiTheme) => void): () => void
+  /** current UI design preference (persisted by the shell in app-settings.json) */
+  getDesign(): Promise<UiDesign>
+  /** design switched from the shell home page */
+  onDesignChanged(handler: (design: UiDesign) => void): () => void
   /** shell-wide AutoSave default (see useAutoSavePref) */
   getAutoSaveDefault(): Promise<AutoSaveDefault>
   onAutoSaveDefaultChanged(handler: (value: AutoSaveDefault) => void): () => void

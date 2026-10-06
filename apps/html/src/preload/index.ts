@@ -8,7 +8,7 @@ import {
   OPEN_FILE_DIALOG_CHANNEL,
 } from '@genoffice/electron-utils/drop-open'
 import { AI_CHANNELS, HTML_CHANNELS } from '../shared/ipc'
-import type { AutoSaveDefault, ExportFormat, HtmlApi, SaveMode, UiTheme } from '../shared/ipc'
+import type { AutoSaveDefault, ExportFormat, HtmlApi, SaveMode, UiDesign, UiTheme } from '../shared/ipc'
 
 const api: HtmlApi = {
   consumePending: () => ipcRenderer.invoke(HTML_CHANNELS.consumePending),
@@ -82,6 +82,12 @@ const api: HtmlApi = {
     const listener = (_e: Electron.IpcRendererEvent, theme: UiTheme) => handler(theme)
     ipcRenderer.on(HTML_CHANNELS.themeChanged, listener)
     return () => ipcRenderer.removeListener(HTML_CHANNELS.themeChanged, listener)
+  },
+  getDesign: () => ipcRenderer.invoke('app:get-design'),
+  onDesignChanged: (handler) => {
+    const listener = (_e: Electron.IpcRendererEvent, design: UiDesign) => handler(design)
+    ipcRenderer.on('app:design-changed', listener)
+    return () => ipcRenderer.removeListener('app:design-changed', listener)
   },
   getAutoSaveDefault: () => ipcRenderer.invoke(HTML_CHANNELS.getAutoSaveDefault),
   onAutoSaveDefaultChanged: (handler) => {

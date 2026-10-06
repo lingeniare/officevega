@@ -113,4 +113,10 @@ export const ka = {
   aiScopeClearTitle: 'გააუქმეთ დიაპაზონის ფარგლები და მიმართეთ მთელ ფურცელს',
   aiGensparkAccount: 'Genspark account',
   aiLoginGenspark: 'Sign in to Genspark',
+  aiStarterBudget: 'ბიუჯეტის ტრეკერი',
+  aiStarterBudgetPrompt: 'შექმენი ყოველთვიური ბიუჯეტის ტრეკერი: სვეტები კატეგორია, დაგეგმილი, ფაქტიური და სხვაობა, ჯამის სტრიქონი და რამდენიმე მაგალითი სტრიქონი',
+  aiStarterSales: 'გაყიდვების ანგარიში',
+  aiStarterSalesPrompt: 'შექმენი კვარტალური გაყიდვების ანგარიში: სვეტები პროდუქტი, რეგიონი, ერთეული, ფასი და შემოსავალი მაგალითებით და ჯამის სტრიქონით',
+  aiStarterTasks: 'პროექტის ამოცანების გეგმა',
+  aiStarterTasksPrompt: 'შექმენი პროექტის ამოცანების გეგმა: სვეტები ამოცანა, პასუხისმგებელი, დაწყების თარიღი, ვადა და სტატუსი თორმეტი მაგალითი ამოცანით',
 } satisfies Record<keyof typeof zh, string>

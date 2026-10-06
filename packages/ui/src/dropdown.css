@@ -113,6 +113,12 @@
   background: var(--accent-soft);
 }
 
+/* standard design: selected option reads stronger as a neutral gray than the
+   faint accent tint; the skins keep their own accent-driven look */
+html:not([data-design]) .gs-dd-item.selected {
+  background: var(--bg-selected);
+}
+
 /* ComboBox (combobox.tsx): text input + caret inside one framed field; the
  * popover reuses .gs-dd-pop/.gs-dd-item and adds a search row that must not
  * scroll away with the list */

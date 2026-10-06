@@ -113,4 +113,10 @@ export const fr = {
   aiScopeClearTitle: 'Retirer la portée de la plage et viser toute la feuille',
   aiGensparkAccount: 'Compte Genspark',
   aiLoginGenspark: 'Se connecter à Genspark',
+  aiStarterBudget: 'Suivi de budget',
+  aiStarterBudgetPrompt: 'Crée un suivi de budget mensuel : colonnes catégorie, prévu, réel et écart, une ligne de totaux et quelques lignes d’exemple',
+  aiStarterSales: 'Rapport des ventes',
+  aiStarterSalesPrompt: 'Crée un rapport des ventes trimestriel : colonnes produit, région, quantités, prix et chiffre d’affaires, lignes d’exemple et ligne de totaux',
+  aiStarterTasks: 'Plan de tâches',
+  aiStarterTasksPrompt: 'Crée un plan de tâches de projet : colonnes tâche, responsable, date de début, échéance et statut avec une douzaine de tâches d’exemple',
 } satisfies Record<keyof typeof zh, string>

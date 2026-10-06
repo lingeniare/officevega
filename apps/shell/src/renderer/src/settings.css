@@ -102,7 +102,7 @@
 }
 
 .set-nav-item.active {
-  background: var(--bg-hover);
+  background: var(--bg-selected);
   font-weight: 600;
 }
 
@@ -942,4 +942,1845 @@
 
 .set-intg-path {
   text-align: left;
+}
+
+
+/* ── Дизайн «Ретро ВЕГА» ──
+ * Применяется только при html[data-design='retro'] (выбор в Настройки > Общие > Дизайн).
+ * Без атрибута действует «Стандартный» дизайн выше. */
+/* Settings modal — дизайн-система «ЦУП» (см. DESIGN_SYSTEM.md).
+ * Бумага и тушь, жёсткий офсет, скругления 6/8px, моно-лейблы uppercase.
+ * Токены ЦУП заданы локально на .set-overlay (hex только на строках
+ * определений — так требует CLAUDE.md / check-theme-colors). Вне модалки
+ * ничего не меняется: весь редизайн живёт внутри .set-* классов. */
+
+html[data-design='retro'] .set-overlay {
+  --paper: #f1f1f1;
+  --paper-2: #ffffff;
+  --paper-3: #e4e4e4;
+  --ink: #111111;
+  --ink-70: #3a3a3a;
+  --ink-45: #6f6f6f;
+  --red: #c8321a;
+  --red-dark: #9c2412;
+  --green: #157a45;
+  --blue: #111111;
+  --blue-dark: #000000;
+  --gold: #6f6f6f;
+  --cyan: #0e7c93;
+  --set-on-red: #ffffff;
+  --set-overlay-bg: rgba(0, 0, 0, 0.5);
+  --set-grid: radial-gradient(rgba(0, 0, 0, 0.12) 1px, transparent 1px);
+  --set-dash: #3a3a3a;
+  --set-field-bg: #ffffff;
+  --set-code-bg: #e4e4e4;
+  --set-ok-bg: #ffffff;
+  --set-err-bg: #ffffff;
+  --set-test-bg: #ffffff;
+  --set-shadow: 6px 6px 0 #111111;
+  --set-shadow-sm: 4px 4px 0 #111111;
+  --set-shadow-xs: 2px 2px 0 #111111;
+  --set-shadow-menu: 6px 6px 0 #111111;
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5vh 24px;
+  background: var(--set-overlay-bg);
+  background-image: var(--set-grid);
+  background-size: 24px 24px;
+}
+
+html[data-design='retro'] .set-dialog {
+  display: flex;
+  flex-direction: column;
+  width: min(960px, 100%);
+  height: min(720px, 90vh);
+  border: 2.5px solid var(--ink);
+  border-radius: 8px;
+  background: var(--paper-2);
+  color: var(--ink);
+  box-shadow: var(--set-shadow);
+  overflow: hidden;
+  font-family: var(--gs-font-sans);
+}
+
+html[data-design='retro'] .set-dialog ::selection {
+  background: var(--gold);
+  color: var(--paper-2);
+}
+
+html[data-design='retro'] .set-header {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  border-bottom: 2.5px solid var(--ink);
+  background: var(--paper);
+  background-image: var(--set-grid);
+  background-size: 24px 24px;
+}
+
+html[data-design='retro'] .set-title {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+html[data-design='retro'] .set-title::before {
+  content: '\2726\0020';
+  color: var(--red);
+}
+
+html[data-design='retro'] .set-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  background: var(--paper-2);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+html[data-design='retro'] .set-close:hover {
+  background: var(--red);
+  color: var(--set-on-red);
+  box-shadow: var(--set-shadow-sm);
+}
+
+html[data-design='retro'] .set-close:active {
+  transform: translate(4px, 4px);
+  box-shadow: none;
+}
+
+html[data-design='retro'] .set-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
+/* Левая колонка — приборная панель */
+html[data-design='retro'] .set-nav {
+  flex-shrink: 0;
+  width: 248px;
+  padding: 14px 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-right: 2.5px solid var(--ink);
+  background: var(--paper);
+  overflow-y: auto;
+}
+
+html[data-design='retro'] .set-nav::before {
+  content: 'ПУЛЬТ // РАЗДЕЛЫ';
+  font-family: var(--gs-font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--ink-45);
+  padding: 0 4px 4px;
+}
+
+html[data-design='retro'] .set-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 10px;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  background: none;
+  font-family: var(--gs-font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-70);
+  cursor: pointer;
+  text-align: left;
+}
+
+html[data-design='retro'] .set-nav-item svg {
+  flex-shrink: 0;
+  color: inherit;
+}
+
+html[data-design='retro'] .set-nav-item:hover:not(.active) {
+  border-color: var(--ink);
+  background: var(--paper-2);
+  color: var(--ink);
+  transform: translate(-1px, -1px);
+  box-shadow: var(--set-shadow-xs);
+}
+
+html[data-design='retro'] .set-nav-item.active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+html[data-design='retro'] .set-nav-dot {
+  flex-shrink: 0;
+  width: 9px;
+  height: 9px;
+  margin-left: auto;
+  border-radius: 50%;
+  background: var(--red);
+  border: 2px solid var(--paper);
+}
+
+/* Правая колонка — бланк */
+html[data-design='retro'] .set-pane {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0 24px 24px;
+  overflow-y: auto;
+  background: var(--paper-2);
+  scroll-padding-top: 57px;
+}
+
+html[data-design='retro'] .set-pane > * {
+  flex-shrink: 0;
+}
+
+html[data-design='retro'] .set-pane-title {
+  margin: 16px 0 8px;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1.12;
+  text-transform: uppercase;
+}
+
+html[data-design='retro'] .set-pane-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 0 -24px 8px;
+  padding: 12px 24px;
+  border-bottom: 2px solid var(--ink);
+  background: var(--paper-2);
+}
+
+html[data-design='retro'] .set-pane-head .set-pane-title {
+  flex-shrink: 0;
+  margin: 0;
+}
+
+html[data-design='retro'] .set-pane-actions {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+html[data-design='retro'] .set-pane-actions .set-ai-status {
+  margin-right: 0;
+}
+
+/* Строка бланка: линия отрыва вместо hairline */
+html[data-design='retro'] .set-field {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  min-height: 56px;
+  padding: 12px 0;
+  border-bottom: 2px dashed var(--set-dash);
+}
+
+html[data-design='retro'] .set-field:last-child {
+  border-bottom: none;
+}
+
+html[data-design='retro'] .set-field-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+html[data-design='retro'] .set-field-label {
+  flex-shrink: 0;
+  font-family: var(--gs-font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-70);
+}
+
+html[data-design='retro'] .set-field-value {
+  font-size: 14px;
+  color: var(--ink-70);
+  text-align: right;
+  user-select: text;
+  word-break: break-all;
+  font-variant-numeric: tabular-nums;
+}
+
+html[data-design='retro'] .set-field-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+html[data-design='retro'] .set-field-desc {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--ink-45);
+}
+
+html[data-design='retro'] .set-field-top {
+  align-items: flex-start;
+}
+
+html[data-design='retro'] .set-field-top .set-switch {
+  margin-top: 2px;
+}
+
+html[data-design='retro'] .set-mcp-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 3px;
+  font-family: var(--gs-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+html[data-design='retro'] .set-status-dot {
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  background: var(--paper-3);
+}
+
+html[data-design='retro'] .set-status-dot.running {
+  background: var(--green);
+}
+
+html[data-design='retro'] .set-status-dot.error {
+  background: var(--red);
+}
+
+html[data-design='retro'] .set-config-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 0;
+  border-bottom: 2px dashed var(--set-dash);
+}
+
+html[data-design='retro'] .set-config-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+html[data-design='retro'] .set-btn-row {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 8px;
+}
+
+html[data-design='retro'] .set-code {
+  margin: 0;
+  padding: 10px 12px;
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  background: var(--set-code-bg);
+  font-family: var(--gs-font-mono);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ink);
+  overflow-x: auto;
+  white-space: pre;
+  user-select: text;
+}
+
+html[data-design='retro'] .set-log {
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+html[data-design='retro'] .set-log-empty {
+  color: var(--ink-45);
+}
+
+/* Тумблер ЦУП: прямоугольный, с жёсткой рамкой */
+html[data-design='retro'] .set-switch {
+  position: relative;
+  flex-shrink: 0;
+  width: 48px;
+  height: 26px;
+  padding: 0;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  background: var(--paper-3);
+  cursor: pointer;
+}
+
+html[data-design='retro'] .set-switch::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  background: var(--paper-2);
+  transition: left 0.15s ease, background 0.15s ease;
+}
+
+html[data-design='retro'] .set-switch[aria-checked='true'] {
+  background: var(--green);
+}
+
+html[data-design='retro'] .set-switch[aria-checked='true']::after {
+  left: 22px;
+  background: var(--paper-2);
+}
+
+html[data-design='retro'] .set-switch:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+html[data-design='retro'] .set-switch:hover {
+  box-shadow: var(--set-shadow-xs);
+}
+
+/* GenMail-селект оставлен для совместимости, вид — под ЦУП */
+html[data-design='retro'] .set-select-wrap {
+  position: relative;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  background: var(--paper-2);
+  font-family: var(--gs-font-mono);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+html[data-design='retro'] .set-select-wrap:hover,
+html[data-design='retro'] .set-select-wrap:focus-within {
+  box-shadow: var(--set-shadow-xs);
+}
+
+html[data-design='retro'] .set-select-text {
+  font-size: 12px;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+html[data-design='retro'] .set-select-wrap::after {
+  content: '';
+  flex-shrink: 0;
+  width: 7px;
+  height: 7px;
+  margin-top: -4px;
+  border-right: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+  transform: rotate(45deg);
+}
+
+html[data-design='retro'] .set-select {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  font: inherit;
+  cursor: pointer;
+  color: var(--ink);
+  background: var(--paper-2);
+}
+
+html[data-design='retro'] .set-select option {
+  color: var(--ink);
+  background: var(--paper-2);
+}
+
+/* Shared dropdown (@genoffice/ui) только внутри настроек */
+html[data-design='retro'] .set-dd {
+  flex-shrink: 0;
+}
+
+html[data-design='retro'] .set-dd .gs-dd-btn {
+  height: auto;
+  min-height: 36px;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  background: var(--set-field-bg);
+  font-family: var(--gs-font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+html[data-design='retro'] .set-dd .gs-dd-btn:hover {
+  box-shadow: var(--set-shadow-sm);
+}
+
+html[data-design='retro'] .set-dd .gs-dd-btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: none;
+}
+
+html[data-design='retro'] .set-dd .gs-dd-btn:focus-visible {
+  outline: 3px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+html[data-design='retro'] .set-dd .gs-dd-pop {
+  min-width: 200px;
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  background: var(--paper-2);
+  box-shadow: var(--set-shadow-menu);
+  padding: 6px;
+}
+
+html[data-design='retro'] .set-dd .gs-dd-item {
+  font-family: var(--gs-font-mono);
+  font-size: 12px;
+  border-radius: 6px;
+  color: var(--ink);
+}
+
+html[data-design='retro'] .set-dd .gs-dd-item.active {
+  background: var(--paper-3);
+}
+
+html[data-design='retro'] .set-dd .gs-dd-item.selected {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+html[data-design='retro'] .set-provider-logo {
+  flex-shrink: 0;
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  color: inherit;
+}
+
+html[data-design='retro'] .set-provider-logo svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Кнопки: в покое плоско, тень только при наведении, вдавливание по клику */
+html[data-design='retro'] .set-btn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  background: var(--paper-2);
+  font-family: var(--gs-font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+html[data-design='retro'] .set-btn:hover {
+  box-shadow: var(--set-shadow-sm);
+}
+
+html[data-design='retro'] .set-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+html[data-design='retro'] .set-btn:disabled {
+  opacity: 0.55;
+  cursor: default;
+  transform: none;
+  box-shadow: none;
+}
+
+html[data-design='retro'] .set-btn.primary {
+  background: var(--red);
+  border-color: var(--ink);
+  color: var(--set-on-red);
+}
+
+html[data-design='retro'] .set-btn.primary:hover {
+  background: var(--red-dark);
+}
+
+html[data-design='retro'] .set-btn.danger {
+  color: var(--red-dark);
+}
+
+html[data-design='retro'] .set-btn.danger:hover {
+  background: var(--red);
+  color: var(--set-on-red);
+}
+
+html[data-design='retro'] .set-lic-title {
+  margin-top: 20px;
+  padding-top: 0;
+  border-top: none;
+}
+
+html[data-design='retro'] .set-lic-key {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--gs-font-mono);
+  letter-spacing: 0.04em;
+}
+
+html[data-design='retro'] .set-lic-error {
+  color: var(--red-dark);
+  margin-top: 6px;
+  font-family: var(--gs-font-mono);
+  font-size: 12px;
+}
+
+html[data-design='retro'] .set-lic-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 12px;
+}
+
+html[data-design='retro'] .set-pane-footer {
+  position: relative;
+  margin-top: auto;
+  padding-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* Поля — бланк на бумаге */
+html[data-design='retro'] .set-input {
+  flex-shrink: 0;
+  width: 46%;
+  min-width: 200px;
+  padding: 8px 10px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  font-family: var(--gs-font-mono);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  background: var(--paper);
+}
+
+html[data-design='retro'] .set-combo {
+  flex-shrink: 0;
+  width: 46%;
+  min-width: 200px;
+}
+
+html[data-design='retro'] .set-combo .gs-combo-input {
+  padding: 8px 26px 8px 10px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  font-family: var(--gs-font-mono);
+  font-size: 13px;
+  color: var(--ink);
+  background: var(--paper);
+}
+
+html[data-design='retro'] .set-combo .gs-combo-input:focus,
+html[data-design='retro'] .set-input:focus {
+  outline: 3px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+html[data-design='retro'] .set-combo .gs-combo-input::placeholder,
+html[data-design='retro'] .set-input::placeholder {
+  color: var(--ink-45);
+}
+
+html[data-design='retro'] .set-combo .gs-dd-item {
+  font-size: 12px;
+}
+
+html[data-design='retro'] .set-num {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  font-family: var(--gs-font-mono);
+  font-size: 13px;
+  color: var(--ink-70);
+}
+
+html[data-design='retro'] .set-num-input {
+  width: 72px;
+  min-width: 0;
+  text-align: right;
+}
+
+html[data-design='retro'] .set-device-code {
+  width: 130px;
+  min-width: 0;
+  text-align: center;
+  letter-spacing: 0.08em;
+  cursor: text;
+}
+
+html[data-design='retro'] .set-ai-note {
+  padding: 8px 0 2px;
+  line-height: 1.5;
+  font-family: var(--gs-font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-45);
+}
+
+/* Штамп статуса */
+html[data-design='retro'] .set-ai-status {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%) rotate(-1.5deg);
+  max-width: max(140px, calc(100% - 340px));
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 4px 10px 4px 8px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  font-family: var(--gs-font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-70);
+  background: var(--set-test-bg);
+}
+
+html[data-design='retro'] .set-ai-status.ok {
+  color: var(--green);
+  border-color: var(--green);
+  background: var(--set-ok-bg);
+}
+
+html[data-design='retro'] .set-ai-status.err {
+  color: var(--red-dark);
+  border-color: var(--red);
+  background: var(--set-err-bg);
+}
+
+html[data-design='retro'] .set-ai-status-icon {
+  flex-shrink: 0;
+}
+
+html[data-design='retro'] .set-ai-status-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+html[data-design='retro'] .set-ai-spin {
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--ink-45);
+  border-top-color: var(--ink);
+  border-radius: 50%;
+  animation: set-ai-spin 0.8s linear infinite;
+}
+
+@keyframes set-ai-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+html[data-design='retro'] .set-pane-subtitle {
+  margin: 24px 0 4px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+html[data-design='retro'] .set-pane-subhead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 24px 0 4px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--ink);
+}
+
+html[data-design='retro'] .set-pane-subhead .set-pane-subtitle {
+  margin: 0;
+}
+
+html[data-design='retro'] .set-pane-subhead .set-ai-status {
+  position: static;
+  transform: rotate(-1.5deg);
+  margin-right: 0;
+  padding: 2px 8px 2px 6px;
+  font-size: 11px;
+}
+
+/* Integrations — карточки-консоли */
+html[data-design='retro'] .set-intg-hero {
+  margin: 12px 0 4px;
+  padding: 14px 16px;
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  background: var(--set-code-bg);
+  box-shadow: var(--set-shadow-sm);
+}
+
+html[data-design='retro'] .set-intg-hero-title {
+  margin-bottom: 4px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+html[data-design='retro'] .set-intg-hero-steps {
+  display: flex;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: intg-step;
+}
+
+html[data-design='retro'] .set-intg-hero-steps li {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--ink);
+  counter-increment: intg-step;
+}
+
+html[data-design='retro'] .set-intg-hero-steps li::before,
+html[data-design='retro'] .set-intg-step-no {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--paper-2);
+  border-radius: 8px;
+  background: var(--red);
+  font-family: var(--gs-font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--set-on-red);
+}
+
+html[data-design='retro'] .set-intg-hero-steps li::before {
+  content: counter(intg-step);
+}
+
+html[data-design='retro'] .set-intg-step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+html[data-design='retro'] .set-intg-version {
+  margin-left: auto;
+  font-family: var(--gs-font-mono);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--ink-45);
+}
+
+html[data-design='retro'] .set-intg-lead {
+  padding: 4px 0 8px;
+}
+
+html[data-design='retro'] .set-intg-warn {
+  padding: 0 0 8px;
+  color: var(--red-dark);
+  font-family: var(--gs-font-mono);
+  font-size: 12px;
+}
+
+html[data-design='retro'] .set-intg-row {
+  border-bottom: 2px dashed var(--set-dash);
+}
+
+html[data-design='retro'] .set-intg-row .set-field {
+  border-bottom: none;
+}
+
+html[data-design='retro'] .set-intg-row[data-state='installed'] .set-intg-state {
+  color: var(--green);
+  font-family: var(--gs-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+html[data-design='retro'] .set-intg-actions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+html[data-design='retro'] .set-intg-details {
+  margin-top: 10px;
+}
+
+html[data-design='retro'] .set-intg-details > summary {
+  font-family: var(--gs-font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+html[data-design='retro'] .set-intg-details > summary:hover {
+  color: var(--red-dark);
+}
+
+html[data-design='retro'] .set-intg-cli {
+  margin-top: 24px;
+}
+
+html[data-design='retro'] .set-intg-part {
+  margin-top: 8px;
+}
+
+html[data-design='retro'] .set-intg-part + .set-intg-part {
+  margin-top: 24px;
+  padding-top: 8px;
+  border-top: 2px solid var(--ink);
+}
+
+html[data-design='retro'] .set-intg-sub {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 22px 0 2px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+html[data-design='retro'] .set-intg-mcp-http {
+  margin-top: 8px;
+}
+
+html[data-design='retro'] .set-mcp-advanced {
+  margin-top: 16px;
+}
+
+html[data-design='retro'] .set-intg-code-block {
+  align-items: flex-start;
+}
+
+html[data-design='retro'] .set-intg-code-block code {
+  white-space: pre;
+  word-break: normal;
+  overflow-x: auto;
+}
+
+html[data-design='retro'] .set-intg-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 2px dashed var(--set-dash);
+}
+
+html[data-design='retro'] .set-intg-option:last-of-type {
+  border-bottom: none;
+}
+
+html[data-design='retro'] .set-intg-option .set-field-stack {
+  flex: 1;
+}
+
+html[data-design='retro'] .set-intg-option-letter {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  background: var(--ink);
+  font-family: var(--gs-font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--paper);
+}
+
+html[data-design='retro'] .set-intg-code {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  padding: 6px 6px 6px 10px;
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  background: var(--set-code-bg);
+}
+
+html[data-design='retro'] .set-intg-code code {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--gs-font-mono);
+  font-size: 12px;
+  color: var(--ink);
+  user-select: text;
+  word-break: break-all;
+}
+
+html[data-design='retro'] .set-intg-examples {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+html[data-design='retro'] .set-intg-example {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 6px 8px 12px;
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  background: var(--paper);
+}
+
+html[data-design='retro'] .set-intg-example-text {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  color: var(--ink);
+  user-select: text;
+}
+
+html[data-design='retro'] .set-intg-confirm {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0 0 10px;
+  padding: 10px 12px;
+  border: 2px dashed var(--red);
+  border-radius: 8px;
+  background: var(--paper);
+}
+
+html[data-design='retro'] .set-intg-confirm .set-field-desc {
+  word-break: break-all;
+}
+
+html[data-design='retro'] .set-intg-notice {
+  padding: 0 0 10px;
+}
+
+html[data-design='retro'] .set-intg-path {
+  text-align: left;
+  font-family: var(--gs-font-mono);
+  font-size: 12px;
+}
+
+/* Фокус и доступность по ЦУП */
+html[data-design='retro'] .set-dialog :focus-visible {
+  outline: 3px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-design='retro'] .set-dialog *,
+  html[data-design='retro'] .set-dialog *::before,
+  html[data-design='retro'] .set-dialog *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  html[data-design='retro'] .set-btn:hover,
+  html[data-design='retro'] .set-nav-item:hover:not(.active),
+  html[data-design='retro'] .set-close:hover {
+    transform: none;
+  }
+}
+
+/* Тёмная тема — «ночь в ЦУПе» */
+:root[data-design='retro'][data-theme='dark'] .set-overlay {
+  --paper: #000000;
+  --paper-2: #111111;
+  --paper-3: #232323;
+  --ink: #f5f5f5;
+  --ink-70: #c9c9c9;
+  --ink-45: #8f8f8f;
+  --set-on-red: #ffffff;
+  --set-overlay-bg: rgba(0, 0, 0, 0.66);
+  --set-grid: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  --set-dash: #8f8f8f;
+  --set-field-bg: #111111;
+  --set-code-bg: #232323;
+  --set-ok-bg: #111111;
+  --set-err-bg: #111111;
+  --set-test-bg: #111111;
+  --set-shadow: 6px 6px 0 #000000;
+  --set-shadow-sm: 4px 4px 0 #000000;
+  --set-shadow-xs: 2px 2px 0 #000000;
+  --set-shadow-menu: 6px 6px 0 #000000;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-design='retro']:not([data-theme='light']):not([data-theme='dark']) .set-overlay {
+    --paper: #000000;
+    --paper-2: #111111;
+    --paper-3: #232323;
+    --ink: #f5f5f5;
+    --ink-70: #c9c9c9;
+    --ink-45: #8f8f8f;
+    --set-on-red: #ffffff;
+    --set-overlay-bg: rgba(0, 0, 0, 0.66);
+    --set-grid: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    --set-dash: #8f8f8f;
+    --set-field-bg: #111111;
+    --set-code-bg: #232323;
+    --set-ok-bg: #111111;
+    --set-err-bg: #111111;
+    --set-test-bg: #111111;
+    --set-shadow: 6px 6px 0 #000000;
+    --set-shadow-sm: 4px 4px 0 #000000;
+    --set-shadow-xs: 2px 2px 0 #000000;
+    --set-shadow-menu: 6px 6px 0 #000000;
+  }
+}
+
+/* Мобильная навигация */
+@media (max-width: 760px) {
+  html[data-design='retro'] .set-overlay {
+    padding: 3vh 12px;
+  }
+  html[data-design='retro'] .set-body {
+    flex-direction: column;
+  }
+  html[data-design='retro'] .set-nav {
+    width: auto;
+    flex-direction: row;
+    overflow-x: auto;
+    border-right: none;
+    border-bottom: 2.5px solid var(--ink);
+  }
+  html[data-design='retro'] .set-nav::before {
+    display: none;
+  }
+  html[data-design='retro'] .set-nav-item {
+    width: auto;
+    white-space: nowrap;
+  }
+  html[data-design='retro'] .set-pane {
+    padding: 0 16px 20px;
+  }
+  html[data-design='retro'] .set-pane-head {
+    margin: 0 -16px 8px;
+    padding: 12px 16px;
+  }
+  html[data-design='retro'] .set-field {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  html[data-design='retro'] .set-input,
+  html[data-design='retro'] .set-combo {
+    width: 100%;
+  }
+}
+
+/* ── Дизайн «Цифровая ВЕГА» ──
+ * По дизайн-системе api.vega.chat: neutral-палитра, emerald-акцент,
+ * радиус 12px, стекло, жёсткие тени только при наведении.
+ * Применяется только при html[data-design='digital']. */
+
+html[data-design='digital'] .set-overlay {
+  --dg-bg: #FAFAFA;
+  --dg-card: #FFFFFF;
+  --dg-text: #09090B;
+  --dg-muted: #52525B;
+  --dg-faint: #71717A;
+  --dg-border: #E4E4E7;
+  --dg-accent: #059669;
+  --dg-accent-strong: #047857;
+  --dg-accent-ink: #FFFFFF;
+  --dg-glow: rgba(5, 150, 105, 0.12);
+  --dg-glass: rgba(255, 255, 255, 0.7);
+  --dg-overlay: rgba(9, 9, 11, 0.35);
+  --dg-pop: 0 24px 70px -12px rgba(9, 9, 11, 0.25);
+  --dg-hard: #000000;
+  --dg-amber: #D97706;
+  --dg-danger: #DC2626;
+  --dg-danger-bg: rgba(220, 38, 38, 0.08);
+  --dg-knob: 0 1px 3px rgba(9, 9, 11, 0.25);
+}
+
+html[data-design='digital'][data-theme='dark'] .set-overlay {
+  --dg-bg: #09090B;
+  --dg-card: #18181B;
+  --dg-text: #FAFAFA;
+  --dg-muted: #A1A1AA;
+  --dg-faint: #71717A;
+  --dg-border: #27272A;
+  --dg-accent: #34D399;
+  --dg-accent-strong: #10B981;
+  --dg-accent-ink: #000000;
+  --dg-glow: rgba(52, 211, 153, 0.16);
+  --dg-glass: rgba(24, 24, 27, 0.55);
+  --dg-overlay: rgba(0, 0, 0, 0.5);
+  --dg-pop: 0 24px 70px -12px rgba(0, 0, 0, 0.6);
+  --dg-hard: #CBEEF3;
+  --dg-amber: #FBBF24;
+  --dg-danger: #F87171;
+  --dg-danger-bg: rgba(248, 113, 113, 0.1);
+  --dg-knob: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+@media (prefers-color-scheme: dark) {
+  html[data-design='digital']:not([data-theme='light']):not([data-theme='dark']) .set-overlay {
+    --dg-bg: #09090B;
+    --dg-card: #18181B;
+    --dg-text: #FAFAFA;
+    --dg-muted: #A1A1AA;
+    --dg-faint: #71717A;
+    --dg-border: #27272A;
+    --dg-accent: #34D399;
+    --dg-accent-strong: #10B981;
+    --dg-accent-ink: #000000;
+    --dg-glow: rgba(52, 211, 153, 0.16);
+    --dg-glass: rgba(24, 24, 27, 0.55);
+    --dg-overlay: rgba(0, 0, 0, 0.5);
+    --dg-pop: 0 24px 70px -12px rgba(0, 0, 0, 0.6);
+    --dg-hard: #CBEEF3;
+    --dg-amber: #FBBF24;
+    --dg-danger: #F87171;
+    --dg-danger-bg: rgba(248, 113, 113, 0.1);
+    --dg-knob: 0 1px 3px rgba(0, 0, 0, 0.5);
+  }
+}
+
+html[data-design='digital'] .set-overlay {
+  background: var(--dg-overlay);
+}
+
+html[data-design='digital'] .set-dialog {
+  background: var(--dg-card);
+  color: var(--dg-text);
+  border: 1px solid var(--dg-border);
+  border-radius: 12px;
+  box-shadow: var(--dg-pop);
+  font-family: var(--gs-font-sans);
+}
+
+html[data-design='digital'] .set-dialog ::selection {
+  background: var(--dg-glow);
+  color: var(--dg-text);
+}
+
+html[data-design='digital'] .set-header {
+  border-bottom: 1px solid var(--dg-border);
+  background: var(--dg-card);
+}
+
+html[data-design='digital'] .set-title {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+html[data-design='digital'] .set-title::before {
+  content: '// ';
+  font-family: var(--gs-font-mono);
+  color: var(--dg-accent);
+}
+
+html[data-design='digital'] .set-close {
+  border: none;
+  border-radius: 8px;
+  background: none;
+  color: var(--dg-faint);
+  box-shadow: none;
+}
+
+html[data-design='digital'] .set-close:hover {
+  background: var(--dg-glow);
+  color: var(--dg-accent);
+  box-shadow: none;
+  transform: none;
+}
+
+html[data-design='digital'] .set-nav {
+  border-right: 1px solid var(--dg-border);
+  background: var(--dg-card);
+}
+
+html[data-design='digital'] .set-nav::before {
+  content: '// разделы';
+  font-family: var(--gs-font-mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--dg-faint);
+}
+
+html[data-design='digital'] .set-nav-item {
+  border: none;
+  border-radius: 8px;
+  font-family: var(--gs-font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--dg-muted);
+  transform: none;
+  box-shadow: none;
+}
+
+html[data-design='digital'] .set-nav-item svg {
+  color: inherit;
+}
+
+html[data-design='digital'] .set-nav-item:hover:not(.active) {
+  background: var(--dg-glow);
+  color: var(--dg-accent);
+  border-color: transparent;
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--dg-accent);
+}
+
+html[data-design='digital'] .set-nav-item.active {
+  background: var(--dg-glow);
+  border-color: transparent;
+  color: var(--dg-accent);
+  font-weight: 600;
+  box-shadow: none;
+}
+
+html[data-design='digital'] .set-nav-item.active svg {
+  color: var(--dg-accent);
+}
+
+html[data-design='digital'] .set-nav-dot {
+  background: var(--dg-amber);
+  border: none;
+}
+
+html[data-design='digital'] .set-pane {
+  background: var(--dg-card);
+  scrollbar-width: thin;
+  scrollbar-color: var(--dg-border) transparent;
+}
+
+html[data-design='digital'] .set-pane::-webkit-scrollbar,
+html[data-design='digital'] .set-nav::-webkit-scrollbar {
+  width: 4px;
+}
+
+html[data-design='digital'] .set-pane::-webkit-scrollbar-thumb,
+html[data-design='digital'] .set-nav::-webkit-scrollbar-thumb {
+  background-color: var(--dg-border);
+  border-radius: 3px;
+}
+
+html[data-design='digital'] .set-pane-head {
+  border-bottom: 1px solid var(--dg-border);
+  background: var(--dg-card);
+}
+
+html[data-design='digital'] .set-pane-title {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+html[data-design='digital'] .set-field {
+  border-bottom: 1px solid var(--dg-border);
+}
+
+html[data-design='digital'] .set-field-label {
+  font-family: var(--gs-font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--dg-text);
+}
+
+html[data-design='digital'] .set-field-value {
+  font-size: 14px;
+  color: var(--dg-muted);
+}
+
+html[data-design='digital'] .set-field-desc {
+  color: var(--dg-faint);
+}
+
+html[data-design='digital'] .set-mcp-status {
+  font-family: var(--gs-font-sans);
+  font-size: 12px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+html[data-design='digital'] .set-status-dot {
+  border: 1px solid var(--dg-border);
+  background: var(--dg-muted);
+}
+
+html[data-design='digital'] .set-status-dot.running {
+  background: var(--dg-accent);
+  border-color: var(--dg-accent);
+}
+
+html[data-design='digital'] .set-status-dot.error {
+  background: var(--dg-danger);
+  border-color: var(--dg-danger);
+}
+
+html[data-design='digital'] .set-config-block,
+html[data-design='digital'] .set-intg-row,
+html[data-design='digital'] .set-intg-option {
+  border-bottom: 1px solid var(--dg-border);
+}
+
+html[data-design='digital'] .set-code {
+  border: 1px solid var(--dg-border);
+  border-radius: 12px;
+  background: var(--dg-bg);
+  font-size: 12.5px;
+  color: var(--dg-text);
+}
+
+html[data-design='digital'] .set-btn {
+  border: 1px solid var(--dg-border);
+  border-radius: 8px;
+  background: var(--dg-card);
+  box-shadow: none;
+  font-family: var(--gs-font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--dg-text);
+  transform: none;
+}
+
+html[data-design='digital'] .set-btn:hover {
+  border-color: var(--dg-accent);
+  background: var(--dg-glow);
+  color: var(--dg-accent);
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--dg-accent);
+}
+
+html[data-design='digital'] .set-btn:active {
+  transform: translateY(1px);
+  box-shadow: 2px 2px 0 var(--dg-accent);
+}
+
+html[data-design='digital'] .set-btn:disabled {
+  transform: none;
+  box-shadow: none;
+}
+
+html[data-design='digital'] .set-btn.primary {
+  background: var(--dg-accent);
+  border-color: transparent;
+  color: var(--dg-accent-ink);
+}
+
+html[data-design='digital'] .set-btn.primary:hover {
+  background: var(--dg-accent-strong);
+  color: var(--dg-accent-ink);
+  border-color: transparent;
+  transform: translateY(-1px);
+  box-shadow: 5px 5px 0 var(--dg-hard);
+}
+
+html[data-design='digital'] .set-btn.danger {
+  color: var(--dg-danger);
+}
+
+html[data-design='digital'] .set-btn.danger:hover {
+  background: var(--dg-danger-bg);
+  border-color: var(--dg-danger);
+  color: var(--dg-danger);
+  box-shadow: 4px 4px 0 var(--dg-danger);
+}
+
+html[data-design='digital'] .set-lic-title {
+  border-top: none;
+}
+
+html[data-design='digital'] .set-lic-key {
+  font-family: var(--gs-font-mono);
+}
+
+html[data-design='digital'] .set-lic-error {
+  font-family: var(--gs-font-sans);
+  color: var(--dg-danger);
+}
+
+html[data-design='digital'] .set-input {
+  border: 1px solid var(--dg-border);
+  border-radius: 8px;
+  background: var(--dg-card);
+  font-family: var(--gs-font-sans);
+  font-size: 13px;
+  color: var(--dg-text);
+}
+
+html[data-design='digital'] .set-combo .gs-combo-input {
+  border: 1px solid var(--dg-border);
+  border-radius: 8px;
+  background: var(--dg-card);
+  font-family: var(--gs-font-sans);
+  font-size: 13px;
+  color: var(--dg-text);
+}
+
+html[data-design='digital'] .set-combo .gs-combo-input:focus,
+html[data-design='digital'] .set-input:focus {
+  outline: none;
+  border-color: var(--dg-accent);
+  box-shadow: 0 0 0 3px var(--dg-glow);
+}
+
+html[data-design='digital'] .set-combo .gs-combo-input::placeholder,
+html[data-design='digital'] .set-input::placeholder {
+  color: var(--dg-faint);
+}
+
+html[data-design='digital'] .set-num {
+  font-family: var(--gs-font-sans);
+  color: var(--dg-muted);
+}
+
+html[data-design='digital'] .set-ai-note {
+  font-family: var(--gs-font-sans);
+  font-size: 12.5px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--dg-faint);
+}
+
+html[data-design='digital'] .set-ai-status {
+  border: 1px solid var(--dg-border);
+  border-radius: 999px;
+  background: var(--dg-bg);
+  font-family: var(--gs-font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--dg-muted);
+  transform: translateX(-50%);
+}
+
+html[data-design='digital'] .set-ai-status.ok {
+  border-color: var(--dg-accent);
+  background: var(--dg-glow);
+  color: var(--dg-accent);
+}
+
+html[data-design='digital'] .set-ai-status.err {
+  border-color: var(--dg-danger);
+  background: var(--dg-danger-bg);
+  color: var(--dg-danger);
+}
+
+html[data-design='digital'] .set-ai-spin {
+  border: 2px solid var(--dg-border);
+  border-top-color: var(--dg-accent);
+}
+
+html[data-design='digital'] .set-pane-subtitle {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--dg-text);
+}
+
+html[data-design='digital'] .set-pane-subhead {
+  border-bottom: 1px solid var(--dg-border);
+}
+
+html[data-design='digital'] .set-pane-subhead .set-ai-status {
+  transform: none;
+}
+
+html[data-design='digital'] .set-intg-hero {
+  border: 1px solid var(--dg-border);
+  border-radius: 12px;
+  background: var(--dg-glass);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: none;
+}
+
+html[data-design='digital'] .set-intg-hero-title {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+html[data-design='digital'] .set-intg-hero-steps li::before,
+html[data-design='digital'] .set-intg-step-no {
+  border: none;
+  border-radius: 50%;
+  background: var(--dg-accent);
+  font-family: var(--gs-font-sans);
+  color: var(--dg-accent-ink);
+}
+
+html[data-design='digital'] .set-intg-version {
+  font-family: var(--gs-font-sans);
+  color: var(--dg-faint);
+}
+
+html[data-design='digital'] .set-intg-warn {
+  font-family: var(--gs-font-sans);
+  color: var(--dg-danger);
+}
+
+html[data-design='digital'] .set-intg-row[data-state='installed'] .set-intg-state {
+  font-family: var(--gs-font-sans);
+  color: var(--dg-accent);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+html[data-design='digital'] .set-intg-details > summary {
+  font-family: var(--gs-font-sans);
+  font-size: 13px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+html[data-design='digital'] .set-intg-details > summary:hover {
+  color: var(--dg-accent);
+}
+
+html[data-design='digital'] .set-intg-part + .set-intg-part {
+  border-top: 1px solid var(--dg-border);
+}
+
+html[data-design='digital'] .set-intg-sub {
+  font-size: 13px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+html[data-design='digital'] .set-intg-option-letter {
+  border: none;
+  border-radius: 50%;
+  background: var(--dg-glow);
+  font-family: var(--gs-font-sans);
+  color: var(--dg-accent);
+}
+
+html[data-design='digital'] .set-intg-code {
+  border: 1px solid var(--dg-border);
+  border-radius: 8px;
+  background: var(--dg-bg);
+}
+
+html[data-design='digital'] .set-intg-code code {
+  font-family: var(--gs-font-mono);
+  color: var(--dg-text);
+}
+
+html[data-design='digital'] .set-intg-example {
+  border: 1px solid var(--dg-border);
+  border-radius: 8px;
+  background: var(--dg-bg);
+}
+
+html[data-design='digital'] .set-intg-example-text {
+  color: var(--dg-text);
+}
+
+html[data-design='digital'] .set-intg-confirm {
+  border: 1px dashed var(--dg-amber);
+  border-radius: 8px;
+  background: var(--dg-bg);
+}
+
+html[data-design='digital'] .set-intg-path {
+  font-family: var(--gs-font-mono);
+}
+
+html[data-design='digital'] .set-select-wrap {
+  border: 1px solid var(--dg-border);
+  border-radius: 8px;
+  background: var(--dg-card);
+  box-shadow: none;
+  font-family: var(--gs-font-sans);
+}
+
+html[data-design='digital'] .set-select-wrap:hover,
+html[data-design='digital'] .set-select-wrap:focus-within {
+  border-color: var(--dg-accent);
+  transform: none;
+  box-shadow: none;
+}
+
+html[data-design='digital'] .set-select-text {
+  color: var(--dg-text);
+}
+
+html[data-design='digital'] .set-select-wrap::after {
+  border-right: 1.5px solid var(--dg-muted);
+  border-bottom: 1.5px solid var(--dg-muted);
+}
+
+html[data-design='digital'] .set-dd .gs-dd-btn {
+  min-height: 32px;
+  border: 1px solid var(--dg-border);
+  border-radius: 8px;
+  background: var(--dg-card);
+  box-shadow: none;
+  font-family: var(--gs-font-sans);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--dg-text);
+}
+
+html[data-design='digital'] .set-dd .gs-dd-btn:hover {
+  border-color: var(--dg-accent);
+  background: var(--dg-glow);
+  transform: none;
+  box-shadow: none;
+}
+
+html[data-design='digital'] .set-dd .gs-dd-pop {
+  border: 1px solid var(--dg-border);
+  border-radius: 12px;
+  background: var(--dg-card);
+  box-shadow: var(--dg-pop);
+}
+
+html[data-design='digital'] .set-dd .gs-dd-item {
+  border-radius: 6px;
+  font-family: var(--gs-font-sans);
+  font-size: 13px;
+  color: var(--dg-text);
+}
+
+html[data-design='digital'] .set-dd .gs-dd-item.active {
+  background: var(--dg-glow);
+}
+
+html[data-design='digital'] .set-dd .gs-dd-item.selected {
+  background: var(--dg-glow);
+  color: var(--dg-accent);
+}
+
+html[data-design='digital'] .set-switch {
+  width: 40px;
+  height: 22px;
+  border: none;
+  border-radius: 999px;
+  background: var(--dg-border);
+  box-shadow: none;
+}
+
+html[data-design='digital'] .set-switch::after {
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border: none;
+  border-radius: 50%;
+  background: var(--dg-card);
+  box-shadow: var(--dg-knob);
+}
+
+html[data-design='digital'] .set-switch[aria-checked='true'] {
+  background: var(--dg-accent);
+}
+
+html[data-design='digital'] .set-switch[aria-checked='true']::after {
+  left: 20px;
+  background: var(--dg-accent-ink);
+}
+
+html[data-design='digital'] .set-switch:hover {
+  box-shadow: 0 0 0 3px var(--dg-glow);
+}
+
+html[data-design='digital'] .set-dialog :focus-visible {
+  outline: 2px solid var(--dg-accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-design='digital'] .set-btn:hover,
+  html[data-design='digital'] .set-nav-item:hover:not(.active) {
+    transform: none;
+  }
 }

@@ -112,4 +112,10 @@ export const pl = {
   aiScopeClearTitle: 'Usuń zakres zaznaczenia i obejmij cały arkusz',
   aiGensparkAccount: 'Konto Genspark',
   aiLoginGenspark: 'Zaloguj się do Genspark',
+  aiStarterBudget: 'Śledzenie budżetu',
+  aiStarterBudgetPrompt: 'Utwórz miesięczne śledzenie budżetu: kolumny kategoria, planowane, rzeczywiste i różnica, wiersz sum i kilka przykładowych wierszy',
+  aiStarterSales: 'Raport sprzedaży',
+  aiStarterSalesPrompt: 'Utwórz kwartalny raport sprzedaży: kolumny produkt, region, liczba sztuk, cena i przychód, przykładowe wiersze i wiersz sum',
+  aiStarterTasks: 'Plan zadań',
+  aiStarterTasksPrompt: 'Utwórz plan zadań projektu: kolumny zadanie, właściciel, data rozpoczęcia, termin i status z kilkunastoma przykładowymi zadaniami',
 } satisfies Record<keyof typeof zh, string>
