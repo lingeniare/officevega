@@ -55,7 +55,7 @@ function mockApi(overrides: Partial<HomeApi> = {}): HomeApi {
   } as unknown as HomeApi
 }
 
-async function renderModal(api: HomeApi) {
+async function renderModal(_api: HomeApi) {
   await act(async () => {
     root.render(
       createElement(

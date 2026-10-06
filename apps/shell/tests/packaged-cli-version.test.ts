@@ -36,6 +36,7 @@ function loadConfig(opts: {
     module: configModule,
     __dirname: shellRoot,
     process: { platform: 'linux', arch: 'x64', env: {}, execPath: '/usr/bin/node' },
+    Buffer,
     require: (id: string) => {
       if (id === './package.json') return shellPackage
       if (id === 'node:child_process') {
