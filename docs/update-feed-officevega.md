@@ -141,8 +141,7 @@ forward-only; при переводе beta-сборки в stable просто �
 инсталлер, собранную из того же фида — убедитесь, что dmg (macOS), exe
 (Windows) и AppImage (Linux) действительно лежат рядом с манифестом. Крайний
 фолбэк — `DOWNLOAD_PAGE_URL` в `apps/shell/src/main/updater.ts`, сейчас
-`https://officevega.com/`; когда появится отдельная страница загрузки —
-замените одной строкой.
+`https://officevega.com/releases`.
 
 ## Чеклист релиза
 

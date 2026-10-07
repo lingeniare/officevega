@@ -532,9 +532,8 @@ const MANUAL_FALLBACK_AFTER = 2
 // Last-resort manual link only: preferred is always the installer URL
 // derived from the user's own update feed (see manualDownloadUrlFor), which
 // matches channel, track, and arch. This is where users land when that
-// derivation fails — the site root until a dedicated download page exists;
-// swap in the real download-page URL when it does.
-const DOWNLOAD_PAGE_URL = 'https://officevega.com/'
+// derivation fails — the site's releases page.
+const DOWNLOAD_PAGE_URL = 'https://officevega.com/releases'
 
 /// Trusted HTTPS base URL baked into resources/app-update.yml. Manual download
 /// links are always rebuilt from this base rather than trusting URLs supplied

@@ -2702,7 +2702,7 @@ export function Home() {
       <div className="recents-heading">
         {rerankApplied && (
           <span className="search-rerank-badge" title={t('searchRerankedBy')}>
-            Jev
+            {t('searchRerankBadge')}
           </span>
         )}
         <span className="file-count">

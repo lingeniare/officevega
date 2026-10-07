@@ -57,8 +57,10 @@ export const AI_MEDIA_PROVIDERS: AiMediaProviderMeta[] = [
   {
     id: 'vega',
     label: 'VEGA',
+    // the image-capability slot shows the localized setAiMediaVegaImageHint
+    // instead — this English line is the fallback for other consumers
     description:
-      'Генерация изображений и анализ фото/видео идет через ВЕГА провайдер.',
+      'Image generation and photo/video analysis through the VEGA provider',
     keyPlaceholder: 'sk-apivega-...',
     defaultBaseUrl: VEGA_BASE_URL,
     liveCatalog: true,

@@ -8,6 +8,12 @@
   --accent: var(--excel-green);
   --accent-dark: var(--excel-green-dark);
   --accent-soft: var(--excel-green-soft);
+  /* AI accent = the app's file-type accent (the ribbon-tab-file color): the
+     shared chat skin maps --accent onto --ai-accent inside the chat surfaces,
+     and the AI ribbon icons read --ai-accent directly */
+  --ai-accent: var(--accent);
+  --ai-accent-dark: var(--accent-dark);
+  --ai-accent-soft: var(--accent-soft);
 
   --surface-hover: #edf1ee;
   /* ribbon toggle states match the slides ribbon (--hover / --active-bg):
@@ -894,6 +900,7 @@ html.officevega-popover-open .ribbon-tabs {
   min-height: 0;
   padding: 0;
   margin: 0;
+  color: var(--ai-accent);
 }
 
 /* VegaMark renders at 24px to match the feature glyphs beside it */
@@ -933,9 +940,13 @@ html.officevega-popover-open .ribbon-tabs {
   border-radius: 4px;
 }
 
+/* open state: brand-blue ink on the bare chip — no gray plate */
 .ribbon-tool.large.as-button.ai-entry.active {
-  /* neutral gray, shared with the docs/slides Genspark entries */
-  background: var(--ribbon-active);
+  background: transparent;
+}
+
+.ribbon-tool.large.as-button.ai-entry.active .tool-icon-row {
+  color: var(--ai-accent);
 }
 
 .ribbon-tool.large.ai-entry:hover .tool-icon-row,

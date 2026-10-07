@@ -39,8 +39,8 @@ launches (`npm run shell`, `npm start -w @officevega/shell`) from such terminals
   forward-only versions (`--force` to roll back). Upload installers first,
   `*.yml` last — the full site-side runbook is `docs/update-feed-officevega.md`.
 - `DOWNLOAD_PAGE_URL` in `apps/shell/src/main/updater.ts` is the last-resort
-  manual fallback (`https://officevega.com/`); the feed-derived installer
-  link always wins when derivable.
+  manual fallback (`https://officevega.com/releases`); the feed-derived
+  installer link always wins when derivable.
 
 ## Slides AI pipeline notes
 

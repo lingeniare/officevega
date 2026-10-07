@@ -180,15 +180,15 @@ the System One model that returns one calibrated relevance score per document
 in a single call instead of generating text. The list is reordered by
 that score; if the call fails or times out, the local order stays.
 
-<img src="docs/assets/readme/search-jev-motion.webp" alt="Screen recording of the OfficeVega home screen: typing laptop refresh policy lists a browser-cache policy, a brand-refresh plan and a dashboard-refresh schedule first while the equipment standards document is last; the Settings page shows Jev search reranking switched on under AI Media & Search with the TypeSafe endpoint; the same search then shows the equipment standards document first with a Jev badge next to the result count" width="100%">
+<img src="docs/assets/readme/search-jev-motion.webp" alt="Screen recording of the OfficeVega home screen: typing laptop refresh policy lists a browser-cache policy, a brand-refresh plan and a dashboard-refresh schedule first while the equipment standards document is last; the Settings page shows Decision model reranking switched on under AI Media & Search with the TypeSafe endpoint; the same search then shows the equipment standards document first with a Decision model badge next to the result count" width="100%">
 
 <table>
 <tr>
 <td width="50%"><img src="docs/assets/readme/search-jev-before-after.webp" alt="Two result lists for the query laptop refresh policy side by side: without Jev the dashboard refresh schedule, brand refresh plan and browser cache refresh policy lead and the company equipment standards document is fifth; with Jev the equipment standards document, which states the three-year laptop replacement cycle, is first"></td>
-<td width="50%"><img src="docs/assets/readme/search-jev-settings.webp" alt="OfficeVega Settings, AI Media & Search page: the Local file search block with the Jev search reranking switch, the endpoint choice between OpenRouter and TypeSafe, and the API key field"></td>
+<td width="50%"><img src="docs/assets/readme/search-jev-settings.webp" alt="OfficeVega Settings, AI Media & Search page: the Local file search block with the Decision model reranking switch, the endpoint choice between OpenRouter and TypeSafe, and the API key field"></td>
 </tr>
 <tr>
-<td><b>Same words, different answers</b> — "laptop refresh policy" matches a browser-cache refresh policy, a brand-refresh plan and a dashboard-refresh schedule word for word, so full-text ranking puts them first. Jev reads the excerpts and moves the equipment standards document, the one that states the three-year replacement cycle, to the top. The <b>Jev</b> badge next to the result count shows when the order came from the model.</td>
+<td><b>Same words, different answers</b> — "laptop refresh policy" matches a browser-cache refresh policy, a brand-refresh plan and a dashboard-refresh schedule word for word, so full-text ranking puts them first. Jev reads the excerpts and moves the equipment standards document, the one that states the three-year replacement cycle, to the top. The <b>Decision model</b> badge next to the result count shows when the order came from the model.</td>
 <td><b>Off by default, one switch to turn on</b> — Settings → AI Media & Search → Local file search. Pick OpenRouter or TypeSafe direct, paste a key, hit Test connection. Only when the switch is on do excerpts of the top hits leave the device; the index itself never does.</td>
 </tr>
 </table>
@@ -274,7 +274,7 @@ OpenAI-compatible images endpoint for image generation and image/video
 analysis, plus DeepSeek V4.1 Flash for image analysis.
 
 **TypeSafe Jev** reranks the home screen's file search. Under **AI Media & Search →
-Local file search**, switch on Jev search reranking and pick an endpoint:
+Local file search**, switch on Decision model reranking and pick an endpoint:
 [OpenRouter](https://openrouter.ai/typesafe) (model `typesafe/jev-1.13`) or
 TypeSafe's own API. The key is stored only on this device. It is off by
 default; when on, the excerpts of the top 20 local hits are sent for judgment

@@ -4,9 +4,12 @@
    provide layout (dock width, resizer, grid). Do not reintroduce per-app
    chat skins: every visual choice belongs here.
    Principles: one accent, flat messages, quiet chrome, one memorable detail
-   (the orange send button). Light + dark adapt through the shared tokens. */
+   (the accent send button). Light + dark adapt through the shared tokens. */
 
-/* ---------- unified accent: the chat ignores per-app --accent ---------- */
+/* ---------- AI accent: each app's file-type color (ribbon-tab-file) ----------
+   The chat maps its --accent onto --ai-accent so the app accent can't bleed
+   into chat-only elements, while --ai-accent itself is set per app on :root
+   (tokens.css ships the neutral fallback) — one chat layout, per-app color. */
 .ai-dock,
 .ai-panel,
 aside.copilot,
@@ -727,23 +730,27 @@ button.ai-step-title.clickable:hover {
   margin-left: 0;
 }
 
-/* attach: quiet 16px glyph, same fade-on-hover as the shield badge */
+/* attach: quiet 16px glyph; hover paints the same accent disc as .ai-header-btn */
 .ai-attach-btn {
   order: 2;
   margin-left: auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 16px;
-  height: 16px;
+  width: 24px;
+  height: 24px;
   flex-shrink: 0;
   padding: 0;
   border: none;
+  border-radius: 50%;
   background: transparent;
   color: var(--color-text-tertiary);
   opacity: 0.7;
   cursor: pointer;
-  transition: opacity var(--transition-fast);
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast),
+    opacity var(--transition-fast);
 }
 
 .ai-attach-btn svg,
@@ -755,6 +762,12 @@ button.ai-step-title.clickable:hover {
 
 .ai-attach-btn:hover {
   opacity: 1;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.ai-attach-btn:active {
+  color: var(--accent-dark);
 }
 
 .ai-track-btn {

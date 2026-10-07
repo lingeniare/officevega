@@ -68,6 +68,12 @@
   --accent: #c43e1c;
   --accent-dark: #a33517;
   --accent-soft: #fbeae5;
+  /* AI accent = the app's file-type accent (the ribbon-tab-file color): the
+     shared chat skin maps --accent onto --ai-accent inside the chat surfaces,
+     and the AI ribbon icons read --ai-accent directly */
+  --ai-accent: var(--accent);
+  --ai-accent-dark: var(--accent-dark);
+  --ai-accent-soft: var(--accent-soft);
 
   /* slides-local chrome shades */
   --slides-statusbar-bg: #f3f4f6;
@@ -837,6 +843,7 @@ button {
   min-height: 0;
   padding: 0;
   margin: 0;
+  color: var(--ai-accent);
 }
 
 /* VegaMark renders at 24px to match the feature glyphs beside it */
@@ -857,10 +864,13 @@ button {
   background: var(--hover);
 }
 
+/* open state: brand-blue ink on the bare chip — no gray plate */
 .rb-big.ai-entry.active {
-  /* neutral gray, shared with the docs/sheets Genspark entries */
-  background: var(--active-bg);
-  color: var(--text);
+  background: transparent;
+}
+
+.rb-big.ai-entry.active .rb-big-icon {
+  color: var(--ai-accent);
 }
 
 .rb-big.ai-entry:hover:not(:disabled) .rb-big-icon,

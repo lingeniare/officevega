@@ -81,21 +81,18 @@ function buildIco(entries) {
 const srcImg = await loadImage(SRC)
 
 /**
- * The asterisk redrawn vector-crisp at `size`. The source PNG's spokes are
- * ~2.6% of the canvas, so a faithful downscale to ≤48px produces sub-pixel
- * lines — small entries draw the mark with a heavier relative stroke instead.
+ * The asterisk drawn vector-crisp: `r` is the spoke half-length, `stroke`
+ * the line width; the caller sets strokeStyle. Used wherever a PNG downscale
+ * would lose the thin rays — small icon entries and the NSIS wizard bitmaps.
  */
-function drawAsterisk(ctx, size) {
-  const c = size / 2
-  const r = size * 0.42
-  ctx.strokeStyle = '#ffffff'
-  ctx.lineWidth = size * 0.1
+function drawAsterisk(ctx, cx, cy, r, stroke) {
+  ctx.lineWidth = stroke
   ctx.lineCap = 'round'
   for (const deg of [0, 30, 60, 90, 120, 150]) {
     const a = (deg * Math.PI) / 180
     ctx.beginPath()
-    ctx.moveTo(c - r * Math.sin(a), c + r * Math.cos(a))
-    ctx.lineTo(c + r * Math.sin(a), c - r * Math.cos(a))
+    ctx.moveTo(cx - r * Math.sin(a), cy + r * Math.cos(a))
+    ctx.lineTo(cx + r * Math.sin(a), cy - r * Math.cos(a))
     ctx.stroke()
   }
 }
@@ -109,7 +106,8 @@ async function renderSmall(size) {
   const ctx = c.getContext('2d')
   ctx.fillStyle = '#000000'
   ctx.fillRect(0, 0, size, size)
-  drawAsterisk(ctx, size)
+  ctx.strokeStyle = '#ffffff'
+  drawAsterisk(ctx, size / 2, size / 2, size * 0.42, size * 0.1)
   return c.toBuffer('image/png')
 }
 
@@ -158,10 +156,9 @@ console.log('generated icon.ico')
 
 // NSIS wizard icons (build/installerIcon.ico + uninstallerIcon.ico are picked
 // up by electron-builder automatically — MUI_ICON/MUI_UNICON/UNINSTALLER_ICON).
-// The wizard shows the icon at 32-55 px in the MUI header, where the
-// simplified star-core loses the glow and reads as a broken mark, so installer
-// icons keep the full vega.png artwork at every size except 16 px (title bar),
-// where the glow downscales to noise and the star core stays legible.
+// The wizard shows the icon at 32-55 px where the source spokes still read,
+// so installer icons keep the full vega.png artwork at every size except
+// 16 px (title bar), where the vector redraw stays legible.
 const installerEntries = []
 for (const size of WIN_SIZES) {
   installerEntries.push({ size, png: size <= 16 ? await renderSmall(size) : await renderFull(size) })
@@ -170,6 +167,58 @@ const installerIco = buildIco(installerEntries)
 writeFileSync(join(buildDir, 'installerIcon.ico'), installerIco)
 writeFileSync(join(buildDir, 'uninstallerIcon.ico'), installerIco)
 console.log('generated installerIcon.ico + uninstallerIcon.ico')
+
+// NSIS wizard bitmaps — electron-builder auto-detects build/*.bmp by name:
+// the welcome/finish sidebar (164×314, the uninstaller gets its own copy)
+// and the header strip on inner pages (150×57). Without them the wizard
+// falls back to the generic nsis3-metro.bmp, which has nothing to do with
+// the product mark.
+function writeBmp(filePath, canvas) {
+  const w = canvas.width
+  const h = canvas.height
+  const { data } = canvas.getContext('2d').getImageData(0, 0, w, h)
+  const rowSize = (w * 3 + 3) & ~3
+  const buf = Buffer.alloc(54 + rowSize * h)
+  buf.write('BM')
+  buf.writeUInt32LE(buf.length, 2)
+  buf.writeUInt32LE(54, 10)
+  buf.writeUInt32LE(40, 14)
+  buf.writeInt32LE(w, 18)
+  buf.writeInt32LE(h, 22) // positive height = bottom-up rows
+  buf.writeUInt16LE(1, 26)
+  buf.writeUInt16LE(24, 28)
+  buf.writeUInt32LE(rowSize * h, 34)
+  for (let y = 0; y < h; y++) {
+    const row = 54 + (h - 1 - y) * rowSize
+    for (let x = 0; x < w; x++) {
+      const s = (y * w + x) * 4
+      const o = row + x * 3
+      buf[o] = data[s + 2]
+      buf[o + 1] = data[s + 1]
+      buf[o + 2] = data[s]
+    }
+  }
+  writeFileSync(filePath, buf)
+}
+
+const sidebar = createCanvas(164, 314)
+const sidebarCtx = sidebar.getContext('2d')
+sidebarCtx.fillStyle = '#000000'
+sidebarCtx.fillRect(0, 0, 164, 314)
+sidebarCtx.strokeStyle = '#ffffff'
+drawAsterisk(sidebarCtx, 82, 96, 44, 9)
+writeBmp(join(buildDir, 'installerSidebar.bmp'), sidebar)
+writeBmp(join(buildDir, 'uninstallerSidebar.bmp'), sidebar)
+
+// header strip sits on the white wizard band — white canvas, dark mark
+const header = createCanvas(150, 57)
+const headerCtx = header.getContext('2d')
+headerCtx.fillStyle = '#ffffff'
+headerCtx.fillRect(0, 0, 150, 57)
+headerCtx.strokeStyle = '#000000'
+drawAsterisk(headerCtx, 75, 28.5, 22, 5)
+writeBmp(join(buildDir, 'installerHeader.bmp'), header)
+console.log('generated installerSidebar/uninstallerSidebar/installerHeader .bmp')
 
 // mac master keeps its grid margin; iconset for iconutil
 const macMaster = await renderMac(1024)

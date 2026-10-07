@@ -2,6 +2,13 @@
   --accent: #232425;
   --accent-dark: #000000;
   --accent-soft: rgba(35, 36, 37, 0.1);
+  /* AI accent: the .html file-type teal the .file-tab-wrap capsule wears (the
+     neutral editing --accent stays near-black). The shared chat skin maps
+     --accent onto --ai-accent inside the chat surfaces, and the AI ribbon
+     icons read --ai-accent directly */
+  --ai-accent: #0fa3a3;
+  --ai-accent-dark: #0c8383;
+  --ai-accent-soft: rgb(15 163 163 / 10%);
   /* document surface: a page without its own background is white in every browser, so the theme never repaints it */
   --preview-page-bg: #ffffff;
   --hx-ai-changed: rgb(255 213 79 / 40%);
@@ -63,6 +70,9 @@
   --accent: #e4e4e4;
   --accent-dark: #ffffff;
   --accent-soft: rgba(228, 228, 228, 0.16);
+  --ai-accent: #2dd4bf;
+  --ai-accent-dark: #5eead4;
+  --ai-accent-soft: rgb(45 212 191 / 14%);
   --cm-tag: #7ee787;
   --cm-attr: #79c0ff;
   --cm-string: #a5d6ff;
@@ -100,6 +110,9 @@
     --accent: #e4e4e4;
     --accent-dark: #ffffff;
     --accent-soft: rgba(228, 228, 228, 0.16);
+    --ai-accent: #2dd4bf;
+    --ai-accent-dark: #5eead4;
+    --ai-accent-soft: rgb(45 212 191 / 14%);
     --cm-tag: #7ee787;
     --cm-attr: #79c0ff;
     --cm-string: #a5d6ff;
@@ -470,6 +483,7 @@ html.officevega-popover-open .ribbon-tabs {
   min-height: 0;
   padding: 0;
   margin: 0;
+  color: var(--ai-accent);
 }
 
 /* VegaMark renders at 24px to match the feature glyphs beside it */
@@ -489,9 +503,13 @@ html.officevega-popover-open .ribbon-tabs {
   background: var(--hover);
 }
 
+/* open state: brand-blue ink on the bare chip — no gray plate */
 .rb-big.ai-entry.active {
-  background: var(--active-bg);
-  color: var(--text-primary);
+  background: transparent;
+}
+
+.rb-big.ai-entry.active .rb-big-icon {
+  color: var(--ai-accent);
 }
 
 .ai-feature-icon {
@@ -765,31 +783,10 @@ html.officevega-popover-open .ribbon-tabs {
   color: var(--color-text-primary);
 }
 
-/* AI accent: html teal — the file-type color from the shell icons
-   (overrides the neutral app accent inside the chat panel and the Ask-AI
-   popover, which mounts at the app root outside .copilot) */
-.copilot,
-.ai-ask-pop {
-  --accent: #0fa3a3;
-  --accent-dark: #0c8383;
-  --accent-soft: rgb(15 163 163 / 10%);
-}
-
-[data-theme='dark'] .copilot,
-[data-theme='dark'] .ai-ask-pop {
-  --accent: #2dd4bf;
-  --accent-dark: #5eead4;
-  --accent-soft: rgb(45 212 191 / 14%);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) .copilot,
-  :root:not([data-theme='light']) .ai-ask-pop {
-    --accent: #2dd4bf;
-    --accent-dark: #5eead4;
-    --accent-soft: rgb(45 212 191 / 14%);
-  }
-}
+/* AI accent: html teal — the file-type color from the shell icons. It lives
+   on :root as --ai-accent (see the token block above): the shared chat skin
+   maps --accent onto it inside .copilot/.ai-ask-pop, and the AI ribbon icons
+   read it directly. */
 
 /* drag handle on the panel's right edge — resize the panel horizontally */
 .ai-panel-resizer {

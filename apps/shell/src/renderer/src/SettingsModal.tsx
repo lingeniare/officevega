@@ -373,6 +373,31 @@ const VEGA_IMAGE_MODEL_FILTER = {
   excludeSuffixes: [':free'],
 } as const
 
+/** the model-pricing page every setAiVegaNote translation points at */
+const AIMODELS_NOTE_URL = 'api.vega.chat/aimodels'
+
+/**
+ * Wrap the api.vega.chat/aimodels mention inside a note with a real link that
+ * opens in the system browser (window.open is denied in this renderer).
+ */
+function noteWithLink(note: string): ReactNode {
+  const at = note.indexOf(AIMODELS_NOTE_URL)
+  if (at < 0) return note
+  return (
+    <>
+      {note.slice(0, at)}
+      <button
+        type="button"
+        className="set-text-link"
+        onClick={() => void window.aiOffice.openAiModels?.()}
+      >
+        {AIMODELS_NOTE_URL}
+      </button>
+      {note.slice(at + AIMODELS_NOTE_URL.length)}
+    </>
+  )
+}
+
 function AiModelPane({
   t,
   account,
@@ -667,7 +692,7 @@ function AiModelPane({
           : isCodex
             ? t('setAiCodexHint')
             : provider === 'vega'
-              ? t('setAiVegaNote')
+              ? noteWithLink(t('setAiVegaNote'))
               : t('setAiByokNote')}
       </div>
       <div className="set-field">
@@ -1330,7 +1355,7 @@ function AiMediaPane({
               ? cap === 'image'
                 ? // image has its own picker now — the "model is set by VEGA" hint
                   // only stays accurate for the analysis capabilities
-                  meta.description
+                  t('setAiMediaVegaImageHint')
                 : t('setAiMediaVegaHint')
               : meta.description}
         </div>

@@ -119,8 +119,9 @@
   --color-border-default: #eaeaea;
   --color-border-strong: #d0d3d8;
   --color-border-brand: #0f7fff;
-  /* Unified AI-chat accent (VEGA One): every ai-dock maps --accent onto these,
-     so docs/slides/pdf/html/markdown/sheets render one identical chat */
+  /* AI-chat accent fallback (VEGA One): every ai-dock maps --accent onto
+     these. Each app overrides them on :root with its file-type color (the
+     ribbon-tab-file accent), so the chat wears the app's brand */
   --ai-accent: #343a40;
   --ai-accent-dark: #212529;
   --ai-accent-soft: rgb(52 58 64 / 12%);

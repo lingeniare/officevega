@@ -610,6 +610,22 @@
   line-height: 1.5;
 }
 
+/* inline link inside a note/description (e.g. the aimodels pricing link) */
+.set-text-link {
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: var(--accent);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.set-text-link:hover {
+  color: var(--accent-dark);
+}
+
 /* feedback pill: spinner while testing, green on success/saved, red on failure */
 .set-ai-status {
   /* dead-center on the footer (top stays auto → keeps the flex static

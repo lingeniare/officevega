@@ -126,8 +126,7 @@ graph TD
   `resources/app-update.yml` (`updateFeedBaseUrl`) — URL из удалённых
   метаданных не доверяются. Невалидная/не-HTTPS база → null.
 - Если базу прочитать нельзя или файл не подобрался — используется запасная
-  страница `DOWNLOAD_PAGE_URL = https://officevega.com/` (заменить на
-  реальную страницу загрузки, когда появится).
+  страница `DOWNLOAD_PAGE_URL = https://officevega.com/releases`.
 
 ## Standalone Docs
 
@@ -154,7 +153,7 @@ standalone-сборки сейчас собираются без publish-кон�
 - Env-переменные переименованы: `GENOFFICE_UPDATE_URL` →
   `OFFICEVEGA_UPDATE_URL`, `GENOFFICE_FAKE_UPDATE` → `OFFICEVEGA_FAKE_UPDATE`.
 - Фид — собственный хост `https://officevega.com/updates/` (статическая
-  раздача), а не Azure CDN; `DOWNLOAD_PAGE_URL` — `https://officevega.com/`
+  раздача), а не Azure CDN; `DOWNLOAD_PAGE_URL` — `https://officevega.com/releases`
   вместо GitHub Releases.
 - Добавлен `scripts/stage-update-feed.cjs` + `update-feed-utils.cjs` — сборка
   фида с sha512-верификацией, мерджем манифестов arch-проходов и forward-only

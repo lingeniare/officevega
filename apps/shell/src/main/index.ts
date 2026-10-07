@@ -606,6 +606,7 @@ const CREDIT_USAGE_URL = 'https://api.vega.chat/dashboard'
 // Settings → About link rows; kept main-side so the renderer never supplies the URL.
 const OFFICEVEGA_SITE_URL = 'https://officevega.com'
 const VEGA_API_URL = 'https://api.vega.chat'
+const VEGA_MODELS_URL = 'https://api.vega.chat/aimodels'
 const FEEDBACK_URL = 'https://officevega.com/feedback'
 
 // ---- "star us on GitHub" prompt (see star-prompt.ts for the rules) ----
@@ -5049,6 +5050,12 @@ function registerHomeIpc(): void {
 
   ipcMain.handle(HOME_CHANNELS.openAiProvider, () => {
     shell.openExternal(VEGA_API_URL).catch(() => {
+      // no browser handler available; nothing actionable for the user here
+    })
+  })
+
+  ipcMain.handle(HOME_CHANNELS.openAiModels, () => {
+    shell.openExternal(VEGA_MODELS_URL).catch(() => {
       // no browser handler available; nothing actionable for the user here
     })
   })

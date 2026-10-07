@@ -4,6 +4,13 @@
   --accent: #c43e1c;
   --accent-dark: #a33517;
   --accent-soft: #fbeae5;
+  /* AI accent: the .pdf file-type red the .file-tab-wrap capsule wears (the
+     document-editing --accent stays c43e1c orange). The shared chat skin maps
+     --accent onto --ai-accent inside the chat surfaces, and the AI ribbon
+     icons read --ai-accent directly */
+  --ai-accent: #ef4444;
+  --ai-accent-dark: #dc2626;
+  --ai-accent-soft: rgb(239 68 68 / 10%);
 
   /* pdf-local chrome shades */
   --pdf-error: #c0392b;
@@ -86,6 +93,9 @@
   --accent: #e8663f;
   --accent-dark: #d4552f;
   --accent-soft: #43261d;
+  --ai-accent: #f87171;
+  --ai-accent-dark: #ef4444;
+  --ai-accent-soft: rgb(248 113 113 / 16%);
   --pdf-error: #e57373;
   --pdf-error-border: rgb(229 115 115 / 50%);
   --pdf-error-bg-hover: rgb(229 115 115 / 12%);
@@ -111,6 +121,9 @@
     --accent: #e8663f;
     --accent-dark: #d4552f;
     --accent-soft: #43261d;
+    --ai-accent: #f87171;
+    --ai-accent-dark: #ef4444;
+    --ai-accent-soft: rgb(248 113 113 / 16%);
     --pdf-error: #e57373;
     --pdf-error-border: rgb(229 115 115 / 50%);
     --pdf-error-bg-hover: rgb(229 115 115 / 12%);
@@ -518,6 +531,7 @@ button {
   min-height: 0;
   padding: 0;
   margin: 0;
+  color: var(--ai-accent);
 }
 
 /* VegaMark renders at 24px to match the feature glyphs beside it */
@@ -531,9 +545,13 @@ button {
   background: var(--hover);
 }
 
+/* open state: brand-blue ink on the bare chip — no gray plate */
 .rb-big.ai-entry.active {
-  background: var(--active-bg);
-  color: var(--text);
+  background: transparent;
+}
+
+.rb-big.ai-entry.active .rb-big-icon {
+  color: var(--ai-accent);
 }
 
 .rb-big.ai-entry:hover:not(:disabled) .rb-big-icon,

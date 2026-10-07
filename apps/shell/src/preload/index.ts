@@ -475,6 +475,9 @@ const homeApi: HomeApi = {
   async openAiProvider() {
     await ipcRenderer.invoke(HOME_CHANNELS.openAiProvider)
   },
+  async openAiModels() {
+    await ipcRenderer.invoke(HOME_CHANNELS.openAiModels)
+  },
   async openFeedback() {
     await ipcRenderer.invoke(HOME_CHANNELS.openFeedback)
   },
