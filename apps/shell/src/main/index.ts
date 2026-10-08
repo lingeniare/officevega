@@ -374,13 +374,31 @@ import { isUpdateChannel, type UpdateChannel } from '../shared/update-api'
 // run silently quits and forwards its argv to the running installed OfficeVega.
 // OFFICEVEGA_USER_DATA: test drivers point this at a scratch dir so an
 // automated instance can run alongside the dev instance (separate lock).
-if (!app.isPackaged)
-  app.setPath(
-    'userData',
-    process.env.OFFICEVEGA_USER_DATA ??
-      process.env.VEGAOFFICE_USER_DATA ??
-      join(app.getPath('appData'), 'OfficeVega Dev'),
-  )
+if (!app.isPackaged) {
+  const envUserData = process.env.OFFICEVEGA_USER_DATA ?? process.env.VEGAOFFICE_USER_DATA
+  if (envUserData) {
+    app.setPath('userData', envUserData)
+  } else {
+    // The dev profile used to live in "OfficeVega Dev"; the space breaks
+    // unquoted shell expansions, rsync targets and .desktop Exec= lines, and
+    // XDG config entries are single tokens (#1817). "OfficeVega-Dev" keeps the
+    // family naming of the packaged profile ("OfficeVega"). The old directory
+    // moves once — it sits on the same volume as appData, so the rename is
+    // atomic, and a concurrent dev instance keeps its open file handles.
+    const appData = app.getPath('appData')
+    const devDir = join(appData, 'OfficeVega-Dev')
+    const oldDevDir = join(appData, 'OfficeVega Dev')
+    if (existsSync(oldDevDir) && !existsSync(devDir)) {
+      try {
+        renameSync(oldDevDir, devDir)
+      } catch {
+        // another dev instance is mid-migration or holds the directory:
+        // continuing with a fresh profile beats failing the launch
+      }
+    }
+    app.setPath('userData', devDir)
+  }
+}
 
 /**
  * `--headless-export <file> --to <format> --out <path> [--json]`: one document, no

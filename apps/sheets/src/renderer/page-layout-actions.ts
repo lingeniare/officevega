@@ -23,7 +23,9 @@ import type { HeaderFooterResult } from './HeaderFooterDialog'
 import { t } from './i18n/locale'
 import { effectivePageBreaks } from './page-break-preview'
 import { COLOR_SCHEMES, FONT_SCHEMES, rethemeStyles, THEME_PRESETS } from './themes'
-import { loadVisibleRange } from './univer-sync'
+import { loadVisibleRange, preloadEntireWorkbook } from './univer-sync'
+import { FULL_LOAD_MAX_CELLS } from './app-constants'
+import { pollUntilReady } from '@genoffice/electron-utils/headless-export'
 import {
   buildSheetPrintPayload,
   type HeaderFooterPictureImage,
@@ -352,23 +354,150 @@ export function handleApplyHeaderFooter(
   return null
 }
 
+const FULL_LOAD_TIMEOUT_MS = 180_000
+
+interface SharedPreloadOperation {
+  promise: Promise<void>
+  error: unknown | null
+}
+
+const inFlightPreloads = new WeakMap<LazyWorkbookState, SharedPreloadOperation>()
+
+function workbookDeclaredCellCount(state: LazyWorkbookState): number | null {
+  let total = 0
+  for (const sheet of state.file.sheets) {
+    const rows = sheet.rowCount
+    const cols = sheet.columnCount
+    if (!Number.isSafeInteger(rows) || !Number.isSafeInteger(cols) || rows < 0 || cols < 0) {
+      return null
+    }
+    const product = rows * cols
+    if (!Number.isSafeInteger(product)) {
+      return null
+    }
+    total += product
+    if (!Number.isSafeInteger(total)) {
+      return null
+    }
+  }
+  return total
+}
+
+function ensurePreloadStarted(
+  runtime: UniverRuntime,
+  ctx: PageLayoutContext,
+  state: LazyWorkbookState,
+): SharedPreloadOperation | null {
+  const existing = inFlightPreloads.get(state)
+  if (existing) {
+    return existing
+  }
+  if (state.flags.preloadRunning) {
+    return null
+  }
+  const op: SharedPreloadOperation = {
+    promise: Promise.resolve(),
+    error: null,
+  }
+  op.promise = preloadEntireWorkbook(runtime, ctx.lazyWorkbookRef, () => undefined)
+    .catch((err) => {
+      op.error = err
+    })
+    .finally(() => {
+      if (inFlightPreloads.get(state) === op) {
+        inFlightPreloads.delete(state)
+      }
+    })
+  inFlightPreloads.set(state, op)
+  return op
+}
+
+export async function ensurePrintWorkbookLoaded(
+  ctx: PageLayoutContext,
+  state: LazyWorkbookState,
+  messages: { readonly notLoaded: string; readonly failed: string },
+): Promise<boolean> {
+  if (state.flags.preloadComplete) {
+    return true
+  }
+  const totalCells = workbookDeclaredCellCount(state)
+  if (totalCells === null) {
+    ctx.setMessage(messages.failed)
+    return false
+  }
+  if (totalCells > FULL_LOAD_MAX_CELLS) {
+    ctx.setMessage(t('appPrintTooLarge'))
+    return false
+  }
+  const runtime = ctx.univerRef.current
+  if (!runtime) {
+    ctx.setMessage(messages.failed)
+    return false
+  }
+  const operation = ensurePreloadStarted(runtime, ctx, state)
+  try {
+    await pollUntilReady(
+      () =>
+        ctx.lazyWorkbookRef.current !== state ||
+        state.flags.preloadComplete ||
+        Boolean(operation?.error) ||
+        !state.flags.preloadRunning,
+      messages.notLoaded,
+      {
+        timeoutMs: FULL_LOAD_TIMEOUT_MS,
+        pollMs: 50,
+      },
+    )
+  } catch {
+    if (ctx.lazyWorkbookRef.current === state) {
+      ctx.setMessage(messages.failed)
+    }
+    return false
+  }
+
+  if (ctx.lazyWorkbookRef.current !== state) {
+    return false
+  }
+  if (operation?.error) {
+    ctx.setMessage(messages.failed)
+    return false
+  }
+  if (!state.flags.preloadComplete) {
+    ctx.setMessage(messages.notLoaded)
+    return false
+  }
+  return true
+}
+
 /// The active sheet laid out as print HTML with its Page Layout settings, or
 /// null (after a status message) when the workbook is not ready for it.
 async function activeSheetPrintPayload(
   ctx: PageLayoutContext,
-  messages: { readonly notLoaded: string; readonly preparing: string },
+  messages: { readonly notLoaded: string; readonly preparing: string; readonly failed: string },
 ): Promise<WorkbookExportPdfRequest | null> {
-  const runtime = ctx.univerRef.current
-  const worksheet = runtime?.univerAPI.getActiveWorkbook()?.getActiveSheet()
-  if (!runtime || !worksheet) {
+  const initialRuntime = ctx.univerRef.current
+  const initialWorksheet = initialRuntime?.univerAPI.getActiveWorkbook()?.getActiveSheet()
+  if (!initialRuntime || !initialWorksheet) {
     ctx.setMessage(t('appActiveSheetUnavailable'))
     return null
   }
   const state = ctx.lazyWorkbookRef.current
   if (state && !state.flags.preloadComplete) {
     ctx.setMessage(messages.notLoaded)
+    const loaded = await ensurePrintWorkbookLoaded(ctx, state, messages)
+    if (!loaded) return null
+  }
+
+  const runtime = ctx.univerRef.current
+  const worksheet = runtime?.univerAPI.getActiveWorkbook()?.getActiveSheet()
+  if (!runtime || !worksheet) {
+    ctx.setMessage(t('appActiveSheetUnavailable'))
     return null
   }
+  if (ctx.lazyWorkbookRef.current !== state) {
+    return null
+  }
+
   ctx.setMessage(messages.preparing)
   const sheetId = worksheet.getSheetId()
   const journal = state?.editJournal.pageSetup.get(sheetId) ?? {}
@@ -387,7 +516,23 @@ async function activeSheetPrintPayload(
   const pictures = state
     ? await loadHeaderFooterPictures(state.file.sessionId, setup.headerFooterPictures)
     : new Map<string, HeaderFooterPictureImage>()
+
+  if (ctx.lazyWorkbookRef.current !== state) {
+    return null
+  }
+  if (runtime.univerAPI.getActiveWorkbook()?.getActiveSheet()?.getSheetId() !== sheetId) {
+    return null
+  }
+
   const frames = await settledVisualFrames(ctx, state, sheetId)
+
+  if (ctx.lazyWorkbookRef.current !== state) {
+    return null
+  }
+  if (runtime.univerAPI.getActiveWorkbook()?.getActiveSheet()?.getSheetId() !== sheetId) {
+    return null
+  }
+
   return buildSheetPrintPayload(
     worksheet as unknown as PrintWorksheet,
     setup,
@@ -407,6 +552,7 @@ export async function handleExportPdf(ctx: PageLayoutContext, outPath?: string):
     const payload = await activeSheetPrintPayload(ctx, {
       notLoaded: t('appPdfNeedsFullLoad'),
       preparing: t('appPdfRendering'),
+      failed: t('appPdfExportFailed'),
     })
     if (!payload) return false
     const result = await window.desktopApi.exportPdf({
@@ -429,6 +575,7 @@ export async function handlePrint(ctx: PageLayoutContext): Promise<boolean> {
     const payload = await activeSheetPrintPayload(ctx, {
       notLoaded: t('appPrintNeedsFullLoad'),
       preparing: t('appPrintPreparing'),
+      failed: t('appPrintFailed'),
     })
     if (!payload) return false
     const result = await window.desktopApi.printWorkbook(payload)

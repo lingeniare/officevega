@@ -305,9 +305,19 @@ export function mergeLevelXml(existing: string, l: CustomNumberingLevel, ilvl: n
   pPr.set('w:ind', `<w:ind w:left="${Math.round(l.indentLeft)}" w:hanging="${hanging}"/>`)
   if (l.tabStop !== undefined)
     pPr.set('w:tabs', `<w:tabs><w:tab w:val="num" w:pos="${Math.round(l.tabStop)}"/></w:tabs>`)
-  const pPrOrder = ['w:tabs', 'w:ind']
+  // CT_PPrGeneral sequence. Named children sort to their schema position;
+  // anything unlisted sorts last rather than first — indexOf returns -1, which
+  // would hoist it to the front of w:pPr and, since Word validates the child
+  // order strictly, make the saved document unreadable. Same shape as the rPr and
+  // body sorts below. w:spacing is listed because a producer may legitimately put
+  // it in a w:lvl's pPr and it has to land between tabs and ind.
+  const pPrOrder = ['w:tabs', 'w:spacing', 'w:ind']
   const pPrXml = [...pPr.entries()]
-    .sort((a, b) => pPrOrder.indexOf(a[0]) - pPrOrder.indexOf(b[0]))
+    .sort((a, b) => {
+      const ia = pPrOrder.indexOf(a[0])
+      const ib = pPrOrder.indexOf(b[0])
+      return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib)
+    })
     .map(([, xml]) => xml)
     .join('')
   set('w:pPr', `<w:pPr>${pPrXml}</w:pPr>`)

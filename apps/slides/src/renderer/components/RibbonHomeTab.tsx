@@ -469,7 +469,7 @@ export function RibbonHomeTab({ rb }: { rb: RibbonTabCtx }) {
             className="rb-big rb-split"
             disabled={!hasDoc}
             onClick={onAddSlide}
-            data-tip={t('ribbonNewSlideTip')}
+            data-tip={platformShortcuts(t('ribbonNewSlideTip'))}
           >
             <span className="rb-big-icon">
               <span className="rb-split-main">
