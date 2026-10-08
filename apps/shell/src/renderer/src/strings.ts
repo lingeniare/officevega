@@ -1032,7 +1032,7 @@ export const strings = {
     loginOpenShort: 'Mở trang đăng nhập thủ công',
     loginCopyUrl: 'Sao chép liên kết đăng nhập',
     loginCopied: 'Đã sao chép',
-    loginNetworkError: 'Không thể kết nối tới Genspark — hãy kiểm tra cài đặt mạng hoặc proxy',
+    loginNetworkError: 'Không thể kết nối tới VEGA — hãy kiểm tra cài đặt mạng hoặc proxy',
     loginExpired: 'Phiên đăng nhập đã hết hạn — nhấp để thử lại',
     loginFailed: 'Đăng nhập thất bại — nhấp để thử lại',
     loggingOut: 'Đang đăng xuất…',
@@ -1256,7 +1256,7 @@ export const strings = {
     setAiCodexHint:
       'Tự động tìm CLI Codex đã đăng nhập hiện tại sau các bản cập nhật; đường dẫn tùy chỉnh là không bắt buộc. Không cần khóa API.',
     setAiByokNote:
-      'Các cuộc trò chuyện sử dụng khóa của riêng bạn. Việc tạo hình ảnh và phân tích phương tiện tuân theo phần Phương tiện AI; tìm kiếm web vẫn sử dụng đăng nhập Genspark hoặc các nguồn miễn phí.',
+      'Các cuộc trò chuyện sử dụng khóa của riêng bạn. Việc tạo hình ảnh và phân tích phương tiện tuân theo phần Phương tiện AI; tìm kiếm web vẫn sử dụng đăng nhập VEGA hoặc các nguồn miễn phí.',
     setAiSaved: 'Đã lưu',
     setAiTest: 'Kiểm tra kết nối',
     setAiTesting: 'Đang kiểm tra…',

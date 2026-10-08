@@ -1414,7 +1414,7 @@ export const strings = {
     aiNetworkError:
       'Sự cố mạng: không thể kết nối tới dịch vụ AI. Kiểm tra kết nối của bạn và thử lại',
     aiCreditsExhausted:
-      'Genspark credits của bạn đã hết. Hãy truy cập genspark.ai/pricing để nạp thêm rồi thử lại',
+      'Tín dụng VEGA của bạn đã hết. Hãy nạp thêm tại api.vega.chat rồi thử lại',
     aiToolReadPages: 'Đọc các trang {start}-{end}',
     aiToolSearch: 'Tìm kiếm "{query}" ({count} kết quả)',
     aiToolGoto: 'Đi tới trang {page}',
@@ -1583,7 +1583,7 @@ export const strings = {
     removeStamp: 'Nhấp để chọn hình mờ / đầu trang / chân trang này',
     props: 'Thuộc tính',
     propsTitle: 'Thuộc tính tài liệu',
-    ribbonAiAssistant: 'Genspark',
+    ribbonAiAssistant: 'VEGA',
     ribbonAiAssistantTip: 'Mở trợ lý AI',
     propTitle: 'Tiêu đề',
     propAuthor: 'Tác giả',

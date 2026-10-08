@@ -1,4 +1,5 @@
 import { mkdir, mkdtemp, readFile, writeFile, rm, stat } from 'node:fs/promises'
+import { statSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { createHash } from 'node:crypto'
@@ -161,14 +162,32 @@ describe('resumable installer download', () => {
 
   it('a mid-stream network failure keeps the .part for the next attempt', async () => {
     const dest = destOf()
-    const { executor } = makeUpdater()
-    // a body stream that errors halfway through
-    // a real socket hang-up errors the stream after the prefix was delivered
-    // (a synchronous error would void the queued chunk — Node web streams)
+    // a wide stall window: the fake stream deliberately idles until the
+    // prefix lands on disk, so the 50 ms watchdog must not abort it first
+    const { executor } = makeUpdater(5_000)
+    // a body stream that errors halfway through. Neither a fixed timer nor
+    // pull() is safe: a timer races the file write on a loaded machine, and
+    // erroring the moment the queued chunk is dequeued voids it in the
+    // web→node handoff. So the socket error is driven by observing the
+    // .part itself — strictly after the executor consumed and flushed the
+    // prefix.
+    let timer: ReturnType<typeof setInterval> | undefined
     const stream = new ReadableStream<Uint8Array>({
       start(controller) {
         controller.enqueue(new Uint8Array(FULL.subarray(0, 4)))
-        setTimeout(() => controller.error(new Error('socket hang up')), 5)
+        timer = setInterval(() => {
+          try {
+            if (statSync(partOf()).size >= 4) {
+              clearInterval(timer)
+              controller.error(new Error('socket hang up'))
+            }
+          } catch {
+            /* .part not created yet */
+          }
+        }, 1)
+      },
+      cancel() {
+        clearInterval(timer)
       },
     })
     globalThis.fetch = vi.fn(

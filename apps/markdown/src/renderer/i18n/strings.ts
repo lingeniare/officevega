@@ -600,7 +600,7 @@ export const strings = {
     aiTimeoutError: 'Phản hồi từ AI đã hết thời gian chờ',
     aiOverloadedError: 'Dịch vụ AI hiện đang bận — vui lòng thử lại sau giây lát',
     aiNetworkError: 'Sự cố mạng: không thể kết nối với dịch vụ AI. Kiểm tra kết nối và thử lại',
-    aiCreditsExhausted: 'Đã hết tín dụng — nạp thêm tại genspark.ai',
+    aiCreditsExhausted: 'Đã hết tín dụng — nạp thêm tại api.vega.chat',
     aiOpenAssistant: 'Mở trợ lý AI',
     aiSummarizeBtn: 'AI Tóm tắt',
     aiSummarizePrompt: 'Tóm tắt nội dung chính và các điểm quan trọng của tài liệu này',

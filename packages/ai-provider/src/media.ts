@@ -388,7 +388,7 @@ export function activeMediaProvider(
   return id
 }
 
-/** the active BYOK config for one capability, or null when it runs through Genspark */
+/** the active BYOK config for one capability, or null when it runs through the signed-in default */
 export function activeMediaConfig(
   settings: MediaSettingsSlice,
   capability: MediaCapability,
