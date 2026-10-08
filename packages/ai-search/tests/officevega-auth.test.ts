@@ -51,11 +51,24 @@ function jsonResponse(json: unknown, opts: { status?: number } = {}): Response {
   } as unknown as Response
 }
 
+const deviceCodeOk = {
+  device_code: DEVICE_CODE,
+  user_code: 'ABCD-1234',
+  verification_uri: 'https://api.vega.chat/device',
+  verification_uri_complete: AUTH_URL,
+  expires_in: 600,
+  interval: 0.001,
+}
+
 interface FlowOpts {
   /** poll answers before the approved one */
   polls?: Record<string, unknown>[]
   /** override for the key-issuance response */
   keyResponse?: { body: unknown; status?: number }
+  /** overrides fields of the device/code response (interval, expires_in, …) */
+  deviceCode?: Record<string, unknown>
+  /** keep answering authorization_pending, so only the expiry can end the flow */
+  alwaysPending?: boolean
 }
 
 /** fetch stub for the VEGA device flow: device/code → device/token polls → keys/officevega */
@@ -64,16 +77,13 @@ function stubFlow(opts: FlowOpts = {}) {
   const fetchMock = vi.fn(async (input: string | URL, _init?: RequestInit) => {
     const url = String(input)
     if (url.includes('/api/auth/device/code')) {
-      return jsonResponse({
-        device_code: DEVICE_CODE,
-        user_code: 'ABCD-1234',
-        verification_uri: 'https://api.vega.chat/device',
-        verification_uri_complete: AUTH_URL,
-        expires_in: 600,
-        interval: 0.001,
-      })
+      return jsonResponse({ ...deviceCodeOk, ...opts.deviceCode })
     }
     if (url.includes('/api/auth/device/token')) {
+      if (opts.alwaysPending) {
+        tokenPolls++
+        return jsonResponse(PENDING, { status: 400 })
+      }
       const scripted = (opts.polls ?? [])[tokenPolls]
       tokenPolls++
       if (scripted) return jsonResponse(scripted, { status: 400 })
@@ -280,6 +290,70 @@ describe('startOfficeVegaLogin (VEGA device flow)', () => {
       expect(polls).toBe(3)
     },
   )
+
+  // The device-code endpoint chooses the poll interval and the expiry, so one odd
+  // response could stretch a login for hours or leave it polling at a crawl.
+  // Both are clamped; the ceiling is MAX_LOGIN_SEC / MAX_POLL_INTERVAL_MS.
+  it('clamps a server poll interval far above the ceiling', async () => {
+    vi.useFakeTimers()
+    try {
+      stubFlow({ deviceCode: { ...deviceCodeOk, interval: 2_000_000 } })
+      const events: GskLoginProgress[] = []
+      startOfficeVegaLogin((progress) => events.push(progress))
+      // 10s is the clamped ceiling; the ~23 days the server asked for never elapse
+      await vi.advanceTimersByTimeAsync(0) // let the device_code reply land and arm the sleep
+      await vi.advanceTimersByTimeAsync(10_000)
+      await vi.waitFor(() => {
+        expect(['success', 'error']).toContain(events.at(-1)?.phase)
+      })
+      expect(events.at(-1)).toEqual({ phase: 'success' })
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('stops waiting for a device code at the clamped expiry', async () => {
+    vi.useFakeTimers()
+    try {
+      stubFlow({
+        alwaysPending: true,
+        deviceCode: { ...deviceCodeOk, expires_in: 1e9, interval: 2_000_000 },
+      })
+      const events: GskLoginProgress[] = []
+      startOfficeVegaLogin((progress) => events.push(progress))
+      // 1h is the clamped ceiling: still waiting one second before it
+      await vi.advanceTimersByTimeAsync(3_599_000)
+      expect(events.some((e) => e.phase === 'error')).toBe(false)
+      await vi.advanceTimersByTimeAsync(2_000)
+      await vi.waitFor(() => {
+        expect(events.at(-1)).toEqual({ phase: 'error', error: 'expired' })
+      })
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+
+  it('honors a provider lifetime longer than the old 15 min ceiling', async () => {
+    // A clamp must never truncate a code the server still considers valid:
+    // a provider answering 1800s would have had it cut in half by the previous
+    // 900s ceiling and logged out a user who could still approve.
+    vi.useFakeTimers()
+    try {
+      stubFlow({
+        alwaysPending: true,
+        deviceCode: { ...deviceCodeOk, expires_in: 1800, interval: 2_000 },
+      })
+      const events: GskLoginProgress[] = []
+      startOfficeVegaLogin((progress) => events.push(progress))
+      await vi.advanceTimersByTimeAsync(0)
+      expect(events.at(-1)).toEqual({ phase: 'url', url: AUTH_URL, expiresInSec: 1800, userCode: 'ABCD-1234' })
+      // still alive well past the old 900s ceiling
+      await vi.advanceTimersByTimeAsync(1_500_000)
+      expect(events.some((e) => e.phase === 'error')).toBe(false)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
 
   it('reports expired_token as error "expired"', async () => {
     stubFlow({ polls: [{ error: 'expired_token' }] })

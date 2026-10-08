@@ -133,6 +133,7 @@ import {
   appendFloatSpillBlock,
   assignSections,
   bumpLineSampleFontEpoch,
+  carryStreamedSamples,
   endnotesAnchorY,
   createLineRectsCache,
   anchorElement,
@@ -343,7 +344,8 @@ import {
   revisionDisplayState,
 } from './editor/extensions'
 import { setDkColor } from './editor/dark-page'
-import { useUiThemeIsDark } from './ui-theme'
+import { readDarkPagePref, writeDarkPagePref } from './dark-page-pref'
+import { useDocThemeIsDark, useUiThemeIsDark } from './ui-theme'
 import { type InkAnnotation, type InkTool } from './editor/ink'
 import { InkOverlay } from './components/InkOverlay'
 import {
@@ -789,12 +791,25 @@ export function App() {
   const [status, setStatus] = useState('')
   const [zoom, setZoom] = useState(100)
   const scrollContainerRef = useRef<HTMLElement>(null)
-  // Word-style dark page (editor/dark-page.ts): on by default in the dark theme,
-  // View ▸ Dark Mode flips it for the session (Word's Switch Modes); a theme
-  // switch drops the override and follows the new theme again
+  // Word-style dark page (editor/dark-page.ts): the shell's document-page-theme
+  // setting (#1811) decides by default — 'follow' rides the UI theme,
+  // 'light'/'dark' pin the paper; View ▸ Dark Mode remains the docs-specific
+  // choice (dark-page-pref.ts) and wins over the setting once the user has
+  // flipped it
   const themeDark = useUiThemeIsDark()
-  const [darkPage, setDarkPage] = useState(themeDark)
-  useEffect(() => setDarkPage(themeDark), [themeDark])
+  const docThemeDark = useDocThemeIsDark()
+  const [darkPage, setDarkPage] = useState(() => readDarkPagePref() ?? docThemeDark)
+  useEffect(() => {
+    if (readDarkPagePref() === null) setDarkPage(docThemeDark)
+  }, [docThemeDark])
+  // for toggle-by-one in the menu path, whose closure is not re-created per render
+  const darkPageRef = useRef(darkPage)
+  darkPageRef.current = darkPage
+  /** View ▸ Dark Mode (menu and ribbon): remember the choice, then apply it */
+  const updateDarkPage = useCallback((next: boolean) => {
+    writeDarkPagePref(next)
+    setDarkPage(next)
+  }, [])
   const [section, setSection] = useState<SectionSettings | null>(null)
   /** All sections (readSections): pagination/preview use per-section geometry; layout edits apply to the cursor's section */
   const [sections, setSections] = useState<SectionInfo[]>([])
@@ -3563,6 +3578,12 @@ export function App() {
     let lastPre: PageSlice[] = []
     let lastOut: SliceOutputs | null = null
     let lastSecSig = ''
+    /** top-level child count at the last pass: a streaming pass whose only
+     *  trigger is the appended tail (dirty ≥ this) may carry the prefix's
+     *  line/row samples; any user edit below the frontier (dirty < this)
+     *  disables the carry — a same-height edit would otherwise keep stale
+     *  line boxes that the height gate cannot see */
+    let lastPassChildCount = 0
     /** first top-level index a transaction touched since the last pass; null once a trigger needs the whole document */
     let dirtyFrom: number | null = null
     let resumePasses = 0
@@ -3752,6 +3773,11 @@ export function App() {
         const { blocks, totalHeight, floats, sectBreaks } = measureBlocks(pm, origin, factor)
         if (hasVertical)
           for (const b of blocks) if (b.el && !b.floated) b.inlineExtraPx = blockInlineExtraPx(b.el)
+        carryStreamedSamples(blocks, lastBlocks, {
+          pending: isPhasedContentPending(),
+          dirty,
+          lastPassChildCount,
+        })
         tMeasure = performance.now() - t0
         // multi-section: assign blocks to sections by docxIndex; each section has its own content height / forced breaks.
         // liveSections: when a section-break block is deleted, that section merges into the next in real time (effective before saving)
@@ -3854,6 +3880,7 @@ export function App() {
       } = measured
       slices = measured.s
       lastBlocks = blocks
+      lastPassChildCount = editor?.state.doc.childCount ?? lastPassChildCount
       pageLayoutRef.current = { blocks, slices, sections: secList ?? [] }
       if (mirrorMargins) locateCaretPageRef.current()
       const blockIndex = new BlockIndex(blocks)
@@ -5499,7 +5526,7 @@ export function App() {
           setShowAi((v) => !v)
           break
         case 'toggle-dark':
-          setDarkPage((v) => !v)
+          updateDarkPage(!darkPageRef.current)
           break
         case 'insert-table':
           // Word semantics: the menu opens the Insert Table dialog (custom rows/cols)
@@ -5656,6 +5683,7 @@ export function App() {
     runAiProofread,
     toggleTableGridlines,
     tableSectionWidthPx,
+    updateDarkPage,
   ])
 
   // Resolve the bookmark anchor against the original block XML, fall back to
@@ -6570,7 +6598,7 @@ export function App() {
     onZoom: setZoom,
     onZoomFit: zoomFit,
     onZoomDialog: () => setShowZoomDialog(true),
-    onDarkPage: setDarkPage,
+    onDarkPage: updateDarkPage,
     onAiPreset: (text: string) => {
       // presets stage the prompt in the composer — the user reviews and sends
       setShowAi(true)

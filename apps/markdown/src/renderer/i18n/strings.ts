@@ -1,5 +1,6 @@
 export const strings = {
   zh: {
+    renameNeedsSave: '先保存或放弃改动，再改文件后缀',
     appExportingImages: '正在导出图片…',
     appExportImagesProgress: '正在导出 {count} 张图片…',
     appExportImagesDone: '已导出 {count} 张图片到 {dir}',
@@ -130,6 +131,8 @@ export const strings = {
     outline: '大纲',
     outlineResize: '调整大纲宽度',
     spellcheck: '拼写检查',
+    sourceView: '源码',
+    sourceViewHint: '直接编辑 Markdown 源码，与保存到文件的文本完全一致',
     outlineEmpty: '暂无标题',
     codeCopy: '复制',
     codeCopied: '已复制',
@@ -213,10 +216,12 @@ export const strings = {
 
   },
   en: {
+    renameNeedsSave: 'Save or discard your changes before changing the extension',
     appExportingImages: 'Exporting images…',
     appExportImagesProgress: 'Exporting {count} images…',
     appExportImagesDone: 'Exported {count} images to {dir}',
     appExportImagesFailed: 'Image export failed: {error}',
+    imageTooLarge: 'Image is larger than {mb} MB and cannot be inserted',
     aiToolReadFm: 'Read document properties',
     aiToolWriteDoc: 'Wrote the content',
     aiToolWriteDocFailed: 'Writing failed',
@@ -287,7 +292,7 @@ export const strings = {
     savedOk: 'Saved',
     saveFailed: 'Save failed',
     imageNeedsSavedDocument: 'Save the document first, then paste images',
-    imageTooLarge: 'Image is larger than {mb} MB and cannot be inserted',
+
     viewImage: 'View Image',
     saveImageAs: 'Save Image As…',
     imageActualSize: 'Actual Size',
@@ -347,6 +352,8 @@ export const strings = {
     outline: 'Outline',
     outlineResize: 'Resize outline',
     spellcheck: 'Spelling',
+    sourceView: 'Source',
+    sourceViewHint: 'Edit the raw Markdown — exactly the text a save writes',
     outlineEmpty: 'No headings yet',
     codeCopy: 'Copy',
     codeCopied: 'Copied',
@@ -432,6 +439,8 @@ export const strings = {
 
   },
   vi: {
+    fileTab: 'Tệp',
+    renameNeedsSave: 'Hãy lưu hoặc hủy thay đổi trước khi đổi phần mở rộng',
     appExportingImages: 'Đang xuất hình ảnh…',
     appExportImagesProgress: 'Đang xuất {count} hình ảnh…',
     appExportImagesDone: 'Đã xuất {count} hình ảnh sang {dir}',
@@ -565,6 +574,8 @@ export const strings = {
     outline: 'Mục lục',
     outlineResize: 'Thay đổi kích thước mục lục',
     spellcheck: 'Chính tả',
+    sourceView: 'Mã nguồn',
+    sourceViewHint: 'Chỉnh sửa Markdown thô — đúng văn bản mà lưu sẽ ghi ra',
     outlineEmpty: 'Chưa có tiêu đề nào',
     codeCopy: 'Sao chép',
     codeCopied: 'Đã sao chép',
@@ -635,7 +646,7 @@ export const strings = {
     aiToolWebSearchDone: 'Đã tìm kiếm "{query}" · {count} kết quả',
     zoom: 'Thu phóng',
     zoomIn: 'Phóng to',
-    zoomOut: 'Thu nhỏ',    fileTab: 'Tệp',
+    zoomOut: 'Thu nhỏ',
     fileOpen: 'Mở',
     fileOpenInDocs: 'Mở trong OfficeVega Docs',
     fileSave: 'Lưu',
@@ -647,6 +658,7 @@ export const strings = {
 
   },
   ja: {
+    renameNeedsSave: '拡張子を変更する前に変更を保存または破棄してください',
     appExportingImages: '画像をエクスポート中…',
     appExportImagesProgress: '{count} 枚の画像をエクスポート中…',
     appExportImagesDone: '{count} 枚の画像を {dir} にエクスポートしました',
@@ -779,6 +791,8 @@ export const strings = {
     outline: 'アウトライン',
     outlineResize: 'アウトラインの幅を調整',
     spellcheck: 'スペルチェック',
+    sourceView: 'ソース',
+    sourceViewHint: 'Markdown のソースを直接編集。保存される内容と同じテキストです',
     outlineEmpty: '見出しがありません',
     codeCopy: 'コピー',
     codeCopied: 'コピーしました',
@@ -864,6 +878,7 @@ export const strings = {
 
   },
   ko: {
+    renameNeedsSave: '확장자를 바꾸기 전에 변경 사항을 저장하거나 버리세요',
     appExportingImages: '이미지 내보내는 중…',
     appExportImagesProgress: '이미지 {count}장 내보내는 중…',
     appExportImagesDone: '이미지 {count}장을 {dir}에 내보냈습니다',
@@ -997,6 +1012,8 @@ export const strings = {
     outline: '개요',
     outlineResize: '개요 너비 조절',
     spellcheck: '맞춤법 검사',
+    sourceView: '소스',
+    sourceViewHint: '원본 Markdown을 직접 편집하세요. 저장되는 텍스트와 동일합니다',
     outlineEmpty: '제목이 없습니다',
     codeCopy: '복사',
     codeCopied: '복사됨',
@@ -1082,6 +1099,7 @@ export const strings = {
 
   },
   fr: {
+    renameNeedsSave: "Enregistrez ou annulez vos modifications avant de changer l'extension",
     appExportingImages: 'Exportation des images…',
     appExportImagesProgress: 'Exportation de {count} images…',
     appExportImagesDone: '{count} images exportées vers {dir}',
@@ -1218,6 +1236,8 @@ export const strings = {
     outline: 'Signets',
     outlineResize: 'Redimensionner les signets',
     spellcheck: 'Orthographe',
+    sourceView: 'Source',
+    sourceViewHint: 'Modifier le Markdown brut — exactement le texte qu’un enregistrement écrit',
     outlineEmpty: 'Aucun titre pour le moment',
     codeCopy: 'Copier',
     codeCopied: 'Copié',
@@ -1305,6 +1325,8 @@ export const strings = {
 
   },
   de: {
+    renameNeedsSave:
+      'Speichern oder verwerfen Sie Ihre Änderungen, bevor Sie die Erweiterung ändern',
     appExportingImages: 'Bilder werden exportiert…',
     appExportImagesProgress: '{count} Bilder werden exportiert…',
     appExportImagesDone: '{count} Bilder nach {dir} exportiert',
@@ -1441,6 +1463,8 @@ export const strings = {
     outline: 'Gliederung',
     outlineResize: 'Gliederungsbreite anpassen',
     spellcheck: 'Rechtschreibung',
+    sourceView: 'Quelltext',
+    sourceViewHint: 'Das rohe Markdown bearbeiten — genau der Text, den ein Speichern schreibt',
     outlineEmpty: 'Noch keine Überschriften',
     codeCopy: 'Kopieren',
     codeCopied: 'Kopiert',
@@ -1527,6 +1551,7 @@ export const strings = {
 
   },
   es: {
+    renameNeedsSave: 'Guarda o descarta los cambios antes de cambiar la extensión',
     appExportingImages: 'Exportando imágenes…',
     appExportImagesProgress: 'Exportando {count} imágenes…',
     appExportImagesDone: 'Se exportaron {count} imágenes a {dir}',
@@ -1662,6 +1687,8 @@ export const strings = {
     outline: 'Esquema',
     outlineResize: 'Cambiar el ancho del esquema',
     spellcheck: 'Ortografía',
+    sourceView: 'Código fuente',
+    sourceViewHint: 'Edita el Markdown sin formato: exactamente el texto que se guarda',
     outlineEmpty: 'Sin encabezados todavía',
     codeCopy: 'Copiar',
     codeCopied: 'Copiado',
@@ -1750,6 +1777,7 @@ export const strings = {
 
   },
   th: {
+    renameNeedsSave: 'บันทึกหรือยกเลิกการเปลี่ยนแปลงก่อนเปลี่ยนนามสกุลไฟล์',
     appExportingImages: 'กำลังส่งออกรูปภาพ…',
     appExportImagesProgress: 'กำลังส่งออกรูปภาพ {count} รูป…',
     appExportImagesDone: 'ส่งออกรูปภาพ {count} รูปไปยัง {dir} แล้ว',
@@ -1880,6 +1908,8 @@ export const strings = {
     outline: 'สารบัญ',
     outlineResize: 'ปรับความกว้างสารบัญ',
     spellcheck: 'ตรวจการสะกด',
+    sourceView: 'ซอร์สโค้ด',
+    sourceViewHint: 'แก้ไข Markdown ดิบ — เป็นข้อความเดียวกับที่การบันทึกเขียนลงไฟล์',
     outlineEmpty: 'ยังไม่มีหัวข้อ',
     codeCopy: 'คัดลอก',
     codeCopied: 'คัดลอกแล้ว',
@@ -1965,6 +1995,7 @@ export const strings = {
 
   },
   id: {
+    renameNeedsSave: 'Simpan atau batalkan perubahan Anda sebelum mengubah ekstensi',
     appExportingImages: 'Mengekspor gambar…',
     appExportImagesProgress: 'Mengekspor {count} gambar…',
     appExportImagesDone: '{count} gambar diekspor ke {dir}',
@@ -2098,6 +2129,8 @@ export const strings = {
     outline: 'Kerangka',
     outlineResize: 'Ubah lebar kerangka',
     spellcheck: 'Ejaan',
+    sourceView: 'Sumber',
+    sourceViewHint: 'Edit Markdown mentah — persis sama dengan teks yang ditulis saat menyimpan',
     outlineEmpty: 'Belum ada judul',
     codeCopy: 'Salin',
     codeCopied: 'Disalin',
@@ -2183,6 +2216,7 @@ export const strings = {
 
   },
   ru: {
+    renameNeedsSave: 'Сохраните или отмените изменения перед сменой расширения',
     appExportingImages: 'Экспорт изображений…',
     appExportImagesProgress: 'Экспорт {count} изображений…',
     appExportImagesDone: 'Экспортировано {count} изображений в {dir}',
@@ -2317,6 +2351,8 @@ export const strings = {
     outline: 'Оглавление',
     outlineResize: 'Изменить ширину оглавления',
     spellcheck: 'Правописание',
+    sourceView: 'Исходник',
+    sourceViewHint: 'Правьте чистый Markdown — ровно тот текст, который записывает сохранение',
     outlineEmpty: 'Заголовков пока нет',
     codeCopy: 'Копировать',
     codeCopied: 'Скопировано',
@@ -2402,6 +2438,7 @@ export const strings = {
 
   },
   ar: {
+    renameNeedsSave: 'احفظ تغييراتك أو تجاهلها قبل تغيير الامتداد',
     appExportingImages: 'جارٍ تصدير الصور…',
     appExportImagesProgress: 'جارٍ تصدير {count} صورة…',
     appExportImagesDone: 'تم تصدير {count} صورة إلى {dir}',
@@ -2532,6 +2569,8 @@ export const strings = {
     outline: 'المخطط',
     outlineResize: 'تغيير عرض المخطط',
     spellcheck: 'تدقيق إملائي',
+    sourceView: 'المصدر',
+    sourceViewHint: 'حرّر Markdown الخام — وهو النص نفسه الذي تكتبه عملية الحفظ',
     outlineEmpty: 'لا توجد عناوين بعد',
     codeCopy: 'نسخ',
     codeCopied: 'تم النسخ',
@@ -2617,6 +2656,7 @@ export const strings = {
 
   },
   pt: {
+    renameNeedsSave: 'Salve ou descarte as alterações antes de mudar a extensão',
     appExportingImages: 'Exportando imagens…',
     appExportImagesProgress: 'Exportando {count} imagens…',
     appExportImagesDone: '{count} imagens exportadas para {dir}',
@@ -2752,6 +2792,8 @@ export const strings = {
     outline: 'Estrutura',
     outlineResize: 'Redimensionar a estrutura',
     spellcheck: 'Ortografia',
+    sourceView: 'Fonte',
+    sourceViewHint: 'Edite o Markdown bruto — exatamente o texto que uma gravação escreve',
     outlineEmpty: 'Sem títulos ainda',
     codeCopy: 'Copiar',
     codeCopied: 'Copiado',
@@ -2838,6 +2880,7 @@ export const strings = {
 
   },
   it: {
+    renameNeedsSave: "Salva o annulla le modifiche prima di cambiare l'estensione",
     appExportingImages: 'Esportazione delle immagini…',
     appExportImagesProgress: 'Esportazione di {count} immagini…',
     appExportImagesDone: '{count} immagini esportate in {dir}',
@@ -2973,6 +3016,8 @@ export const strings = {
     outline: 'Struttura',
     outlineResize: 'Ridimensiona la struttura',
     spellcheck: 'Ortografia',
+    sourceView: 'Sorgente',
+    sourceViewHint: 'Modifica il Markdown grezzo — è il testo che il salvataggio scrive',
     outlineEmpty: 'Nessuna intestazione',
     codeCopy: 'Copia',
     codeCopied: 'Copiato',
@@ -3059,6 +3104,7 @@ export const strings = {
 
   },
   pl: {
+    renameNeedsSave: 'Zapisz lub odrzuć zmiany przed zmianą rozszerzenia',
     appExportingImages: 'Eksportowanie obrazów…',
     appExportImagesProgress: 'Eksportowanie {count} obrazów…',
     appExportImagesDone: 'Wyeksportowano {count} obrazów do {dir}',
@@ -3193,6 +3239,8 @@ export const strings = {
     outline: 'Konspekt',
     outlineResize: 'Zmień szerokość konspektu',
     spellcheck: 'Pisownia',
+    sourceView: 'Źródło',
+    sourceViewHint: 'Edytuj surowy Markdown — dokładnie tekst zapisywany do pliku',
     outlineEmpty: 'Brak nagłówków',
     codeCopy: 'Kopiuj',
     codeCopied: 'Skopiowano',
@@ -3278,6 +3326,7 @@ export const strings = {
 
   },
   cs: {
+    renameNeedsSave: 'Před změnou přípony uložte nebo zrušte změny',
     appExportingImages: 'Exportují se obrázky…',
     appExportImagesProgress: 'Exportuje se {count} obrázků…',
     appExportImagesDone: 'Exportováno {count} obrázků do {dir}',
@@ -3397,6 +3446,8 @@ export const strings = {
     outline: 'Osnova',
     outlineResize: 'Změnit šířku osnovy',
     spellcheck: 'Pravopis',
+    sourceView: 'Zdrojový kód',
+    sourceViewHint: 'Upravujte surový Markdown — přesně text, který se zapisuje do souboru',
     outlineEmpty: 'Zatím žádné nadpisy',
     codeCopy: 'Kopírovat',
     codeCopied: 'Zkopírováno',
@@ -3496,6 +3547,7 @@ export const strings = {
 
   },
   nl: {
+    renameNeedsSave: 'Sla uw wijzigingen op of verwerp ze voordat u de extensie wijzigt',
     appExportingImages: 'Afbeeldingen exporteren…',
     appExportImagesProgress: '{count} afbeeldingen exporteren…',
     appExportImagesDone: '{count} afbeeldingen geëxporteerd naar {dir}',
@@ -3631,6 +3683,8 @@ export const strings = {
     outline: 'Overzicht',
     outlineResize: 'Breedte van overzicht aanpassen',
     spellcheck: 'Spelling',
+    sourceView: 'Broncode',
+    sourceViewHint: 'Bewerk de ruwe Markdown — precies de tekst die bij opslaan wordt geschreven',
     outlineEmpty: 'Nog geen koppen',
     codeCopy: 'Kopiëren',
     codeCopied: 'Gekopieerd',
@@ -3716,6 +3770,7 @@ export const strings = {
 
   },
   ms: {
+    renameNeedsSave: 'Simpan atau buang perubahan anda sebelum menukar sambungan',
     appExportingImages: 'Mengeksport imej…',
     appExportImagesProgress: 'Mengeksport {count} imej…',
     appExportImagesDone: '{count} imej dieksport ke {dir}',
@@ -3849,6 +3904,8 @@ export const strings = {
     outline: 'Rangka',
     outlineResize: 'Ubah lebar rangka',
     spellcheck: 'Ejaan',
+    sourceView: 'Sumber',
+    sourceViewHint: 'Edit Markdown mentah — teks yang sama seperti yang ditulis semasa menyimpan',
     outlineEmpty: 'Tiada tajuk lagi',
     codeCopy: 'Salin',
     codeCopied: 'Disalin',
@@ -3934,6 +3991,7 @@ export const strings = {
 
   },
   he: {
+    renameNeedsSave: 'שמור או בטל את השינויים לפני שינוי הסיומת',
     appExportingImages: 'מייצא תמונות…',
     appExportImagesProgress: 'מייצא {count} תמונות…',
     appExportImagesDone: '{count} תמונות יוצאו אל {dir}',
@@ -4064,6 +4122,8 @@ export const strings = {
     outline: 'מתאר',
     outlineResize: 'שינוי רוחב המתאר',
     spellcheck: 'בדיקת איות',
+    sourceView: 'מקור',
+    sourceViewHint: 'ערוך Markdown גולמי — בדיוק הטקסט שנכתב בעת השמירה',
     outlineEmpty: 'אין כותרות עדיין',
     codeCopy: 'העתק',
     codeCopied: 'הועתק',
@@ -4148,6 +4208,7 @@ export const strings = {
 
   },
   hi: {
+    renameNeedsSave: 'एक्सटेंशन बदलने से पहले अपने बदलाव सहेजें या छोड़ें',
     appExportingImages: 'छवियाँ निर्यात की जा रही हैं…',
     appExportImagesProgress: '{count} छवियाँ निर्यात की जा रही हैं…',
     appExportImagesDone: '{count} छवियाँ {dir} में निर्यात की गईं',
@@ -4281,6 +4342,8 @@ export const strings = {
     outline: 'रूपरेखा',
     outlineResize: 'रूपरेखा की चौड़ाई बदलें',
     spellcheck: 'वर्तनी जाँच',
+    sourceView: 'स्रोत',
+    sourceViewHint: 'कच्चा Markdown संपादित करें — वही टेक्स्ट जो सहेजने पर लिखा जाता है',
     outlineEmpty: 'अभी कोई शीर्षक नहीं',
     codeCopy: 'कॉपी',
     codeCopied: 'कॉपी हो गया',
@@ -4366,6 +4429,7 @@ export const strings = {
 
   },
   'zh-TW': {
+    renameNeedsSave: '先儲存或捨棄變更，再更改副檔名',
     appExportingImages: '正在匯出圖片…',
     appExportImagesProgress: '正在匯出 {count} 張圖片…',
     appExportImagesDone: '已匯出 {count} 張圖片到 {dir}',
@@ -4496,6 +4560,8 @@ export const strings = {
     outline: '大綱',
     outlineResize: '調整大綱寬度',
     spellcheck: '拼字檢查',
+    sourceView: '原始碼',
+    sourceViewHint: '直接編輯 Markdown 原始碼，與儲存到檔案的文字完全一致',
     outlineEmpty: '尚無標題',
     codeCopy: '複製',
     codeCopied: '已複製',
@@ -4796,7 +4862,11 @@ export const strings = {
     appExportingImages: 'Rasmlar eksport qilinmoqda…',
     appExportImagesProgress: '{count} ta rasm eksport qilinmoqda…',
     appExportImagesDone: '{count} ta rasm {dir} papkasiga eksport qilindi',
-    appExportImagesFailed: 'Rasmlarni eksport qilish muvaffaqiyatsiz: {error}',    imageTooLarge: 'Image is larger than {mb} MB and cannot be inserted',
+    appExportImagesFailed: 'Rasmlarni eksport qilish muvaffaqiyatsiz: {error}',
+    imageTooLarge: 'Rasm {mb} MB dan katta, kiritib boʻlmaydi',
+    renameNeedsSave: 'Kengaytmani oʻzgartirishdan oldin oʻzgarishlarni saqlang yoki bekor qiling',
+    sourceView: 'Manba kodi',
+    sourceViewHint: 'Xom Markdownʼni tahrirlash — faylga yoziladigan matn bilan bir xil',
 
   },
   kk: {
@@ -5015,7 +5085,11 @@ export const strings = {
     appExportingImages: 'Суреттер экспортталуда…',
     appExportImagesProgress: '{count} сурет экспортталуда…',
     appExportImagesDone: '{count} сурет {dir} қалтасына экспортталды',
-    appExportImagesFailed: 'Суреттерді экспорттау сәтсіз аяқталды: {error}',    imageTooLarge: 'Image is larger than {mb} MB and cannot be inserted',
+    appExportImagesFailed: 'Суреттерді экспорттау сәтсіз аяқталды: {error}',
+    imageTooLarge: 'Сурет {mb} МБ-дан үлкен, қою мүмкін емес',
+    renameNeedsSave: 'Кеңейтпені өзгертпес бұрын өзгерістерді сақтаңыз немесе бас тартыңыз',
+    sourceView: 'Бастапқы код',
+    sourceViewHint: 'Шикі Markdown-ды өңдеу — файлға жазылатын мәтінмен дәл бірдей',
 
   },
   az: {
@@ -5233,7 +5307,11 @@ export const strings = {
     appExportingImages: 'Şəkillər ixrac edilir…',
     appExportImagesProgress: '{count} şəkil ixrac edilir…',
     appExportImagesDone: '{count} şəkil {dir} qovluğuna ixrac edildi',
-    appExportImagesFailed: 'Şəkil ixracı alınmadı: {error}',    imageTooLarge: 'Image is larger than {mb} MB and cannot be inserted',
+    appExportImagesFailed: 'Şəkil ixracı alınmadı: {error}',
+    imageTooLarge: 'Şəkil {mb} MB-dan böyükdür, əlavə etmək olmaz',
+    renameNeedsSave: 'Uzantını dəyişməzdən əvvəl dəyişiklikləri saxlayın və ya ləğv edin',
+    sourceView: 'Mənbə kodu',
+    sourceViewHint: 'Xam Markdown-u redaktə edin — fayla yazılan mətnlə eyni',
 
   },
   tk: {
@@ -5452,7 +5530,11 @@ export const strings = {
     appExportingImages: 'Suratlar eksport edilýär…',
     appExportImagesProgress: '{count} surat eksport edilýär…',
     appExportImagesDone: '{count} surat {dir} bukjasyna eksport edildi',
-    appExportImagesFailed: 'Surat eksporty şowsuz: {error}',    imageTooLarge: 'Image is larger than {mb} MB and cannot be inserted',
+    appExportImagesFailed: 'Surat eksporty şowsuz: {error}',
+    imageTooLarge: 'Surat {mb} MB-dan uly, goşup bolmaýar',
+    renameNeedsSave: 'Giňeltmani üýtgetmezden öň üýtgeşmeleri ýazdyryň ýa-da ýatyryň',
+    sourceView: 'Çeşme kody',
+    sourceViewHint: 'Ham Markdown-y redaktirläň — faýla ýazylýan tekst bilen teng',
 
   },
   ky: {
@@ -5673,7 +5755,11 @@ export const strings = {
     appExportingImages: 'Сүрөттөр экспорттолууда…',
     appExportImagesProgress: '{count} сүрөт экспорттолууда…',
     appExportImagesDone: '{count} сүрөт {dir} папкасына экспорттолду',
-    appExportImagesFailed: 'Сүрөттөрдү экспорттоо ишке ашкан жок: {error}',    imageTooLarge: 'Image is larger than {mb} MB and cannot be inserted',
+    appExportImagesFailed: 'Сүрөттөрдү экспорттоо ишке ашкан жок: {error}',
+    imageTooLarge: 'Сүрөт {mb} МБдан чоң, коюу мүмкүн эмес',
+    renameNeedsSave: 'Кеңейтмени өзгөртүүдөн муун өзгөртүүлөрдү сактаңыз же баш тартыңыз',
+    sourceView: 'Баштапкы код',
+    sourceViewHint: 'Кумар Markdown-ды түзөңүз — файлга жазылган текст менен так бирдей',
 
   },
   tt: {
@@ -5891,7 +5977,11 @@ export const strings = {
     appExportingImages: 'Рәсемнәр экспортлана…',
     appExportImagesProgress: '{count} рәсем экспортлана…',
     appExportImagesDone: '{count} рәсем {dir} папкасына экспортланды',
-    appExportImagesFailed: 'Рәсемнәрне экспортлау уңышсыз: {error}',    imageTooLarge: 'Image is larger than {mb} MB and cannot be inserted',
+    appExportImagesFailed: 'Рәсемнәрне экспортлау уңышсыз: {error}',
+    imageTooLarge: 'Рәсем {mb} МБ-тан зур, кертеп булмый',
+    renameNeedsSave: 'Киңәйтмәне үзгәртмәс борын үзгәртүләрне саклагыз яки баш тартыгыз',
+    sourceView: 'Чыганак код',
+    sourceViewHint: 'Чи Markdown-ны үзгәртү — файлга язылган текст белән тәңгәл',
 
   },
   ka: {
@@ -6110,7 +6200,11 @@ export const strings = {
     appExportingImages: 'სურათების ექსპორტი…',
     appExportImagesProgress: '{count} სურათის ექსპორტი…',
     appExportImagesDone: '{count} სურათი ექსპორტირდა {dir}-ში',
-    appExportImagesFailed: 'სურათების ექსპორტი ვერ მოხერხდა: {error}',    imageTooLarge: 'Image is larger than {mb} MB and cannot be inserted',
+    appExportImagesFailed: 'სურათების ექსპორტი ვერ მოხერხდა: {error}',
+    imageTooLarge: 'სურათი {mb} MB-ზე დიდია, ჩასმა შეუძლებელია',
+    renameNeedsSave: 'გაფართოების შეცვლამდე შეინახეთ ან გააუქმეთ ცვლილებები',
+    sourceView: 'წყაროს კოდი',
+    sourceViewHint: 'ნედლი Markdown-ის რედაქტირება — ზუსტად ის ტექსტი, რომელიც ფაილში იწერება',
 
   },
 } as const

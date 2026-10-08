@@ -44,15 +44,16 @@ import {
   readBodyCapped,
 } from '@genoffice/electron-utils'
 import { createI18n, getUiLang } from '@genoffice/i18n'
-import { generateImageTool } from '@genoffice/ai-search'
+import { generateImageTool, documentMediaRoots } from '@genoffice/ai-search'
 import { parseFileToText } from '@genoffice/file-parse'
 import { convertHtmlToDocx } from '../../../../packages/html2docx/src'
 import { atomicWriteFile } from './atomic-write'
+import { printHtmlDocument, type PrintDialogOutcome } from './print-window'
 import { ElectronBrowserDriver } from '../../../../packages/html2docx/src/drivers/electron'
 import {
   copyImageIntoOwnedAssets,
   discardPendingOwnedAssets,
-  extractHtmlImageSources,
+  extractHtmlAssetReferences,
   isInDocDir,
   pendingOwnedAssetsForDocument,
   prepareAssetsForSaveAs,
@@ -89,6 +90,8 @@ import type {
   ExportPdfRequest,
   ExportResult,
   ImageData,
+  PrintHtmlRequest,
+  PrintResult,
   SaveHtmlRequest,
   SaveHtmlResult,
   SaveMode,
@@ -1141,6 +1144,32 @@ export function sendHtmlPrintRequest(contents: WebContents): void {
   contents.send(HTML_CHANNELS.printRequest)
 }
 
+/**
+ * Print the document through the system dialog, in the same window
+ * renderPrintPdf uses so relative assets resolve through html-asset:// exactly
+ * as in the preview.
+ *
+ * The window keeps scripting ON, unlike the PDF export window above. Chromium
+ * rejects `executeJavaScript` outright when a window is created with
+ * `javascript: false` (verified against Electron 43), and the print path has
+ * to run the fonts/images readiness probe — a document that loads a webfont
+ * would otherwise print with fallback metrics and missing bitmaps. The cost is
+ * that print and "Export as PDF" now disagree for a document that builds its
+ * content with <script>: print runs those scripts, as the editor canvas and
+ * the docx export already do, while the PDF export still prints the shell.
+ * That is one of the two "change them together" cases this file already
+ * flagged; flipping the export window is a separate call for whoever owns it.
+ */
+function printHtml(html: string, docPath: string | undefined): Promise<PrintDialogOutcome> {
+  const base = docPath ? assetBaseHref(dirname(docPath)) : null
+  return printHtmlDocument({
+    html: buildPreviewDocument(html, base),
+    window: new BrowserWindow({ show: false, webPreferences: { sandbox: true } }),
+    fileName: 'print.html',
+    dirPrefix: 'genoffice-html-print-',
+  })
+}
+
 export function htmlIsDirty(webContentsId: number): boolean {
   return dirtyByWc.has(webContentsId)
 }
@@ -1572,7 +1601,7 @@ function registerHtmlIpc(): void {
         const isNewPath = currentPath !== target
         const imageSources = [...(request.imageSources ?? [])]
         const knownImageSources = new Set(imageSources)
-        for (const source of extractHtmlImageSources(request.text)) {
+        for (const source of extractHtmlAssetReferences(request.text)) {
           if (knownImageSources.has(source)) continue
           knownImageSources.add(source)
           imageSources.push(source)
@@ -1733,11 +1762,20 @@ function registerHtmlIpc(): void {
   // shell-registered, but image generation is gated per app
   ipcMain.handle(
     HTML_CHANNELS.aiGenerateImage,
-    (_e, op: { prompt?: unknown; aspectRatio?: unknown }) =>
-      generateImageTool(join(app.getPath('userData'), 'ai-settings.json'), {
-        prompt: String(op?.prompt ?? ''),
-        aspectRatio: op?.aspectRatio ? String(op.aspectRatio) : undefined,
-      }),
+    (e, op: { prompt?: unknown; aspectRatio?: unknown }) =>
+      generateImageTool(
+        join(app.getPath('userData'), 'ai-settings.json'),
+        {
+          prompt: String(op?.prompt ?? ''),
+          aspectRatio: op?.aspectRatio ? String(op.aspectRatio) : undefined,
+        },
+        {
+          mediaRoots: documentMediaRoots(
+            htmlFilePath(e.sender.id),
+            join(app.getPath('temp'), 'genoffice-pasted'),
+          ),
+        },
+      ),
   )
 
   const MIME_BY_EXT: Record<string, ImageData['mime']> = {
@@ -1886,6 +1924,20 @@ function registerHtmlIpc(): void {
   )
 
   ipcMain.handle(
+    HTML_CHANNELS.printHtml,
+    async (e, request: PrintHtmlRequest): Promise<PrintResult> => {
+      if (typeof request?.html !== 'string') {
+        return { ok: false, error: 'html: bad print request' }
+      }
+      // printHtml already reports why it failed and separates a dialog the
+      // user closed from a real failure, so the outcome maps straight onto
+      // PrintResult: the renderer can stay silent on cancel and must surface
+      // a failure instead of swallowing it.
+      return printHtml(request.html, savePathByWc.get(e.sender.id))
+    },
+  )
+
+  ipcMain.handle(
     HTML_CHANNELS.exportHtml,
     async (e, request: ExportHtmlRequest): Promise<ExportResult> => {
       if (typeof request?.html !== 'string') {
@@ -1921,39 +1973,6 @@ function registerHtmlIpc(): void {
           : { ok: true, path: picked.filePath }
       } catch (err) {
         return { ok: false, error: err instanceof Error ? err.message : String(err) }
-      }
-    },
-  )
-
-  ipcMain.handle(
-    HTML_CHANNELS.print,
-    async (e, request: { html?: unknown }): Promise<{ ok: boolean; error?: string }> => {
-      if (typeof request?.html !== 'string') return { ok: false, error: 'html: bad print request' }
-      const workDir = await mkdtemp(join(tmpdir(), 'officevega-html-print-'))
-      try {
-        const docPath = savePathByWc.get(e.sender.id)
-        const base = docPath ? assetBaseHref(dirname(docPath)) : null
-        const htmlPath = join(workDir, 'print.html')
-        await writeFile(htmlPath, buildPreviewDocument(request.html, base), 'utf8')
-        const printWin = new BrowserWindow({
-          show: false,
-          webPreferences: { sandbox: true, javascript: false },
-        })
-        try {
-          await printWin.loadFile(htmlPath)
-          // print() returns once the job is handed to the system (or the dialog
-          // is canceled) — the hidden window can go away right after.
-          const ok = await new Promise<boolean>((resolve) =>
-            printWin.webContents.print({ printBackground: true }, (success) => resolve(success)),
-          )
-          return ok ? { ok: true } : { ok: false, error: 'print canceled' }
-        } finally {
-          printWin.destroy()
-        }
-      } catch (err) {
-        return { ok: false, error: err instanceof Error ? err.message : String(err) }
-      } finally {
-        await rm(workDir, { recursive: true, force: true }).catch(() => {})
       }
     },
   )

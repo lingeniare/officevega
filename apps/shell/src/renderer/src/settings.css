@@ -960,7 +960,6 @@
   text-align: left;
 }
 
-
 /* ── Дизайн «Ретро ВЕГА» ──
  * Применяется только при html[data-design='retro'] (выбор в Настройки > Общие > Дизайн).
  * Без атрибута действует «Стандартный» дизайн выше. */
@@ -2799,4 +2798,20 @@ html[data-design='digital'] .set-dialog :focus-visible {
   html[data-design='digital'] .set-nav-item:hover:not(.active) {
     transform: none;
   }
+}
+
+/* Settings → About: the one-click update entry next to the version row */
+.set-update-btn {
+  height: 26px;
+  padding: 0 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 3px;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.set-update-btn:hover {
+  background: var(--hover);
 }

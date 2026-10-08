@@ -49,6 +49,13 @@ import {
 import { HIGHLIGHT_CSS } from '../editor/extensions'
 import { applyCase, type CaseMode } from '../editor/case-transform'
 import { isRtlUiLang, setParagraphDirection, setSelectionAlign } from '../editor/direction'
+import {
+  bringForward,
+  bringToFront,
+  sendBackward,
+  sendToBack,
+  setFloatingWrap,
+} from '../editor/floating-z-order'
 import { setInactiveSelectionShown } from '../editor/inactive-selection'
 import { stepParagraphIndent } from '../editor/indent'
 import { pasteFromClipboard } from '../editor/paste-actions'
@@ -124,7 +131,7 @@ import {
 import { RibbonColorPalette } from './ribbon-color-palette'
 import { HeaderFooterTab, type HfAction, type HfEditingInfo } from './ribbon-hf-tab'
 import { PasteSpecialDialog } from './PasteSpecialDialog'
-import { fontFamiliesFor, isEastAsianFontName } from '../font-list'
+import { fontFamiliesFor, isEastAsianFontName, systemFamiliesBesidesCandidates } from '../font-list'
 import {
   fontSizeLabel,
   fontSizeOptions,
@@ -160,6 +167,8 @@ import {
   IconAutoFit,
   IconBorderAll,
   IconBorderBottom,
+  IconBorderDiagonalDown,
+  IconBorderDiagonalUp,
   IconBorderInner,
   IconBorderInsideH,
   IconBorderInsideV,
@@ -216,6 +225,10 @@ import {
   IconSearch,
   IconStylesPane,
   IconSelectAll,
+  IconBringForward,
+  IconBringToFront,
+  IconSendBackward,
+  IconSendToBack,
 } from './icons'
 interface RibbonProps {
   /** App keyboard shortcuts reuse ribbon closures through here (font-size stepping keeps its coalescing) */
@@ -526,6 +539,8 @@ const TABLE_BORDER_ITEMS: Record<
   inner: { label: 'ribbonInnerBorders', Icon: IconBorderInner },
   insideH: { label: 'ribbonTableInsideHBorders', Icon: IconBorderInsideH },
   insideV: { label: 'ribbonTableInsideVBorders', Icon: IconBorderInsideV },
+  tl2br: { label: 'ribbonTableDiagonalDownBorders', Icon: IconBorderDiagonalDown },
+  tr2bl: { label: 'ribbonTableDiagonalUpBorders', Icon: IconBorderDiagonalUp },
 }
 
 /** Table Layout ▸ Select ▾ in Word for Mac order */
@@ -555,6 +570,15 @@ const CELL_TEXT_DIRECTIONS: Array<[CellTextDirection, StringKey]> = [
 ]
 const IMAGE_TABS = ['pictureFormat'] as const
 const SHAPE_TABS = ['shapeFormat'] as const
+/** Shape Format ▸ Arrange ordering: label + glyph + command, in Word order */
+const ARRANGE_ORDER_ITEMS: Array<
+  [StringKey, (props: { size?: number }) => ReactNode, (editor: Editor) => void]
+> = [
+  ['appBringToFront', IconBringToFront, bringToFront],
+  ['appBringForward', IconBringForward, bringForward],
+  ['appSendBackward', IconSendBackward, sendBackward],
+  ['appSendToBack', IconSendToBack, sendToBack],
+]
 const HF_TABS = ['headerFooter'] as const
 type RibbonTab =
   | (typeof TABS)[number]
@@ -801,7 +825,13 @@ function RibbonInner({
   onPagePreview,
 }: RibbonProps) {
   const { t, lang } = useI18n()
-  const collapse = useRibbonCollapse('aidocs.ribbonCollapsed')
+  const collapse = useRibbonCollapse('aidocs.ribbonCollapsed', {
+    collapse: t('ribbonCollapse'),
+    expand: t('ribbonExpand'),
+    // ⌥⌘K / Ctrl+Alt+K: the icon-only middle density (see #362)
+    compact: t('ribbonCompact'),
+    expandFull: t('ribbonExpandFull'),
+  })
   // The one-click AI actions need text to work on; grey them out on an empty document
   const docEmpty = !hasDoc || fs.docEmpty
   const [tab, setTab] = useState<RibbonTab>('home')
@@ -1303,7 +1333,10 @@ function RibbonInner({
   // computed unconditionally (not inside the dropdown render): cheap, and the
   // render-isolation test uses fontFamiliesFor calls as its render probe
   const fontFamilies = fontFamiliesFor(lang)
-  const { families: systemFontFamilies, load: loadSystemFonts } = useSystemFontFamilies()
+  const { families: allSystemFontFamilies, load: loadSystemFonts } = useSystemFontFamilies()
+  // every candidate stays listed (the machine may genuinely lack some), so the
+  // system section is the candidates-deduped remainder: no builtin is listed twice
+  const systemFontFamilies = systemFamiliesBesidesCandidates(fontFamilies, allSystemFontFamilies)
   // unset align follows the paragraph direction: start is left in LTR, right in RTL
   const activeAlign = fs.align ?? (fs.bidi ? 'right' : 'left')
   // like Word, direction buttons appear only with an RTL UI language or RTL paragraphs at hand
@@ -2263,6 +2296,44 @@ function RibbonInner({
                 <div className="ribbon-group-label">{t('ribbonGroupText')}</div>
               </div>
             )}
+            <div className="ribbon-sep" />
+            {/* ---- Arrange: wrap text / stacking order, mirroring the Picture Format group ---- */}
+            <div className="table-tool-group">
+              <div className="table-tool-row">
+                <Dropdown
+                  className="rb-wrap-dd"
+                  disabled={!canEdit}
+                  tip={t('ribbonWrapText')}
+                  value={fs.imageWrap ?? ''}
+                  options={WRAP_OPTIONS.map((opt) => ({
+                    value: opt.value ?? '',
+                    label: t(opt.labelKey),
+                  }))}
+                  onPick={(v) => {
+                    if (!canEdit) return
+                    setFloatingWrap(editor, v || null)
+                  }}
+                />
+              </div>
+              <div className="table-tool-row">
+                {ARRANGE_ORDER_ITEMS.map(([label, Icon, action]) => (
+                  <button
+                    key={label}
+                    className="table-tool-button"
+                    disabled={!canEdit}
+                    data-tip={t(label)}
+                    aria-label={t(label)}
+                    onClick={() => {
+                      if (!canEdit) return
+                      action(editor)
+                    }}
+                  >
+                    <Icon size={17} />
+                  </button>
+                ))}
+              </div>
+              <div className="ribbon-group-label">{t('ribbonGroupArrange')}</div>
+            </div>
           </div>
         ) : tab === 'pictureFormat' && inImage ? (
           <div className="table-ribbon-body">

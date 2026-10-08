@@ -10,7 +10,8 @@ import {
   clampAiCustomFontSize,
 } from '@genoffice/ui'
 import type { AiFontSize, AiPanelPrefs, AiPanelSide } from '@genoffice/ui'
-import type { DefaultAppStatus, FileSearchSettings, JevEndpoint } from '../../shared/home-api'
+import type { DecisionEndpoint, DefaultAppStatus, FileSearchSettings } from '../../shared/home-api'
+import type { UpdateUiState } from '../../shared/update-api'
 import {
   DEFAULT_MAX_OUTPUT_TOKENS,
   MAX_MAX_OUTPUT_TOKENS,
@@ -29,7 +30,13 @@ import type {
 } from '@genoffice/ai-provider'
 import { useI18n } from './locale'
 import type { StringKey, TFunc } from './locale'
-import type { AccountStatus, AiCatalogEntry, UiDesign, UiTheme } from '../../shared/home-api'
+import type {
+  AccountStatus,
+  AiCatalogEntry,
+  DocTheme,
+  UiDesign,
+  UiTheme,
+} from '../../shared/home-api'
 import { LicenseBlock } from './LicenseBlock'
 import { ProviderLogo } from './provider-logos'
 import { IntegrationsPane, skillUpdateDue } from './IntegrationsPane'
@@ -85,6 +92,14 @@ const DESIGN_OPTIONS = [
   { value: 'retro', labelKey: 'designRetro' },
   { value: 'digital', labelKey: 'designDigital' },
 ] as const satisfies readonly { value: UiDesign; labelKey: StringKey }[]
+
+// Document page theme (#1811): the canvas/paper preference the editors follow;
+// 'follow' keeps the pre-existing behavior of riding the UI theme
+const DOC_THEME_OPTIONS = [
+  { value: 'follow', labelKey: 'docThemeFollowApp' },
+  { value: 'light', labelKey: 'themeLight' },
+  { value: 'dark', labelKey: 'themeDark' },
+] as const satisfies readonly { value: DocTheme; labelKey: StringKey }[]
 
 const AI_FONT_SIZE_OPTIONS = [
   { value: 'default', labelKey: 'aiFontSizeDefault' },
@@ -899,19 +914,25 @@ function AiModelPane({
 }
 
 type Capability = 'image' | 'analysis' | 'video' | 'search'
-/** a tested block: the four capabilities plus the Jev reranker of the local file search */
+/** a tested block: the four capabilities plus the decision-model reranker of the local file search */
 type TestedBlock = Capability | 'rerank'
-/** where an outside entry point (e.g. the home list's Jev button) lands when it opens the modal */
+/** where an outside entry point (e.g. the home list's rerank button) lands when it opens the modal */
 export interface SettingsTarget {
   section: SectionId
   block?: TestedBlock
 }
 type TestResult = { ok: boolean; error?: string }
 
-const JEV_ENDPOINTS: { value: JevEndpoint; label: string }[] = [
+/** VEGA first (the default, rides the sign-in key), then the hosted Jev routes and the other decision-model servers */
+const DECISION_ENDPOINTS: { value: DecisionEndpoint; label: string }[] = [
   { value: 'vega', label: 'VEGA' },
-  { value: 'openrouter', label: 'OpenRouter' },
-  { value: 'direct', label: 'TypeSafe' },
+  { value: 'openrouter', label: 'Jev (TypeSafe via OpenRouter)' },
+  { value: 'direct', label: 'Jev (TypeSafe API)' },
+  { value: 'perplexity', label: 'Perplexity' },
+  { value: 'cloudflare', label: 'Cloudflare' },
+  { value: 'kev', label: 'Kev (local)' },
+  { value: 'rizzo', label: 'Rizzo Flow (local)' },
+  { value: 'custom', label: 'Custom (/v1/systemone)' },
 ]
 
 /**
@@ -1125,11 +1146,7 @@ function AiMediaPane({
     if (fileSearch?.rerank) {
       blocks.push([
         'rerank',
-        () =>
-          window.aiOffice.testFileSearchRerank?.({
-            endpoint: fileSearch.jevEndpoint,
-            apiKey: fileSearch.jevKeys[fileSearch.jevEndpoint],
-          }) ?? Promise.resolve(fallback),
+        () => window.aiOffice.testFileSearchRerank?.(fileSearch) ?? Promise.resolve(fallback),
       ])
     }
     await Promise.all(
@@ -1148,6 +1165,29 @@ function AiMediaPane({
     setTesting(false)
   }
 
+  const blockLabel = (block: TestedBlock) =>
+    block === 'search'
+      ? t('setAiCapSearch')
+      : block === 'image'
+        ? t('setAiCapImage')
+        : block === 'analysis'
+          ? t('setAiCapAnalysis')
+          : block === 'video'
+            ? t('setAiCapVideo')
+            : t('setAiCapFileSearch')
+  const blockProvider = (block: TestedBlock) => {
+    if (block === 'rerank')
+      return DECISION_ENDPOINTS.find((e) => e.value === fileSearch?.endpoint)?.label ?? ''
+    if (block === 'search')
+      return searchCatalog.find((m) => m.id === search.provider)?.label ?? search.provider
+    const id =
+      block === 'image'
+        ? media.imageProvider
+        : block === 'video'
+          ? media.videoAnalysisProvider
+          : media.analysisProvider
+    return mediaCatalog.find((m) => m.id === id)?.label ?? id
+  }
   const blockStatus = (block: TestedBlock): AiStatus | null => {
     if (testing) return { kind: 'testing', text: t('setAiTesting') }
     const r = testResults?.[block]
@@ -1270,6 +1310,35 @@ function AiMediaPane({
         id={id}
         className="set-input"
         type="password"
+        value={value}
+        placeholder={placeholder}
+        spellCheck={false}
+        autoComplete="off"
+        onChange={(e) => onChange(e.target.value.trim())}
+      />
+    </div>
+  )
+
+  /** a plain text row with an i18n label; used for the decision-endpoint extra fields */
+  const textRow = (
+    id: string,
+    labelKey: StringKey,
+    value: string,
+    placeholder: string,
+    onChange: (v: string) => void,
+  ) => (
+    <div className="set-field">
+      <div className="set-field-text">
+        <div className="set-field-stack">
+          <label className="set-field-label" htmlFor={id}>
+            {t(labelKey)}
+          </label>
+        </div>
+      </div>
+      <input
+        id={id}
+        className="set-input"
+        type="text"
         value={value}
         placeholder={placeholder}
         spellCheck={false}
@@ -1461,32 +1530,66 @@ function AiMediaPane({
                 </div>
                 <Dropdown
                   className="set-dd"
-                  value={licensed ? fileSearch.jevEndpoint : 'vega'}
+                  value={licensed ? fileSearch.endpoint : 'vega'}
                   ariaLabel={t('setSearchRerankEndpoint')}
-                  options={JEV_ENDPOINTS.map((o) => ({
+                  options={DECISION_ENDPOINTS.map((o) => ({
                     ...o,
                     disabled: !licensed && o.value !== 'vega',
                   }))}
-                  onPick={(v) =>
-                    setFileSearch({ ...fileSearch, jevEndpoint: v as JevEndpoint })
-                  }
+                  onPick={(v) => setFileSearch({ ...fileSearch, endpoint: v as DecisionEndpoint })}
                 />
               </div>
-              {(licensed ? fileSearch.jevEndpoint : 'vega') === 'vega' ? (
+              {(licensed ? fileSearch.endpoint : 'vega') === 'vega' ? (
                 // VEGA reranks on the sign-in key — no API key field, same as
                 // the search/media providers above
                 <div className="set-field-desc set-ai-note">{t('setAiAccountHint')}</div>
               ) : (
                 keyRow(
                   'set-search-jev-key',
-                  fileSearch.jevKeys[fileSearch.jevEndpoint],
-                  fileSearch.jevEndpoint === 'openrouter' ? 'sk-or-…' : 'API Key',
+                  fileSearch.keys[fileSearch.endpoint],
+                  fileSearch.endpoint === 'openrouter' ? 'sk-or-…' : 'API Key',
                   (v) =>
                     setFileSearch({
                       ...fileSearch,
-                      jevKeys: { ...fileSearch.jevKeys, [fileSearch.jevEndpoint]: v },
+                      keys: { ...fileSearch.keys, [fileSearch.endpoint]: v },
                     }),
                 )
+              )}
+              {licensed && fileSearch.endpoint === 'custom' && (
+                <>
+                  {textRow(
+                    'set-search-jev-url',
+                    'setSearchRerankCustomUrl',
+                    fileSearch.customBaseUrl,
+                    'http://127.0.0.1:8009/v1/systemone',
+                    (v) => setFileSearch({ ...fileSearch, customBaseUrl: v }),
+                  )}
+                  {textRow(
+                    'set-search-jev-model',
+                    'setSearchRerankCustomModel',
+                    fileSearch.customModel,
+                    'kev-latest',
+                    (v) => setFileSearch({ ...fileSearch, customModel: v }),
+                  )}
+                </>
+              )}
+              {licensed && fileSearch.endpoint === 'cloudflare' && (
+                <>
+                  {textRow(
+                    'set-search-jev-account',
+                    'setSearchRerankAccount',
+                    fileSearch.cloudflareAccountId,
+                    '',
+                    (v) => setFileSearch({ ...fileSearch, cloudflareAccountId: v }),
+                  )}
+                  {textRow(
+                    'set-search-jev-cf-model',
+                    'setSearchRerankCustomModel',
+                    fileSearch.cloudflareModel,
+                    '@cf/cloudflare/clef',
+                    (v) => setFileSearch({ ...fileSearch, cloudflareModel: v }),
+                  )}
+                </>
               )}
             </>
           )}
@@ -1560,7 +1663,7 @@ export interface SettingsModalProps {
   /** device-flow user code (e.g. "ABCD-1234") shown in the sign-in field while waiting */
   deviceCode: string | null
   onClose: () => void
-  /** the Jev search settings were saved; the home search re-judges or drops its current order */
+  /** the decision-model search settings were saved; the home search re-judges or drops its current order */
   onFileSearchChange?: () => void
   /** closes the modal and launches the VEGA login flow (progress shows on the account entry) */
   onLogin: () => void
@@ -1590,6 +1693,7 @@ export function SettingsModal({
   const [displayName, setDisplayName] = useState('')
   const [theme, setTheme] = useState<UiTheme>('system')
   const [design, setDesign] = useState<UiDesign>('standard')
+  const [docTheme, setDocTheme] = useState<DocTheme>('follow')
   const [saveDir, setSaveDir] = useState('')
   const [autoSaveOn, setAutoSaveOn] = useState(false)
   const [defaultApp, setDefaultApp] = useState<DefaultAppStatus | null>(null)
@@ -1598,6 +1702,7 @@ export function SettingsModal({
   const [aiPrefs, setAiPrefs] = useState<AiPanelPrefs>(DEFAULT_AI_PANEL_PREFS)
   const [channel, setChannel] = useState<'stable' | 'beta'>('stable')
   const [appVersion, setAppVersion] = useState('')
+  const [updateState, setUpdateState] = useState<UpdateUiState | null>(null)
 
   useEffect(() => {
     let alive = true
@@ -1609,6 +1714,9 @@ export function SettingsModal({
     })
     void window.aiOffice.getDisplayName?.().then((name) => {
       if (alive) setDisplayName(name)
+    })
+    void window.aiOffice.getDocumentTheme?.().then((th) => {
+      if (alive) setDocTheme(th)
     })
     void window.aiOffice.getDefaultSaveDir?.().then((dir) => {
       if (alive && dir) setSaveDir(dir)
@@ -1628,9 +1736,24 @@ export function SettingsModal({
     void window.aiOffice.getAppVersion?.().then((v) => {
       if (alive && v) setAppVersion(v)
     })
+    // a rejected invoke (main process not ready, a shell whose preload does
+    // not expose the channel) must not surface as an unhandled rejection;
+    // without a known state the About row simply stays hidden
+    void window.aiOffice
+      .getUpdateState?.()
+      .then((s) => {
+        if (alive) setUpdateState(s)
+      })
+      .catch(() => undefined)
     return () => {
       alive = false
     }
+  }, [])
+
+  // live update state: the About row offers the update as soon as one is known
+  useEffect(() => {
+    const off = window.aiOffice.onUpdateStateChanged?.((s) => setUpdateState(s))
+    return () => off?.()
   }, [])
 
   useEffect(() => {
@@ -1653,6 +1776,11 @@ export function SettingsModal({
     void window.aiOffice.setDesign(next)
     if (next === 'standard') document.documentElement.removeAttribute('data-design')
     else document.documentElement.setAttribute('data-design', next)
+  }
+
+  const applyDocumentTheme = (next: DocTheme) => {
+    setDocTheme(next)
+    void window.aiOffice.setDocumentTheme(next)
   }
 
   const updateAiPrefs = (patch: Partial<AiPanelPrefs>) => {
@@ -1885,6 +2013,21 @@ export function SettingsModal({
                 </div>
                 <div className="set-field">
                   <div className="set-field-text">
+                    <label className="set-field-label">{t('documentTheme')}</label>
+                  </div>
+                  <Dropdown
+                    className="set-dd"
+                    value={docTheme}
+                    ariaLabel={t('documentTheme')}
+                    options={DOC_THEME_OPTIONS.map((opt) => ({
+                      value: opt.value,
+                      label: t(opt.labelKey),
+                    }))}
+                    onPick={(v) => applyDocumentTheme(v as DocTheme)}
+                  />
+                </div>
+                <div className="set-field">
+                  <div className="set-field-text">
                     <label className="set-field-label">{t('setAiPanelSide')}</label>
                   </div>
                   <Dropdown
@@ -2015,6 +2158,26 @@ export function SettingsModal({
               <>
                 <h3 className="set-pane-title">{t('setSecAbout')}</h3>
                 <Field label={t('versionLabel')} value={appVersion || '—'} />
+                {updateState && (
+                  <div className="set-field">
+                    <div className="set-field-text">
+                      <label className="set-field-label">{t('setUpdateAvailableLabel')}</label>
+                    </div>
+                    <button
+                      type="button"
+                      className="set-update-btn"
+                      onClick={() => void window.aiOffice.openUpdateDialog?.()}
+                    >
+                      {updateState.phase === 'downloading'
+                        ? t('setUpdateDownloading', {
+                            percent: Math.round(updateState.percent),
+                          })
+                        : updateState.phase === 'downloaded'
+                          ? t('setUpdateRestart')
+                          : t('setUpdateTo', { version: updateState.version })}
+                    </button>
+                  </div>
+                )}
                 <div className="set-field">
                   <div className="set-field-text">
                     <label className="set-field-label">{t('updateChannel')}</label>

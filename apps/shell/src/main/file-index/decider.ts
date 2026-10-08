@@ -1,13 +1,44 @@
 /**
- * Client for TypeSafe's Jev judgment model: given a query and up to 20 document
- * excerpts it returns a calibrated 0–2 relevance score per document in one
- * call (0 unrelated, 1 same topic, 2 answers the query). Any response that
- * fails validation is an error; callers keep the local order.
+ * Client for decision models (System One): given a query and up to 20 document
+ * excerpts the endpoint returns a calibrated 0–2 relevance score per document
+ * in one call (0 unrelated, 1 same topic, 2 answers the query). Any response
+ * that fails validation is an error; callers keep the local order.
+ *
+ * The wire protocol is TypeSafe's `/v1/systemone` (state + questions → typed
+ * answers with probabilities), which the hosted Jev API, the open /v1/systemone
+ * servers (Kev, Von, Rizzo Flow, AFM-D/ollaya) and Perplexity's Decisions API
+ * all speak; Cloudflare's Workers AI uses the same request body behind its own
+ * account-scoped URL and a `{ result }` envelope. OpenRouter hosts Jev behind a
+ * routing envelope with provider pinning.
  */
 
-export type JevEndpoint = 'vega' | 'openrouter' | 'direct'
+export type DecisionEndpoint =
+  'vega' | 'openrouter' | 'direct' | 'perplexity' | 'cloudflare' | 'kev' | 'rizzo' | 'custom'
 
-const ENDPOINTS: Record<JevEndpoint, { url: string; model: string }> = {
+export interface DecisionCallOptions {
+  endpoint: DecisionEndpoint
+  key: string
+  /** `custom` endpoint only: base URL of a /v1/systemone-compatible server */
+  customBaseUrl: string
+  /** `custom` endpoint only: model id the server expects */
+  customModel: string
+  /** `cloudflare` endpoint only: Workers AI account id */
+  cloudflareAccountId: string
+  /** `cloudflare` endpoint only: Workers AI model path */
+  cloudflareModel: string
+}
+
+interface EndpointSpec {
+  url: string
+  model: string
+  /** local servers need no key; requests omit the Authorization header until one is set */
+  local?: boolean
+}
+
+const KEV_URL = 'http://127.0.0.1:8009/v1/systemone'
+const RIZZO_URL = 'http://127.0.0.1:8017/v1/systemone'
+
+const ENDPOINTS: Record<Exclude<DecisionEndpoint, 'custom'>, EndpointSpec> = {
   // api.vega.chat proxies OpenRouter — the decisions alpha rides the same path;
   // the `jev-router` alias row was dropped server-side (answers 400), so the
   // pinned versioned id is sent like on the OpenRouter endpoint — the gateway
@@ -15,6 +46,66 @@ const ENDPOINTS: Record<JevEndpoint, { url: string; model: string }> = {
   vega: { url: 'https://api.vega.chat/api/alpha/decisions', model: 'typesafe/jev-1.13' },
   openrouter: { url: 'https://openrouter.ai/api/alpha/decisions', model: 'typesafe/jev-1.13' },
   direct: { url: 'https://api.typesafe.ai/v1/systemone', model: 'jev-1.13.0' },
+  perplexity: { url: 'https://api.perplexity.ai/v1/decisions', model: 'pplx-decider-v1-27b' },
+  cloudflare: { url: '', model: '@cf/cloudflare/clef' },
+  kev: { url: KEV_URL, model: 'kev-latest', local: true },
+  rizzo: { url: RIZZO_URL, model: 'rizzo-latest', local: true },
+}
+
+/** Workers AI takes the model in the URL path but only `clef` / `clef-flash` in the body. */
+const CLOUDFLARE_BODY_MODEL = /^(clef|clef-flash)$/
+/** a custom base URL may only be https, or http on this machine: the body carries local file text */
+const LOOPBACK_HOST = /^(127\.\d+\.\d+\.\d+|\[?::1\]?|localhost)(:\d+)?$/i
+
+/** Endpoints whose server runs on this machine and needs no API key. */
+export function isLocalEndpoint(endpoint: DecisionEndpoint): boolean {
+  return endpoint === 'kev' || endpoint === 'rizzo' || endpoint === 'custom'
+}
+
+/** Request URL for an endpoint, including the settings-derived variants. */
+export function endpointUrl(opts: DecisionCallOptions): string {
+  if (opts.endpoint === 'custom') {
+    const base = opts.customBaseUrl.trim()
+    if (!base) throw new Error('missing-url')
+    return assertCustomUrl(base)
+  }
+  if (opts.endpoint === 'cloudflare') {
+    const account = opts.cloudflareAccountId.trim()
+    if (!account) throw new Error('missing-account')
+    // the model path keeps its literal "@cf/..." spelling: "@" and "/" are legal
+    // path characters and Workers AI does not decode percent-escapes there
+    const model = opts.cloudflareModel.trim() || ENDPOINTS.cloudflare.model
+    return `https://api.cloudflare.com/client/v4/accounts/${encodeURIComponent(account)}/ai/run/${model}`
+  }
+  return ENDPOINTS[opts.endpoint].url
+}
+
+/**
+ * Rejects a custom base URL that is not https, or http on this machine: the
+ * request carries up to 20 local excerpts and should not cross a plain channel.
+ */
+function assertCustomUrl(base: string): string {
+  let u: URL
+  try {
+    u = new URL(base)
+  } catch {
+    throw new Error('bad-url')
+  }
+  if (u.protocol === 'https:') return base
+  if (u.protocol === 'http:' && LOOPBACK_HOST.test(u.host)) return base
+  throw new Error('insecure-url')
+}
+
+/** Model id sent in the request body; mirroring servers may ignore it. */
+function bodyModel(opts: DecisionCallOptions): string {
+  if (opts.endpoint === 'custom') return opts.customModel.trim() || 'decision'
+  if (opts.endpoint === 'cloudflare') {
+    // the URL keeps "@cf/cloudflare/clef"; the body wants the bare id
+    const id = (opts.cloudflareModel.trim() || ENDPOINTS.cloudflare.model).split('/').pop() ?? ''
+    if (!CLOUDFLARE_BODY_MODEL.test(id)) throw new Error('unsupported-model')
+    return id
+  }
+  return ENDPOINTS[opts.endpoint].model
 }
 
 export const MAX_DOCS = 20
@@ -72,7 +163,7 @@ const instructions = (i: number) =>
 export function prepare(
   query: string,
   docs: readonly JevDocument[],
-  endpoint: JevEndpoint,
+  opts: DecisionCallOptions,
 ): { body: string; count: number } {
   if (!query.trim()) throw new Error('empty-request')
   const documents: JevDocument[] = []
@@ -84,7 +175,8 @@ export function prepare(
         { type: 'score', instructions: instructions(i), criteria: CRITERIA },
       ]),
     )
-    if (endpoint !== 'direct') {
+    // vega rides the OpenRouter wire format: api.vega.chat proxies it
+    if (opts.endpoint === 'openrouter' || opts.endpoint === 'vega') {
       // pin the route to TypeSafe: other providers cannot return score distributions
       const provider = {
         only: ['typesafe'],
@@ -92,9 +184,9 @@ export function prepare(
         zdr: true,
         data_collection: 'deny',
       }
-      return JSON.stringify({ model: ENDPOINTS[endpoint].model, state, questions, provider })
+      return JSON.stringify({ model: ENDPOINTS[opts.endpoint].model, state, questions, provider })
     }
-    return JSON.stringify({ model: ENDPOINTS.direct.model, state, questions })
+    return JSON.stringify({ model: bodyModel(opts), state, questions })
   }
   for (const d of docs.slice(0, MAX_DOCS)) {
     documents.push({
@@ -122,11 +214,20 @@ function num(v: unknown, min: number, max: number): number {
   return v
 }
 
-export function validate(raw: unknown, count: number, endpoint: JevEndpoint): JevJudgement {
+/** Workers AI wraps every reply in a `{ result }` envelope; the protocol does not. */
+function unwrap(raw: unknown, endpoint: DecisionEndpoint): unknown {
+  if (endpoint !== 'cloudflare') return raw
   const r = obj(raw)
+  return 'result' in r ? r.result : r
+}
+
+export function validate(raw: unknown, count: number, endpoint: DecisionEndpoint): JevJudgement {
+  const r = obj(unwrap(raw, endpoint))
+  // only the two hosted Jev routes echo a model we can pin; self-hosted and
+  // third-party servers name their models freely
   if (endpoint === 'direct') {
     if (r.model !== ENDPOINTS.direct.model) throw new Error('model-mismatch')
-  } else {
+  } else if (endpoint === 'openrouter' || endpoint === 'vega') {
     const pattern = endpoint === 'vega' ? VEGA_MODEL_PATTERN : OPENROUTER_MODEL_PATTERN
     if (typeof r.model !== 'string' || !pattern.test(r.model))
       throw new Error('model-mismatch')
@@ -156,21 +257,20 @@ export function validate(raw: unknown, count: number, endpoint: JevEndpoint): Je
       inputTokens = num(usage.input_tokens, 0, Number.MAX_SAFE_INTEGER)
       if (!Number.isInteger(inputTokens)) throw new Error('invalid-response')
     }
-    if (endpoint !== 'direct' && usage.cost !== undefined)
-      cost = num(usage.cost, 0, Number.MAX_SAFE_INTEGER)
+    if (usage.cost !== undefined) cost = num(usage.cost, 0, Number.MAX_SAFE_INTEGER)
   }
   return { scores, inputTokens, cost }
 }
 
 export const fetchTransport: JevTransport = async (url, body, key, signal) => {
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+  // local and unauthenticated servers reject or ignore the header; empty key = none
+  if (key.trim()) headers.Authorization = `Bearer ${key.trim()}`
+  // the VEGA gateway's PII shield keys its token dictionary by session; one request = one session
+  if (new URL(url).hostname === 'api.vega.chat') headers['X-Vega-Session'] = crypto.randomUUID()
   const res = await fetch(url, {
     method: 'POST',
-    headers: {
-      Authorization: `Bearer ${key}`,
-      'Content-Type': 'application/json',
-      // the VEGA gateway's PII shield keys its token dictionary by session; one request = one session
-      ...(new URL(url).hostname === 'api.vega.chat' ? { 'X-Vega-Session': crypto.randomUUID() } : {}),
-    },
+    headers,
     body,
     signal,
   })
@@ -199,18 +299,19 @@ function sleep(ms: number, signal: AbortSignal): Promise<void> {
 export async function evaluate(
   query: string,
   docs: readonly JevDocument[],
-  endpoint: JevEndpoint,
-  key: string,
+  opts: DecisionCallOptions,
   send: JevTransport = fetchTransport,
 ): Promise<JevJudgement> {
-  if (!key.trim()) throw new Error('missing-key')
-  const { body, count } = prepare(query, docs, endpoint)
+  // local servers run without a key; hosted ones reject empty credentials up front
+  if (!isLocalEndpoint(opts.endpoint) && !opts.key.trim()) throw new Error('missing-key')
+  const { body, count } = prepare(query, docs, opts)
+  const url = endpointUrl(opts)
   const controller = new AbortController()
   const deadline = Date.now() + TIMEOUT_MS
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS)
   try {
     for (let attempt = 0; attempt < 2; attempt++) {
-      const r = await send(ENDPOINTS[endpoint].url, body, key, controller.signal)
+      const r = await send(url, body, opts.key, controller.signal)
       if ((r.status === 429 || r.status === 529) && attempt === 0) {
         const seconds = Number(r.retryAfter)
         const wait = r.retryAfter
@@ -231,7 +332,7 @@ export async function evaluate(
       } catch {
         throw new Error('invalid-response')
       }
-      return validate(raw, count, endpoint)
+      return validate(raw, count, opts.endpoint)
     }
     throw new Error('rate-limit')
   } finally {

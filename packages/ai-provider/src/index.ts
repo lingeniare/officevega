@@ -81,13 +81,19 @@ export type {
   GenerateImageInput,
   MediaBlob,
 } from './media-protocols'
-export { AI_PROVIDER_ADAPTERS, getProviderAdapter, modelLacksVision } from './registry'
+export {
+  AI_PROVIDER_ADAPTERS,
+  getProviderAdapter,
+  modelLacksVision,
+  normalizeBaseUrl,
+} from './registry'
 export type {
   AiProtocol,
   ProviderAdapter,
   ProviderCapabilities,
   ResolvedEndpoint,
 } from './registry'
+export { sanitizeAiSettings, validCliPath } from './ai-settings-guard'
 export { chatForProvider } from './chat'
 export { setAiUserAgent, setRescueFetch, warmAiConnections } from './fetch'
 export { isAiNetworkError } from './network-error'

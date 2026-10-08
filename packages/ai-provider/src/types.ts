@@ -12,12 +12,18 @@ export type AiProviderId =
   | 'glm'
   | 'qwen'
   | 'doubao'
+  | 'mimo'
+  | 'hunyuan'
+  | 'ling'
+  | 'spark'
+  | 'longcat'
   | 'minimax'
   | 'xai'
   | 'mistral'
   | 'openrouter'
   | 'requesty'
   | 'opper'
+  | 'cheaperinference'
   | 'opencode-zen'
   | 'opencode-go'
   | 'custom'
@@ -131,7 +137,7 @@ export interface AiMediaSettings {
   provider?: AiMediaProviderId | undefined
 }
 
-/** web/image search backends: VEGA, account sign-in (gsk), or a user key for Serper / Serply / Tavily / Parallel (Parallel also runs keyless) */
+/** web/image search backends: VEGA, account sign-in (gsk), or a user key for Serper / Serply / Tavily / Parallel / Exa / Firecrawl (Parallel also runs keyless) */
 export type AiSearchProviderId =
   | 'genspark'
   | 'vega'
@@ -139,6 +145,8 @@ export type AiSearchProviderId =
   | 'serply'
   | 'tavily'
   | 'parallel'
+  | 'exa'
+  | 'firecrawl'
 
 export interface AiSearchProviderMeta {
   id: AiSearchProviderId

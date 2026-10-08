@@ -36,8 +36,7 @@ export const HTML_CHANNELS = {
   consumeHeadlessExport: 'html:consume-headless-export',
   headlessExportDone: 'html:headless-export-done',
   printRequest: 'html:print-request',
-  /** renderer → main: print the given document HTML via the system dialog */
-  print: 'html:print',
+  printHtml: 'html:print-html',
   aiGenerateImage: 'html:ai-generate-image',
   filesPick: 'html:files-pick',
   filesAdd: 'html:files-add',
@@ -185,6 +184,16 @@ export type ExportResult =
   | { ok: true; canceled: true }
   | { ok: false; error: string }
 
+/** Shell menu Print: the renderer hands over the document text, main opens the system dialog */
+export interface PrintHtmlRequest {
+  /** the document text */
+  html: string
+}
+
+/** A cancelled job is the user closing the system dialog: an outcome, not a failure,
+ * so it must stay silent. Mirrors the `canceled` variant ExportResult already uses. */
+export type PrintResult = { ok: true } | { ok: true; canceled: true } | { ok: false; error: string }
+
 export interface ImageData {
   base64: string
   mime: 'image/png' | 'image/jpeg' | 'image/gif'
@@ -267,11 +276,11 @@ export interface HtmlApi {
   onExportRequest(handler: (format: ExportFormat) => void): () => void
   /** Shell menu Print → renderer builds the print HTML and opens the system print dialog */
   onPrintRequest(handler: () => void): () => void
-  /** Print the document source through a hidden script-free window and the system print dialog */
-  print(request: { html: string }): Promise<{ ok: boolean; error?: string }>
   exportDocx(request: ExportDocxRequest): Promise<ExportResult>
   exportPdf(request: ExportPdfRequest): Promise<ExportResult>
   exportHtml(request: ExportHtmlRequest): Promise<ExportResult>
+  /** Shell menu Print → main renders the document and opens the system print dialog */
+  printHtml(request: PrintHtmlRequest): Promise<PrintResult>
   getLanguage(): Promise<Lang>
   onLanguageChanged(handler: (lang: Lang) => void): () => void
   getTheme(): Promise<UiTheme>

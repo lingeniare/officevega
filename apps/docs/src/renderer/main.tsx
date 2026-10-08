@@ -1,8 +1,8 @@
 import { createRoot } from 'react-dom/client'
-import { htmlLang, type Lang } from '@genoffice/i18n'
+import { htmlDir, htmlLang, type Lang } from '@genoffice/i18n'
 import { App } from './App'
 import { LocaleProvider, setModuleLang } from './i18n/locale'
-import type { UiDesign, UiTheme } from '../shared/ipc'
+import type { DocTheme, UiDesign, UiTheme } from '../shared/ipc'
 import '@genoffice/ui/tokens.css'
 import '@genoffice/ui/screentip.css'
 import '@genoffice/ui/color-picker.css'
@@ -34,27 +34,38 @@ function applyDesign(design: UiDesign): void {
   else document.documentElement.setAttribute('data-design', design)
 }
 
+function applyDocumentTheme(theme: DocTheme): void {
+  // data-doc-theme drives the canvas/paper (#1811); absent means 'follow' the UI theme
+  if (theme === 'follow') document.documentElement.removeAttribute('data-doc-theme')
+  else document.documentElement.setAttribute('data-doc-theme', theme)
+}
+
 async function bootstrap(): Promise<void> {
   let lang: Lang = 'zh'
   let theme: UiTheme = 'system'
   let design: UiDesign = 'standard'
+  let docTheme: DocTheme = 'follow'
   try {
     // per-promise catch: standalone runs have no app:get-theme handler, and
     // that rejection must not drop a resolved language
-    ;[lang, theme, design] = await Promise.all([
+    ;[lang, theme, design, docTheme] = await Promise.all([
       window.desktop.getLanguage().catch(() => 'zh' as const),
       window.desktop.getTheme().catch(() => 'system' as const),
       window.desktop.getDesign().catch(() => 'standard' as const),
+      window.desktop.getDocumentTheme?.().catch(() => 'follow' as const),
     ])
   } catch {
     /* dev renderer without the preload bridge */
   }
   setModuleLang(lang)
   document.documentElement.lang = htmlLang(lang)
+  document.documentElement.dir = htmlDir(lang)
   applyTheme(theme)
   applyDesign(design)
+  applyDocumentTheme(docTheme ?? 'follow')
   window.desktop?.onThemeChanged(applyTheme)
   window.desktop?.onDesignChanged(applyDesign)
+  window.desktop?.onDocumentThemeChanged?.(applyDocumentTheme)
   await window.desktop
     ?.getAiPanelPrefs?.()
     .then(applyAiPanelPrefs)

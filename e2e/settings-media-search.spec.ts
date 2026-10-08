@@ -21,20 +21,27 @@ test('Decision model reranking lives in the AI Media & Search pane, saves with i
       has: page.locator('.set-pane-subtitle', { hasText: 'Local file search' }),
     })
     const toggle = block.getByRole('switch', { name: 'Decision model reranking' })
-    await expect(toggle).toHaveAttribute('aria-checked', 'false')
-    await toggle.click()
-    await block.getByRole('button', { name: 'Decision model endpoint', exact: true }).click()
-    await page.getByRole('option', { name: 'TypeSafe', exact: true }).click()
+    // absent = on: the VEGA endpoint rides the sign-in key, so a fresh profile
+    // starts with reranking enabled
+    await expect(toggle).toHaveAttribute('aria-checked', 'true')
 
-    // the block reports its own verdict: no key entered, nothing leaves the machine
+    // without a licence only the VEGA endpoint is selectable
+    await block.getByRole('button', { name: 'Decision model endpoint', exact: true }).click()
+    await expect(
+      page.getByRole('option', { name: 'Jev (TypeSafe API)', exact: true }),
+    ).toBeDisabled()
+    await page.getByRole('option', { name: 'VEGA', exact: true }).click()
+
+    // the block reports its own verdict: no sign-in, nothing leaves the machine
     await page.getByRole('button', { name: 'Test connection', exact: true }).click()
-    await expect(block.locator('.set-ai-status.err')).toHaveText('Enter an API key')
+    await expect(block.locator('.set-ai-status.err')).toHaveText(
+      'Sign in to VEGA or enter an API key',
+    )
     // test verdicts live only on the blocks — the sticky pane head keeps just
     // the autosave pill so no result floats over the scrolled rows
     await expect(page.locator('.set-pane-actions .set-ai-status.err')).toHaveCount(0)
     await page.screenshot({ path: screenshotPath('settings-media-search-test') })
 
-    await block.locator('#set-search-jev-key').fill('ts-key')
     await page.getByRole('button', { name: 'Save', exact: true }).click()
     await expect(page.locator('.set-pane-actions .set-ai-status.ok')).toHaveText('Saved')
     await expect
@@ -44,8 +51,21 @@ test('Decision model reranking lives in the AI Media & Search pane, saves with i
       })
       .toEqual({
         rerank: true,
-        jevEndpoint: 'direct',
-        jevKeys: { openrouter: '', direct: 'ts-key' },
+        endpoint: 'vega',
+        keys: {
+          vega: '',
+          openrouter: '',
+          direct: '',
+          perplexity: '',
+          cloudflare: '',
+          kev: '',
+          rizzo: '',
+          custom: '',
+        },
+        customBaseUrl: '',
+        customModel: '',
+        cloudflareAccountId: '',
+        cloudflareModel: '@cf/cloudflare/clef',
       })
   } finally {
     await closeAndSaveVideo(launched, 'settings-media-search')

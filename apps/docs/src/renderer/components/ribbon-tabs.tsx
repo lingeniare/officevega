@@ -29,6 +29,7 @@ import type { InkTool } from '../editor/ink'
 import { appTitle } from '@genoffice/i18n'
 import { t, useI18n, type StringKey } from '../i18n/locale'
 import type { RevisionDisplayMode } from '../editor/revision-view'
+import { TRANSLATE_LANGS, ribbonLangKey } from './translate-langs'
 import {
   IconAccept,
   IconAiPanel,
@@ -753,18 +754,6 @@ export interface InsertTabProps extends TabProps {
   onTableInserted: () => void
 }
 
-/** target languages of Word's Translate dropdown that the AI backend can serve;
- *  the localized label is also spliced into the instruction sent to the LLM */
-const TRANSLATE_TARGETS: Array<{ labelKey: StringKey }> = [
-  { labelKey: 'ribbonLangEnglish' },
-  { labelKey: 'ribbonLangSimplifiedChinese' },
-  { labelKey: 'ribbonLangJapanese' },
-  { labelKey: 'ribbonLangKorean' },
-  { labelKey: 'ribbonLangFrench' },
-  { labelKey: 'ribbonLangGerman' },
-  { labelKey: 'ribbonLangSpanish' },
-]
-
 /** One-time "AI rewrites the whole document" acknowledgement */
 export const AI_REWRITE_ACK_KEY = 'docs-ai-rewrite-ack'
 
@@ -937,19 +926,21 @@ export function ReviewTab({
             </button>
             {dropdown === 'translate' && (
               <div data-rb-panel="" className="layout-menu">
-                {TRANSLATE_TARGETS.map((lang) => (
+                {TRANSLATE_LANGS.map(({ code }) => (
                   <button
-                    key={lang.labelKey}
+                    key={code}
                     onClick={() => {
                       setDropdown(() => null)
                       if (hasRangeSelection()) {
-                        onAiPreset(t('ribbonTranslateSelectionPrompt', { lang: t(lang.labelKey) }))
+                        onAiPreset(
+                          t('ribbonTranslateSelectionPrompt', { lang: t(ribbonLangKey(code)) }),
+                        )
                       } else if (confirmAiRewrite()) {
-                        onAiPreset(t('ribbonTranslatePrompt', { lang: t(lang.labelKey) }))
+                        onAiPreset(t('ribbonTranslatePrompt', { lang: t(ribbonLangKey(code)) }))
                       }
                     }}
                   >
-                    {t('ribbonTranslateTo', { lang: t(lang.labelKey) })}
+                    {t('ribbonTranslateTo', { lang: t(ribbonLangKey(code)) })}
                   </button>
                 ))}
               </div>
