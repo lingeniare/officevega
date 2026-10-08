@@ -139,14 +139,7 @@ export interface AiMediaSettings {
 
 /** web/image search backends: VEGA, account sign-in (gsk), or a user key for Serper / Serply / Tavily / Parallel / Exa / Firecrawl (Parallel also runs keyless) */
 export type AiSearchProviderId =
-  | 'genspark'
-  | 'vega'
-  | 'serper'
-  | 'serply'
-  | 'tavily'
-  | 'parallel'
-  | 'exa'
-  | 'firecrawl'
+  'genspark' | 'vega' | 'serper' | 'serply' | 'tavily' | 'parallel' | 'exa' | 'firecrawl'
 
 export interface AiSearchProviderMeta {
   id: AiSearchProviderId
@@ -186,6 +179,15 @@ export interface AiSettings {
    * free sources. The chat provider is unaffected.
    */
   vegaToolsEnabled?: boolean
+  /**
+   * VEGA PII shield (api.vega.chat masks personal data as #TYPE_N# tokens
+   * before a request reaches the model and restores them in the reply).
+   * Default true; false sends `X-Vega-Pii: off` on gateway requests so the
+   * shield is skipped, and disables the client-side token guard. Image
+   * payloads bypass the shield entirely either way — the filter only ever
+   * touches text.
+   */
+  piiShieldEnabled?: boolean
   /**
    * Legacy name of vegaToolsEnabled (the switch used to gate the Genspark
    * backend). Read as a fallback during settings resolution; never written.

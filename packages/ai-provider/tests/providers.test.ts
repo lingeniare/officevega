@@ -497,6 +497,28 @@ describe('vegaToolsEnabled', () => {
   })
 })
 
+describe('piiShieldEnabled', () => {
+  it('defaults on, survives resolveAiSettings, and only an explicit false turns it off', () => {
+    expect(defaultAiSettings().piiShieldEnabled).toBe(true)
+    // pre-toggle settings file (field absent) keeps masking
+    const legacy = resolveAiSettings({ providers: {} as never }, defaultAiSettings())
+    expect(legacy.piiShieldEnabled).toBe(true)
+    const off = resolveAiSettings(
+      { providers: {} as never, piiShieldEnabled: false },
+      defaultAiSettings(),
+    )
+    expect(off.piiShieldEnabled).toBe(false)
+    const on = resolveAiSettings(
+      { providers: {} as never, piiShieldEnabled: true },
+      defaultAiSettings(),
+    )
+    expect(on.piiShieldEnabled).toBe(true)
+    // legacy single-endpoint files keep the opt-out too
+    const slim = resolveAiSettings({ apiKey: 'k', piiShieldEnabled: false }, defaultAiSettings())
+    expect(slim.piiShieldEnabled).toBe(false)
+  })
+})
+
 describe('withFastModel', () => {
   it('swaps fastModel into model on every provider that defines one', () => {
     const settings = defaultAiSettings()

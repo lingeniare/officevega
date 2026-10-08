@@ -12,6 +12,7 @@ import {
   VEGA_BASE_URL,
   setIssuedVegaKeyGetter,
   setLegacyGskKeyGetter,
+  vegaPiiHeaders,
 } from '@genoffice/ai-provider'
 import {
   asRecord,
@@ -253,7 +254,12 @@ async function vegaWebSearchOnce(
       `${VEGA_BASE_URL}/chat/completions`,
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${key}` },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${key}`,
+          // PII shield opt-out while the setting is off; {} when enabled
+          ...vegaPiiHeaders(VEGA_BASE_URL),
+        },
         body: JSON.stringify({
           model: VEGA_SEARCH_MODEL,
           plugins: [{ id: 'web', engine, max_results: maxResults }],

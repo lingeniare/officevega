@@ -123,6 +123,7 @@ const api: MarkdownApi = {
     return () => ipcRenderer.removeListener('app:chrome-pressed', listener)
   },
   getAiSettings: () => ipcRenderer.invoke(AI_CHANNELS.getSettings),
+  setAiSettings: (settings) => ipcRenderer.invoke(AI_CHANNELS.setSettings, settings),
   aiGskStatus: () => ipcRenderer.invoke(AI_CHANNELS.gskStatus),
   onAiAuthChanged: (handler: (status: { loggedIn: boolean }) => void) => {
     const listener = (_e: Electron.IpcRendererEvent, status: { loggedIn: boolean }) =>

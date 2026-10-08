@@ -4075,15 +4075,12 @@ button {
   font-family: var(--gs-font-sans);
 }
 
-/* composer card — 16px radius, default border, production float shadow */
+/* composer card — 16px radius, production float shadow, no border */
 .ai-input-box {
-  border: 1px solid var(--color-border-default);
+  border: none;
   border-radius: var(--radius-16);
   background: var(--color-bg-page);
   box-shadow: var(--pdf-shadow-composer);
-  transition:
-    border-color var(--transition-fast),
-    box-shadow var(--transition-fast);
 }
 
 /* textarea: 16px / 24px fixed line-height (chat body size), auto-grow band

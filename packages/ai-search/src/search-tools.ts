@@ -10,6 +10,7 @@
 
 import {
   activeSearchProvider,
+  vegaPiiHeaders,
   vegaSearchKey,
   VEGA_BASE_URL,
   type AiSearchProviderId,
@@ -55,7 +56,7 @@ export async function testSearchProvider(
     // /models is public; a bad key still gets 401 — a cheap credential check
     try {
       const resp = await fetch(`${VEGA_BASE_URL}/models?limit=1`, {
-        headers: { Authorization: `Bearer ${apiKey}` },
+        headers: { Authorization: `Bearer ${apiKey}`, ...vegaPiiHeaders(VEGA_BASE_URL) },
         signal: AbortSignal.timeout(10_000),
       })
       return resp.ok ? { ok: true } : { ok: false, error: `HTTP ${resp.status}` }

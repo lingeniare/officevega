@@ -199,6 +199,9 @@ interface ExcelShellProps {
   readonly onPromptChange: (prompt: string) => void
   /// true while the effective AI provider is VEGA — shows the PII-shield badge in the composer footer
   readonly privacyBadge?: boolean | undefined
+  /// badge state: the piiShieldEnabled AI setting (default on); the click persists the flip
+  readonly shieldOn?: boolean | undefined
+  readonly onShieldToggle?: (() => void) | undefined
   /** Send the composer text, or the given instruction when provided (Retry also
    *  resends that message's original attachments and passes the failed bubble's
    *  chat index so the send replaces it in place) */
@@ -388,6 +391,8 @@ export function ExcelShell({
   onPromptChange,
   onSend,
   privacyBadge,
+  shieldOn,
+  onShieldToggle,
   suggestedQuestions,
   onSuggestionPick,
   onStop,
@@ -826,6 +831,8 @@ export function ExcelShell({
           onPromptChange={onPromptChange}
           onSend={onSend}
           privacyBadge={privacyBadge}
+          shieldOn={shieldOn}
+          onShieldToggle={onShieldToggle}
           {...(suggestedQuestions !== undefined ? { suggestedQuestions } : {})}
           {...(onSuggestionPick !== undefined ? { onSuggestionPick } : {})}
           onStop={onStop}

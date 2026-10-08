@@ -113,6 +113,8 @@ export function sanitizeAiSettings(input: unknown): AiSettings | null {
     providers,
   }
   if (typeof raw.gskToolsEnabled === 'boolean') settings.gskToolsEnabled = raw.gskToolsEnabled
+  if (typeof raw.vegaToolsEnabled === 'boolean') settings.vegaToolsEnabled = raw.vegaToolsEnabled
+  if (typeof raw.piiShieldEnabled === 'boolean') settings.piiShieldEnabled = raw.piiShieldEnabled
   if (
     typeof raw.maxOutputTokens === 'number' &&
     Number.isFinite(raw.maxOutputTokens) &&

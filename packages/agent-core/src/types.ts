@@ -134,4 +134,10 @@ export interface AgentStreamHandle {
 
 export interface AgentTransport {
   stream(request: AgentStreamRequest, callbacks: AgentStreamCallbacks): AgentStreamHandle
+  /**
+   * Drop the transport's retained session id. Call on a new conversation so
+   * session-keyed provider state — the VEGA PII dictionary behind
+   * X-Vega-Session, OpenCode's x-opencode-session — does not bleed across chats.
+   */
+  resetSession?(): void
 }

@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { AgentMessage, AgentToolCall } from '@genoffice/agent-core'
 import { AiCreditsError, sseLines, streamForProvider } from '../src/stream'
+import { setPiiShieldEnabled } from '../src/fetch'
 import {
   MAX_RESPONSE_BODY_BYTES,
   jsonBodyInsteadOfSse,
@@ -1492,10 +1493,18 @@ describe('streamForProvider: VEGA gateway PII shield', () => {
     const fetchMock = vi.fn().mockImplementation(async () => okResponse(sseStream([])))
     vi.stubGlobal('fetch', fetchMock)
     for (let turn = 0; turn < 2; turn++) {
-      await streamForProvider('vega', { apiKey: 'k', model: 'openai/gpt-6-sol' }, 'sys', [], [], 100, {
-        ...collector().cb,
-        sessionId: 'chat-7',
-      }).catch(() => {})
+      await streamForProvider(
+        'vega',
+        { apiKey: 'k', model: 'openai/gpt-6-sol' },
+        'sys',
+        [],
+        [],
+        100,
+        {
+          ...collector().cb,
+          sessionId: 'chat-7',
+        },
+      ).catch(() => {})
     }
     for (const call of fetchMock.mock.calls) {
       expect((call[1].headers as Record<string, string>)['X-Vega-Session']).toBe('chat-7')
@@ -1509,7 +1518,60 @@ describe('streamForProvider: VEGA gateway PII shield', () => {
       ...collector().cb,
       sessionId: 'chat-7',
     }).catch(() => {})
-    expect((fetchMock.mock.calls[0]![1].headers as Record<string, string>)['X-Vega-Session']).toBeUndefined()
+    expect(
+      (fetchMock.mock.calls[0]![1].headers as Record<string, string>)['X-Vega-Session'],
+    ).toBeUndefined()
+  })
+
+  it('sends X-Vega-Pii: off to the gateway while the shield is switched off', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(okResponse(sseStream([])))
+    vi.stubGlobal('fetch', fetchMock)
+    setPiiShieldEnabled(false)
+    try {
+      await streamForProvider('vega', { apiKey: 'k', model: 'm' }, 'sys', [], [], 100, {
+        ...collector().cb,
+        sessionId: 's',
+      }).catch(() => {})
+    } finally {
+      setPiiShieldEnabled(true)
+    }
+    const headers = fetchMock.mock.calls[0]![1].headers as Record<string, string>
+    expect(headers['X-Vega-Pii']).toBe('off')
+  })
+
+  it('omits X-Vega-Pii while the shield is on and never sends it to other gateways', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(okResponse(sseStream([])))
+    vi.stubGlobal('fetch', fetchMock)
+    await streamForProvider('vega', { apiKey: 'k', model: 'm' }, 'sys', [], [], 100, {
+      ...collector().cb,
+      sessionId: 's',
+    }).catch(() => {})
+    await streamForProvider('kimi', { apiKey: 'k', model: 'kimi-k3' }, 'sys', [], [], 100, {
+      ...collector().cb,
+      sessionId: 's',
+    }).catch(() => {})
+    // the module flag sits at its default on here, so neither gateway sees the
+    // opt-out header
+    for (const call of fetchMock.mock.calls) {
+      expect((call[1].headers as Record<string, string>)['X-Vega-Pii']).toBeUndefined()
+    }
+  })
+
+  it('does not leak X-Vega-Pii to another gateway even while switched off', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(okResponse(sseStream([])))
+    vi.stubGlobal('fetch', fetchMock)
+    setPiiShieldEnabled(false)
+    try {
+      await streamForProvider('kimi', { apiKey: 'k', model: 'kimi-k3' }, 'sys', [], [], 100, {
+        ...collector().cb,
+        sessionId: 's',
+      }).catch(() => {})
+    } finally {
+      setPiiShieldEnabled(true)
+    }
+    expect(
+      (fetchMock.mock.calls[0]![1].headers as Record<string, string>)['X-Vega-Pii'],
+    ).toBeUndefined()
   })
 
   it('pii_unavailable (503) is retried and then succeeds', async () => {
@@ -1572,7 +1634,11 @@ describe('streamForProvider: VEGA gateway PII shield', () => {
   it('prefers the gateway-provided message', async () => {
     vi.stubGlobal(
       'fetch',
-      vi.fn().mockResolvedValue(new Response(piiBody('pii_too_large', 'Слишком большой файл'), { status: 413 })),
+      vi
+        .fn()
+        .mockResolvedValue(
+          new Response(piiBody('pii_too_large', 'Слишком большой файл'), { status: 413 }),
+        ),
     )
     await expect(
       streamForProvider('vega', { apiKey: 'k', model: 'm' }, 'sys', [], [], 100, collector().cb),

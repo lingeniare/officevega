@@ -722,7 +722,10 @@ export class AgentLoop<TSnapshot = unknown> {
   }
 
   /** Swap the mechanical digest for the LLM summary when it arrives; on failure or reset the digest simply stays. */
-  private async refineSummary(folded: AgentMessage, dropped: readonly AgentMessage[]): Promise<void> {
+  private async refineSummary(
+    folded: AgentMessage,
+    dropped: readonly AgentMessage[],
+  ): Promise<void> {
     const generation = this.generation
     const summary = await this.summarizeViaLlm(dropped)
     // A reset may have cleared history or started a new conversation while
@@ -836,6 +839,9 @@ export class AgentLoop<TSnapshot = unknown> {
   /** drop the conversation (e.g. when a different document is opened) */
   reset(): void {
     this.generation++
+    // a new conversation gets a new transport session id, so session-keyed
+    // provider state (VEGA's per-session PII dictionary) starts empty
+    this.options.transport.resetSession?.()
     this.abortController?.abort()
     this.summaryHandle?.cancel()
     this.summaryHandle = null

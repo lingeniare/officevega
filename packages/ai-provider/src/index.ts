@@ -32,6 +32,7 @@ export {
   cloudToolsEnabled,
   defaultAiSettings,
   maxOutputTokensOf,
+  piiShieldMayApply,
   requestProvider,
   resolveAiSettings,
   withFastModel,
@@ -95,7 +96,13 @@ export type {
 } from './registry'
 export { sanitizeAiSettings, validCliPath } from './ai-settings-guard'
 export { chatForProvider } from './chat'
-export { setAiUserAgent, setRescueFetch, warmAiConnections } from './fetch'
+export {
+  setAiUserAgent,
+  setPiiShieldEnabled,
+  setRescueFetch,
+  vegaPiiHeaders,
+  warmAiConnections,
+} from './fetch'
 export { isAiNetworkError } from './network-error'
 export { isAiOverloadedError } from './overload-error'
 export { isOutputCapRejection, parseOutputCapRejection } from './output-cap'

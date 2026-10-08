@@ -326,11 +326,11 @@ describe('VML horizontal rule sharing a text paragraph', () => {
     expect(noop.saveBlocks.map((b) => b.kind)).toEqual(['original', 'original'])
     expect(await saveDocx(parsed, noop.saveBlocks)).toBe(bytes)
 
-    // an identity replace leaves the paragraph untouched (still 'original')
+    // an identical find/replace is rejected, so the paragraph is untouched
     const same = executeOps(editor, [
       { op: 'findReplace', find: 'Séquence', replace: 'Séquence', matchCase: true },
     ] as never)
-    expect(same.ok).toBe(true)
+    expect(same.ok).toBe(false)
     expect(
       pmDocToSavePlan(editor.state.doc.toJSON() as never, parsed.blocks).saveBlocks.map(
         (b) => b.kind,

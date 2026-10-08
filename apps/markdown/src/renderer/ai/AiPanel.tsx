@@ -6,11 +6,13 @@ import {
   composeSkills,
   generateSuggestedQuestions,
   streamText,
+  withPiiTokenGuard,
 } from '@genoffice/agent-core'
 import {
   imageGenerationAvailable,
   isOutputCapRejection,
   maxOutputTokensOf,
+  piiShieldMayApply,
   withFastModel,
   type AiProviderId,
   type AiSettings,
@@ -209,6 +211,16 @@ export function AiPanel({
   const settingsRef = useRef<AiSettings | null>(null)
   /** the effective provider from the last settings read — drives the composer's VEGA privacy badge */
   const [aiProvider, setAiProvider] = useState<AiProviderId | null>(null)
+  /** piiShieldEnabled from the last settings read — the badge shows and flips it */
+  const [piiOn, setPiiOn] = useState(true)
+  const togglePiiShield = () => {
+    const cur = settingsRef.current
+    if (!cur) return
+    const next = { ...cur, piiShieldEnabled: cur.piiShieldEnabled === false }
+    settingsRef.current = next
+    setPiiOn(next.piiShieldEnabled === true)
+    void window.markdownApi?.setAiSettings?.(next).catch(() => {})
+  }
   /** gsk login state for the generate_image gate (refreshed on mount, window focus and auth pushes) */
   const gskLoggedInRef = useRef(false)
   useEffect(() => {
@@ -227,6 +239,7 @@ export function AiPanel({
           if (!alive || !s) return
           settingsRef.current = s
           setAiProvider(s.provider)
+          setPiiOn(s.piiShieldEnabled !== false)
         })
         .catch(() => {})
     }
@@ -321,9 +334,7 @@ export function AiPanel({
   // user's "fast model" pick (withFastModel falls back to the main model).
   const suggestTransportRef = useRef<ReturnType<typeof createElectronTransport> | null>(null)
   if (!suggestTransportRef.current)
-    suggestTransportRef.current = createElectronTransport(() =>
-      withFastModel(settingsRef.current!),
-    )
+    suggestTransportRef.current = createElectronTransport(() => withFastModel(settingsRef.current!))
   const suggested = useSuggestedQuestions((user, assistant, signal) => {
     if (!settingsRef.current) return Promise.resolve([])
     return generateSuggestedQuestions({
@@ -367,8 +378,7 @@ export function AiPanel({
     }
     // long-form writes request the output floor — the 32K settings default
     // truncates long documents into the keep/discard card
-    const docBudget = () =>
-      Math.max(DOC_OUTPUT_TOKEN_FLOOR, maxOutputTokensOf(settingsRef.current))
+    const docBudget = () => Math.max(DOC_OUTPUT_TOKEN_FLOOR, maxOutputTokensOf(settingsRef.current))
     const attempt = (maxTokens?: number) =>
       streamText({
         transport: transportRef.current!,
@@ -389,9 +399,7 @@ export function AiPanel({
     if (outcome.status === 'empty' && !signal?.aborted) {
       // A rejected raised cap (unparseable ceiling) retries at the settings
       // default; a plain empty stream retries at the same budget.
-      outcome = isOutputCapRejection(outcome.error)
-        ? await attempt()
-        : await attempt(docBudget())
+      outcome = isOutputCapRejection(outcome.error) ? await attempt() : await attempt(docBudget())
     }
     closed = true
     if (chipTimer !== null) clearTimeout(chipTimer)
@@ -435,20 +443,24 @@ export function AiPanel({
   if (!loopRef.current) {
     loopRef.current = new AgentLoop<DocSnapshot>({
       transport: transportRef.current,
-      skill: composeSkills('markdown+search', '', [
-        createMarkdownSkill(
-          () => depsRef.current.getEditor(),
-          {
-            read: () => depsRef.current.getFrontmatter(),
-            write: (inner) => depsRef.current.setFrontmatter(inner),
-          },
-          () => imageGenerationAvailable(settingsRef.current, gskLoggedInRef.current),
-          () => ({
-            write: (spec, onProgress, signal) => runDocWriterRef.current(spec, onProgress, signal),
-          }),
-        ),
-        createSearchSkill(),
-      ]),
+      skill: withPiiTokenGuard(
+        composeSkills('markdown+search', '', [
+          createMarkdownSkill(
+            () => depsRef.current.getEditor(),
+            {
+              read: () => depsRef.current.getFrontmatter(),
+              write: (inner) => depsRef.current.setFrontmatter(inner),
+            },
+            () => imageGenerationAvailable(settingsRef.current, gskLoggedInRef.current),
+            () => ({
+              write: (spec, onProgress, signal) =>
+                runDocWriterRef.current(spec, onProgress, signal),
+            }),
+          ),
+          createSearchSkill(),
+        ]),
+        () => piiShieldMayApply(settingsRef.current),
+      ),
       // Read/search calls can't mutate — skip the whole-document serialize
       // they would otherwise pay for before every read turn.
       captureSnapshot: (call) =>
@@ -534,8 +546,7 @@ export function AiPanel({
           depsRef.current.onRunDone(runMutatedRef.current)
           setBusy(false)
           // follow-up suggestions are generated off the fast model after the reply lands
-          if (!cancelled && final)
-            suggested.refresh(runInstructionRef.current, final)
+          if (!cancelled && final) suggested.refresh(runInstructionRef.current, final)
         },
         onError: (error) => {
           flushStreamedText()
@@ -685,12 +696,14 @@ export function AiPanel({
         if (!settingsRef.current) {
           settingsRef.current = await window.markdownApi.getAiSettings()
           setAiProvider(settingsRef.current.provider)
+          setPiiOn(settingsRef.current.piiShieldEnabled !== false)
         } else {
           // refresh for the next run without delaying this one's first request
           void window.markdownApi.getAiSettings().then(
             (s) => {
               settingsRef.current = s
               setAiProvider(s.provider)
+              setPiiOn(s.piiShieldEnabled !== false)
             },
             () => {},
           )
@@ -889,6 +902,7 @@ export function AiPanel({
                 stop()
                 abandonWriter()
                 loopRef.current?.reset()
+                suggestTransportRef.current?.resetSession?.()
                 suggested.clear()
                 setBusy(false)
                 setChat([])
@@ -1156,6 +1170,8 @@ export function AiPanel({
           stopLabel={t('aiStop')}
           iconOnly
           privacyBadge={aiProvider === 'vega'}
+          shieldOn={piiOn}
+          onShieldToggle={togglePiiShield}
           textareaRef={inputRef}
           onChange={setPrompt}
           onSend={() => send(prompt)}

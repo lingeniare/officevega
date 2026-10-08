@@ -240,6 +240,8 @@ export function AiChatPanel({
   onRemoveAttachment,
   prompt,
   privacyBadge,
+  shieldOn,
+  onShieldToggle,
   preview,
   aiBusy,
   onPromptChange,
@@ -276,6 +278,9 @@ export function AiChatPanel({
   readonly prompt: string
   /// true while the effective AI provider is VEGA — shows the PII-shield badge in the composer footer
   readonly privacyBadge?: boolean | undefined
+  /// badge state: the piiShieldEnabled AI setting (default on); the click persists the flip
+  readonly shieldOn?: boolean | undefined
+  readonly onShieldToggle?: (() => void) | undefined
   readonly preview: ChangePlan | null
   readonly aiBusy: boolean
   readonly onPromptChange: (prompt: string) => void
@@ -741,10 +746,7 @@ export function AiChatPanel({
       </div>
 
       {!aiBusy && onSuggestionPick && (
-        <AiSuggestedQuestions
-          questions={suggestedQuestions}
-          onPick={onSuggestionPick}
-        />
+        <AiSuggestedQuestions questions={suggestedQuestions} onPick={onSuggestionPick} />
       )}
 
       <div className="ai-composer">
@@ -864,6 +866,8 @@ export function AiChatPanel({
           ariaLabel={t('aiInstructionAria')}
           iconOnly
           privacyBadge={privacyBadge}
+          shieldOn={shieldOn}
+          onShieldToggle={onShieldToggle}
           footerStart={
             <button
               className="ai-attach-btn"

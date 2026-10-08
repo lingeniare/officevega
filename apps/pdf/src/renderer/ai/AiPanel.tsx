@@ -1,9 +1,10 @@
 import { aiPanelWidthAtPointer } from '@genoffice/ui'
 import { useEffect, useRef, useState } from 'react'
 import type { PointerEvent as ReactPointerEvent, ReactElement } from 'react'
-import { AgentLoop, generateSuggestedQuestions } from '@genoffice/agent-core'
+import { AgentLoop, generateSuggestedQuestions, withPiiTokenGuard } from '@genoffice/agent-core'
 import {
   imageGenerationAvailable,
+  piiShieldMayApply,
   withFastModel,
   type AiProviderId,
   type AiSettings,
@@ -263,6 +264,16 @@ export function AiPanel({
   const settingsRef = useRef<AiSettings | null>(null)
   /** the effective provider from the last settings read — drives the composer's VEGA privacy badge */
   const [aiProvider, setAiProvider] = useState<AiProviderId | null>(null)
+  /** piiShieldEnabled from the last settings read — the badge shows and flips it */
+  const [piiOn, setPiiOn] = useState(true)
+  const togglePiiShield = () => {
+    const cur = settingsRef.current
+    if (!cur) return
+    const next = { ...cur, piiShieldEnabled: cur.piiShieldEnabled === false }
+    settingsRef.current = next
+    setPiiOn(next.piiShieldEnabled === true)
+    void window.pdfApi?.setAiSettings?.(next).catch(() => {})
+  }
 
   /** gsk login state for the cloud-tools gate (refreshed on mount and window focus) */
   const gskLoggedInRef = useRef(false)
@@ -282,6 +293,7 @@ export function AiPanel({
           if (!alive || !s) return
           settingsRef.current = s
           setAiProvider(s.provider)
+          setPiiOn(s.piiShieldEnabled !== false)
         })
         .catch(() => {})
     }
@@ -300,9 +312,7 @@ export function AiPanel({
   // user's "fast model" pick (withFastModel falls back to the main model).
   const suggestTransportRef = useRef<ReturnType<typeof createElectronTransport> | null>(null)
   if (!suggestTransportRef.current)
-    suggestTransportRef.current = createElectronTransport(() =>
-      withFastModel(settingsRef.current!),
-    )
+    suggestTransportRef.current = createElectronTransport(() => withFastModel(settingsRef.current!))
   const suggested = useSuggestedQuestions((user, assistant, signal) => {
     if (!settingsRef.current) return Promise.resolve([])
     return generateSuggestedQuestions({
@@ -423,7 +433,7 @@ export function AiPanel({
     }
     loopRef.current = new AgentLoop({
       transport: createElectronTransport(() => settingsRef.current!),
-      skill: createPdfSkill(deps),
+      skill: withPiiTokenGuard(createPdfSkill(deps), () => piiShieldMayApply(settingsRef.current)),
       systemSuffix: () => aiLangDirective(langRef.current),
       events: {
         onText: (text) => {
@@ -485,8 +495,7 @@ export function AiPanel({
           }))
           setBusy(false)
           // follow-up suggestions are generated off the fast model after the reply lands
-          if (!cancelled && final)
-            suggested.refresh(lastInstructionRef.current, final)
+          if (!cancelled && final) suggested.refresh(lastInstructionRef.current, final)
           if (runMutatedRef.current) {
             runMutatedRef.current = false
             onRunDoneRef.current?.()
@@ -553,6 +562,7 @@ export function AiPanel({
       try {
         settingsRef.current = await window.pdfApi.getAiSettings()
         setAiProvider(settingsRef.current.provider)
+        setPiiOn(settingsRef.current.piiShieldEnabled !== false)
         await loop.run(instruction)
       } catch (err) {
         patchLast({
@@ -679,6 +689,7 @@ export function AiPanel({
               onClick={() => {
                 stop()
                 loopRef.current?.reset()
+                suggestTransportRef.current?.resetSession?.()
                 suggested.clear()
                 setBusy(false)
                 setChat([])
@@ -868,6 +879,8 @@ export function AiPanel({
           stopLabel={t('aiStop')}
           iconOnly
           privacyBadge={aiProvider === 'vega'}
+          shieldOn={piiOn}
+          onShieldToggle={togglePiiShield}
           textareaRef={inputRef}
           onChange={setPrompt}
           onSend={() => send(prompt)}

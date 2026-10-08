@@ -63,6 +63,24 @@ export function vegaSessionHeaders(
     : {}
 }
 
+/**
+ * True when the effective chat provider routes through api.vega.chat, whose
+ * PII shield may mask personal data as #TYPE_N# tokens in what the model sees
+ * (the shield engages per key name / guard URL server-side, so this is a
+ * "may apply" predicate — enabling the token-aware prompt and the unresolved-
+ * token guard under it is harmless when no masking actually happens).
+ */
+export function piiShieldMayApply(
+  settings: Pick<AiSettings, 'provider' | 'providers' | 'piiShieldEnabled'> | null | undefined,
+): boolean {
+  // user opt-out: the gateway gets X-Vega-Pii: off at the fetch layer, so the
+  // token guard and its prompt note would only chase tokens nobody generates
+  if (settings?.piiShieldEnabled === false) return false
+  if (!settings) return false
+  const { provider, config } = requestProvider(settings)
+  return provider === 'vega' || isVegaGatewayUrl(config?.baseUrl)
+}
+
 /** DeepSeek V4.1 Flash under the Genspark pool spelling, shared by the direct provider so the two lists read alike */
 export const DEEPSEEK_V41_FLASH = 'deep-seek-v4.1-flash'
 
@@ -499,6 +517,7 @@ export function defaultAiSettings(
     provider: 'vega',
     providers,
     vegaToolsEnabled: true,
+    piiShieldEnabled: true,
     media: defaultAiMediaSettings(),
     search: defaultAiSearchSettings(),
   }
@@ -658,9 +677,7 @@ function trimConfigs(providers: Record<string, unknown>): AiSettings['providers'
       ...config,
       apiKey: str(config.apiKey),
       model: str(config.model),
-      ...(config.fastModel !== undefined
-        ? { fastModel: str(config.fastModel) || undefined }
-        : {}),
+      ...(config.fastModel !== undefined ? { fastModel: str(config.fastModel) || undefined } : {}),
       ...(config.baseUrl !== undefined ? { baseUrl: str(config.baseUrl) } : {}),
       ...(config.cliPath !== undefined ? { cliPath: str(config.cliPath) } : {}),
     }
@@ -726,7 +743,9 @@ export function resolveAiSettings(stored: unknown, defaults: AiSettings): AiSett
       }
     }
     const tools = settings.vegaToolsEnabled ?? settings.gskToolsEnabled
-    return tools === undefined ? defaults : { ...defaults, vegaToolsEnabled: tools }
+    const pii = settings.piiShieldEnabled
+    const base = tools === undefined ? defaults : { ...defaults, vegaToolsEnabled: tools }
+    return pii === undefined ? base : { ...base, piiShieldEnabled: pii }
   }
   return {
     provider: settings.provider ?? defaults.provider,
@@ -738,6 +757,7 @@ export function resolveAiSettings(stored: unknown, defaults: AiSettings): AiSett
     // legacy files carry gskToolsEnabled — the same opt-out now applies to VEGA
     vegaToolsEnabled:
       settings.vegaToolsEnabled ?? settings.gskToolsEnabled ?? defaults.vegaToolsEnabled ?? true,
+    piiShieldEnabled: settings.piiShieldEnabled ?? defaults.piiShieldEnabled ?? true,
     media: resolveAiMediaSettings(settings.media ?? defaults.media),
     search: resolveAiSearchSettings(settings.search ?? defaults.search),
     // clamped on read: a hand-edited settings file with an absurd cap must not be

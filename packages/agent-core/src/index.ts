@@ -13,6 +13,12 @@ export type {
 } from './types'
 export { composeSkills } from './skill'
 export type { AgentSkill, ExecutedToolCall } from './skill'
+export {
+  PII_SHIELD_NOTE,
+  PII_TOKEN_PATTERN,
+  unresolvedPiiToken,
+  withPiiTokenGuard,
+} from './pii-token-guard'
 export { HUMANIZER_RULES, HUMANIZER_RULES_BRIEF } from './humanizer'
 export {
   AgentLoop,

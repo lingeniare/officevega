@@ -7,6 +7,7 @@ import {
   composeSkills,
   generateSuggestedQuestions,
   streamText,
+  withPiiTokenGuard,
   type AgentImage,
 } from '@genoffice/agent-core'
 import {
@@ -14,6 +15,7 @@ import {
   isOutputCapRejection,
   maxOutputTokensOf,
   mediaAnalysisAvailable,
+  piiShieldMayApply,
   withFastModel,
 } from '@genoffice/ai-provider/browser'
 import type { AiSettings, AttachmentAddResult, AttachmentMeta } from '../../shared/ipc'
@@ -307,6 +309,8 @@ interface AiPanelProps {
   editor: Editor
   blocks: Block[]
   settings: AiSettings
+  /** persists a settings change made in-panel (the composer PII-shield toggle) */
+  onSettingsChange?: (next: AiSettings) => void
   /** the document has no text yet — the empty-state copy offers drafting instead of editing */
   docEmpty?: boolean
   /** fallback numbering ids for documents created from the blank template */
@@ -346,6 +350,7 @@ export function AiPanel({
   editor,
   blocks,
   settings,
+  onSettingsChange,
   docEmpty,
   numIdFallback,
   preset,
@@ -708,9 +713,7 @@ export function AiPanel({
   // user's "fast model" pick (withFastModel falls back to the main model).
   const suggestTransportRef = useRef<ReturnType<typeof createElectronTransport> | null>(null)
   if (!suggestTransportRef.current)
-    suggestTransportRef.current = createElectronTransport(() =>
-      withFastModel(settingsRef.current),
-    )
+    suggestTransportRef.current = createElectronTransport(() => withFastModel(settingsRef.current))
   const suggested = useSuggestedQuestions((user, assistant, signal) =>
     generateSuggestedQuestions({
       transport: suggestTransportRef.current!,
@@ -749,8 +752,7 @@ export function AiPanel({
     }
     // long-form writes request the output floor — the 32K settings default
     // truncates long documents into the keep/discard card
-    const docBudget = () =>
-      Math.max(DOC_OUTPUT_TOKEN_FLOOR, maxOutputTokensOf(settingsRef.current))
+    const docBudget = () => Math.max(DOC_OUTPUT_TOKEN_FLOOR, maxOutputTokensOf(settingsRef.current))
     const attempt = (maxTokens?: number) =>
       streamText({
         transport: transportRef.current!,
@@ -771,9 +773,7 @@ export function AiPanel({
     if (outcome.status === 'empty' && !signal?.aborted) {
       // A rejected raised cap (unparseable ceiling) retries at the settings
       // default; a plain empty stream retries at the same budget.
-      outcome = isOutputCapRejection(outcome.error)
-        ? await attempt()
-        : await attempt(docBudget())
+      outcome = isOutputCapRejection(outcome.error) ? await attempt() : await attempt(docBudget())
     }
     closed = true
     if (chipTimer !== null) clearTimeout(chipTimer)
@@ -837,24 +837,28 @@ export function AiPanel({
       formatUserMessage: (instruction, context) =>
         context ? `${instruction}\n\n<doc-context>\n${context}\n</doc-context>` : instruction,
       staleContextPattern: /\n\n<doc-context>\n[\s\S]*?<\/doc-context>/g,
-      skill: composeSkills('docs+files', '', [
-        createDocsSkill(
-          () => editorRef.current,
-          numIds,
-          () => (trackChangesRef.current ? { author: AI_REVISION_AUTHOR } : undefined),
-          () => commentsAccessRef.current,
-          () => hfAccessRef.current,
-          () => imageGenerationAvailable(settingsRef.current, gskLoggedInRef.current),
-          () => ({
-            write: (spec, onProgress, signal) => runDocWriterRef.current(spec, onProgress, signal),
-          }),
-          () => pageSetupAccessRef.current,
-          () => docExtrasRef.current,
-          () => notesAccessRef.current,
-          () => mediaAnalysisAvailable(settingsRef.current, gskLoggedInRef.current),
-        ),
-        createFilesSkill(availableAttachments),
-      ]),
+      skill: withPiiTokenGuard(
+        composeSkills('docs+files', '', [
+          createDocsSkill(
+            () => editorRef.current,
+            numIds,
+            () => (trackChangesRef.current ? { author: AI_REVISION_AUTHOR } : undefined),
+            () => commentsAccessRef.current,
+            () => hfAccessRef.current,
+            () => imageGenerationAvailable(settingsRef.current, gskLoggedInRef.current),
+            () => ({
+              write: (spec, onProgress, signal) =>
+                runDocWriterRef.current(spec, onProgress, signal),
+            }),
+            () => pageSetupAccessRef.current,
+            () => docExtrasRef.current,
+            () => notesAccessRef.current,
+            () => mediaAnalysisAvailable(settingsRef.current, gskLoggedInRef.current),
+          ),
+          createFilesSkill(availableAttachments),
+        ]),
+        () => piiShieldMayApply(settingsRef.current),
+      ),
       captureSnapshot: () => editorRef.current.getJSON() as PmNode,
       events: {
         onText: (text) => {
@@ -936,8 +940,7 @@ export function AiPanel({
           }))
           setBusy(false)
           // follow-up suggestions are generated off the fast model after the reply lands
-          if (!cancelled && finalText)
-            suggested.refresh(lastInstructionRef.current, finalText)
+          if (!cancelled && finalText) suggested.refresh(lastInstructionRef.current, finalText)
           // App listens: a run that generated content into a never-saved document
           // triggers a silent first save with a content-derived file name
           window.dispatchEvent(new Event('ai-docs-run-done'))
@@ -1217,6 +1220,8 @@ export function AiPanel({
     }
     abandonWriter()
     loopRef.current?.reset()
+    // the suggestions transport owns no loop, so its session id is reset here
+    suggestTransportRef.current?.resetSession?.()
     suggested.clear()
     setBusy(false)
     setChat([])
@@ -1748,6 +1753,16 @@ export function AiPanel({
           stopLabel={t('aiStop')}
           iconOnly
           privacyBadge={settings.provider === 'vega'}
+          shieldOn={settings.piiShieldEnabled !== false}
+          onShieldToggle={
+            onSettingsChange
+              ? () =>
+                  onSettingsChange({
+                    ...settings,
+                    piiShieldEnabled: settings.piiShieldEnabled === false,
+                  })
+              : undefined
+          }
           textareaRef={inputRef}
           onChange={setInput}
           onSend={run}

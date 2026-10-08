@@ -26,6 +26,8 @@ export function AiComposer({
   header,
   footerStart,
   privacyBadge = false,
+  shieldOn = true,
+  onShieldToggle,
   iconOnly = false,
   sendIconEnabled,
   sendIconDisabled,
@@ -52,6 +54,10 @@ export function AiComposer({
   readonly footerStart?: React.ReactNode
   /** show the VEGA PII-shield badge in the footer (only while the effective provider is VEGA) */
   readonly privacyBadge?: boolean | undefined
+  /** shield state the badge shows (the `piiShieldEnabled` AI setting; default on) */
+  readonly shieldOn?: boolean | undefined
+  /** badge click — persists the flipped `piiShieldEnabled` (absent handler: a static indicator) */
+  readonly onShieldToggle?: (() => void) | undefined
   /** compact variant: no hint text, icon-only enter/stop button (Genspark composer style) */
   readonly iconOnly?: boolean | undefined
   /** custom art for the icon-only send button; falls back to IconArrowUp */
@@ -121,7 +127,7 @@ export function AiComposer({
         }}
       />
       <div className="ai-input-footer">
-        {privacyBadge && <AiShieldBadge />}
+        {privacyBadge && <AiShieldBadge active={shieldOn} onToggle={() => onShieldToggle?.()} />}
         {footerStart}
         {!iconOnly && (
           <span className="ai-input-hint" title={busy ? undefined : hintIdleTitle}>

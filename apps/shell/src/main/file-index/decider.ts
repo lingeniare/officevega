@@ -12,6 +12,8 @@
  * routing envelope with provider pinning.
  */
 
+import { vegaPiiHeaders } from '@genoffice/ai-provider'
+
 export type DecisionEndpoint =
   'vega' | 'openrouter' | 'direct' | 'perplexity' | 'cloudflare' | 'kev' | 'rizzo' | 'custom'
 
@@ -229,8 +231,7 @@ export function validate(raw: unknown, count: number, endpoint: DecisionEndpoint
     if (r.model !== ENDPOINTS.direct.model) throw new Error('model-mismatch')
   } else if (endpoint === 'openrouter' || endpoint === 'vega') {
     const pattern = endpoint === 'vega' ? VEGA_MODEL_PATTERN : OPENROUTER_MODEL_PATTERN
-    if (typeof r.model !== 'string' || !pattern.test(r.model))
-      throw new Error('model-mismatch')
+    if (typeof r.model !== 'string' || !pattern.test(r.model)) throw new Error('model-mismatch')
     if (Array.isArray(r.warnings) && r.warnings.length) throw new Error('provider-warning')
   }
   const answers = obj(r.answers)
@@ -268,6 +269,7 @@ export const fetchTransport: JevTransport = async (url, body, key, signal) => {
   if (key.trim()) headers.Authorization = `Bearer ${key.trim()}`
   // the VEGA gateway's PII shield keys its token dictionary by session; one request = one session
   if (new URL(url).hostname === 'api.vega.chat') headers['X-Vega-Session'] = crypto.randomUUID()
+  Object.assign(headers, vegaPiiHeaders(url))
   const res = await fetch(url, {
     method: 'POST',
     headers,

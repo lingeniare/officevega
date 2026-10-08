@@ -589,6 +589,10 @@ register({
       throw new GuidedError('op "findReplace" needs "find": a non-empty search string.')
     }
     if (typeof op.replace !== 'string') throw new GuidedError('op "findReplace" needs "replace".')
+    if (op.find === op.replace)
+      throw new GuidedError(
+        'op "findReplace": find and replace are identical — nothing would change.',
+      )
   },
   apply(op, ctx): OpRecord {
     const { count } = replaceAllInDeck(ctx.opened.deck, String(op.find), String(op.replace), {

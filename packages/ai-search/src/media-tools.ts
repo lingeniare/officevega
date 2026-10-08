@@ -15,6 +15,7 @@ import {
   defaultAiSettings,
   generateImageWithProvider,
   resolveAiSettings,
+  setPiiShieldEnabled,
   type AiSettings,
   type LegacyAiSettings,
   type MediaBlob,
@@ -109,7 +110,11 @@ export function readAiSettingsFile(path: string): AiSettings {
   } catch {
     /* corrupted settings file: defaults */
   }
-  return resolveAiSettings(stored, defaultAiSettings())
+  const settings = resolveAiSettings(stored, defaultAiSettings())
+  // tools run off this file instead of an IPC round-trip, so it is also the
+  // point that syncs the PII-shield opt-out into the aiFetch header state
+  setPiiShieldEnabled(settings.piiShieldEnabled !== false)
+  return settings
 }
 
 type Gate = { error: string } | null

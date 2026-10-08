@@ -661,6 +661,18 @@ describe('AgentLoop', () => {
     expect(transport.requests).toHaveLength(1)
   })
 
+  it('reset() tells the transport to drop its retained session id', async () => {
+    const transport = scriptedTransport([(cb) => cb.onDone()])
+    const resetSession = vi.fn()
+    transport.resetSession = resetSession
+    const loop = new AgentLoop({ transport, skill: makeSkill() })
+    loop.run('x')
+    await flush()
+    expect(resetSession).not.toHaveBeenCalled()
+    loop.reset()
+    expect(resetSession).toHaveBeenCalledTimes(1)
+  })
+
   it('executeTool receives a live (non-aborted) signal during normal runs', async () => {
     const transport = scriptedTransport([
       (cb) => {

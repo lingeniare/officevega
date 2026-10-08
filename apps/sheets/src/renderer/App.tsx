@@ -125,10 +125,12 @@ import {
   COMPLETED_VIA_TOOLS_TEXT,
   composeSkills,
   generateSuggestedQuestions,
+  withPiiTokenGuard,
   type AgentImage,
 } from '@genoffice/agent-core'
 import {
   imageGenerationAvailable,
+  piiShieldMayApply,
   withFastModel,
   type AiSettings,
 } from '@genoffice/ai-provider/browser'
@@ -964,6 +966,14 @@ export function App({
   const [aiSettings, setAiSettingsState] = useState<AiSettings | null>(null)
   const aiSettingsRef = useRef<AiSettings | null>(null)
   aiSettingsRef.current = aiSettings
+  /** composer shield toggle — persists piiShieldEnabled like a Settings-modal flip */
+  const toggleAiPiiShield = () => {
+    const cur = aiSettingsRef.current
+    if (!cur) return
+    const next = { ...cur, piiShieldEnabled: cur.piiShieldEnabled === false }
+    setAiSettingsState(next)
+    void window.desktopApi.setAiSettings(next).catch(() => {})
+  }
 
   /** gsk login state for the cloud-tools gate (refreshed on mount, window focus and auth pushes) */
   const gskLoggedInRef = useRef(false)
@@ -1333,24 +1343,29 @@ export function App({
       // so the loop can strip stale snapshots from older user messages — each
       // turn otherwise re-sends every snapshot the session ever attached.
       formatUserMessage: (instruction, context) =>
-        context ? `${instruction}\n\n<workbook-context>\n${context}\n</workbook-context>` : instruction,
+        context
+          ? `${instruction}\n\n<workbook-context>\n${context}\n</workbook-context>`
+          : instruction,
       staleContextPattern: /\n\n<workbook-context>\n[\s\S]*?<\/workbook-context>/g,
-      skill: composeSkills('sheets+files', '', [
-        createWorkbookSkill(sheetsSkillDeps()),
-        createFilesSkill(availableAttachments),
-        createMergeSkill({
-          getAttachments: availableAttachments,
-          mergePaths: (paths) => {
-            const runtime = univerRef.current
-            if (!runtime) throw new Error(t('appMergeWorkbooksFailed'))
-            return mergeAttachedWorkbooks({ runtime, lazyWorkbookRef, setMessage }, paths)
-          },
-        }),
-        createSearchSkill(),
-        createImageSkill(() =>
-          imageGenerationAvailable(aiSettingsRef.current, gskLoggedInRef.current),
-        ),
-      ]),
+      skill: withPiiTokenGuard(
+        composeSkills('sheets+files', '', [
+          createWorkbookSkill(sheetsSkillDeps()),
+          createFilesSkill(availableAttachments),
+          createMergeSkill({
+            getAttachments: availableAttachments,
+            mergePaths: (paths) => {
+              const runtime = univerRef.current
+              if (!runtime) throw new Error(t('appMergeWorkbooksFailed'))
+              return mergeAttachedWorkbooks({ runtime, lazyWorkbookRef, setMessage }, paths)
+            },
+          }),
+          createSearchSkill(),
+          createImageSkill(() =>
+            imageGenerationAvailable(aiSettingsRef.current, gskLoggedInRef.current),
+          ),
+        ]),
+        () => piiShieldMayApply(aiSettingsRef.current),
+      ),
       events: {
         onText: (text) => {
           if (text) runLastTextRef.current = text
@@ -1463,8 +1478,7 @@ export function App({
           }
           setAiRunScope(undefined)
           // follow-up suggestions are generated off the fast model after the reply lands
-          if (!cancelled && finalText)
-            suggested.refresh(lastAiInstructionRef.current, finalText)
+          if (!cancelled && finalText) suggested.refresh(lastAiInstructionRef.current, finalText)
           void autoSaveCompletedAiRun().finally(() => setAiBusy(false))
         },
         onError: (error) => {
@@ -1624,6 +1638,7 @@ export function App({
 
   function handleNewChat(): void {
     agentLoopRef.current?.reset()
+    suggestTransportRef.current?.resetSession?.()
     suggested.clear()
     setAiRunScope(undefined)
     setAiBusy(false)
@@ -4790,6 +4805,8 @@ export function App({
         onPromptChange={setPrompt}
         onSend={handleSend}
         privacyBadge={aiSettings?.provider === 'vega'}
+        shieldOn={aiSettings?.piiShieldEnabled !== false}
+        onShieldToggle={toggleAiPiiShield}
         suggestedQuestions={suggested.questions}
         onSuggestionPick={(q) => {
           suggested.clear()

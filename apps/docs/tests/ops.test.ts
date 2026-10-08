@@ -308,6 +308,16 @@ describe('findReplace', () => {
     expect(boldChild.marks.some((m) => m.type.name === 'bold')).toBe(true)
   })
 
+  it('rejects an identical find and replace instead of reporting a fake success', () => {
+    const editor = createEditor(fixtureDoc())
+    const outcome = executeOps(editor, [
+      { op: 'findReplace', find: 'GenSpark', replace: 'GenSpark' },
+    ])
+    expect(outcome.ok).toBe(false)
+    expect(outcome.error).toContain('find and replace are identical')
+    expect(editor.state.doc.child(1).textContent).toContain('GenSpark')
+  })
+
   it('matchCase: sensitive by default, insensitive when false', () => {
     const editor = createEditor(fixtureDoc())
     const strict = executeOps(editor, [{ op: 'findReplace', find: 'genspark', replace: 'X' }])

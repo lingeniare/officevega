@@ -40,16 +40,45 @@ export function isVegaGatewayUrl(url: string | undefined): boolean {
 }
 
 /**
+ * Process-wide state of the "PII anonymization" settings switch: on by
+ * default, so a process that never touches settings keeps masking. The main
+ * process applies it wherever settings arrive (ai:get-settings /
+ * ai:set-settings / ai:stream / ai:chat) and from the settings file reads in
+ * ai-search's readAiSettingsFile.
+ */
+let piiShieldEnabled = true
+
+export function setPiiShieldEnabled(enabled: boolean): void {
+  piiShieldEnabled = enabled
+}
+
+/**
+ * The PII-shield opt-out for requests to the VEGA gateway: `X-Vega-Pii: off`
+ * while the setting is off, empty object when it is on or the URL is not the
+ * gateway. Callers that bypass aiFetch (ai-search's own fetch, the file-index
+ * reranker) merge it into their header records the same way.
+ */
+export function vegaPiiHeaders(url: string | undefined): Record<string, string> {
+  return !piiShieldEnabled && isVegaGatewayUrl(url) ? { 'X-Vega-Pii': 'off' } : {}
+}
+
+/**
  * Every request to the VEGA gateway carries X-Vega-Session (its PII shield
  * keeps a token dictionary per session). Chat protocols set a stable per-chat
  * id; anything that reaches here without one (media, one-shot calls) is its
- * own session.
+ * own session. While the shield is switched off, X-Vega-Pii: off rides along
+ * so the gateway skips masking entirely.
  */
 function withVegaSession(url: string, init: RequestInit): RequestInit {
   if (!isVegaGatewayUrl(url)) return init
-  const headers = init.headers as Record<string, string>
-  if (Object.keys(headers).some((n) => n.toLowerCase() === 'x-vega-session')) return init
-  return { ...init, headers: { ...headers, 'X-Vega-Session': crypto.randomUUID() } }
+  const headers: Record<string, string> = {
+    ...(init.headers as Record<string, string>),
+    ...vegaPiiHeaders(url),
+  }
+  if (!Object.keys(headers).some((n) => n.toLowerCase() === 'x-vega-session')) {
+    headers['X-Vega-Session'] = crypto.randomUUID()
+  }
+  return { ...init, headers }
 }
 
 /** protocols pass plain header records; keep that shape so callers can read the request back */

@@ -2242,6 +2242,7 @@ export const aiSettingsInputSchema = z
     providers: z.record(z.string(), aiProviderConfigSchema),
     vegaToolsEnabled: z.boolean().optional(),
     gskToolsEnabled: z.boolean().optional(),
+    piiShieldEnabled: z.boolean().optional(),
     media: z
       .object({
         imageProvider: z.string().min(1).optional(),

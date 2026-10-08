@@ -1,12 +1,18 @@
 import { aiPanelWidthAtPointer } from '@genoffice/ui'
 import { useEffect, useRef, useState } from 'react'
 import type { PointerEvent as ReactPointerEvent, ReactElement } from 'react'
-import { AgentLoop, composeSkills, generateSuggestedQuestions } from '@genoffice/agent-core'
+import {
+  AgentLoop,
+  composeSkills,
+  generateSuggestedQuestions,
+  withPiiTokenGuard,
+} from '@genoffice/agent-core'
 import type { AgentImage } from '@genoffice/agent-core'
 import type { AiProviderId, AiSettings } from '@genoffice/ai-provider'
 import {
   isOutputCapRejection,
   maxOutputTokensOf,
+  piiShieldMayApply,
   withFastModel,
 } from '@genoffice/ai-provider/browser'
 import { ATTACHMENT_IMAGE_EXTS } from '../../shared/ipc'
@@ -508,6 +514,16 @@ export function AiPanel({
   const settingsRef = useRef<AiSettings | null>(null)
   /** the effective provider from the last settings read — drives the composer's VEGA privacy badge */
   const [aiProvider, setAiProvider] = useState<AiProviderId | null>(null)
+  /** piiShieldEnabled from the last settings read — the badge shows and flips it */
+  const [piiOn, setPiiOn] = useState(true)
+  const togglePiiShield = () => {
+    const cur = settingsRef.current
+    if (!cur) return
+    const next = { ...cur, piiShieldEnabled: cur.piiShieldEnabled === false }
+    settingsRef.current = next
+    setPiiOn(next.piiShieldEnabled === true)
+    void window.htmlApi?.setAiSettings?.(next).catch(() => {})
+  }
   const langRef = useRef(lang)
   langRef.current = lang
   const depsRef = useRef(deps)
@@ -645,9 +661,7 @@ export function AiPanel({
       // The provider rejected the raised cap and its ceiling didn't parse, so
       // the main-process fallback couldn't rescue it: retry at the settings
       // default. A plain empty stream retries at the same budget.
-      outcome = isOutputCapRejection(outcome.error)
-        ? await attempt()
-        : await attempt(pageBudget())
+      outcome = isOutputCapRejection(outcome.error) ? await attempt() : await attempt(pageBudget())
     }
     // nothing may touch the mirror after this point, or the overlay would outlive the landed page
     closed = true
@@ -706,48 +720,51 @@ export function AiPanel({
   if (!loopRef.current) {
     loopRef.current = new AgentLoop<DocSnapshot>({
       transport: transportRef.current,
-      skill: composeSkills('html+search', '', [
-        createDocumentSkill({
-          getText: () => depsRef.current.access.getText(),
-          getVersion: () => depsRef.current.access.getVersion(),
-          getMap: () => depsRef.current.access.getMap(),
-          getLastManualVersion: () => depsRef.current.access.getLastManualVersion(),
-          getFilePath: () => depsRef.current.access.getFilePath(),
-          getSelectedSid: () =>
-            queueRunRef.current ? null : depsRef.current.access.getSelectedSid(),
-          applyOps: (ops, label) => depsRef.current.access.applyOps(ops, label),
-          replaceAll: (html, label) => depsRef.current.access.replaceAll(html, label),
-          askClarification: (questions) =>
-            new Promise((resolve) => {
-              clarifyResolverRef.current = resolve
-              setActiveClarify(questions)
-            }),
-          confirmBrief: (brief) =>
-            new Promise((resolve) => {
-              briefResolverRef.current = resolve
-              setActiveBrief(brief)
-            }),
-          writePage: (spec, signal) => runPageWriterRef.current(spec, signal),
-          planBrief: (spec, signal) => runBriefWriterRef.current(spec, signal),
-          getInstruction: () => runInstructionRef.current,
-          resolveAttachmentSrc: (ref) => resolveAttachmentSrc(ref),
-          listAttachmentNames: () => availableAttachments().map((a) => a.name),
-          // research runs while the questionnaire card waits on the user
-          webSearch: (query, maxResults) => window.htmlApi.webSearch(query, maxResults),
-          generateImage: (op) => window.htmlApi.aiGenerateImage(op),
-          searchImages: async (query, maxResults) => {
-            const r = await window.htmlApi.imageSearch(query, maxResults)
-            return (r.images ?? []).map((i) => i.imageUrl).filter((u) => /^https?:/i.test(u))
-          },
-          persistImage: (url) => persistImage(url),
-        }),
-        createSearchSkill(),
-        createFilesSkill(availableAttachments),
-        createIntentSkill(
-          () => intentRef.current,
-          () => isDocEmpty(depsRef.current.access.getText()),
-        ),
-      ]),
+      skill: withPiiTokenGuard(
+        composeSkills('html+search', '', [
+          createDocumentSkill({
+            getText: () => depsRef.current.access.getText(),
+            getVersion: () => depsRef.current.access.getVersion(),
+            getMap: () => depsRef.current.access.getMap(),
+            getLastManualVersion: () => depsRef.current.access.getLastManualVersion(),
+            getFilePath: () => depsRef.current.access.getFilePath(),
+            getSelectedSid: () =>
+              queueRunRef.current ? null : depsRef.current.access.getSelectedSid(),
+            applyOps: (ops, label) => depsRef.current.access.applyOps(ops, label),
+            replaceAll: (html, label) => depsRef.current.access.replaceAll(html, label),
+            askClarification: (questions) =>
+              new Promise((resolve) => {
+                clarifyResolverRef.current = resolve
+                setActiveClarify(questions)
+              }),
+            confirmBrief: (brief) =>
+              new Promise((resolve) => {
+                briefResolverRef.current = resolve
+                setActiveBrief(brief)
+              }),
+            writePage: (spec, signal) => runPageWriterRef.current(spec, signal),
+            planBrief: (spec, signal) => runBriefWriterRef.current(spec, signal),
+            getInstruction: () => runInstructionRef.current,
+            resolveAttachmentSrc: (ref) => resolveAttachmentSrc(ref),
+            listAttachmentNames: () => availableAttachments().map((a) => a.name),
+            // research runs while the questionnaire card waits on the user
+            webSearch: (query, maxResults) => window.htmlApi.webSearch(query, maxResults),
+            generateImage: (op) => window.htmlApi.aiGenerateImage(op),
+            searchImages: async (query, maxResults) => {
+              const r = await window.htmlApi.imageSearch(query, maxResults)
+              return (r.images ?? []).map((i) => i.imageUrl).filter((u) => /^https?:/i.test(u))
+            },
+            persistImage: (url) => persistImage(url),
+          }),
+          createSearchSkill(),
+          createFilesSkill(availableAttachments),
+          createIntentSkill(
+            () => intentRef.current,
+            () => isDocEmpty(depsRef.current.access.getText()),
+          ),
+        ]),
+        () => piiShieldMayApply(settingsRef.current),
+      ),
       captureSnapshot: () => depsRef.current.getSnapshot(),
       systemSuffix: () => aiLangDirective(langRef.current),
       events: {
@@ -873,6 +890,7 @@ export function AiPanel({
           if (!mountedRef.current || !s) return
           settingsRef.current = s
           setAiProvider(s.provider)
+          setPiiOn(s.piiShieldEnabled !== false)
         })
         .catch(() => {})
     }
@@ -1023,6 +1041,7 @@ export function AiPanel({
       try {
         settingsRef.current = await window.htmlApi.getAiSettings()
         setAiProvider(settingsRef.current.provider)
+        setPiiOn(settingsRef.current.piiShieldEnabled !== false)
         const images = sentAtts.length > 0 ? await collectImages(sentAtts) : []
         if (!mountedRef.current || seq !== sendSeqRef.current) return
         await loop.run(instruction, images.length > 0 ? images : undefined)
@@ -1228,6 +1247,7 @@ export function AiPanel({
               onClick={() => {
                 stop()
                 loopRef.current?.reset()
+                suggestTransportRef.current?.resetSession?.()
                 suggested.clear()
                 setBusy(false)
                 setChat([])
@@ -1606,6 +1626,8 @@ export function AiPanel({
           stopLabel={t('aiStop')}
           iconOnly
           privacyBadge={aiProvider === 'vega'}
+          shieldOn={piiOn}
+          onShieldToggle={togglePiiShield}
           textareaRef={inputRef}
           onChange={setPrompt}
           onSend={() => send(prompt)}

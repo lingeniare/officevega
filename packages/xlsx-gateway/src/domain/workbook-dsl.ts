@@ -1719,6 +1719,8 @@ export function expandToPrimitiveOps(
       }
       expanded.push(operation)
     } else if (operation.op === 'find_replace') {
+      if (operation.find === operation.replace)
+        throw new Error('find_replace: find and replace are identical — nothing would change.')
       const bounds = parseRange(operation.range)
       const cells = rangeCellCount(bounds)
       if (cells > MAX_RANGE_OP_CELLS) {

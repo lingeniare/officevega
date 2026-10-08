@@ -3485,6 +3485,10 @@ export function App() {
                 applyDeck={applyDeck}
                 fitWidthPx={FIT_WIDTH}
                 settings={aiSettings}
+                onSettingsChange={(next) => {
+                  setAiSettings(next)
+                  void window.slidesApi.setAiSettings(next).catch(() => {})
+                }}
                 preset={aiPreset}
                 open={showAi}
                 onExpand={toggleAi}

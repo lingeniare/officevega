@@ -64,6 +64,26 @@ describe('sanitizeAiSettings', () => {
     }
   })
 
+  it('carries the boolean opt-out switches through to disk', () => {
+    const sanitized = sanitizeAiSettings({
+      ...baseSettings(),
+      vegaToolsEnabled: false,
+      piiShieldEnabled: false,
+    })
+    expect(sanitized!.vegaToolsEnabled).toBe(false)
+    expect(sanitized!.piiShieldEnabled).toBe(false)
+  })
+
+  it('drops the opt-out switches when they are not booleans', () => {
+    const sanitized = sanitizeAiSettings({
+      ...baseSettings(),
+      vegaToolsEnabled: 'no',
+      piiShieldEnabled: 0,
+    })
+    expect(sanitized!.vegaToolsEnabled).toBeUndefined()
+    expect(sanitized!.piiShieldEnabled).toBeUndefined()
+  })
+
   it('drops unknown provider entries and unknown top-level fields', () => {
     const sanitized = sanitizeAiSettings({
       ...baseSettings(),

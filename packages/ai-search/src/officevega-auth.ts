@@ -24,6 +24,7 @@ import {
 import { createRequire } from 'node:module'
 import { homedir } from 'node:os'
 import { dirname, join } from 'node:path'
+import { vegaPiiHeaders } from '@genoffice/ai-provider'
 import { asRecord, gskProxyUrl } from './shared'
 
 /** Progress event for the browser login flow. */
@@ -244,7 +245,9 @@ export function loadOfficeVegaAuth(): OfficeVegaAuth | null {
  */
 let authChangedListener: ((auth: OfficeVegaAuth | null) => void) | null = null
 
-export function setOfficeVegaAuthListener(fn: ((auth: OfficeVegaAuth | null) => void) | null): void {
+export function setOfficeVegaAuthListener(
+  fn: ((auth: OfficeVegaAuth | null) => void) | null,
+): void {
   authChangedListener = fn
 }
 
@@ -429,7 +432,7 @@ async function runDeviceLogin(
 ): Promise<void> {
   const { resp, json } = await httpJson(`${authBase()}/device/code`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...vegaPiiHeaders(authBase()) },
     body: JSON.stringify({ client_id: CLIENT_ID }),
     signal,
   })
@@ -462,7 +465,7 @@ async function runDeviceLogin(
     await sleep(pollMs, signal)
     const { resp: pollResp, json: poll } = await httpJson(`${authBase()}/device/token`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...vegaPiiHeaders(authBase()) },
       body: JSON.stringify({
         grant_type: 'urn:ietf:params:oauth:grant-type:device_code',
         device_code: deviceCode,
@@ -489,7 +492,11 @@ async function runDeviceLogin(
   // the session token is only needed to mint the key — dropped right after
   const { resp: keyResp, json: created } = await httpJson(keysUrl(), {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${accessToken}` },
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
+      ...vegaPiiHeaders(keysUrl()),
+    },
     body: JSON.stringify({ name: KEY_NAME }),
     signal,
   })
@@ -579,7 +586,7 @@ export async function officeVegaLogout(): Promise<void> {
     try {
       await resolveFetch()(`${keysUrl()}/revoke`, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${auth.apiKey}` },
+        headers: { Authorization: `Bearer ${auth.apiKey}`, ...vegaPiiHeaders(keysUrl()) },
         signal: controller.signal,
       })
     } catch {
@@ -618,7 +625,7 @@ export async function vegaAccountInfo(): Promise<VegaAccountInfo | null> {
   if (!key) return null
   try {
     const resp = await resolveFetch()(`${apiBase()}/account`, {
-      headers: { Authorization: `Bearer ${key}` },
+      headers: { Authorization: `Bearer ${key}`, ...vegaPiiHeaders(apiBase()) },
       signal: AbortSignal.timeout(HTTP_TIMEOUT_MS),
     })
     if (!resp.ok) return null

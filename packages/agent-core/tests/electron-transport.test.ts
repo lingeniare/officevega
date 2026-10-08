@@ -225,6 +225,29 @@ describe('createIpcTransport', () => {
     expect(cb.onDone).not.toHaveBeenCalled()
   })
 
+  it('keeps a stable sessionId across turns and rotates it on resetSession', () => {
+    const payloads: IpcStreamStart<FakeSettings>[] = []
+    const transport = createIpcTransport<FakeSettings>({
+      onStream: () => () => undefined,
+      start: (request) => {
+        payloads.push(request)
+      },
+      cancel: () => undefined,
+      getSettings: () => ({ provider: 'genspark' }),
+      unknownErrorText: () => 'e',
+      timeoutErrorText: () => 'e',
+    })
+    const cb = { onDelta: () => {}, onToolCall: () => {}, onDone: () => {}, onError: () => {} }
+    transport.stream({ system: 's', messages: [], tools: [] }, cb)
+    transport.stream({ system: 's', messages: [], tools: [] }, cb)
+    expect(payloads[0]!.sessionId).toBeTruthy()
+    expect(payloads[1]!.sessionId).toBe(payloads[0]!.sessionId)
+
+    transport.resetSession?.()
+    transport.stream({ system: 's', messages: [], tools: [] }, cb)
+    expect(payloads[2]!.sessionId).not.toBe(payloads[0]!.sessionId)
+  })
+
   it('forwards a positive maxTokens into the start payload and drops invalid values', () => {
     const payloads: IpcStreamStart<FakeSettings>[] = []
     const transport = createIpcTransport<FakeSettings>({

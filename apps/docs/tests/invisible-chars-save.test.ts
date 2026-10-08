@@ -76,15 +76,15 @@ describe('invisible characters survive saving', () => {
 
   it('round-trips NBSP/ZWSP/NNBSP and hyphen elements through a regenerated paragraph', async () => {
     const { parsed, editor, host } = await openDoc(BODY_PARA)
-    const outcome = executeOps(editor, [{ op: 'findReplace', find: INVISIBLE, replace: INVISIBLE }])
+    const outcome = executeOps(editor, [
+      { op: 'findReplace', find: INVISIBLE, replace: `${INVISIBLE}!` },
+    ])
     expect(outcome.ok).toBe(true)
     expect(outcome.results[0]).toMatchObject({ matched: 1 })
     const plan = pmDocToSavePlan(editor.getJSON() as PmNode, parsed.blocks)
     const xml = await documentXml(await saveDocx(parsed, plan.saveBlocks))
     expect(xml).toContain(INVISIBLE)
-    expect(xml).toMatch(
-      />e<\/w:t><w:noBreakHyphen\/><w:t[^>]*>f<\/w:t><w:softHyphen\/><w:t[^>]*>g</,
-    )
+    expect(xml).toMatch(/e<\/w:t><w:noBreakHyphen\/><w:t[^>]*>f<\/w:t><w:softHyphen\/><w:t[^>]*>g</)
     expect(xml).not.toMatch(/[‑­]/)
     editor.destroy()
     host.remove()

@@ -27,6 +27,7 @@ import {
   resolveAiSettings,
   sanitizeAiSettings,
   setAiUserAgent,
+  setPiiShieldEnabled,
   setRescueFetch,
   warmAiConnections,
   streamForProvider,
@@ -138,6 +139,7 @@ export function registerAiIpc(): void {
   ipcMain.handle('ai:get-settings', (): AiSettings => {
     const stored = readJson<Partial<AiSettings> & LegacyAiSettings>(AI_SETTINGS_PATH(), {})
     const settings = resolveAiSettings(stored, defaultAiSettings())
+    setPiiShieldEnabled(settings.piiShieldEnabled !== false)
     // `provider` reports the effective route; storedProvider keeps the user's
     // pick visible so a settings save can't clobber a half-configured selection
     const storedProvider = settings.provider
@@ -175,6 +177,7 @@ export function registerAiIpc(): void {
       console.warn('[ai] rejected invalid ai:set-settings payload')
       return
     }
+    setPiiShieldEnabled(sanitized.piiShieldEnabled !== false)
     writeJsonAtomic(AI_SETTINGS_PATH(), sanitized)
   })
 
@@ -195,6 +198,7 @@ export function registerAiIpc(): void {
       } satisfies AiStreamChunk)
       return
     }
+    setPiiShieldEnabled(settings.piiShieldEnabled !== false)
     const { requestId, system, messages } = request
     const tools = request.tools ?? []
     const maxTokens = request.maxTokens ?? maxOutputTokensOf(settings)

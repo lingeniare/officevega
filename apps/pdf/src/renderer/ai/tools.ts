@@ -2087,6 +2087,19 @@ async function editText(deps: PdfAiDeps, input: Record<string, unknown>): Promis
       summary,
     )
   }
+  if (
+    newText === located.oldText &&
+    newColor === undefined &&
+    newFontSize === undefined &&
+    newFont === undefined &&
+    input.bold === undefined &&
+    input.italic === undefined
+  ) {
+    return err(
+      'new_text is identical to the existing text and no style change was given — nothing would change',
+      summary,
+    )
+  }
   const reason = await deps.editText({
     pageIndex: r.origIdx,
     rect: located.rect,
@@ -2191,6 +2204,20 @@ async function editBlock(deps: PdfAiDeps, input: Record<string, unknown>): Promi
   const align = input.align === undefined ? block.align : String(input.align)
   if (align !== 'left' && align !== 'center' && align !== 'right') {
     return err('align must be one of left, center, right', summary)
+  }
+  if (
+    newText === joinBlockLines(block.lines.map((l) => l.text)) &&
+    newColor === undefined &&
+    newFontSize === undefined &&
+    newFont === undefined &&
+    input.bold === undefined &&
+    input.italic === undefined &&
+    align === block.align
+  ) {
+    return err(
+      'new_text reproduces the existing paragraph and no style or alignment change was given — nothing would change',
+      summary,
+    )
   }
   const lines = newText
     .split('\n')

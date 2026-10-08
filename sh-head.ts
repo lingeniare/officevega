@@ -308,8 +308,7 @@ export const strings = {
     setAiMediaAccountHint: '生图与图片/视频解析使用 VEGA 账号登录。',
     setAiImageModel: '生图模型',
     setAiAnalysisModel: '解析模型',
-    setAiSearchAccountHint:
-      '网页与图片搜索使用 VEGA 账号登录；未登录或关闭云工具时改用免费来源。',
+    setAiSearchAccountHint: '网页与图片搜索使用 VEGA 账号登录；未登录或关闭云工具时改用免费来源。',
     setAiSearchSerperHint: 'Serper 用你的 key 同时提供网页与图片搜索。',
     setAiSearchTavilyHint: 'Tavily 用你的 key 提供网页搜索；图片搜索改用免费来源。',
     setAiSearchParallelHint:
@@ -358,7 +357,8 @@ export const strings = {
     onbSubtitle1: '第一个开源的 AI 原生 Office 套件',
     onbBody1: '创建文档、制作表格、生成演示、审阅 PDF。AI 深度融入每个环节。',
     onbTitle2: '这只是一个开始',
-    onbBody2: 'OfficeVega 目前处于 alpha 阶段。欢迎在 GitHub 上为我们点星并分享反馈，一起塑造它的未来。',
+    onbBody2:
+      'OfficeVega 目前处于 alpha 阶段。欢迎在 GitHub 上为我们点星并分享反馈，一起塑造它的未来。',
     onbCredits: '活跃贡献者可获得 **1,000+ VEGA 积分**',
     onbJoinGitHub: '在 GitHub 上点星',
     onbSkip: '跳过',
@@ -737,7 +737,8 @@ export const strings = {
     onbBody1:
       'Create docs, build sheets, make slides, and review PDFs. AI is built into every step.',
     onbTitle2: 'This is just the beginning',
-    onbBody2: 'OfficeVega is still in alpha. Star us on GitHub and share feedback to help shape what comes next.',
+    onbBody2:
+      'OfficeVega is still in alpha. Star us on GitHub and share feedback to help shape what comes next.',
     onbCredits: 'Active contributors get **1,000+ VEGA credits**',
     onbJoinGitHub: 'Star on GitHub',
     onbSkip: 'Skip',
@@ -1129,7 +1130,8 @@ export const strings = {
     onbBody1:
       '文書の作成、表計算、プレゼン作成、PDF のレビュー。あらゆるステップに AI が組み込まれています。',
     onbTitle2: 'これはまだ始まりにすぎません',
-    onbBody2: 'OfficeVega はまだアルファ版です。GitHub でスターを付けてフィードバックを共有し、今後の開発を一緒に形作りましょう。',
+    onbBody2:
+      'OfficeVega はまだアルファ版です。GitHub でスターを付けてフィードバックを共有し、今後の開発を一緒に形作りましょう。',
     onbCredits: 'アクティブな貢献者への特典 **1,000+ VEGA クレジット**',
     onbJoinGitHub: 'GitHub でスター',
     onbSkip: 'スキップ',
@@ -1513,7 +1515,8 @@ export const strings = {
     onbBody1:
       '문서 작성, 스프레드시트 제작, 프레젠테이션 생성, PDF 검토. 모든 단계에 AI가 녹아 있습니다.',
     onbTitle2: '이제 시작일 뿐입니다',
-    onbBody2: 'OfficeVega는 아직 알파 단계입니다. GitHub에서 별표를 눌러 피드백을 공유하고 앞으로의 방향을 함께 만들어 가세요.',
+    onbBody2:
+      'OfficeVega는 아직 알파 단계입니다. GitHub에서 별표를 눌러 피드백을 공유하고 앞으로의 방향을 함께 만들어 가세요.',
     onbCredits: '활발한 기여자를 위한 혜택 **1,000+ VEGA 크레딧**',
     onbJoinGitHub: 'GitHub에서 별표',
     onbSkip: '건너뛰기',
@@ -1912,7 +1915,8 @@ export const strings = {
     onbBody1:
       'Créez des documents, des feuilles de calcul et des présentations, et relisez des PDF. L’IA est intégrée à chaque étape.',
     onbTitle2: 'Ce n’est qu’un début',
-    onbBody2: 'OfficeVega est encore en alpha. Donnez-nous une étoile sur GitHub et partagez vos retours pour façonner la suite.',
+    onbBody2:
+      'OfficeVega est encore en alpha. Donnez-nous une étoile sur GitHub et partagez vos retours pour façonner la suite.',
     onbCredits: 'Les contributeurs actifs reçoivent **1 000+ crédits VEGA**',
     onbJoinGitHub: 'Étoile sur GitHub',
     onbSkip: 'Passer',
@@ -2252,8 +2256,7 @@ export const strings = {
     setAiMaxTokensDesc:
       'Ausgabe-Budget pro Durchlauf. Denk-Modelle verbrauchen es beim Reasoning; ist es erschöpft, kommt eine leere Antwort zurück — dann diesen Wert erhöhen.',
     setSecAiMedia: 'KI-Medien & Suche',
-    setAiMediaAccountHint:
-      'Bildgenerierung und Bild-/Videoanalyse nutzen deine VEGA-Anmeldung.',
+    setAiMediaAccountHint: 'Bildgenerierung und Bild-/Videoanalyse nutzen deine VEGA-Anmeldung.',
     setAiImageModel: 'Bildmodell',
     setAiAnalysisModel: 'Analysemodell',
     setAiSearchAccountHint:
@@ -2313,7 +2316,8 @@ export const strings = {
     onbBody1:
       'Dokumente erstellen, Tabellen bauen, Präsentationen gestalten und PDFs prüfen. KI ist in jedem Schritt integriert.',
     onbTitle2: 'Das ist erst der Anfang',
-    onbBody2: 'OfficeVega ist noch in der Alpha-Phase. Geben Sie uns einen Stern auf GitHub und teilen Sie Feedback, um die Zukunft mitzugestalten.',
+    onbBody2:
+      'OfficeVega ist noch in der Alpha-Phase. Geben Sie uns einen Stern auf GitHub und teilen Sie Feedback, um die Zukunft mitzugestalten.',
     onbCredits: 'Aktive Mitwirkende erhalten **1.000+ VEGA-Guthaben**',
     onbJoinGitHub: 'Stern auf GitHub',
     onbSkip: 'Überspringen',
@@ -2615,7 +2619,8 @@ export const strings = {
     intgSaveZipTitle: 'Guardar skill',
     intgSavedTo: 'Guardado en {path}',
     intgCopied: 'Copiado',
-    intgCliEphemeral: 'Arrastra primero OfficeVega a Aplicaciones y luego usa la línea de comandos.',
+    intgCliEphemeral:
+      'Arrastra primero OfficeVega a Aplicaciones y luego usa la línea de comandos.',
     intgCopyPath: 'Copiar ruta',
     intgCliNeedsUpdate:
       'Este skill necesita la línea de comandos {v} o superior; actualiza OfficeVega.',
@@ -2711,7 +2716,8 @@ export const strings = {
     onbBody1:
       'Crea documentos, hojas de cálculo y presentaciones, y revisa PDF. La IA está integrada en cada paso.',
     onbTitle2: 'Esto es solo el comienzo',
-    onbBody2: 'OfficeVega aún está en alfa. Danos una estrella en GitHub y comparte tus comentarios para ayudar a dar forma a lo que viene.',
+    onbBody2:
+      'OfficeVega aún está en alfa. Danos una estrella en GitHub y comparte tus comentarios para ayudar a dar forma a lo que viene.',
     onbCredits: 'Los colaboradores activos reciben **1.000+ créditos de VEGA**',
     onbJoinGitHub: 'Estrella en GitHub',
     onbSkip: 'Omitir',
@@ -3033,8 +3039,7 @@ export const strings = {
     setAiMaxTokensDesc:
       'งบผลลัพธ์ต่อหนึ่งรอบ โมเดลแบบใช้เหตุผลจะใช้ส่วนหนึ่งไปกับการคิด หากงบหมด คำตอบอาจกลับมาว่างเปล่า ให้เพิ่มค่านี้',
     setSecAiMedia: 'สื่อ AI และการค้นหา',
-    setAiMediaAccountHint:
-      'การสร้างภาพและการวิเคราะห์ภาพ/วิดีโอใช้การลงชื่อเข้าใช้ VEGA ของคุณ',
+    setAiMediaAccountHint: 'การสร้างภาพและการวิเคราะห์ภาพ/วิดีโอใช้การลงชื่อเข้าใช้ VEGA ของคุณ',
     setAiImageModel: 'โมเดลสร้างภาพ',
     setAiAnalysisModel: 'โมเดลวิเคราะห์',
     setAiSearchAccountHint:
@@ -3092,7 +3097,8 @@ export const strings = {
     onbSubtitle1: 'ชุดโปรแกรมออฟฟิศ AI-native โอเพนซอร์สตัวแรก',
     onbBody1: 'สร้างเอกสาร ทำสเปรดชีต สร้างงานนำเสนอ และตรวจทาน PDF ทุกขั้นตอนมี AI ในตัว',
     onbTitle2: 'นี่เป็นเพียงจุดเริ่มต้น',
-    onbBody2: 'OfficeVega ยังอยู่ในช่วงอัลฟ่า กดดาวให้เราบน GitHub และแบ่งปันความคิดเห็นเพื่อร่วมกำหนดทิศทางต่อไป',
+    onbBody2:
+      'OfficeVega ยังอยู่ในช่วงอัลฟ่า กดดาวให้เราบน GitHub และแบ่งปันความคิดเห็นเพื่อร่วมกำหนดทิศทางต่อไป',
     onbCredits: 'ผู้มีส่วนร่วมอย่างต่อเนื่องจะได้รับ **เครดิต VEGA กว่า 1,000**',
     onbJoinGitHub: 'กดดาวบน GitHub',
     onbSkip: 'ข้าม',
@@ -3355,7 +3361,8 @@ export const strings = {
     intgMcpHttpDesc:
       'Berjalan di dalam OfficeVega; asisten terhubung lewat URL dan Anda bisa melihat dokumen dibangun langkah demi langkah di editor Word. OfficeVega harus tetap terbuka; untuk saat ini hanya dokumen Word.',
     intgMcpHttpAdvanced: 'Lanjutan: alamat lain dan log',
-    intgMcpTryNote: 'Asisten memanggil OfficeVega melalui MCP; Anda tidak pernah mengetik perintah.',
+    intgMcpTryNote:
+      'Asisten memanggil OfficeVega melalui MCP; Anda tidak pernah mengetik perintah.',
     intgMcpClaudeTitle: 'Claude Code',
     intgMcpClaudeDesc: 'Jalankan ini sekali di terminal:',
     intgMcpOtherTitle: 'Cursor, Claude Desktop, atau asisten lain yang mendukung MCP',
@@ -3485,7 +3492,8 @@ export const strings = {
     onbBody1:
       'Buat dokumen, susun spreadsheet, rancang presentasi, dan tinjau PDF. AI hadir di setiap langkah.',
     onbTitle2: 'Ini baru permulaan',
-    onbBody2: 'OfficeVega masih dalam tahap alpha. Beri kami bintang di GitHub dan bagikan masukan untuk ikut menentukan arah ke depan.',
+    onbBody2:
+      'OfficeVega masih dalam tahap alpha. Beri kami bintang di GitHub dan bagikan masukan untuk ikut menentukan arah ke depan.',
     onbCredits: 'Kontributor aktif mendapat **1.000+ kredit VEGA**',
     onbJoinGitHub: 'Bintang di GitHub',
     onbSkip: 'Lewati',
@@ -3654,7 +3662,7 @@ export const strings = {
       'Включено по умолчанию и отключается в Настройки → Общие. Используется Google Analytics 4; Google получает публичный IP и транспортные метаданные, но не содержимое документов и не имена файлов.',
     setSearchRerank: 'Переранжирование Jev',
     setSearchRerankDesc:
-      'Отправляет фрагменты 20 лучших локальных результатов модели Jev от TypeSafe и переупорядочивает их по релевантности. По умолчанию выключено; при включении фрагменты покидают это устройство.',
+      'Отправляет фрагменты 20 лучших локальных результатов Decision модели и переупорядочивает их по релевантности. По умолчанию выключено; при включении фрагменты покидают это устройство.',
     setSearchRerankEndpoint: 'Конечная точка Jev',
     searchRerankedBy: 'Переупорядочено по релевантности с помощью Jev',
     searchJevSettings: 'Семантическая сортировка Jev',
@@ -3791,8 +3799,7 @@ export const strings = {
     setAiModelId: 'Модель',
     setAiModelSearch: 'Поиск моделей…',
     setAiFastModelId: 'Быстрая модель',
-    setAiFastModelDesc:
-      'Используется для фоновых задач.',
+    setAiFastModelDesc: 'Используется для фоновых задач.',
     setAiFastModelSame: 'Как основная модель',
     setAiApiKey: 'API-ключ',
     setAiKeyHint: 'Хранится только на этом устройстве.',
@@ -3836,15 +3843,12 @@ export const strings = {
     setAiVegaTools: 'Облачные инструменты ВЕГА',
     setAiVegaToolsDesc:
       'Когда провайдером выбран ВЕГА - веб-поиск, генерация изображений и анализ медиа идут через него.',
-    setAiVegaNote:
-      'Ключ выдается автоматически, при авторизации на ВЕГА',
+    setAiVegaNote: 'Ключ выдается автоматически, при авторизации на ВЕГА',
     setAiVegaSigninDesc:
       'Один вход — ключ API выдаётся автоматически и надёжно хранится на этом устройстве.',
     setAiVegaSignedIn: 'Вход выполнен — ключ управляется автоматически',
-    setAiMediaVegaHint:
-      'Работает через ВЕГА провайдер.',
-    setAiSearchVegaHint:
-      'Веб-поиск идёт через ВЕГА с ключом от вашего входа.',
+    setAiMediaVegaHint: 'Работает через ВЕГА провайдер.',
+    setAiSearchVegaHint: 'Веб-поиск идёт через ВЕГА с ключом от вашего входа.',
     setGithub: 'Открытый код',
     starOnGitHub: 'Поставить звезду на GitHub',
     starPromptTitle: 'Нравится «Офис ВЕГА»?',
@@ -3876,7 +3880,8 @@ export const strings = {
     onbBody1:
       'Создавайте документы, таблицы и презентации, работайте с PDF. ИИ встроен в каждый шаг.',
     onbTitle2: 'Это только начало',
-    onbBody2: '«Офис ВЕГА» пока в альфа-версии. Поставьте нам звезду на GitHub и делитесь отзывами — помогите сформировать дальнейшее развитие.',
+    onbBody2:
+      '«Офис ВЕГА» пока в альфа-версии. Поставьте нам звезду на GitHub и делитесь отзывами — помогите сформировать дальнейшее развитие.',
     onbCredits: 'Активные участники получают **1000+ кредитов ВЕГА**',
     onbJoinGitHub: 'Звезда на GitHub',
     onbSkip: 'Пропустить',
@@ -4258,7 +4263,8 @@ export const strings = {
     onbBody1:
       'أنشئ المستندات وجداول البيانات والعروض التقديمية وراجع ملفات PDF. الذكاء الاصطناعي مدمج في كل خطوة.',
     onbTitle2: 'هذه مجرد البداية',
-    onbBody2: 'لا يزال OfficeVega في مرحلة ألفا. امنحنا نجمة على GitHub وشارك ملاحظاتك للمساهمة في تشكيل المستقبل.',
+    onbBody2:
+      'لا يزال OfficeVega في مرحلة ألفا. امنحنا نجمة على GitHub وشارك ملاحظاتك للمساهمة في تشكيل المستقبل.',
     onbCredits: 'يحصل المساهمون النشطون على **+1,000 من أرصدة VEGA**',
     onbJoinGitHub: 'نجمة على GitHub',
     onbSkip: 'تخطي',
@@ -4646,7 +4652,8 @@ export const strings = {
     onbBody1:
       'Crie documentos, planilhas e apresentações e revise PDFs. A IA está integrada em cada etapa.',
     onbTitle2: 'Isto é só o começo',
-    onbBody2: 'O OfficeVega ainda está em alfa. Dê-nos uma estrela no GitHub e compartilhe feedback para ajudar a moldar o que vem a seguir.',
+    onbBody2:
+      'O OfficeVega ainda está em alfa. Dê-nos uma estrela no GitHub e compartilhe feedback para ajudar a moldar o que vem a seguir.',
     onbCredits: 'Contribuidores ativos recebem **1.000+ créditos VEGA**',
     onbJoinGitHub: 'Estrela no GitHub',
     onbSkip: 'Pular',
@@ -5033,7 +5040,8 @@ export const strings = {
     onbBody1:
       'Crea documenti, fogli di calcolo e presentazioni e rivedi i PDF. L’IA è integrata in ogni passaggio.',
     onbTitle2: 'Questo è solo l’inizio',
-    onbBody2: 'OfficeVega è ancora in alpha. Mettici una stella su GitHub e condividi il tuo feedback per contribuire a plasmare il futuro.',
+    onbBody2:
+      'OfficeVega è ancora in alpha. Mettici una stella su GitHub e condividi il tuo feedback per contribuire a plasmare il futuro.',
     onbCredits: 'I collaboratori attivi ricevono **1.000+ crediti VEGA**',
     onbJoinGitHub: 'Stella su GitHub',
     onbSkip: 'Salta',
@@ -5273,7 +5281,8 @@ export const strings = {
     intgExample1: 'Zamień ~/Downloads/report.md na dokument Word',
     intgExample2: 'Zrób prezentację z 6 slajdów o naszych wynikach za III kwartał',
     intgExample3: 'Przekonwertuj budget.xlsx do PDF i otwórz w OfficeVega',
-    intgStep2Note: 'Asystent sam uruchamia wiersz poleceń officevega; nigdy nie musisz go wpisywać.',
+    intgStep2Note:
+      'Asystent sam uruchamia wiersz poleceń officevega; nigdy nie musisz go wpisywać.',
     intgCliPartTitle: 'CLI · wiersz poleceń + skill',
     intgCliPartDesc:
       'Dla asystentów, które potrafią uruchamiać polecenia terminala (Claude Code, Codex, Cursor i inne). Po zainstalowaniu skilla asystent sam wywołuje wiersz poleceń officevega, aby tworzyć, konwertować, czytać i edytować pliki; nigdy nie wpisujesz polecenia.',
@@ -5324,7 +5333,8 @@ export const strings = {
     intgCopied: 'Skopiowano',
     intgCliEphemeral: 'Najpierw przenieś OfficeVega do Aplikacji, potem użyj wiersza poleceń.',
     intgCopyPath: 'Kopiuj ścieżkę',
-    intgCliNeedsUpdate: 'Ten skill wymaga wiersza poleceń {v} lub nowszego; zaktualizuj OfficeVega.',
+    intgCliNeedsUpdate:
+      'Ten skill wymaga wiersza poleceń {v} lub nowszego; zaktualizuj OfficeVega.',
     intgLoading: 'Sprawdzanie…',
     intgUpdateDue: 'Dostępna aktualizacja skilla',
     setSecAiModel: 'Model AI',
@@ -5414,7 +5424,8 @@ export const strings = {
     onbBody1:
       'Twórz dokumenty, arkusze i prezentacje oraz przeglądaj pliki PDF. AI jest wbudowana w każdy etap.',
     onbTitle2: 'To dopiero początek',
-    onbBody2: 'OfficeVega jest wciąż w fazie alfa. Zostaw nam gwiazdkę na GitHubie i podziel się opinią, aby współtworzyć jego przyszłość.',
+    onbBody2:
+      'OfficeVega jest wciąż w fazie alfa. Zostaw nam gwiazdkę na GitHubie i podziel się opinią, aby współtworzyć jego przyszłość.',
     onbCredits: 'Aktywni współtwórcy otrzymują **1000+ kredytów VEGA**',
     onbJoinGitHub: 'Gwiazdka na GitHubie',
     onbSkip: 'Pomiń',
@@ -5774,7 +5785,8 @@ export const strings = {
     onbBody1:
       'Vytvářejte dokumenty, tabulky a prezentace a kontrolujte PDF. AI je součástí každého kroku.',
     onbTitle2: 'Toto je jen začátek',
-    onbBody2: 'OfficeVega je stále ve fázi alfa. Dejte nám hvězdičku na GitHubu a podělte se o zpětnou vazbu, abyste pomohli utvářet, co přijde dál.',
+    onbBody2:
+      'OfficeVega je stále ve fázi alfa. Dejte nám hvězdičku na GitHubu a podělte se o zpětnou vazbu, abyste pomohli utvářet, co přijde dál.',
     onbCredits: 'Aktivní přispěvatelé získají **1 000+ kreditů VEGA**',
     onbJoinGitHub: 'Hvězdička na GitHubu',
     onbSkip: 'Přeskočit',
@@ -6177,7 +6189,8 @@ export const strings = {
     onbBody1:
       'Maak documenten, bouw spreadsheets, maak presentaties en beoordeel PDF-bestanden. AI zit in elke stap ingebouwd.',
     onbTitle2: 'Dit is nog maar het begin',
-    onbBody2: 'OfficeVega is nog in alfa. Geef ons een ster op GitHub en deel feedback om mee te bepalen wat er komt.',
+    onbBody2:
+      'OfficeVega is nog in alfa. Geef ons een ster op GitHub en deel feedback om mee te bepalen wat er komt.',
     onbCredits: 'Actieve bijdragers krijgen **1.000+ VEGA-credits**',
     onbJoinGitHub: 'Ster op GitHub',
     onbSkip: 'Overslaan',
@@ -6564,7 +6577,8 @@ export const strings = {
     onbBody1:
       'Cipta dokumen, bina hamparan, hasilkan persembahan dan semak PDF. AI tersedia pada setiap langkah.',
     onbTitle2: 'Ini baru permulaan',
-    onbBody2: 'OfficeVega masih dalam peringkat alfa. Berikan kami bintang di GitHub dan kongsi maklum balas untuk membentuk masa depannya.',
+    onbBody2:
+      'OfficeVega masih dalam peringkat alfa. Berikan kami bintang di GitHub dan kongsi maklum balas untuk membentuk masa depannya.',
     onbCredits: 'Penyumbang aktif menerima **1,000+ kredit VEGA**',
     onbJoinGitHub: 'Bintang di GitHub',
     onbSkip: 'Langkau',
@@ -7313,7 +7327,8 @@ export const strings = {
     onbBody1:
       'दस्तावेज़ बनाएँ, स्प्रेडशीट तैयार करें, प्रस्तुतियाँ बनाएँ और PDF की समीक्षा करें। AI हर चरण में शामिल है।',
     onbTitle2: 'यह तो बस शुरुआत है',
-    onbBody2: 'OfficeVega अभी अल्फ़ा में है। GitHub पर हमें स्टार दें और फ़ीडबैक साझा करें ताकि आगे की दिशा तय करने में मदद मिले।',
+    onbBody2:
+      'OfficeVega अभी अल्फ़ा में है। GitHub पर हमें स्टार दें और फ़ीडबैक साझा करें ताकि आगे की दिशा तय करने में मदद मिले।',
     onbCredits: 'सक्रिय योगदानकर्ताओं के लिए **1,000+ VEGA क्रेडिट**',
     onbJoinGitHub: 'GitHub पर स्टार',
     onbSkip: 'छोड़ें',
@@ -7674,7 +7689,8 @@ export const strings = {
     onbSubtitle1: '第一個開源的 AI 原生 Office 套件',
     onbBody1: '建立文件、製作試算表、產生簡報、審閱 PDF。AI 深度融入每個環節。',
     onbTitle2: '這只是一個開始',
-    onbBody2: 'OfficeVega 目前仍在 alpha 階段。歡迎在 GitHub 上為我們點星並分享回饋，一起打造它的未來。',
+    onbBody2:
+      'OfficeVega 目前仍在 alpha 階段。歡迎在 GitHub 上為我們點星並分享回饋，一起打造它的未來。',
     onbCredits: '活躍貢獻者可獲得 **1,000+ VEGA 點數**',
     onbJoinGitHub: '在 GitHub 上點星',
     onbSkip: '略過',
@@ -7692,7 +7708,8 @@ export const strings = {
     fileSortRecent: 'So‘nggi',
     fileSortOldest: 'Eng eski',
     navTrash: 'Chiqindi qutisi',
-    navTrashTip: 'O‘chirilgan fayllar tizim Chiqindi qutisiga yuboriladi va u yerdan tiklanishi mumkin',
+    navTrashTip:
+      'O‘chirilgan fayllar tizim Chiqindi qutisiga yuboriladi va u yerdan tiklanishi mumkin',
     secQuickStart: 'Tezkor boshlash',
     secRecent: 'So‘nggi',
     secStarred: 'Yulduzcha qo‘yilgan',
@@ -7733,7 +7750,8 @@ export const strings = {
     selectFile: '{name} ni tanlash',
     removeFromList: 'Ro‘yxatdan olib tashlash',
     missingFileTitle: 'Fayl mavjud emas',
-    missingFileBody: '“{name}” topilmadi. U uzilgan diskda bo‘lishi yoki ko‘chirilgan yoxud o‘chirilgan bo‘lishi mumkin. Uni ro‘yxatdan olib tashlaysizmi?',
+    missingFileBody:
+      '“{name}” topilmadi. U uzilgan diskda bo‘lishi yoki ko‘chirilgan yoxud o‘chirilgan bo‘lishi mumkin. Uni ro‘yxatdan olib tashlaysizmi?',
     deleteFiles: 'Fayllarni o‘chirish',
     cancel: 'Bekor qilish',
     star: 'Yulduz',
@@ -7745,7 +7763,8 @@ export const strings = {
     rename: 'Qayta nomlash',
     duplicate: 'Nusxalash',
     renameFailed: 'Qayta nomlash amalga oshmadi',
-    emptyStarred: 'Yulduzcha qo‘yilgan fayllar yo‘q — qator ustiga olib boring va yulduzchani bosing.',
+    emptyStarred:
+      'Yulduzcha qo‘yilgan fayllar yo‘q — qator ustiga olib boring va yulduzchani bosing.',
     emptyRecent: 'So‘nggi fayllar yo‘q — boshlash uchun fayl yarating yoki oching.',
     emptyFiltered: 'Bu turdagi fayllar mavjud emas.',
     // Folders panel
@@ -7769,7 +7788,8 @@ export const strings = {
     folderMoreActions: '{name} uchun qo‘shimcha amallar',
     conflictTitle: 'Bunday nomdagi element allaqachon mavjud',
     conflictBodyOne: 'Maqsadli jildda "{name}" allaqachon mavjud. Nima qilmoqchisiz?',
-    conflictBodyMany: 'Maqsadli jildda bir xil nomdagi {n} ta element allaqachon mavjud. Nima qilmoqchisiz?',
+    conflictBodyMany:
+      'Maqsadli jildda bir xil nomdagi {n} ta element allaqachon mavjud. Nima qilmoqchisiz?',
     conflictKeepBoth: 'Ikkalasini ham saqlash',
     conflictReplace: 'Almashtirish',
     rootUnusable: 'Standart saqlash joyi mavjud emas, shuning uchun jildlarni ko‘rsatib bo‘lmaydi.',
@@ -7798,7 +7818,8 @@ export const strings = {
     loginOpenShort: 'Kirish sahifasini qo‘lda ochish',
     loginCopyUrl: 'Kirish havolasidan nusxa olish',
     loginCopied: 'Nusxalandi',
-    loginNetworkError: 'VEGA bilan bog‘lanib bo‘lmadi — tarmoq yoki proksi sozlamalarini tekshiring',
+    loginNetworkError:
+      'VEGA bilan bog‘lanib bo‘lmadi — tarmoq yoki proksi sozlamalarini tekshiring',
     loginExpired: 'Kirish muddati tugadi — qayta urinish uchun bosing',
     loginFailed: 'Kirish amalga oshmadi — qayta urinish uchun bosing',
     loginDeviceCode: 'Qurilma kodi',
@@ -7818,9 +7839,11 @@ export const strings = {
     themeSystem: 'Tizimga ergashish',
     saveLocation: 'Saqlash joyi',
     setAutoSave: 'Barcha hujjatlarni avtomatik saqlash',
-    setAutoSaveDesc: 'Har bir tahrirlovchida Avtomatik saqlashni sukut bo‘yicha yoqing. Uni bitta oyna uchun alohida o‘chirishingiz mumkin.',
+    setAutoSaveDesc:
+      'Har bir tahrirlovchida Avtomatik saqlashni sukut bo‘yicha yoqing. Uni bitta oyna uchun alohida o‘chirishingiz mumkin.',
     setAnalytics: 'Anonim foydalanish statistikalarini yuborish',
-    setAnalyticsDesc: 'Sukut bo‘yicha yoqilgan va Sozlamalar → Umumiy bo‘limida istalgan vaqtda o‘chirilishi mumkin. Google Analytics 4 dan foydalanadi; Google umumiy IP manzilingiz va uzatish metama’lumotlarini oladi, ammo hujjat mazmuni va fayl nomlari hech qachon to‘planmaydi.',
+    setAnalyticsDesc:
+      'Sukut bo‘yicha yoqilgan va Sozlamalar → Umumiy bo‘limida istalgan vaqtda o‘chirilishi mumkin. Google Analytics 4 dan foydalanadi; Google umumiy IP manzilingiz va uzatish metama’lumotlarini oladi, ammo hujjat mazmuni va fayl nomlari hech qachon to‘planmaydi.',
     setAiPanelSide: 'AI yon paneli joylashuvi',
     aiPanelSideLeft: 'Chap',
     aiPanelSideRight: 'O‘ng',
@@ -7830,12 +7853,14 @@ export const strings = {
     aiFontSizeXLarge: 'Juda katta',
     aiFontSizeCustom: 'Maxsus',
     setAiSpellcheck: 'AI chatida imloni tekshirish',
-    setAiSpellcheckDesc: 'AI chatidagi kiritish maydonida yozish paytida imlo xatolari bor so‘zlarning tagiga chizing.',
+    setAiSpellcheckDesc:
+      'AI chatidagi kiritish maydonida yozish paytida imlo xatolari bor so‘zlarning tagiga chizing.',
     settings: 'Sozlamalar',
     setSecAccount: 'Hisob',
     setSecGeneral: 'Umumiy',
     setMcp: 'Mahalliy MCP serveri',
-    setMcpDesc: 'Tashqi AI agentlariga (Claude Desktop, Cursor…) ishlayotgan ushbu ilova orqali Word hujjatlarini yaratishga ruxsat bering. Faqat Localhost.',
+    setMcpDesc:
+      'Tashqi AI agentlariga (Claude Desktop, Cursor…) ishlayotgan ushbu ilova orqali Word hujjatlarini yaratishga ruxsat bering. Faqat Localhost.',
     setMcpPort: 'Port',
     setMcpRunning: 'Ishlamoqda',
     setMcpStopped: 'Ishlamayapti',
@@ -7845,9 +7870,11 @@ export const strings = {
     setMcpCopy: 'Nusxalash',
     setMcpCopied: 'Nusxalandi',
     setMcpConfig: 'Mijoz konfiguratsiyasi namunasi',
-    setMcpConfigDesc: 'Buni mijozning MCP server konfiguratsiyasiga qo‘shing (Claude Desktop dasturidagi mcp.json, Cursor dasturidagi MCP sozlamalari va boshqalar).',
+    setMcpConfigDesc:
+      'Buni mijozning MCP server konfiguratsiyasiga qo‘shing (Claude Desktop dasturidagi mcp.json, Cursor dasturidagi MCP sozlamalari va boshqalar).',
     setMcpBg: 'Fonda yaratish',
-    setMcpBgDesc: 'Hujjatlarni UI\'ni ochmasdan to‘g‘ridan-to‘g‘ri yo‘lga yozish; o‘chirilganda yaratish ilovada ko‘rinadigan tarzda amalga oshiriladi.',
+    setMcpBgDesc:
+      "Hujjatlarni UI'ni ochmasdan to‘g‘ridan-to‘g‘ri yo‘lga yozish; o‘chirilganda yaratish ilovada ko‘rinadigan tarzda amalga oshiriladi.",
     setMcpLog: 'Jurnal yuritish',
     setMcpLogDesc: 'MCP serveri va vositalar faoliyatini mahalliy jurnal fayliga yozib borish',
     setMcpLogFile: 'Jurnal fayli',
@@ -7858,51 +7885,67 @@ export const strings = {
     setMcpLogEmpty: 'Hali jurnal yozuvlari yo‘q',
     setSecAbout: 'Haqida',
     setSecIntegrations: 'Integratsiyalar',
-    intgHeroTitle: 'OfficeVega\'dan AI yordamchingizda foydalaning',
-    intgHeroDesc: 'Ulangandan so‘ng Claude Code, Codex, Cursor, Claude Desktop va shunga o‘xshash yordamchilar siz uchun Word, Excel, PowerPoint, PDF va Markdown fayllarini yaratishi, o‘zgartirishi, o‘qishi va tahrirlashi mumkin. Hammasi shu kompyuterda ishlaydi; hech narsa yuklanmaydi.',
-    intgHeroStep1: 'Usulni tanlang: yordamchingiz terminal buyruqlarini bajara olsa — CLI, bajara olmasa — MCP',
+    intgHeroTitle: "OfficeVega'dan AI yordamchingizda foydalaning",
+    intgHeroDesc:
+      'Ulangandan so‘ng Claude Code, Codex, Cursor, Claude Desktop va shunga o‘xshash yordamchilar siz uchun Word, Excel, PowerPoint, PDF va Markdown fayllarini yaratishi, o‘zgartirishi, o‘qishi va tahrirlashi mumkin. Hammasi shu kompyuterda ishlaydi; hech narsa yuklanmaydi.',
+    intgHeroStep1:
+      'Usulni tanlang: yordamchingiz terminal buyruqlarini bajara olsa — CLI, bajara olmasa — MCP',
     intgHeroStep2: 'Quyidagi bo‘limga amal qiling; odatda bir marta bosish kifoya',
     intgHeroStep3: 'Yangi suhbatni boshlang va shunchaki so‘rang',
-    intgStep1Title: 'skill\'ni yordamchingizga o‘rnating',
-    intgStep1Desc: 'Faqat shu kompyuterda topilgan yordamchilar ro‘yxatga kiritilgan. Haqiqatan foydalanadigan yordamchingizga o‘rnating; barchasiga o‘rnatishingiz shart emas.',
-    intgStep1Update: 'OfficeVega yangilanishida yangiroq skill mavjud bo‘lsa, shu yordamchi yonida Update tugmasi paydo bo‘ladi.',
+    intgStep1Title: "skill'ni yordamchingizga o‘rnating",
+    intgStep1Desc:
+      'Faqat shu kompyuterda topilgan yordamchilar ro‘yxatga kiritilgan. Haqiqatan foydalanadigan yordamchingizga o‘rnating; barchasiga o‘rnatishingiz shart emas.',
+    intgStep1Update:
+      'OfficeVega yangilanishida yangiroq skill mavjud bo‘lsa, shu yordamchi yonida Update tugmasi paydo bo‘ladi.',
     intgSkillVersion: 'skill {v}',
     intgStateMissing: 'Skill o‘rnatilmagan',
     intgStateInstalled: 'Skill {v} o‘rnatildi · keyingi suhbatingizda foydalanishga tayyor',
     intgOtherToggle: 'Yordamchim ro‘yxatda yo‘q',
-    intgOtherDesc: 'Quyidagi uch usuldan istalgan birini tanlang. Ularning barchasi bir xil skill\'ni o‘rnatadi, shuning uchun bittadan ortig‘ini bajarish shart emas.',
+    intgOtherDesc:
+      "Quyidagi uch usuldan istalgan birini tanlang. Ularning barchasi bir xil skill'ni o‘rnatadi, shuning uchun bittadan ortig‘ini bajarish shart emas.",
     intgOtherFolderTitle: 'SKILL.md jildlarini o‘qiy oladigan istalgan yordamchi',
     intgOtherFolderDesc: 'Uning skills jildini tanlang — OfficeVega faylni shu yerga yozadi.',
     intgOtherZipTitle: 'Faylni yordamchiga bering',
-    intgOtherZipDesc: 'Skill\'ni zip fayli sifatida saqlang, so‘ng yordamchidan uni o‘rnatishni so‘rang.',
+    intgOtherZipDesc:
+      "Skill'ni zip fayli sifatida saqlang, so‘ng yordamchidan uni o‘rnatishni so‘rang.",
     intgOtherNpxTitle: 'skills buyrug‘i bilan (Node.js kerak)',
     intgOtherNpxDesc: 'Buni terminalda bajaring:',
     intgCopy: 'Nusxalash',
     intgStep2Title: 'Sinab ko‘rish',
-    intgStep2Desc: 'Yordamchingizda yangi suhbat oching va oddiy so‘zlar bilan, masalan, shunday so‘rang:',
-    intgStep2DescBefore: 'O‘rnatilgach, yordamchingizda yangi suhbat oching va oddiy so‘zlar bilan, masalan, shunday so‘rang:',
+    intgStep2Desc:
+      'Yordamchingizda yangi suhbat oching va oddiy so‘zlar bilan, masalan, shunday so‘rang:',
+    intgStep2DescBefore:
+      'O‘rnatilgach, yordamchingizda yangi suhbat oching va oddiy so‘zlar bilan, masalan, shunday so‘rang:',
     intgExample1: '~/Downloads/report.md faylini Word hujjatiga aylantir',
     intgExample2: 'Q3 natijalarimiz haqida 6 slaydli taqdimot yarating',
-    intgExample3: 'budget.xlsx faylini PDF\'ga aylantiring va OfficeVega\'da oching',
-    intgStep2Note: 'Yordamchi officevega buyruq satrini o‘zi ishga tushiradi; uni o‘zingiz kiritishingiz shart emas.',
+    intgExample3: "budget.xlsx faylini PDF'ga aylantiring va OfficeVega'da oching",
+    intgStep2Note:
+      'Yordamchi officevega buyruq satrini o‘zi ishga tushiradi; uni o‘zingiz kiritishingiz shart emas.',
     intgCliPartTitle: 'CLI · buyruq satri + skill',
-    intgCliPartDesc: 'Terminal buyruqlarini bajara oladigan yordamchilar uchun (Claude Code, Codex, Cursor va boshqalar). Skill o‘rnatilgach, yordamchi fayllarni yaratish, o‘zgartirish, o‘qish va tahrirlash uchun officevega buyruq satrini o‘zi chaqiradi; buyruqni o‘zingiz kiritmaysiz.',
+    intgCliPartDesc:
+      'Terminal buyruqlarini bajara oladigan yordamchilar uchun (Claude Code, Codex, Cursor va boshqalar). Skill o‘rnatilgach, yordamchi fayllarni yaratish, o‘zgartirish, o‘qish va tahrirlash uchun officevega buyruq satrini o‘zi chaqiradi; buyruqni o‘zingiz kiritmaysiz.',
     intgMcpPartTitle: 'MCP',
-    intgMcpPartDesc: 'MCP — AI yordamchilari tashqi vositalarni chaqirish uchun foydalanadigan umumiy protokol. Yordamchingiz buyruqlarni bajara olmasa (masalan, Claude Desktop) yoki u OfficeVega oynasini bevosita boshqarishini istasangiz, undan foydalaning. Quyidagi ikki usuldan birini tanlang.',
+    intgMcpPartDesc:
+      'MCP — AI yordamchilari tashqi vositalarni chaqirish uchun foydalanadigan umumiy protokol. Yordamchingiz buyruqlarni bajara olmasa (masalan, Claude Desktop) yoki u OfficeVega oynasini bevosita boshqarishini istasangiz, undan foydalaning. Quyidagi ikki usuldan birini tanlang.',
     intgMcpStdioTitle: 'Yordamchi tomonidan ishga tushiriladi (tavsiya etiladi)',
-    intgMcpStdioDesc: 'Yordamchi officevega mcp\'ni o‘zi ishga tushiradi: bu yerda hech narsani yoqish shart emas va OfficeVega ochiq bo‘lishi kerak emas. CLI bilan bir xil imkoniyatlar.',
+    intgMcpStdioDesc:
+      "Yordamchi officevega mcp'ni o‘zi ishga tushiradi: bu yerda hech narsani yoqish shart emas va OfficeVega ochiq bo‘lishi kerak emas. CLI bilan bir xil imkoniyatlar.",
     intgMcpHttpTitle: 'Mahalliy HTTP serveri',
-    intgMcpHttpDesc: 'OfficeVega ichida ishlaydi; yordamchi URL\'ga ulanadi va hujjat Word muharririda bosqichma-bosqich yaratilishini kuzatishingiz mumkin. OfficeVega ochiq turishi kerak; hozircha faqat Word hujjatlari.',
+    intgMcpHttpDesc:
+      "OfficeVega ichida ishlaydi; yordamchi URL'ga ulanadi va hujjat Word muharririda bosqichma-bosqich yaratilishini kuzatishingiz mumkin. OfficeVega ochiq turishi kerak; hozircha faqat Word hujjatlari.",
     intgMcpHttpAdvanced: 'Kengaytirilgan: boshqa endpointlar va jurnal',
-    intgMcpTryNote: 'Yordamchi OfficeVega\'ni MCP orqali chaqiradi; buyruqni o‘zingiz kiritmaysiz.',
+    intgMcpTryNote: "Yordamchi OfficeVega'ni MCP orqali chaqiradi; buyruqni o‘zingiz kiritmaysiz.",
     intgMcpClaudeTitle: 'Claude Code',
     intgMcpClaudeDesc: 'Buni terminalda bir marta bajaring:',
-    intgMcpOtherTitle: 'Cursor, Claude Desktop yoki MCP\'ni qo‘llab-quvvatlaydigan boshqa yordamchi',
-    intgMcpOtherDesc: 'Buni uning MCP serveri sozlamalariga qo‘shing (JSON fayliga yoki sozlamalaridagi "Add MCP server" bandi orqali):',
-    intgMcpNote: 'Skill va MCP\'ni yonma-yon sozlash mumkin; yordamchi ulardan birini tanlaydi. Ular aynan bir xil ishlarni bajaradi.',
+    intgMcpOtherTitle: "Cursor, Claude Desktop yoki MCP'ni qo‘llab-quvvatlaydigan boshqa yordamchi",
+    intgMcpOtherDesc:
+      'Buni uning MCP serveri sozlamalariga qo‘shing (JSON fayliga yoki sozlamalaridagi "Add MCP server" bandi orqali):',
+    intgMcpNote:
+      "Skill va MCP'ni yonma-yon sozlash mumkin; yordamchi ulardan birini tanlaydi. Ular aynan bir xil ishlarni bajaradi.",
     intgCliTitle: 'Kengaytirilgan: officevega buyruq satri',
     intgCliReady: 'officevega {v} · terminalingizda foydalanishga tayyor ({path})',
-    intgCliNotOnPath: 'officevega {v} · terminalingizning PATH\'ida yo‘q. Yordamchilar uni ~/.officevega/launcher orqali baribir topadi, shuning uchun skill ishlaydi. officevega\'ni o‘zingiz kiritish uchun buni bir marta bajaring:',
+    intgCliNotOnPath:
+      "officevega {v} · terminalingizning PATH'ida yo‘q. Yordamchilar uni ~/.officevega/launcher orqali baribir topadi, shuning uchun skill ishlaydi. officevega'ni o‘zingiz kiritish uchun buni bir marta bajaring:",
     intgCliLauncher: 'Launcher jildi',
     intgStateOutdated: '{v} o‘rnatilgan, {next} yangilanishi mavjud',
     intgStateModified: '{v} o‘rnatilgan (o‘zgartirilgan)',
@@ -7922,13 +7965,15 @@ export const strings = {
     intgInstalledHint: 'O‘rnatildi. Yangi sessiyada kuchga kiradi.',
     intgInstallElsewhere: 'Boshqa jildga o‘rnatish…',
     intgPickDirTitle: 'Skills jildini tanlang',
-    intgDownloadZip: 'Skill\'ni yuklab olish (zip)',
-    intgSaveZipTitle: 'Skill\'ni saqlash',
+    intgDownloadZip: "Skill'ni yuklab olish (zip)",
+    intgSaveZipTitle: "Skill'ni saqlash",
     intgSavedTo: '{path} manziliga saqlandi',
     intgCopied: 'Nusxalandi',
-    intgCliEphemeral: 'Avval OfficeVega\'ni Applications jildiga tortib o‘tkazing, so‘ng buyruq satridan foydalaning.',
+    intgCliEphemeral:
+      "Avval OfficeVega'ni Applications jildiga tortib o‘tkazing, so‘ng buyruq satridan foydalaning.",
     intgCopyPath: 'Yo‘lni nusxalash',
-    intgCliNeedsUpdate: 'Bu skill uchun buyruq satrining {v} yoki yangiroq versiyasi kerak; OfficeVega\'ni yangilang.',
+    intgCliNeedsUpdate:
+      "Bu skill uchun buyruq satrining {v} yoki yangiroq versiyasi kerak; OfficeVega'ni yangilang.",
     intgLoading: 'Tekshirilmoqda…',
     intgUpdateDue: 'Skill yangilanishi mavjud',
     setSecAiModel: 'AI modeli',
@@ -7937,7 +7982,7 @@ export const strings = {
     setAiModelSearch: 'Modellarni qidirish…',
     setAiFastModelId: 'Tezkor model',
     setAiFastModelDesc:
-      'Taklif etilgan savollar kabi fon vazifalarida ishlatiladi. Bo\'sh = asosiy model bilan bir xil.',
+      "Taklif etilgan savollar kabi fon vazifalarida ishlatiladi. Bo'sh = asosiy model bilan bir xil.",
     setAiFastModelSame: 'Asosiy model bilan bir xil',
     setAiApiKey: 'API kaliti',
     setAiKeyHint: 'Faqat shu qurilmada saqlanadi.',
@@ -7945,41 +7990,55 @@ export const strings = {
     setAiBaseUrlHint: 'Rasmiy endpoint uchun bo‘sh qoldiring.',
     setAiAccountHint: 'VEGA hisobingizdan foydalanadi; API kaliti kerak emas.',
     setAiCodexPath: 'Codex bajariladigan fayli',
-    setAiCodexPathHint: 'Buni faqat maxsus o‘rnatish uchun belgilang; avtomatik aniqlash uchun bo‘sh qoldiring.',
+    setAiCodexPathHint:
+      'Buni faqat maxsus o‘rnatish uchun belgilang; avtomatik aniqlash uchun bo‘sh qoldiring.',
     setAiCodexAutoPlaceholder: 'Avtomatik aniqlash (tavsiya etiladi)',
-    setAiCodexHint: 'Yangilanishlardan keyin joriy kirilgan Codex CLI’ni avtomatik topadi; maxsus yo‘l ixtiyoriy. API kaliti kerak emas.',
-    setAiByokNote: 'Chatlar o‘z kalitingizdan foydalanadi. Tasvir yaratish va media tahlili AI Media bo‘limiga muvofiq ishlaydi; veb-qidiruv esa VEGA hisobiga kirish yoki bepul manbalardan foydalanadi.',
+    setAiCodexHint:
+      'Yangilanishlardan keyin joriy kirilgan Codex CLI’ni avtomatik topadi; maxsus yo‘l ixtiyoriy. API kaliti kerak emas.',
+    setAiByokNote:
+      'Chatlar o‘z kalitingizdan foydalanadi. Tasvir yaratish va media tahlili AI Media bo‘limiga muvofiq ishlaydi; veb-qidiruv esa VEGA hisobiga kirish yoki bepul manbalardan foydalanadi.',
     setAiSaved: 'Saqlandi',
     setAiTest: 'Ulanishni sinash',
     setAiTesting: 'Sinovdan o‘tkazilmoqda…',
     setAiTestOk: 'Ulanish muvaffaqiyatli',
     setAiTestFail: 'Ulanish amalga oshmadi',
     setAiMaxTokens: 'Maksimal chiqish tokenlari',
-    setAiMaxTokensDesc: 'Bir aylanish uchun chiqish limiti. Mulohaza yurituvchi modellar uning bir qismini fikrlashga sarflaydi, shuning uchun limit tugasa javob bo‘sh kelishi mumkin; shunday bo‘lsa, bu qiymatni oshiring.',
+    setAiMaxTokensDesc:
+      'Bir aylanish uchun chiqish limiti. Mulohaza yurituvchi modellar uning bir qismini fikrlashga sarflaydi, shuning uchun limit tugasa javob bo‘sh kelishi mumkin; shunday bo‘lsa, bu qiymatni oshiring.',
     setSecAiMedia: 'AI media va qidiruv',
-    setAiMediaAccountHint: 'Tasvir yaratish va tasvir/video tahlili VEGA hisobingizdan foydalanadi.',
+    setAiMediaAccountHint:
+      'Tasvir yaratish va tasvir/video tahlili VEGA hisobingizdan foydalanadi.',
     setAiImageModel: 'Tasvir modeli',
     setAiAnalysisModel: 'Tahlil modeli',
-    setAiSearchAccountHint: 'Veb va tasvir qidiruvi VEGA hisobingizdan foydalanadi; hisobdan chiqilganida yoki bulut vositalari o‘chirilganda, bepul manbalarga o‘tadi.',
+    setAiSearchAccountHint:
+      'Veb va tasvir qidiruvi VEGA hisobingizdan foydalanadi; hisobdan chiqilganida yoki bulut vositalari o‘chirilganda, bepul manbalarga o‘tadi.',
     setAiSearchSerperHint: 'Serper veb va tasvir qidiruvini kalitingiz orqali taqdim etadi.',
-    setAiSearchTavilyHint: 'Tavily veb-qidiruvni kalitingiz orqali taqdim etadi; tasvir qidiruvi bepul manbalarga o‘tadi.',
+    setAiSearchTavilyHint:
+      'Tavily veb-qidiruvni kalitingiz orqali taqdim etadi; tasvir qidiruvi bepul manbalarga o‘tadi.',
     setAiCapImage: 'Tasvir yaratish',
     setAiCapAnalysis: 'Tasvir tahlili',
     setAiCapVideo: 'Video tahlili',
     setAiCapSearch: 'Internetda qidirish',
-    setAiSharedKeyHint: 'Provayder kaliti va asosiy URL barcha imkoniyatlar uchun umumiy; ularni bir marta kiriting.',
+    setAiSharedKeyHint:
+      'Provayder kaliti va asosiy URL barcha imkoniyatlar uchun umumiy; ularni bir marta kiriting.',
     setAiVegaTools: 'VEGA bulut vositalari',
-    setAiVegaToolsDesc: 'Veb-qidiruv, tasvir yaratish va media tahlili provayderi VEGA qilib o‘rnatilganda, VEGA kalitingiz orqali api.vega.chat orqali ishlaydi; o‘chirilganda, bu vositalar VEGA hisobiga kirish yoki bepul manbalarga o‘tadi. Chat provayderi bundan mustasno.',
-    setAiVegaNote: 'OpenRouter bilan mos gateway — bir marta kiring va API kaliti avtomatik beriladi; u hech qachon ko‘rsatilmaydi yoki tahrirlab bo‘lmaydi.',
-    setAiVegaSigninDesc: 'Bir marta kiring — API kaliti beriladi va ushbu qurilmada xavfsiz saqlanadi; hech narsa joylashtirish shart emas.',
+    setAiVegaToolsDesc:
+      'Veb-qidiruv, tasvir yaratish va media tahlili provayderi VEGA qilib o‘rnatilganda, VEGA kalitingiz orqali api.vega.chat orqali ishlaydi; o‘chirilganda, bu vositalar VEGA hisobiga kirish yoki bepul manbalarga o‘tadi. Chat provayderi bundan mustasno.',
+    setAiVegaNote:
+      'OpenRouter bilan mos gateway — bir marta kiring va API kaliti avtomatik beriladi; u hech qachon ko‘rsatilmaydi yoki tahrirlab bo‘lmaydi.',
+    setAiVegaSigninDesc:
+      'Bir marta kiring — API kaliti beriladi va ushbu qurilmada xavfsiz saqlanadi; hech narsa joylashtirish shart emas.',
     setAiVegaSignedIn: 'Hisobga kirilgan — kalit avtomatik boshqariladi',
-    setAiMediaVegaHint: 'Kirish kalitingiz orqali api.vega.chat yordamida ishlaydi; model VEGA tomonidan belgilanadi.',
-    setAiSearchVegaHint: 'Veb-qidiruv kirish kalitingiz orqali api.vega.chat yordamida ishlaydi; tasvir qidiruvi bepul manbalardan foydalanadi.',
+    setAiMediaVegaHint:
+      'Kirish kalitingiz orqali api.vega.chat yordamida ishlaydi; model VEGA tomonidan belgilanadi.',
+    setAiSearchVegaHint:
+      'Veb-qidiruv kirish kalitingiz orqali api.vega.chat yordamida ishlaydi; tasvir qidiruvi bepul manbalardan foydalanadi.',
     setGithub: 'Ochiq manba',
     starOnGitHub: 'GitHub’da yulduzcha bosing',
     starPromptTitle: 'OfficeVega sizga yoqyaptimi?',
     starPromptTitleN: 'OfficeVega bilan {n} ta hujjat ochdingiz',
-    starPromptBody: 'OfficeVega bepul va ochiq manbali. GitHub’dagi yulduzcha jamoani qo‘llab-quvvatlashning eng yaxshi usulidir.',
+    starPromptBody:
+      'OfficeVega bepul va ochiq manbali. GitHub’dagi yulduzcha jamoani qo‘llab-quvvatlashning eng yaxshi usulidir.',
     starPromptGo: 'GitHub’da yulduzcha bosing',
     starPromptDone: 'Yulduzcha allaqachon bosilgan',
     starPromptLater: 'Balki keyinroq',
@@ -8000,9 +8059,11 @@ export const strings = {
     // First-run onboarding
     onbTitle1: 'OfficeVega’ga xush kelibsiz',
     onbSubtitle1: 'Birinchi ochiq manbali, AI-markazli ofis to‘plami',
-    onbBody1: 'Hujjatlar yarating, elektron jadvallar tuzing, taqdimotlar tayyorlang va PDF’larni ko‘rib chiqing. AI har bir bosqichga o‘rnatilgan.',
+    onbBody1:
+      'Hujjatlar yarating, elektron jadvallar tuzing, taqdimotlar tayyorlang va PDF’larni ko‘rib chiqing. AI har bir bosqichga o‘rnatilgan.',
     onbTitle2: 'Bu faqat boshlanishi',
-    onbBody2: 'OfficeVega hali alpha bosqichida. GitHub’da bizga yulduzcha bosing va keyingi rivojlanishni shakllantirishga yordam berish uchun fikr-mulohaza bildiring.',
+    onbBody2:
+      'OfficeVega hali alpha bosqichida. GitHub’da bizga yulduzcha bosing va keyingi rivojlanishni shakllantirishga yordam berish uchun fikr-mulohaza bildiring.',
     onbCredits: 'Faol hissa qo‘shuvchilar **1,000+ VEGA krediti** oladi',
     onbJoinGitHub: 'GitHub’da yulduzcha bosing',
     onbSkip: 'O‘tkazib yuborish',
@@ -8013,7 +8074,7 @@ export const strings = {
     onbBody3: 'Litsenziya to‘lovlari yo‘q. Reklama yo‘q. Suv belgilari yo‘q.',
     onbNote3: 'AI funksiyalari VEGA depozitingizdan sarflashi mumkin.',
     onbBack: 'Orqaga',
-      addFolderRoot: 'Jild qoʻshish…',
+    addFolderRoot: 'Jild qoʻshish…',
     removeFolderRoot: 'Roʻyxatdan olib tashlash',
     rootUnavailable: 'Mavjud emas',
     searchClear: 'Qidiruvni tozalash',
@@ -8025,18 +8086,21 @@ export const strings = {
     searchResultCount: '{n} ta natija',
     searchResultCountOne: '{n} ta natija',
     setAiCapFileSearch: 'Mahalliy fayl qidiruvi',
-    setAiSearchParallelHint: 'Bepul Parallel qidiruvi uchun kalitni boʻsh qoldiring (cheklangan foydalanish). Parallel hisobingizdan foydalanish uchun kalit qoʻshing. Rasm qidiruvi boshqa manbalardan foydalanadi.',
+    setAiSearchParallelHint:
+      'Bepul Parallel qidiruvi uchun kalitni boʻsh qoldiring (cheklangan foydalanish). Parallel hisobingizdan foydalanish uchun kalit qoʻshing. Rasm qidiruvi boshqa manbalardan foydalanadi.',
     setSearchRerank: 'Jev qidiruvini qayta saralash',
-    setSearchRerankDesc: 'Mahalliy qidiruvning dastlabki 20 natijasi parchalarini TypeSafe Jev modeliga yuboradi va dolzarlik boʻyicha qayta saralaydi. Sukut boʻyicha oʻchiq; yoqilganda parchalar bu qurilmadan chiqadi.',
+    setSearchRerankDesc:
+      'Mahalliy qidiruvning dastlabki 20 natijasi parchalarini TypeSafe Jev modeliga yuboradi va dolzarlik boʻyicha qayta saralaydi. Sukut boʻyicha oʻchiq; yoqilganda parchalar bu qurilmadan chiqadi.',
     setSearchRerankEndpoint: 'Jev nuqtasi',
-},
+  },
   kk: {
     navRecent: 'Соңғылар',
     navStarred: 'Таңдаулылар',
     fileSortRecent: 'Соңғылар',
     fileSortOldest: 'Ең ескі',
     navTrash: 'Себет',
-    navTrashTip: 'Жойылған файлдар жүйелік себетке жіберіледі және оларды сол жерден қалпына келтіруге болады',
+    navTrashTip:
+      'Жойылған файлдар жүйелік себетке жіберіледі және оларды сол жерден қалпына келтіруге болады',
     secQuickStart: 'Жылдам бастау',
     secRecent: 'Соңғылар',
     secStarred: 'Таңдаулылар',
@@ -8077,7 +8141,8 @@ export const strings = {
     selectFile: '{name} таңдау',
     removeFromList: 'Тізімнен жою',
     missingFileTitle: 'Файл қолжетімсіз',
-    missingFileBody: '“{name}” табылмады. Ол ажыратылған дискіде болуы немесе жылжытылған не жойылған болуы мүмкін. Оны тізімнен жою керек пе?',
+    missingFileBody:
+      '“{name}” табылмады. Ол ажыратылған дискіде болуы немесе жылжытылған не жойылған болуы мүмкін. Оны тізімнен жою керек пе?',
     deleteFiles: 'Файлдарды жою',
     cancel: 'Бас тарту',
     star: 'Жұлдыз',
@@ -8089,7 +8154,8 @@ export const strings = {
     rename: 'Атын өзгерту',
     duplicate: 'Көшірмесін жасау',
     renameFailed: 'Атын өзгерту сәтсіз аяқталды',
-    emptyStarred: 'Жұлдызшамен белгіленген файлдар жоқ — жолға меңзерді апарып, жұлдызшаны басыңыз.',
+    emptyStarred:
+      'Жұлдызшамен белгіленген файлдар жоқ — жолға меңзерді апарып, жұлдызшаны басыңыз.',
     emptyRecent: 'Соңғы файлдар жоқ — бастау үшін файл жасаңыз немесе ашыңыз.',
     emptyFiltered: 'Бұл түрдегі файлдар жоқ.',
     // Folders panel
@@ -8113,7 +8179,8 @@ export const strings = {
     folderMoreActions: '{name} үшін қосымша әрекеттер',
     conflictTitle: 'Бұл атаумен элемент бұрыннан бар',
     conflictBodyOne: 'Мақсатты қалтада "{name}" бұрыннан бар. Не істегіңіз келеді?',
-    conflictBodyMany: 'Мақсатты қалтада атаулары бірдей {n} элемент бұрыннан бар. Не істегіңіз келеді?',
+    conflictBodyMany:
+      'Мақсатты қалтада атаулары бірдей {n} элемент бұрыннан бар. Не істегіңіз келеді?',
     conflictKeepBoth: 'Екеуін де сақтау',
     conflictReplace: 'Ауыстыру',
     rootUnusable: 'Әдепкі сақтау орны қолжетімсіз, сондықтан қалталарды көрсету мүмкін емес.',
@@ -8142,7 +8209,8 @@ export const strings = {
     loginOpenShort: 'Кіру бетін қолмен ашу',
     loginCopyUrl: 'Кіру сілтемесін көшіру',
     loginCopied: 'Көшірілді',
-    loginNetworkError: 'VEGA жүйесіне қосылу мүмкін емес — желі немесе прокси параметрлерін тексеріңіз',
+    loginNetworkError:
+      'VEGA жүйесіне қосылу мүмкін емес — желі немесе прокси параметрлерін тексеріңіз',
     loginExpired: 'Кіру мерзімі аяқталды — қайталап көру үшін басыңыз',
     loginFailed: 'Кіру сәтсіз аяқталды — қайталап көру үшін басыңыз',
     loginDeviceCode: 'Құрылғы коды',
@@ -8162,9 +8230,11 @@ export const strings = {
     themeSystem: 'Жүйеге сай',
     saveLocation: 'Сақтау орны',
     setAutoSave: 'Барлық құжаттарды автоматты сақтау',
-    setAutoSaveDesc: 'Әр редакторда AutoSave әдепкі бойынша қосылады. Оны бір терезе үшін өшіруге болады.',
+    setAutoSaveDesc:
+      'Әр редакторда AutoSave әдепкі бойынша қосылады. Оны бір терезе үшін өшіруге болады.',
     setAnalytics: 'Анонимді пайдалану статистикасын жіберу',
-    setAnalyticsDesc: 'Әдепкі бойынша қосулы және оны кез келген уақытта Баптаулар → Жалпы бөлімінде өшіруге болады. Google Analytics 4 пайдаланылады; Google сіздің жалпыға қолжетімді IP мекенжайыңыз бен тасымалдау метадеректерін алады, бірақ құжат мазмұны мен файл атаулары ешқашан жиналмайды.',
+    setAnalyticsDesc:
+      'Әдепкі бойынша қосулы және оны кез келген уақытта Баптаулар → Жалпы бөлімінде өшіруге болады. Google Analytics 4 пайдаланылады; Google сіздің жалпыға қолжетімді IP мекенжайыңыз бен тасымалдау метадеректерін алады, бірақ құжат мазмұны мен файл атаулары ешқашан жиналмайды.',
     setAiPanelSide: 'AI бүйірлік тақтасының орны',
     aiPanelSideLeft: 'Сол жақ',
     aiPanelSideRight: 'Оң жақ',
@@ -8179,7 +8249,8 @@ export const strings = {
     setSecAccount: 'Тіркелгі',
     setSecGeneral: 'Жалпы',
     setMcp: 'Жергілікті MCP сервері',
-    setMcpDesc: 'Сыртқы AI агенттеріне (Claude Desktop, Cursor…) осы іске қосылған қолданба арқылы Word құжаттарын жасауға мүмкіндік беру. Тек Localhost.',
+    setMcpDesc:
+      'Сыртқы AI агенттеріне (Claude Desktop, Cursor…) осы іске қосылған қолданба арқылы Word құжаттарын жасауға мүмкіндік беру. Тек Localhost.',
     setMcpPort: 'Порт',
     setMcpRunning: 'Іске қосылған',
     setMcpStopped: 'Іске қосылмаған',
@@ -8189,9 +8260,11 @@ export const strings = {
     setMcpCopy: 'Көшіру',
     setMcpCopied: 'Көшірілді',
     setMcpConfig: 'Клиент конфигурациясының мысалы',
-    setMcpConfigDesc: 'Мұны клиенттің MCP сервері конфигурациясына қосыңыз (Claude Desktop қолданбасындағы mcp.json файлына, Cursor MCP баптауларына және т. б.).',
+    setMcpConfigDesc:
+      'Мұны клиенттің MCP сервері конфигурациясына қосыңыз (Claude Desktop қолданбасындағы mcp.json файлына, Cursor MCP баптауларына және т. б.).',
     setMcpBg: 'Фонда жасау',
-    setMcpBgDesc: 'Интерфейсті ашпай-ақ құжаттарды тікелей көрсетілген жолға жазу; өшірулі болса, жасау қолданбада көрнекі түрде орындалады.',
+    setMcpBgDesc:
+      'Интерфейсті ашпай-ақ құжаттарды тікелей көрсетілген жолға жазу; өшірулі болса, жасау қолданбада көрнекі түрде орындалады.',
     setMcpLog: 'Журнал жүргізу',
     setMcpLogDesc: 'MCP сервері мен құрал әрекеттерін жергілікті журнал файлына жазу',
     setMcpLogFile: 'Журнал файлы',
@@ -8203,18 +8276,23 @@ export const strings = {
     setSecAbout: 'Ақпарат',
     setSecIntegrations: 'Интеграциялар',
     intgHeroTitle: 'AI көмекшіңізден OfficeVega пайдаланыңыз',
-    intgHeroDesc: 'Қосылғаннан кейін Claude Code, Codex, Cursor, Claude Desktop және ұқсас көмекшілер Word, Excel, PowerPoint, PDF және Markdown файлдарын сіз үшін жасай, түрлендіре, оқи және өңдей алады. Барлығы осы компьютерде орындалады; ештеңе жүктеп салынбайды.',
-    intgHeroStep1: 'Бағытты таңдаңыз: көмекшіңіз терминал пәрмендерін орындай алса — CLI, орындай алмаса — MCP',
+    intgHeroDesc:
+      'Қосылғаннан кейін Claude Code, Codex, Cursor, Claude Desktop және ұқсас көмекшілер Word, Excel, PowerPoint, PDF және Markdown файлдарын сіз үшін жасай, түрлендіре, оқи және өңдей алады. Барлығы осы компьютерде орындалады; ештеңе жүктеп салынбайды.',
+    intgHeroStep1:
+      'Бағытты таңдаңыз: көмекшіңіз терминал пәрмендерін орындай алса — CLI, орындай алмаса — MCP',
     intgHeroStep2: 'Төмендегі тиісті бөлімді орындаңыз; әдетте бір рет басу жеткілікті',
     intgHeroStep3: 'Жаңа чат ашып, сұрағыңызды айтыңыз',
     intgStep1Title: 'Skill-ді көмекшіңізге орнатыңыз',
-    intgStep1Desc: 'Тек осы компьютерден табылған көмекшілер тізімде көрсетіледі. Қолданатын көмекшіге орнатыңыз; олардың барлығын орнатудың қажеті жоқ.',
-    intgStep1Update: 'OfficeVega жаңартуы жаңа skill нұсқасын ұсынғанда, сол көмекшінің жанында Update түймесі пайда болады.',
+    intgStep1Desc:
+      'Тек осы компьютерден табылған көмекшілер тізімде көрсетіледі. Қолданатын көмекшіге орнатыңыз; олардың барлығын орнатудың қажеті жоқ.',
+    intgStep1Update:
+      'OfficeVega жаңартуы жаңа skill нұсқасын ұсынғанда, сол көмекшінің жанында Update түймесі пайда болады.',
     intgSkillVersion: 'skill {v}',
     intgStateMissing: 'Skill орнатылмаған',
     intgStateInstalled: '{v} skill орнатылды · келесі чатыңызда пайдалануға дайын',
     intgOtherToggle: 'Менің көмекшім тізімде жоқ',
-    intgOtherDesc: 'Осы үш тәсілдің кез келгенін таңдаңыз. Олардың барлығы бір skill орнатады, сондықтан бірден артық тәсілді қолданудың қажеті жоқ.',
+    intgOtherDesc:
+      'Осы үш тәсілдің кез келгенін таңдаңыз. Олардың барлығы бір skill орнатады, сондықтан бірден артық тәсілді қолданудың қажеті жоқ.',
     intgOtherFolderTitle: 'SKILL.md қалталарын оқитын кез келген көмекші',
     intgOtherFolderDesc: 'Оның skills қалтасын таңдаңыз, сонда OfficeVega файлды сол жерге жазады.',
     intgOtherZipTitle: 'Файлды көмекшіге беріңіз',
@@ -8224,29 +8302,39 @@ export const strings = {
     intgCopy: 'Көшіру',
     intgStep2Title: 'Байқап көру',
     intgStep2Desc: 'Көмекшіңізде жаңа чат ашып, қарапайым тілмен, мысалы, мынаны сұраңыз:',
-    intgStep2DescBefore: 'Орнатылғаннан кейін көмекшіңізде жаңа чат ашып, қарапайым тілмен, мысалы, мынаны сұраңыз:',
+    intgStep2DescBefore:
+      'Орнатылғаннан кейін көмекшіңізде жаңа чат ашып, қарапайым тілмен, мысалы, мынаны сұраңыз:',
     intgExample1: '~/Downloads/report.md файлын Word құжатына айналдыр',
     intgExample2: 'Q3 нәтижелеріміз туралы 6 слайдтық презентация жаса',
     intgExample3: 'budget.xlsx файлын PDF форматына түрлендіріп, оны OfficeVega қолданбасында аш',
-    intgStep2Note: 'Көмекші officevega пәрмен жолын өзі іске қосады; оны өзіңіз терудің қажеті жоқ.',
+    intgStep2Note:
+      'Көмекші officevega пәрмен жолын өзі іске қосады; оны өзіңіз терудің қажеті жоқ.',
     intgCliPartTitle: 'CLI · пәрмен жолы + skill',
-    intgCliPartDesc: 'Терминал пәрмендерін орындай алатын көмекшілерге арналған (Claude Code, Codex, Cursor және басқалары). Skill орнатылғаннан кейін көмекші файлдарды жасау, түрлендіру, оқу және өңдеу үшін officevega пәрмен жолын өзі шақырады; ешқандай пәрменді өзіңіз термейсіз.',
+    intgCliPartDesc:
+      'Терминал пәрмендерін орындай алатын көмекшілерге арналған (Claude Code, Codex, Cursor және басқалары). Skill орнатылғаннан кейін көмекші файлдарды жасау, түрлендіру, оқу және өңдеу үшін officevega пәрмен жолын өзі шақырады; ешқандай пәрменді өзіңіз термейсіз.',
     intgMcpPartTitle: 'MCP',
-    intgMcpPartDesc: 'MCP — AI көмекшілері сыртқы құралдарды шақыру үшін пайдаланатын ортақ протокол. Оны көмекшіңіз пәрмендерді орындай алмаса (мысалы, Claude Desktop) немесе OfficeVega терезесін тікелей басқаруын қаласаңыз пайдаланыңыз. Төмендегі екі тәсілдің бірін таңдаңыз.',
+    intgMcpPartDesc:
+      'MCP — AI көмекшілері сыртқы құралдарды шақыру үшін пайдаланатын ортақ протокол. Оны көмекшіңіз пәрмендерді орындай алмаса (мысалы, Claude Desktop) немесе OfficeVega терезесін тікелей басқаруын қаласаңыз пайдаланыңыз. Төмендегі екі тәсілдің бірін таңдаңыз.',
     intgMcpStdioTitle: 'Көмекші іске қосады (ұсынылады)',
-    intgMcpStdioDesc: 'Көмекші officevega mcp файлын өзі іске қосады: мұнда ештеңені қосудың қажеті жоқ және OfficeVega ашық тұруы міндетті емес. CLI мүмкіндіктерімен бірдей.',
+    intgMcpStdioDesc:
+      'Көмекші officevega mcp файлын өзі іске қосады: мұнда ештеңені қосудың қажеті жоқ және OfficeVega ашық тұруы міндетті емес. CLI мүмкіндіктерімен бірдей.',
     intgMcpHttpTitle: 'Жергілікті HTTP сервері',
-    intgMcpHttpDesc: 'OfficeVega ішінде іске қосылады; көмекші URL мекенжайына қосылып, Word редакторында құжаттың қадам-қадамымен жасалуын көруге болады. OfficeVega ашық тұруы керек; әзірге тек Word құжаттары қолдау көрсетіледі.',
+    intgMcpHttpDesc:
+      'OfficeVega ішінде іске қосылады; көмекші URL мекенжайына қосылып, Word редакторында құжаттың қадам-қадамымен жасалуын көруге болады. OfficeVega ашық тұруы керек; әзірге тек Word құжаттары қолдау көрсетіледі.',
     intgMcpHttpAdvanced: 'Қосымша: басқа соңғы нүктелер мен журнал',
-    intgMcpTryNote: 'Көмекші OfficeVega қолданбасын MCP арқылы шақырады; ешқандай пәрменді өзіңіз термейсіз.',
+    intgMcpTryNote:
+      'Көмекші OfficeVega қолданбасын MCP арқылы шақырады; ешқандай пәрменді өзіңіз термейсіз.',
     intgMcpClaudeTitle: 'Claude Code',
     intgMcpClaudeDesc: 'Мұны терминалда бір рет орындаңыз:',
     intgMcpOtherTitle: 'Cursor, Claude Desktop немесе MCP қолдайтын кез келген басқа ассистент',
-    intgMcpOtherDesc: 'Мұны оның MCP сервері параметрлеріне қосыңыз (JSON файлына немесе параметрлеріндегі «MCP серверін қосу» бөліміне):',
-    intgMcpNote: 'Skill мен MCP қатар орнатыла алады; ассистент олардың біреуін таңдайды. Екеуі де дәл бірдей әрекеттерді орындайды.',
+    intgMcpOtherDesc:
+      'Мұны оның MCP сервері параметрлеріне қосыңыз (JSON файлына немесе параметрлеріндегі «MCP серверін қосу» бөліміне):',
+    intgMcpNote:
+      'Skill мен MCP қатар орнатыла алады; ассистент олардың біреуін таңдайды. Екеуі де дәл бірдей әрекеттерді орындайды.',
     intgCliTitle: 'Қосымша: officevega пәрмен жолы',
     intgCliReady: 'officevega {v} · терминалда дайын ({path})',
-    intgCliNotOnPath: 'officevega {v} · терминалдың PATH айнымалысында жоқ. Ассистенттер оны ~/.officevega/launcher арқылы бәрібір табады, сондықтан skill жұмыс істейді. officevega пәрменін өзіңіз енгізу үшін мұны бір рет орындаңыз:',
+    intgCliNotOnPath:
+      'officevega {v} · терминалдың PATH айнымалысында жоқ. Ассистенттер оны ~/.officevega/launcher арқылы бәрібір табады, сондықтан skill жұмыс істейді. officevega пәрменін өзіңіз енгізу үшін мұны бір рет орындаңыз:',
     intgCliLauncher: 'Іске қосу құралының қалтасы',
     intgStateOutdated: '{v} орнатылған, {next} нұсқасына жаңарту қолжетімді',
     intgStateModified: '{v} орнатылған (өзгертілген)',
@@ -8270,9 +8358,11 @@ export const strings = {
     intgSaveZipTitle: 'Skill файлын сақтау',
     intgSavedTo: 'Мына жерге сақталды: {path}',
     intgCopied: 'Көшірілді',
-    intgCliEphemeral: 'Алдымен OfficeVega-ны Applications қалтасына сүйреп апарыңыз, содан кейін пәрмен жолын пайдаланыңыз.',
+    intgCliEphemeral:
+      'Алдымен OfficeVega-ны Applications қалтасына сүйреп апарыңыз, содан кейін пәрмен жолын пайдаланыңыз.',
     intgCopyPath: 'Жолды көшіру',
-    intgCliNeedsUpdate: 'Бұл skill үшін {v} немесе одан кейінгі пәрмен жолы нұсқасы қажет; OfficeVega-ны жаңартыңыз.',
+    intgCliNeedsUpdate:
+      'Бұл skill үшін {v} немесе одан кейінгі пәрмен жолы нұсқасы қажет; OfficeVega-ны жаңартыңыз.',
     intgLoading: 'Тексерілуде…',
     intgUpdateDue: 'Skill жаңартуы қолжетімді',
     setSecAiModel: 'AI моделі',
@@ -8289,41 +8379,55 @@ export const strings = {
     setAiBaseUrlHint: 'Ресми endpoint үшін бос қалдырыңыз.',
     setAiAccountHint: 'VEGA жүйесіне кіру деректеріңіз пайдаланылады; API кілті қажет емес.',
     setAiCodexPath: 'Codex орындалатын файлы',
-    setAiCodexPathHint: 'Мұны тек реттелетін орнату үшін көрсетіңіз; автоматты анықтау үшін бос қалдырыңыз.',
+    setAiCodexPathHint:
+      'Мұны тек реттелетін орнату үшін көрсетіңіз; автоматты анықтау үшін бос қалдырыңыз.',
     setAiCodexAutoPlaceholder: 'Автоматты анықтау (ұсынылады)',
-    setAiCodexHint: 'Жаңартулардан кейін жүйеге кірілген ағымдағы Codex CLI нұсқасын автоматты түрде табады; реттелетін жол міндетті емес. API кілті қажет емес.',
-    setAiByokNote: 'Чаттарда өз кілтіңіз пайдаланылады. Кескін жасау және медианы талдау AI Media бөлімінің параметрлеріне сай орындалады; веб-іздеу әлі де VEGA жүйесіне кіру деректеріңізді немесе тегін дереккөздерді пайдаланады.',
+    setAiCodexHint:
+      'Жаңартулардан кейін жүйеге кірілген ағымдағы Codex CLI нұсқасын автоматты түрде табады; реттелетін жол міндетті емес. API кілті қажет емес.',
+    setAiByokNote:
+      'Чаттарда өз кілтіңіз пайдаланылады. Кескін жасау және медианы талдау AI Media бөлімінің параметрлеріне сай орындалады; веб-іздеу әлі де VEGA жүйесіне кіру деректеріңізді немесе тегін дереккөздерді пайдаланады.',
     setAiSaved: 'Сақталды',
     setAiTest: 'Қосылымды тексеру',
     setAiTesting: 'Тексерілуде…',
     setAiTestOk: 'Қосылым сәтті',
     setAiTestFail: 'Қосылым сәтсіз аяқталды',
     setAiMaxTokens: 'Шығыс токендерінің ең көп саны',
-    setAiMaxTokensDesc: 'Бір айналымға арналған шығыс лимиті. Ойлау модельдері оның бір бөлігін ойлануға жұмсайды, сондықтан лимит біткенде жауап бос қайтуы мүмкін; бұл орын алса, мәнді арттырыңыз.',
+    setAiMaxTokensDesc:
+      'Бір айналымға арналған шығыс лимиті. Ойлау модельдері оның бір бөлігін ойлануға жұмсайды, сондықтан лимит біткенде жауап бос қайтуы мүмкін; бұл орын алса, мәнді арттырыңыз.',
     setSecAiMedia: 'AI медиа және іздеу',
-    setAiMediaAccountHint: 'Кескін жасау және кескін/бейне талдауы VEGA жүйесіне кіру деректеріңізді пайдаланады.',
+    setAiMediaAccountHint:
+      'Кескін жасау және кескін/бейне талдауы VEGA жүйесіне кіру деректеріңізді пайдаланады.',
     setAiImageModel: 'Кескін моделі',
     setAiAnalysisModel: 'Талдау моделі',
-    setAiSearchAccountHint: 'Веб және кескін іздеуі VEGA жүйесіне кіру деректеріңізді пайдаланады; жүйеден шыққанда немесе бұлттық құралдар өшірулі болғанда, тегін дереккөздерге ауысады.',
+    setAiSearchAccountHint:
+      'Веб және кескін іздеуі VEGA жүйесіне кіру деректеріңізді пайдаланады; жүйеден шыққанда немесе бұлттық құралдар өшірулі болғанда, тегін дереккөздерге ауысады.',
     setAiSearchSerperHint: 'Serper сіздің кілтіңізбен веб және кескін іздеуін ұсынады.',
-    setAiSearchTavilyHint: 'Tavily сіздің кілтіңізбен веб іздеуін ұсынады; кескін іздеуі тегін дереккөздерге ауысады.',
+    setAiSearchTavilyHint:
+      'Tavily сіздің кілтіңізбен веб іздеуін ұсынады; кескін іздеуі тегін дереккөздерге ауысады.',
     setAiCapImage: 'Кескін жасау',
     setAiCapAnalysis: 'Кескінді талдау',
     setAiCapVideo: 'Бейнені талдау',
     setAiCapSearch: 'Вебтен іздеу',
-    setAiSharedKeyHint: 'Провайдердің кілті мен негізгі URL мекенжайы барлық мүмкіндіктерге ортақ; оларды бір рет енгізіңіз.',
+    setAiSharedKeyHint:
+      'Провайдердің кілті мен негізгі URL мекенжайы барлық мүмкіндіктерге ортақ; оларды бір рет енгізіңіз.',
     setAiVegaTools: 'VEGA бұлттық құралдары',
-    setAiVegaToolsDesc: 'Веб іздеуі, кескін жасау және медианы талдау провайдері VEGA болғанда, сіздің VEGA кілтіңізбен api.vega.chat арқылы орындалады; өшірулі болғанда, бұл құралдар VEGA жүйесіне кіру деректеріне немесе тегін дереккөздерге ауысады. Чат провайдеріне әсер етпейді.',
-    setAiVegaNote: 'OpenRouter-үйлесімді шлюз — бір рет кіріңіз, API кілті автоматты түрде беріледі; ол ешқашан көрсетілмейді немесе өңделмейді.',
-    setAiVegaSigninDesc: 'Бір рет кіріңіз — API кілті беріледі және осы құрылғыда қауіпсіз сақталады; ештеңені қою қажет емес.',
+    setAiVegaToolsDesc:
+      'Веб іздеуі, кескін жасау және медианы талдау провайдері VEGA болғанда, сіздің VEGA кілтіңізбен api.vega.chat арқылы орындалады; өшірулі болғанда, бұл құралдар VEGA жүйесіне кіру деректеріне немесе тегін дереккөздерге ауысады. Чат провайдеріне әсер етпейді.',
+    setAiVegaNote:
+      'OpenRouter-үйлесімді шлюз — бір рет кіріңіз, API кілті автоматты түрде беріледі; ол ешқашан көрсетілмейді немесе өңделмейді.',
+    setAiVegaSigninDesc:
+      'Бір рет кіріңіз — API кілті беріледі және осы құрылғыда қауіпсіз сақталады; ештеңені қою қажет емес.',
     setAiVegaSignedIn: 'Жүйеге кірілді — кілт автоматты түрде басқарылады',
-    setAiMediaVegaHint: 'api.vega.chat арқылы кіру кілтіңіз пайдаланылады; модельді VEGA белгілейді.',
-    setAiSearchVegaHint: 'Веб іздеуі api.vega.chat арқылы кіру кілтіңізбен орындалады; кескін іздеуі тегін дереккөздерді пайдаланады.',
+    setAiMediaVegaHint:
+      'api.vega.chat арқылы кіру кілтіңіз пайдаланылады; модельді VEGA белгілейді.',
+    setAiSearchVegaHint:
+      'Веб іздеуі api.vega.chat арқылы кіру кілтіңізбен орындалады; кескін іздеуі тегін дереккөздерді пайдаланады.',
     setGithub: 'Ашық бастапқы код',
     starOnGitHub: 'GitHub-та жұлдызша қою',
     starPromptTitle: 'OfficeVega ұнап жүр ме?',
     starPromptTitleN: 'OfficeVega көмегімен {n} құжат аштыңыз',
-    starPromptBody: 'OfficeVega — тегін және ашық бастапқы коды бар бағдарлама. GitHub-та жұлдызша қою — командаға қолдау көрсетудің ең жақсы жолы.',
+    starPromptBody:
+      'OfficeVega — тегін және ашық бастапқы коды бар бағдарлама. GitHub-та жұлдызша қою — командаға қолдау көрсетудің ең жақсы жолы.',
     starPromptGo: 'GitHub-та жұлдызша қою',
     starPromptDone: 'Жұлдызша қойылған',
     starPromptLater: 'Мүмкін, кейінірек',
@@ -8344,9 +8448,11 @@ export const strings = {
     // First-run onboarding
     onbTitle1: 'OfficeVega-ға қош келдіңіз',
     onbSubtitle1: 'Ашық бастапқы коды бар, AI негізіндегі алғашқы кеңсе жиынтығы',
-    onbBody1: 'Құжаттар жасаңыз, кестелер құрыңыз, слайдтар әзірлеңіз және PDF файлдарын қарап шығыңыз. AI әр қадамға кіріктірілген.',
+    onbBody1:
+      'Құжаттар жасаңыз, кестелер құрыңыз, слайдтар әзірлеңіз және PDF файлдарын қарап шығыңыз. AI әр қадамға кіріктірілген.',
     onbTitle2: 'Бұл тек бастамасы',
-    onbBody2: 'OfficeVega әлі де alpha нұсқасында. GitHub-та бізге жұлдызша қойып, келесі мүмкіндіктерді қалыптастыруға көмектесу үшін пікіріңізбен бөлісіңіз.',
+    onbBody2:
+      'OfficeVega әлі де alpha нұсқасында. GitHub-та бізге жұлдызша қойып, келесі мүмкіндіктерді қалыптастыруға көмектесу үшін пікіріңізбен бөлісіңіз.',
     onbCredits: 'Белсенді үлес қосушыларға **1 000+ VEGA кредиті** беріледі',
     onbJoinGitHub: 'GitHub-та жұлдызша қою',
     onbSkip: 'Өткізіп жіберу',
@@ -8357,7 +8463,7 @@ export const strings = {
     onbBody3: 'Лицензиялық төлемдер жоқ. Жарнамалар жоқ. Су белгілері жоқ.',
     onbNote3: 'AI мүмкіндіктері VEGA депозитіңізді жұмсауы мүмкін.',
     onbBack: 'Артқа',
-      addFolderRoot: 'Қалта қосу…',
+    addFolderRoot: 'Қалта қосу…',
     removeFolderRoot: 'Тізімнен алып тастау',
     rootUnavailable: 'Қолжетімсіз',
     searchClear: 'Іздеуді тазалау',
@@ -8369,11 +8475,13 @@ export const strings = {
     searchResultCount: '{n} нәтиже',
     searchResultCountOne: '{n} нәтиже',
     setAiCapFileSearch: 'Жергілікті файл іздеуі',
-    setAiSearchParallelHint: 'Тегін Parallel іздеуі үшін кілтті бос қалдырыңыз (шектеулі қолдану). Parallel тіркелгіңізді пайдалану үшін кілт қосыңыз. Сурет іздеуі басқа көздерді пайдаланады.',
+    setAiSearchParallelHint:
+      'Тегін Parallel іздеуі үшін кілтті бос қалдырыңыз (шектеулі қолдану). Parallel тіркелгіңізді пайдалану үшін кілт қосыңыз. Сурет іздеуі басқа көздерді пайдаланады.',
     setSearchRerank: 'Jev іздеуін қайта реттеу',
-    setSearchRerankDesc: 'Жергілікті іздеудің алғашқы 20 нәтижесінің үзінділерін TypeSafe Jev моделіне жібереді және сәйкестік бойынша қайта реттейді. Әдепкі бойынша өшірулі; қосылғанда үзінділер осы құрылғыдан шығады.',
+    setSearchRerankDesc:
+      'Жергілікті іздеудің алғашқы 20 нәтижесінің үзінділерін TypeSafe Jev моделіне жібереді және сәйкестік бойынша қайта реттейді. Әдепкі бойынша өшірулі; қосылғанда үзінділер осы құрылғыдан шығады.',
     setSearchRerankEndpoint: 'Jev нүктесі',
-},
+  },
   az: {
     navRecent: 'Son istifadə olunanlar',
     navStarred: 'Ulduzlular',
@@ -8421,7 +8529,8 @@ export const strings = {
     selectFile: '{name} seç',
     removeFromList: 'Siyahıdan sil',
     missingFileTitle: 'Fayl əlçatan deyil',
-    missingFileBody: '“{name}” tapılmadı. O, əlaqəsi kəsilmiş diskdə ola bilər və ya köçürülüb, yaxud silinib. Siyahıdan silinsin?',
+    missingFileBody:
+      '“{name}” tapılmadı. O, əlaqəsi kəsilmiş diskdə ola bilər və ya köçürülüb, yaxud silinib. Siyahıdan silinsin?',
     deleteFiles: 'Faylları sil',
     cancel: 'Ləğv et',
     star: 'Ulduz',
@@ -8457,10 +8566,12 @@ export const strings = {
     folderMoreActions: '{name} üçün əlavə əməliyyatlar',
     conflictTitle: 'Bu adda element artıq mövcuddur',
     conflictBodyOne: 'Hədəf qovluqda artıq "{name}" mövcuddur. Nə etmək istəyirsiniz?',
-    conflictBodyMany: 'Hədəf qovluqda eyni adlı {n} element artıq mövcuddur. Nə etmək istəyirsiniz?',
+    conflictBodyMany:
+      'Hədəf qovluqda eyni adlı {n} element artıq mövcuddur. Nə etmək istəyirsiniz?',
     conflictKeepBoth: 'Hər ikisini saxla',
     conflictReplace: 'Əvəz et',
-    rootUnusable: 'Standart yadda saxlama yeri əlçatan deyil, buna görə qovluqlar göstərilə bilmir.',
+    rootUnusable:
+      'Standart yadda saxlama yeri əlçatan deyil, buna görə qovluqlar göstərilə bilmir.',
     pickSaveDir: 'Yadda saxlama yeri seçin',
     deleteModalTitle: 'Faylları sil',
     deleteConfirmOne: '"{name}" zibil qutusuna köçürülsün?',
@@ -8506,9 +8617,11 @@ export const strings = {
     themeSystem: 'Sistemə uyğun',
     saveLocation: 'Saxlama yeri',
     setAutoSave: 'Bütün sənədləri avtomatik yadda saxla',
-    setAutoSaveDesc: 'Hər redaktorda AutoSave-i defolt olaraq aktiv edin. Ayrı pəncərə üçün onu söndürə bilərsiniz.',
+    setAutoSaveDesc:
+      'Hər redaktorda AutoSave-i defolt olaraq aktiv edin. Ayrı pəncərə üçün onu söndürə bilərsiniz.',
     setAnalytics: 'Anonim istifadə statistikalarını göndər',
-    setAnalyticsDesc: 'Defolt olaraq aktivdir və Parametrlər → Ümumi bölməsində istənilən vaxt söndürülə bilər. Google Analytics 4 istifadə olunur; Google açıq IP ünvanınızı və ötürmə metadatasını alır, lakin sənəd məzmunu və fayl adları heç vaxt toplanmır.',
+    setAnalyticsDesc:
+      'Defolt olaraq aktivdir və Parametrlər → Ümumi bölməsində istənilən vaxt söndürülə bilər. Google Analytics 4 istifadə olunur; Google açıq IP ünvanınızı və ötürmə metadatasını alır, lakin sənəd məzmunu və fayl adları heç vaxt toplanmır.',
     setAiPanelSide: 'AI yan panelinin mövqeyi',
     aiPanelSideLeft: 'Sol',
     aiPanelSideRight: 'Sağ',
@@ -8518,12 +8631,14 @@ export const strings = {
     aiFontSizeXLarge: 'Çox böyük',
     aiFontSizeCustom: 'Fərdi',
     setAiSpellcheck: 'AI çatında orfoqrafiya yoxlaması',
-    setAiSpellcheckDesc: 'AI çatının daxiletmə sahəsində yazarkən səhv yazılmış sözlərin altından xətt çək.',
+    setAiSpellcheckDesc:
+      'AI çatının daxiletmə sahəsində yazarkən səhv yazılmış sözlərin altından xətt çək.',
     settings: 'Parametrlər',
     setSecAccount: 'Hesab',
     setSecGeneral: 'Ümumi',
     setMcp: 'Yerli MCP serveri',
-    setMcpDesc: 'Xarici AI agentlərinə (Claude Desktop, Cursor…) bu işləyən tətbiq vasitəsilə Word sənədləri yaratmağa imkan verin. Yalnız localhost.',
+    setMcpDesc:
+      'Xarici AI agentlərinə (Claude Desktop, Cursor…) bu işləyən tətbiq vasitəsilə Word sənədləri yaratmağa imkan verin. Yalnız localhost.',
     setMcpPort: 'Port',
     setMcpRunning: 'İşləyir',
     setMcpStopped: 'İşləmir',
@@ -8533,9 +8648,11 @@ export const strings = {
     setMcpCopy: 'Kopyala',
     setMcpCopied: 'Köçürüldü',
     setMcpConfig: 'Müştəri konfiqurasiyası nümunəsi',
-    setMcpConfigDesc: 'Bunu müştərinin MCP serveri konfiqurasiyasına əlavə edin (Claude Desktop-un mcp.json faylına, Cursor-un MCP parametrlərinə və s.).',
+    setMcpConfigDesc:
+      'Bunu müştərinin MCP serveri konfiqurasiyasına əlavə edin (Claude Desktop-un mcp.json faylına, Cursor-un MCP parametrlərinə və s.).',
     setMcpBg: 'Arxa planda yaratma',
-    setMcpBgDesc: 'Sənədləri UI-ni açmadan birbaşa yola yazın; söndürüldükdə yaratma tətbiqdə görünən şəkildə baş verir.',
+    setMcpBgDesc:
+      'Sənədləri UI-ni açmadan birbaşa yola yazın; söndürüldükdə yaratma tətbiqdə görünən şəkildə baş verir.',
     setMcpLog: 'Jurnallaşdırma',
     setMcpLogDesc: 'MCP serverinin və alət fəaliyyətinin yerli jurnal faylına yazılması',
     setMcpLogFile: 'Jurnal faylı',
@@ -8547,50 +8664,65 @@ export const strings = {
     setSecAbout: 'Haqqında',
     setSecIntegrations: 'İnteqrasiyalar',
     intgHeroTitle: 'OfficeVega-dan AI köməkçinizlə istifadə edin',
-    intgHeroDesc: 'Qoşulduqdan sonra Claude Code, Codex, Cursor, Claude Desktop və oxşar köməkçilər sizin üçün Word, Excel, PowerPoint, PDF və Markdown faylları yarada, çevirə, oxuya və redaktə edə bilər. Hər şey bu kompüterdə icra olunur; heç nə yüklənmir.',
-    intgHeroStep1: 'Marşrut seçin: köməkçiniz terminal əmrlərini işlədə bilirsə CLI, işlədə bilmirsə MCP',
+    intgHeroDesc:
+      'Qoşulduqdan sonra Claude Code, Codex, Cursor, Claude Desktop və oxşar köməkçilər sizin üçün Word, Excel, PowerPoint, PDF və Markdown faylları yarada, çevirə, oxuya və redaktə edə bilər. Hər şey bu kompüterdə icra olunur; heç nə yüklənmir.',
+    intgHeroStep1:
+      'Marşrut seçin: köməkçiniz terminal əmrlərini işlədə bilirsə CLI, işlədə bilmirsə MCP',
     intgHeroStep2: 'Aşağıdakı bölməni izləyin; adətən bir klik kifayətdir',
     intgHeroStep3: 'Yeni çat başladın və sadəcə soruşun',
     intgStep1Title: 'Skill-i köməkçinizə quraşdırın',
-    intgStep1Desc: 'Yalnız bu kompüterdə tapılan köməkçilər siyahıda göstərilir. Həqiqətən istifadə etdiyiniz köməkçiyə quraşdırın; hamısına ehtiyac yoxdur.',
-    intgStep1Update: 'OfficeVega yeniləməsi daha yeni skill təqdim etdikdə həmin köməkçinin yanında Yenilə düyməsi görünür.',
+    intgStep1Desc:
+      'Yalnız bu kompüterdə tapılan köməkçilər siyahıda göstərilir. Həqiqətən istifadə etdiyiniz köməkçiyə quraşdırın; hamısına ehtiyac yoxdur.',
+    intgStep1Update:
+      'OfficeVega yeniləməsi daha yeni skill təqdim etdikdə həmin köməkçinin yanında Yenilə düyməsi görünür.',
     intgSkillVersion: 'skill {v}',
     intgStateMissing: 'Skill quraşdırılmayıb',
     intgStateInstalled: 'Skill {v} quraşdırılıb · növbəti çatınızda istifadəyə hazırdır',
     intgOtherToggle: 'Köməkçim siyahıda yoxdur',
-    intgOtherDesc: 'Bu üç üsuldan istənilən birini seçin. Hamısı eyni skill-i quraşdırır, ona görə birdən çoxunu etməyə ehtiyac yoxdur.',
+    intgOtherDesc:
+      'Bu üç üsuldan istənilən birini seçin. Hamısı eyni skill-i quraşdırır, ona görə birdən çoxunu etməyə ehtiyac yoxdur.',
     intgOtherFolderTitle: 'SKILL.md qovluqlarını oxuyan istənilən köməkçi',
     intgOtherFolderDesc: 'Onun skills qovluğunu seçin, OfficeVega faylı ora yazacaq.',
     intgOtherZipTitle: 'Faylı köməkçiyə verin',
-    intgOtherZipDesc: 'Skill-i zip kimi yadda saxlayın, sonra köməkçidən onu quraşdırmasını istəyin.',
+    intgOtherZipDesc:
+      'Skill-i zip kimi yadda saxlayın, sonra köməkçidən onu quraşdırmasını istəyin.',
     intgOtherNpxTitle: 'skills əmri ilə (Node.js tələb olunur)',
     intgOtherNpxDesc: 'Bunu terminalda icra edin:',
     intgCopy: 'Kopyala',
     intgStep2Title: 'Sınayın',
     intgStep2Desc: 'Köməkçinizdə yeni çat açın və sadə sözlərlə, məsələn, belə soruşun:',
-    intgStep2DescBefore: 'Quraşdırıldıqdan sonra köməkçinizdə yeni çat açın və sadə sözlərlə, məsələn, belə soruşun:',
+    intgStep2DescBefore:
+      'Quraşdırıldıqdan sonra köməkçinizdə yeni çat açın və sadə sözlərlə, məsələn, belə soruşun:',
     intgExample1: '~/Downloads/report.md faylını Word sənədinə çevir',
     intgExample2: 'Nəticələrimiz haqqında 6 slayddan ibarət təqdimat hazırla',
     intgExample3: 'budget.xlsx faylını PDF-ə çevir və OfficeVega-da aç',
-    intgStep2Note: 'Köməkçi officevega əmr sətrini özü işlədir; onu heç vaxt əl ilə yazmalı olmayacaqsınız.',
+    intgStep2Note:
+      'Köməkçi officevega əmr sətrini özü işlədir; onu heç vaxt əl ilə yazmalı olmayacaqsınız.',
     intgCliPartTitle: 'CLI · əmr sətri + skill',
-    intgCliPartDesc: 'Terminal əmrlərini işlədə bilən köməkçilər üçün (Claude Code, Codex, Cursor və digərləri). Skill quraşdırıldıqdan sonra köməkçi faylları yaratmaq, çevirmək, oxumaq və redaktə etmək üçün officevega əmr sətrini özü çağırır; heç bir əmri siz yazmırsınız.',
+    intgCliPartDesc:
+      'Terminal əmrlərini işlədə bilən köməkçilər üçün (Claude Code, Codex, Cursor və digərləri). Skill quraşdırıldıqdan sonra köməkçi faylları yaratmaq, çevirmək, oxumaq və redaktə etmək üçün officevega əmr sətrini özü çağırır; heç bir əmri siz yazmırsınız.',
     intgMcpPartTitle: 'MCP',
-    intgMcpPartDesc: 'MCP AI köməkçilərinin xarici alətləri çağırmaq üçün istifadə etdiyi ümumi protokoldur. Köməkçiniz əmrləri işlədə bilmədikdə (məsələn, Claude Desktop) və ya onun OfficeVega pəncərəsini birbaşa idarə etməsini istədikdə istifadə edin. Aşağıdakı iki üsuldan birini seçin.',
+    intgMcpPartDesc:
+      'MCP AI köməkçilərinin xarici alətləri çağırmaq üçün istifadə etdiyi ümumi protokoldur. Köməkçiniz əmrləri işlədə bilmədikdə (məsələn, Claude Desktop) və ya onun OfficeVega pəncərəsini birbaşa idarə etməsini istədikdə istifadə edin. Aşağıdakı iki üsuldan birini seçin.',
     intgMcpStdioTitle: 'Köməkçi tərəfindən başladılır (tövsiyə olunur)',
-    intgMcpStdioDesc: 'Köməkçi officevega mcp-ni özü başladır: burada heç nəyi aktivləşdirmək lazım deyil və OfficeVega-nın açıq olması tələb olunmur. CLI ilə eyni imkanlar.',
+    intgMcpStdioDesc:
+      'Köməkçi officevega mcp-ni özü başladır: burada heç nəyi aktivləşdirmək lazım deyil və OfficeVega-nın açıq olması tələb olunmur. CLI ilə eyni imkanlar.',
     intgMcpHttpTitle: 'Yerli HTTP serveri',
-    intgMcpHttpDesc: 'OfficeVega daxilində işləyir; köməkçi URL-ə qoşulur və sənədin Word redaktorunda addım-addım yaradılmasını izləyə bilərsiniz. OfficeVega açıq qalmalıdır; hələlik yalnız Word sənədləri dəstəklənir.',
+    intgMcpHttpDesc:
+      'OfficeVega daxilində işləyir; köməkçi URL-ə qoşulur və sənədin Word redaktorunda addım-addım yaradılmasını izləyə bilərsiniz. OfficeVega açıq qalmalıdır; hələlik yalnız Word sənədləri dəstəklənir.',
     intgMcpHttpAdvanced: 'Qabaqcıl: digər son nöqtələr və jurnal',
     intgMcpTryNote: 'Köməkçi OfficeVega-nı MCP vasitəsilə çağırır; heç bir əmri siz yazmırsınız.',
     intgMcpClaudeTitle: 'Claude Code',
     intgMcpClaudeDesc: 'Bunu terminalda bir dəfə icra edin:',
     intgMcpOtherTitle: 'Cursor, Claude Desktop və MCP dəstəkləyən digər köməkçilər',
-    intgMcpOtherDesc: 'Bunu onun MCP server ayarlarına əlavə edin (JSON faylına və ya ayarlardakı "MCP server əlavə et" bölməsinə):',
-    intgMcpNote: 'Skill və MCP yan-yana qurula bilər; köməkçi onlardan birini seçir. Hər ikisi tam olaraq eyni işləri görür.',
+    intgMcpOtherDesc:
+      'Bunu onun MCP server ayarlarına əlavə edin (JSON faylına və ya ayarlardakı "MCP server əlavə et" bölməsinə):',
+    intgMcpNote:
+      'Skill və MCP yan-yana qurula bilər; köməkçi onlardan birini seçir. Hər ikisi tam olaraq eyni işləri görür.',
     intgCliTitle: 'Qabaqcıl: officevega əmr sətri',
     intgCliReady: 'officevega {v} · terminalınızda hazırdır ({path})',
-    intgCliNotOnPath: 'officevega {v} · terminalınızın PATH dəyişənində yoxdur. Köməkçilər onu yenə də ~/.officevega/launcher vasitəsilə tapır, buna görə skill işləyir. officevega əmrini özünüz yazmaq üçün bunu bir dəfə icra edin:',
+    intgCliNotOnPath:
+      'officevega {v} · terminalınızın PATH dəyişənində yoxdur. Köməkçilər onu yenə də ~/.officevega/launcher vasitəsilə tapır, buna görə skill işləyir. officevega əmrini özünüz yazmaq üçün bunu bir dəfə icra edin:',
     intgCliLauncher: 'Launcher qovluğu',
     intgStateOutdated: '{v} quraşdırılıb, {next} yeniləməsi mövcuddur',
     intgStateModified: '{v} quraşdırılıb (dəyişdirilib)',
@@ -8614,9 +8746,11 @@ export const strings = {
     intgSaveZipTitle: 'Skill-i saxla',
     intgSavedTo: '{path} ünvanında saxlanıldı',
     intgCopied: 'Köçürüldü',
-    intgCliEphemeral: 'Əvvəlcə OfficeVega-nı Applications qovluğuna köçürün, sonra əmr sətrindən istifadə edin.',
+    intgCliEphemeral:
+      'Əvvəlcə OfficeVega-nı Applications qovluğuna köçürün, sonra əmr sətrindən istifadə edin.',
     intgCopyPath: 'Yolu kopyala',
-    intgCliNeedsUpdate: 'Bu skill üçün {v} və ya daha yeni əmr sətri versiyası lazımdır; OfficeVega-nı yeniləyin.',
+    intgCliNeedsUpdate:
+      'Bu skill üçün {v} və ya daha yeni əmr sətri versiyası lazımdır; OfficeVega-nı yeniləyin.',
     intgLoading: 'Yoxlanılır…',
     intgUpdateDue: 'Skill yeniləməsi mövcuddur',
     setSecAiModel: 'AI modeli',
@@ -8633,41 +8767,54 @@ export const strings = {
     setAiBaseUrlHint: 'Rəsmi endpoint üçün boş saxlayın.',
     setAiAccountHint: 'VEGA hesabınızdan istifadə edir; API açarı tələb olunmur.',
     setAiCodexPath: 'Codex icra faylı',
-    setAiCodexPathHint: 'Bunu yalnız fərdi quraşdırma üçün təyin edin; avtomatik aşkarlama üçün boş saxlayın.',
+    setAiCodexPathHint:
+      'Bunu yalnız fərdi quraşdırma üçün təyin edin; avtomatik aşkarlama üçün boş saxlayın.',
     setAiCodexAutoPlaceholder: 'Avtomatik aşkıla (tövsiyə olunur)',
-    setAiCodexHint: 'Yeniləmələrdən sonra hazırda hesabla daxil olduğunuz Codex CLI-ni avtomatik tapır; fərdi yol göstərmək istəyə bağlıdır. API açarı tələb olunmur.',
-    setAiByokNote: 'Söhbətlər öz açarınızdan istifadə edir. Şəkil yaratma və media təhlili AI Media bölməsindəki ayarlara əsasən işləyir; veb axtarışı isə VEGA hesabından və ya pulsuz mənbələrdən istifadə edir.',
+    setAiCodexHint:
+      'Yeniləmələrdən sonra hazırda hesabla daxil olduğunuz Codex CLI-ni avtomatik tapır; fərdi yol göstərmək istəyə bağlıdır. API açarı tələb olunmur.',
+    setAiByokNote:
+      'Söhbətlər öz açarınızdan istifadə edir. Şəkil yaratma və media təhlili AI Media bölməsindəki ayarlara əsasən işləyir; veb axtarışı isə VEGA hesabından və ya pulsuz mənbələrdən istifadə edir.',
     setAiSaved: 'Saxlanıldı',
     setAiTest: 'Bağlantını yoxla',
     setAiTesting: 'Yoxlanılır…',
     setAiTestOk: 'Bağlantı uğurludur',
     setAiTestFail: 'Bağlantı uğursuz oldu',
     setAiMaxTokens: 'Maksimum çıxış tokenləri',
-    setAiMaxTokensDesc: 'Bir cavab üçün çıxış limiti. Düşünən modellər bu limitin bir hissəsini düşünməyə sərf edir, buna görə limit bitdikdə cavab boş qayıda bilər; belə olduqda bu dəyəri artırın.',
+    setAiMaxTokensDesc:
+      'Bir cavab üçün çıxış limiti. Düşünən modellər bu limitin bir hissəsini düşünməyə sərf edir, buna görə limit bitdikdə cavab boş qayıda bilər; belə olduqda bu dəyəri artırın.',
     setSecAiMedia: 'AI Media və axtarış',
     setAiMediaAccountHint: 'Şəkil yaratma və şəkil/video təhlili VEGA hesabınızdan istifadə edir.',
     setAiImageModel: 'Şəkil modeli',
     setAiAnalysisModel: 'Təhlil modeli',
-    setAiSearchAccountHint: 'Veb və şəkil axtarışı VEGA hesabınızdan istifadə edir; hesabdan çıxıldıqda və ya bulud alətləri söndürüldükdə pulsuz mənbələrə keçir.',
+    setAiSearchAccountHint:
+      'Veb və şəkil axtarışı VEGA hesabınızdan istifadə edir; hesabdan çıxıldıqda və ya bulud alətləri söndürüldükdə pulsuz mənbələrə keçir.',
     setAiSearchSerperHint: 'Serper veb və şəkil axtarışını açarınızla təmin edir.',
-    setAiSearchTavilyHint: 'Tavily veb axtarışını açarınızla təmin edir; şəkil axtarışı pulsuz mənbələrə keçir.',
+    setAiSearchTavilyHint:
+      'Tavily veb axtarışını açarınızla təmin edir; şəkil axtarışı pulsuz mənbələrə keçir.',
     setAiCapImage: 'Şəkil yaratma',
     setAiCapAnalysis: 'Şəkil təhlili',
     setAiCapVideo: 'Video təhlili',
     setAiCapSearch: 'Veb axtarışı',
-    setAiSharedKeyHint: 'Təchizatçının açarı və əsas URL-i bütün imkanlar üçün ortaqdır; onları bir dəfə daxil edin.',
+    setAiSharedKeyHint:
+      'Təchizatçının açarı və əsas URL-i bütün imkanlar üçün ortaqdır; onları bir dəfə daxil edin.',
     setAiVegaTools: 'VEGA bulud alətləri',
-    setAiVegaToolsDesc: 'Veb axtarışı, şəkil yaratma və media təhlili təchizatçı VEGA olduqda VEGA açarınızla api.vega.chat üzərindən işləyir; söndürüldükdə bu alətlər VEGA hesabına və ya pulsuz mənbələrə keçir. Söhbət təminatçısına təsir etmir.',
-    setAiVegaNote: 'OpenRouter-uyğun keçid — bir dəfə daxil olun və API açarı avtomatik verilsin; açar heç vaxt göstərilmir və redaktə edilmir.',
-    setAiVegaSigninDesc: 'Bir dəfə daxil olun — API açarı verilir və bu cihazda təhlükəsiz saxlanılır; heç nə yapışdırmaq lazım deyil.',
+    setAiVegaToolsDesc:
+      'Veb axtarışı, şəkil yaratma və media təhlili təchizatçı VEGA olduqda VEGA açarınızla api.vega.chat üzərindən işləyir; söndürüldükdə bu alətlər VEGA hesabına və ya pulsuz mənbələrə keçir. Söhbət təminatçısına təsir etmir.',
+    setAiVegaNote:
+      'OpenRouter-uyğun keçid — bir dəfə daxil olun və API açarı avtomatik verilsin; açar heç vaxt göstərilmir və redaktə edilmir.',
+    setAiVegaSigninDesc:
+      'Bir dəfə daxil olun — API açarı verilir və bu cihazda təhlükəsiz saxlanılır; heç nə yapışdırmaq lazım deyil.',
     setAiVegaSignedIn: 'Daxil olunub — açar avtomatik idarə olunur',
-    setAiMediaVegaHint: 'Daxilolma açarınızla api.vega.chat üzərindən işləyir; model VEGA tərəfindən təyin olunur.',
-    setAiSearchVegaHint: 'Veb axtarışı daxilolma açarınızla api.vega.chat üzərindən işləyir; şəkil axtarışı pulsuz mənbələrdən istifadə edir.',
+    setAiMediaVegaHint:
+      'Daxilolma açarınızla api.vega.chat üzərindən işləyir; model VEGA tərəfindən təyin olunur.',
+    setAiSearchVegaHint:
+      'Veb axtarışı daxilolma açarınızla api.vega.chat üzərindən işləyir; şəkil axtarışı pulsuz mənbələrdən istifadə edir.',
     setGithub: 'Açıq mənbə',
     starOnGitHub: 'GitHub-da ulduz verin',
     starPromptTitle: 'OfficeVega xoşunuza gəlir?',
     starPromptTitleN: 'OfficeVega ilə {n} sənəd açmısınız',
-    starPromptBody: 'OfficeVega pulsuz və açıq mənbəlidir. GitHub-da ulduz vermək komandaya dəstəyin ən yaxşı yoludur.',
+    starPromptBody:
+      'OfficeVega pulsuz və açıq mənbəlidir. GitHub-da ulduz vermək komandaya dəstəyin ən yaxşı yoludur.',
     starPromptGo: 'GitHub-da ulduz verin',
     starPromptDone: 'Artıq ulduz verilib',
     starPromptLater: 'Bəlkə sonra',
@@ -8688,9 +8835,11 @@ export const strings = {
     // First-run onboarding
     onbTitle1: 'OfficeVega-ya xoş gəlmisiniz',
     onbSubtitle1: 'İlk açıq mənbəli, süni intellekt əsaslı ofis dəsti',
-    onbBody1: 'Sənədlər yaradın, cədvəllər hazırlayın, slaydlar düzəldin və PDF-ləri nəzərdən keçirin. Süni intellekt hər mərhələyə inteqrasiya olunub.',
+    onbBody1:
+      'Sənədlər yaradın, cədvəllər hazırlayın, slaydlar düzəldin və PDF-ləri nəzərdən keçirin. Süni intellekt hər mərhələyə inteqrasiya olunub.',
     onbTitle2: 'Bu, yalnız başlanğıcdır',
-    onbBody2: 'OfficeVega hələ alfa mərhələsindədir. GitHub-da bizi ulduzlayın və gələcək inkişaf istiqamətlərinə təsir etmək üçün rəyinizi paylaşın.',
+    onbBody2:
+      'OfficeVega hələ alfa mərhələsindədir. GitHub-da bizi ulduzlayın və gələcək inkişaf istiqamətlərinə təsir etmək üçün rəyinizi paylaşın.',
     onbCredits: 'Aktiv töhfəçilər **1 000+ VEGA krediti** əldə edir',
     onbJoinGitHub: 'GitHub-da ulduz verin',
     onbSkip: 'Ötür',
@@ -8701,7 +8850,7 @@ export const strings = {
     onbBody3: 'Lisenziya haqqı yoxdur. Reklam yoxdur. Su nişanı yoxdur.',
     onbNote3: 'Süni intellekt funksiyaları VEGA depozitinizi xərcləyə bilər.',
     onbBack: 'Geri',
-      addFolderRoot: 'Qovluq əlavə et…',
+    addFolderRoot: 'Qovluq əlavə et…',
     removeFolderRoot: 'Siyahıdan sil',
     rootUnavailable: 'Əlçatan deyil',
     searchClear: 'Axtarışı təmizlə',
@@ -8713,11 +8862,13 @@ export const strings = {
     searchResultCount: '{n} nəticə',
     searchResultCountOne: '{n} nəticə',
     setAiCapFileSearch: 'Yerli fayl axtarışı',
-    setAiSearchParallelHint: 'Pulsuz Parallel axtarışı üçün açarı boş buraxın (məhdud istifadə). Parallel hesabınızdan istifadə etmək üçün açar əlavə edin. Şəkil axtarışı digər mənbələrdən istifadə edir.',
+    setAiSearchParallelHint:
+      'Pulsuz Parallel axtarışı üçün açarı boş buraxın (məhdud istifadə). Parallel hesabınızdan istifadə etmək üçün açar əlavə edin. Şəkil axtarışı digər mənbələrdən istifadə edir.',
     setSearchRerank: 'Jev axtarış sıralaması',
-    setSearchRerankDesc: 'Yerli axtarışın ilk 20 nəticəsinin fraqmentlərini TypeSafe Jev modelinə göndərir və uyğunluğa görə yenidən sıralayır. Susmaya görə söndürülüb; yandıqda fraqmentlər bu cihazdan çıxır.',
+    setSearchRerankDesc:
+      'Yerli axtarışın ilk 20 nəticəsinin fraqmentlərini TypeSafe Jev modelinə göndərir və uyğunluğa görə yenidən sıralayır. Susmaya görə söndürülüb; yandıqda fraqmentlər bu cihazdan çıxır.',
     setSearchRerankEndpoint: 'Jev endpointi',
-},
+  },
   tk: {
     navRecent: 'Soňkylar',
     navStarred: 'Ýyldyzlananlar',
@@ -8765,7 +8916,8 @@ export const strings = {
     selectFile: '{name} saýla',
     removeFromList: 'Sanawdan aýyr',
     missingFileTitle: 'Faýl elýeterli däl',
-    missingFileBody: '“{name}” tapylmady. Ol birikdirilmedik diskde bolup biler ýa-da göçürilen ýa-da öçürilen bolmagy mümkin. Ony sanawdan aýyrmalymy?',
+    missingFileBody:
+      '“{name}” tapylmady. Ol birikdirilmedik diskde bolup biler ýa-da göçürilen ýa-da öçürilen bolmagy mümkin. Ony sanawdan aýyrmalymy?',
     deleteFiles: 'Faýllary öçür',
     cancel: 'Ýatyr',
     star: 'Ýyldyz',
@@ -8801,10 +8953,12 @@ export const strings = {
     folderMoreActions: '{name} üçin goşmaça hereketler',
     conflictTitle: 'Bu at bilen element eýýäm bar',
     conflictBodyOne: 'Maksat bukjada eýýäm "{name}" bar. Näme etmek isleýärsiňiz?',
-    conflictBodyMany: 'Maksat bukjada şol bir at bilen {n} element eýýäm bar. Näme etmek isleýärsiňiz?',
+    conflictBodyMany:
+      'Maksat bukjada şol bir at bilen {n} element eýýäm bar. Näme etmek isleýärsiňiz?',
     conflictKeepBoth: 'Ikisini hem sakla',
     conflictReplace: 'Çalyş',
-    rootUnusable: 'Bellenen ýatda saklama ýeri elýeterli däl, şonuň üçin bukjalary görkezmek mümkin däl.',
+    rootUnusable:
+      'Bellenen ýatda saklama ýeri elýeterli däl, şonuň üçin bukjalary görkezmek mümkin däl.',
     pickSaveDir: 'Ýatda saklama ýerini saýla',
     deleteModalTitle: 'Faýllary öçür',
     deleteConfirmOne: '"{name}" zibil gutusyna geçirilsinmi?',
@@ -8850,9 +9004,11 @@ export const strings = {
     themeSystem: 'Ulgama eýer',
     saveLocation: 'Ýatda saklama ýeri',
     setAutoSave: 'Ähli resminamalary awtomatiki ýatda sakla',
-    setAutoSaveDesc: 'Her redaktorda AutoSave-i deslapdan işlediň. Ýeke penjire üçin ony öçürip bilersiňiz.',
+    setAutoSaveDesc:
+      'Her redaktorda AutoSave-i deslapdan işlediň. Ýeke penjire üçin ony öçürip bilersiňiz.',
     setAnalytics: 'Anonim ulanyş statistikalaryny iber',
-    setAnalyticsDesc: 'Deslapdan işledilen we Sazlamalar → Umumy bölüminde islän wagtyňyz öçürip bolýar. Google Analytics 4 ulanylýar; Google siziň köpçülikleýin IP salgyňyzy we transport metadatalaryňyzy alýar, emma resminamalaryň mazmuny we faýl atlary hiç haçan ýygnalmaýar.',
+    setAnalyticsDesc:
+      'Deslapdan işledilen we Sazlamalar → Umumy bölüminde islän wagtyňyz öçürip bolýar. Google Analytics 4 ulanylýar; Google siziň köpçülikleýin IP salgyňyzy we transport metadatalaryňyzy alýar, emma resminamalaryň mazmuny we faýl atlary hiç haçan ýygnalmaýar.',
     setAiPanelSide: 'AI gapdal paneliniň ýerleşişi',
     aiPanelSideLeft: 'Çep',
     aiPanelSideRight: 'Sag',
@@ -8862,12 +9018,14 @@ export const strings = {
     aiFontSizeXLarge: 'Has uly',
     aiFontSizeCustom: 'Ýörite',
     setAiSpellcheck: 'AI söhbetdeşliginde orfografiýany barla',
-    setAiSpellcheckDesc: 'AI söhbetdeşliginiň girişinde ýazýan wagtyňyz nädogry ýazylan sözleriň aşagyny çyzyň.',
+    setAiSpellcheckDesc:
+      'AI söhbetdeşliginiň girişinde ýazýan wagtyňyz nädogry ýazylan sözleriň aşagyny çyzyň.',
     settings: 'Sazlamalar',
     setSecAccount: 'Hasap',
     setSecGeneral: 'Umumy',
     setMcp: 'Ýerli MCP serweri',
-    setMcpDesc: 'Daşarky AI agentlerine (Claude Desktop, Cursor…) işleýän bu programma arkaly Word resminamalaryny döretmäge rugsat beriň. Diňe Localhost.',
+    setMcpDesc:
+      'Daşarky AI agentlerine (Claude Desktop, Cursor…) işleýän bu programma arkaly Word resminamalaryny döretmäge rugsat beriň. Diňe Localhost.',
     setMcpPort: 'Port',
     setMcpRunning: 'Işleýär',
     setMcpStopped: 'Işlemeýär',
@@ -8877,9 +9035,11 @@ export const strings = {
     setMcpCopy: 'Göçür',
     setMcpCopied: 'Göçürildi',
     setMcpConfig: 'Müşderi konfigurasiýasynyň mysaly',
-    setMcpConfigDesc: 'Muny müşderiniň MCP serwer konfigurasiýasyna goşuň (Claude Desktop-yň mcp.json faýlyna, Cursor-yň MCP sazlamalaryna we ş.m.).',
+    setMcpConfigDesc:
+      'Muny müşderiniň MCP serwer konfigurasiýasyna goşuň (Claude Desktop-yň mcp.json faýlyna, Cursor-yň MCP sazlamalaryna we ş.m.).',
     setMcpBg: 'Arka planda döretmek',
-    setMcpBgDesc: 'Ulanyjy interfeýsini açmazdan resminamalary göni ýola ýazyň; öçürilende döretmek programmada görünýän görnüşde amala aşyrylýar.',
+    setMcpBgDesc:
+      'Ulanyjy interfeýsini açmazdan resminamalary göni ýola ýazyň; öçürilende döretmek programmada görünýän görnüşde amala aşyrylýar.',
     setMcpLog: 'Hasaba almak',
     setMcpLogDesc: 'MCP serweriniň we gurallaryň işjeňligini ýerli log faýlyna ýazga al',
     setMcpLogFile: 'Log faýly',
@@ -8891,50 +9051,66 @@ export const strings = {
     setSecAbout: 'Maglumat',
     setSecIntegrations: 'Integrasiýalar',
     intgHeroTitle: 'OfficeVega-ny AI kömekçiňiz bilen ulanyň',
-    intgHeroDesc: 'Baglanyşyk gurlandan soň, Claude Code, Codex, Cursor, Claude Desktop we şuňa meňzeş kömekçiler siziň üçin Word, Excel, PowerPoint, PDF we Markdown faýllaryny döredip, öwrüp, okap we redaktirläp biler. Ähli işler şu kompýuterde ýerine ýetirilýär; hiç zat ýüklenmeýär.',
-    intgHeroStep1: 'Ýoly saýlaň: kömekçiňiz terminal buýruklaryny işledip bilýän bolsa CLI, başarmasa MCP',
+    intgHeroDesc:
+      'Baglanyşyk gurlandan soň, Claude Code, Codex, Cursor, Claude Desktop we şuňa meňzeş kömekçiler siziň üçin Word, Excel, PowerPoint, PDF we Markdown faýllaryny döredip, öwrüp, okap we redaktirläp biler. Ähli işler şu kompýuterde ýerine ýetirilýär; hiç zat ýüklenmeýär.',
+    intgHeroStep1:
+      'Ýoly saýlaň: kömekçiňiz terminal buýruklaryny işledip bilýän bolsa CLI, başarmasa MCP',
     intgHeroStep2: 'Aşakdaky degişli bölüme eýeriň; adatça bir gezek basmak ýeterlikdir',
     intgHeroStep3: 'Täze söhbetdeşlik başladyň we diňe haýyşyňyzy aýdyň',
     intgStep1Title: 'Skill-i kömekçiňize gurnaň',
-    intgStep1Desc: 'Diňe şu kompýuterde tapylan kömekçiler sanawda görkezilýär. Hakykatda ulanýan kömekçiňize gurnaň; olaryň hemmesi gerek däl.',
-    intgStep1Update: 'OfficeVega täzelenmesi has täze skill bilen çykanda, şol kömekçiniň ýanynda Update düwmesi peýda bolýar.',
+    intgStep1Desc:
+      'Diňe şu kompýuterde tapylan kömekçiler sanawda görkezilýär. Hakykatda ulanýan kömekçiňize gurnaň; olaryň hemmesi gerek däl.',
+    intgStep1Update:
+      'OfficeVega täzelenmesi has täze skill bilen çykanda, şol kömekçiniň ýanynda Update düwmesi peýda bolýar.',
     intgSkillVersion: 'skill {v}',
     intgStateMissing: 'Skill gurnalmadyk',
     intgStateInstalled: 'Skill {v} gurnaldy · indiki söhbetdeşlikde taýýar',
     intgOtherToggle: 'Kömekçim sanawda ýok',
-    intgOtherDesc: 'Şu üç usulyň islendigini saýlaň. Olaryň hemmesi şol bir skill-i gurnaýar, şonuň üçin birden köpüsini ulanmak gerek däl.',
+    intgOtherDesc:
+      'Şu üç usulyň islendigini saýlaň. Olaryň hemmesi şol bir skill-i gurnaýar, şonuň üçin birden köpüsini ulanmak gerek däl.',
     intgOtherFolderTitle: 'SKILL.md bukjalaryny okaýan islendik kömekçi',
     intgOtherFolderDesc: 'Onuň skills bukjasyny saýlaň, OfficeVega faýly şol ýere ýazýar.',
     intgOtherZipTitle: 'Faýly kömekçä beriň',
-    intgOtherZipDesc: 'Skill-i zip görnüşinde ýatda saklaň, soňra kömekçiden ony gurnamagyny haýyş ediň.',
+    intgOtherZipDesc:
+      'Skill-i zip görnüşinde ýatda saklaň, soňra kömekçiden ony gurnamagyny haýyş ediň.',
     intgOtherNpxTitle: 'skills buýrugy bilen (Node.js gerek)',
     intgOtherNpxDesc: 'Muny terminalda işlediň:',
     intgCopy: 'Göçür',
     intgStep2Title: 'Synap gör',
-    intgStep2Desc: 'Kömekçiňizde täze söhbetdeşlik açyň we ýönekeý sözler bilen, mysal üçin, şeýle haýyş ediň:',
-    intgStep2DescBefore: 'Gurnalansoň, kömekçiňizde täze söhbetdeşlik açyň we ýönekeý sözler bilen, mysal üçin, şeýle haýyş ediň:',
+    intgStep2Desc:
+      'Kömekçiňizde täze söhbetdeşlik açyň we ýönekeý sözler bilen, mysal üçin, şeýle haýyş ediň:',
+    intgStep2DescBefore:
+      'Gurnalansoň, kömekçiňizde täze söhbetdeşlik açyň we ýönekeý sözler bilen, mysal üçin, şeýle haýyş ediň:',
     intgExample1: '~/Downloads/report.md faýlyny Word resminamasyna öwür',
     intgExample2: 'Q3 netijelerimiz barada 6 slaýdlyk prezentasiýa taýýarla',
     intgExample3: 'budget.xlsx faýlyny PDF-e öwür we OfficeVega-da aç',
-    intgStep2Note: 'Kömekçi officevega buýruk setirini özi işledýär; ony hiç haçan özüňiz ýazmaly dälsiňiz.',
+    intgStep2Note:
+      'Kömekçi officevega buýruk setirini özi işledýär; ony hiç haçan özüňiz ýazmaly dälsiňiz.',
     intgCliPartTitle: 'CLI · buýruk setiri + skill',
-    intgCliPartDesc: 'Terminal buýruklaryny işledip bilýän kömekçiler üçin (Claude Code, Codex, Cursor we beýlekiler). Skill gurnalansoň, kömekçi faýllary döretmek, öwürmek, okamak we redaktirlemek üçin officevega buýruk setirini özi çagyrýar; siz hiç hili buýruk ýazmaýarsyňyz.',
+    intgCliPartDesc:
+      'Terminal buýruklaryny işledip bilýän kömekçiler üçin (Claude Code, Codex, Cursor we beýlekiler). Skill gurnalansoň, kömekçi faýllary döretmek, öwürmek, okamak we redaktirlemek üçin officevega buýruk setirini özi çagyrýar; siz hiç hili buýruk ýazmaýarsyňyz.',
     intgMcpPartTitle: 'MCP',
-    intgMcpPartDesc: 'MCP AI kömekçileriniň daşarky gurallary çagyrmak üçin ulanýan umumy protokolydyr. Kömekçiňiz buýruklary işledip bilmeýän bolsa (mysal üçin, Claude Desktop) ýa-da onuň OfficeVega penjiresini göni dolandyrmagyny isleýän bolsaňyz, şuny ulanyň. Aşakdaky iki usuldan birini saýlaň.',
+    intgMcpPartDesc:
+      'MCP AI kömekçileriniň daşarky gurallary çagyrmak üçin ulanýan umumy protokolydyr. Kömekçiňiz buýruklary işledip bilmeýän bolsa (mysal üçin, Claude Desktop) ýa-da onuň OfficeVega penjiresini göni dolandyrmagyny isleýän bolsaňyz, şuny ulanyň. Aşakdaky iki usuldan birini saýlaň.',
     intgMcpStdioTitle: 'Kömekçi tarapyndan başladyldy (maslahat berilýär)',
-    intgMcpStdioDesc: 'Kömekçi officevega mcp-ni özi işe girizýär: bu ýerde hiç zady açmak gerek däl, OfficeVega-nyň hem açyk bolmagy zerur däl. CLI bilen birmeňzeş mümkinçilikler.',
+    intgMcpStdioDesc:
+      'Kömekçi officevega mcp-ni özi işe girizýär: bu ýerde hiç zady açmak gerek däl, OfficeVega-nyň hem açyk bolmagy zerur däl. CLI bilen birmeňzeş mümkinçilikler.',
     intgMcpHttpTitle: 'Ýerli HTTP serweri',
-    intgMcpHttpDesc: 'OfficeVega-nyň içinde işleýär; kömekçi URL-e birikýär we resminamanyň Word redaktorynda ädimme-ädim döredilişine tomaşa edip bilersiňiz. OfficeVega açyk bolmaly; häzirlikçe diňe Word resminamalary.',
+    intgMcpHttpDesc:
+      'OfficeVega-nyň içinde işleýär; kömekçi URL-e birikýär we resminamanyň Word redaktorynda ädimme-ädim döredilişine tomaşa edip bilersiňiz. OfficeVega açyk bolmaly; häzirlikçe diňe Word resminamalary.',
     intgMcpHttpAdvanced: 'Öňdebaryjy: beýleki endpointler we log',
     intgMcpTryNote: 'Kömekçi OfficeVega-ny MCP arkaly çagyrýar; siz hiç hili buýruk ýazmaýarsyňyz.',
     intgMcpClaudeTitle: 'Claude Code',
     intgMcpClaudeDesc: 'Muny terminalda bir gezek işlediň:',
     intgMcpOtherTitle: 'Cursor, Claude Desktop ýa-da MCP goldaýan başga islendik kömekçi',
-    intgMcpOtherDesc: 'Muny onuň MCP serwer sazlamalaryna goşuň (JSON faýlyna ýa-da sazlamalaryndaky "Add MCP server" bölümine):',
-    intgMcpNote: 'Skill we MCP gapdal-gabata gurnalyp bilner; kömekçi olaryň birini saýlaýar. Olar birmeňzeş işleri ýerine ýetirýär.',
+    intgMcpOtherDesc:
+      'Muny onuň MCP serwer sazlamalaryna goşuň (JSON faýlyna ýa-da sazlamalaryndaky "Add MCP server" bölümine):',
+    intgMcpNote:
+      'Skill we MCP gapdal-gabata gurnalyp bilner; kömekçi olaryň birini saýlaýar. Olar birmeňzeş işleri ýerine ýetirýär.',
     intgCliTitle: 'Giňişleýin: officevega buýruk setiri',
     intgCliReady: 'officevega {v} · terminalyňyzda taýýar ({path})',
-    intgCliNotOnPath: 'officevega {v} · terminalyňyzyň PATH üýtgeýjisinde ýok. Kömekçiler ony henizem ~/.officevega/launcher arkaly tapýar, şonuň üçin skill işleýär. officevega buýrugyny özüňiz ýazmak üçin muny bir gezek işlediň:',
+    intgCliNotOnPath:
+      'officevega {v} · terminalyňyzyň PATH üýtgeýjisinde ýok. Kömekçiler ony henizem ~/.officevega/launcher arkaly tapýar, şonuň üçin skill işleýär. officevega buýrugyny özüňiz ýazmak üçin muny bir gezek işlediň:',
     intgCliLauncher: 'Launcher bukjasy',
     intgStateOutdated: '{v} gurnaldy, {next} wersiýasyna täzelenme elýeterli',
     intgStateModified: '{v} gurnaldy (üýtgedilen)',
@@ -8958,9 +9134,11 @@ export const strings = {
     intgSaveZipTitle: 'Skill-i ýatda saklamak',
     intgSavedTo: '{path} salgysynda ýatda saklandy',
     intgCopied: 'Göçürildi',
-    intgCliEphemeral: 'Ilki OfficeVega-ny Applications bukjasyna süýräp geçiriň, soňra buýruk setirini ulanyň.',
+    intgCliEphemeral:
+      'Ilki OfficeVega-ny Applications bukjasyna süýräp geçiriň, soňra buýruk setirini ulanyň.',
     intgCopyPath: 'Ýoly göçür',
-    intgCliNeedsUpdate: 'Bu skill üçin {v} ýa-da has täze buýruk setiri gerek; OfficeVega-ny täzeläň.',
+    intgCliNeedsUpdate:
+      'Bu skill üçin {v} ýa-da has täze buýruk setiri gerek; OfficeVega-ny täzeläň.',
     intgLoading: 'Barlanýar…',
     intgUpdateDue: 'Skill täzelenmesi elýeterli',
     setSecAiModel: 'AI modeli',
@@ -8977,41 +9155,55 @@ export const strings = {
     setAiBaseUrlHint: 'Resmi endpoint üçin boş goýuň.',
     setAiAccountHint: 'VEGA hasabyňyz ulanylýar; API açary gerek däl.',
     setAiCodexPath: 'Codex ýerine ýetirijisi',
-    setAiCodexPathHint: 'Muny diňe ýörite gurnama üçin belläň; awtomatiki kesgitlemek üçin boş goýuň.',
+    setAiCodexPathHint:
+      'Muny diňe ýörite gurnama üçin belläň; awtomatiki kesgitlemek üçin boş goýuň.',
     setAiCodexAutoPlaceholder: 'Awtomatiki kesgitle (maslahat berilýär)',
-    setAiCodexHint: 'Täzelenmelerden soň häzirki giriş edilen Codex CLI-ni awtomatiki tapýar; ýörite ýol görkezmek islege bagly. API açary gerek däl.',
-    setAiByokNote: 'Söhbetler öz açaryňyzy ulanýar. Surat döretmek we media seljermesi AI Media bölümine eýerýär; web gözlegi henizem VEGA girişiňizi ýa-da mugt çeşmeleri ulanýar.',
+    setAiCodexHint:
+      'Täzelenmelerden soň häzirki giriş edilen Codex CLI-ni awtomatiki tapýar; ýörite ýol görkezmek islege bagly. API açary gerek däl.',
+    setAiByokNote:
+      'Söhbetler öz açaryňyzy ulanýar. Surat döretmek we media seljermesi AI Media bölümine eýerýär; web gözlegi henizem VEGA girişiňizi ýa-da mugt çeşmeleri ulanýar.',
     setAiSaved: 'Saklandy',
     setAiTest: 'Baglanyşygy barla',
     setAiTesting: 'Barlanýar…',
     setAiTestOk: 'Baglanyşyk üstünlikli',
     setAiTestFail: 'Baglanyşyk şowsuz',
     setAiMaxTokens: 'Maksimal çykyş tokenleri',
-    setAiMaxTokensDesc: 'Bir gezekki jogap üçin çykyş býujeti. Pikirlenýän modeller onuň bir bölegini pikirlenmäge sarp edýär, şonuň üçin býujet gutaranda jogap boş gelip biler; şeýle ýagdaýda bu bahany ýokarlandyryň.',
+    setAiMaxTokensDesc:
+      'Bir gezekki jogap üçin çykyş býujeti. Pikirlenýän modeller onuň bir bölegini pikirlenmäge sarp edýär, şonuň üçin býujet gutaranda jogap boş gelip biler; şeýle ýagdaýda bu bahany ýokarlandyryň.',
     setSecAiMedia: 'AI media we gözleg',
     setAiMediaAccountHint: 'Surat döretmek we surat/wideo seljermesi VEGA girişiňizi ulanýar.',
     setAiImageModel: 'Surat modeli',
     setAiAnalysisModel: 'Seljerme modeli',
-    setAiSearchAccountHint: 'Web we surat gözlegi VEGA girişiňizi ulanýar; ulgamdan çykylan ýa-da bulut gurallary öçürilen ýagdaýynda mugt çeşmelere geçýär.',
-    setAiSearchSerperHint: 'Serper web we surat gözleginiň ikisini-de siziň açaryňyz bilen üpjün edýär.',
-    setAiSearchTavilyHint: 'Tavily web gözlegini siziň açaryňyz bilen üpjün edýär; surat gözlegi mugt çeşmelere geçýär.',
+    setAiSearchAccountHint:
+      'Web we surat gözlegi VEGA girişiňizi ulanýar; ulgamdan çykylan ýa-da bulut gurallary öçürilen ýagdaýynda mugt çeşmelere geçýär.',
+    setAiSearchSerperHint:
+      'Serper web we surat gözleginiň ikisini-de siziň açaryňyz bilen üpjün edýär.',
+    setAiSearchTavilyHint:
+      'Tavily web gözlegini siziň açaryňyz bilen üpjün edýär; surat gözlegi mugt çeşmelere geçýär.',
     setAiCapImage: 'Surat döretmek',
     setAiCapAnalysis: 'Surat seljermesi',
     setAiCapVideo: 'Wideo seljermesi',
     setAiCapSearch: 'Web gözlegi',
-    setAiSharedKeyHint: 'Üpjin edijiniň açary we esasy URL-si ähli mümkinçiliklerde paýlaşylýar; olary bir gezek giriziň.',
+    setAiSharedKeyHint:
+      'Üpjin edijiniň açary we esasy URL-si ähli mümkinçiliklerde paýlaşylýar; olary bir gezek giriziň.',
     setAiVegaTools: 'VEGA bulut gurallary',
-    setAiVegaToolsDesc: 'Web gözlegi, surat döretmek we media seljermesi üpjün edijisi VEGA saýlanylanda VEGA açaryňyz bilen api.vega.chat arkaly işleýär; öçürilende bu gurallar VEGA girişiňize ýa-da mugt çeşmelere geçýär. Söhbet üpjün edijisine täsir etmeýär.',
-    setAiVegaNote: 'OpenRouter bilen utgaşykly gateway — bir gezek giriň, API açary awtomatiki berilýär; ol hiç haçan görkezilmeýär ýa-da üýtgedilip bilinmeýär.',
-    setAiVegaSigninDesc: 'Bir gezek giriň — API açary berilýär we şu enjamda howpsuz saklanýar; göçürip goýuljak zat ýok.',
+    setAiVegaToolsDesc:
+      'Web gözlegi, surat döretmek we media seljermesi üpjün edijisi VEGA saýlanylanda VEGA açaryňyz bilen api.vega.chat arkaly işleýär; öçürilende bu gurallar VEGA girişiňize ýa-da mugt çeşmelere geçýär. Söhbet üpjün edijisine täsir etmeýär.',
+    setAiVegaNote:
+      'OpenRouter bilen utgaşykly gateway — bir gezek giriň, API açary awtomatiki berilýär; ol hiç haçan görkezilmeýär ýa-da üýtgedilip bilinmeýär.',
+    setAiVegaSigninDesc:
+      'Bir gezek giriň — API açary berilýär we şu enjamda howpsuz saklanýar; göçürip goýuljak zat ýok.',
     setAiVegaSignedIn: 'Giriş edildi — açar awtomatiki dolandyrylýar',
-    setAiMediaVegaHint: 'Giriş açaryňyz bilen api.vega.chat arkaly işleýär; model VEGA tarapyndan bellenýär.',
-    setAiSearchVegaHint: 'Web gözlegi giriş açaryňyz bilen api.vega.chat arkaly işleýär; surat gözlegi mugt çeşmeleri ulanýar.',
+    setAiMediaVegaHint:
+      'Giriş açaryňyz bilen api.vega.chat arkaly işleýär; model VEGA tarapyndan bellenýär.',
+    setAiSearchVegaHint:
+      'Web gözlegi giriş açaryňyz bilen api.vega.chat arkaly işleýär; surat gözlegi mugt çeşmeleri ulanýar.',
     setGithub: 'Açyk çeşme',
     starOnGitHub: 'GitHub-da ýyldyz goýuň',
     starPromptTitle: 'OfficeVega-dan peýdalanýarsyňyzmy?',
     starPromptTitleN: 'OfficeVega bilen {n} resminama açdyňyz',
-    starPromptBody: 'OfficeVega mugt we açyk çeşmelidir. GitHub-da ýyldyz goýmak topara goldaw bermegiň iň gowy usulydyr.',
+    starPromptBody:
+      'OfficeVega mugt we açyk çeşmelidir. GitHub-da ýyldyz goýmak topara goldaw bermegiň iň gowy usulydyr.',
     starPromptGo: 'GitHub-da ýyldyz goýuň',
     starPromptDone: 'Eýýäm ýyldyz goýuldy',
     starPromptLater: 'Belki soňrak',
@@ -9032,9 +9224,11 @@ export const strings = {
     // First-run onboarding
     onbTitle1: 'OfficeVega-a hoş geldiňiz',
     onbSubtitle1: 'Ilkinji açyk çeşmeli, AI esasly ofis toplumy',
-    onbBody1: 'Resminamalar dörediň, elektron tablisalary taýýarlaň, slaýdlar dörediň we PDF faýllaryny gözden geçiriň. AI her ädimde içinden gurlandyr.',
+    onbBody1:
+      'Resminamalar dörediň, elektron tablisalary taýýarlaň, slaýdlar dörediň we PDF faýllaryny gözden geçiriň. AI her ädimde içinden gurlandyr.',
     onbTitle2: 'Bu diňe başlangyjy',
-    onbBody2: 'OfficeVega häzirlikçe alfa tapgyrynda. GitHub-da bize ýyldyz goýuň we indiki ädimleri kesgitlemäge kömek etmek üçin pikirleriňizi paýlaşyň.',
+    onbBody2:
+      'OfficeVega häzirlikçe alfa tapgyrynda. GitHub-da bize ýyldyz goýuň we indiki ädimleri kesgitlemäge kömek etmek üçin pikirleriňizi paýlaşyň.',
     onbCredits: 'Işjeň goşant goşýanlar **1 000+ VEGA krediti** alýarlar',
     onbJoinGitHub: 'GitHub-da ýyldyz goýuň',
     onbSkip: 'Geçir',
@@ -9045,7 +9239,7 @@ export const strings = {
     onbBody3: 'Lisenziýa tölegi ýok. Mahabat ýok. Suw belgisi ýok.',
     onbNote3: 'AI aýratynlyklary VEGA depozitiňizden sarp edip biler.',
     onbBack: 'Yza',
-      addFolderRoot: 'Buja goşuň…',
+    addFolderRoot: 'Buja goşuň…',
     removeFolderRoot: 'Sanawdan aýyr',
     rootUnavailable: 'Elýeterli däl',
     searchClear: 'Gözlegi arassala',
@@ -9057,18 +9251,21 @@ export const strings = {
     searchResultCount: '{n} netije',
     searchResultCountOne: '{n} netije',
     setAiCapFileSearch: 'Ýerli faýl gözlegi',
-    setAiSearchParallelHint: 'Mugt Parallel gözlegi üçin açary boş goýuň (çäkli ulanyş). Parallel hasabyňyzy ulanmak üçin açar goşuň. Surat gözlegi beýleki çeşmeleri ulanýar.',
+    setAiSearchParallelHint:
+      'Mugt Parallel gözlegi üçin açary boş goýuň (çäkli ulanyş). Parallel hasabyňyzy ulanmak üçin açar goşuň. Surat gözlegi beýleki çeşmeleri ulanýar.',
     setSearchRerank: 'Jev gözleginiň tertiplemesi',
-    setSearchRerankDesc: 'Ýerli gözlegiň ilkinji 20 netijesiniň böleklerini TypeSafe Jev modeline iberýär we degişlilik boýunça täzeden tertipleýär. Gaýybana öçürilen; açylanda bölekler bu enjamdan çykýar.',
+    setSearchRerankDesc:
+      'Ýerli gözlegiň ilkinji 20 netijesiniň böleklerini TypeSafe Jev modeline iberýär we degişlilik boýunça täzeden tertipleýär. Gaýybana öçürilen; açylanda bölekler bu enjamdan çykýar.',
     setSearchRerankEndpoint: 'Jev nokady',
-},
+  },
   ky: {
     navRecent: 'Акыркы колдонулгандар',
     navStarred: 'Жылдызча коюлган',
     fileSortRecent: 'Акыркы колдонулгандар',
     fileSortOldest: 'Эң эски',
     navTrash: 'Таштанды челеки',
-    navTrashTip: 'Өчүрүлгөн файлдар системанын таштанды челегине жөнөтүлөт жана аларды ошол жерден калыбына келтирүүгө болот',
+    navTrashTip:
+      'Өчүрүлгөн файлдар системанын таштанды челегине жөнөтүлөт жана аларды ошол жерден калыбына келтирүүгө болот',
     secQuickStart: 'Ыкчам баштоо',
     secRecent: 'Акыркы колдонулгандар',
     secStarred: 'Жылдызча коюлган',
@@ -9109,7 +9306,8 @@ export const strings = {
     selectFile: '{name} тандаңыз',
     removeFromList: 'Тизмеден алып салуу',
     missingFileTitle: 'Файл жеткиликсиз',
-    missingFileBody: '“{name}” табылган жок. Ал туташпаган дискте болушу же жылдырылып, өчүрүлүп калышы мүмкүн. Аны тизмеден алып саласызбы?',
+    missingFileBody:
+      '“{name}” табылган жок. Ал туташпаган дискте болушу же жылдырылып, өчүрүлүп калышы мүмкүн. Аны тизмеден алып саласызбы?',
     deleteFiles: 'Файлдарды өчүрүү',
     cancel: 'Жокко чыгаруу',
     star: 'Жылдыз',
@@ -9145,7 +9343,8 @@ export const strings = {
     folderMoreActions: '{name} үчүн көбүрөөк аракеттер',
     conflictTitle: 'Мындай аталыштагы элемент мурунтан эле бар',
     conflictBodyOne: 'Максаттуу папкада "{name}" мурунтан эле бар. Эмне кылгыңыз келет?',
-    conflictBodyMany: 'Максаттуу папкада ушундай аталыштагы {n} элемент мурунтан эле бар. Эмне кылгыңыз келет?',
+    conflictBodyMany:
+      'Максаттуу папкада ушундай аталыштагы {n} элемент мурунтан эле бар. Эмне кылгыңыз келет?',
     conflictKeepBoth: 'Экөөнү тең сактоо',
     conflictReplace: 'Алмаштыруу',
     rootUnusable: 'Демейки сактоо орду жеткиликсиз болгондуктан, папкаларды көрсөтүү мүмкүн эмес.',
@@ -9166,7 +9365,7 @@ export const strings = {
     login: 'Кирүү',
     loginVega: 'VEGA менен кирүү',
     loggedIn: 'Кирдиңиз',
-    loggedInVega: 'VEGA\'га кирилди',
+    loggedInVega: "VEGA'га кирилди",
     waitingLogin: 'Браузер аркылуу кирүү күтүлүүдө… Кирүү барагын кайра ачуу үчүн басыңыз',
     loginTimeout: 'Кирүү убактысы бүттү — кайра аракет кылуу үчүн басыңыз',
     loginLaunchFailed: 'Кирүүнү баштоо мүмкүн болбоду — кайра аракет кылуу үчүн басыңыз',
@@ -9174,7 +9373,7 @@ export const strings = {
     loginOpenShort: 'Кирүү барагын кол менен ачуу',
     loginCopyUrl: 'Кирүү шилтемесин көчүрүү',
     loginCopied: 'Көчүрүлдү',
-    loginNetworkError: 'VEGA\'га туташуу мүмкүн эмес — тармак же прокси жөндөөлөрүңүздү текшериңиз',
+    loginNetworkError: "VEGA'га туташуу мүмкүн эмес — тармак же прокси жөндөөлөрүңүздү текшериңиз",
     loginExpired: 'Кирүү мөөнөтү бүттү — кайра аракет кылуу үчүн басыңыз',
     loginFailed: 'Кирүү ишке ашкан жок — кайра аракет кылуу үчүн басыңыз',
     loginDeviceCode: 'Түзмөк коду',
@@ -9194,9 +9393,11 @@ export const strings = {
     themeSystem: 'Системаны ээрчүү',
     saveLocation: 'Сактоо орду',
     setAutoSave: 'Бардык документтерди автоматтык сактоо',
-    setAutoSaveDesc: 'Ар бир редактордо AutoSave функциясын демейки боюнча күйгүзүү. Аны бир терезе үчүн өзүнчө өчүрө аласыз.',
+    setAutoSaveDesc:
+      'Ар бир редактордо AutoSave функциясын демейки боюнча күйгүзүү. Аны бир терезе үчүн өзүнчө өчүрө аласыз.',
     setAnalytics: 'Анонимдүү колдонуу статистикасын жөнөтүү',
-    setAnalyticsDesc: 'Демейки боюнча күйгүзүлгөн жана Жөндөөлөр → Жалпы бөлүмүнөн каалаган убакта өчүрүлөт. Google Analytics 4 колдонулат; Google сиздин жалпыга ачык IP дарегиңизди жана өткөрүү метамаалыматтарын алат, бирок документтердин мазмуну менен файл аттары эч качан чогултулбайт.',
+    setAnalyticsDesc:
+      'Демейки боюнча күйгүзүлгөн жана Жөндөөлөр → Жалпы бөлүмүнөн каалаган убакта өчүрүлөт. Google Analytics 4 колдонулат; Google сиздин жалпыга ачык IP дарегиңизди жана өткөрүү метамаалыматтарын алат, бирок документтердин мазмуну менен файл аттары эч качан чогултулбайт.',
     setAiPanelSide: 'AI каптал тилкесинин жайгашуусу',
     aiPanelSideLeft: 'Сол',
     aiPanelSideRight: 'Оң',
@@ -9206,12 +9407,14 @@ export const strings = {
     aiFontSizeXLarge: 'Өтө чоң',
     aiFontSizeCustom: 'Ыңгайлаштырылган',
     setAiSpellcheck: 'AI чатында орфографияны текшерүү',
-    setAiSpellcheckDesc: 'AI чатына киргизүү талаасында терип жатканда туура эмес жазылган сөздөрдүн астын сызуу.',
+    setAiSpellcheckDesc:
+      'AI чатына киргизүү талаасында терип жатканда туура эмес жазылган сөздөрдүн астын сызуу.',
     settings: 'Жөндөөлөр',
     setSecAccount: 'Каттоо эсеби',
     setSecGeneral: 'Жалпы',
     setMcp: 'Жергиликтүү MCP сервери',
-    setMcpDesc: 'Тышкы AI агенттерине (Claude Desktop, Cursor…) ушул иштеп жаткан колдонмо аркылуу Word документтерин түзүүгө уруксат берүү. Localhost гана.',
+    setMcpDesc:
+      'Тышкы AI агенттерине (Claude Desktop, Cursor…) ушул иштеп жаткан колдонмо аркылуу Word документтерин түзүүгө уруксат берүү. Localhost гана.',
     setMcpPort: 'Порт',
     setMcpRunning: 'Иштеп жатат',
     setMcpStopped: 'Иштеп жаткан жок',
@@ -9221,9 +9424,11 @@ export const strings = {
     setMcpCopy: 'Көчүрүү',
     setMcpCopied: 'Көчүрүлдү',
     setMcpConfig: 'Кардар конфигурациясынын мисалы',
-    setMcpConfigDesc: 'Муну кардардын MCP серверинин конфигурациясына кошуңуз (Claude Desktop колдонмосундагы mcp.json файлына, Cursor колдонмосунун MCP жөндөөлөрүнө, …).',
+    setMcpConfigDesc:
+      'Муну кардардын MCP серверинин конфигурациясына кошуңуз (Claude Desktop колдонмосундагы mcp.json файлына, Cursor колдонмосунун MCP жөндөөлөрүнө, …).',
     setMcpBg: 'Фондо түзүү',
-    setMcpBgDesc: 'Колдонуучу интерфейсин ачпастан документтерди түз көрсөтүлгөн жолго жазуу; өчүрүлгөндө түзүү колдонмодо көрүнүп турат.',
+    setMcpBgDesc:
+      'Колдонуучу интерфейсин ачпастан документтерди түз көрсөтүлгөн жолго жазуу; өчүрүлгөндө түзүү колдонмодо көрүнүп турат.',
     setMcpLog: 'Журналга жазуу',
     setMcpLogDesc: 'MCP серверинин жана куралдардын аракеттерин жергиликтүү журнал файлына жазуу',
     setMcpLogFile: 'Журнал файлы',
@@ -9235,50 +9440,63 @@ export const strings = {
     setSecAbout: 'Колдонмо тууралуу',
     setSecIntegrations: 'Интеграциялар',
     intgHeroTitle: 'OfficeVega колдонмосун AI жардамчыңыздан пайдаланыңыз',
-    intgHeroDesc: 'Туташкандан кийин Claude Code, Codex, Cursor, Claude Desktop жана ушул сыяктуу жардамчылар сиз үчүн Word, Excel, PowerPoint, PDF жана Markdown файлдарын түзүп, өзгөртүп, окуп жана түзөтө алышат. Баары ушул компьютерде иштейт; эч нерсе жүктөлбөйт.',
-    intgHeroStep1: 'Жолду тандаңыз: жардамчыңыз терминал буйруктарын аткара алса CLI, аткара албаса MCP',
+    intgHeroDesc:
+      'Туташкандан кийин Claude Code, Codex, Cursor, Claude Desktop жана ушул сыяктуу жардамчылар сиз үчүн Word, Excel, PowerPoint, PDF жана Markdown файлдарын түзүп, өзгөртүп, окуп жана түзөтө алышат. Баары ушул компьютерде иштейт; эч нерсе жүктөлбөйт.',
+    intgHeroStep1:
+      'Жолду тандаңыз: жардамчыңыз терминал буйруктарын аткара алса CLI, аткара албаса MCP',
     intgHeroStep2: 'Төмөндөгү тиешелүү бөлүмдү аткарыңыз; адатта бир чыкылдатуу жетиштүү',
     intgHeroStep3: 'Жаңы чат ачып, жөн гана сураңыз',
-    intgStep1Title: 'Skill\'ди жардамчыңызга орнотуңуз',
-    intgStep1Desc: 'Бул компьютерден табылган жардамчылар гана көрсөтүлөт. Чынында колдонгон жардамчыңызга орнотуңуз; алардын баарына орнотуунун кереги жок.',
-    intgStep1Update: 'OfficeVega жаңыртуусунда жаңы skill чыкса, ошол жардамчынын жанында Жаңыртуу баскычы пайда болот.',
+    intgStep1Title: "Skill'ди жардамчыңызга орнотуңуз",
+    intgStep1Desc:
+      'Бул компьютерден табылган жардамчылар гана көрсөтүлөт. Чынында колдонгон жардамчыңызга орнотуңуз; алардын баарына орнотуунун кереги жок.',
+    intgStep1Update:
+      'OfficeVega жаңыртуусунда жаңы skill чыкса, ошол жардамчынын жанында Жаңыртуу баскычы пайда болот.',
     intgSkillVersion: 'skill {v}',
     intgStateMissing: 'Skill орнотулган эмес',
     intgStateInstalled: 'Skill {v} орнотулду · кийинки чатыңызда колдонууга даяр',
     intgOtherToggle: 'Жардамчым тизмеде жок',
-    intgOtherDesc: 'Ушул үч ыкманын каалаган бирин тандаңыз. Алардын баары бир эле skill\'ди орнотот, ошондуктан бирден ашык ыкманы колдонуунун кереги жок.',
+    intgOtherDesc:
+      "Ушул үч ыкманын каалаган бирин тандаңыз. Алардын баары бир эле skill'ди орнотот, ошондуктан бирден ашык ыкманы колдонуунун кереги жок.",
     intgOtherFolderTitle: 'SKILL.md папкаларын окуган каалаган жардамчы',
     intgOtherFolderDesc: 'Анын skills папкасын тандаңыз, OfficeVega файлды ошол жерге жазат.',
     intgOtherZipTitle: 'Файлды жардамчыга бериңиз',
-    intgOtherZipDesc: 'Skill\'ди zip катары сактап, андан кийин жардамчыдан аны орнотууну сураңыз.',
+    intgOtherZipDesc: "Skill'ди zip катары сактап, андан кийин жардамчыдан аны орнотууну сураңыз.",
     intgOtherNpxTitle: 'skills буйругу менен (Node.js талап кылынат)',
     intgOtherNpxDesc: 'Муну терминалда аткарыңыз:',
     intgCopy: 'Көчүрүү',
     intgStep2Title: 'Сынап көрүү',
     intgStep2Desc: 'Жардамчыңызда жаңы чат ачып, жөнөкөй сөздөр менен, мисалы, мындай сураңыз:',
-    intgStep2DescBefore: 'Орнотулгандан кийин жардамчыңызда жаңы чат ачып, жөнөкөй сөздөр менен, мисалы, мындай сураңыз:',
+    intgStep2DescBefore:
+      'Орнотулгандан кийин жардамчыңызда жаңы чат ачып, жөнөкөй сөздөр менен, мисалы, мындай сураңыз:',
     intgExample1: '~/Downloads/report.md файлын Word документине айландыр',
     intgExample2: 'Q3 жыйынтыктарыбыз жөнүндө 6 слайддан турган презентация түз',
-    intgExample3: 'budget.xlsx файлын PDF форматына айлантып, OfficeVega\'да ач',
+    intgExample3: "budget.xlsx файлын PDF форматына айлантып, OfficeVega'да ач",
     intgStep2Note: 'Жардамчы officevega буйрук сабын өзү иштетет; аны терүүнүн кереги жок.',
     intgCliPartTitle: 'CLI · буйрук сабы + skill',
-    intgCliPartDesc: 'Терминал буйруктарын аткара алган жардамчылар үчүн (Claude Code, Codex, Cursor жана башкалар). Skill орнотулгандан кийин жардамчы файлдарды түзүү, өзгөртүү, окуу жана түзөтүү үчүн officevega буйрук сабын өзү чакырат; сиз эч кандай буйрук тербейсиз.',
+    intgCliPartDesc:
+      'Терминал буйруктарын аткара алган жардамчылар үчүн (Claude Code, Codex, Cursor жана башкалар). Skill орнотулгандан кийин жардамчы файлдарды түзүү, өзгөртүү, окуу жана түзөтүү үчүн officevega буйрук сабын өзү чакырат; сиз эч кандай буйрук тербейсиз.',
     intgMcpPartTitle: 'MCP',
-    intgMcpPartDesc: 'MCP — AI жардамчылары тышкы куралдарды чакыруу үчүн колдонгон жалпы протокол. Жардамчыңыз буйруктарды аткара албаганда (мисалы, Claude Desktop) же OfficeVega терезесин түз башкаргыңыз келгенде колдонуңуз. Төмөндөгү эки ыкманын бирин тандаңыз.',
+    intgMcpPartDesc:
+      'MCP — AI жардамчылары тышкы куралдарды чакыруу үчүн колдонгон жалпы протокол. Жардамчыңыз буйруктарды аткара албаганда (мисалы, Claude Desktop) же OfficeVega терезесин түз башкаргыңыз келгенде колдонуңуз. Төмөндөгү эки ыкманын бирин тандаңыз.',
     intgMcpStdioTitle: 'Жардамчы иштетет (сунушталат)',
-    intgMcpStdioDesc: 'Жардамчы officevega mcp\'ни өзү иштетет: бул жерде эч нерсени күйгүзүүнүн кереги жок жана OfficeVega ачык турушу шарт эмес. CLI менен бирдей мүмкүнчүлүктөр.',
+    intgMcpStdioDesc:
+      "Жардамчы officevega mcp'ни өзү иштетет: бул жерде эч нерсени күйгүзүүнүн кереги жок жана OfficeVega ачык турушу шарт эмес. CLI менен бирдей мүмкүнчүлүктөр.",
     intgMcpHttpTitle: 'Жергиликтүү HTTP сервери',
-    intgMcpHttpDesc: 'OfficeVega ичинде иштейт; жардамчы URL дарегине туташып, документтин Word редакторунда кадам сайын түзүлүшүн көрө аласыз. OfficeVega ачык турушу керек; азырынча Word документтери гана колдоого алынат.',
-    intgMcpHttpAdvanced: 'Өркүндөтүлгөн: башка endpoint\'тер жана журнал',
-    intgMcpTryNote: 'Жардамчы OfficeVega\'ны MCP аркылуу чакырат; сиз эч кандай буйрук тербейсиз.',
+    intgMcpHttpDesc:
+      'OfficeVega ичинде иштейт; жардамчы URL дарегине туташып, документтин Word редакторунда кадам сайын түзүлүшүн көрө аласыз. OfficeVega ачык турушу керек; азырынча Word документтери гана колдоого алынат.',
+    intgMcpHttpAdvanced: "Өркүндөтүлгөн: башка endpoint'тер жана журнал",
+    intgMcpTryNote: "Жардамчы OfficeVega'ны MCP аркылуу чакырат; сиз эч кандай буйрук тербейсиз.",
     intgMcpClaudeTitle: 'Claude Code',
     intgMcpClaudeDesc: 'Муну терминалда бир жолу аткарыңыз:',
     intgMcpOtherTitle: 'Cursor, Claude Desktop же MCP колдогон башка жардамчы',
-    intgMcpOtherDesc: 'Муну анын MCP серверинин жөндөөлөрүнө кошуңуз (JSON файлына же жөндөөлөрүндөгү «MCP серверин кошуу» бөлүмүнө):',
-    intgMcpNote: 'Көндүм менен MCP’ни катарлаш орнотсо болот; жардамчы алардын бирин тандайт. Экөө тең бир эле иштерди аткарат.',
+    intgMcpOtherDesc:
+      'Муну анын MCP серверинин жөндөөлөрүнө кошуңуз (JSON файлына же жөндөөлөрүндөгү «MCP серверин кошуу» бөлүмүнө):',
+    intgMcpNote:
+      'Көндүм менен MCP’ни катарлаш орнотсо болот; жардамчы алардын бирин тандайт. Экөө тең бир эле иштерди аткарат.',
     intgCliTitle: 'Өркүндөтүлгөн: officevega буйрук сабы',
     intgCliReady: 'officevega {v} · терминалыңызда даяр ({path})',
-    intgCliNotOnPath: 'officevega {v} · терминалыңыздын PATH жолунда жок. Жардамчылар аны ~/.officevega/launcher аркылуу дагы таба алышат, андыктан көндүм иштейт. officevega’ти өзүңүз терүү үчүн муну бир жолу аткарыңыз:',
+    intgCliNotOnPath:
+      'officevega {v} · терминалыңыздын PATH жолунда жок. Жардамчылар аны ~/.officevega/launcher аркылуу дагы таба алышат, андыктан көндүм иштейт. officevega’ти өзүңүз терүү үчүн муну бир жолу аткарыңыз:',
     intgCliLauncher: 'Ишке киргизгичтин папкасы',
     intgStateOutdated: '{v} орнотулду, {next} жаңыртуусу жеткиликтүү',
     intgStateModified: '{v} орнотулду (өзгөртүлгөн)',
@@ -9302,9 +9520,11 @@ export const strings = {
     intgSaveZipTitle: 'Көндүмдү сактоо',
     intgSavedTo: 'Сакталды: {path}',
     intgCopied: 'Көчүрүлдү',
-    intgCliEphemeral: 'Адегенде OfficeVega’ны Applications папкасына сүйрөп, андан соң буйрук сабын колдонуңуз.',
+    intgCliEphemeral:
+      'Адегенде OfficeVega’ны Applications папкасына сүйрөп, андан соң буйрук сабын колдонуңуз.',
     intgCopyPath: 'Жолду көчүрүү',
-    intgCliNeedsUpdate: 'Бул көндүмгө {v} же андан жаңыраак буйрук сабы керек; OfficeVega’ны жаңыртыңыз.',
+    intgCliNeedsUpdate:
+      'Бул көндүмгө {v} же андан жаңыраак буйрук сабы керек; OfficeVega’ны жаңыртыңыз.',
     intgLoading: 'Текшерилүүдө…',
     intgUpdateDue: 'Көндүмдүн жаңыртуусу жеткиликтүү',
     setSecAiModel: 'AI модели',
@@ -9321,41 +9541,55 @@ export const strings = {
     setAiBaseUrlHint: 'Расмий акыркы чекитти колдонуу үчүн бош калтырыңыз.',
     setAiAccountHint: 'VEGA аккаунтуңуз колдонулат; API ачкычы талап кылынбайт.',
     setAiCodexPath: 'Codex аткарылуучу файлы',
-    setAiCodexPathHint: 'Муну ыңгайлаштырылган орнотуу үчүн гана коюңуз; автоматтык аныктоо үчүн бош калтырыңыз.',
+    setAiCodexPathHint:
+      'Муну ыңгайлаштырылган орнотуу үчүн гана коюңуз; автоматтык аныктоо үчүн бош калтырыңыз.',
     setAiCodexAutoPlaceholder: 'Автоматтык аныктоо (сунушталат)',
-    setAiCodexHint: 'Жаңыртуулардан кийин учурда аккаунтка кирген Codex CLI’ди автоматтык түрдө табат; ыңгайлаштырылган жол милдеттүү эмес. API ачкычы талап кылынбайт.',
-    setAiByokNote: 'Чаттарда өзүңүздүн ачкычыңыз колдонулат. Сүрөт түзүү жана медианы талдоо AI Media бөлүмүнөн жөндөлөт; веб-издөөдө дагы VEGA аккаунту же акысыз булактар колдонулат.',
+    setAiCodexHint:
+      'Жаңыртуулардан кийин учурда аккаунтка кирген Codex CLI’ди автоматтык түрдө табат; ыңгайлаштырылган жол милдеттүү эмес. API ачкычы талап кылынбайт.',
+    setAiByokNote:
+      'Чаттарда өзүңүздүн ачкычыңыз колдонулат. Сүрөт түзүү жана медианы талдоо AI Media бөлүмүнөн жөндөлөт; веб-издөөдө дагы VEGA аккаунту же акысыз булактар колдонулат.',
     setAiSaved: 'Сакталды',
     setAiTest: 'Байланышты текшерүү',
     setAiTesting: 'Текшерилүүдө…',
     setAiTestOk: 'Байланыш ийгиликтүү',
     setAiTestFail: 'Байланыш үзүлдү',
     setAiMaxTokens: 'Чыгыш токендеринин максималдуу саны',
-    setAiMaxTokensDesc: 'Бир айлампа үчүн чыгыштын бюджети. Ой жүгүртүүчү моделдер анын бир бөлүгүн ойлоого коротот, андыктан бюджет түгөнгөндө жооп бош кайтышы мүмкүн; мындай болсо бул маанини көбөйтүңүз.',
+    setAiMaxTokensDesc:
+      'Бир айлампа үчүн чыгыштын бюджети. Ой жүгүртүүчү моделдер анын бир бөлүгүн ойлоого коротот, андыктан бюджет түгөнгөндө жооп бош кайтышы мүмкүн; мындай болсо бул маанини көбөйтүңүз.',
     setSecAiMedia: 'AI медиа жана издөө',
-    setAiMediaAccountHint: 'Сүрөт түзүү жана сүрөт/видеону талдоо үчүн VEGA аккаунтуңуз колдонулат.',
+    setAiMediaAccountHint:
+      'Сүрөт түзүү жана сүрөт/видеону талдоо үчүн VEGA аккаунтуңуз колдонулат.',
     setAiImageModel: 'Сүрөт модели',
     setAiAnalysisModel: 'Талдоо модели',
-    setAiSearchAccountHint: 'Веб жана сүрөт издөөдө VEGA аккаунтуңуз колдонулат; аккаунттан чыкканда же булут куралдары өчүк болгондо акысыз булактарга өтөт.',
+    setAiSearchAccountHint:
+      'Веб жана сүрөт издөөдө VEGA аккаунтуңуз колдонулат; аккаунттан чыкканда же булут куралдары өчүк болгондо акысыз булактарга өтөт.',
     setAiSearchSerperHint: 'Serper сиздин ачкычыңыз менен веб жана сүрөт издөөсүн камсыздайт.',
-    setAiSearchTavilyHint: 'Tavily сиздин ачкычыңыз менен веб издөөсүн камсыздайт; сүрөт издөөсү акысыз булактарга өтөт.',
+    setAiSearchTavilyHint:
+      'Tavily сиздин ачкычыңыз менен веб издөөсүн камсыздайт; сүрөт издөөсү акысыз булактарга өтөт.',
     setAiCapImage: 'Сүрөт түзүү',
     setAiCapAnalysis: 'Сүрөттү талдоо',
     setAiCapVideo: 'Видеону талдоо',
     setAiCapSearch: 'Веб издөө',
-    setAiSharedKeyHint: 'Провайдердин ачкычы менен негизги URL’и бардык мүмкүнчүлүктөргө орток; аларды бир жолу киргизиңиз.',
+    setAiSharedKeyHint:
+      'Провайдердин ачкычы менен негизги URL’и бардык мүмкүнчүлүктөргө орток; аларды бир жолу киргизиңиз.',
     setAiVegaTools: 'VEGA булут куралдары',
-    setAiVegaToolsDesc: 'Веб издөө, сүрөт түзүү жана медианы талдоо VEGA провайдери тандалганда VEGA ачкычыңыз аркылуу api.vega.chat серверинде иштейт; өчүрүлгөндө бул куралдар VEGA аккаунтуна же акысыз булактарга өтөт. Чат провайдерине таасир этпейт.',
-    setAiVegaNote: 'OpenRouter’ге шайкеш шлюз — бир жолу кирип, API ачкычын автоматтык түрдө алыңыз; ал эч качан көрсөтүлбөйт жана түзөтүлбөйт.',
-    setAiVegaSigninDesc: 'Бир жолу кириңиз — API ачкычы түзүлүп, бул түзмөктө коопсуз сакталат; чаптай турган эч нерсе жок.',
+    setAiVegaToolsDesc:
+      'Веб издөө, сүрөт түзүү жана медианы талдоо VEGA провайдери тандалганда VEGA ачкычыңыз аркылуу api.vega.chat серверинде иштейт; өчүрүлгөндө бул куралдар VEGA аккаунтуна же акысыз булактарга өтөт. Чат провайдерине таасир этпейт.',
+    setAiVegaNote:
+      'OpenRouter’ге шайкеш шлюз — бир жолу кирип, API ачкычын автоматтык түрдө алыңыз; ал эч качан көрсөтүлбөйт жана түзөтүлбөйт.',
+    setAiVegaSigninDesc:
+      'Бир жолу кириңиз — API ачкычы түзүлүп, бул түзмөктө коопсуз сакталат; чаптай турган эч нерсе жок.',
     setAiVegaSignedIn: 'Кирдиңиз — ачкыч автоматтык түрдө башкарылат',
-    setAiMediaVegaHint: 'Сиздин аккаунтуңуздун ачкычы менен api.vega.chat аркылуу иштейт; моделди VEGA тандайт.',
-    setAiSearchVegaHint: 'Веб издөө сиздин аккаунтуңуздун ачкычы менен api.vega.chat аркылуу иштейт; сүрөт издөөдө акысыз булактар колдонулат.',
+    setAiMediaVegaHint:
+      'Сиздин аккаунтуңуздун ачкычы менен api.vega.chat аркылуу иштейт; моделди VEGA тандайт.',
+    setAiSearchVegaHint:
+      'Веб издөө сиздин аккаунтуңуздун ачкычы менен api.vega.chat аркылуу иштейт; сүрөт издөөдө акысыз булактар колдонулат.',
     setGithub: 'Ачык булак',
     starOnGitHub: 'GitHub’да жылдызча коюу',
     starPromptTitle: 'OfficeVega сизге жагабы?',
     starPromptTitleN: 'Сиз OfficeVega менен {n} документ ачтыңыз',
-    starPromptBody: 'OfficeVega акысыз жана ачык булактуу. GitHub’да жылдызча коюу — командага колдоо көрсөтүүнүн эң жакшы жолу.',
+    starPromptBody:
+      'OfficeVega акысыз жана ачык булактуу. GitHub’да жылдызча коюу — командага колдоо көрсөтүүнүн эң жакшы жолу.',
     starPromptGo: 'GitHub’да жылдызча коюу',
     starPromptDone: 'Буга чейин жылдызча коюлган',
     starPromptLater: 'Балким, кийинчерээк',
@@ -9374,11 +9608,13 @@ export const strings = {
     appMenu: 'Меню',
     newTab: 'Жаңы өтмөк',
     // First-run onboarding
-    onbTitle1: 'OfficeVega\'га кош келиңиз',
+    onbTitle1: "OfficeVega'га кош келиңиз",
     onbSubtitle1: 'Биринчи ачык коддуу, AI-негизиндеги кеңсе топтому',
-    onbBody1: 'Документ түзүңүз, жадыбалдарды даярдаңыз, слайддарды жасаңыз жана PDF файлдарын карап чыгыңыз. AI ар бир кадамга камтылган.',
+    onbBody1:
+      'Документ түзүңүз, жадыбалдарды даярдаңыз, слайддарды жасаңыз жана PDF файлдарын карап чыгыңыз. AI ар бир кадамга камтылган.',
     onbTitle2: 'Бул башталышы гана',
-    onbBody2: 'OfficeVega азырынча альфа версиясында. GitHub\'да бизге жылдызча коюп, кийинки мүмкүнчүлүктөрдү аныктоого жардам берүү үчүн пикир бөлүшүңүз.',
+    onbBody2:
+      "OfficeVega азырынча альфа версиясында. GitHub'да бизге жылдызча коюп, кийинки мүмкүнчүлүктөрдү аныктоого жардам берүү үчүн пикир бөлүшүңүз.",
     onbCredits: 'Жигердүү салым кошуучулар **1 000+ VEGA кредитин** алышат',
     onbJoinGitHub: 'GitHub’да жылдызча коюу',
     onbSkip: 'Өткөрүп жиберүү',
@@ -9389,7 +9625,7 @@ export const strings = {
     onbBody3: 'Лицензиялык төлөмдөр жок. Жарнамалар жок. Суу белгилери жок.',
     onbNote3: 'AI функциялары VEGA депозитиңизди коротушу мүмкүн.',
     onbBack: 'Артка',
-      addFolderRoot: 'Папка кошуу…',
+    addFolderRoot: 'Папка кошуу…',
     removeFolderRoot: 'Тизмеден алып салуу',
     rootUnavailable: 'Жеткиликсиз',
     searchClear: 'Издөөнү тазалоо',
@@ -9401,18 +9637,21 @@ export const strings = {
     searchResultCount: '{n} жыйынтык',
     searchResultCountOne: '{n} жыйынтык',
     setAiCapFileSearch: 'Жергиликтүү файл издөө',
-    setAiSearchParallelHint: 'Акысыз Parallel издөө үчүн ачтыкты бош калтырыңыз (чектелген колдонуу). Parallel аккаунтуңузду колдонуу үчүн ачтык кошуңуз. Сүрөт издөө башка булактарды колдонот.',
+    setAiSearchParallelHint:
+      'Акысыз Parallel издөө үчүн ачтыкты бош калтырыңыз (чектелген колдонуу). Parallel аккаунтуңузду колдонуу үчүн ачтык кошуңуз. Сүрөт издөө башка булактарды колдонот.',
     setSearchRerank: 'Jev издөөнү кайра иреттөө',
-    setSearchRerankDesc: 'Жергиликтүү издөөнүн алгачкы 20 жыйынтыгынын үзүндүлөрүн TypeSafe Jev моделине жиберет жана ылайыкташтык боюнча кайра иреттейт. Демейки боюнча өчүк; күйгүзүлгөндө үзүндүлөр бул түзмөктөн чыгат.',
+    setSearchRerankDesc:
+      'Жергиликтүү издөөнүн алгачкы 20 жыйынтыгынын үзүндүлөрүн TypeSafe Jev моделине жиберет жана ылайыкташтык боюнча кайра иреттейт. Демейки боюнча өчүк; күйгүзүлгөндө үзүндүлөр бул түзмөктөн чыгат.',
     setSearchRerankEndpoint: 'Jev чекити',
-},
+  },
   tt: {
     navRecent: 'Соңгы',
     navStarred: 'Йолдызлы',
     fileSortRecent: 'Соңгы',
     fileSortOldest: 'Иң иске',
     navTrash: 'Чүп чиләге',
-    navTrashTip: 'Бетерелгән файллар системаның Чүп чиләгенә җибәрелә һәм аларны шуннан торгызырга мөмкин',
+    navTrashTip:
+      'Бетерелгән файллар системаның Чүп чиләгенә җибәрелә һәм аларны шуннан торгызырга мөмкин',
     secQuickStart: 'Тиз башлау',
     secRecent: 'Соңгы',
     secStarred: 'Йолдызлы',
@@ -9453,7 +9692,8 @@ export const strings = {
     selectFile: '{name} сайлау',
     removeFromList: 'Исемлектән чыгару',
     missingFileTitle: 'Файл мөмкин түгел',
-    missingFileBody: '«{name}» табылмады. Ул өзелгән дискта булырга яки күчерелгән я бетерелгән булырга мөмкин. Аны исемлектән чыгарыргамы?',
+    missingFileBody:
+      '«{name}» табылмады. Ул өзелгән дискта булырга яки күчерелгән я бетерелгән булырга мөмкин. Аны исемлектән чыгарыргамы?',
     deleteFiles: 'Файлларны бетерү',
     cancel: 'Баш тарту',
     star: 'Йолдыз',
@@ -9489,7 +9729,8 @@ export const strings = {
     folderMoreActions: '{name} өчен өстәмә гамәлләр',
     conflictTitle: 'Бу исемле элемент инде бар',
     conflictBodyOne: 'Максат папкасында «{name}» инде бар. Нәрсә эшләргә телисез?',
-    conflictBodyMany: 'Максат папкасында бер үк исемле {n} элемент инде бар. Нәрсә эшләргә телисез?',
+    conflictBodyMany:
+      'Максат папкасында бер үк исемле {n} элемент инде бар. Нәрсә эшләргә телисез?',
     conflictKeepBoth: 'Икесен дә саклау',
     conflictReplace: 'Алыштыру',
     rootUnusable: 'Килешенгән саклау урыны мөмкин түгел, шуңа күрә папкалар күрсәтелә алмый.',
@@ -9518,7 +9759,8 @@ export const strings = {
     loginOpenShort: 'Керү битен кулдан ачу',
     loginCopyUrl: 'Керү сылтамасын күчерү',
     loginCopied: 'Күчерелде',
-    loginNetworkError: 'VEGA белән элемтә урнаштырып булмый — челтәр яки прокси көйләүләрен тикшерегез',
+    loginNetworkError:
+      'VEGA белән элемтә урнаштырып булмый — челтәр яки прокси көйләүләрен тикшерегез',
     loginExpired: 'Керү вакыты узды — кабатлау өчен басыгыз',
     loginFailed: 'Кереп булмады — кабатлау өчен басыгыз',
     loginDeviceCode: 'Җайланма коды',
@@ -9538,9 +9780,11 @@ export const strings = {
     themeSystem: 'Системага иярү',
     saveLocation: 'Саклау урыны',
     setAutoSave: 'Барлык документларны автоматик саклау',
-    setAutoSaveDesc: 'Һәр редакторда AutoSave функциясен килешү буенча кабызыгыз. Аны аерым тәрәзәдә теләсә кайчан сүндерә аласыз.',
+    setAutoSaveDesc:
+      'Һәр редакторда AutoSave функциясен килешү буенча кабызыгыз. Аны аерым тәрәзәдә теләсә кайчан сүндерә аласыз.',
     setAnalytics: 'Аноним куллану статистикасын җибәрү',
-    setAnalyticsDesc: 'Килешү буенча кабызылган; аны Көйләүләр → Гомуми бүлегендә теләсә кайчан сүндереп була. Google Analytics 4 кулланыла; Google сезнең ачык IP адресыгызны һәм тапшыру метадаталарын ала, әмма документ эчтәлеге һәм файл исемнәре беркайчан да җыелмый.',
+    setAnalyticsDesc:
+      'Килешү буенча кабызылган; аны Көйләүләр → Гомуми бүлегендә теләсә кайчан сүндереп була. Google Analytics 4 кулланыла; Google сезнең ачык IP адресыгызны һәм тапшыру метадаталарын ала, әмма документ эчтәлеге һәм файл исемнәре беркайчан да җыелмый.',
     setAiPanelSide: 'AI ян тактасының урыны',
     aiPanelSideLeft: 'Сул',
     aiPanelSideRight: 'Уң',
@@ -9555,7 +9799,8 @@ export const strings = {
     setSecAccount: 'Хисап язмасы',
     setSecGeneral: 'Гомуми',
     setMcp: 'Локаль MCP серверы',
-    setMcpDesc: 'Тышкы AI агентларына (Claude Desktop, Cursor…) эшләп торган бу кушымта аша Word документлары төзергә рөхсәт итегез. Фәкать Localhost.',
+    setMcpDesc:
+      'Тышкы AI агентларына (Claude Desktop, Cursor…) эшләп торган бу кушымта аша Word документлары төзергә рөхсәт итегез. Фәкать Localhost.',
     setMcpPort: 'Порт',
     setMcpRunning: 'Эшли',
     setMcpStopped: 'Эшләми',
@@ -9565,9 +9810,11 @@ export const strings = {
     setMcpCopy: 'Күчереп алу',
     setMcpCopied: 'Күчерелде',
     setMcpConfig: 'Клиент конфигурациясе мисалы',
-    setMcpConfigDesc: 'Моны клиентның MCP серверы конфигурациясенә өстәгез (Claude Desktop өчен mcp.json, Cursor өчен MCP көйләүләре һ.б.).',
+    setMcpConfigDesc:
+      'Моны клиентның MCP серверы конфигурациясенә өстәгез (Claude Desktop өчен mcp.json, Cursor өчен MCP көйләүләре һ.б.).',
     setMcpBg: 'Фонда генерацияләү',
-    setMcpBgDesc: 'Интерфейсны ачмыйча, документларны турыдан-туры күрсәтелгән юлга языгыз; сүндерелгәндә генерация кушымтада күренеп бара.',
+    setMcpBgDesc:
+      'Интерфейсны ачмыйча, документларны турыдан-туры күрсәтелгән юлга языгыз; сүндерелгәндә генерация кушымтада күренеп бара.',
     setMcpLog: 'Журнал алып бару',
     setMcpLogDesc: 'MCP серверы һәм кораллар эшчәнлеген локаль журнал файлына язу',
     setMcpLogFile: 'Журнал файлы',
@@ -9579,18 +9826,23 @@ export const strings = {
     setSecAbout: 'Кушымта турында',
     setSecIntegrations: 'Интеграцияләр',
     intgHeroTitle: 'AI ярдәмчегездән Офис ВЕГА кулланыгыз',
-    intgHeroDesc: 'Тоташканнан соң, Claude Code, Codex, Cursor, Claude Desktop һәм башка шундый ярдәмчеләр сезнең өчен Word, Excel, PowerPoint, PDF һәм Markdown файлларын төзи, конвертацияли, укый һәм үзгәртә ала. Барысы да бу компьютерда эшли; бернәрсә дә йөкләнми.',
-    intgHeroStep1: 'Юл сайлагыз: ярдәмчегез терминал командаларын эшли алса — CLI, эшли алмаса — MCP',
+    intgHeroDesc:
+      'Тоташканнан соң, Claude Code, Codex, Cursor, Claude Desktop һәм башка шундый ярдәмчеләр сезнең өчен Word, Excel, PowerPoint, PDF һәм Markdown файлларын төзи, конвертацияли, укый һәм үзгәртә ала. Барысы да бу компьютерда эшли; бернәрсә дә йөкләнми.',
+    intgHeroStep1:
+      'Юл сайлагыз: ярдәмчегез терминал командаларын эшли алса — CLI, эшли алмаса — MCP',
     intgHeroStep2: 'Түбәндәге бүлек буенча эш итегез; гадәттә бер тапкыр чиртү җитә',
     intgHeroStep3: 'Яңа чат башлап, соравыгызны бирегез',
     intgStep1Title: 'Skill-ны ярдәмчегезгә урнаштырыгыз',
-    intgStep1Desc: 'Бу компьютерда табылган ярдәмчеләр генә күрсәтелә. Чынлыкта кулланган ярдәмчегезгә урнаштырыгыз; аларның барысын да урнаштыру кирәкми.',
-    intgStep1Update: 'Офис ВЕГА яңартуы яңа skill чыгарганда, шул ярдәмче янында Update төймәсе күренә.',
+    intgStep1Desc:
+      'Бу компьютерда табылган ярдәмчеләр генә күрсәтелә. Чынлыкта кулланган ярдәмчегезгә урнаштырыгыз; аларның барысын да урнаштыру кирәкми.',
+    intgStep1Update:
+      'Офис ВЕГА яңартуы яңа skill чыгарганда, шул ярдәмче янында Update төймәсе күренә.',
     intgSkillVersion: 'skill {v}',
     intgStateMissing: 'Skill урнаштырылмаган',
     intgStateInstalled: 'Skill {v} урнаштырылды · киләсе чатта әзер',
     intgOtherToggle: 'Минем ярдәмчем исемлектә юк',
-    intgOtherDesc: 'Бу өч ысулның теләсә кайсын сайлагыз. Аларның барысы да бер үк skill-ны урнаштыра, шуңа күрә бердән артыгын куллану кирәкми.',
+    intgOtherDesc:
+      'Бу өч ысулның теләсә кайсын сайлагыз. Аларның барысы да бер үк skill-ны урнаштыра, шуңа күрә бердән артыгын куллану кирәкми.',
     intgOtherFolderTitle: 'SKILL.md папкаларын укый торган теләсә кайсы ярдәмче',
     intgOtherFolderDesc: 'Аның skills папкасын сайлагыз, Офис ВЕГА файлны шунда яза.',
     intgOtherZipTitle: 'Файлны ярдәмчегә бирегез',
@@ -9600,29 +9852,39 @@ export const strings = {
     intgCopy: 'Күчереп алу',
     intgStep2Title: 'Сынап карагыз',
     intgStep2Desc: 'Ярдәмчегездә яңа чат ачыгыз һәм гади сүзләр белән, мәсәлән, болай сорагыз:',
-    intgStep2DescBefore: 'Урнаштырганнан соң, ярдәмчегездә яңа чат ачыгыз һәм гади сүзләр белән, мәсәлән, болай сорагыз:',
+    intgStep2DescBefore:
+      'Урнаштырганнан соң, ярдәмчегездә яңа чат ачыгыз һәм гади сүзләр белән, мәсәлән, болай сорагыз:',
     intgExample1: '~/Downloads/report.md файлын Word документына әйләндер',
     intgExample2: 'Q3 нәтиҗәләребез турында 6 слайдлы презентация яса',
     intgExample3: 'budget.xlsx файлын PDF-ка конвертациялә һәм Офис ВЕГА-да ач',
-    intgStep2Note: 'Ярдәмче officevega командалар юлын үзе эшләтә; сезгә аны кулдан язарга кирәкми.',
+    intgStep2Note:
+      'Ярдәмче officevega командалар юлын үзе эшләтә; сезгә аны кулдан язарга кирәкми.',
     intgCliPartTitle: 'CLI · командалар юлы + skill',
-    intgCliPartDesc: 'Терминал командаларын эшли ала торган ярдәмчеләр өчен (Claude Code, Codex, Cursor һәм башкалар). Skill урнаштырылганнан соң, ярдәмче файлларны төзү, конвертацияләү, уку һәм үзгәртү өчен officevega командалар юлын үзе чакыра; сез бернинди команда да язмыйсыз.',
+    intgCliPartDesc:
+      'Терминал командаларын эшли ала торган ярдәмчеләр өчен (Claude Code, Codex, Cursor һәм башкалар). Skill урнаштырылганнан соң, ярдәмче файлларны төзү, конвертацияләү, уку һәм үзгәртү өчен officevega командалар юлын үзе чакыра; сез бернинди команда да язмыйсыз.',
     intgMcpPartTitle: 'MCP',
-    intgMcpPartDesc: 'MCP — AI ярдәмчеләре тышкы коралларга мөрәҗәгать итү өчен куллана торган уртак протокол. Ярдәмчегез командалар эшли алмаса (мәсәлән, Claude Desktop) яки аның Офис ВЕГА тәрәзәсен турыдан-туры идарә итүен теләсәгез, MCP кулланыгыз. Түбәндәге ике ысулның берсен сайлагыз.',
+    intgMcpPartDesc:
+      'MCP — AI ярдәмчеләре тышкы коралларга мөрәҗәгать итү өчен куллана торган уртак протокол. Ярдәмчегез командалар эшли алмаса (мәсәлән, Claude Desktop) яки аның Офис ВЕГА тәрәзәсен турыдан-туры идарә итүен теләсәгез, MCP кулланыгыз. Түбәндәге ике ысулның берсен сайлагыз.',
     intgMcpStdioTitle: 'Ярдәмче башлап җибәрә (тәкъдим ителә)',
-    intgMcpStdioDesc: 'Ярдәмче officevega mcp-ны үзе эшләтә: монда бернәрсәне дә кабызырга кирәкми, Офис ВЕГА ачык булырга да тиеш түгел. CLI белән бер үк мөмкинлекләр.',
+    intgMcpStdioDesc:
+      'Ярдәмче officevega mcp-ны үзе эшләтә: монда бернәрсәне дә кабызырга кирәкми, Офис ВЕГА ачык булырга да тиеш түгел. CLI белән бер үк мөмкинлекләр.',
     intgMcpHttpTitle: 'Локаль HTTP серверы',
-    intgMcpHttpDesc: 'Офис ВЕГА эчендә эшли; ярдәмче URL-га тоташа, ә сез аның Word редакторында документны адымлап төзүен күзәтә аласыз. Офис ВЕГА ачык килеш торырга тиеш; әлегә Word документлары гына.',
+    intgMcpHttpDesc:
+      'Офис ВЕГА эчендә эшли; ярдәмче URL-га тоташа, ә сез аның Word редакторында документны адымлап төзүен күзәтә аласыз. Офис ВЕГА ачык килеш торырга тиеш; әлегә Word документлары гына.',
     intgMcpHttpAdvanced: 'Өстәмә: башка endpoint-лар һәм журнал',
-    intgMcpTryNote: 'Ярдәмче Офис ВЕГА-га MCP аша мөрәҗәгать итә; сезгә бернинди команда да язарга кирәкми.',
+    intgMcpTryNote:
+      'Ярдәмче Офис ВЕГА-га MCP аша мөрәҗәгать итә; сезгә бернинди команда да язарга кирәкми.',
     intgMcpClaudeTitle: 'Claude Code',
     intgMcpClaudeDesc: 'Моны терминалда бер тапкыр эшләтегез:',
     intgMcpOtherTitle: 'Cursor, Claude Desktop яки MCP белән эшли торган башка ассистент',
-    intgMcpOtherDesc: 'Моны аның MCP серверы көйләүләренә өстәгез (JSON файлына яки көйләүләрдәге «Add MCP server» пункты аша):',
-    intgMcpNote: 'Skill һәм MCP янәшә көйләнә ала; ассистент аларның берсен сайлый. Алар бер үк эшләрне башкара.',
+    intgMcpOtherDesc:
+      'Моны аның MCP серверы көйләүләренә өстәгез (JSON файлына яки көйләүләрдәге «Add MCP server» пункты аша):',
+    intgMcpNote:
+      'Skill һәм MCP янәшә көйләнә ала; ассистент аларның берсен сайлый. Алар бер үк эшләрне башкара.',
     intgCliTitle: 'Алдынгы: officevega командалар юлы',
     intgCliReady: 'officevega {v} · терминалда әзер ({path})',
-    intgCliNotOnPath: 'officevega {v} · терминалның PATH үзгәрешлесендә юк. Ассистентлар аны барыбер ~/.officevega/launcher аша таба, шуңа skill эшли. officevega командасын үзегез кертергә теләсәгез, моны бер тапкыр эшләгез:',
+    intgCliNotOnPath:
+      'officevega {v} · терминалның PATH үзгәрешлесендә юк. Ассистентлар аны барыбер ~/.officevega/launcher аша таба, шуңа skill эшли. officevega командасын үзегез кертергә теләсәгез, моны бер тапкыр эшләгез:',
     intgCliLauncher: 'Launcher папкасы',
     intgStateOutdated: '{v} урнаштырылган, {next} яңартуы бар',
     intgStateModified: '{v} урнаштырылган (үзгәртелгән)',
@@ -9646,9 +9908,11 @@ export const strings = {
     intgSaveZipTitle: 'Skill-ны саклау',
     intgSavedTo: '{path} урынына сакланды',
     intgCopied: 'Күчерелде',
-    intgCliEphemeral: 'Башта Офис ВЕГА-ны Applications папкасына күчерегез, аннары командалар юлын кулланыгыз.',
+    intgCliEphemeral:
+      'Башта Офис ВЕГА-ны Applications папкасына күчерегез, аннары командалар юлын кулланыгыз.',
     intgCopyPath: 'Юлны күчерү',
-    intgCliNeedsUpdate: 'Бу skill өчен {v} яки яңарак командалар юлы кирәк; Офис ВЕГА-ны яңартыгыз.',
+    intgCliNeedsUpdate:
+      'Бу skill өчен {v} яки яңарак командалар юлы кирәк; Офис ВЕГА-ны яңартыгыз.',
     intgLoading: 'Тикшерелә…',
     intgUpdateDue: 'Skill яңартуы бар',
     setSecAiModel: 'AI моделе',
@@ -9665,45 +9929,59 @@ export const strings = {
     setAiBaseUrlHint: 'Рәсми endpoint өчен буш калдырыгыз.',
     setAiAccountHint: 'Сезнең VEGA аккаунтыгыз кулланыла; API ачкычы кирәкми.',
     setAiCodexPath: 'Codex башкарылма файлы',
-    setAiCodexPathHint: 'Моны бары тик махсус урнаштыру өчен күрсәтегез; автоматик ачыклау өчен буш калдырыгыз.',
+    setAiCodexPathHint:
+      'Моны бары тик махсус урнаштыру өчен күрсәтегез; автоматик ачыклау өчен буш калдырыгыз.',
     setAiCodexAutoPlaceholder: 'Автоматик ачыклау (тәкъдим ителә)',
-    setAiCodexHint: 'Яңартулардан соң хәзерге аккаунтка керелгән Codex CLI-ны автоматик рәвештә таба; махсус юл күрсәтү мәҗбүри түгел. API ачкычы кирәкми.',
-    setAiByokNote: 'Чатлар сезнең үз ачкычыгызны куллана. Рәсем ясау һәм медианы анализлау AI Media бүлегенә бәйле; веб-эзләү һаман да VEGA аккаунтын яки бушлай чыганакларны куллана.',
+    setAiCodexHint:
+      'Яңартулардан соң хәзерге аккаунтка керелгән Codex CLI-ны автоматик рәвештә таба; махсус юл күрсәтү мәҗбүри түгел. API ачкычы кирәкми.',
+    setAiByokNote:
+      'Чатлар сезнең үз ачкычыгызны куллана. Рәсем ясау һәм медианы анализлау AI Media бүлегенә бәйле; веб-эзләү һаман да VEGA аккаунтын яки бушлай чыганакларны куллана.',
     setAiSaved: 'Сакланды',
     setAiTest: 'Бәйләнешне сынау',
     setAiTesting: 'Сынала…',
     setAiTestOk: 'Бәйләнеш эшли',
     setAiTestFail: 'Бәйләнеш өзелде',
     setAiMaxTokens: 'Чыгыш токен maximumы',
-    setAiMaxTokensDesc: 'Бер җавап өчен чыгыш лимиты. Логик фикерләү модельләре аның бер өлешен уйлануга сарыф итә, шуңа лимит беткәч җавап буш кайтырга мөмкин; шулай булса, бу кыйммәтне арттырыгыз.',
+    setAiMaxTokensDesc:
+      'Бер җавап өчен чыгыш лимиты. Логик фикерләү модельләре аның бер өлешен уйлануга сарыф итә, шуңа лимит беткәч җавап буш кайтырга мөмкин; шулай булса, бу кыйммәтне арттырыгыз.',
     setSecAiMedia: 'AI медиа һәм эзләү',
-    setAiMediaAccountHint: 'Рәсем ясау һәм рәсем/видеоны анализлау өчен сезнең VEGA аккаунтыгыз кулланыла.',
+    setAiMediaAccountHint:
+      'Рәсем ясау һәм рәсем/видеоны анализлау өчен сезнең VEGA аккаунтыгыз кулланыла.',
     setAiImageModel: 'Рәсем моделе',
     setAiAnalysisModel: 'Анализ моделе',
-    setAiSearchAccountHint: 'Веб һәм рәсем эзләү өчен сезнең VEGA аккаунтыгыз кулланыла; аккаунттан чыкканда яки болыт кораллары сүндерелгәндә бушлай чыганакларга күчәләр.',
+    setAiSearchAccountHint:
+      'Веб һәм рәсем эзләү өчен сезнең VEGA аккаунтыгыз кулланыла; аккаунттан чыкканда яки болыт кораллары сүндерелгәндә бушлай чыганакларга күчәләр.',
     setAiSearchSerperHint: 'Serper сезнең ачкыч белән веб һәм рәсем эзләүне тәэмин итә.',
-    setAiSearchTavilyHint: 'Tavily сезнең ачкыч белән веб-эзләүне тәэмин итә; рәсем эзләү бушлай чыганакларга күчә.',
+    setAiSearchTavilyHint:
+      'Tavily сезнең ачкыч белән веб-эзләүне тәэмин итә; рәсем эзләү бушлай чыганакларга күчә.',
     setAiCapImage: 'Рәсем ясау',
     setAiCapAnalysis: 'Рәсемне анализлау',
     setAiCapVideo: 'Видеоны анализлау',
     setAiCapSearch: 'Веб-эзләү',
-    setAiSharedKeyHint: 'Провайдер ачкычы һәм base URL мөмкинлекләр өчен уртак; аларны бер тапкыр кертегез.',
+    setAiSharedKeyHint:
+      'Провайдер ачкычы һәм base URL мөмкинлекләр өчен уртак; аларны бер тапкыр кертегез.',
     setAiVegaTools: 'VEGA болыт кораллары',
-    setAiVegaToolsDesc: 'Веб-эзләү, рәсем ясау һәм медианы анализлау провайдеры VEGA итеп куелганда api.vega.chat аша сезнең VEGA ачкычыгыз белән эшли; сүндерелгәндә бу кораллар VEGA аккаунтына яки бушлай чыганакларга күчә. Чат провайдерына бу тәэсир итми.',
-    setAiVegaNote: 'OpenRouter белән ярашлы шлюз — бер тапкыр керегез, API ачкычы автоматик рәвештә бирелә; ул беркайчан да күрсәтелми һәм үзгәртелми.',
-    setAiVegaSigninDesc: 'Бер тапкыр керегез — API ачкычы бирелә һәм бу җайланмада имин рәвештә саклана; бернәрсә дә куярга кирәкми.',
+    setAiVegaToolsDesc:
+      'Веб-эзләү, рәсем ясау һәм медианы анализлау провайдеры VEGA итеп куелганда api.vega.chat аша сезнең VEGA ачкычыгыз белән эшли; сүндерелгәндә бу кораллар VEGA аккаунтына яки бушлай чыганакларга күчә. Чат провайдерына бу тәэсир итми.',
+    setAiVegaNote:
+      'OpenRouter белән ярашлы шлюз — бер тапкыр керегез, API ачкычы автоматик рәвештә бирелә; ул беркайчан да күрсәтелми һәм үзгәртелми.',
+    setAiVegaSigninDesc:
+      'Бер тапкыр керегез — API ачкычы бирелә һәм бу җайланмада имин рәвештә саклана; бернәрсә дә куярга кирәкми.',
     setAiVegaSignedIn: 'Аккаунтка керелгән — ачкыч автоматик рәвештә идарә ителә',
-    setAiMediaVegaHint: 'api.vega.chat аша сезнең аккаунт ачкычыгыз белән эшли; модельне VEGA билгели.',
-    setAiSearchVegaHint: 'Веб-эзләү api.vega.chat аша сезнең аккаунт ачкычыгыз белән эшли; рәсем эзләү бушлай чыганакларны куллана.',
+    setAiMediaVegaHint:
+      'api.vega.chat аша сезнең аккаунт ачкычыгыз белән эшли; модельне VEGA билгели.',
+    setAiSearchVegaHint:
+      'Веб-эзләү api.vega.chat аша сезнең аккаунт ачкычыгыз белән эшли; рәсем эзләү бушлай чыганакларны куллана.',
     setGithub: 'Ачык чыганаклы',
-    starOnGitHub: 'GitHub\'та йолдызча кую',
+    starOnGitHub: "GitHub'та йолдызча кую",
     starPromptTitle: 'Офис ВЕГА ошыймы?',
     starPromptTitleN: 'Сез Офис ВЕГА белән {n} документ ачтыгыз',
-    starPromptBody: 'Офис ВЕГА — бушлай һәм ачык чыганаклы программа. GitHub\'та йолдызча кую — командага ярдәм итүнең иң яхшы ысулы.',
-    starPromptGo: 'GitHub\'та йолдызча кую',
+    starPromptBody:
+      "Офис ВЕГА — бушлай һәм ачык чыганаклы программа. GitHub'та йолдызча кую — командага ярдәм итүнең иң яхшы ысулы.",
+    starPromptGo: "GitHub'та йолдызча кую",
     starPromptDone: 'Инде йолдызча куелган',
     starPromptLater: 'Бәлки соңрак',
-    onbStarHint: 'Офис ВЕГА ошаса, GitHub\'та безгә йолдызча куегыз.',
+    onbStarHint: "Офис ВЕГА ошаса, GitHub'та безгә йолдызча куегыз.",
     setDisplayName: 'Исем',
     setEmail: 'Электрон почта',
     setNotLoggedIn: 'Аккаунтка керелмәгән',
@@ -9720,11 +9998,13 @@ export const strings = {
     // First-run onboarding
     onbTitle1: 'Офис ВЕГА-га рәхим итегез',
     onbSubtitle1: 'Беренче ачык чыганаклы, AI нигезендәге офис пакеты',
-    onbBody1: 'Документлар төзегез, таблицалар ясагыз, слайдлар әзерләгез һәм PDF файлларын тикшерегез. AI һәр адымда урнаштырылган.',
+    onbBody1:
+      'Документлар төзегез, таблицалар ясагыз, слайдлар әзерләгез һәм PDF файлларын тикшерегез. AI һәр адымда урнаштырылган.',
     onbTitle2: 'Бу бары башы гына',
-    onbBody2: 'Офис ВЕГА әле альфа-версиядә. Безгә GitHub-та йолдыз куегыз һәм киләчәкне формалаштыруда ярдәм итү өчен фикерләрегез белән уртаклашыгыз.',
+    onbBody2:
+      'Офис ВЕГА әле альфа-версиядә. Безгә GitHub-та йолдыз куегыз һәм киләчәкне формалаштыруда ярдәм итү өчен фикерләрегез белән уртаклашыгыз.',
     onbCredits: 'Актив өлеш кертүчеләр **1,000+ VEGA кредитлары** ала',
-    onbJoinGitHub: 'GitHub\'та йолдызча кую',
+    onbJoinGitHub: "GitHub'та йолдызча кую",
     onbSkip: 'Калдырырга',
     onbNext: 'Киләсе',
     onbStart: 'Башларга',
@@ -9733,7 +10013,7 @@ export const strings = {
     onbBody3: 'Лицензия өчен түләүләр юк. Рекламалар юк. Су тамгалары юк.',
     onbNote3: 'AI мөмкинлекләре сезнең VEGA депозитын сарыф итәргә мөмкин.',
     onbBack: 'Артка',
-      addFolderRoot: 'Папка өстәү…',
+    addFolderRoot: 'Папка өстәү…',
     removeFolderRoot: 'Исемлектән бетерү',
     rootUnavailable: 'Мөмкин түгел',
     searchClear: 'Эзләнешне чистарту',
@@ -9745,18 +10025,21 @@ export const strings = {
     searchResultCount: '{n} нәтиҗә',
     searchResultCountOne: '{n} нәтиҗә',
     setAiCapFileSearch: 'Җирле файл эзләү',
-    setAiSearchParallelHint: 'Бушлай Parallel эзләүе өчен ачны буш калдырыгыз (чикләнгән куллану). Parallel хисабыгызны куллану өчен ач кушыгыз. Рәсем эзләүе башка чыганакларны куллана.',
+    setAiSearchParallelHint:
+      'Бушлай Parallel эзләүе өчен ачны буш калдырыгыз (чикләнгән куллану). Parallel хисабыгызны куллану өчен ач кушыгыз. Рәсем эзләүе башка чыганакларны куллана.',
     setSearchRerank: 'Jev эзләүен яңадан тәртипкә кую',
-    setSearchRerankDesc: 'Җирле эзләнешнең беренче 20 нәтиҗәсенең өзекләрен TypeSafe Jev моделенә җибәрә һәм турыдантурылык буенча яңадан тәртипли. Килешү буенча сүндерелгән; кабылганда өзекләр бу җайланмадан чыга.',
+    setSearchRerankDesc:
+      'Җирле эзләнешнең беренче 20 нәтиҗәсенең өзекләрен TypeSafe Jev моделенә җибәрә һәм турыдантурылык буенча яңадан тәртипли. Килешү буенча сүндерелгән; кабылганда өзекләр бу җайланмадан чыга.',
     setSearchRerankEndpoint: 'Jev ноктасы',
-},
+  },
   ka: {
     navRecent: 'ბოლო',
     navStarred: 'ვარსკვლავით მონიშნული',
     fileSortRecent: 'ბოლო',
     fileSortOldest: 'უძველესი',
     navTrash: 'ნაგვის ურნა',
-    navTrashTip: 'წაშლილი ფაილები გადადის სისტემის ნაგვის ურნაში და იქიდან მათი აღდგენა შესაძლებელია',
+    navTrashTip:
+      'წაშლილი ფაილები გადადის სისტემის ნაგვის ურნაში და იქიდან მათი აღდგენა შესაძლებელია',
     secQuickStart: 'სწრაფი დაწყება',
     secRecent: 'ბოლო',
     secStarred: 'ვარსკვლავით მონიშნული',
@@ -9797,7 +10080,8 @@ export const strings = {
     selectFile: '{name}-ის არჩევა',
     removeFromList: 'სიიდან წაშლა',
     missingFileTitle: 'ფაილი მიუწვდომელია',
-    missingFileBody: '„{name}“ ვერ მოიძებნა. ის შესაძლოა გათიშულ დისკზე იყოს, ან გადატანილი ან წაშლილი. წავშალოთ სიიდან?',
+    missingFileBody:
+      '„{name}“ ვერ მოიძებნა. ის შესაძლოა გათიშულ დისკზე იყოს, ან გადატანილი ან წაშლილი. წავშალოთ სიიდან?',
     deleteFiles: 'ფაილების წაშლა',
     cancel: 'გაუქმება',
     star: 'ვარსკვლავი',
@@ -9809,7 +10093,8 @@ export const strings = {
     rename: 'სახელის გადარქმევა',
     duplicate: 'დუბლირება',
     renameFailed: 'სახელის გადარქმევა ვერ მოხერხდა',
-    emptyStarred: 'ვარსკვლავით მონიშნული ფაილები არ არის — გადაიტანეთ კურსორი მწკრივზე და დააწკაპუნეთ ვარსკვლავზე.',
+    emptyStarred:
+      'ვარსკვლავით მონიშნული ფაილები არ არის — გადაიტანეთ კურსორი მწკრივზე და დააწკაპუნეთ ვარსკვლავზე.',
     emptyRecent: 'ბოლო ფაილები არ არის — დასაწყებად შექმენით ან გახსენით ფაილი.',
     emptyFiltered: 'ამ ტიპის ფაილები არ არის.',
     // Folders panel
@@ -9833,10 +10118,12 @@ export const strings = {
     folderMoreActions: '{name}-ის მეტი მოქმედება',
     conflictTitle: 'ამ სახელის მქონე ელემენტი უკვე არსებობს',
     conflictBodyOne: 'სამიზნე საქაღალდეში „{name}“ უკვე არსებობს. რა გსურთ, რომ გავაკეთოთ?',
-    conflictBodyMany: 'სამიზნე საქაღალდეში იგივე სახელების მქონე {n} ელემენტი უკვე არსებობს. რა გსურთ, რომ გავაკეთოთ?',
+    conflictBodyMany:
+      'სამიზნე საქაღალდეში იგივე სახელების მქონე {n} ელემენტი უკვე არსებობს. რა გსურთ, რომ გავაკეთოთ?',
     conflictKeepBoth: 'ორივე შევინარჩუნოთ',
     conflictReplace: 'ჩანაცვლება',
-    rootUnusable: 'შენახვის ნაგულისხმევი მდებარეობა მიუწვდომელია, ამიტომ საქაღალდეების ჩვენება შეუძლებელია.',
+    rootUnusable:
+      'შენახვის ნაგულისხმევი მდებარეობა მიუწვდომელია, ამიტომ საქაღალდეების ჩვენება შეუძლებელია.',
     pickSaveDir: 'აირჩიეთ შენახვის მდებარეობა',
     deleteModalTitle: 'ფაილების წაშლა',
     deleteConfirmOne: 'გადავიტანოთ „{name}“ სანაგვე ყუთში?',
@@ -9862,7 +10149,8 @@ export const strings = {
     loginOpenShort: 'შესვლის გვერდის ხელით გახსნა',
     loginCopyUrl: 'შესვლის ბმულის კოპირება',
     loginCopied: 'კოპირებულია',
-    loginNetworkError: 'VEGA-სთან დაკავშირება ვერ ხერხდება — შეამოწმეთ ქსელის ან პროქსის პარამეტრები',
+    loginNetworkError:
+      'VEGA-სთან დაკავშირება ვერ ხერხდება — შეამოწმეთ ქსელის ან პროქსის პარამეტრები',
     loginExpired: 'შესვლის ვადა ამოიწურა — ხელახლა ცდისთვის დააწკაპუნეთ',
     loginFailed: 'შესვლა ვერ მოხერხდა — ხელახლა ცდისთვის დააწკაპუნეთ',
     loginDeviceCode: 'მოწყობილობის კოდი',
@@ -9882,9 +10170,11 @@ export const strings = {
     themeSystem: 'სისტემის მიხედვით',
     saveLocation: 'შენახვის მდებარეობა',
     setAutoSave: 'ყველა დოკუმენტის ავტომატური შენახვა',
-    setAutoSaveDesc: 'ნაგულისხმევად ჩართეთ AutoSave ყველა რედაქტორში. ცალკე ფანჯარაში მისი გამორთვა კვლავ შეგიძლიათ.',
+    setAutoSaveDesc:
+      'ნაგულისხმევად ჩართეთ AutoSave ყველა რედაქტორში. ცალკე ფანჯარაში მისი გამორთვა კვლავ შეგიძლიათ.',
     setAnalytics: 'გამოყენების ანონიმური სტატისტიკის გაგზავნა',
-    setAnalyticsDesc: 'ნაგულისხმევად ჩართულია და ნებისმიერ დროს შეგიძლიათ გამორთოთ Settings → General-ში. იყენებს Google Analytics 4-ს; Google იღებს თქვენს საჯარო IP მისამართსა და ტრანსპორტის მეტამონაცემებს, თუმცა დოკუმენტების შიგთავსი და ფაილების სახელები არასდროს გროვდება.',
+    setAnalyticsDesc:
+      'ნაგულისხმევად ჩართულია და ნებისმიერ დროს შეგიძლიათ გამორთოთ Settings → General-ში. იყენებს Google Analytics 4-ს; Google იღებს თქვენს საჯარო IP მისამართსა და ტრანსპორტის მეტამონაცემებს, თუმცა დოკუმენტების შიგთავსი და ფაილების სახელები არასდროს გროვდება.',
     setAiPanelSide: 'AI გვერდითი ზოლის მდებარეობა',
     aiPanelSideLeft: 'მარცხნივ',
     aiPanelSideRight: 'მარჯვნივ',
@@ -9899,7 +10189,8 @@ export const strings = {
     setSecAccount: 'ანგარიში',
     setSecGeneral: 'ზოგადი',
     setMcp: 'ლოკალური MCP სერვერი',
-    setMcpDesc: 'გარე AI აგენტებს (Claude Desktop, Cursor…) მიეცით ამ გაშვებული აპის მეშვეობით Word დოკუმენტების შექმნის უფლება. მხოლოდ Localhost.',
+    setMcpDesc:
+      'გარე AI აგენტებს (Claude Desktop, Cursor…) მიეცით ამ გაშვებული აპის მეშვეობით Word დოკუმენტების შექმნის უფლება. მხოლოდ Localhost.',
     setMcpPort: 'პორტი',
     setMcpRunning: 'მუშაობს',
     setMcpStopped: 'არ მუშაობს',
@@ -9909,9 +10200,11 @@ export const strings = {
     setMcpCopy: 'კოპირება',
     setMcpCopied: 'კოპირებულია',
     setMcpConfig: 'კლიენტის კონფიგურაციის მაგალითი',
-    setMcpConfigDesc: 'დაამატეთ ეს კლიენტის MCP სერვერის კონფიგურაციას (Claude Desktop-ის mcp.json-ში, Cursor-ის MCP პარამეტრებში და სხვ.).',
+    setMcpConfigDesc:
+      'დაამატეთ ეს კლიენტის MCP სერვერის კონფიგურაციას (Claude Desktop-ის mcp.json-ში, Cursor-ის MCP პარამეტრებში და სხვ.).',
     setMcpBg: 'ფონური გენერაცია',
-    setMcpBgDesc: 'დოკუმენტები პირდაპირ გზაზე ჩაიწეროს UI-ის გახსნის გარეშე; გამორთვისას გენერაცია აპში ხილულად მიმდინარეობს.',
+    setMcpBgDesc:
+      'დოკუმენტები პირდაპირ გზაზე ჩაიწეროს UI-ის გახსნის გარეშე; გამორთვისას გენერაცია აპში ხილულად მიმდინარეობს.',
     setMcpLog: 'ჟურნალირება',
     setMcpLogDesc: 'MCP სერვერისა და ხელსაწყოების აქტივობის ჩაწერა ლოკალურ ჟურნალის ფაილში',
     setMcpLogFile: 'ჟურნალის ფაილი',
@@ -9923,18 +10216,24 @@ export const strings = {
     setSecAbout: 'შესახებ',
     setSecIntegrations: 'ინტეგრაციები',
     intgHeroTitle: 'გამოიყენეთ OfficeVega თქვენი AI ასისტენტის მეშვეობით',
-    intgHeroDesc: 'დაკავშირების შემდეგ Claude Code-ს, Codex-ს, Cursor-ს, Claude Desktop-სა და მსგავს ასისტენტებს შეუძლიათ თქვენთვის Word, Excel, PowerPoint, PDF და Markdown ფაილების შექმნა, კონვერტაცია, წაკითხვა და რედაქტირება. ყველაფერი ამ კომპიუტერზე მუშაობს; არაფერი იტვირთება.',
-    intgHeroStep1: 'აირჩიეთ გზა: CLI, თუ თქვენს ასისტენტს ტერმინალის ბრძანებების გაშვება შეუძლია, MCP, თუ არ შეუძლია',
-    intgHeroStep2: 'მიჰყევით ქვემოთ მოცემულ შესაბამის განყოფილებას; ჩვეულებრივ საკმარისია ერთი დაწკაპუნება',
+    intgHeroDesc:
+      'დაკავშირების შემდეგ Claude Code-ს, Codex-ს, Cursor-ს, Claude Desktop-სა და მსგავს ასისტენტებს შეუძლიათ თქვენთვის Word, Excel, PowerPoint, PDF და Markdown ფაილების შექმნა, კონვერტაცია, წაკითხვა და რედაქტირება. ყველაფერი ამ კომპიუტერზე მუშაობს; არაფერი იტვირთება.',
+    intgHeroStep1:
+      'აირჩიეთ გზა: CLI, თუ თქვენს ასისტენტს ტერმინალის ბრძანებების გაშვება შეუძლია, MCP, თუ არ შეუძლია',
+    intgHeroStep2:
+      'მიჰყევით ქვემოთ მოცემულ შესაბამის განყოფილებას; ჩვეულებრივ საკმარისია ერთი დაწკაპუნება',
     intgHeroStep3: 'დაიწყეთ ახალი ჩატი და უბრალოდ იკითხეთ',
     intgStep1Title: 'დააინსტალირეთ skill თქვენს ასისტენტში',
-    intgStep1Desc: 'ჩამოთვლილია მხოლოდ ამ კომპიუტერში ნაპოვნი ასისტენტები. დააინსტალირეთ ის ასისტენტი, რომელსაც რეალურად იყენებთ; ყველა მათგანი საჭირო არ არის.',
-    intgStep1Update: 'როდესაც OfficeVega-ის განახლება უფრო ახალ skill-ს გამოაქვეყნებს, ამ ასისტენტის გვერდით გამოჩნდება Update ღილაკი.',
+    intgStep1Desc:
+      'ჩამოთვლილია მხოლოდ ამ კომპიუტერში ნაპოვნი ასისტენტები. დააინსტალირეთ ის ასისტენტი, რომელსაც რეალურად იყენებთ; ყველა მათგანი საჭირო არ არის.',
+    intgStep1Update:
+      'როდესაც OfficeVega-ის განახლება უფრო ახალ skill-ს გამოაქვეყნებს, ამ ასისტენტის გვერდით გამოჩნდება Update ღილაკი.',
     intgSkillVersion: 'skill {v}',
     intgStateMissing: 'Skill დაინსტალირებული არ არის',
     intgStateInstalled: 'Skill {v} დაინსტალირებულია · მზადაა თქვენს შემდეგ ჩატში',
     intgOtherToggle: 'ჩემი ასისტენტი სიაში არ არის',
-    intgOtherDesc: 'აირჩიეთ ამ სამი გზიდან ნებისმიერი. ყველა ერთსა და იმავე skill-ს აინსტალირებს, ამიტომ ერთზე მეტის გამოყენება საჭირო არ არის.',
+    intgOtherDesc:
+      'აირჩიეთ ამ სამი გზიდან ნებისმიერი. ყველა ერთსა და იმავე skill-ს აინსტალირებს, ამიტომ ერთზე მეტის გამოყენება საჭირო არ არის.',
     intgOtherFolderTitle: 'ნებისმიერი ასისტენტი, რომელიც SKILL.md საქაღალდეებს კითხულობს',
     intgOtherFolderDesc: 'აირჩიეთ მისი skills საქაღალდე და OfficeVega ფაილს იქ ჩაწერს.',
     intgOtherZipTitle: 'გადასცით ფაილი ასისტენტს',
@@ -9944,29 +10243,39 @@ export const strings = {
     intgCopy: 'კოპირება',
     intgStep2Title: 'სცადეთ',
     intgStep2Desc: 'გახსენით ახალი ჩატი თქვენს ასისტენტში და იკითხეთ მარტივი სიტყვებით, მაგალითად:',
-    intgStep2DescBefore: 'ინსტალაციის შემდეგ გახსენით ახალი ჩატი თქვენს ასისტენტში და იკითხეთ მარტივი სიტყვებით, მაგალითად:',
+    intgStep2DescBefore:
+      'ინსტალაციის შემდეგ გახსენით ახალი ჩატი თქვენს ასისტენტში და იკითხეთ მარტივი სიტყვებით, მაგალითად:',
     intgExample1: '~/Downloads/report.md გადააქციე Word დოკუმენტად',
     intgExample2: 'შექმენი 6-სლაიდიანი პრეზენტაცია ჩვენი Q3 შედეგების შესახებ',
     intgExample3: 'budget.xlsx გადააქციე PDF-ად და გახსენი OfficeVega-ში',
     intgStep2Note: 'ასისტენტი თავად უშვებს officevega ბრძანების ხაზს; მისი აკრეფა არასდროს გიწევთ.',
     intgCliPartTitle: 'CLI · ბრძანების ხაზი + skill',
-    intgCliPartDesc: 'ასისტენტებისთვის, რომლებსაც ტერმინალის ბრძანებების გაშვება შეუძლიათ (Claude Code, Codex, Cursor და სხვები). Skill-ის ინსტალაციის შემდეგ ასისტენტი თავად იძახებს officevega ბრძანების ხაზს ფაილების შესაქმნელად, კონვერტაციისთვის, წასაკითხად და რედაქტირებისთვის; თქვენ ბრძანების აკრეფა არ გიწევთ.',
+    intgCliPartDesc:
+      'ასისტენტებისთვის, რომლებსაც ტერმინალის ბრძანებების გაშვება შეუძლიათ (Claude Code, Codex, Cursor და სხვები). Skill-ის ინსტალაციის შემდეგ ასისტენტი თავად იძახებს officevega ბრძანების ხაზს ფაილების შესაქმნელად, კონვერტაციისთვის, წასაკითხად და რედაქტირებისთვის; თქვენ ბრძანების აკრეფა არ გიწევთ.',
     intgMcpPartTitle: 'MCP',
-    intgMcpPartDesc: 'MCP არის საერთო პროტოკოლი, რომელსაც AI ასისტენტები გარე ხელსაწყოების გამოსაძახებლად იყენებენ. გამოიყენეთ ის, როცა თქვენს ასისტენტს ბრძანებების გაშვება არ შეუძლია (მაგალითად, Claude Desktop-ს), ან როცა გსურთ, რომ მან პირდაპირ მართოს OfficeVega-ის ფანჯარა. აირჩიეთ ქვემოთ მოცემული ორი გზიდან ერთ-ერთი.',
+    intgMcpPartDesc:
+      'MCP არის საერთო პროტოკოლი, რომელსაც AI ასისტენტები გარე ხელსაწყოების გამოსაძახებლად იყენებენ. გამოიყენეთ ის, როცა თქვენს ასისტენტს ბრძანებების გაშვება არ შეუძლია (მაგალითად, Claude Desktop-ს), ან როცა გსურთ, რომ მან პირდაპირ მართოს OfficeVega-ის ფანჯარა. აირჩიეთ ქვემოთ მოცემული ორი გზიდან ერთ-ერთი.',
     intgMcpStdioTitle: 'ასისტენტის მიერ გაშვებული (რეკომენდებულია)',
-    intgMcpStdioDesc: 'ასისტენტი თავად უშვებს officevega mcp-ს: აქ არაფრის ჩართვა არ არის საჭირო და OfficeVega-ის გახსნაც აუცილებელი არ არის. CLI-ის იდენტური შესაძლებლობები.',
+    intgMcpStdioDesc:
+      'ასისტენტი თავად უშვებს officevega mcp-ს: აქ არაფრის ჩართვა არ არის საჭირო და OfficeVega-ის გახსნაც აუცილებელი არ არის. CLI-ის იდენტური შესაძლებლობები.',
     intgMcpHttpTitle: 'ლოკალური HTTP სერვერი',
-    intgMcpHttpDesc: 'მუშაობს OfficeVega-ში; ასისტენტი URL-ით უკავშირდება და შეგიძლიათ უყუროთ, როგორ ქმნის დოკუმენტს ეტაპობრივად Word-ის რედაქტორში. OfficeVega ღია უნდა დარჩეს; ამჟამად მხოლოდ Word დოკუმენტები.',
+    intgMcpHttpDesc:
+      'მუშაობს OfficeVega-ში; ასისტენტი URL-ით უკავშირდება და შეგიძლიათ უყუროთ, როგორ ქმნის დოკუმენტს ეტაპობრივად Word-ის რედაქტორში. OfficeVega ღია უნდა დარჩეს; ამჟამად მხოლოდ Word დოკუმენტები.',
     intgMcpHttpAdvanced: 'დამატებითი: სხვა endpoint-ები და ჟურნალი',
-    intgMcpTryNote: 'ასისტენტი OfficeVega-ს MCP-ის მეშვეობით იძახებს; თქვენ ბრძანების აკრეფა არ გიწევთ.',
+    intgMcpTryNote:
+      'ასისტენტი OfficeVega-ს MCP-ის მეშვეობით იძახებს; თქვენ ბრძანების აკრეფა არ გიწევთ.',
     intgMcpClaudeTitle: 'Claude Code',
     intgMcpClaudeDesc: 'გაუშვით ერთხელ ტერმინალში:',
-    intgMcpOtherTitle: 'Cursor, Claude Desktop ან ნებისმიერი სხვა MCP-ის მხარდაჭერის მქონე ასისტენტი',
-    intgMcpOtherDesc: 'დაამატეთ ეს მის MCP სერვერის პარამეტრებში (JSON ფაილში ან პარამეტრებში „MCP სერვერის დამატება“):',
-    intgMcpNote: 'skill-ისა და MCP-ის დაყენება შესაძლებელია პარალელურად; ასისტენტი ერთ-ერთს აირჩევს. ისინი ზუსტად ერთსა და იმავეს აკეთებენ.',
+    intgMcpOtherTitle:
+      'Cursor, Claude Desktop ან ნებისმიერი სხვა MCP-ის მხარდაჭერის მქონე ასისტენტი',
+    intgMcpOtherDesc:
+      'დაამატეთ ეს მის MCP სერვერის პარამეტრებში (JSON ფაილში ან პარამეტრებში „MCP სერვერის დამატება“):',
+    intgMcpNote:
+      'skill-ისა და MCP-ის დაყენება შესაძლებელია პარალელურად; ასისტენტი ერთ-ერთს აირჩევს. ისინი ზუსტად ერთსა და იმავეს აკეთებენ.',
     intgCliTitle: 'დამატებითი: officevega-ის ბრძანების ხაზი',
     intgCliReady: 'officevega {v} · მზადაა თქვენს ტერმინალში ({path})',
-    intgCliNotOnPath: 'officevega {v} · თქვენი ტერმინალის PATH-ში არ არის. ასისტენტები მას მაინც პოულობენ ~/.officevega/launcher-ის მეშვეობით, ამიტომ skill მუშაობს. officevega-ის ხელით აკრეფისთვის ერთხელ გაუშვით:',
+    intgCliNotOnPath:
+      'officevega {v} · თქვენი ტერმინალის PATH-ში არ არის. ასისტენტები მას მაინც პოულობენ ~/.officevega/launcher-ის მეშვეობით, ამიტომ skill მუშაობს. officevega-ის ხელით აკრეფისთვის ერთხელ გაუშვით:',
     intgCliLauncher: 'Launcher-ის საქაღალდე',
     intgStateOutdated: 'დაყენებულია {v}, განახლება {next} ხელმისაწვდომია',
     intgStateModified: 'დაყენებულია {v} (შეცვლილი)',
@@ -9990,9 +10299,11 @@ export const strings = {
     intgSaveZipTitle: 'skill-ის შენახვა',
     intgSavedTo: 'შენახულია: {path}',
     intgCopied: 'კოპირებულია',
-    intgCliEphemeral: 'ჯერ გადაიტანეთ OfficeVega Applications-ში, შემდეგ გამოიყენეთ ბრძანების ხაზი.',
+    intgCliEphemeral:
+      'ჯერ გადაიტანეთ OfficeVega Applications-ში, შემდეგ გამოიყენეთ ბრძანების ხაზი.',
     intgCopyPath: 'ბილიკის კოპირება',
-    intgCliNeedsUpdate: 'ამ skill-ს სჭირდება ბრძანების ხაზი {v} ან უფრო ახალი; განაახლეთ OfficeVega.',
+    intgCliNeedsUpdate:
+      'ამ skill-ს სჭირდება ბრძანების ხაზი {v} ან უფრო ახალი; განაახლეთ OfficeVega.',
     intgLoading: 'მოწმდება…',
     intgUpdateDue: 'ხელმისაწვდომია skill-ის განახლება',
     setSecAiModel: 'AI მოდელი',
@@ -10009,41 +10320,56 @@ export const strings = {
     setAiBaseUrlHint: 'ოფიციალური endpoint-ისთვის ცარიელი დატოვეთ.',
     setAiAccountHint: 'იყენებს თქვენს VEGA ანგარიშს; API გასაღები საჭირო არ არის.',
     setAiCodexPath: 'Codex-ის executable',
-    setAiCodexPathHint: 'დააყენეთ მხოლოდ custom ინსტალაციისთვის; ავტომატური აღმოჩენისთვის ცარიელი დატოვეთ.',
+    setAiCodexPathHint:
+      'დააყენეთ მხოლოდ custom ინსტალაციისთვის; ავტომატური აღმოჩენისთვის ცარიელი დატოვეთ.',
     setAiCodexAutoPlaceholder: 'ავტომატური აღმოჩენა (რეკომენდებულია)',
-    setAiCodexHint: 'განახლებების შემდეგ ავტომატურად პოულობს ამჟამად შესული Codex CLI-ს; custom path არჩევითია. API გასაღები საჭირო არ არის.',
-    setAiByokNote: 'ჩატები იყენებს თქვენს საკუთარ გასაღებს. სურათების გენერაცია და მედიის ანალიზი მიჰყვება AI Media განყოფილების პარამეტრებს; ვებძიება კვლავ იყენებს VEGA ანგარიშს ან უფასო წყაროებს.',
+    setAiCodexHint:
+      'განახლებების შემდეგ ავტომატურად პოულობს ამჟამად შესული Codex CLI-ს; custom path არჩევითია. API გასაღები საჭირო არ არის.',
+    setAiByokNote:
+      'ჩატები იყენებს თქვენს საკუთარ გასაღებს. სურათების გენერაცია და მედიის ანალიზი მიჰყვება AI Media განყოფილების პარამეტრებს; ვებძიება კვლავ იყენებს VEGA ანგარიშს ან უფასო წყაროებს.',
     setAiSaved: 'შენახულია',
     setAiTest: 'კავშირის შემოწმება',
     setAiTesting: 'მოწმდება…',
     setAiTestOk: 'კავშირი გამართულია',
     setAiTestFail: 'კავშირი ვერ დამყარდა',
     setAiMaxTokens: 'გამოსავლის მაქსიმალური ტოკენები',
-    setAiMaxTokensDesc: 'ერთი სვლის გამოსავლის ბიუჯეტი. Reasoning მოდელები მის ნაწილს ფიქრში ხარჯავენ, ამიტომ ბიუჯეტის ამოწურვისას პასუხი შეიძლება ცარიელი დაბრუნდეს; თუ ასე მოხდა, გაზარდეთ ეს მნიშვნელობა.',
+    setAiMaxTokensDesc:
+      'ერთი სვლის გამოსავლის ბიუჯეტი. Reasoning მოდელები მის ნაწილს ფიქრში ხარჯავენ, ამიტომ ბიუჯეტის ამოწურვისას პასუხი შეიძლება ცარიელი დაბრუნდეს; თუ ასე მოხდა, გაზარდეთ ეს მნიშვნელობა.',
     setSecAiMedia: 'AI მედია და ძიება',
-    setAiMediaAccountHint: 'სურათების გენერაცია და სურათების/ვიდეოს ანალიზი იყენებს თქვენს VEGA ანგარიშს.',
+    setAiMediaAccountHint:
+      'სურათების გენერაცია და სურათების/ვიდეოს ანალიზი იყენებს თქვენს VEGA ანგარიშს.',
     setAiImageModel: 'სურათების მოდელი',
     setAiAnalysisModel: 'ანალიზის მოდელი',
-    setAiSearchAccountHint: 'ვებსა და სურათების ძიება იყენებს თქვენს VEGA ანგარიშს; ანგარიშიდან გამოსვლისას ან cloud tools-ის გამორთვისას გადაერთვება უფასო წყაროებზე.',
-    setAiSearchSerperHint: 'Serper თქვენი გასაღებით უზრუნველყოფს როგორც ვების, ისე სურათების ძიებას.',
-    setAiSearchTavilyHint: 'Tavily თქვენი გასაღებით უზრუნველყოფს ვების ძიებას; სურათების ძიება გადაერთვება უფასო წყაროებზე.',
+    setAiSearchAccountHint:
+      'ვებსა და სურათების ძიება იყენებს თქვენს VEGA ანგარიშს; ანგარიშიდან გამოსვლისას ან cloud tools-ის გამორთვისას გადაერთვება უფასო წყაროებზე.',
+    setAiSearchSerperHint:
+      'Serper თქვენი გასაღებით უზრუნველყოფს როგორც ვების, ისე სურათების ძიებას.',
+    setAiSearchTavilyHint:
+      'Tavily თქვენი გასაღებით უზრუნველყოფს ვების ძიებას; სურათების ძიება გადაერთვება უფასო წყაროებზე.',
     setAiCapImage: 'სურათების გენერაცია',
     setAiCapAnalysis: 'სურათების ანალიზი',
     setAiCapVideo: 'ვიდეოს ანალიზი',
     setAiCapSearch: 'ვებში ძიება',
-    setAiSharedKeyHint: 'პროვაიდერის გასაღები და საბაზისო URL შესაძლებლობებს შორის საერთოა; შეიყვანეთ ისინი ერთხელ.',
+    setAiSharedKeyHint:
+      'პროვაიდერის გასაღები და საბაზისო URL შესაძლებლობებს შორის საერთოა; შეიყვანეთ ისინი ერთხელ.',
     setAiVegaTools: 'VEGA cloud tools',
-    setAiVegaToolsDesc: 'ვებძიება, სურათების გენერაცია და მედიის ანალიზი მუშაობს api.vega.chat-ის მეშვეობით თქვენი VEGA გასაღებით, როცა მათი პროვაიდერია VEGA; გამორთვისას ეს ხელსაწყოები გადაერთვება VEGA ანგარიშზე ან უფასო წყაროებზე. ჩატის პროვაიდერზე ეს გავლენას არ ახდენს.',
-    setAiVegaNote: 'OpenRouter-თან თავსებადი gateway — ერთხელ შედით ანგარიშში და API გასაღები ავტომატურად გაიცემა; მისი ნახვა ან რედაქტირება შეუძლებელია.',
-    setAiVegaSigninDesc: 'ერთხელ შედით ანგარიშში — API გასაღები გაიცემა და უსაფრთხოდ შეინახება ამ მოწყობილობაზე; ჩასმა საჭირო არ არის.',
+    setAiVegaToolsDesc:
+      'ვებძიება, სურათების გენერაცია და მედიის ანალიზი მუშაობს api.vega.chat-ის მეშვეობით თქვენი VEGA გასაღებით, როცა მათი პროვაიდერია VEGA; გამორთვისას ეს ხელსაწყოები გადაერთვება VEGA ანგარიშზე ან უფასო წყაროებზე. ჩატის პროვაიდერზე ეს გავლენას არ ახდენს.',
+    setAiVegaNote:
+      'OpenRouter-თან თავსებადი gateway — ერთხელ შედით ანგარიშში და API გასაღები ავტომატურად გაიცემა; მისი ნახვა ან რედაქტირება შეუძლებელია.',
+    setAiVegaSigninDesc:
+      'ერთხელ შედით ანგარიშში — API გასაღები გაიცემა და უსაფრთხოდ შეინახება ამ მოწყობილობაზე; ჩასმა საჭირო არ არის.',
     setAiVegaSignedIn: 'შესული ხართ — გასაღების მართვა ავტომატურია',
-    setAiMediaVegaHint: 'მუშაობს api.vega.chat-ის მეშვეობით თქვენი ანგარიშის გასაღებით; მოდელს განსაზღვრავს VEGA.',
-    setAiSearchVegaHint: 'ვებძიება მუშაობს api.vega.chat-ის მეშვეობით თქვენი ანგარიშის გასაღებით; სურათების ძიება იყენებს უფასო წყაროებს.',
+    setAiMediaVegaHint:
+      'მუშაობს api.vega.chat-ის მეშვეობით თქვენი ანგარიშის გასაღებით; მოდელს განსაზღვრავს VEGA.',
+    setAiSearchVegaHint:
+      'ვებძიება მუშაობს api.vega.chat-ის მეშვეობით თქვენი ანგარიშის გასაღებით; სურათების ძიება იყენებს უფასო წყაროებს.',
     setGithub: 'ღია კოდი',
     starOnGitHub: 'GitHub-ზე ვარსკვლავის დაჭერა',
     starPromptTitle: 'მოგწონთ OfficeVega?',
     starPromptTitleN: 'OfficeVega-ით გახსენით {n} დოკუმენტი',
-    starPromptBody: 'OfficeVega უფასო და ღია კოდია. GitHub-ზე ვარსკვლავის დაჭერა გუნდის მხარდაჭერის საუკეთესო გზაა.',
+    starPromptBody:
+      'OfficeVega უფასო და ღია კოდია. GitHub-ზე ვარსკვლავის დაჭერა გუნდის მხარდაჭერის საუკეთესო გზაა.',
     starPromptGo: 'GitHub-ზე ვარსკვლავის დაჭერა',
     starPromptDone: 'უკვე დავაჭირე ვარსკვლავს',
     starPromptLater: 'შეიძლება მოგვიანებით',
@@ -10064,9 +10390,11 @@ export const strings = {
     // First-run onboarding
     onbTitle1: 'კეთილი იყოს თქვენი მობრძანება OfficeVega-ში',
     onbSubtitle1: 'პირველი ღია კოდის, AI-ზე დაფუძნებული საოფისე პაკეტი',
-    onbBody1: 'შექმენით დოკუმენტები, ააწყვეთ ცხრილები, შექმენით სლაიდები და გადახედეთ PDF-ებს. AI ჩაშენებულია ყოველ ნაბიჯში.',
+    onbBody1:
+      'შექმენით დოკუმენტები, ააწყვეთ ცხრილები, შექმენით სლაიდები და გადახედეთ PDF-ებს. AI ჩაშენებულია ყოველ ნაბიჯში.',
     onbTitle2: 'ეს მხოლოდ დასაწყისია',
-    onbBody2: 'OfficeVega ჯერ კიდევ ალფა-ვერსიაშია. დაგვაფასეთ GitHub-ზე და გაგვიზიარეთ თქვენი მოსაზრებები, რათა დაგვეხმაროთ მომავლის ჩამოყალიბებაში.',
+    onbBody2:
+      'OfficeVega ჯერ კიდევ ალფა-ვერსიაშია. დაგვაფასეთ GitHub-ზე და გაგვიზიარეთ თქვენი მოსაზრებები, რათა დაგვეხმაროთ მომავლის ჩამოყალიბებაში.',
     onbCredits: 'აქტიური კონტრიბუტორები მიიღებენ **1,000+ VEGA კრედიტს**',
     onbJoinGitHub: 'GitHub-ზე ვარსკვლავის დაჭერა',
     onbSkip: 'გამოტოვება',
@@ -10077,7 +10405,7 @@ export const strings = {
     onbBody3: 'ლიცენზიის საფასურის გარეშე. რეკლამების გარეშე. ჭვირნიშნების გარეშე.',
     onbNote3: 'AI-ის ფუნქციებმა შეიძლება დახარჯოს თქვენი VEGA დეპოზიტი.',
     onbBack: 'უკან',
-      addFolderRoot: 'საქაღალდის დამატება…',
+    addFolderRoot: 'საქაღალდის დამატება…',
     removeFolderRoot: 'სიიდან ამოშლა',
     rootUnavailable: 'მიუწვდომელია',
     searchClear: 'ძიების გასუფთავება',
@@ -10089,9 +10417,11 @@ export const strings = {
     searchResultCount: '{n} შედეგი',
     searchResultCountOne: '{n} შედეგი',
     setAiCapFileSearch: 'ლოკალური ფაილების ძიება',
-    setAiSearchParallelHint: 'დატოვეთ გასაღები ცარიელი უფასო Parallel ძიებისთვის (შეზღუდული რაოდენობა). დაამატეთ გასაღები თქვენი Parallel ანგარიშის გამოსაყენებლად. სურათების ძიება სხვა წყაროებს იყენებს.',
+    setAiSearchParallelHint:
+      'დატოვეთ გასაღები ცარიელი უფასო Parallel ძიებისთვის (შეზღუდული რაოდენობა). დაამატეთ გასაღები თქვენი Parallel ანგარიშის გამოსაყენებლად. სურათების ძიება სხვა წყაროებს იყენებს.',
     setSearchRerank: 'Jev ძიების რერანკინგი',
-    setSearchRerankDesc: 'აგზავნის ლოკალური ძიების პირველი 20 შედეგის ფრაგმენტებს TypeSafe-ის Jev მოდელში და ალაგებს მათ შესაბამისობის მიხედვით. ნაგულისხმებად გამორთულია; ჩართვისას ფრაგმენტები ტოვებს ამ მოწყობილობას.',
+    setSearchRerankDesc:
+      'აგზავნის ლოკალური ძიების პირველი 20 შედეგის ფრაგმენტებს TypeSafe-ის Jev მოდელში და ალაგებს მათ შესაბამისობის მიხედვით. ნაგულისხმებად გამორთულია; ჩართვისას ფრაგმენტები ტოვებს ამ მოწყობილობას.',
     setSearchRerankEndpoint: 'Jev ენდპოინტი',
-},
+  },
 } as const

@@ -5,6 +5,7 @@ import {
   composeSkills,
   generateSuggestedQuestions,
   IPC_STREAM_SILENCE_TIMEOUT_MS,
+  withPiiTokenGuard,
   type AgentImage,
   type ToolDisplay,
 } from '@genoffice/agent-core'
@@ -13,6 +14,7 @@ import {
   cloudToolsEnabled,
   imageGenerationAvailable,
   mediaAnalysisAvailable,
+  piiShieldMayApply,
   withFastModel,
 } from '@genoffice/ai-provider/browser'
 import type { AiSettings, AttachmentAddResult, AttachmentMeta } from '../../shared/ipc'
@@ -269,6 +271,8 @@ interface AiPanelProps {
   applyDeck: (slides: RenderSlide[], goTo?: number) => void
   fitWidthPx: number
   settings: AiSettings
+  /** persists a settings change made in-panel (the composer PII-shield toggle) */
+  onSettingsChange?: (next: AiSettings) => void
   /** Preset instruction pushed from the ribbon/start screen; sent immediately when autoRun. When displayText exists the chat bubble shows only it while the full text still goes to the model.
       attachments are local files added in the start-screen input, taking effect with the first message.
       slideShot attaches a rendering of the current slide so the model sees what it's editing (AI Beautify) */
@@ -376,6 +380,7 @@ export function AiPanel({
   applyDeck,
   fitWidthPx,
   settings,
+  onSettingsChange,
   preset,
   open = true,
   onExpand,
@@ -522,9 +527,7 @@ export function AiPanel({
   // user's "fast model" pick (withFastModel falls back to the main model).
   const suggestTransportRef = useRef<ReturnType<typeof createElectronTransport> | null>(null)
   if (!suggestTransportRef.current)
-    suggestTransportRef.current = createElectronTransport(() =>
-      withFastModel(settingsRef.current),
-    )
+    suggestTransportRef.current = createElectronTransport(() => withFastModel(settingsRef.current))
   const suggested = useSuggestedQuestions((user, assistant, signal) =>
     generateSuggestedQuestions({
       transport: suggestTransportRef.current!,
@@ -1217,7 +1220,7 @@ export function AiPanel({
           '- Every visual slot listed for a page → a placeholder box: {"type":"shape","shape":"roundRect","fill":"#F1F5F9","stroke":{"color":"#CBD5E1","widthPt":1},"valign":"middle","paragraphs":[{"align":"center","runs":[{"text":"IMAGE: <slot description, keeping its [N:M] tag>","sizePt":12,"color":"#64748B"}]}]} at the slot\'s planned position AND at the slot\'s fixed aspect — each slot ends with a [N:M] tag (one of 1:1, 16:9, 9:16, 3:4, 4:3; untagged = 16:9): the box\'s w:h must equal it, so a [3:4] slot is a 3:4 box, never a narrow strip. For chart/data slots label it "CHART: <description>" instead (any proportion). NEVER draw real charts, icons or images — placeholders only.\n' +
           '- Text boxes have zero padding: a line is ~sizePt*1.8 px tall at lineSpacingPct 110, a Latin char ~sizePt*0.7 px wide, a CJK char ~sizePt*1.35 px. Size each box for its wrapped lines plus one spare; no text overflow, no text overlapping other elements.\n' +
           '- List-like lines are real lists: set "bullet":true on the paragraph — never type •/-/– characters into run text (typed bullets break the hanging indent: wrapped lines slide under the bullet glyph).\n' +
-          "- Keep each page's real text from its brief. Titles make a claim, not a topic label (\"Costs fell 18%\", not \"Cost overview\"). One idea per page; bullets ≤8 words each with parallel grammar; content pages max 4-6 bullets — when the brief carries more, prefer fewer, sharper bullets over cramming; no filler (\"In conclusion\", \"As we all know\"). Do not invent figures not in the brief/material.\n"
+          '- Keep each page\'s real text from its brief. Titles make a claim, not a topic label ("Costs fell 18%", not "Cost overview"). One idea per page; bullets ≤8 words each with parallel grammar; content pages max 4-6 bullets — when the brief carries more, prefer fewer, sharper bullets over cramming; no filler ("In conclusion", "As we all know"). Do not invent figures not in the brief/material.\n'
         const userMsg =
           `Deck topic: ${args.topic || args.coreHook || 'Presentation'}\nCore hook: ${args.coreHook}\n` +
           (args.context
@@ -1391,7 +1394,13 @@ export function AiPanel({
         if (!r.ok || !r.text) return { ok: false, error: r.error ?? tGlobal('aiErrEmptyOutput') }
         try {
           const obj = JSON.parse(extractJsonObject(r.text)) as {
-            variants?: { name?: unknown; concept?: unknown; palette?: unknown; fonts?: unknown; motif?: unknown }[]
+            variants?: {
+              name?: unknown
+              concept?: unknown
+              palette?: unknown
+              fonts?: unknown
+              motif?: unknown
+            }[]
           }
           const variants = (Array.isArray(obj.variants) ? obj.variants : [])
             .map((v) => ({
@@ -1663,10 +1672,15 @@ export function AiPanel({
     loopRef.current = new AgentLoop({
       transport: createElectronTransport(() => settingsRef.current),
       systemSuffix: aiLangDirective,
-      skill: composeSkills('slides+files', '', [
-        createSlidesSkill(access),
-        createFilesSkill(availableAttachments, (path) => readAttachmentPathsRef.current.add(path)),
-      ]),
+      skill: withPiiTokenGuard(
+        composeSkills('slides+files', '', [
+          createSlidesSkill(access),
+          createFilesSkill(availableAttachments, (path) =>
+            readAttachmentPathsRef.current.add(path),
+          ),
+        ]),
+        () => piiShieldMayApply(settingsRef.current),
+      ),
       events: {
         onText: (text) => {
           streamedTextRef.current = text
@@ -1753,8 +1767,7 @@ export function AiPanel({
             setBusy(false)
             // follow-up suggestions are generated off the fast model after the reply lands;
             // a pending QC pass keeps `busy` set, which hides the strip until the deck settles
-            if (!cancelled && finalText)
-              suggested.refresh(lastInstructionRef.current, finalText)
+            if (!cancelled && finalText) suggested.refresh(lastInstructionRef.current, finalText)
             // Post-generation layout QC: only after a completed run that landed generated pages
             if (cancelled) qcPagesRef.current = []
             else if (qcPagesRef.current.length > 0) void runQcPassRef.current()
@@ -2236,6 +2249,7 @@ export function AiPanel({
     dismissClarify()
     qcAbortRef.current?.abort()
     loopRef.current?.reset()
+    suggestTransportRef.current?.resetSession?.()
     suggested.clear()
     setBusy(false)
     setChat([])
@@ -2786,7 +2800,17 @@ export function AiPanel({
               rows={3}
             />
             <div className="ai-input-footer">
-              {settings.provider === 'vega' && <AiShieldBadge />}
+              {settings.provider === 'vega' && (
+                <AiShieldBadge
+                  active={settings.piiShieldEnabled !== false}
+                  onToggle={() =>
+                    onSettingsChange?.({
+                      ...settings,
+                      piiShieldEnabled: settings.piiShieldEnabled === false,
+                    })
+                  }
+                />
+              )}
               <button
                 className="ai-attach-btn"
                 onClick={pickAttachments}
@@ -3488,8 +3512,7 @@ function OutlineCard({
       // Keep the user's page removals/retitles/brief edits in the revision request —
       // re-planning must see the same edits an approval would have applied.
       const parts = [fb]
-      if (excluded.size)
-        parts.push(`Remove page(s): ${[...excluded].map((i) => i + 1).join(', ')}`)
+      if (excluded.size) parts.push(`Remove page(s): ${[...excluded].map((i) => i + 1).join(', ')}`)
       const renamed = titles
         .map((title, i) =>
           title.trim() && title.trim() !== proposal.pages[i]?.title
@@ -3625,12 +3648,7 @@ function OutlineCard({
  */
 export type StylePreset = 'auto' | 'editorial' | 'swiss' | 'dark' | 'minimal'
 
-const STYLE_PRESETS: Exclude<StylePreset, 'auto'>[] = [
-  'editorial',
-  'swiss',
-  'dark',
-  'minimal',
-]
+const STYLE_PRESETS: Exclude<StylePreset, 'auto'>[] = ['editorial', 'swiss', 'dark', 'minimal']
 
 const STYLE_PRESET_KEY: Record<Exclude<StylePreset, 'auto'>, StringKey> = {
   editorial: 'aiStylePresetEditorial',

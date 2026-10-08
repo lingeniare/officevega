@@ -9,7 +9,7 @@
 // local server that is very often simply not running. The user agent it would
 // have added is still set, since gateways reject a bare `node`.
 import type { CodexModelCatalog } from './types'
-import { withUserAgent } from './fetch'
+import { vegaPiiHeaders, withUserAgent } from './fetch'
 import { endpointUrl, readCappedResponseText } from './protocols/shared'
 import { createStreamWatchdog } from './watchdog'
 
@@ -55,7 +55,7 @@ export async function listCustomModels(
   const base = baseUrl.trim().replace(/\/+$/, '')
   if (!base) return emptyCatalog()
   const key = (apiKey ?? '').trim()
-  const headers: Record<string, string> = { Accept: 'application/json' }
+  const headers: Record<string, string> = { Accept: 'application/json', ...vegaPiiHeaders(base) }
   if (key) headers.Authorization = `Bearer ${key}`
 
   const watchdog = createStreamWatchdog(undefined, REQUEST_TIMEOUT_MS)

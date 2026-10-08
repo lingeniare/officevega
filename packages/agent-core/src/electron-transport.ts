@@ -74,8 +74,11 @@ export interface IpcTransportOptions<S> {
  */
 export function createIpcTransport<S>(options: IpcTransportOptions<S>): AgentTransport {
   const timeoutText = () => options.timeoutErrorText?.() ?? options.unknownErrorText()
-  const sessionId = crypto.randomUUID()
+  let sessionId = crypto.randomUUID()
   return {
+    resetSession() {
+      sessionId = crypto.randomUUID()
+    },
     stream(request: AgentStreamRequest, cb) {
       const requestId = crypto.randomUUID()
       let settled = false

@@ -1157,6 +1157,8 @@ register({
     if (typeof op.find !== 'string' || op.find === '') return `${where}: find must not be empty`
     if (typeof op.replace !== 'string')
       return `${where}: replace must be a string (empty deletes the match)`
+    if (op.find === op.replace)
+      return `${where}: find and replace are identical — nothing would change; give different replacement text or drop this op`
     if (op.matchCase !== undefined && typeof op.matchCase !== 'boolean') {
       return `${where}: matchCase must be a boolean`
     }

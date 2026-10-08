@@ -748,50 +748,50 @@ function AiModelPane({
         )}
       </div>
       {SHOW_FAST_MODEL ? (
-      <div className="set-field">
-        <div className="set-field-text">
-          <div className="set-field-stack">
-            <label className="set-field-label">{t('setAiFastModelId')}</label>
-            <div className="set-field-desc">{t('setAiFastModelDesc')}</div>
+        <div className="set-field">
+          <div className="set-field-text">
+            <div className="set-field-stack">
+              <label className="set-field-label">{t('setAiFastModelId')}</label>
+              <div className="set-field-desc">{t('setAiFastModelDesc')}</div>
+            </div>
           </div>
+          {meta?.liveCatalog ? (
+            // same editable combobox as the main model; the first row reverts to
+            // "same as main" (empty fastModel) so the pick is never one-way, and
+            // an unset field reads that state instead of a bare id
+            <ComboBox
+              id="set-ai-fast-model"
+              className="set-combo"
+              ariaLabel={t('setAiFastModelId')}
+              value={config.fastModel ?? ''}
+              options={fastModelOptions}
+              placeholder={config.model || meta.defaultModel || 'model-id'}
+              searchPlaceholder={t('setAiModelSearch')}
+              onChange={(m) => updateConfig({ fastModel: m || undefined })}
+            />
+          ) : meta && meta.models.length > 0 ? (
+            <Dropdown
+              className="set-dd"
+              value={config.fastModel ?? ''}
+              ariaLabel={t('setAiFastModelId')}
+              options={[
+                { value: '', label: t('setAiFastModelSame') },
+                ...meta.models.map((m) => ({ value: m, label: m })),
+              ]}
+              onPick={(m) => updateConfig({ fastModel: m || undefined })}
+            />
+          ) : (
+            <input
+              id="set-ai-fast-model"
+              className="set-input"
+              type="text"
+              value={config.fastModel ?? ''}
+              placeholder={config.model || 'model-id'}
+              spellCheck={false}
+              onChange={(e) => updateConfig({ fastModel: e.target.value || undefined })}
+            />
+          )}
         </div>
-        {meta?.liveCatalog ? (
-          // same editable combobox as the main model; the first row reverts to
-          // "same as main" (empty fastModel) so the pick is never one-way, and
-          // an unset field reads that state instead of a bare id
-          <ComboBox
-            id="set-ai-fast-model"
-            className="set-combo"
-            ariaLabel={t('setAiFastModelId')}
-            value={config.fastModel ?? ''}
-            options={fastModelOptions}
-            placeholder={config.model || meta.defaultModel || 'model-id'}
-            searchPlaceholder={t('setAiModelSearch')}
-            onChange={(m) => updateConfig({ fastModel: m || undefined })}
-          />
-        ) : meta && meta.models.length > 0 ? (
-          <Dropdown
-            className="set-dd"
-            value={config.fastModel ?? ''}
-            ariaLabel={t('setAiFastModelId')}
-            options={[
-              { value: '', label: t('setAiFastModelSame') },
-              ...meta.models.map((m) => ({ value: m, label: m })),
-            ]}
-            onPick={(m) => updateConfig({ fastModel: m || undefined })}
-          />
-        ) : (
-          <input
-            id="set-ai-fast-model"
-            className="set-input"
-            type="text"
-            value={config.fastModel ?? ''}
-            placeholder={config.model || 'model-id'}
-            spellCheck={false}
-            onChange={(e) => updateConfig({ fastModel: e.target.value || undefined })}
-          />
-        )}
-      </div>
       ) : null}
       {isCodex ? (
         <div className="set-field">
@@ -905,6 +905,24 @@ function AiModelPane({
           aria-label={t('setAiVegaTools')}
           onClick={() => {
             setSettings({ ...settings, vegaToolsEnabled: settings.vegaToolsEnabled === false })
+            touch()
+          }}
+        />
+      </div>
+      <div className="set-field">
+        <div className="set-field-text">
+          <div className="set-field-stack">
+            <div className="set-field-label">{t('setAiPiiShield')}</div>
+            <div className="set-field-desc">{t('setAiPiiShieldDesc')}</div>
+          </div>
+        </div>
+        <button
+          className="set-switch"
+          role="switch"
+          aria-checked={settings.piiShieldEnabled !== false}
+          aria-label={t('setAiPiiShield')}
+          onClick={() => {
+            setSettings({ ...settings, piiShieldEnabled: settings.piiShieldEnabled === false })
             touch()
           }}
         />
@@ -1165,29 +1183,6 @@ function AiMediaPane({
     setTesting(false)
   }
 
-  const blockLabel = (block: TestedBlock) =>
-    block === 'search'
-      ? t('setAiCapSearch')
-      : block === 'image'
-        ? t('setAiCapImage')
-        : block === 'analysis'
-          ? t('setAiCapAnalysis')
-          : block === 'video'
-            ? t('setAiCapVideo')
-            : t('setAiCapFileSearch')
-  const blockProvider = (block: TestedBlock) => {
-    if (block === 'rerank')
-      return DECISION_ENDPOINTS.find((e) => e.value === fileSearch?.endpoint)?.label ?? ''
-    if (block === 'search')
-      return searchCatalog.find((m) => m.id === search.provider)?.label ?? search.provider
-    const id =
-      block === 'image'
-        ? media.imageProvider
-        : block === 'video'
-          ? media.videoAnalysisProvider
-          : media.analysisProvider
-    return mediaCatalog.find((m) => m.id === id)?.label ?? id
-  }
   const blockStatus = (block: TestedBlock): AiStatus | null => {
     if (testing) return { kind: 'testing', text: t('setAiTesting') }
     const r = testResults?.[block]
@@ -1491,9 +1486,9 @@ function AiMediaPane({
                 ? t('setAiSearchParallelHint')
                 : search.provider === 'serply'
                   ? t('setAiSearchSerplyHint')
-                : searchMeta?.imageSearch
-                  ? t('setAiSearchSerperHint')
-                  : t('setAiSearchTavilyHint')}
+                  : searchMeta?.imageSearch
+                    ? t('setAiSearchSerperHint')
+                    : t('setAiSearchTavilyHint')}
         </div>
         {search.provider !== 'genspark' &&
           search.provider !== 'vega' &&
@@ -1884,9 +1879,7 @@ export function SettingsModal({
                     className="set-input"
                     type="text"
                     value={displayName}
-                    placeholder={
-                      loggedIn && email ? email.split('@')[0] : t('setDisplayName')
-                    }
+                    placeholder={loggedIn && email ? email.split('@')[0] : t('setDisplayName')}
                     spellCheck={false}
                     autoComplete="off"
                     maxLength={80}

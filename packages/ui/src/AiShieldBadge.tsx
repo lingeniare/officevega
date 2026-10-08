@@ -1,22 +1,50 @@
 import React from 'react'
 
-const SHIELD_TEXT: Record<string, string> = {
-  ru: 'Персональные данные документов, файлов и промптов анонимизируются через сервис ВЕГА перед отправкой в LLM. Остальное содержимое передаётся в модель без изменений — не отправляйте сведения ограниченного доступа',
-  en: 'Personal data in documents, files and prompts is anonymized via the VEGA service before being sent to the LLM. Other content reaches the model unchanged — do not submit restricted information',
-  zh: '文档、文件和提示词中的个人数据在发送至 LLM 前会经由 VEGA 服务进行匿名化处理。其余内容将原样发送至模型——请勿提交受限信息',
+const SHIELD_TEXT: Record<string, { on: string; off: string }> = {
+  ru: {
+    on: 'Персональные данные документов, файлов и промптов анонимизируются через сервис ВЕГА перед отправкой в LLM. Остальное содержимое передаётся в модель без изменений — не отправляйте сведения ограниченного доступа. Нажмите, чтобы отключить анонимизацию',
+    off: 'Анонимизация персональных данных отключена — документы, файлы и промпты отправляются в LLM как есть. Нажмите, чтобы включить её обратно',
+  },
+  en: {
+    on: 'Personal data in documents, files and prompts is anonymized via the VEGA service before being sent to the LLM. Other content reaches the model unchanged — do not submit restricted information. Click to turn anonymization off',
+    off: 'PII anonymization is off — documents, files and prompts reach the LLM as they are. Click to turn it back on',
+  },
+  zh: {
+    on: '文档、文件和提示词中的个人数据在发送至 LLM 前会经由 VEGA 服务进行匿名化处理。其余内容将原样发送至模型——请勿提交受限信息。点击可关闭匿名化',
+    off: '个人数据匿名化已关闭——文档、文件和提示词将原样发送至 LLM。点击可重新开启',
+  },
 }
 
-function shieldText(): string {
+function shieldText(active: boolean): string {
   const lang = (typeof document !== 'undefined' ? document.documentElement.lang : '') || 'en'
-  return SHIELD_TEXT[lang.toLowerCase().split('-')[0]!] ?? SHIELD_TEXT.en!
+  const entry = SHIELD_TEXT[lang.toLowerCase().split('-')[0]!] ?? SHIELD_TEXT.en!
+  return active ? entry.on : entry.off
 }
 
-/** Static privacy indicator for the AI composer: not a toggle — VEGA anonymizes
- *  PII server-side, so callers render it only while the effective provider is VEGA. */
-export function AiShieldBadge(): React.JSX.Element {
-  const text = shieldText()
+/**
+ * Privacy-shield toggle for the AI composer: `active` paints the accent color
+ * and shows the checked shield; off returns the muted style with the struck
+ * shield. The click flips the `piiShieldEnabled` AI setting (callers persist
+ * it); render this only while the effective provider is VEGA.
+ */
+export function AiShieldBadge({
+  active,
+  onToggle,
+}: {
+  active: boolean
+  onToggle: () => void
+}): React.JSX.Element {
+  const text = shieldText(active)
   return (
-    <span className="ai-shield-badge" title={text} aria-label={text} role="img">
+    <button
+      type="button"
+      className={`ai-shield-badge${active ? ' ai-shield-badge--on' : ''}`}
+      title={text}
+      aria-label={text}
+      role="switch"
+      aria-checked={active}
+      onClick={onToggle}
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="16"
@@ -30,8 +58,8 @@ export function AiShieldBadge(): React.JSX.Element {
         aria-hidden="true"
       >
         <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
-        <path d="m9 12 2 2 4-4" />
+        {active ? <path d="m9 12 2 2 4-4" /> : <line x1="4" y1="4" x2="20" y2="20" />}
       </svg>
-    </span>
+    </button>
   )
 }

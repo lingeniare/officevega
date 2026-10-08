@@ -12,7 +12,7 @@ import {
 import { copyFile, mkdir, readFile, rm, stat, writeFile } from 'node:fs/promises'
 import { refreshCsvDigest } from './csv-digest'
 import { createServer } from 'node:http'
-import { basename, dirname, isAbsolute, join, resolve } from 'node:path'
+import { basename, dirname, isAbsolute, join } from 'node:path'
 
 import {
   app,
@@ -59,7 +59,14 @@ import {
   forwardRendererConsole,
   writeJsonAtomic,
 } from '@genoffice/electron-utils'
-import { appTitle, createI18n, getUiLang, type Lang, normalizeLang, setUiLang } from '@genoffice/i18n'
+import {
+  appTitle,
+  createI18n,
+  getUiLang,
+  type Lang,
+  normalizeLang,
+  setUiLang,
+} from '@genoffice/i18n'
 import { ProjectStore } from '@genoffice/project-store'
 
 import {
@@ -74,6 +81,7 @@ import {
   requestProvider,
   resolveAiSettings,
   setAiUserAgent,
+  setPiiShieldEnabled,
   setRescueFetch,
   warmAiConnections,
   streamForProvider,
@@ -4041,6 +4049,7 @@ export function registerSheetsAiIpc(): void {
     sessionFor(event)
     const stored = readJson<Partial<AiSettings> & LegacyAiSettings>(SETTINGS_PATH(), {})
     const settings = resolveAiSettings(stored, defaultAiSettings())
+    setPiiShieldEnabled(settings.piiShieldEnabled !== false)
     // `provider` reports the effective route; storedProvider keeps the user's
     // pick visible so a settings save can't clobber a half-configured selection
     const storedProvider = settings.provider
@@ -4073,12 +4082,14 @@ export function registerSheetsAiIpc(): void {
     const settings = aiSettingsInputSchema.parse(input)
     // storedProvider is a get-settings transport hint — never persisted
     const { storedProvider: _ignored, ...persist } = settings
+    setPiiShieldEnabled(settings.piiShieldEnabled !== false)
     writeJsonAtomic(SETTINGS_PATH(), persist)
   })
 
   ipcMain.handle(IPC_CHANNELS.aiChat, async (event, input: unknown) => {
     sessionFor(event)
     const request = aiChatRequestSchema.parse(input)
+    setPiiShieldEnabled(request.settings.piiShieldEnabled !== false)
     // callers pass the effective provider from ai:get-settings — resolving again
     // here would break "test connection" on a stored-but-keyless BYOK pick; only
     // the legacy-genspark→vega upgrade is re-applied (a pre-sign-in snapshot
@@ -4116,6 +4127,7 @@ export function registerSheetsAiIpc(): void {
   ipcMain.handle(IPC_CHANNELS.aiStream, async (event, input: unknown) => {
     const entry = sessionFor(event)
     const request = aiStreamRequestSchema.parse(input)
+    setPiiShieldEnabled(request.settings.piiShieldEnabled !== false)
     const { requestId, system, messages } = request
     const tools = request.tools ?? []
     const maxTokens = request.maxTokens ?? maxOutputTokensOf(request.settings)

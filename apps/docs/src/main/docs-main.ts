@@ -107,6 +107,7 @@ import {
   sanitizeAiSettings,
   validCliPath,
   setAiUserAgent,
+  setPiiShieldEnabled,
   setRescueFetch,
   warmAiConnections,
   streamForProvider,
@@ -4751,6 +4752,7 @@ export function registerAiIpc(): void {
       writeJsonAtomic(SETTINGS_PATH(), stored)
     }
     const settings = resolveAiSettings(stored, defaultAiSettings())
+    setPiiShieldEnabled(settings.piiShieldEnabled !== false)
     // `provider` reports the effective route (a stored BYOK provider is honored
     // when usable; half-filled configs fall back to genspark); storedProvider
     // keeps the user's pick visible so the settings UI can't clobber it
@@ -4789,6 +4791,7 @@ export function registerAiIpc(): void {
       console.warn('[ai] rejected invalid ai:set-settings payload')
       return
     }
+    setPiiShieldEnabled(sanitized.piiShieldEnabled !== false)
     writeJsonAtomic(SETTINGS_PATH(), sanitized)
   })
 
@@ -4847,6 +4850,7 @@ export function registerAiIpc(): void {
       } satisfies AiStreamChunk)
       return
     }
+    setPiiShieldEnabled(settings.piiShieldEnabled !== false)
     const { requestId, system, messages } = request
     const tools = request.tools ?? []
     const maxTokens = request.maxTokens ?? maxOutputTokensOf(settings)
@@ -5057,6 +5061,7 @@ export function registerAiIpc(): void {
     // the renderer's settings copy verbatim
     const settings = sanitizeAiSettings(request.settings)
     if (!settings) return { ok: false, error: 'invalid AI settings payload' }
+    setPiiShieldEnabled(settings.piiShieldEnabled !== false)
     const { system, user } = request
     // callers pass the effective provider from ai:get-settings — resolving again
     // here would break "test connection" on a stored-but-keyless BYOK pick; only

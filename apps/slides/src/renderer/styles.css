@@ -2530,20 +2530,12 @@ body.vib .slide-list {
   background: currentColor;
 }
 
-/* composer card — same spec as the Excel panel: 16px radius, default border, float shadow */
+/* composer card — same spec as the Excel panel: 16px radius, float shadow, no border */
 .ai-input-box {
-  border: 1px solid var(--color-border-default);
+  border: none;
   border-radius: var(--radius-16);
   background: var(--color-bg-page);
   box-shadow: var(--slides-shadow-composer);
-  transition:
-    border-color var(--transition-fast),
-    box-shadow var(--transition-fast);
-}
-
-/* Focus state: no colored highlight, just a one-step darker border as the cue */
-.ai-input-box:focus-within {
-  border-color: var(--color-border-strong);
 }
 
 /* textarea: 16px / 24px fixed line-height (chat body size); resting height matches the apps/sheets panel */

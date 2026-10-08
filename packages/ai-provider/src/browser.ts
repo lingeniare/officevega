@@ -15,6 +15,7 @@ export {
   MIN_MAX_OUTPUT_TOKENS,
   clampMaxOutputTokens,
   maxOutputTokensOf,
+  piiShieldMayApply,
   withFastModel,
 } from './providers'
 export { isOutputCapRejection } from './output-cap'
