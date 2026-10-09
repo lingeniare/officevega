@@ -73,16 +73,21 @@ describe('resolveGlobalShortcut routing', () => {
       [keyEvent('F5'), GRID, GO_TO],
       [keyEvent('Backquote', ctrl), GRID, cmd('toggle-show-formulas')],
       [keyEvent('KeyK', meta), MAC, cmd('link-open')],
+      [keyEvent('KeyM', metaShift), MAC, cmd('comment-new')],
+      [keyEvent('F2', ctrlShift), GRID, cmd('comment-new')],
+      [keyEvent('F2', shift), GRID, cmd('note-open')],
       [keyEvent('KeyE', ctrl), GRID, cmd('flash-fill')],
       [keyEvent('F2', shift), GRID, cmd('note-open')],
       [keyEvent('F3', shift), GRID, cmd('insert-function-open')],
       [keyEvent('F3', ctrl), GRID, cmd('name-manager-open')],
       [keyEvent('F11', shift), GRID, cmd('insert-sheet')],
       [keyEvent('KeyV', ctrlShift), GRID, cmd('paste-special:value')],
+      [keyEvent('KeyV', { ctrlKey: true, altKey: true }), GRID, cmd('paste-special-open')],
+      [keyEvent('KeyV', { metaKey: true, ctrlKey: true }), MAC, cmd('paste-special-open')],
       [keyEvent('BracketLeft', ctrl), GRID, cmd('trace-precedents')],
       [keyEvent('BracketRight', meta), MAC, cmd('trace-dependents')],
-      [keyEvent('ArrowRight', altShift), GRID, cmd('outline-group:rows')],
-      [keyEvent('ArrowLeft', altShift), GRID, cmd('outline-ungroup:rows')],
+      [keyEvent('ArrowRight', altShift), GRID, cmd('outline-group:auto')],
+      [keyEvent('ArrowLeft', altShift), GRID, cmd('outline-ungroup:auto')],
       [keyEvent('Period', ctrlShift), GRID, cmd('font-size-step:1')],
       [keyEvent('Comma', metaShift), MAC, cmd('font-size-step:-1')],
       [keyEvent('KeyU', ctrlShift), GRID, cmd('formula-bar-toggle')],
@@ -105,6 +110,10 @@ describe('resolveGlobalShortcut routing', () => {
     // Ctrl+Shift+1 is Excel's number-format chord (excel-format-shortcuts): pick an unbound one
     expect(resolveGlobalShortcut(keyEvent('KeyG', ctrlShift), GRID)).toBeNull()
     expect(resolveGlobalShortcut(keyEvent('KeyV', ctrl), GRID)).toBeNull()
+    // Cmd+Ctrl+V is Excel for Mac only
+    expect(
+      resolveGlobalShortcut(keyEvent('KeyV', { metaKey: true, ctrlKey: true }), GRID),
+    ).toBeNull()
     expect(resolveGlobalShortcut(keyEvent('F11'), GRID)).toBeNull()
     expect(resolveGlobalShortcut(keyEvent('ArrowRight', alt), GRID)).toBeNull()
     expect(
@@ -118,10 +127,9 @@ describe('resolveGlobalShortcut routing', () => {
     expect(resolveGlobalShortcut(keyEvent('KeyF', ctrlShift), MAC)).toBeNull()
   })
 
-  it('binds filter and AutoSum cross-platform on the Excel chords', () => {
-    expect(resolveGlobalShortcut(keyEvent('KeyL', ctrlShift), GRID)).toEqual(cmd('filter-toggle'))
-    expect(resolveGlobalShortcut(keyEvent('KeyL', metaShift), MAC)).toEqual(cmd('filter-toggle'))
-    expect(resolveGlobalShortcut(keyEvent('KeyL'), GRID)).toBeNull()
+  it('binds AutoSum cross-platform; the filter Ctrl/⌘+Shift+L chord belongs to Univer', () => {
+    expect(resolveGlobalShortcut(keyEvent('KeyL', ctrlShift), GRID)).toBeNull()
+    expect(resolveGlobalShortcut(keyEvent('KeyL', metaShift), MAC)).toBeNull()
     expect(resolveGlobalShortcut(keyEvent('KeyT', ctrlShift), GRID)).toEqual(cmd('autofn:SUM'))
     expect(resolveGlobalShortcut(keyEvent('KeyT', metaShift), MAC)).toEqual(cmd('autofn:SUM'))
   })

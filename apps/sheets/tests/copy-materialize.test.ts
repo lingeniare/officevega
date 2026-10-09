@@ -1,6 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { installCopyMaterialize } from '../src/renderer/copy-materialize'
+import {
+  COPY_MATERIALIZE_MAX_CELLS,
+  installCopyMaterialize,
+} from '../src/renderer/copy-materialize'
 import { setModuleLang } from '../src/renderer/i18n/locale'
 import { ensureLazyRangeLoaded, readCopySourceDirect } from '../src/renderer/univer-sync'
 
@@ -167,7 +170,9 @@ describe('copy materialize screen extent', () => {
     })
     expect(written).toEqual(['Año\t1,234.50\n\tTRUE'])
     // the numbers are system-locale formatted (1,440,000 / 1 440 000 / 1.440.000)
-    expect(h.messages.at(-1)).toMatch(/A1:DP12000.*1\D?440\D?000.*250\D?000/)
+    expect(h.messages.at(-1)).toMatch(
+      new RegExp(`A1:DP12000.*1\\D?440\\D?000.*${COPY_MATERIALIZE_MAX_CELLS.toLocaleString()}`),
+    )
     dispose()
   })
 
@@ -183,7 +188,7 @@ describe('copy materialize screen extent', () => {
     expect(await h.clipboard.cut()).toBe(false)
     expect(mockDirect).not.toHaveBeenCalled()
     expect(cutSpy).not.toHaveBeenCalled()
-    expect(h.messages.at(-1)).toMatch(/A1:DP12000.*250000/)
+    expect(h.messages.at(-1)).toMatch(new RegExp(`A1:DP12000.*${COPY_MATERIALIZE_MAX_CELLS}`))
     dispose()
   })
 })

@@ -14,10 +14,15 @@ export interface McpLaunch {
 const isWindowsPath = (p: string) => p.includes('\\')
 
 /** The app's snippet: the bare name once officevega is on the PATH, else the launcher itself. */
-export function mcpLaunch(cli: { status: string; launcherDir: string }): McpLaunch {
+export function mcpLaunch(cli: {
+  status: string
+  launcherDir: string
+  pathHint?: string
+}): McpLaunch {
   const dir = cli.launcherDir
   if (isWindowsPath(dir)) return windowsAppLaunch(dir)
-  return { command: cli.status === 'present' ? 'officevega' : `${dir}/officevega`, args: ['mcp'] }
+  const onPath = cli.status === 'present' && !cli.pathHint
+  return { command: onPath ? 'officevega' : `${dir}/officevega`, args: ['mcp'] }
 }
 
 function windowsAppLaunch(dir: string): McpLaunch {

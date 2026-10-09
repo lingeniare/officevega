@@ -492,6 +492,7 @@ export const tt = {
   appParaSpecialFirstLine: 'First line',
   appParaSpecialHanging: 'Hanging',
   appParaBy: 'By',
+  appParaUnitChars: 'тамга',
   appUseWildcards: 'Use wildcards (? * [ ] < >)',
   appUseRegex: 'Use regular expressions',
   appMatchWidth: 'Match half/full width',

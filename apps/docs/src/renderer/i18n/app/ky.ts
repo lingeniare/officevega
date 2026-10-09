@@ -494,6 +494,7 @@ export const ky = {
   appParaSpecialFirstLine: 'First line',
   appParaSpecialHanging: 'Hanging',
   appParaBy: 'By',
+  appParaUnitChars: 'белги',
   appUseWildcards: 'Use wildcards (? * [ ] < >)',
   appUseRegex: 'Use regular expressions',
   appMatchWidth: 'Match half/full width',

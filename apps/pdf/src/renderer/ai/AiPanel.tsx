@@ -1,4 +1,9 @@
-import { aiPanelWidthAtPointer } from '@genoffice/ui'
+import {
+  aiPanelWidthAtPointer,
+  AiPanelSideButton,
+  AiModelPicker,
+  type AiModelPickerBridge,
+} from '@genoffice/ui'
 import { useEffect, useRef, useState } from 'react'
 import type { PointerEvent as ReactPointerEvent, ReactElement } from 'react'
 import { AgentLoop, generateSuggestedQuestions, withPiiTokenGuard } from '@genoffice/agent-core'
@@ -19,6 +24,9 @@ import {
   type AiScopeQuoteData,
 } from '@genoffice/ui'
 import { aiLangDirective, t as tGlobal, useI18n } from '../i18n/locale'
+import sendEnterOn from '../assets/send-enter-on.png'
+import sendEnterOff from '../assets/send-enter-off.png'
+import sendStop from '../assets/send-stop.png'
 import { localizedToolSummary } from './tool-labels'
 import { Markdown } from '@genoffice/ui'
 import { createPdfSkill } from './pdf-skill'
@@ -82,6 +90,14 @@ type Phase = 'thinking' | 'replying' | 'working'
 interface PendingConfirm {
   req: FileOpConfirm
   settle: (ok: boolean) => void
+}
+
+const MODEL_BRIDGE: AiModelPickerBridge = {
+  getSettings: () => window.pdfApi.getAiSettings(),
+  setSettings: (settings) => window.pdfApi.setAiSettings(settings),
+  onSettingsChanged: (handler) => window.pdfApi.onAiSettingsChanged(handler),
+  gskLoggedIn: () => window.pdfApi.gskStatus().then((s) => !!s?.loggedIn),
+  openModelSettings: () => window.pdfApi.openAiModelSettings().catch(() => {}),
 }
 
 export function AiPanel({
@@ -407,6 +423,8 @@ export function AiPanel({
       moveTextBlock: (idx, block, d) => apiRef.current.moveTextBlock(idx, block, d),
       insertText: (input) => apiRef.current.insertText(input),
       addFormMark: (idx, kind, rect) => apiRef.current.addFormMark(idx, kind, rect),
+      formWidgets: (idx) => apiRef.current.formWidgets(idx),
+      pageBoxes: (idx) => apiRef.current.pageBoxes(idx),
       textInserts: () => apiRef.current.textInserts(),
       updateTextInsert: (id, edit) => apiRef.current.updateTextInsert(id, edit),
       moveTextInsert: (id, origin) => apiRef.current.moveTextInsert(id, origin),
@@ -882,6 +900,10 @@ export function AiPanel({
           shieldOn={piiOn}
           onShieldToggle={togglePiiShield}
           textareaRef={inputRef}
+          footerStart={<AiModelPicker bridge={MODEL_BRIDGE} lang={lang} />}
+          sendIconEnabled={<img src={sendEnterOn} alt="" aria-hidden />}
+          sendIconDisabled={<img src={sendEnterOff} alt="" aria-hidden />}
+          stopIcon={<img src={sendStop} alt="" aria-hidden />}
           onChange={setPrompt}
           onSend={() => send(prompt)}
           onStop={stop}

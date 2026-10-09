@@ -84,6 +84,12 @@ export interface AgentLoopOptions<TSnapshot = unknown> {
 }
 
 const COMPACT_MAX_BYTES = 256 * 1024
+/** Per-turn cap on streamed text / reasoning (UTF-16 units); a stream that never ends must not grow memory without bound */
+const TURN_STREAM_MAX_CHARS = 2 * 1024 * 1024
+function turnBudgetError(kind: 'text' | 'reasoning'): string {
+  const mib = TURN_STREAM_MAX_CHARS / (1024 * 1024)
+  return `The model streamed more than ${mib} MiB of ${kind} in a single turn; the run was stopped. Please send the request again`
+}
 const COMPACT_KEEP_RECENT_BYTES = 96 * 1024
 /** Pre-truncation of each tool output in the summary request (the compaction request itself must not blow up on huge outputs) */
 const SUMMARIZE_TOOL_OUTPUT_MAX = 2_000
@@ -273,6 +279,58 @@ export function invalidArgumentFields(
 }
 
 /**
+ * Repairs the argument shapes weaker models emit that every handler used to
+ * accept silently before invalidArgumentFields existed: a numeric string in a
+ * number/integer field becomes a number, a number is clamped into a declared
+ * minimum/maximum (the handlers clamp too, so this only spares a retry), and a
+ * value that still violates a field whose schema declares a `default` is
+ * replaced by it. Anything else is left for invalidArgumentFields.
+ */
+export function coerceArgumentFields(
+  tool: AgentToolDef | undefined,
+  input: Record<string, unknown>,
+): Record<string, unknown> {
+  const properties = tool?.inputSchema?.properties
+  if (!isPlainRecord(properties)) return input
+  let out = input
+  for (const [field, fieldSchema] of Object.entries(properties)) {
+    if (!isPlainRecord(fieldSchema)) continue
+    const value = input[field]
+    if (value === undefined) continue
+    let next = value
+    const declared = (
+      Array.isArray(fieldSchema.type) ? fieldSchema.type : [fieldSchema.type]
+    ).filter((t): t is string => typeof t === 'string')
+    const numeric = declared.includes('number') || declared.includes('integer')
+    if (numeric && typeof value === 'string' && value.trim() !== '') {
+      const n = Number(value)
+      if (Number.isFinite(n) && (declared.includes('number') || Number.isInteger(n))) next = n
+    }
+    if (typeof next === 'number' && Number.isFinite(next)) {
+      const { minimum, maximum, exclusiveMinimum, exclusiveMaximum } = fieldSchema
+      let clamped: number = next
+      if (typeof minimum === 'number' && exclusiveMinimum !== true)
+        clamped = Math.max(clamped, minimum)
+      if (typeof maximum === 'number' && exclusiveMaximum !== true)
+        clamped = Math.min(clamped, maximum)
+      next = clamped
+    }
+    if (
+      fieldSchema.default !== undefined &&
+      schemaViolation(next, fieldSchema, 0) !== undefined &&
+      schemaViolation(fieldSchema.default, fieldSchema, 0) === undefined
+    ) {
+      next = fieldSchema.default
+    }
+    if (next !== value) {
+      if (out === input) out = { ...input }
+      out[field] = next
+    }
+  }
+  return out
+}
+
+/**
  * Degenerate-loop guards. Weak models (BYOK/local endpoints especially) can
  * repeat the exact same turn forever or keep issuing failing tool calls; with
  * a large turn budget these must abort early instead of burning it.
@@ -454,6 +512,7 @@ export class AgentLoop<TSnapshot = unknown> {
   /** strips raw tool-call markup leaked into the text stream (see tool-markup.ts) */
   private markupStripper: ToolMarkupStripper = createToolCallMarkupStripper()
   private turnReasoning = ''
+  private retryTimer: ReturnType<typeof setTimeout> | null = null
   private toolCalls: AgentToolCall[] = []
   /** read-only tool calls started while the model was still streaming (keyed by the call object); awaited in call order at turn end */
   private earlyRuns = new Map<AgentToolCall, Promise<ToolExecution>>()
@@ -832,6 +891,26 @@ export class AgentLoop<TSnapshot = unknown> {
     // abort lets long tools mid-execution (internal LLM loops etc.) stop promptly
     this.abortController?.abort()
     this.summaryHandle?.cancel()
+    // Waiting out a retry backoff: finalize here. A run that already committed
+    // tool turns (or showed text) ends like a mid-stream cancel; one that
+    // produced nothing is rolled back instead of recording a placeholder reply
+    if (this.retryTimer) {
+      this.clearRetryTimer()
+      this.running = false
+      if (this.history.at(-1) !== this.runUserMsg || this.turnText) {
+        this.dropTurnLimitNote()
+        this.history.push({ role: 'assistant', text: this.turnText || COMPLETED_VIA_TOOLS_TEXT })
+        this.runUserMsg = null
+      } else {
+        this.rollbackFailedRun()
+      }
+      this.options.events?.onDone?.({
+        text: this.turnText,
+        cancelled: true,
+        turnLimit: this.finalizing,
+      })
+      return
+    }
     // the transport emits onDone after aborting, which finalizes the run
     this.handle?.cancel()
   }
@@ -839,6 +918,7 @@ export class AgentLoop<TSnapshot = unknown> {
   /** drop the conversation (e.g. when a different document is opened) */
   reset(): void {
     this.generation++
+    this.clearRetryTimer()
     // a new conversation gets a new transport session id, so session-keyed
     // provider state (VEGA's per-session PII dictionary) starts empty
     this.options.transport.resetSession?.()
@@ -853,6 +933,22 @@ export class AgentLoop<TSnapshot = unknown> {
     this.runUserMsg = null
   }
 
+  private dropTurnLimitNote(): void {
+    if (!this.finalizing) return
+    for (let i = this.history.length - 1; i >= 0; i--) {
+      const m = this.history[i]!
+      if (m.role === 'user' && m.text === TURN_LIMIT_NOTE) {
+        this.history.splice(i, 1)
+        break
+      }
+    }
+  }
+
+  private clearRetryTimer(): void {
+    if (this.retryTimer) clearTimeout(this.retryTimer)
+    this.retryTimer = null
+  }
+
   /**
    * Terminal failure path for the callback guard sites: clear `running` (or
    * every later message is silently dropped, and even cancel() no-ops), roll
@@ -861,6 +957,13 @@ export class AgentLoop<TSnapshot = unknown> {
    * from it must not escape and wedge the loop a second time.
    */
   private failRun(message: string): void {
+    // the request that threw may still be streaming: retire its generation and
+    // cancel it so a later run() cannot overlap with it
+    this.generation++
+    this.clearRetryTimer()
+    this.abortController?.abort()
+    this.handle?.cancel()
+    this.handle = null
     this.running = false
     this.rollbackFailedRun()
     try {
@@ -956,6 +1059,11 @@ export class AgentLoop<TSnapshot = unknown> {
             const text = this.markupStripper.feed(raw)
             if (!text) return
             this.turnText += text
+            if (this.turnText.length > TURN_STREAM_MAX_CHARS) {
+              settled = true
+              this.failRun(turnBudgetError('text'))
+              return
+            }
             try {
               this.options.events?.onText?.(this.turnText)
             } catch (err) {
@@ -969,6 +1077,10 @@ export class AgentLoop<TSnapshot = unknown> {
           onReasoning: (text) => {
             if (generation !== this.generation || settled) return
             this.turnReasoning += text
+            if (this.turnReasoning.length > TURN_STREAM_MAX_CHARS) {
+              settled = true
+              this.failRun(turnBudgetError('reasoning'))
+            }
           },
           onToolCall: (call) => {
             if (generation !== this.generation || settled) return
@@ -1003,13 +1115,9 @@ export class AgentLoop<TSnapshot = unknown> {
               this.toolCalls.length === 0
             const delay = retryEmpty ? emptyDelay : EMPTY_STREAM_RETRY_DELAYS_MS[0]
             if ((retryEmpty || retryDrop) && !this.cancelled) {
-              setTimeout(() => {
+              this.retryTimer = setTimeout(() => {
+                this.retryTimer = null
                 if (generation !== this.generation) return
-                // Stopped during the backoff window: finalize like a normal cancel
-                if (this.cancelled) {
-                  this.settleTurn()
-                  return
-                }
                 this.startTurn(retriesUsed + 1)
               }, delay)
               return
@@ -1066,15 +1174,7 @@ export class AgentLoop<TSnapshot = unknown> {
       // ends. Left in history it would tell every later run "no more tools may
       // be called" — a stale directive models obey (or worse, echo verbatim
       // over and over; see public issue about BYOK models repeating it).
-      if (this.finalizing) {
-        for (let i = this.history.length - 1; i >= 0; i--) {
-          const m = this.history[i]!
-          if (m.role === 'user' && m.text === TURN_LIMIT_NOTE) {
-            this.history.splice(i, 1)
-            break
-          }
-        }
-      }
+      this.dropTurnLimitNote()
       // Same cleanup for repeat-loop warnings: a mid-run nudge that stays in
       // history reads as a stale "you are looping" directive on later turns.
       for (let i = this.history.length - 1; i >= 0; i--) {
@@ -1162,8 +1262,20 @@ export class AgentLoop<TSnapshot = unknown> {
       results.push({ id: call.id, name: call.name, output: aborted.output, isError: true })
       events?.onToolExecuted?.({ call, execution: aborted })
     }
+    // Repairable argument shapes are coerced before validation and execution;
+    // the earlyRuns map and the recorded history keep the raw call object, so
+    // a coerced call needs its raw counterpart to find an in-flight early run.
+    const coerceCall = (
+      rawCall: AgentToolCall,
+      tool: AgentToolDef | undefined,
+    ): AgentToolCall =>
+      rawCall.truncated || rawCall.inputError
+        ? rawCall
+        : { ...rawCall, input: coerceArgumentFields(tool, rawCall.input) }
     for (let i = 0; i < toolCalls.length; i++) {
-      const call = toolCalls[i]!
+      const rawCall = toolCalls[i]!
+      const tool = skill.tools.find((t) => t.name === rawCall.name)
+      const call = coerceCall(rawCall, tool)
       // The user hit stop while an earlier tool was running: skip remaining tools,
       // but fill in paired error results to keep tool_use/tool_result pairs valid for the next request
       if (this.cancelled) {
@@ -1177,7 +1289,6 @@ export class AgentLoop<TSnapshot = unknown> {
       }
       // Unusable input (truncated by the token limit, or JSON that failed to parse):
       // don't execute; feed a targeted error back so the model retries correctly
-      const tool = skill.tools.find((t) => t.name === call.name)
       const unreadable = call.truncated || call.inputError
       const missing = unreadable ? [] : missingRequiredFields(tool, call.input)
       // A value that contradicts the schema is as unusable as a missing one, and
@@ -1207,19 +1318,26 @@ export class AgentLoop<TSnapshot = unknown> {
       // runs, so call order semantics match serial execution.
       if (this.toolDef(call.name)?.readonly === true) {
         const wave: AgentToolCall[] = [call]
+        const waveRaw = new Map<AgentToolCall, AgentToolCall>([[call, rawCall]])
         while (
           i + 1 < toolCalls.length &&
           this.toolDef(toolCalls[i + 1]!.name)?.readonly === true &&
           !toolCalls[i + 1]!.truncated &&
           !toolCalls[i + 1]!.inputError
         ) {
-          wave.push(toolCalls[++i]!)
+          const nextRaw = toolCalls[++i]!
+          const next = coerceCall(
+            nextRaw,
+            skill.tools.find((t) => t.name === nextRaw.name),
+          )
+          waveRaw.set(next, nextRaw)
+          wave.push(next)
         }
-        for (const c of wave) if (!this.earlyRuns.has(c)) events?.onToolStart?.(c)
+        for (const c of wave) if (!this.earlyRuns.has(waveRaw.get(c)!)) events?.onToolStart?.(c)
         // Read-only calls never mutate — a pre-edit snapshot can never be used
         // here, and capturing one costs a full document serialization per wave
         const racedWave = await awaitToolOrAbort(
-          Promise.all(wave.map((c) => this.earlyRuns.get(c) ?? this.runTool(c))),
+          Promise.all(wave.map((c) => this.earlyRuns.get(waveRaw.get(c)!) ?? this.runTool(c))),
           this.abortController?.signal,
         )
         if (generation !== this.generation) return // reset while tools were running
@@ -1351,13 +1469,7 @@ export function sanitizeAgentPayload(payload: string): string {
       .replace(/\b(?:sk-|AIza|ghp_|secret_)[A-Za-z0-9_-]{16,}/g, '[REDACTED_API_KEY]')
       .replace(/\b(?:AKIA|ASIA)[0-9A-Z]{16}\b/g, '[REDACTED_API_KEY]')
       .replace(/\bxox[abeoprs]-[A-Za-z0-9-]{10,}/g, '[REDACTED_API_KEY]')
-      // The scheme run is bounded for the same reason as the identifier prefix below:
-      // an unbounded `[a-z0-9+.-]*` in front of a literal `://` is ambiguous, so every
-      // start offset consumed the whole run and backtracked looking for the `://`
-      // (measured: 96 KB of hex took ~12s in this regex alone, ~70s for the call).
-      // A 30-char scheme covers every registered one; past it the match simply starts
-      // mid-scheme, which still redacts the password — only the captured scheme
-      // prefix is shorter.
+      // Bounded scheme run: an unbounded one backtracks quadratically on a long hex/alnum run.
       .replace(/([a-z][a-z0-9+.-]{0,30}:\/\/[^\s:@/]+):[^\s@/]+@/gi, '$1:[REDACTED_CREDENTIALS]@')
       .replace(
         /(password|passwd|secret_key|private_key)(\s*[:=]\s*)["'][^"']+["']/gi,
@@ -1365,13 +1477,7 @@ export function sanitizeAgentPayload(payload: string): string {
       )
       // Unquoted `password=abc123`: the value must be 6+ chars with a non-letter,
       // so "password: is in the vault" prose stays untouched.
-      // The identifier prefix is bounded: an unbounded `\w*` in front of the
-      // alternation overlaps it, so at every start offset the engine consumed the
-      // whole word run and backtracked one character at a time to place the
-      // keyword — quadratic in the length of an unbroken [A-Za-z0-9_] run. A user
-      // pasting a hex dump or a base64url token froze the renderer for ~70s
-      // (measured: 100 KB of hex, this function, one call). 64 chars is far more
-      // than any real `my_password`-style prefix and keeps the match set identical.
+      // Bounded prefix for the same reason; 64 chars keeps the match set identical.
       .replace(
         /(?<!\/)(\w{0,64}(?:password|passwd|secret_key|private_key))(\s*[:=]\s*)(?=[^\s"',;]*[^A-Za-z\s"',;])[^\s"',;]{6,}/gi,
         '$1$2[REDACTED_SECURE_TOKEN]',

@@ -258,4 +258,13 @@ export const az = {
   appStatusSummaryZoomInserted: '{count} plitka ilə Xülasə Zoom slaydı əlavə edildi',
   appStatusZoomsInserted: '{count} zoom əlavə edildi: slayd-şou zamanı klikləyib həmin slaydlara keçin',
   appStatusPasteTruncated: 'Pasted text was too long and has been truncated',
+  redactMenuLabel: 'Hide the selection from AI',
+  redactDialogDesc:
+    'The selection stays in the document and in the file; the model sees the placeholder below instead. Name it so the model knows what it stands for.',
+  redactDialogScope:
+    "Hiding covers this app's AI. The CLI, MCP tools and headless export read the file directly, and they still see these words.",
+  redactDialogPlaceholder: 'Placeholder name, e.g. client phone',
+  redactCancel: 'Cancel',
+  redactInsert: 'Hide',
+  redactEnable: 'Right-click a selection to hide it from the model.',
 } satisfies Record<keyof typeof zh, string>

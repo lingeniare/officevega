@@ -1,4 +1,9 @@
-import { aiPanelWidthAtPointer } from '@genoffice/ui'
+import {
+  aiPanelWidthAtPointer,
+  AiPanelSideButton,
+  AiModelPicker,
+  type AiModelPickerBridge,
+} from '@genoffice/ui'
 import { useEffect, useRef, useState } from 'react'
 import type { PointerEvent as ReactPointerEvent, ReactElement } from 'react'
 import {
@@ -70,6 +75,7 @@ import {
   resolveQueue,
   type EditQueueItem,
 } from './edit-queue'
+import { buildProjection } from './redact'
 
 /** [chip label, composer prefill]: blank page → design something new; page with content → rework it */
 const GENERATE_STARTERS = [
@@ -276,6 +282,14 @@ export interface HtmlAiDeps {
 
 /** how often the streaming draft is pushed into the preview mirror */
 const DRAFT_PREVIEW_MS = 400
+
+const MODEL_BRIDGE: AiModelPickerBridge = {
+  getSettings: () => window.htmlApi.getAiSettings(),
+  setSettings: (settings) => window.htmlApi.setAiSettings(settings),
+  onSettingsChanged: (handler) => window.htmlApi.onAiSettingsChanged(handler),
+  gskLoggedIn: () => window.htmlApi.aiGskStatus().then((s) => !!s?.loggedIn),
+  openModelSettings: () => window.htmlApi.openAiModelSettings().catch(() => {}),
+}
 
 export function AiPanel({
   deps,
@@ -1063,7 +1077,9 @@ export function AiPanel({
   /** one run for the whole queue; every item is consumed up front, failures go through retry */
   const sendQueue = (): void => {
     const access = depsRef.current.access
-    const entries = liveItems(resolveQueue(access.getText(), access.getMap(), editQueue))
+    const entries = liveItems(
+      resolveQueue(buildProjection(access.getText(), access.getMap()), access.getMap(), editQueue),
+    )
     if (entries.length === 0) {
       onQueueClear()
       return
@@ -1635,15 +1651,18 @@ export function AiPanel({
           onPasteFiles={(files) => void onPasteFiles(files)}
           onPasteText={onPasteText}
           footerStart={
-            <button
-              type="button"
-              className="ai-attach-btn"
-              onClick={() => void pickAttachments()}
-              data-tip={t('aiAttachTitle')}
-              aria-label={t('aiAttachTitle')}
-            >
-              <img src={attachIcon} alt="" aria-hidden />
-            </button>
+            <>
+              <AiModelPicker bridge={MODEL_BRIDGE} lang={lang} />
+              <button
+                type="button"
+                className="ai-attach-btn"
+                onClick={() => void pickAttachments()}
+                data-tip={t('aiAttachTitle')}
+                aria-label={t('aiAttachTitle')}
+              >
+                <img src={attachIcon} alt="" aria-hidden />
+              </button>
+            </>
           }
         />
       </div>

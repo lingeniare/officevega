@@ -11,11 +11,12 @@ import type {
   CodexModelCatalog,
   ProviderModelCatalog,
 } from '@genoffice/ai-provider'
-import type { UpdateChannel } from './update-api'
+import type { UpdateChannel, UpdateUiState } from './update-api'
 import type { LicenseActionResult, LicenseStatus } from './license-api'
 import type { AiPanelPrefs } from '@genoffice/ui/ai-panel-prefs'
 
 /** UI language; kept self-contained here (mirrors Lang in @genoffice/i18n) */
+
 export type UiLanguage =
   | 'zh'
   | 'en'
@@ -53,7 +54,7 @@ export type UiTheme = 'light' | 'dark' | 'system'
 export type UiDesign = 'standard' | 'retro' | 'digital'
 
 /**
- * Document page theme preference (#1811): what the editors' canvas/paper does
+ * Document page theme preference (genoffice#1811): what the editors' canvas/paper does
  * relative to the UI theme. 'follow' reproduces the previous single-theme
  * behavior; 'light'/'dark' pin the paper regardless of the UI theme.
  */
@@ -94,6 +95,9 @@ export interface RecentEntry {
   sizeBytes: number
   /** whether the user starred this file */
   starred: boolean
+  /** the starred group this file belongs to (absent when ungrouped); only
+      populated by the starred() query — the other list queries omit it */
+  group?: string
   /** the path failed to stat (disconnected drive, moved, deleted) — kept
       listed like Word's recents instead of silently dropped (r158) */
   missing?: boolean
@@ -107,6 +111,8 @@ export interface RecentQuery {
   limit?: number
   /** restrict to one extension ('docx' | 'xlsx' | 'pptx'); omit for all */
   ext?: string
+  /** starred() only: restrict to one starred group; omit for all */
+  group?: string
 }
 
 export interface RecentPage {
@@ -193,8 +199,6 @@ export interface DefaultAppStatus {
   manualOnly: boolean
 }
 
-import type { UpdateUiState } from './update-api'
-
 export interface HomeApi {
   /** unified recents across document types, newest first (paged) */
   recents(query?: RecentQuery): Promise<RecentPage>
@@ -208,11 +212,16 @@ export interface HomeApi {
   testFileSearchRerank(settings: FileSearchSettings): Promise<{ ok: boolean; error?: string }>
   /** starred files (independent of the recent list), newest first (paged) */
   starred(query?: RecentQuery): Promise<RecentPage>
+  /** starred group names that currently have at least one file, in creation order */
+  starredGroups(): Promise<string[]>
+  /** put each starred path into `group` (null = remove from its group) */
+  setStarredGroup(paths: string[], group: string | null): Promise<void>
   /** stat a specific set of paths (project view); unstat-able files come back flagged `missing` */
   statPaths(paths: string[]): Promise<RecentEntry[]>
   /** star / unstar a file */
   toggleStar(path: string): Promise<void>
   /** open an existing file, routing to the right module by extension */
+  openHelp(): Promise<void>
   openPath(path: string): Promise<void>
   /** file picker accepting every supported extension, then routes */
   browse(): Promise<void>
@@ -230,6 +239,8 @@ export interface HomeApi {
   newPdf(opts?: NewFileOpts): Promise<void>
   /** drop entries from the recent list (does not touch the files) */
   removeRecent(paths: string[]): Promise<void>
+  /** unstar files in bulk (Starred view selection bar); the recents list and the files are untouched */
+  unstarPaths(paths: string[]): Promise<void>
   /** reveal the file in Finder / Explorer */
   revealPath(path: string): Promise<void>
   /** rename the file on disk (same directory) and update the recent list */
@@ -284,6 +295,8 @@ export interface HomeApi {
   onAccountLogin(handler: (ev: AccountLoginEvent) => void): () => void
   /** sign-in/out anywhere in the app (including a chat panel's login button); refresh accountStatus */
   onAuthChanged(handler: (status: { loggedIn: boolean }) => void): () => void
+  /** a tab asked for the settings modal (composer model chip → AI Model section) */
+  onOpenSettings(handler: (target: { section: string }) => void): () => void
   /** re-open the pending login auth URL in the default browser (rescue when auto-open failed) */
   openLoginUrl(): Promise<void>
   /** log out (clears the saved API key; the login state is shared globally with the gsk CLI) */
@@ -346,8 +359,6 @@ export interface HomeApi {
   onThemeChanged(handler: (theme: UiTheme) => void): () => void
   /** design switched anywhere (broadcast from the main process) */
   onDesignChanged(handler: (design: UiDesign) => void): () => void
-  /** the app menu's Settings item: main activates the home tab, then pushes this */
-  onOpenSettings(handler: () => void): () => void
   /** document page theme switched anywhere (broadcast from the main process) */
   onDocumentThemeChanged(handler: (theme: DocTheme) => void): () => void
   /** open the VEGA keys/deposit dashboard in the default browser */
@@ -381,8 +392,10 @@ export interface HomeApi {
   starPromptAction(action: StarPromptAction): Promise<void>
   /** AI settings (userData/ai-settings.json, shared by every editor); the genspark key never appears here */
   getAiSettings(): Promise<AiSettings>
-  /** persist AI settings; open editors pick the change up on their next settings read */
+  /** persist AI settings; every renderer gets ai:settings-changed and re-reads */
   setAiSettings(settings: AiSettings): Promise<void>
+  /** ai-settings.json was rewritten by any renderer (composer model chip, another window) */
+  onAiSettingsChanged(handler: () => void): () => void
   /** provider catalog with each fixed endpoint's default base URL (empty for genspark/custom) */
   getAiProviders(): AiCatalogEntry[]
   /** live Codex model catalog discovered through the current or overridden app-server */
@@ -544,6 +557,7 @@ export interface MoveResult {
 }
 
 export const HOME_CHANNELS = {
+  openHelp: 'home:open-help',
   recents: 'home:recents',
   searchFiles: 'home:search-files',
   rerankSearch: 'home:rerank-search',
@@ -553,6 +567,9 @@ export const HOME_CHANNELS = {
   starred: 'home:starred',
   statPaths: 'home:stat-paths',
   toggleStar: 'home:toggle-star',
+  unstarPaths: 'home:unstar-paths',
+  starredGroups: 'home:starred-groups',
+  setStarredGroup: 'home:set-starred-group',
   openPath: 'home:open-path',
   browse: 'home:browse',
   newDoc: 'home:new-doc',
@@ -589,6 +606,7 @@ export const HOME_CHANNELS = {
   // app-wide push: emitted by the AI IPC layer on every VEGA sign-in/out,
   // whichever UI started it (a chat panel's login button included)
   authChanged: 'ai:auth-changed',
+  openSettings: 'home:open-settings',
   accountLoginOpenUrl: 'home:account-login-open-url',
   accountLogout: 'home:account-logout',
   getAppVersion: 'home:get-app-version',
@@ -613,7 +631,6 @@ export const HOME_CHANNELS = {
   getDefaultAppStatus: 'home:get-default-app-status',
   setDefaultApp: 'home:set-default-app',
   pickDefaultSaveDir: 'home:pick-default-save-dir',
-  openSettings: 'home:open-settings',
   openCreditUsage: 'home:open-credit-usage',
   openGitHubRepo: 'home:open-github-repo',
   openWebsite: 'home:open-website',

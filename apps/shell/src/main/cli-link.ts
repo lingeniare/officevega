@@ -44,7 +44,8 @@ export function installCliLinkBestEffort(settingsPath: string): void {
     const launcher = join(dir, process.platform === 'win32' ? 'officevega.cmd' : 'officevega')
     const outcome = installCliLink({ launcher })
     console.log(
-      `[officevega] cli link: ${outcome.status}${outcome.location ? ` (${outcome.location})` : ''}`,
+      `[officevega] cli link: ${outcome.status}${outcome.location ? ` (${outcome.location})` : ''}` +
+        (outcome.pathHint ? `; not on PATH, add it with: ${outcome.pathHint}` : ''),
     )
     const record: CliLinkRecord = { version, status: outcome.status }
     if (outcome.location) record.location = outcome.location

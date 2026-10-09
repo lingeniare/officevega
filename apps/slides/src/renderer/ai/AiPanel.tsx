@@ -1,4 +1,9 @@
-import { aiPanelWidthAtPointer } from '@genoffice/ui'
+import {
+  aiPanelWidthAtPointer,
+  AiPanelSideButton,
+  AiModelPicker,
+  type AiModelPickerBridge,
+} from '@genoffice/ui'
 import React, { useEffect, useRef, useState, useCallback } from 'react'
 import {
   AgentLoop,
@@ -46,6 +51,8 @@ import {
   qcConcurrency,
   QC_MAX_PAGES,
   runQcPages,
+  NO_SCREENSHOT_NOTE,
+  screenshotAllowed,
   settingsSupportVision,
   type QcPageOutcome,
 } from './slide-qc'
@@ -368,6 +375,14 @@ function clampPanelWidth(w: number): number {
   // shell lays it out), so never let the ceiling drop below the minimum
   const max = Math.max(PANEL_WIDTH_MIN, Math.min(720, Math.round(window.innerWidth * 0.6)))
   return Math.min(Math.max(w, PANEL_WIDTH_MIN), max)
+}
+
+const MODEL_BRIDGE: AiModelPickerBridge = {
+  getSettings: () => window.slidesApi.getAiSettings(),
+  setSettings: (settings) => window.slidesApi.setAiSettings(settings),
+  onSettingsChanged: (handler) => window.slidesApi.onAiSettingsChanged(handler),
+  gskLoggedIn: () => window.slidesApi.aiGskStatus().then((s) => !!s?.loggedIn),
+  openModelSettings: () => window.slidesApi.openAiModelSettings().catch(() => {}),
 }
 
 export function AiPanel({
@@ -833,7 +848,7 @@ export function AiPanel({
     // generateDraftPages) pass useGenModel=false and run on the user's model —
     // outline/draft JSON needs no art direction, and QC already runs on the user
     // model via its own transport below.
-    const SLIDES_GEN_MODEL = 'claude-opus-4-7'
+    const SLIDES_GEN_MODEL = 'claude-opus-5-5'
     // Return on demand a settings copy with the generation model overridden (deep copy, doesn't pollute settingsRef).
     const settingsForGen = (): AiSettings => {
       const cur = settingsRef.current
@@ -1283,6 +1298,8 @@ export function AiPanel({
       // Cloud single-page generation (gsk slide_generate): the cloud service owns HTML writing +
       // pptx conversion; the deck-level style/outline stay local.
       generatePageCloud: async (args) => {
+        // a stop that already fired must not start (and bill) another page
+        if (args.signal?.aborted) return { ok: false, error: tGlobal('aiErrStopped') }
         // Forward the panel's stop signal: the main process aborts the in-flight
         // cloud request instead of letting it run (and bill) to completion
         const cancelCloud = () => void window.slidesApi.cloudPageCancel().catch(() => {})
@@ -1913,9 +1930,19 @@ export function AiPanel({
   }
 
   /** Current slide rendered at pixelRatio 1 (vision-friendly size); null when rendering fails */
+  /**
+   * A rendered picture of the slide, when sending one is safe.
+   *
+   * A screenshot is the one outbound path that no text projection can reach:
+   * the renderer tints a withheld run, it does not replace it, so the words are
+   * in the bitmap. There is no mask to put over them — a picture has no spans.
+   * So a slide that withholds anything gets no picture, and the caller says so,
+   * rather than the model receiving an image it was never shown the text of.
+   */
   const captureSlideShot = async (pageIndex: number): Promise<AgentImage | null> => {
     const slide = slidesRef.current[pageIndex]
     if (!slide) return null
+    if (!screenshotAllowed(slide)) return null
     try {
       const [png] = await renderSlidesToPngBase64([slide], imagesRef.current, 1)
       return png ? { base64: png, mime: 'image/png' } : null
@@ -2003,6 +2030,10 @@ export function AiPanel({
           if (shot) {
             images.push(shot)
             modelInstruction += `\n\n(Attached image: the current rendering of this slide, slideIndex ${currentRef.current}. Use it to spot visual issues the element inventory can't show.)`
+          } else {
+            // said rather than omitted: a model told nothing assumes it has the
+            // rendering and reasons about text it cannot see
+            modelInstruction += `\n\n(${NO_SCREENSHOT_NOTE})`
           }
         }
         // Clear the flag before run: loop.run sets running synchronously, leaving no re-entry window
@@ -2811,6 +2842,7 @@ export function AiPanel({
                   }
                 />
               )}
+              <AiModelPicker bridge={MODEL_BRIDGE} lang={lang} />
               <button
                 className="ai-attach-btn"
                 onClick={pickAttachments}

@@ -493,6 +493,7 @@ export const kk = {
   appParaSpecialFirstLine: 'First line',
   appParaSpecialHanging: 'Hanging',
   appParaBy: 'By',
+  appParaUnitChars: 'таңба',
   appUseWildcards: 'Use wildcards (? * [ ] < >)',
   appUseRegex: 'Use regular expressions',
   appMatchWidth: 'Match half/full width',

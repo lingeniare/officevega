@@ -1,0 +1,466 @@
+641dad10c898e097b92801eb54919890c1660880
+apps/docs/src/main/docs-main.ts
+apps/docs/src/renderer/App.tsx
+apps/docs/src/renderer/ai/AiPanel.tsx
+apps/docs/src/shared/ipc.ts
+apps/html/src/preload/index.ts
+apps/html/src/renderer/ai/AiPanel.tsx
+apps/html/src/shared/ipc.ts
+apps/markdown/src/preload/index.ts
+apps/markdown/src/renderer/ai/AiPanel.tsx
+apps/markdown/src/shared/ipc.ts
+apps/pdf/src/preload/index.ts
+apps/pdf/src/renderer/App.tsx
+apps/pdf/src/renderer/ai/AiPanel.tsx
+apps/pdf/src/shared/ipc.ts
+apps/sheets/src/main/sheets-main.ts
+apps/sheets/src/renderer/App.tsx
+apps/sheets/src/renderer/ExcelShell.tsx
+apps/sheets/src/renderer/ai/AiChatPanel.tsx
+apps/sheets/src/renderer/global-shortcuts.ts
+apps/sheets/src/renderer/i18n/app/vi.ts
+apps/sheets/src/renderer/page-layout-actions.ts
+apps/sheets/src/shared/desktop-api.ts
+apps/sheets/tests/copy-materialize.test.ts
+apps/sheets/tests/global-shortcuts.test.ts
+apps/shell/src/main/cli-link.ts
+apps/shell/src/main/tab-manager.ts
+apps/shell/src/renderer/src/Home.tsx
+apps/shell/src/renderer/src/SettingsModal.tsx
+apps/shell/src/renderer/src/main.tsx
+apps/shell/src/renderer/src/provider-logos.tsx
+apps/shell/src/renderer/src/strings.ts
+apps/shell/src/shared/home-api.ts
+apps/shell/tests/tab-manager.test.ts
+apps/slides/src/main/print-window.ts
+apps/slides/src/renderer/App.tsx
+apps/slides/src/renderer/ai/AiPanel.tsx
+apps/slides/src/renderer/components/RibbonHomeTab.tsx
+apps/slides/src/renderer/components/RibbonInsertTab.tsx
+apps/slides/src/renderer/i18n/ribbon/ar.ts
+apps/slides/src/renderer/i18n/ribbon/cs.ts
+apps/slides/src/renderer/i18n/ribbon/de.ts
+apps/slides/src/renderer/i18n/ribbon/en.ts
+apps/slides/src/renderer/i18n/ribbon/es.ts
+apps/slides/src/renderer/i18n/ribbon/fr.ts
+apps/slides/src/renderer/i18n/ribbon/he.ts
+apps/slides/src/renderer/i18n/ribbon/hi.ts
+apps/slides/src/renderer/i18n/ribbon/id.ts
+apps/slides/src/renderer/i18n/ribbon/it.ts
+apps/slides/src/renderer/i18n/ribbon/ja.ts
+apps/slides/src/renderer/i18n/ribbon/ko.ts
+apps/slides/src/renderer/i18n/ribbon/ms.ts
+apps/slides/src/renderer/i18n/ribbon/nl.ts
+apps/slides/src/renderer/i18n/ribbon/pl.ts
+apps/slides/src/renderer/i18n/ribbon/pt.ts
+apps/slides/src/renderer/i18n/ribbon/ru.ts
+apps/slides/src/renderer/i18n/ribbon/th.ts
+apps/slides/src/renderer/i18n/ribbon/vi.ts
+apps/slides/src/renderer/i18n/ribbon/zh-TW.ts
+apps/slides/src/renderer/i18n/ribbon/zh.ts
+e2e/settings-media-search.spec.ts
+e2e/sheets-menu-input-enter.spec.ts
+package-lock.json
+package.json
+packages/agent-core/src/loop.ts
+packages/agent-core/tests/loop.test.ts
+packages/ai-provider/src/ai-settings-guard.ts
+packages/ai-provider/src/browser.ts
+packages/ai-provider/src/providers.ts
+packages/ai-search/src/genoffice-auth.ts
+packages/ai-search/src/gsk.ts
+packages/ai-search/tests/login-url-allowlist.test.ts
+packages/cli/src/commands/install.ts
+packages/cli/src/mcp-launch.ts
+packages/cli/tests/install.test.ts
+packages/docx-engine/src/blank.ts
+packages/docx-engine/tests/numbering-ppr-order.test.ts
+packages/pptx-render/tests/build-chart.test.ts
+tools/gen-third-party-notices.mjs
+
+Auto-merging README.md
+Auto-merging SECURITY.md
+Auto-merging apps/docs/package.json
+Auto-merging apps/docs/src/main/docs-main.ts
+CONFLICT (content): Merge conflict in apps/docs/src/main/docs-main.ts
+Auto-merging apps/docs/src/preload/index.ts
+Auto-merging apps/docs/src/renderer/App.tsx
+CONFLICT (content): Merge conflict in apps/docs/src/renderer/App.tsx
+Auto-merging apps/docs/src/renderer/ai/AiPanel.tsx
+CONFLICT (content): Merge conflict in apps/docs/src/renderer/ai/AiPanel.tsx
+Auto-merging apps/docs/src/renderer/components/Ribbon.tsx
+Auto-merging apps/docs/src/renderer/components/icons.tsx
+Auto-merging apps/docs/src/renderer/components/ribbon-tabs.tsx
+Auto-merging apps/docs/src/renderer/editor/extensions.ts
+Auto-merging apps/docs/src/renderer/editor/marks.ts
+Auto-merging apps/docs/src/renderer/i18n/app/ar.ts
+Auto-merging apps/docs/src/renderer/i18n/app/cs.ts
+Auto-merging apps/docs/src/renderer/i18n/app/de.ts
+Auto-merging apps/docs/src/renderer/i18n/app/en.ts
+Auto-merging apps/docs/src/renderer/i18n/app/es.ts
+Auto-merging apps/docs/src/renderer/i18n/app/fr.ts
+Auto-merging apps/docs/src/renderer/i18n/app/he.ts
+Auto-merging apps/docs/src/renderer/i18n/app/hi.ts
+Auto-merging apps/docs/src/renderer/i18n/app/id.ts
+Auto-merging apps/docs/src/renderer/i18n/app/it.ts
+Auto-merging apps/docs/src/renderer/i18n/app/ja.ts
+Auto-merging apps/docs/src/renderer/i18n/app/ko.ts
+Auto-merging apps/docs/src/renderer/i18n/app/ms.ts
+Auto-merging apps/docs/src/renderer/i18n/app/nl.ts
+Auto-merging apps/docs/src/renderer/i18n/app/pl.ts
+Auto-merging apps/docs/src/renderer/i18n/app/pt.ts
+Auto-merging apps/docs/src/renderer/i18n/app/ru.ts
+Auto-merging apps/docs/src/renderer/i18n/app/th.ts
+Auto-merging apps/docs/src/renderer/i18n/app/vi.ts
+Auto-merging apps/docs/src/renderer/i18n/app/zh-TW.ts
+Auto-merging apps/docs/src/renderer/i18n/app/zh.ts
+Auto-merging apps/docs/src/renderer/i18n/ribbon/ar.ts
+Auto-merging apps/docs/src/renderer/i18n/ribbon/cs.ts
+Auto-merging apps/docs/src/renderer/i18n/ribbon/de.ts
+Auto-merging apps/docs/src/renderer/i18n/ribbon/en.ts
+Auto-merging apps/docs/src/renderer/i18n/ribbon/es.ts
+Auto-merging apps/docs/src/renderer/i18n/ribbon/fr.ts
+Auto-merging apps/docs/src/renderer/i18n/ribbon/he.ts
+Auto-merging apps/docs/src/renderer/i18n/ribbon/hi.ts
+Auto-merging apps/docs/src/renderer/i18n/ribbon/id.ts
+Auto-merging apps/docs/src/renderer/i18n/ribbon/it.ts
+Auto-merging apps/docs/src/renderer/i18n/ribbon/ja.ts
+Auto-merging apps/docs/src/renderer/i18n/ribbon/ko.ts
+Auto-merging apps/docs/src/renderer/i18n/ribbon/ms.ts
+Auto-merging apps/docs/src/renderer/i18n/ribbon/nl.ts
+Auto-merging apps/docs/src/renderer/i18n/ribbon/pl.ts
+Auto-merging apps/docs/src/renderer/i18n/ribbon/pt.ts
+Auto-merging apps/docs/src/renderer/i18n/ribbon/ru.ts
+Auto-merging apps/docs/src/renderer/i18n/ribbon/th.ts
+Auto-merging apps/docs/src/renderer/i18n/ribbon/vi.ts
+Auto-merging apps/docs/src/renderer/i18n/ribbon/zh-TW.ts
+Auto-merging apps/docs/src/renderer/i18n/ribbon/zh.ts
+Auto-merging apps/docs/src/renderer/line-metrics.ts
+Auto-merging apps/docs/src/renderer/main.tsx
+Auto-merging apps/docs/src/renderer/pagination-lines.ts
+Auto-merging apps/docs/src/renderer/styles.css
+Auto-merging apps/docs/src/shared/ipc.ts
+CONFLICT (content): Merge conflict in apps/docs/src/shared/ipc.ts
+Auto-merging apps/docs/tests/autospace-live.test.ts
+Auto-merging apps/docs/tests/translate-i18n-completeness.test.ts
+Auto-merging apps/html/package.json
+Auto-merging apps/html/src/main/asset-lifecycle.ts
+Auto-merging apps/html/src/main/html-main.ts
+Auto-merging apps/html/src/preload/index.ts
+CONFLICT (content): Merge conflict in apps/html/src/preload/index.ts
+Auto-merging apps/html/src/renderer/App.tsx
+Auto-merging apps/html/src/renderer/ai/AiPanel.tsx
+CONFLICT (content): Merge conflict in apps/html/src/renderer/ai/AiPanel.tsx
+Auto-merging apps/html/src/renderer/ai/html-skill.ts
+Auto-merging apps/html/src/renderer/ai/tools.ts
+Auto-merging apps/html/src/renderer/i18n/app/ar.ts
+Auto-merging apps/html/src/renderer/i18n/app/cs.ts
+Auto-merging apps/html/src/renderer/i18n/app/de.ts
+Auto-merging apps/html/src/renderer/i18n/app/en.ts
+Auto-merging apps/html/src/renderer/i18n/app/es.ts
+Auto-merging apps/html/src/renderer/i18n/app/fr.ts
+Auto-merging apps/html/src/renderer/i18n/app/he.ts
+Auto-merging apps/html/src/renderer/i18n/app/hi.ts
+Auto-merging apps/html/src/renderer/i18n/app/id.ts
+Auto-merging apps/html/src/renderer/i18n/app/it.ts
+Auto-merging apps/html/src/renderer/i18n/app/ja.ts
+Auto-merging apps/html/src/renderer/i18n/app/ko.ts
+Auto-merging apps/html/src/renderer/i18n/app/ms.ts
+Auto-merging apps/html/src/renderer/i18n/app/nl.ts
+Auto-merging apps/html/src/renderer/i18n/app/pl.ts
+Auto-merging apps/html/src/renderer/i18n/app/pt.ts
+Auto-merging apps/html/src/renderer/i18n/app/ru.ts
+Auto-merging apps/html/src/renderer/i18n/app/th.ts
+Auto-merging apps/html/src/renderer/i18n/app/vi.ts
+Auto-merging apps/html/src/renderer/i18n/app/zh-TW.ts
+Auto-merging apps/html/src/renderer/i18n/app/zh.ts
+Auto-merging apps/html/src/renderer/main.tsx
+Auto-merging apps/html/src/renderer/styles.css
+Auto-merging apps/html/src/shared/ipc.ts
+CONFLICT (content): Merge conflict in apps/html/src/shared/ipc.ts
+Auto-merging apps/html/tests/tools.test.ts
+Auto-merging apps/markdown/package.json
+Auto-merging apps/markdown/src/main/markdown-main.ts
+Auto-merging apps/markdown/src/preload/index.ts
+CONFLICT (content): Merge conflict in apps/markdown/src/preload/index.ts
+Auto-merging apps/markdown/src/renderer/App.tsx
+Auto-merging apps/markdown/src/renderer/ai/AiPanel.tsx
+CONFLICT (content): Merge conflict in apps/markdown/src/renderer/ai/AiPanel.tsx
+Auto-merging apps/markdown/src/renderer/components/Ribbon.tsx
+Auto-merging apps/markdown/src/renderer/i18n/strings.ts
+Auto-merging apps/markdown/src/renderer/main.tsx
+Auto-merging apps/markdown/src/renderer/styles.css
+Auto-merging apps/markdown/src/shared/ipc.ts
+CONFLICT (content): Merge conflict in apps/markdown/src/shared/ipc.ts
+Auto-merging apps/markdown/tests/ribbon-source-mode.test.ts
+Auto-merging apps/markdown/tests/source-splice.test.ts
+Auto-merging apps/pdf/package.json
+Auto-merging apps/pdf/src/main/save-pdf.ts
+Auto-merging apps/pdf/src/preload/index.ts
+CONFLICT (content): Merge conflict in apps/pdf/src/preload/index.ts
+Auto-merging apps/pdf/src/renderer/App.tsx
+CONFLICT (content): Merge conflict in apps/pdf/src/renderer/App.tsx
+Auto-merging apps/pdf/src/renderer/ai/AiPanel.tsx
+CONFLICT (content): Merge conflict in apps/pdf/src/renderer/ai/AiPanel.tsx
+Auto-merging apps/pdf/src/renderer/ai/pdf-skill.ts
+Auto-merging apps/pdf/src/renderer/ai/tools.ts
+Auto-merging apps/pdf/src/renderer/form-catalog.ts
+Auto-merging apps/pdf/src/renderer/i18n/strings.ts
+Auto-merging apps/pdf/src/renderer/main.tsx
+Auto-merging apps/pdf/src/renderer/styles.css
+Auto-merging apps/pdf/src/shared/ipc.ts
+CONFLICT (content): Merge conflict in apps/pdf/src/shared/ipc.ts
+Auto-merging apps/pdf/tests/ai-tools.test.ts
+Auto-merging apps/pdf/tests/save-pdf.test.ts
+Auto-merging apps/sheets/native/xlsx-engine/src/archive.rs
+Auto-merging apps/sheets/native/xlsx-engine/src/tests.rs
+Auto-merging apps/sheets/native/xlsx-engine/src/xml_util.rs
+Auto-merging apps/sheets/package.json
+Auto-merging apps/sheets/src/main/sheets-main.ts
+CONFLICT (content): Merge conflict in apps/sheets/src/main/sheets-main.ts
+Auto-merging apps/sheets/src/preload/index.ts
+Auto-merging apps/sheets/src/renderer/App.tsx
+CONFLICT (content): Merge conflict in apps/sheets/src/renderer/App.tsx
+Auto-merging apps/sheets/src/renderer/ExcelShell.tsx
+CONFLICT (content): Merge conflict in apps/sheets/src/renderer/ExcelShell.tsx
+Auto-merging apps/sheets/src/renderer/InsertFunctionDialog.tsx
+Auto-merging apps/sheets/src/renderer/ai/AiChatPanel.tsx
+CONFLICT (content): Merge conflict in apps/sheets/src/renderer/ai/AiChatPanel.tsx
+Auto-merging apps/sheets/src/renderer/ai/tools.ts
+Auto-merging apps/sheets/src/renderer/ai/workbook-readers.ts
+Auto-merging apps/sheets/src/renderer/global-shortcuts.ts
+CONFLICT (content): Merge conflict in apps/sheets/src/renderer/global-shortcuts.ts
+Auto-merging apps/sheets/src/renderer/i18n/app/ar.ts
+Auto-merging apps/sheets/src/renderer/i18n/app/cs.ts
+Auto-merging apps/sheets/src/renderer/i18n/app/de.ts
+Auto-merging apps/sheets/src/renderer/i18n/app/en.ts
+Auto-merging apps/sheets/src/renderer/i18n/app/es.ts
+Auto-merging apps/sheets/src/renderer/i18n/app/fr.ts
+Auto-merging apps/sheets/src/renderer/i18n/app/he.ts
+Auto-merging apps/sheets/src/renderer/i18n/app/hi.ts
+Auto-merging apps/sheets/src/renderer/i18n/app/id.ts
+Auto-merging apps/sheets/src/renderer/i18n/app/it.ts
+Auto-merging apps/sheets/src/renderer/i18n/app/ja.ts
+Auto-merging apps/sheets/src/renderer/i18n/app/ko.ts
+Auto-merging apps/sheets/src/renderer/i18n/app/ms.ts
+Auto-merging apps/sheets/src/renderer/i18n/app/nl.ts
+Auto-merging apps/sheets/src/renderer/i18n/app/pl.ts
+Auto-merging apps/sheets/src/renderer/i18n/app/pt.ts
+Auto-merging apps/sheets/src/renderer/i18n/app/ru.ts
+Auto-merging apps/sheets/src/renderer/i18n/app/th.ts
+Auto-merging apps/sheets/src/renderer/i18n/app/vi.ts
+CONFLICT (content): Merge conflict in apps/sheets/src/renderer/i18n/app/vi.ts
+Auto-merging apps/sheets/src/renderer/i18n/app/zh-TW.ts
+Auto-merging apps/sheets/src/renderer/i18n/app/zh.ts
+Auto-merging apps/sheets/src/renderer/i18n/locale.tsx
+Auto-merging apps/sheets/src/renderer/main.tsx
+Auto-merging apps/sheets/src/renderer/page-layout-actions.ts
+CONFLICT (content): Merge conflict in apps/sheets/src/renderer/page-layout-actions.ts
+Auto-merging apps/sheets/src/renderer/styles.css
+Auto-merging apps/sheets/src/renderer/univer-sync.ts
+Auto-merging apps/sheets/src/shared/desktop-api.ts
+CONFLICT (content): Merge conflict in apps/sheets/src/shared/desktop-api.ts
+Auto-merging apps/sheets/src/shared/ipc-channels.ts
+Auto-merging apps/sheets/tests/copy-materialize.test.ts
+CONFLICT (content): Merge conflict in apps/sheets/tests/copy-materialize.test.ts
+Auto-merging apps/sheets/tests/global-shortcuts.test.ts
+CONFLICT (content): Merge conflict in apps/sheets/tests/global-shortcuts.test.ts
+Auto-merging apps/shell/package.json
+Auto-merging apps/shell/src/main/cli-link.ts
+CONFLICT (content): Merge conflict in apps/shell/src/main/cli-link.ts
+Auto-merging apps/shell/src/main/folder-tree.ts
+Auto-merging apps/shell/src/main/index.ts
+Auto-merging apps/shell/src/main/integrations-ipc.ts
+Auto-merging apps/shell/src/main/mcp/tools/open-documents-tools.ts
+Auto-merging apps/shell/src/main/open-documents.ts
+Auto-merging apps/shell/src/main/tab-manager.ts
+CONFLICT (content): Merge conflict in apps/shell/src/main/tab-manager.ts
+Auto-merging apps/shell/src/main/updater.ts
+Auto-merging apps/shell/src/preload/index.ts
+Auto-merging apps/shell/src/renderer/src/Home.tsx
+CONFLICT (content): Merge conflict in apps/shell/src/renderer/src/Home.tsx
+Auto-merging apps/shell/src/renderer/src/IntegrationsPane.tsx
+Auto-merging apps/shell/src/renderer/src/SettingsModal.tsx
+CONFLICT (content): Merge conflict in apps/shell/src/renderer/src/SettingsModal.tsx
+Auto-merging apps/shell/src/renderer/src/TabBar.tsx
+Auto-merging apps/shell/src/renderer/src/home.css
+Auto-merging apps/shell/src/renderer/src/main.tsx
+CONFLICT (content): Merge conflict in apps/shell/src/renderer/src/main.tsx
+Auto-merging apps/shell/src/renderer/src/provider-logos.tsx
+CONFLICT (content): Merge conflict in apps/shell/src/renderer/src/provider-logos.tsx
+Auto-merging apps/shell/src/renderer/src/settings.css
+Auto-merging apps/shell/src/renderer/src/strings.ts
+CONFLICT (content): Merge conflict in apps/shell/src/renderer/src/strings.ts
+Auto-merging apps/shell/src/shared/home-api.ts
+CONFLICT (content): Merge conflict in apps/shell/src/shared/home-api.ts
+Auto-merging apps/shell/tests/app-settings.test.ts
+Auto-merging apps/shell/tests/headless-export.test.ts
+Auto-merging apps/shell/tests/tab-manager.test.ts
+CONFLICT (content): Merge conflict in apps/shell/tests/tab-manager.test.ts
+Auto-merging apps/shell/tests/updater.test.ts
+Auto-merging apps/slides/package.json
+Auto-merging apps/slides/src/main/ai-ipc.ts
+Auto-merging apps/slides/src/main/print-window.ts
+CONFLICT (content): Merge conflict in apps/slides/src/main/print-window.ts
+Auto-merging apps/slides/src/main/slides-main.ts
+Auto-merging apps/slides/src/preload/index.ts
+Auto-merging apps/slides/src/renderer/App.tsx
+CONFLICT (content): Merge conflict in apps/slides/src/renderer/App.tsx
+Auto-merging apps/slides/src/renderer/TextEditOverlay.tsx
+Auto-merging apps/slides/src/renderer/ai/AiPanel.tsx
+CONFLICT (content): Merge conflict in apps/slides/src/renderer/ai/AiPanel.tsx
+Auto-merging apps/slides/src/renderer/ai/slide-qc.ts
+Auto-merging apps/slides/src/renderer/ai/slides-skill.ts
+Auto-merging apps/slides/src/renderer/components/Ribbon.tsx
+Auto-merging apps/slides/src/renderer/components/RibbonHomeTab.tsx
+CONFLICT (content): Merge conflict in apps/slides/src/renderer/components/RibbonHomeTab.tsx
+Auto-merging apps/slides/src/renderer/components/RibbonInsertTab.tsx
+CONFLICT (content): Merge conflict in apps/slides/src/renderer/components/RibbonInsertTab.tsx
+Auto-merging apps/slides/src/renderer/i18n/app/ar.ts
+Auto-merging apps/slides/src/renderer/i18n/app/cs.ts
+Auto-merging apps/slides/src/renderer/i18n/app/de.ts
+Auto-merging apps/slides/src/renderer/i18n/app/en.ts
+Auto-merging apps/slides/src/renderer/i18n/app/es.ts
+Auto-merging apps/slides/src/renderer/i18n/app/fr.ts
+Auto-merging apps/slides/src/renderer/i18n/app/he.ts
+Auto-merging apps/slides/src/renderer/i18n/app/hi.ts
+Auto-merging apps/slides/src/renderer/i18n/app/id.ts
+Auto-merging apps/slides/src/renderer/i18n/app/it.ts
+Auto-merging apps/slides/src/renderer/i18n/app/ja.ts
+Auto-merging apps/slides/src/renderer/i18n/app/ko.ts
+Auto-merging apps/slides/src/renderer/i18n/app/ms.ts
+Auto-merging apps/slides/src/renderer/i18n/app/nl.ts
+Auto-merging apps/slides/src/renderer/i18n/app/pl.ts
+Auto-merging apps/slides/src/renderer/i18n/app/pt.ts
+Auto-merging apps/slides/src/renderer/i18n/app/ru.ts
+Auto-merging apps/slides/src/renderer/i18n/app/th.ts
+Auto-merging apps/slides/src/renderer/i18n/app/vi.ts
+Auto-merging apps/slides/src/renderer/i18n/app/zh-TW.ts
+Auto-merging apps/slides/src/renderer/i18n/app/zh.ts
+Auto-merging apps/slides/src/renderer/i18n/ribbon/ar.ts
+CONFLICT (content): Merge conflict in apps/slides/src/renderer/i18n/ribbon/ar.ts
+Auto-merging apps/slides/src/renderer/i18n/ribbon/cs.ts
+CONFLICT (content): Merge conflict in apps/slides/src/renderer/i18n/ribbon/cs.ts
+Auto-merging apps/slides/src/renderer/i18n/ribbon/de.ts
+CONFLICT (content): Merge conflict in apps/slides/src/renderer/i18n/ribbon/de.ts
+Auto-merging apps/slides/src/renderer/i18n/ribbon/en.ts
+CONFLICT (content): Merge conflict in apps/slides/src/renderer/i18n/ribbon/en.ts
+Auto-merging apps/slides/src/renderer/i18n/ribbon/es.ts
+CONFLICT (content): Merge conflict in apps/slides/src/renderer/i18n/ribbon/es.ts
+Auto-merging apps/slides/src/renderer/i18n/ribbon/fr.ts
+CONFLICT (content): Merge conflict in apps/slides/src/renderer/i18n/ribbon/fr.ts
+Auto-merging apps/slides/src/renderer/i18n/ribbon/he.ts
+CONFLICT (content): Merge conflict in apps/slides/src/renderer/i18n/ribbon/he.ts
+Auto-merging apps/slides/src/renderer/i18n/ribbon/hi.ts
+CONFLICT (content): Merge conflict in apps/slides/src/renderer/i18n/ribbon/hi.ts
+Auto-merging apps/slides/src/renderer/i18n/ribbon/id.ts
+CONFLICT (content): Merge conflict in apps/slides/src/renderer/i18n/ribbon/id.ts
+Auto-merging apps/slides/src/renderer/i18n/ribbon/it.ts
+CONFLICT (content): Merge conflict in apps/slides/src/renderer/i18n/ribbon/it.ts
+Auto-merging apps/slides/src/renderer/i18n/ribbon/ja.ts
+CONFLICT (content): Merge conflict in apps/slides/src/renderer/i18n/ribbon/ja.ts
+Auto-merging apps/slides/src/renderer/i18n/ribbon/ko.ts
+CONFLICT (content): Merge conflict in apps/slides/src/renderer/i18n/ribbon/ko.ts
+Auto-merging apps/slides/src/renderer/i18n/ribbon/ms.ts
+CONFLICT (content): Merge conflict in apps/slides/src/renderer/i18n/ribbon/ms.ts
+Auto-merging apps/slides/src/renderer/i18n/ribbon/nl.ts
+CONFLICT (content): Merge conflict in apps/slides/src/renderer/i18n/ribbon/nl.ts
+Auto-merging apps/slides/src/renderer/i18n/ribbon/pl.ts
+CONFLICT (content): Merge conflict in apps/slides/src/renderer/i18n/ribbon/pl.ts
+Auto-merging apps/slides/src/renderer/i18n/ribbon/pt.ts
+CONFLICT (content): Merge conflict in apps/slides/src/renderer/i18n/ribbon/pt.ts
+Auto-merging apps/slides/src/renderer/i18n/ribbon/ru.ts
+CONFLICT (content): Merge conflict in apps/slides/src/renderer/i18n/ribbon/ru.ts
+Auto-merging apps/slides/src/renderer/i18n/ribbon/th.ts
+CONFLICT (content): Merge conflict in apps/slides/src/renderer/i18n/ribbon/th.ts
+Auto-merging apps/slides/src/renderer/i18n/ribbon/vi.ts
+CONFLICT (content): Merge conflict in apps/slides/src/renderer/i18n/ribbon/vi.ts
+Auto-merging apps/slides/src/renderer/i18n/ribbon/zh-TW.ts
+CONFLICT (content): Merge conflict in apps/slides/src/renderer/i18n/ribbon/zh-TW.ts
+Auto-merging apps/slides/src/renderer/i18n/ribbon/zh.ts
+CONFLICT (content): Merge conflict in apps/slides/src/renderer/i18n/ribbon/zh.ts
+Auto-merging apps/slides/src/renderer/main.tsx
+Auto-merging apps/slides/src/renderer/styles.css
+Auto-merging apps/slides/src/shared/ipc.ts
+Auto-merging apps/slides/tests/print-window.test.ts
+Auto-merging e2e/docs-simple-markup.spec.ts
+Auto-merging e2e/html-insert-drag.spec.ts
+Auto-merging e2e/markdown-tab.spec.ts
+Auto-merging e2e/open-focus-typing.spec.ts
+Auto-merging e2e/settings-media-search.spec.ts
+CONFLICT (content): Merge conflict in e2e/settings-media-search.spec.ts
+Auto-merging e2e/sheets-menu-input-enter.spec.ts
+CONFLICT (content): Merge conflict in e2e/sheets-menu-input-enter.spec.ts
+Auto-merging package-lock.json
+CONFLICT (content): Merge conflict in package-lock.json
+Auto-merging package.json
+CONFLICT (content): Merge conflict in package.json
+Auto-merging packages/agent-core/package.json
+Auto-merging packages/agent-core/src/electron-transport.ts
+Auto-merging packages/agent-core/src/index.ts
+Auto-merging packages/agent-core/src/loop.ts
+CONFLICT (content): Merge conflict in packages/agent-core/src/loop.ts
+Auto-merging packages/agent-core/tests/loop.test.ts
+CONFLICT (content): Merge conflict in packages/agent-core/tests/loop.test.ts
+Auto-merging packages/ai-provider/src/ai-settings-guard.ts
+CONFLICT (content): Merge conflict in packages/ai-provider/src/ai-settings-guard.ts
+Auto-merging packages/ai-provider/src/browser.ts
+CONFLICT (content): Merge conflict in packages/ai-provider/src/browser.ts
+Auto-merging packages/ai-provider/src/index.ts
+Auto-merging packages/ai-provider/src/media-protocols.ts
+Auto-merging packages/ai-provider/src/protocols/anthropic.ts
+Auto-merging packages/ai-provider/src/protocols/gemini.ts
+Auto-merging packages/ai-provider/src/protocols/openai-compatible.ts
+Auto-merging packages/ai-provider/src/protocols/shared.ts
+Auto-merging packages/ai-provider/src/providers.ts
+CONFLICT (content): Merge conflict in packages/ai-provider/src/providers.ts
+Auto-merging packages/ai-provider/src/registry.ts
+Auto-merging packages/ai-provider/src/types.ts
+Auto-merging packages/ai-provider/tests/ai-settings-guard.test.ts
+Auto-merging packages/ai-provider/tests/providers.test.ts
+Auto-merging packages/ai-provider/tests/stream.test.ts
+CONFLICT (modify/delete): packages/ai-search/src/genoffice-auth.ts deleted in HEAD and modified in upstream/main.  Version upstream/main of packages/ai-search/src/genoffice-auth.ts left in tree.
+Auto-merging packages/ai-search/src/gsk.ts
+CONFLICT (content): Merge conflict in packages/ai-search/src/gsk.ts
+Auto-merging packages/ai-search/src/index.ts
+Auto-merging packages/ai-search/src/media-tools.ts
+Auto-merging packages/ai-search/tests/login-url-allowlist.test.ts
+CONFLICT (content): Merge conflict in packages/ai-search/tests/login-url-allowlist.test.ts
+Auto-merging packages/ai-search/tests/search.test.ts
+Auto-merging packages/cli/package.json
+Auto-merging packages/cli/src/args.ts
+Auto-merging packages/cli/src/commands/convert.ts
+Auto-merging packages/cli/src/commands/install.ts
+CONFLICT (content): Merge conflict in packages/cli/src/commands/install.ts
+Auto-merging packages/cli/src/commands/mcp.ts
+Auto-merging packages/cli/src/install.ts
+Auto-merging packages/cli/src/mcp-launch.ts
+CONFLICT (content): Merge conflict in packages/cli/src/mcp-launch.ts
+Auto-merging packages/cli/src/mcp/http.ts
+Auto-merging packages/cli/tests/install.test.ts
+CONFLICT (content): Merge conflict in packages/cli/tests/install.test.ts
+Auto-merging packages/cli/tests/mcp-http-harden.test.ts
+Auto-merging packages/cli/tests/mcp-launch.test.ts
+Auto-merging packages/docx-engine/src/blank.ts
+CONFLICT (content): Merge conflict in packages/docx-engine/src/blank.ts
+Auto-merging packages/docx-engine/tests/numbering-ppr-order.test.ts
+CONFLICT (add/add): Merge conflict in packages/docx-engine/tests/numbering-ppr-order.test.ts
+Auto-merging packages/electron-utils/src/context-menu.ts
+Auto-merging packages/electron-utils/src/index.ts
+Auto-merging packages/electron-utils/src/renderer-scheme.ts
+Auto-merging packages/electron-utils/tests/save-image.test.ts
+Auto-merging packages/i18n/src/index.ts
+Auto-merging packages/i18n/tests/i18n.test.ts
+Auto-merging packages/pipelines/tests/deck-spec.test.ts
+Auto-merging packages/pptx-render/tests/build-chart.test.ts
+CONFLICT (content): Merge conflict in packages/pptx-render/tests/build-chart.test.ts
+Auto-merging packages/project-store/src/store.ts
+Auto-merging packages/ui/package.json
+Auto-merging packages/ui/src/index.ts
+Auto-merging packages/ui/src/tokens.css
+Auto-merging packages/xlsx-gateway/package.json
+Auto-merging packages/xlsx-gateway/src/domain/workbook-dsl.ts
+Auto-merging packages/xlsx-gateway/src/gateway/xlsx-pivot-add.ts
+Auto-merging packages/xlsx-gateway/src/gateway/xlsx-pivot-expand.ts
+Auto-merging tools/gen-third-party-notices.mjs
+CONFLICT (content): Merge conflict in tools/gen-third-party-notices.mjs

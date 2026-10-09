@@ -21,6 +21,7 @@ import {
   IconNumbered,
   IconOutlineView,
   IconPicture,
+  IconCloudUpload,
   IconProperties,
   IconRedo,
   IconSave,
@@ -47,10 +48,11 @@ interface Props {
   onToggleAutoSave: (on: boolean) => void
   imageEnabled: boolean
   onInsertImage: () => void
+  /** open the image host configuration (genoffice#388) */
+  onImageHost: () => void
   frontmatterOpen: boolean
   onToggleFrontmatter: () => void
-  /** the source view replaces the document canvas, so editor-shaped commands go dead */
-  /** this PR's markdown source view — NOT the .txt/.json `sourceMode` */
+  /** the markdown source view, distinct from the .txt/.json `sourceMode` */
   sourceViewOpen: boolean
   onToggleSource: () => void
   outlineOpen: boolean
@@ -67,6 +69,8 @@ interface Props {
    * not exist. Save, find, autosave and the AI panel still apply.
    */
   sourceMode?: boolean
+  /** source mode: history lives in CodeMirror, not the TipTap editor */
+  sourceHistory?: { canUndo: boolean; canRedo: boolean; undo(): void; redo(): void }
 }
 
 type BlockStyle = 'paragraph' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'quote' | 'codeBlock'
@@ -189,6 +193,7 @@ export function Ribbon({
   onToggleAutoSave,
   imageEnabled,
   onInsertImage,
+  onImageHost,
   frontmatterOpen,
   onToggleFrontmatter,
   sourceViewOpen,
@@ -202,6 +207,7 @@ export function Ribbon({
   onToggleAi,
   onAiPreset,
   sourceMode = false,
+  sourceHistory,
 }: Props) {
   const { t, lang } = useI18n()
   const collapse = useRibbonCollapse('mdapp.ribbonCollapsed')
@@ -252,10 +258,10 @@ export function Ribbon({
     inside: () => [linkAnchorRef.current],
   })
 
-  // In the source view the canvas is a textarea: formatting acts on a selection
-  // the user cannot see, and undo/focus would yank them out of the pane, so the
-  // editor-shaped commands stand down. Saving and the source toggle stay live.
+  // editor-shaped commands stand down while the pane hides the selection;
+  // Save As never does, and Find only while the source view hides its target
   const off = disabled || sourceMode || sourceViewOpen || !editor || !state
+  const findOff = disabled || sourceViewOpen
 
   const openLink = () => {
     if (!editor) return
@@ -396,7 +402,7 @@ export function Ribbon({
           data-tip={t('saveAs')}
           data-tip-detail={t('saveAsTip')}
           aria-label={t('saveAs')}
-          disabled={off}
+          disabled={disabled}
           onMouseDown={(e) => e.preventDefault()}
           onClick={onSaveAs}
         >
@@ -407,9 +413,11 @@ export function Ribbon({
           className="qa-btn"
           data-tip={t('undo')}
           aria-label={t('undo')}
-          disabled={off || !state?.canUndo}
+          disabled={sourceHistory ? !sourceHistory.canUndo : off || !state?.canUndo}
           onMouseDown={(e) => e.preventDefault()}
-          onClick={() => editor?.chain().focus().undo().run()}
+          onClick={() =>
+            sourceHistory ? sourceHistory.undo() : editor?.chain().focus().undo().run()
+          }
         >
           <IconUndo size={16} />
         </button>
@@ -418,9 +426,11 @@ export function Ribbon({
           className="qa-btn"
           data-tip={t('redo')}
           aria-label={t('redo')}
-          disabled={off || !state?.canRedo}
+          disabled={sourceHistory ? !sourceHistory.canRedo : off || !state?.canRedo}
           onMouseDown={(e) => e.preventDefault()}
-          onClick={() => editor?.chain().focus().redo().run()}
+          onClick={() =>
+            sourceHistory ? sourceHistory.redo() : editor?.chain().focus().redo().run()
+          }
         >
           <IconRedo size={16} />
         </button>
@@ -429,7 +439,7 @@ export function Ribbon({
           className="qa-btn"
           data-tip={t('findTip')}
           aria-label={t('findTip')}
-          disabled={off}
+          disabled={findOff}
           onMouseDown={(e) => e.preventDefault()}
           onClick={onFind}
         >
@@ -623,6 +633,9 @@ export function Ribbon({
               >
                 <IconPicture size={ICON} />
               </IconBtn>
+              <IconBtn title={t('imageHostTitle')} onClick={onImageHost}>
+                <IconCloudUpload size={ICON} />
+              </IconBtn>
               <IconBtn
                 title={t('insertHr')}
                 disabled={off}
@@ -640,14 +653,6 @@ export function Ribbon({
 
         <div className="ribbon-group">
           <div className="ribbon-group-items">
-            {/*
-              The markdown source view is the PR's own mode, distinct from
-              `sourceMode` (a .txt/.json edited as source). Both hide the
-              block-formatting buttons: there is no block document to format in
-              either case.
-            */}
-            {/* A .txt/.json is already source text, so there is nothing for
-                this toggle to switch to; it is a markdown control. */}
             {!sourceMode && (
               <IconBtn
                 title={t('sourceView')}

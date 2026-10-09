@@ -492,6 +492,7 @@ export const tk = {
   appParaSpecialFirstLine: 'First line',
   appParaSpecialHanging: 'Hanging',
   appParaBy: 'By',
+  appParaUnitChars: 'belgi',
   appUseWildcards: 'Use wildcards (? * [ ] < >)',
   appUseRegex: 'Use regular expressions',
   appMatchWidth: 'Match half/full width',

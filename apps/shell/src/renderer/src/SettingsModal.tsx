@@ -16,7 +16,13 @@ import {
   DEFAULT_MAX_OUTPUT_TOKENS,
   MAX_MAX_OUTPUT_TOKENS,
   MIN_MAX_OUTPUT_TOKENS,
+  activeCustomEndpoint,
   clampMaxOutputTokens,
+  customEndpointLabel,
+  newCustomEndpointId,
+  removeCustomEndpoint,
+  selectCustomEndpoint,
+  upsertCustomEndpoint,
 } from '@genoffice/ai-provider/browser'
 import type {
   AiMediaProviderId,
@@ -319,11 +325,14 @@ function useAiSettingsAutosave(settings: AiSettings | null) {
   /** last snapshot the main process holds — the load or an acknowledged write */
   const confirmed = useRef<AiSettings | null>(null)
   const latest = useRef<AiSettings | null>(null)
+  /** edits the main process hasn't acknowledged — external-change reloads must not clobber them */
+  const pendingRef = useRef(false)
   const [saved, setSaved] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
 
   useEffect(() => {
     latest.current = settings
+    pendingRef.current = !!settings && settings !== confirmed.current
     if (!settings || settings === confirmed.current) return
     const timer = setTimeout(() => {
       const snapshot = settings
@@ -331,6 +340,7 @@ function useAiSettingsAutosave(settings: AiSettings | null) {
         .setAiSettings?.(snapshot)
         .then(() => {
           confirmed.current = snapshot
+          pendingRef.current = latest.current !== snapshot
           setSaveError(null)
           // 'Saved' only when the acknowledged write covers the newest edits
           if (latest.current === snapshot) setSaved(true)
@@ -352,13 +362,14 @@ function useAiSettingsAutosave(settings: AiSettings | null) {
 
   const confirmLoaded = useCallback((s: AiSettings) => {
     confirmed.current = s
+    pendingRef.current = latest.current !== s
   }, [])
   const clearFeedback = useCallback(() => {
     setSaved(false)
     setSaveError(null)
   }, [])
 
-  return { confirmLoaded, saved, saveError, clearFeedback }
+  return { confirmLoaded, saved, saveError, clearFeedback, pendingRef }
 }
 
 /**
@@ -428,7 +439,8 @@ function AiModelPane({
     () => window.aiOffice.getAiProviders?.() ?? [],
   )
   const [settings, setSettings] = useState<AiSettings | null>(null)
-  const { confirmLoaded, saved, saveError, clearFeedback } = useAiSettingsAutosave(settings)
+  const { confirmLoaded, saved, saveError, clearFeedback, pendingRef } =
+    useAiSettingsAutosave(settings)
   const [testing, setTesting] = useState(false)
   const [testResult, setTestResult] = useState<{ ok: boolean; error?: string } | null>(null)
   /** free-typed value of the output-cap field; committed (and clamped) on blur */
@@ -487,34 +499,49 @@ function AiModelPane({
     [],
   )
 
+  // Re-read on every outside write (composer model chip) while the form has no
+  // unconfirmed autosave edits; a pending draft keeps the user's edits.
+  /** bumped on every outside reload so a connection test that was still running reports nothing */
+  const testSeqRef = useRef(0)
   useEffect(() => {
     let alive = true
-    void window.aiOffice.getAiSettings?.().then((s) => {
-      if (!alive || !s) return
-      const shown = storedPick(s)
-      confirmLoaded(shown)
-      setSettings(shown)
-      const codex = s.providers.codex
-      if (codex) {
-        void refreshCodexModels(codex.cliPath ?? '', codex.model).catch(() => undefined)
-      }
-      const active = s.providers[shown.provider]
-      const meta = catalog.find((c) => c.id === shown.provider)
-      if (meta?.liveCatalog && active) {
-        void refreshLiveModels(
-          shown.provider,
-          active.apiKey,
-          active.baseUrl ?? '',
-          active.model,
-        ).catch(() => undefined)
-      }
+    const load = () => {
+      void window.aiOffice.getAiSettings?.().then((s) => {
+        if (!alive || !s) return
+        testSeqRef.current += 1
+        setTesting(false)
+        setTestResult(null)
+        clearFeedback()
+        const shown = storedPick(s)
+        confirmLoaded(shown)
+        setSettings(shown)
+        const codex = s.providers.codex
+        if (codex) {
+          void refreshCodexModels(codex.cliPath ?? '', codex.model).catch(() => undefined)
+        }
+        const active = s.providers[shown.provider]
+        const meta = catalog.find((c) => c.id === shown.provider)
+        if (meta?.liveCatalog && active) {
+          void refreshLiveModels(
+            shown.provider,
+            active.apiKey,
+            active.baseUrl ?? '',
+            active.model,
+          ).catch(() => undefined)
+        }
+      })
+    }
+    load()
+    const off = window.aiOffice.onAiSettingsChanged?.(() => {
+      if (!pendingRef.current) load()
     })
     return () => {
       alive = false
+      off?.()
     }
     // catalog is only read once on mount for the liveCatalog flag
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [refreshCodexModels, refreshLiveModels, confirmLoaded])
+  }, [refreshCodexModels, refreshLiveModels, confirmLoaded, clearFeedback])
 
   // A user-hosted endpoint gets the same live model list as Codex, asked of the
   // endpoint itself. Keyed on the catalog's `needsBaseUrl` flag rather than on
@@ -604,11 +631,49 @@ function AiModelPane({
     clearFeedback()
     setTestResult(null)
   }
+  const endpoint = meta?.needsBaseUrl ? activeCustomEndpoint(settings) : undefined
   const updateConfig = (patch: Partial<typeof config>) => {
-    setSettings({
-      ...settings,
-      providers: { ...settings.providers, [provider]: { ...config, ...patch } },
-    })
+    if (meta?.needsBaseUrl) {
+      // the slot mirrors the active endpoint, so the edit lands on the endpoint
+      const base = endpoint ?? {
+        id: newCustomEndpointId(),
+        name: '',
+        baseUrl: config.baseUrl ?? '',
+        apiKey: config.apiKey,
+        model: config.model,
+      }
+      const { cliPath: _cli, ...fields } = patch
+      setSettings(upsertCustomEndpoint(settings, { ...base, ...fields }, true))
+    } else {
+      setSettings({
+        ...settings,
+        providers: { ...settings.providers, [provider]: { ...config, ...patch } },
+      })
+    }
+    touch()
+  }
+  const addEndpoint = () => {
+    setSettings(
+      upsertCustomEndpoint(
+        settings,
+        { id: newCustomEndpointId(), name: '', baseUrl: '', apiKey: '', model: '' },
+        true,
+      ),
+    )
+    touch()
+  }
+  const renameEndpoint = (name: string) => {
+    if (!endpoint) return
+    setSettings(upsertCustomEndpoint(settings, { ...endpoint, name }))
+    touch()
+  }
+  const pickEndpoint = (id: string) => {
+    setSettings(selectCustomEndpoint(settings, id))
+    touch()
+  }
+  const deleteEndpoint = () => {
+    if (!endpoint) return
+    setSettings(removeCustomEndpoint(settings, endpoint.id))
     touch()
   }
   /** Commit the output-cap input: clamp what was typed and drop a no-op edit */
@@ -630,11 +695,13 @@ function AiModelPane({
     }
   }
   const test = () => {
+    const seq = ++testSeqRef.current
     setTesting(true)
     setTestResult(null)
     window.aiOffice
       .testAiSettings?.(settings)
       .then((r) => {
+        if (seq !== testSeqRef.current) return
         setTestResult(r ?? { ok: false })
         if (r?.ok && isCodex) {
           void refreshCodexModels(config.cliPath ?? '', config.model).catch(() => undefined)
@@ -645,10 +712,13 @@ function AiModelPane({
           )
         }
       })
-      .catch((error) =>
-        setTestResult({ ok: false, error: error instanceof Error ? error.message : String(error) }),
-      )
-      .finally(() => setTesting(false))
+      .catch((error) => {
+        if (seq !== testSeqRef.current) return
+        setTestResult({ ok: false, error: error instanceof Error ? error.message : String(error) })
+      })
+      .finally(() => {
+        if (seq === testSeqRef.current) setTesting(false)
+      })
   }
 
   return (
@@ -710,6 +780,58 @@ function AiModelPane({
               ? noteWithLink(t('setAiVegaNote'))
               : t('setAiByokNote')}
       </div>
+      {meta?.needsBaseUrl && (
+        <>
+          <div className="set-field">
+            <div className="set-field-text">
+              <div className="set-field-stack">
+                <label className="set-field-label">{t('setAiEndpoint')}</label>
+                <div className="set-field-desc">{t('setAiEndpointHint')}</div>
+              </div>
+            </div>
+            <div className="set-ai-endpoint-row">
+              {endpoint && (
+                <Dropdown
+                  className="set-dd"
+                  value={endpoint.id}
+                  ariaLabel={t('setAiEndpoint')}
+                  options={(settings.customEndpoints ?? []).map((e) => ({
+                    value: e.id,
+                    label: customEndpointLabel(e, meta.label),
+                  }))}
+                  onPick={pickEndpoint}
+                />
+              )}
+              <button className="set-btn" type="button" onClick={addEndpoint}>
+                {t('setAiEndpointAdd')}
+              </button>
+              {endpoint && (
+                <button className="set-btn" type="button" onClick={deleteEndpoint}>
+                  {t('setAiEndpointRemove')}
+                </button>
+              )}
+            </div>
+          </div>
+          {endpoint && (
+            <div className="set-field">
+              <div className="set-field-text">
+                <label className="set-field-label" htmlFor="set-ai-endpoint-name">
+                  {t('setAiEndpointName')}
+                </label>
+              </div>
+              <input
+                id="set-ai-endpoint-name"
+                className="set-input"
+                type="text"
+                value={endpoint.name}
+                placeholder={customEndpointLabel(endpoint, meta.label)}
+                spellCheck={false}
+                onChange={(e) => renameEndpoint(e.target.value)}
+              />
+            </div>
+          )}
+        </>
+      )}
       <div className="set-field">
         <div className="set-field-text">
           <label className="set-field-label">{t('setAiModelId')}</label>
@@ -976,7 +1098,8 @@ function AiMediaPane({
     () => window.aiOffice.getAiSearchProviders?.() ?? [],
   )
   const [settings, setSettings] = useState<AiSettings | null>(null)
-  const { confirmLoaded, saved, saveError, clearFeedback } = useAiSettingsAutosave(settings)
+  const { confirmLoaded, saved, saveError, clearFeedback, pendingRef } =
+    useAiSettingsAutosave(settings)
   const [fileSearch, setFileSearchState] = useState<FileSearchSettings | null>(null)
   const [testing, setTesting] = useState(false)
   const [testResults, setTestResults] = useState<Partial<Record<TestedBlock, TestResult>> | null>(
@@ -1036,28 +1159,43 @@ function AiMediaPane({
     return () => clearTimeout(timer)
   }, [fileSearch])
 
+  /** bumped on every outside reload so a connection test that was still running reports nothing */
+  const testSeqRef = useRef(0)
   useEffect(() => {
     let alive = true
-    void window.aiOffice.getAiSettings?.().then((s) => {
-      if (!alive || !s) return
-      const shown = storedPick(s)
-      confirmLoaded(shown)
-      setSettings(shown)
-      void refreshVegaImageModels(
-        shown.media?.providers?.vega?.apiKey || shown.providers.vega?.apiKey || '',
-        shown.media?.providers?.vega?.baseUrl ?? '',
-      )
-    })
+    const load = () => {
+      void window.aiOffice.getAiSettings?.().then((s) => {
+        if (!alive || !s) return
+        testSeqRef.current += 1
+        setTesting(false)
+        setTestResults(null)
+        clearFeedback()
+        const shown = storedPick(s)
+        confirmLoaded(shown)
+        setSettings(shown)
+        void refreshVegaImageModels(
+          shown.media?.providers?.vega?.apiKey || shown.providers.vega?.apiKey || '',
+          shown.media?.providers?.vega?.baseUrl ?? '',
+        )
+      })
+    }
+    load()
     void window.aiOffice.getFileSearchSettings?.().then((v) => {
       if (alive && v) {
         fileSearchConfirmed.current = v
         setFileSearchState(v)
       }
     })
+    // this pane saves the whole file too: follow chip switches while clean
+    const off = window.aiOffice.onAiSettingsChanged?.(() => {
+      if (!pendingRef.current) load()
+    })
     return () => {
       alive = false
+      off?.()
     }
-  }, [refreshVegaImageModels, confirmLoaded])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refreshVegaImageModels, confirmLoaded, clearFeedback])
 
   if (!settings?.media || !settings.search) return null
   const media: AiMediaSettings = settings.media
@@ -1130,6 +1268,7 @@ function AiMediaPane({
 
   // every block reports its own verdict; blocks sharing a vendor share that vendor's one check
   const test = async () => {
+    const seq = ++testSeqRef.current
     setTesting(true)
     setTestResults(null)
     const results: Partial<Record<TestedBlock, TestResult>> = {}
@@ -1179,6 +1318,7 @@ function AiMediaPane({
         }
       }),
     )
+    if (seq !== testSeqRef.current) return
     setTestResults(results)
     setTesting(false)
   }
@@ -1685,6 +1825,9 @@ export function SettingsModal({
 }: SettingsModalProps) {
   const { lang, setLang, t } = useI18n()
   const [section, setSection] = useState<SectionId>(target?.section ?? 'account')
+  useEffect(() => {
+    if (target) setSection(target.section)
+  }, [target])
   const [displayName, setDisplayName] = useState('')
   const [theme, setTheme] = useState<UiTheme>('system')
   const [design, setDesign] = useState<UiDesign>('standard')

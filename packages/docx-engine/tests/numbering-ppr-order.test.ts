@@ -3,9 +3,9 @@ import { mergeLevelXml } from '../src/blank'
 
 /**
  * `CT_PPrGeneral` orders its children, and Word validates that order strictly.
- * The order array names only the two children this function writes, so any
- * `w:pPr` child the original document already had — `w:spacing` is the one a
- * producer will realistically emit — has to sort *after* them, not before.
+ * A producer can put any paragraph child in a `w:lvl`'s `w:pPr` — `w:spacing`
+ * and `w:jc` are the realistic ones — and the merge has to emit them in schema
+ * order, not just park them around the two children this function writes.
  */
 describe('mergeLevelXml keeps w:pPr children in schema order', () => {
   const LEVEL = { numFmt: 'bullet', lvlText: '–', indentLeft: 720 }
@@ -53,5 +53,20 @@ describe('mergeLevelXml keeps w:pPr children in schema order', () => {
     const order = pPrOrder(mergeLevelXml(existing, LEVEL, 0))
     expect(order).toContain('w:ind')
     expect(order.indexOf('w:spacing')).toBeLessThan(order.indexOf('w:ind'))
+  })
+
+  it('sorts every schema child by its CT_PPrGeneral position, not around tabs/ind', () => {
+    const existing =
+      '<w:lvl w:ilvl="0"><w:numFmt w:val="bullet"/><w:lvlText w:val="–"/>' +
+      '<w:pPr><w:jc w:val="left"/><w:keepNext/><w:spacing w:after="120"/>' +
+      '<w:tabs><w:tab w:val="num" w:pos="720"/></w:tabs></w:pPr></w:lvl>'
+    // schema: keepNext (1) < tabs (10) < spacing (24) < ind (25) < jc (26)
+    expect(pPrOrder(mergeLevelXml(existing, LEVEL, 0))).toEqual([
+      'w:keepNext',
+      'w:tabs',
+      'w:spacing',
+      'w:ind',
+      'w:jc',
+    ])
   })
 })
