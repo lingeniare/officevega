@@ -187,6 +187,7 @@ const api: DesktopApi = {
   },
   getAiSettings: () => ipcRenderer.invoke('ai:get-settings'),
   setAiSettings: (settings: AiSettings) => ipcRenderer.invoke('ai:set-settings', settings),
+  getProviderModels: (input) => ipcRenderer.invoke('ai:provider-models', input),
   onAiSettingsChanged: (handler) => {
     const listener = () => handler()
     ipcRenderer.on('ai:settings-changed', listener)

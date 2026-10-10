@@ -1,9 +1,4 @@
-import {
-  aiPanelWidthAtPointer,
-  AiPanelSideButton,
-  AiModelPicker,
-  type AiModelPickerBridge,
-} from '@genoffice/ui'
+import { aiPanelWidthAtPointer, AiModelPicker, type AiModelPickerBridge } from '@genoffice/ui'
 import React, { useEffect, useRef, useState } from 'react'
 import {
   AiComposer,
@@ -238,6 +233,7 @@ const MODEL_BRIDGE: AiModelPickerBridge = {
   onSettingsChanged: (handler) => window.desktopApi.onAiSettingsChanged(handler),
   gskLoggedIn: () => window.desktopApi.aiGskStatus().then((s) => !!s?.loggedIn),
   openModelSettings: () => window.desktopApi.openAiModelSettings().catch(() => {}),
+  getProviderModels: (input) => window.desktopApi.getProviderModels(input),
 }
 
 export function AiChatPanel({

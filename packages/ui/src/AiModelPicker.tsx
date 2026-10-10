@@ -1,6 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { Lang } from '@genoffice/i18n'
-import type { AiSettings } from '@genoffice/ai-provider/browser'
+import type {
+  AiProviderId,
+  AiSettings,
+  ModelFilter,
+  ProviderModelCatalog,
+} from '@genoffice/ai-provider/browser'
 import {
   aiModelPickerGroups,
   aiModelPickerSelection,
@@ -11,6 +16,18 @@ import { ProviderLogo } from './provider-logos'
 import { useDismissablePopover } from './popover-dismiss'
 import { AI_MODEL_PICKER_STRINGS } from './strings-ai-model-picker'
 
+/**
+ * Same live-catalog filter the AI Model settings pane applies: text-out
+ * models only, no image generators, `~` aliases or `:free`/`:batch`
+ * duplicates — so the chip's popover lists the same ids as Settings › AI Model.
+ */
+const CHAT_MODEL_FILTER = {
+  output: 'text',
+  excludeOutput: ['image'],
+  excludePrefixes: ['~'],
+  excludeSuffixes: [':free', 'latest', 'meta', ':batch'],
+} as const
+
 /** Each app's preload exposes these under its own namespace; the panel adapts them. */
 export interface AiModelPickerBridge {
   readonly getSettings: () => Promise<AiSettings>
@@ -20,6 +37,19 @@ export interface AiModelPickerBridge {
   readonly gskLoggedIn?: (() => Promise<boolean>) | undefined
   /** shell: switch to Home and open Settings › AI Model */
   readonly openModelSettings?: (() => Promise<void> | void) | undefined
+  /**
+   * live {base}/models catalog for liveCatalog providers (VEGA, OpenRouter) —
+   * feeds display names while the row value stays the model id; absent = ids only
+   */
+  readonly getProviderModels?:
+    | ((
+        input: ModelFilter & {
+          provider: AiProviderId
+          apiKey?: string
+          baseUrl?: string
+        },
+      ) => Promise<ProviderModelCatalog>)
+    | undefined
 }
 
 /**
@@ -80,7 +110,62 @@ export function AiModelPicker({
   const current = settings ? aiModelPickerSelection(settings) : null
   const sameGroup = (g: { id: string; endpoint?: string | undefined }) =>
     g.id === current?.provider && (g.id !== 'custom' || g.endpoint === current?.endpoint)
-  const currentUsable = groups.some(sameGroup)
+  const currentGroup = groups.find(sameGroup)
+  const currentUsable = !!currentGroup
+
+  /** live catalog: full model ids + display names, keyed by `provider[:endpoint]` (fetched once per key/url pair) */
+  const [liveNames, setLiveNames] = useState<Record<string, Record<string, string>>>({})
+  const [liveIds, setLiveIds] = useState<Record<string, readonly string[]>>({})
+  const catalogKeysRef = useRef<Record<string, string>>({})
+  useEffect(() => {
+    const getModels = bridge.getProviderModels
+    if (!settings || !getModels) return
+    let alive = true
+    for (const g of groups) {
+      // liveCatalog providers (VEGA, OpenRouter) and every saved custom
+      // endpoint expose GET {base}/models — the same probe the settings pane runs
+      if (!g.liveCatalog && !g.endpoint) continue
+      const key = `${g.id}:${g.endpoint ?? ''}`
+      const config = g.endpoint
+        ? settings.customEndpoints?.find((e) => e.id === g.endpoint)
+        : settings.providers?.[g.id]
+      const credKey = `${config?.apiKey ?? ''}|${config?.baseUrl ?? ''}`
+      if (catalogKeysRef.current[key] === credKey) continue
+      catalogKeysRef.current[key] = credKey
+      // Promise.resolve().then: a sync-throwing stub (panel-less test pages)
+      // must not take the picker down — it just keeps showing ids
+      void Promise.resolve()
+        .then(() =>
+          getModels({
+            provider: g.id,
+            apiKey: config?.apiKey ?? '',
+            baseUrl: config?.baseUrl ?? '',
+            // the chat filter needs the modality metadata only gateway catalogs
+            // carry — a custom endpoint's bare ids list would filter to nothing
+            ...(g.liveCatalog ? CHAT_MODEL_FILTER : {}),
+          }),
+        )
+        .then((cat) => {
+          if (!alive || !cat?.models?.length) return
+          setLiveNames((prev) => ({
+            ...prev,
+            [key]: Object.fromEntries(cat.models.map((m) => [m.id, m.name])),
+          }))
+          setLiveIds((prev) => ({ ...prev, [key]: cat.models.map((m) => m.id) }))
+        })
+        .catch(() => {})
+    }
+    return () => {
+      alive = false
+    }
+  }, [bridge, settings, groups])
+
+  /** catalog name when one was fetched (or the provider ships a static map), else the bare id */
+  const displayOf = (
+    g: { id: AiProviderId; endpoint?: string | undefined },
+    staticNames: Readonly<Record<string, string>> | undefined,
+    id: string,
+  ) => liveNames[`${g.id}:${g.endpoint ?? ''}`]?.[id] ?? staticNames?.[id] ?? id
 
   const toggle = () => {
     if (!open) {
@@ -104,10 +189,23 @@ export function AiModelPicker({
     void bridge.openModelSettings?.()
   }
 
+  /** live list when fetched (stored/default ids pinned on top, like the settings pane), else the static list */
+  const modelsOf = (g: (typeof groups)[number]) => {
+    const live = g.liveCatalog || g.endpoint ? liveIds[`${g.id}:${g.endpoint ?? ''}`] : undefined
+    return live?.length
+      ? [...(g.pinned ?? []).filter((p) => !live.includes(p)), ...live]
+      : g.models
+  }
+
   if (!settings) return null
   const chipText =
     currentUsable && current
-      ? current.model || (groups.find(sameGroup)?.label ?? '')
+      ? displayOf(
+          { id: current.provider, endpoint: current.endpoint },
+          currentGroup?.names,
+          current.model,
+        ) ||
+        (currentGroup?.label ?? '')
       : strings.choose
 
   return (
@@ -157,35 +255,40 @@ export function AiModelPicker({
               <div key={g.endpoint ? `${g.id}:${g.endpoint}` : g.id} className="ai-model-group">
                 <div className="ai-model-group-head">
                   <ProviderLogo id={g.id} />
-                  <span>{g.label}</span>
+                  <span>{g.account ? strings.aiModels : g.label}</span>
                 </div>
-                {(g.models.length > 0 ? g.models : ['']).map((m) => {
-                  const selected = sameGroup(g) && current?.model === m
-                  return (
-                    <button
-                      key={`${g.id}:${g.endpoint ?? ''}:${m}`}
-                      type="button"
-                      role="option"
-                      aria-selected={selected}
-                      className={`ai-model-item${selected ? ' selected' : ''}`}
-                      onClick={() => pick({ provider: g.id, endpoint: g.endpoint, model: m })}
-                    >
-                      <span className="ai-model-item-text">{m || g.label}</span>
-                      {selected && (
-                        <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden>
-                          <path
-                            d="M2.5 6.5 5 9l4.5-6"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="1.6"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      )}
-                    </button>
-                  )
-                })}
+                {(() => {
+                  const listed = modelsOf(g)
+                  return (listed.length > 0 ? listed : ['']).map((m) => {
+                    const selected = sameGroup(g) && current?.model === m
+                    return (
+                      <button
+                        key={`${g.id}:${g.endpoint ?? ''}:${m}`}
+                        type="button"
+                        role="option"
+                        aria-selected={selected}
+                        className={`ai-model-item${selected ? ' selected' : ''}`}
+                        onClick={() => pick({ provider: g.id, endpoint: g.endpoint, model: m })}
+                      >
+                        <span className="ai-model-item-text">
+                          {m ? displayOf(g, g.names, m) : g.label}
+                        </span>
+                        {selected && (
+                          <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden>
+                            <path
+                              d="M2.5 6.5 5 9l4.5-6"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="1.6"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        )}
+                      </button>
+                    )
+                  })
+                })()}
               </div>
             ))}
           </div>

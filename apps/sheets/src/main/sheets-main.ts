@@ -87,7 +87,10 @@ import {
   setRescueFetch,
   warmAiConnections,
   streamForProvider,
+  listProviderModels,
+  type AiProviderId,
   type AiSettings,
+  type ModelFilter,
   type AiStreamChunk,
   type GenSparkAccountStatus,
   type LegacyAiSettings,
@@ -4128,6 +4131,46 @@ export function registerSheetsAiIpc(): void {
     writeJsonAtomic(SETTINGS_PATH(), persist)
     for (const wc of webContents.getAllWebContents())
       if (!wc.isDestroyed()) wc.send(IPC_CHANNELS.aiSettingsChanged)
+  })
+
+  // live model catalog for liveCatalog providers (VEGA, OpenRouter):
+  // GET {base}/models filtered by modality — powers the composer picker's display names
+  ipcMain.handle(IPC_CHANNELS.aiProviderModels, async (_event, input: unknown) => {
+    const req = (input ?? {}) as {
+      provider?: AiProviderId
+      apiKey?: string
+      baseUrl?: string
+      input?: string
+      output?: string
+      excludeOutput?: unknown
+      excludePrefixes?: unknown
+      excludeSuffixes?: unknown
+    }
+    if (!req.provider) return { models: [], defaultModel: '' }
+    const strings = (v: unknown) =>
+      Array.isArray(v) ? v.filter((s): s is string => typeof s === 'string') : undefined
+    // exactOptionalPropertyTypes: assign filter fields explicitly — a conditional
+    // spread infers `| undefined`, which ModelFilter's optional props reject
+    const filter: ModelFilter = {}
+    if (typeof req.input === 'string' && req.input) filter.input = req.input
+    if (typeof req.output === 'string' && req.output) filter.output = req.output
+    const excludeOutput = strings(req.excludeOutput)
+    if (excludeOutput) filter.excludeOutput = excludeOutput
+    const excludePrefixes = strings(req.excludePrefixes)
+    if (excludePrefixes) filter.excludePrefixes = excludePrefixes
+    const excludeSuffixes = strings(req.excludeSuffixes)
+    if (excludeSuffixes) filter.excludeSuffixes = excludeSuffixes
+    return listProviderModels(
+      req.provider,
+      {
+        // the renderer never sees the issued VEGA key — supply it here so the
+        // signed-in catalog works for a keyless vega slot
+        apiKey: String(req.apiKey ?? '') || (req.provider === 'vega' ? officeVegaApiKey() : ''),
+        model: '',
+        ...(typeof req.baseUrl === 'string' && req.baseUrl ? { baseUrl: req.baseUrl } : {}),
+      },
+      filter,
+    )
   })
 
   ipcMain.handle(IPC_CHANNELS.aiChat, async (event, input: unknown) => {

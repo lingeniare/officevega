@@ -1,10 +1,13 @@
 import type { AiPanelPrefs } from '@genoffice/ui'
 import type { Lang } from '@genoffice/i18n'
 import type {
+  AiProviderId,
   AiSettings,
   AiStreamChunk,
   AiStreamRequest,
   GenSparkAccountStatus,
+  ModelFilter,
+  ProviderModelCatalog,
 } from '@genoffice/ai-provider'
 import type { ExportImageMime } from './export-image-mime'
 
@@ -153,6 +156,7 @@ export const AI_CHANNELS = {
   webSearch: 'ai:web-search',
   imageSearch: 'ai:image-search',
   fetchImage: 'ai:fetch-image',
+  providerModels: 'ai:provider-models',
 } as const
 
 export interface WebSearchResult {
@@ -308,6 +312,10 @@ export interface MarkdownApi {
   getAiSettings(): Promise<AiSettings>
   /** persists the AI settings object (e.g. the PII-shield switch on the composer badge) */
   setAiSettings(settings: AiSettings): Promise<void>
+  /** live {base}/models catalog for liveCatalog providers (VEGA, OpenRouter); feeds display names in the composer picker */
+  getProviderModels(
+    input: ModelFilter & { provider: AiProviderId; apiKey?: string; baseUrl?: string },
+  ): Promise<ProviderModelCatalog>
   /** ai-settings.json was rewritten by any renderer; re-read it */
   onAiSettingsChanged(handler: () => void): () => void
   /** shell only: switch to Home and open Settings › AI Model (rejects in standalone) */

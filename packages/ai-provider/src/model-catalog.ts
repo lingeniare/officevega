@@ -6,6 +6,7 @@
  * gateways that ignore them.
  */
 import { aiFetch } from './fetch'
+import { listCustomModels } from './custom-models'
 import { AI_PROVIDERS } from './providers'
 import { getProviderAdapter } from './registry'
 import type { AiProviderConfig, AiProviderId } from './types'
@@ -215,6 +216,18 @@ export async function listProviderModels(
   const fallback = {
     models: (meta?.models ?? []).map((id) => ({ id, name: id })),
     defaultModel: meta?.defaultModel ?? '',
+  }
+  // user-hosted OpenAI-compatible endpoints ('custom'): the same GET
+  // {baseUrl}/models probe the settings pane uses — a plain ids list with no
+  // modality metadata, so the chat filter is not applied
+  if (meta?.needsBaseUrl) {
+    const baseUrl = config?.baseUrl?.trim() ?? ''
+    if (!baseUrl) return fallback
+    const cat = await listCustomModels(baseUrl, config?.apiKey)
+    return {
+      models: cat.models.map((id) => ({ id, name: id })),
+      defaultModel: '',
+    }
   }
   if (!meta?.liveCatalog) return fallback
   try {

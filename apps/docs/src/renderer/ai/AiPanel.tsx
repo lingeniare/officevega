@@ -1,9 +1,4 @@
-import {
-  aiPanelWidthAtPointer,
-  AiPanelSideButton,
-  AiModelPicker,
-  type AiModelPickerBridge,
-} from '@genoffice/ui'
+import { aiPanelWidthAtPointer, AiModelPicker, type AiModelPickerBridge } from '@genoffice/ui'
 import { useEffect, useRef, useState } from 'react'
 import type { Editor } from '@tiptap/core'
 import type { Block } from '@genoffice/docx-engine'
@@ -357,6 +352,7 @@ const MODEL_BRIDGE: AiModelPickerBridge = {
   onSettingsChanged: (handler) => window.desktop.onAiSettingsChanged(handler),
   gskLoggedIn: () => window.desktop.aiGskStatus().then((s) => !!s?.loggedIn),
   openModelSettings: () => window.desktop.openAiModelSettings().catch(() => {}),
+  getProviderModels: (input) => window.desktop.getProviderModels(input),
 }
 
 export function AiPanel({
@@ -1796,9 +1792,46 @@ export function AiPanel({
                 className={`ai-track-btn${trackChanges ? ' on' : ''}`}
                 onClick={toggleTrackChanges}
                 data-tip={trackChanges ? t('aiTrackOnTitle') : t('aiTrackOffTitle')}
+                aria-label={t('aiTrackChanges')}
+                aria-pressed={trackChanges}
               >
-                <span className="ai-track-dot" aria-hidden />
-                {t('aiTrackChanges')}
+                {trackChanges ? (
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden
+                  >
+                    <path d="M12.5 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h10.2a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4v4.35" />
+                    <path d="m16 19 2 2 4-4" />
+                    <path d="M17 15.13V14a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7" />
+                    <path d="M7 3v4a1 1 0 0 0 1 1h7" />
+                  </svg>
+                ) : (
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden
+                  >
+                    <path d="M13 13H8a1 1 0 0 0-1 1v7" />
+                    <path d="M14 8h1" />
+                    <path d="M17 21v-4" />
+                    <path d="m2 2 20 20" />
+                    <path d="M20.41 20.41A2 2 0 0 1 19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 .59-1.41" />
+                    <path d="M9 3h6.2a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V15" />
+                  </svg>
+                )}
               </button>
             </>
           }

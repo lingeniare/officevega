@@ -780,36 +780,39 @@ button.ai-step-title.clickable:hover {
 .ai-track-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  border: 1px solid transparent;
-  border-radius: var(--radius-30);
-  background: none;
-  font-size: var(--text-caption);
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
   color: var(--color-text-tertiary);
+  opacity: 0.7;
   cursor: pointer;
-  white-space: nowrap;
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast),
+    opacity var(--transition-fast);
+}
+
+.ai-track-btn svg {
+  display: block;
+  width: 16px;
+  height: 16px;
 }
 
 .ai-track-btn:hover {
-  color: var(--accent);
-}
-
-.ai-track-btn.on {
-  border-color: var(--accent);
+  opacity: 1;
   background: var(--accent-soft);
   color: var(--accent);
 }
 
-.ai-track-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: currentColor;
-}
-
-.ai-track-btn.on .ai-track-dot {
-  background: var(--accent);
+.ai-track-btn.on {
+  opacity: 1;
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 
 /* send: the one memorable detail — 32px accent circle, arrow glyph */

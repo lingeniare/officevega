@@ -107,6 +107,7 @@ export const IPC_CHANNELS = {
   aiAuthChanged: 'ai:auth-changed',
   aiImageSearch: 'ai:image-search',
   aiFetchImage: 'ai:fetch-image',
+  aiProviderModels: 'ai:provider-models',
   // sheets: prefix — slides' ai:generate-image only registers once a slides view exists
   aiGenerateImage: 'sheets:ai-generate-image',
   // MCP visible-grid bridge: shell pushes one command, the renderer that owns

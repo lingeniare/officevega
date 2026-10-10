@@ -31,6 +31,8 @@ import {
   setRescueFetch,
   warmAiConnections,
   streamForProvider,
+  listProviderModels,
+  type AiProviderId,
   type AiSettings,
   type AiStreamChunk,
   type AiStreamRequest,
@@ -182,6 +184,41 @@ export function registerAiIpc(): void {
     writeJsonAtomic(AI_SETTINGS_PATH(), sanitized)
     for (const wc of webContents.getAllWebContents())
       if (!wc.isDestroyed()) wc.send('ai:settings-changed')
+  })
+
+  // live model catalog for liveCatalog providers (VEGA, OpenRouter):
+  // GET {base}/models filtered by modality — powers the composer picker's display names
+  ipcMain.handle('ai:provider-models', async (_event, input: unknown) => {
+    const req = (input ?? {}) as {
+      provider?: AiProviderId
+      apiKey?: string
+      baseUrl?: string
+      input?: string
+      output?: string
+      excludeOutput?: unknown
+      excludePrefixes?: unknown
+      excludeSuffixes?: unknown
+    }
+    if (!req.provider) return { models: [], defaultModel: '' }
+    const strings = (v: unknown) =>
+      Array.isArray(v) ? v.filter((s): s is string => typeof s === 'string') : undefined
+    return listProviderModels(
+      req.provider,
+      {
+        // the renderer never sees the issued VEGA key — supply it here so the
+        // signed-in catalog works for a keyless vega slot
+        apiKey: String(req.apiKey ?? '') || (req.provider === 'vega' ? officeVegaApiKey() : ''),
+        model: '',
+        ...(typeof req.baseUrl === 'string' && req.baseUrl ? { baseUrl: req.baseUrl } : {}),
+      },
+      {
+        ...(typeof req.input === 'string' && req.input ? { input: req.input } : {}),
+        ...(typeof req.output === 'string' && req.output ? { output: req.output } : {}),
+        ...(strings(req.excludeOutput) ? { excludeOutput: strings(req.excludeOutput) } : {}),
+        ...(strings(req.excludePrefixes) ? { excludePrefixes: strings(req.excludePrefixes) } : {}),
+        ...(strings(req.excludeSuffixes) ? { excludeSuffixes: strings(req.excludeSuffixes) } : {}),
+      },
+    )
   })
 
   ipcMain.handle('ai:log-run-failure', (_event, entry: AiRunFailure) => {

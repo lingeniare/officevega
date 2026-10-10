@@ -6,6 +6,7 @@ import type {
   AiSettings,
   AiStreamChunk,
   GenSparkAccountStatus,
+  ProviderModelCatalog,
 } from '@genoffice/ai-provider'
 import type { ProjectApi } from '@genoffice/project-store'
 import type {
@@ -514,6 +515,13 @@ const desktopApi: DesktopApi = {
     const listener = () => handler()
     ipcRenderer.on(IPC_CHANNELS.aiSettingsChanged, listener)
     return () => ipcRenderer.removeListener(IPC_CHANNELS.aiSettingsChanged, listener)
+  },
+  async getProviderModels(input) {
+    const result: unknown = await ipcRenderer.invoke(IPC_CHANNELS.aiProviderModels, input)
+    if (!isRecord(result) || !Array.isArray(result.models)) {
+      throw new Error('Invalid provider models response.')
+    }
+    return result as unknown as ProviderModelCatalog
   },
   async openAiModelSettings() {
     await ipcRenderer.invoke(IPC_CHANNELS.aiOpenModelSettings)

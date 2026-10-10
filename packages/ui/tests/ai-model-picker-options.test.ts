@@ -18,6 +18,12 @@ describe('aiModelPickerGroups', () => {
     expect(ids).toEqual(['genspark'])
   })
 
+  it('carries the Genspark pool display names', () => {
+    const g = aiModelPickerGroups(defaultAiSettings(), true).find((x) => x.id === 'genspark')
+    expect(g?.names?.['gpt-6-astra']).toBe('GPT-6 Astra')
+    expect(g?.names?.['claude-opus-5-5']).toBe('Claude Opus 5.5')
+  })
+
   it('adds a vendor once its key is set and puts an off-catalog model first', () => {
     const settings = defaultAiSettings()
     settings.providers.anthropic = { apiKey: 'k', model: 'claude-next' }

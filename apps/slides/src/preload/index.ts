@@ -346,8 +346,7 @@ const api: SlidesApi = {
   aiSnapshotRestore: (id: number) => ipcRenderer.invoke('slides:ai-snapshot-restore', id),
   qcSlideCheckpoint: (slideIndex: number) =>
     ipcRenderer.invoke('slides:qc-slide-checkpoint', slideIndex),
-  qcSlideRestore: (slideIndex: number) =>
-    ipcRenderer.invoke('slides:qc-slide-restore', slideIndex),
+  qcSlideRestore: (slideIndex: number) => ipcRenderer.invoke('slides:qc-slide-restore', slideIndex),
   qcCheckpointsClear: () => ipcRenderer.invoke('slides:qc-checkpoints-clear'),
   undo: () => ipcRenderer.invoke('slides:undo'),
   redo: () => ipcRenderer.invoke('slides:redo'),
@@ -402,6 +401,7 @@ const api: SlidesApi = {
   },
   getAiSettings: () => ipcRenderer.invoke('ai:get-settings'),
   setAiSettings: (settings: AiSettings) => ipcRenderer.invoke('ai:set-settings', settings),
+  getProviderModels: (input) => ipcRenderer.invoke('ai:provider-models', input),
   onAiSettingsChanged: (handler: () => void) => {
     const listener = () => handler()
     ipcRenderer.on('ai:settings-changed', listener)

@@ -78,6 +78,8 @@ export interface AiProviderMeta {
   needsCliPath?: boolean
   /** model list is fetched live from {base}/models (OpenRouter-style catalog); `models` holds fallback ids only */
   liveCatalog?: boolean
+  /** display names for curated static `models` (composer/settings pickers); absent = show the bare id */
+  modelNames?: Record<string, string>
 }
 
 /** Image generation / media analysis backends (separate from the chat provider) */

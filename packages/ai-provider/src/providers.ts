@@ -119,6 +119,18 @@ export const AI_PROVIDERS: AiProviderMeta[] = [
       'gpt-5.6-luna',
       DEEPSEEK_V41_FLASH,
     ],
+    // display names spell the pool ids the way the VEGA/OpenRouter catalog does
+    // (the LiteLLM proxy's /models lists bare ids without names)
+    modelNames: {
+      'claude-opus-5-5': 'Claude Opus 5.5',
+      'claude-sonnet-4-6': 'Claude Sonnet 4.6',
+      'gpt-6-astra': 'GPT-6 Astra',
+      'gpt-6-sol': 'GPT-6 Sol',
+      'gpt-6-luna': 'GPT-6 Luna',
+      'gpt-5.6-terra': 'GPT-5.6 Terra',
+      'gpt-5.6-luna': 'GPT-5.6 Luna',
+      [DEEPSEEK_V41_FLASH]: 'DeepSeek V4.1 Flash',
+    },
     defaultModel: 'claude-opus-5-5',
     keyPlaceholder: 'Not required - sign in to your account',
   },

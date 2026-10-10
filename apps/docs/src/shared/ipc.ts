@@ -38,10 +38,13 @@ export interface PickImageResult {
 import type {
   AiChatRequest,
   AiChatResponse,
+  AiProviderId,
   AiSettings,
   AiStreamChunk,
   AiStreamRequest,
   GenSparkAccountStatus,
+  ModelFilter,
+  ProviderModelCatalog,
 } from '@genoffice/ai-provider'
 import type { HeadlessExportTarget } from '@genoffice/electron-utils/headless-export'
 import type { FaceVerticalMetrics } from '@genoffice/font-metrics'
@@ -445,6 +448,10 @@ export interface DesktopApi {
   fontMetrics(family: string): Promise<FaceVerticalMetrics | null>
   getAiSettings(): Promise<AiSettings>
   setAiSettings(settings: AiSettings): Promise<void>
+  /** live {base}/models catalog for liveCatalog providers (VEGA, OpenRouter); feeds display names in the composer picker */
+  getProviderModels(
+    input: ModelFilter & { provider: AiProviderId; apiKey?: string; baseUrl?: string },
+  ): Promise<ProviderModelCatalog>
   /** ai-settings.json was rewritten by any renderer; re-read it */
   onAiSettingsChanged(handler: () => void): () => void
   /** shell only: switch to Home and open Settings › AI Model (rejects in standalone) */

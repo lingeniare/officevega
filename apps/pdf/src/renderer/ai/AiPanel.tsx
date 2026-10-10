@@ -1,9 +1,4 @@
-import {
-  aiPanelWidthAtPointer,
-  AiPanelSideButton,
-  AiModelPicker,
-  type AiModelPickerBridge,
-} from '@genoffice/ui'
+import { aiPanelWidthAtPointer, AiModelPicker, type AiModelPickerBridge } from '@genoffice/ui'
 import { useEffect, useRef, useState } from 'react'
 import type { PointerEvent as ReactPointerEvent, ReactElement } from 'react'
 import { AgentLoop, generateSuggestedQuestions, withPiiTokenGuard } from '@genoffice/agent-core'
@@ -24,9 +19,6 @@ import {
   type AiScopeQuoteData,
 } from '@genoffice/ui'
 import { aiLangDirective, t as tGlobal, useI18n } from '../i18n/locale'
-import sendEnterOn from '../assets/send-enter-on.png'
-import sendEnterOff from '../assets/send-enter-off.png'
-import sendStop from '../assets/send-stop.png'
 import { localizedToolSummary } from './tool-labels'
 import { Markdown } from '@genoffice/ui'
 import { createPdfSkill } from './pdf-skill'
@@ -98,6 +90,7 @@ const MODEL_BRIDGE: AiModelPickerBridge = {
   onSettingsChanged: (handler) => window.pdfApi.onAiSettingsChanged(handler),
   gskLoggedIn: () => window.pdfApi.gskStatus().then((s) => !!s?.loggedIn),
   openModelSettings: () => window.pdfApi.openAiModelSettings().catch(() => {}),
+  getProviderModels: (input) => window.pdfApi.getProviderModels(input),
 }
 
 export function AiPanel({
@@ -901,9 +894,6 @@ export function AiPanel({
           onShieldToggle={togglePiiShield}
           textareaRef={inputRef}
           footerStart={<AiModelPicker bridge={MODEL_BRIDGE} lang={lang} />}
-          sendIconEnabled={<img src={sendEnterOn} alt="" aria-hidden />}
-          sendIconDisabled={<img src={sendEnterOff} alt="" aria-hidden />}
-          stopIcon={<img src={sendStop} alt="" aria-hidden />}
           onChange={setPrompt}
           onSend={() => send(prompt)}
           onStop={stop}

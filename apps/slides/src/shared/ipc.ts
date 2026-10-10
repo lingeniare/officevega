@@ -15,10 +15,13 @@ import type { FontSizeStep } from '@genoffice/pptx-ops/font-size'
 import type { CatalogEntry as FontCatalogEntry } from '@genoffice/electron-utils/font-store'
 import type { LayoutSkeleton } from '../renderer/ai/layout-skeleton'
 import type {
+  AiProviderId,
   AiSettings,
   AiStreamChunk,
   AiStreamRequest,
   GenSparkAccountStatus,
+  ModelFilter,
+  ProviderModelCatalog,
 } from '@genoffice/ai-provider'
 
 import type {
@@ -1715,6 +1718,10 @@ export interface SlidesApi {
   onRenamed: (handler: (newPath: string) => void) => () => void
   getAiSettings: () => Promise<AiSettings>
   setAiSettings: (settings: AiSettings) => Promise<void>
+  /** live {base}/models catalog for liveCatalog providers (VEGA, OpenRouter); feeds display names in the composer picker */
+  getProviderModels: (
+    input: ModelFilter & { provider: AiProviderId; apiKey?: string; baseUrl?: string },
+  ) => Promise<ProviderModelCatalog>
   /** ai-settings.json was rewritten by any renderer; re-read it */
   onAiSettingsChanged: (handler: () => void) => () => void
   /** shell only: switch to Home and open Settings › AI Model (rejects in standalone) */
