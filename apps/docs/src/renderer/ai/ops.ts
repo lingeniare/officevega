@@ -1148,7 +1148,7 @@ register({
 register({
   name: 'findReplace',
   signature:
-    '{ op: "findReplace", find, replace, matchCase?, target? }  // plain-text find & replace inside runs (no cross-block matching); the replacement keeps the matched text\'s formatting — the right op for small in-place fixes; target narrows the scanned blocks (blockIndexes / scope:"selection" / nodeType), omitted = whole document',
+    '{ op: "findReplace", find, replace, matchCase?, target? }  // plain-text find & replace inside runs (no cross-block matching); find and replace must differ — to restyle text without changing it use setMatchedFont, not findReplace; the replacement keeps the matched text\'s formatting — the right op for small in-place fixes; target narrows the scanned blocks (blockIndexes / scope:"selection" / nodeType), omitted = whole document',
   keys: ['find', 'replace', 'matchCase'],
   target: 'optional',
   validate(op, where) {
@@ -1158,7 +1158,7 @@ register({
     if (typeof op.replace !== 'string')
       return `${where}: replace must be a string (empty deletes the match)`
     if (op.find === op.replace)
-      return `${where}: find and replace are identical — nothing would change; give different replacement text or drop this op`
+      return `${where}: find and replace are identical — nothing would change; give different replacement text or drop this op (to restyle the text without changing it, use setMatchedFont instead)`
     if (op.matchCase !== undefined && typeof op.matchCase !== 'boolean') {
       return `${where}: matchCase must be a boolean`
     }

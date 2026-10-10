@@ -33,6 +33,12 @@ export const tk = {
   aiNewChat: 'Täze söhbet',
   aiCollapsePanel: 'Paneli ýygn',
   aiHistorySep: '—— öňki söhbetdeşlik ——',
+  aiHistoryTitle: 'History',
+  aiHistorySearch: 'Search chats…',
+  aiHistoryEmpty: 'No chats yet',
+  aiHistoryLoading: 'Loading…',
+  aiHistoryCurrent: 'current',
+  aiHistoryVegaOnly: 'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiEmptyTitle: 'AI-a slaýdlaryňyzy kämilleşdirdiriň',
   aiEmptyBody1: 'Görkezmeler beriň ýa-da diňe sorag soraň;',
   aiEmptyBody2:

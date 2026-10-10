@@ -4806,6 +4806,55 @@ export function registerProjectIpc(): void {
       return { projectId: args.projectId, chatId: args.newChatId ?? args.tempChatId }
     },
   )
+
+  /** start a new chat session for a file (older sessions stay in history) */
+  ipcMain.handle('project:beginNewChatSession', (_event, args: { filePath: string }) => {
+    if (typeof args?.filePath !== 'string' || !args.filePath) {
+      throw new Error('Invalid filePath: must be a non-empty string')
+    }
+    return getSlidesProjectStore().beginNewChatSession(args.filePath)
+  })
+
+  /** global chat history, newest first */
+  ipcMain.handle(
+    'project:listChatSessions',
+    (_event, args: { projectId?: string; query?: string; limit?: number }) => {
+      if (args && typeof args !== 'object') throw new Error('Invalid args')
+      if (args?.projectId !== undefined && typeof args.projectId !== 'string') {
+        throw new Error('Invalid projectId')
+      }
+      if (args?.query !== undefined && typeof args.query !== 'string') {
+        throw new Error('Invalid query')
+      }
+      if (args?.limit !== undefined && typeof args.limit !== 'number') {
+        throw new Error('Invalid limit')
+      }
+      return getSlidesProjectStore().listChatSessions(args ?? {})
+    },
+  )
+
+  /** upsert the title/preview sidecar of a chat */
+  ipcMain.handle(
+    'project:setChatTitle',
+    (
+      _event,
+      args: { projectId: string; chatId: string; title?: string; preview?: string; provider?: string },
+    ) => {
+      if (typeof args?.projectId !== 'string' || typeof args?.chatId !== 'string') {
+        throw new Error('Invalid projectId/chatId')
+      }
+      for (const key of ['title', 'preview', 'provider'] as const) {
+        if (args[key] !== undefined && typeof args[key] !== 'string') {
+          throw new Error(`Invalid ${key}`)
+        }
+      }
+      getSlidesProjectStore().setChatTitle(args.projectId, args.chatId, {
+        ...(args.title !== undefined ? { title: args.title } : {}),
+        ...(args.preview !== undefined ? { preview: args.preview } : {}),
+        ...(args.provider !== undefined ? { provider: args.provider } : {}),
+      })
+    },
+  )
 }
 
 /** hidden export windows: webContents id -> the PDF path the renderer must write */

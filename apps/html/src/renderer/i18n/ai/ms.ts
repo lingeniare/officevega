@@ -36,6 +36,13 @@ export const ms = {
   aiNetworkError:
     'Masalah rangkaian: tidak dapat menghubungi perkhidmatan AI. Semak sambungan anda dan cuba lagi',
   aiNewChat: 'Sembang baharu',
+  aiHistoryTitle: 'History',
+  aiHistorySearch: 'Search chats…',
+  aiHistoryEmpty: 'No chats yet',
+  aiHistoryLoading: 'Loading…',
+  aiHistoryCurrent: 'current',
+  aiHistoryVegaOnly:
+    'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiNoReply: '(tiada balasan)',
   aiOverloadedError: 'Perkhidmatan AI sedang sibuk — sila cuba lagi sebentar lagi',
   aiRegenerateTitle: 'Jana semula',

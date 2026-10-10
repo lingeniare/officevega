@@ -6,25 +6,33 @@ Setiap editor boleh memanggil panel AI. Pilih sesuatu, berikan arahan, dan lihat
 
 ![Panel AI dalam Docs](img/ai-panel.png)
 
-- Akses kepada panel ini ialah melalui **butang AI** pada reben setiap editor, **Tanya AI** dalam menu konteks, atau Tanya AI pada bar anotasi.
-- Terangkan tugas itu dalam bahasa biasa, kemudian tekan Enter.
-- Balasan dipaparkan secara berperingkat. Apabila AI memerlukan alatan, ia akan menggunakan alatan itu dan meneruskan sehingga selesai.
-- **Berhenti** boleh digunakan pada bila-bila masa untuk menghentikan pusingan semasa.
+- Cara untuk membukanya: butang **AI** pada reben setiap editor, **Tanya AI** dalam menu konteks, atau Tanya AI pada bar anotasi.
+- Terangkan tugas dalam bahasa biasa (tulis semula ini / jadikan lajur ini peratusan / susun semula halaman ini...) dan tekan Enter.
+- Balasan dipaparkan secara berperingkat. Apabila AI memerlukan alatan (membaca dokumen, mengeditnya), ia akan menjalankannya dan meneruskan sehingga selesai.
+- **Berhenti**: hentikan pusingan semasa pada bila-bila masa.
 
-## Apa yang boleh dibuatnya
+## Apa yang boleh dilakukannya
 
-- **Docs**: menulis semula, melanjutkan, menterjemah, meringkas, dan memasukkan jadual serta imej. Setiap pusingan mengambil gambar keadaan lebih dahulu.
-- **Sheets**: formula, mengisi data, transformasi pukal, dan pemformatan.
-- **Slides**: menjana keseluruhan persembahan, menyelaras susun atur, dan menulis semula teks.
-- **PDF**: menjawab soalan dan meringkas berdasarkan teks atau halaman yang dipilih.
-- **Markdown dan HTML**: menulis semula, melanjutkan, dan menterjemah.
+- **Docs**: menulis semula, mengembangkan, menterjemah dan meringkaskan; memasukkan jadual dan imej; menyesuaikan pemformatan. Setiap pusingan mengambil gambar keadaan terlebih dahulu.
+- **Sheets**: formula, mengisi data, transformasi pukal, pemformatan.
+- **Slides**: menjana keseluruhan persembahan, melaras susun atur, menulis semula teks.
+- **PDF**: soal jawab dan ringkasan berdasarkan teks atau halaman yang dipilih.
+- **Markdown / HTML**: menulis semula, mengembangkan, menterjemah.
 
-## Berundur dan keselamatan
+## Sejarah sembang
 
-- Panel dalam Docs menyimpan **senarai versi** dengan satu gambar keadaan bagi setiap pusingan. Anda boleh berundur ke mana-mana versi dalam senarai itu, dan berundur itu sendiri juga boleh dibatalkan. Gambar keadaan itu kekal walaupun dokumen ditutup dan dibuka semula.
-- Suntingan AI menggunakan laluan penyuntingan yang sama seperti suntingan manual, jadi semuanya boleh dibatalkan dan tidak disimpan sehingga anda mengesahkannya.
+- Setiap perbualan disimpan secara automatik dan kekal pada komputer ini — buka panel esok dan teruskan dari tempat anda berhenti.
+- Mulakan sembang baharu dengan **New chat**, dan tukar antara sembang lama dalam senarai sejarah di bahagian atas panel.
+- Namakan semula sembang untuk mencarinya dengan lebih pantas; padamkannya untuk membuangnya selama-lamanya. Memadam sembang tidak sekali-kali menjejaskan dokumen anda.
 
-## Privasi
+## Undur dan keselamatan
 
-- Arahan dan kandungan dokumen yang berkaitan dihantar ke **perkhidmatan model yang anda konfigurasikan**, iaitu Genspark yang dihoskan atau titik akhir tersuai. Tanpa konfigurasi, tiada apa-apa yang dihantar.
-- Fail setempat tidak dimuat naik ke tempat lain. Kunci BYOK disimpan dalam fail tetapan aplikasi pada mesin ini dan dihantar hanya dalam pengepala permintaan.
+- Panel dalam Docs menyimpan **senarai versi**: satu gambar keadaan bagi setiap pusingan. Anda boleh berundur ke mana-mana versi, dan undur itu sendiri boleh dibatalkan dengan Ctrl+Z. Gambar keadaan kekal walaupun dokumen dibuka semula.
+- Suntingan AI melalui saluran suntingan yang sama seperti suntingan manual (boleh dibatalkan, dan bergantung pada simpanan) — tiada apa yang memintas pengesahan simpanan anda.
+
+## Privasi dan penyamaran data
+
+- Arahan dan kandungan dokumen yang berkaitan dihantar ke **perkhidmatan model yang anda konfigurasikan** (VEGA yang dihoskan atau titik akhir tersuai, bab seterusnya). Tanpa konfigurasi, tiada apa yang dihantar.
+- **Penyamaran (152-FZ)**: sebelum menghantar, aplikasi boleh menyamarkan data peribadi — nama, nombor telefon, e-mel, butiran pasport — supaya model tidak pernah melihatnya. Hidupkannya dalam Tetapan ▸ AI; bahagian yang disamarkan dipulihkan secara automatik ke dalam dokumen anda apabila balasan tiba.
+- **Tiada analitik penjejakan**: OfficeVega dihantar tanpa Google Analytics atau mana-mana penjejak pihak ketiga. Tiada suis statistik penggunaan kerana tiada apa yang perlu dimatikan — kandungan dokumen dan sembang tidak pernah keluar daripada laluan yang anda konfigurasikan.
+- Fail setempat tidak dimuat naik ke tempat lain; kunci BYOK disimpan dalam fail tetapan aplikasi pada mesin ini dan dihantar hanya dalam pengepala permintaan.

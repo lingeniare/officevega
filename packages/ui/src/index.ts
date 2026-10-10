@@ -139,5 +139,12 @@ export {
   type AiModelPickerSelection,
 } from './ai-model-picker-options'
 export { ProviderLogo } from './provider-logos'
+export {
+  AiHistoryButton,
+  AiHistoryMenu,
+  type AiHistoryItem,
+  type AiHistoryMenuProps,
+  type AiHistoryMenuStrings,
+} from './ai-history-menu'
 export { useRedactLabelField } from './use-redact-label'
 export type { RedactLabelField } from './use-redact-label'

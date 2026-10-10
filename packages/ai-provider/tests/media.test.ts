@@ -11,6 +11,7 @@ import {
 import {
   analyzeMediaWithProvider,
   generateImageWithProvider,
+  normalizeVegaAspectRatio,
   sniffImageMime,
   testMediaProvider,
 } from '../src/media-protocols'
@@ -917,5 +918,40 @@ describe('a failed media request does not buffer the whole error body', () => {
     expect(failed.ok).toBe(false)
     expect(failed.error).toMatch(/500/)
     expect(pulled()).toBeLessThanOrEqual(128 * 1024)
+  })
+})
+
+describe('normalizeVegaAspectRatio (OpenRouter enum guard)', () => {
+  it('passes through valid ratios and normalizes separators', () => {
+    expect(normalizeVegaAspectRatio('16:9')).toBe('16:9')
+    expect(normalizeVegaAspectRatio('4:3')).toBe('4:3')
+    expect(normalizeVegaAspectRatio('2.35:1')).toBe('2.35:1')
+    expect(normalizeVegaAspectRatio('16x9')).toBe('16:9')
+    expect(normalizeVegaAspectRatio('16/9')).toBe('16:9')
+    expect(normalizeVegaAspectRatio('square')).toBe('1:1')
+  })
+
+  it('omits auto/empty/unsupported instead of sending a 400', () => {
+    expect(normalizeVegaAspectRatio(undefined)).toBeUndefined()
+    expect(normalizeVegaAspectRatio('auto')).toBeUndefined()
+    expect(normalizeVegaAspectRatio('')).toBeUndefined()
+    expect(normalizeVegaAspectRatio('16:10')).toBeUndefined()
+    expect(normalizeVegaAspectRatio('1024x1024')).toBeUndefined()
+    expect(normalizeVegaAspectRatio('landscape-photo')).toBeUndefined()
+  })
+
+  it('vega omits aspect_ratio for garbage input so the request does not 400', async () => {
+    const fetchMock = vi.fn(async () => jsonResponse({ data: [{ b64_json: PNG_B64 }] }))
+    vi.stubGlobal('fetch', fetchMock)
+    await generateImageWithProvider(
+      'vega',
+      { apiKey: 'sk-apivega-x', imageModel: 'openai/gpt-image-2', analysisModel: '' },
+      { prompt: 'a cat', aspectRatio: '16:10' },
+    )
+    const body = JSON.parse(
+      (fetchMock.mock.calls[0] as unknown as [string, RequestInit])[1].body as string,
+    )
+    expect(body.model).toBe('openai/gpt-image-2')
+    expect(body).not.toHaveProperty('aspect_ratio')
   })
 })

@@ -2,10 +2,13 @@ import { aiPanelWidthAtPointer, AiModelPicker, type AiModelPickerBridge } from '
 import React, { useEffect, useRef, useState } from 'react'
 import {
   AiComposer,
+  AiHistoryButton,
+  AiHistoryMenu,
   AiScopeQuote,
   AiSuggestedQuestions,
   AiTypingIndicator,
   IconPlus,
+  type AiHistoryItem,
   type AiScopeQuoteData,
 } from '@genoffice/ui'
 import { VegaMark } from '../ribbon-icons'
@@ -241,6 +244,15 @@ export function AiChatPanel({
   hasContent,
   chat,
   historicChat = [],
+  historyOpen,
+  historyItems,
+  historyLoading,
+  historyQuery,
+  onHistoryQueryChange,
+  onHistoryOpen,
+  onHistoryClose,
+  onHistorySelect,
+  isVegaHistory,
   attachments,
   attachNotice,
   onPickAttachments,
@@ -274,6 +286,17 @@ export function AiChatPanel({
   readonly hasContent: boolean
   readonly chat: readonly AiChatMessage[]
   readonly historicChat?: readonly AiChatMessage[]
+  /// chat-history menu (state owned by App, which owns the sessions)
+  readonly historyOpen: boolean
+  readonly historyItems: AiHistoryItem[]
+  readonly historyLoading: boolean
+  readonly historyQuery: string
+  readonly onHistoryQueryChange: (q: string) => void
+  readonly onHistoryOpen: () => void
+  readonly onHistoryClose: () => void
+  readonly onHistorySelect: (item: AiHistoryItem) => void
+  /// history sessions + titles are written for VEGA chats only
+  readonly isVegaHistory: boolean
   /// Chat attachments (chips + 📎 button + drag onto the panel), same structure
   /// as the docs/slides AI panels.
   readonly attachments: readonly AttachmentMeta[]
@@ -565,6 +588,28 @@ export function AiChatPanel({
       <header className="ai-panel-header">
         <span className="ai-panel-title">{lang === 'ru' ? 'ВЕГА' : 'VEGA'}</span>
         <div className="ai-panel-header-actions">
+          <AiHistoryMenu
+            open={historyOpen}
+            onClose={onHistoryClose}
+            items={historyItems}
+            loading={historyLoading}
+            query={historyQuery}
+            onQueryChange={onHistoryQueryChange}
+            onSelect={onHistorySelect}
+            onNewChat={onNewChat}
+            disabledReason={isVegaHistory ? null : 'vega-only'}
+            strings={{
+              menuTitle: t('aiHistoryTitle'),
+              searchPlaceholder: t('aiHistorySearch'),
+              empty: t('aiHistoryEmpty'),
+              loading: t('aiHistoryLoading'),
+              newChat: t('aiNewChat'),
+              currentBadge: t('aiHistoryCurrent'),
+              vegaOnlyNote: t('aiHistoryVegaOnly'),
+            }}
+            buttonLabel={t('aiHistoryTitle')}
+            trigger={<AiHistoryButton label={t('aiHistoryTitle')} onClick={onHistoryOpen} />}
+          />
           {(chat.length > 0 || historicChat.length > 0) && (
             <button
               className="ai-header-btn"

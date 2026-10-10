@@ -569,7 +569,7 @@ let cachedDesign: UiDesign | null = null
 function currentDesign(): UiDesign {
   if (cachedDesign) return cachedDesign
   const saved = readAppSettings(APP_SETTINGS_PATH()).design
-  cachedDesign = saved === 'retro' || saved === 'digital' ? saved : 'standard'
+  cachedDesign = saved === 'standard' || saved === 'retro' || saved === 'digital' ? saved : 'digital'
   return cachedDesign
 }
 

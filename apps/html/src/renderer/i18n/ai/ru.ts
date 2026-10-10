@@ -36,6 +36,13 @@ export const ru = {
   aiNetworkError:
     'Проблема с сетью: не удалось подключиться к сервису ИИ. Проверьте подключение и повторите попытку',
   aiNewChat: 'Новый чат',
+  aiHistoryTitle: 'История',
+  aiHistorySearch: 'Поиск по чатам…',
+  aiHistoryEmpty: 'Чатов пока нет',
+  aiHistoryLoading: 'Загрузка…',
+  aiHistoryCurrent: 'текущий',
+  aiHistoryVegaOnly:
+    'История сохраняется только при провайдере VEGA. Старые чаты видны ниже.',
   aiNoReply: '(нет ответа)',
   aiOverloadedError: 'Сервис ИИ сейчас перегружен — повторите попытку чуть позже',
   aiRegenerateTitle: 'Создать заново',

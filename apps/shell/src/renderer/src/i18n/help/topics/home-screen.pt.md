@@ -1,6 +1,6 @@
 # O ecrã Início: onde ficam os seus arquivos
 
-O ecrã Início é a página inicial do GenOffice: uma barra de navegação à esquerda e, à direita, as listas de arquivos e os cartões de criação rápida.
+O ecrã Início é a página inicial do OfficeVega: uma barra de navegação à esquerda e, à direita, as listas de arquivos e os cartões de criação rápida.
 
 ![O ecrã Início](img/home-screen.png)
 
@@ -9,7 +9,7 @@ O ecrã Início é a página inicial do GenOffice: uma barra de navegação à e
 - **Recentes**: os arquivos que você abriu recentemente. Cada linha traz o momento — hoje, ontem ou a data.
 - **Favoritos**: os arquivos que você marcou com uma estrela. Passe o cursor sobre a linha do arquivo e clique na estrela para adicioná-lo ou removê-lo.
 - **Guia do Usuário**: abre este manual.
-- **Genspark Projects**: depois de entrar na sua conta Genspark, mostra os projetos que você criou com o Genspark AI na web; clique em um deles para continuar editando no navegador. Há pesquisa, ordenação por data, atualização e carregar mais.
+- **VEGA Projects**: depois de entrar na sua conta VEGA, mostra os projetos que você criou com o VEGA AI na web; clique em um deles para continuar editando no navegador. Há pesquisa, ordenação por data, atualização e carregar mais.
 - **Pastas**: os diretórios que adiciona à barra lateral com **Adicionar pasta…**, ou que arrasta até lá a partir do gestor de ficheiros. Cada um torna-se uma raiz que pode abrir, onde criar subpastas, renomear e remover; a que ficar indisponível aparece como indisponível e pode ser retirada da lista. **Nova pasta** cria outra.
 
 Não há aqui nenhuma entrada Lixeira. Os arquivos excluídos vão para a lixeira do sistema, e restaurá-los é assunto do sistema operacional.
@@ -36,7 +36,7 @@ Marque a caixa de uma linha, ou faça ⌘/ctrl-clique, para construir uma seleç
 A caixa de pesquisa no topo corresponde a duas coisas ao mesmo tempo:
 
 - **Nomes de arquivos**: filtragem rápida por nome.
-- **Conteúdo dos arquivos**: o GenOffice indexa seus arquivos em segundo plano (texto dentro de docx/xlsx/pptx/pdf/md/html), pelo que pesquisar no corpo do texto também encontra arquivos. O âmbito e as opções ficam nas configurações de pesquisa.
+- **Conteúdo dos arquivos**: o OfficeVega indexa seus arquivos em segundo plano (texto dentro de docx/xlsx/pptx/pdf/md/html), pelo que pesquisar no corpo do texto também encontra arquivos. O âmbito e as opções ficam nas configurações de pesquisa.
 
 ## Cartões de início rápido
 
@@ -56,8 +56,8 @@ O que faz cada cartão:
 
 > Dica: Arquivo ▸ Novo na barra de menus cria os mesmos tipos de documento (⌘N/Ctrl+N usa por omissão um documento de texto); arrastar um arquivo para a janela abre-o.
 
-## Projetos na nuvem (Genspark Projects)
+## Projetos na nuvem (VEGA Projects)
 
-- O primeiro uso exige entrar na sua conta Genspark (fluxo de código de dispositivo: o GenOffice mostra um código e você conclui o início de sessão no navegador).
+- O primeiro uso exige entrar na sua conta VEGA (fluxo de código de dispositivo: o OfficeVega mostra um código e você conclui o início de sessão no navegador).
 - A lista de projetos fica sincronizada com a web; Abrir no navegador leva lá para continuar.
 - Não entrar não afeta nenhuma das funcionalidades locais.

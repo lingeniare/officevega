@@ -36,6 +36,13 @@ export const th = {
   aiNetworkError:
     'เครือข่ายมีปัญหา ไม่สามารถเชื่อมต่อบริการ AI ได้ โปรดตรวจสอบการเชื่อมต่อแล้วลองใหม่',
   aiNewChat: 'แชทใหม่',
+  aiHistoryTitle: 'History',
+  aiHistorySearch: 'Search chats…',
+  aiHistoryEmpty: 'No chats yet',
+  aiHistoryLoading: 'Loading…',
+  aiHistoryCurrent: 'current',
+  aiHistoryVegaOnly:
+    'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiNoReply: '(ไม่มีการตอบกลับ)',
   aiOverloadedError: 'บริการ AI มีผู้ใช้งานจำนวนมากในขณะนี้ โปรดลองอีกครั้งในอีกสักครู่',
   aiRegenerateTitle: 'สร้างใหม่',

@@ -39,7 +39,7 @@ export const HELP_TOPICS: HelpTopicMeta[] = [
     id: 'install',
     group: 'start',
     order: 1,
-    keywords: ['安装', 'install', '下载', 'download', 'dmg', 'deb', 'rpm', 'appimage', '安装包'],
+    keywords: ['安装', 'install', '下载', 'download', '安装包', 'officevega', 'windows', 'exe'],
   },
   {
     id: 'getting-started',
@@ -207,8 +207,8 @@ export const HELP_TOPICS: HelpTopicMeta[] = [
       'byok',
       '端点',
       'endpoint',
-      'genspark',
-      '登录',
+      'vega',
+      'вега',
       'login',
     ],
   },
@@ -269,7 +269,7 @@ export const HELP_TOPICS: HelpTopicMeta[] = [
     id: 'cli',
     group: 'manage',
     order: 3,
-    keywords: ['命令行', 'cli', 'genoffice', 'convert', 'render', '命令行工具', '终端'],
+    keywords: ['命令行', 'cli', 'officevega', 'convert', 'render', '命令行工具', '终端'],
   },
   {
     id: 'mcp',
@@ -291,12 +291,14 @@ export const HELP_TOPICS: HelpTopicMeta[] = [
 /**
  * Topic bodies per language, keyed `<id>.<lang>`; missing pairs fall back to en.
  *
- * Lazy on purpose. Inlined eagerly, 294 markdown files pushed the shell
- * renderer's entry chunk from 1.36 MB to 2.63 MB, and Home parses that on
- * every launch to open a screen most sessions never reach. Each body is its
- * own chunk now, fetched when its topic is opened.
+ * Only the two shipped editions are bundled (`ru` and `en`) — the rest of the
+ * files on disk are not part of the build. Lazy on purpose. Inlined eagerly,
+ * 294 markdown files pushed the shell renderer's entry chunk from 1.36 MB to
+ * 2.63 MB, and Home parses that on every launch to open a screen most
+ * sessions never reach. Each body is its own chunk now, fetched when its
+ * topic is opened.
  */
-const bodies = import.meta.glob<string>('./topics/*.md', {
+const bodies = import.meta.glob<string>('./topics/*.@(ru|en).md', {
   query: '?raw',
   import: 'default',
 })
@@ -340,6 +342,38 @@ export function helpImage(href: string, lang?: string): string | undefined {
  */
 export function helpLangSuffix(lang: string): string {
   return (LANGS as readonly string[]).includes(lang) ? lang : 'en'
+}
+
+/** The two editions the manual ships in. */
+export type ManualLang = 'ru' | 'en'
+
+/** Countries of the former USSR and the CIS, by ISO region code. */
+const RUSSIAN_REGIONS = new Set([
+  'RU', 'BY', 'KZ', 'KG', 'TJ', 'UZ', 'TM', 'AZ', 'AM', 'GE', 'MD', 'UA', 'EE', 'LV', 'LT',
+])
+/** Languages of those countries, for a system locale that names no region. */
+const RUSSIAN_LANGUAGES = new Set([
+  'ru', 'be', 'uk', 'kk', 'ky', 'uz', 'tg', 'tk', 'az', 'hy', 'ka', 'et', 'lv', 'lt',
+])
+
+/**
+ * The manual edition for a system locale: Russian for the former USSR and the
+ * CIS, English everywhere else. Reads the region (`ru-RU`, `en-KZ`) first, and
+ * the language only when there is no region.
+ */
+export function manualLangFor(locale: string | null | undefined): ManualLang {
+  if (!locale) return 'en'
+  let language: string | undefined
+  let region: string | undefined
+  try {
+    const parsed = new Intl.Locale(locale)
+    language = parsed.language
+    region = parsed.region
+  } catch {
+    return 'en'
+  }
+  if (region) return RUSSIAN_REGIONS.has(region.toUpperCase()) ? 'ru' : 'en'
+  return language && RUSSIAN_LANGUAGES.has(language) ? 'ru' : 'en'
 }
 
 /** A topic's body in the reader's language, falling back to English. */

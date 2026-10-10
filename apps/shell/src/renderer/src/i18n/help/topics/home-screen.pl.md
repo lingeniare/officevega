@@ -1,6 +1,6 @@
 # Ekran strony głównej: gdzie mieszkają Twoje pliki
 
-Strona główna to punkt wyjścia GenOffice: pasek nawigacyjny po lewej, listy plików i karty szybkiego tworzenia po prawej.
+Strona główna to punkt wyjścia OfficeVega: pasek nawigacyjny po lewej, listy plików i karty szybkiego tworzenia po prawej.
 
 ![Ekran strony głównej](img/home-screen.png)
 
@@ -9,7 +9,7 @@ Strona główna to punkt wyjścia GenOffice: pasek nawigacyjny po lewej, listy p
 - **Ostatnie**: pliki, które ostatnio otwierałeś. Każdy wiersz ma na sobie czas — dzisiaj, wczoraj albo datę.
 - **Ulubione**: pliki oznaczone gwiazdką. Najedź na wiersz pliku i kliknij gwiazdkę, aby dodać lub usunąć plik.
 - **Podręcznik użytkownika**: otwiera ten podręcznik.
-- **Genspark Projects**: po zalogowaniu na konto Genspark pokazuje projekty utworzone w sieci za pomocą Genspark AI; kliknięcie projektu otwiera go w przeglądarce do dalszej edycji. Dostępne są wyszukiwanie, sortowanie według czasu, odświeżanie i wczytanie kolejnych.
+- **VEGA Projects**: po zalogowaniu na konto VEGA pokazuje projekty utworzone w sieci za pomocą VEGA AI; kliknięcie projektu otwiera go w przeglądarce do dalszej edycji. Dostępne są wyszukiwanie, sortowanie według czasu, odświeżanie i wczytanie kolejnych.
 - **Foldery**: katalogi dodane do paska bocznego przyciskiem **Dodaj folder…** albo przeciągnięte tam z menedżera plików. Każdy staje się katalogiem głównym, który można otworzyć, utworzyć w nim podfoldery, zmienić jego nazwę i usunąć; ten, który przestanie być dostępny, jest oznaczany jako niedostępny i można go zdjąć z listy. **Nowy folder** tworzy kolejny.
 
 Nie ma tu pozycji Kosz. Usunięte pliki trafiają do kosza systemowego, a ich przywrócenie to zadanie systemu operacyjnego.
@@ -36,7 +36,7 @@ Zaznacz pole wyboru w wierszu lub kliknij ⌘/ctrl, aby zbudować zaznaczenie; p
 Pole wyszukiwania u góry filtruje naraz dwie rzeczy:
 
 - **Nazwy plików**: szybkie filtrowanie po nazwie.
-- **Zawartość plików**: GenOffice indeksuje Twoje pliki w tle (tekst w docx/xlsx/pptx/pdf/md/html), więc wyszukiwanie po treści znajduje również pliki. Zakres i przełączniki ustawia się w ustawieniach wyszukiwania.
+- **Zawartość plików**: OfficeVega indeksuje Twoje pliki w tle (tekst w docx/xlsx/pptx/pdf/md/html), więc wyszukiwanie po treści znajduje również pliki. Zakres i przełączniki ustawia się w ustawieniach wyszukiwania.
 
 ## Karty szybkiego startu
 
@@ -56,8 +56,8 @@ Co robi każda karta:
 
 > Wskazówka: Plik ▸ Nowy na pasku menu tworzy te same typy dokumentów (⌘N/Ctrl+N domyślnie tworzy dokument tekstowy); przeciągnięcie pliku do okna otwiera go.
 
-## Projekty w chmurze (Genspark Projects)
+## Projekty w chmurze (VEGA Projects)
 
-- Przy pierwszym użyciu trzeba zalogować się na konto Genspark (przepływ z kodem urządzenia: GenOffice pokazuje kod, a Ty kończysz logowanie w przeglądarce).
+- Przy pierwszym użyciu trzeba zalogować się na konto VEGA (przepływ z kodem urządzenia: OfficeVega pokazuje kod, a Ty kończysz logowanie w przeglądarce).
 - Lista projektów synchronizuje się z siecią; Otwórz w przeglądarce przenosi tam, gdzie można kontynuować.
 - Brak logowania nie wpływa na żadną funkcję lokalną.

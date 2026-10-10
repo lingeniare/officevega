@@ -315,6 +315,8 @@ describe('findReplace', () => {
     ])
     expect(outcome.ok).toBe(false)
     expect(outcome.error).toContain('find and replace are identical')
+    // the message steers the model to the restyle op so it retries correctly
+    expect(outcome.error).toContain('setMatchedFont')
     expect(editor.state.doc.child(1).textContent).toContain('GenSpark')
   })
 

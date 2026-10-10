@@ -131,7 +131,6 @@ export function AiModelPicker({
         : settings.providers?.[g.id]
       const credKey = `${config?.apiKey ?? ''}|${config?.baseUrl ?? ''}`
       if (catalogKeysRef.current[key] === credKey) continue
-      catalogKeysRef.current[key] = credKey
       // Promise.resolve().then: a sync-throwing stub (panel-less test pages)
       // must not take the picker down — it just keeps showing ids
       void Promise.resolve()
@@ -146,7 +145,12 @@ export function AiModelPicker({
           }),
         )
         .then((cat) => {
-          if (!alive || !cat?.models?.length) return
+          // mark fetched only on a non-empty answer: a catalog probed before
+          // sign-in / while the gateway was down must retry on the next
+          // settings refresh, not stay a one-row list for the window's life
+          if (!cat?.models?.length) return
+          catalogKeysRef.current[key] = credKey
+          if (!alive) return
           setLiveNames((prev) => ({
             ...prev,
             [key]: Object.fromEntries(cat.models.map((m) => [m.id, m.name])),

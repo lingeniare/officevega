@@ -135,6 +135,17 @@ const projectApi = {
     ipcRenderer.invoke('project:loadChat', args),
   rebindChat: (args: { projectId: string; tempChatId: string; newFilePath: string }) =>
     ipcRenderer.invoke('project:rebindChat', args),
+  beginNewChatSession: (args: { filePath: string }) =>
+    ipcRenderer.invoke('project:beginNewChatSession', args),
+  listChatSessions: (args: { projectId?: string; query?: string; limit?: number }) =>
+    ipcRenderer.invoke('project:listChatSessions', args),
+  setChatTitle: (args: {
+    projectId: string
+    chatId: string
+    title?: string
+    preview?: string
+    provider?: string
+  }) => ipcRenderer.invoke('project:setChatTitle', args),
 }
 
 contextBridge.exposeInMainWorld('pdfApi', api)

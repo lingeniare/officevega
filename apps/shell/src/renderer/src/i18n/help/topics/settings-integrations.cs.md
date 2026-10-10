@@ -2,68 +2,72 @@
 
 ## Otevření nastavení
 
-Řádek účtu vlevo dole na domovské stránce otevře panel nastavení (při nepřihlášení ukazuje Přihlásit se). Má šest částí: Účet, Model AI, AI média a vyhledávání, Obecné, Integrace a O aplikaci.
+Řádek účtu vlevo dole na domovské stránce otevře panel nastavení (když nejste přihlášeni, zobrazuje Sign in). Má šest částí: Account, AI Model, AI Media & Search, General, Integrations a About.
 
-![Nastavení ▸ Obecné, kde žijí jazyk, motiv, automatické ukládání a přepínač statistik používání](img/settings-general.png)
+![Settings ▸ General, kde jsou jazyk, motiv, AutoSave a přepínač statistik používání](img/settings-general.png)
 
-Konfigurace modelů má vlastní kapitolu; v části **AI média a vyhledávání** zapínáte pro každého poskytovatele generování obrázků, analýzu obrázků, analýzu videí, webové vyhledávání a hledání místních souborů.
+Konfigurace modelů má vlastní článek. V části **AI Media & Search** zapínáte pro každého poskytovatele generování obrázků, analýzu obrázků, analýzu videa, webové vyhledávání a hledání místních souborů.
 
 ## Jazyk
 
-- Nastavení nabízí **21 jazyků rozhraní**: angličtina, zjednodušená čínština, japonština, korejština, francouzština, němčina, španělština, thajština, indonéština, ruština, arabština, portugalština, italština, polština, čeština, nizozemština, malajština, hebrejština, hindština, tradiční čínština, vietnamština.
-- Změna působí okamžitě a zůstává zachována; nativní pruh nabídek se znovu sestaví v novém jazyce.
+- Nastavení nabízí **21 jazyků rozhraní**: angličtina, zjednodušená čínština, japonština, korejština, francouzština, němčina, španělština, thajština, indonéština, ruština, arabština, portugalština, italština, polština, čeština, nizozemština, malajština, hebrejština, hindština, tradiční čínština a vietnamština.
+- Změna se projeví okamžitě a zůstane zachována; nativní pruh nabídek se znovu sestaví v novém jazyce.
 
 ## Motiv
 
-Světlý / Tmavý / Podle systému. Volba Podle systému sleduje vzhled operačního systému a editory se přeoblekují současně bez blikání.
+Light / Dark / System. Volba System sleduje vzhled operačního systému a editory se přebarví současně, bez blikání. Stejný přepínač obarvuje také panel AI a domovskou stránku, takže celá aplikace zůstává v jednom designu: Light pro světlé místnosti, Dark pro práci v noci a System pro sledování Windows.
 
 ## Obecné
 
-- **Odesílat anonymní statistiky používání** — ve výchozím stavu zapnuto. Používá Google Analytics 4 a odesílá vaši veřejnou IP adresu a přenosová metadata; obsah dokumentů ani názvy souborů se nikdy neshromažďují a každá událost nese jen typ, například „otevřen soubor .docx“. Kdykoli to zde vypnete.
+- **Žádná sledovací analytika**: OfficeVega se dodává bez Google Analytics a bez jakéhokoli sledovacího nástroje třetí strany — obsah dokumentů, názvy souborů a události používání se nikdy neshromažďují ani nikam neodesílají.
 - **Pozice postranního panelu AI** (vlevo nebo vpravo), **Velikost textu panelu AI** a **Kontrola pravopisu v chatu AI**.
-- **Otevírat panel AI v nových dokumentech** — vypnuto, nový dokument začíná se složeným panelem, na jedno kliknutí.
-- **Automaticky ukládat všechny dokumenty** zapne ve výchozím stavu automatické ukládání v každém editoru; pro jedno okno ho můžete i nadále vypnout.
-- **Umístění pro ukládání** s tlačítkem **Změnit** a **Výchozí aplikace pro dokumenty Office**, aby GenOffice přebíral .docx / .xlsx / .pptx.
+- **Otevírat panel AI v nových dokumentech** — vypnuto: nový dokument začíná se složeným panelem, který je na jedno kliknutí.
+- **Automaticky ukládat všechny dokumenty** zapne ve výchozím stavu automatické ukládání v každém editoru; pro jedno okno jej můžete vypnout.
+- **Umístění uložení** s tlačítkem **Change** a **Default app for Office documents**, aby OfficeVega otevíral soubory .docx / .xlsx / .pptx.
 
-## AI média a vyhledávání
+## AI Media & Search
 
-Nejsou to přepínače — každá schopnost si vybere dodavatele, který ji poskytuje, a klíč i základní URL dodavatele se zadávají jednou a sdílejí se:
+Nejde o přepínače — každá schopnost vybírá poskytovatele, který ji obsluhuje, a klíč i základní URL poskytovatele se zadají jednou a sdílejí se:
 
-- **Webové vyhledávání**, **Generování obrázků**, **Analýza obrázků** a **Analýza videí**, každá s poskytovatelem, modelem, klíčem a základní URL.
-- **Hledání místních souborů** běží na tomto počítači. Pod ním je **Přeřazení Jev**, které je **ve výchozím stavu vypnuté**. Zapnete-li ho, výňatky 20 nejlepších místních výsledků — až 1 200 znaků z každého dokumentu plus názvy souborů a složek — se odešlou modelu Jev od TypeSafe a přeřadí se podle relevance. Když je vypnuté, ze zařízení nic neodejde.
+- **Web search**, **Image generation**, **Image analysis** a **Video analysis**, každá s poskytovatelem, modelem, klíčem a základní URL. Zvolte **VEGA** jako poskytovatele, aby se směřovaly přes `api.vega.chat` s vaším přihlašovacím klíčem.
+- **Local file search** běží na tomto počítači. Pod ním je **Jev search reranking**, který je **ve výchozím stavu vypnutý**. Když ho zapnete, výňatky z 20 nejlepších místních výsledků — až 1 200 znaků z každého dokumentu plus názvy souborů a složek — se odešlou modelu Jev od TypeSafe a přeřadí se podle relevance. Když je vypnutý, žádná data neopustí zařízení.
 
 ## O aplikaci
 
-- **Verze**, odkaz na projekt na GitHubu a tlačítko **Dát hvězdičku na GitHubu**.
-- **Kanál aktualizací**: Stabilní nebo Beta. Změna se projeví ihned a vyvolá kontrolu aktualizace; instalaci z kanálu Beta nevrátí zpět na Stabilní.
+- **Version**, odkaz na web projektu [officevega.com](https://officevega.com) a stránka verzí [officevega.com/releases](https://officevega.com/releases).
+- **Update Channel**: Stable nebo Beta. Změna se projeví hned a spustí kontrolu aktualizací; instalaci Beta nevrátí zpět na Stable.
 
 ## Přiřazení jako výchozí aplikace
 
-Nastavení může zaregistrovat GenOffice jako aplikaci pro soubory .docx / .xlsx / .pptx / .pdf a podobné (registrace výchozí aplikace na úrovni systému; potvrzení, když o něj systém požádá).
+Nastavení může zaregistrovat OfficeVega jako obsluhu souborů .docx / .xlsx / .pptx / .pdf a podobných (registrace výchozí aplikace na úrovni systému; potvrďte, když o to systém požádá).
 
 ## Informace o softwaru třetích stran a aktualizace
 
-- Nápověda ▸ Informace o softwaru třetích stran: úplný přehled licencí open source dodávaných s aplikací.
-- Nápověda ▸ Zkontrolovat aktualizace…: spustí ruční kontrolu; novější verze vyzve k instalaci.
+- Help ▸ Third-party notices: úplný přehled licencí open source dodávaných s aplikací.
+- Help ▸ Check for updates: spustí ruční kontrolu; novější verze nabídne instalaci.
 
-## Přihlášení ke Genspark
+## Přihlášení do VEGA
 
-- Místo přihlášení (v nastavení nebo v seznamu cloudových projektů) používá postup s **kódem zařízení**: GenOffice zobrazí kód a otevře přihlašovací stránku v prohlížeči; po dokončení postup pokračuje automaticky.
-- Přihlášení slouží pouze k: seznamu cloudových projektů a modelům hostovaným Gensparkem. Bez něj fungují dál všechny místní funkce i vlastní modely.
+- Přihlášení (v nastavení nebo v seznamu cloudových projektů) používá postup s **kódem zařízení**: OfficeVega zobrazí kód a otevře přihlašovací stránku v prohlížeči; po dokončení postup pokračuje automaticky.
+- Přihlášení slouží pouze k: seznamu cloudových projektů a hostovaným modelům VEGA na `api.vega.chat`. Bez něj fungují dál všechny místní funkce i vlastní modely.
 - Odhlášení je jedno kliknutí v nastavení.
+
+## Podpora
+
+Dotazy, nápady a hlášení chyb: [officevega.com/feedback](https://officevega.com/feedback), Telegram kanál [t.me/getmyai](https://t.me/getmyai), e-mail [mail@vega.chat](mailto:mail@vega.chat). Vývojář: [getmyai.io](https://getmyai.io) (Dmitrij Filippov).
 
 ## Integrace MCP (pro pokročilé uživatele a klienty AI)
 
-**Integrace** je panel, který propojí GenOffice s programovým agentem, a má o tom vlastní kapitolu: Připojení programového agenta. Zkrátka — vyberte cestu (příkazová řádka, nebo MCP), řiďte se danou částí a pak začněte nový chat a zeptejte se.
+**Integrations** je panel, který propojuje OfficeVega s programovacím agentem, a má vlastní článek: Připojení programovacího agenta. Stručně — vyberte cestu (příkazová řádka, nebo MCP), řiďte se touto částí a pak začněte nový chat a zeptejte se.
 
-![Nastavení ▸ Integrace: tři kroky, pak řádky dovedností a možnosti MCP](img/settings-integrations.png)
+![Settings ▸ Integrations: tři kroky, pak řádky dovedností a možnosti MCP](img/settings-integrations.png)
 
-Pod **Místní HTTP server** umí aplikace server spustit sama — přepínač zapnutí a port — a část **Pokročilé** přidá adresu pro kontrolu stavu a soubor protokolu, místo aby ho nechala na pomocníkovi. Naslouchá pouze na localhostu.
+Pod **Local HTTP server** může aplikace server spustit sama — přepínač zapnutí a port — a část **Advanced** přidá adresu pro kontrolu stavu a soubor protokolu, místo aby je nechala na asistentovi. Naslouchá pouze na localhostu.
 
 ## Přehled příkazů
 
 | Příkaz               | Co dělá                     |
 | -------------------- | --------------------------- |
-| `genoffice <soubor>` | otevře soubor               |
-| `genoffice mcp`      | spustí místní server MCP    |
-| `genoffice --help`   | všechny příkazy a přepínače |
+| `officevega <file>`  | otevře soubor               |
+| `officevega mcp`     | spustí místní server MCP    |
+| `officevega --help`  | všechny příkazy a přepínače |

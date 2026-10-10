@@ -33,6 +33,12 @@ export const fr = {
   aiNewChat: 'Nouvelle conversation',
   aiCollapsePanel: 'Réduire le panneau',
   aiHistorySep: '—— conversation précédente ——',
+  aiHistoryTitle: 'History',
+  aiHistorySearch: 'Search chats…',
+  aiHistoryEmpty: 'No chats yet',
+  aiHistoryLoading: 'Loading…',
+  aiHistoryCurrent: 'current',
+  aiHistoryVegaOnly: 'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiEmptyTitle: "Laissez l'IA peaufiner vos diapositives",
   aiEmptyBody1: 'Donnez des instructions ou posez simplement vos questions ;',
   aiEmptyBody2:

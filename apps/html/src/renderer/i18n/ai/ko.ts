@@ -36,6 +36,13 @@ export const ko = {
   aiNetworkError:
     '네트워크에 문제가 있어 AI 서비스에 연결할 수 없습니다. 연결을 확인한 후 다시 시도해 주세요',
   aiNewChat: '새 대화',
+  aiHistoryTitle: 'History',
+  aiHistorySearch: 'Search chats…',
+  aiHistoryEmpty: 'No chats yet',
+  aiHistoryLoading: 'Loading…',
+  aiHistoryCurrent: 'current',
+  aiHistoryVegaOnly:
+    'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiNoReply: '(응답 없음)',
   aiOverloadedError: 'AI 서비스가 혼잡합니다. 잠시 후 다시 시도해 주세요',
   aiRegenerateTitle: '다시 생성',

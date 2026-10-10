@@ -36,6 +36,13 @@ export const tt = {
   aiNetworkError:
     'Челтәр проблемасы: AI хезмәтенә тоташа алмадык. Бәйләнешне тикшереп, яңадан башлагыз',
   aiNewChat: 'Яңа чат',
+  aiHistoryTitle: 'History',
+  aiHistorySearch: 'Search chats…',
+  aiHistoryEmpty: 'No chats yet',
+  aiHistoryLoading: 'Loading…',
+  aiHistoryCurrent: 'current',
+  aiHistoryVegaOnly:
+    'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiNoReply: '(җавап юк)',
   aiOverloadedError: 'AI хезмәте хәзер мәшгуль — бераздан яңадан башлагыз',
   aiRegenerateTitle: 'Яңадан ясау',

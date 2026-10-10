@@ -4492,6 +4492,65 @@ export function registerProjectIpc(): void {
       return { projectId: args.projectId, chatId: args.newChatId ?? args.tempChatId }
     },
   )
+
+  /** start a new chat session (older sessions stay in history). Sheets resolves
+   * the file through sessionId like resolveChat/rebindChat — the renderer
+   * passes what it has (filePath and/or sessionId). */
+  ipcMain.handle(
+    'project:beginNewChatSession',
+    (event, args: { filePath?: string; sessionId?: string }) => {
+      let resolvedPath =
+        typeof args?.filePath === 'string' && args.filePath ? args.filePath : null
+      if (!resolvedPath && typeof args?.sessionId === 'string' && args.sessionId) {
+        resolvedPath = resolveSheetsSessionPath(event.sender.id, args.sessionId)
+      }
+      if (!resolvedPath) {
+        throw new Error('Invalid filePath/sessionId: must resolve to a workbook path')
+      }
+      return getSheetsProjectStore().beginNewChatSession(resolvedPath)
+    },
+  )
+
+  /** global chat history, newest first */
+  ipcMain.handle(
+    'project:listChatSessions',
+    (_event, args: { projectId?: string; query?: string; limit?: number }) => {
+      if (args && typeof args !== 'object') throw new Error('Invalid args')
+      if (args?.projectId !== undefined && typeof args.projectId !== 'string') {
+        throw new Error('Invalid projectId')
+      }
+      if (args?.query !== undefined && typeof args.query !== 'string') {
+        throw new Error('Invalid query')
+      }
+      if (args?.limit !== undefined && typeof args.limit !== 'number') {
+        throw new Error('Invalid limit')
+      }
+      return getSheetsProjectStore().listChatSessions(args ?? {})
+    },
+  )
+
+  /** upsert the title/preview sidecar of a chat */
+  ipcMain.handle(
+    'project:setChatTitle',
+    (
+      _event,
+      args: { projectId: string; chatId: string; title?: string; preview?: string; provider?: string },
+    ) => {
+      if (typeof args?.projectId !== 'string' || typeof args?.chatId !== 'string') {
+        throw new Error('Invalid projectId/chatId')
+      }
+      for (const key of ['title', 'preview', 'provider'] as const) {
+        if (args[key] !== undefined && typeof args[key] !== 'string') {
+          throw new Error(`Invalid ${key}`)
+        }
+      }
+      getSheetsProjectStore().setChatTitle(args.projectId, args.chatId, {
+        ...(args.title !== undefined ? { title: args.title } : {}),
+        ...(args.preview !== undefined ? { preview: args.preview } : {}),
+        ...(args.provider !== undefined ? { provider: args.provider } : {}),
+      })
+    },
+  )
 }
 
 /**

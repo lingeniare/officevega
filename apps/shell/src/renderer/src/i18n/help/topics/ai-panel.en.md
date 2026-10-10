@@ -19,12 +19,20 @@ Every editor can summon the AI panel: select something, give an instruction, wat
 - **PDF**: Q&A and summaries against selected text or pages.
 - **Markdown / HTML**: rewrite, extend, translate.
 
+## Chat history
+
+- Every conversation is saved automatically and stays on this machine — reopen the panel tomorrow and continue where you left off.
+- Start a fresh chat with **New chat**; switch between past chats in the history list at the top of the panel.
+- Rename a chat to find it faster; delete one to remove it for good. Deleting a chat never touches your documents.
+
 ## Rollback and safety
 
 - The Docs panel keeps a **version list**: one snapshot per turn, roll back to any of them, and the rollback itself is Ctrl+Z-able. Snapshots survive reopening the document.
 - AI edits go through the same editing pipeline as manual ones (undoable, save-gated) — nothing bypasses your save confirmation.
 
-## Privacy
+## Privacy and anonymization
 
-- Instructions and the relevant document content go to the **model service you configured** (Genspark hosted or a custom endpoint, next chapter); no configuration, no sending.
+- Instructions and the relevant document content go to the **model service you configured** (VEGA hosted or a custom endpoint, next chapter); no configuration, no sending.
+- **Anonymization (152-FZ)**: before sending, the app can mask personal data — names, phone numbers, emails, passport details — so the model never sees them. Turn it on in Settings ▸ AI; masked spans come back restored into your document automatically.
+- **No tracking analytics**: OfficeVega ships without Google Analytics or any third-party tracker. There is no usage-statistics switch because there is nothing to switch off — documents and chat contents never leave the route you configured.
 - Local files are uploaded nowhere else; BYOK keys are stored in the app's settings file on this machine and sent only in request headers.

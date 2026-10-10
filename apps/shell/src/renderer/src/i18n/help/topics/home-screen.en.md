@@ -1,6 +1,6 @@
 # The Home screen: where your files live
 
-Home is GenOffice's start page: a navigation sidebar on the left, file lists and quick-create cards on the right.
+Home is OfficeVega's start page: a navigation sidebar on the left, file lists and quick-create cards on the right.
 
 ![The Home screen](img/home-screen.png)
 
@@ -9,7 +9,7 @@ Home is GenOffice's start page: a navigation sidebar on the left, file lists and
 - **Recent**: files you opened recently. Each row is stamped with when — today, yesterday, or the date.
 - **Starred**: files you starred. Hover a file row and click the star to add or remove it.
 - **User Guide**: opens this manual.
-- **Genspark Projects**: after signing in to your Genspark account, shows the projects you created with Genspark AI on the web; click one to continue editing in the browser. Search, sort by time, refresh and load-more are supported.
+- **VEGA Projects**: after signing in to your VEGA account, shows the projects you created with VEGA AI on the web; click one to continue editing in the browser. Search, sort by time, refresh and load-more are supported.
 - **Folders**: directories you add to the sidebar with **Add folder…**, or drag in from the file manager. Each becomes a root you can open, create subfolders in, rename and remove; one that goes offline shows as unavailable and can be taken off the list. **New folder** makes another one.
 
 There is no Trash entry here. Deleted files go to the system trash, and restoring one is the OS's business.
@@ -36,7 +36,7 @@ Tick the checkbox on a row, or ⌘/ctrl-click, to build a selection; the header 
 The search box at the top matches two things at once:
 
 - **File names**: quick filtering by name.
-- **File contents**: GenOffice indexes your files in the background (text inside docx/xlsx/pptx/pdf/md/html), so searching body text finds files too. Scope and toggles live in the search settings.
+- **File contents**: OfficeVega indexes your files in the background (text inside docx/xlsx/pptx/pdf/md/html), so searching body text finds files too. Scope and toggles live in the search settings.
 
 ## Quick start cards
 
@@ -56,8 +56,8 @@ What each card does:
 
 > Tip: File ▸ New in the menu bar creates the same document types (⌘N/Ctrl+N defaults to a text document); dragging a file into the window opens it.
 
-## Cloud projects (Genspark Projects)
+## Cloud projects (VEGA Projects)
 
-- First use requires signing in to your Genspark account (device-code flow: GenOffice shows a code, you finish logging in in the browser).
+- First use requires signing in to your VEGA account (device-code flow: OfficeVega shows a code, you finish logging in in the browser).
 - The project list syncs with the web; Open in browser jumps there to continue.
 - Not signing in affects none of the local features.

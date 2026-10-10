@@ -36,6 +36,13 @@ export const az = {
   aiNetworkError:
     'Şəbəkə problemi: AI xidmətinə qoşulmaq mümkün olmadı. Bağlantınızı yoxlayın və yenidən cəhd edin',
   aiNewChat: 'Yeni söhbət',
+  aiHistoryTitle: 'History',
+  aiHistorySearch: 'Search chats…',
+  aiHistoryEmpty: 'No chats yet',
+  aiHistoryLoading: 'Loading…',
+  aiHistoryCurrent: 'current',
+  aiHistoryVegaOnly:
+    'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiNoReply: '(cavab yoxdur)',
   aiOverloadedError: 'AI xidməti hazırda məşğuldur — bir qədər sonra yenidən cəhd edin',
   aiRegenerateTitle: 'Yenidən yaradın',

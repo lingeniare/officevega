@@ -90,6 +90,7 @@ export const OPS_GUIDE = [
   'BC-2 A "whole document" formatting operation only changed docParagraph and missed docHeading/docListItem;',
   'BC-3 Addressing by word/character position (no such addressing exists); use block indexes, text containment or the selection instead;',
   'BC-4 Using findReplace sentence by sentence for rewrites such as translation/abbreviation; use replace_blocks (or replace_selection for a selected span) instead;',
+  'BC-5 Using findReplace with identical find and replace (e.g. to bold or recolor a phrase); findReplace only changes text — restyling without a text change is setMatchedFont;',
 ].join('\n')
 
 export const HTML_RULES = [

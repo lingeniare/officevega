@@ -98,8 +98,12 @@ function drawAsterisk(ctx, cx, cy, r, stroke) {
 }
 
 /**
- * Small-size entry: solid black square + the asterisk redrawn large with a
- * heavier stroke. Same mark, optimized for tiny pixels.
+ * Small-size entry: solid black square + the asterisk redrawn with a
+ * guaranteed >=15% safe area from the outer border to the mark, measured
+ * on raster pixels (antialiased fringe costs ~1px, i.e. 6.25% at 16px).
+ * Tip extent = r + stroke/2 = 0.24 + 0.04 = 0.28 from the center,
+ * so the geometric padding is 22%, leaving >=15% even after the fringe.
+ * Same mark, optimized for tiny pixels.
  */
 async function renderSmall(size) {
   const c = createCanvas(size, size)
@@ -107,7 +111,7 @@ async function renderSmall(size) {
   ctx.fillStyle = '#000000'
   ctx.fillRect(0, 0, size, size)
   ctx.strokeStyle = '#ffffff'
-  drawAsterisk(ctx, size / 2, size / 2, size * 0.42, size * 0.1)
+  drawAsterisk(ctx, size / 2, size / 2, size * 0.24, size * 0.08)
   return c.toBuffer('image/png')
 }
 
@@ -156,13 +160,10 @@ console.log('generated icon.ico')
 
 // NSIS wizard icons (build/installerIcon.ico + uninstallerIcon.ico are picked
 // up by electron-builder automatically — MUI_ICON/MUI_UNICON/UNINSTALLER_ICON).
-// The wizard shows the icon at 32-55 px where the source spokes still read,
-// so installer icons keep the full vega.png artwork at every size except
-// 16 px (title bar), where the vector redraw stays legible.
-const installerEntries = []
-for (const size of WIN_SIZES) {
-  installerEntries.push({ size, png: size <= 16 ? await renderSmall(size) : await renderFull(size) })
-}
+// They are byte-identical copies of the app icon (build/icon.ico): the same
+// artwork is used for the installer EXE, the installed EXE and the OS icon.
+// A single shared entry list guarantees this — do not diverge the two.
+const installerEntries = winEntries
 const installerIco = buildIco(installerEntries)
 writeFileSync(join(buildDir, 'installerIcon.ico'), installerIco)
 writeFileSync(join(buildDir, 'uninstallerIcon.ico'), installerIco)
@@ -206,17 +207,21 @@ const sidebarCtx = sidebar.getContext('2d')
 sidebarCtx.fillStyle = '#000000'
 sidebarCtx.fillRect(0, 0, 164, 314)
 sidebarCtx.strokeStyle = '#ffffff'
-drawAsterisk(sidebarCtx, 82, 96, 44, 9)
+// Safe area >=15% on raster pixels: extent 42+4.25=46.25, top pad
+// (96-46.25)/314=15.8% geometric, ~15.5% measured after fringe.
+drawAsterisk(sidebarCtx, 82, 96, 42, 8.5)
 writeBmp(join(buildDir, 'installerSidebar.bmp'), sidebar)
 writeBmp(join(buildDir, 'uninstallerSidebar.bmp'), sidebar)
 
-// header strip sits on the white wizard band — white canvas, dark mark
+// header strip sits on the white wizard band — white canvas, dark mark.
+// Safe area >=15%: r=17 + stroke/2 (2.25) = 19.25 from the center, canvas
+// half-height is 28.5, so the padding is (28.5-19.25)/57 = 16.2%.
 const header = createCanvas(150, 57)
 const headerCtx = header.getContext('2d')
 headerCtx.fillStyle = '#ffffff'
 headerCtx.fillRect(0, 0, 150, 57)
 headerCtx.strokeStyle = '#000000'
-drawAsterisk(headerCtx, 75, 28.5, 22, 5)
+drawAsterisk(headerCtx, 75, 28.5, 17, 4.5)
 writeBmp(join(buildDir, 'installerHeader.bmp'), header)
 console.log('generated installerSidebar/uninstallerSidebar/installerHeader .bmp')
 

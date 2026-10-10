@@ -37,6 +37,13 @@ export const ky = {
   aiNetworkError:
     'Тармак көйгөйү: AI кызматына жетүү мүмкүн болгон жок. Байланышыңызды текшерип, кайра аракет кылыңыз',
   aiNewChat: 'Жаңы чат',
+  aiHistoryTitle: 'History',
+  aiHistorySearch: 'Search chats…',
+  aiHistoryEmpty: 'No chats yet',
+  aiHistoryLoading: 'Loading…',
+  aiHistoryCurrent: 'current',
+  aiHistoryVegaOnly:
+    'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiNoReply: '(жооп жок)',
   aiOverloadedError: 'AI кызматы азыр бош эмес — бир аздан кийин кайра аракет кылыңыз',
   aiRegenerateTitle: 'Кайра түзүү',

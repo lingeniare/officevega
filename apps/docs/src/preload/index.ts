@@ -266,6 +266,9 @@ const projectApi: ProjectApi = {
   appendChat: (args) => ipcRenderer.invoke('project:appendChat', args),
   loadChat: (args) => ipcRenderer.invoke('project:loadChat', args),
   rebindChat: (args) => ipcRenderer.invoke('project:rebindChat', args),
+  beginNewChatSession: (args) => ipcRenderer.invoke('project:beginNewChatSession', args),
+  listChatSessions: (args) => ipcRenderer.invoke('project:listChatSessions', args),
+  setChatTitle: (args) => ipcRenderer.invoke('project:setChatTitle', args),
 }
 
 contextBridge.exposeInMainWorld('desktop', api)

@@ -814,7 +814,7 @@ export const strings = {
     setAiModelSearch: 'Search models…',
     setAiFastModelId: 'Fast model',
     setAiFastModelDesc:
-      'Used for background jobs like suggested follow-up questions. Leave empty to use the main model.',
+      'Used for background jobs like suggested follow-ups and chat history titles. Leave empty to use the main model.',
     setAiFastModelSame: 'Same as main model',
     setAiApiKey: 'API Key',
     setAiKeyHint: 'Stored only on this device.',
@@ -5301,7 +5301,7 @@ export const strings = {
     setAiModelId: 'Модель',
     setAiModelSearch: 'Поиск моделей…',
     setAiFastModelId: 'Быстрая модель',
-    setAiFastModelDesc: 'Используется для фоновых задач.',
+    setAiFastModelDesc: 'Для фоновых задач: подсказки продолжения, заголовки истории чатов. Пусто — как основная модель.',
     setAiFastModelSame: 'Как основная модель',
     setAiApiKey: 'API-ключ',
     setAiKeyHint: 'Хранится только на этом устройстве.',

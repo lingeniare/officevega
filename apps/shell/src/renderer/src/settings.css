@@ -1212,14 +1212,14 @@ html[data-design='retro'] .set-pane-actions .set-ai-status {
   margin-right: 0;
 }
 
-/* Строка бланка: линия отрыва вместо hairline */
+/* Строка бланка: без пунктира — чистые отступы */
 html[data-design='retro'] .set-field {
   display: flex;
   align-items: center;
   gap: 20px;
   min-height: 56px;
   padding: 12px 0;
-  border-bottom: 2px dashed var(--set-dash);
+  border-bottom: none;
 }
 
 html[data-design='retro'] .set-field:last-child {
@@ -1308,7 +1308,7 @@ html[data-design='retro'] .set-config-block {
   flex-direction: column;
   gap: 8px;
   padding: 12px 0;
-  border-bottom: 2px dashed var(--set-dash);
+  border-bottom: none;
 }
 
 html[data-design='retro'] .set-config-head {
@@ -1869,7 +1869,7 @@ html[data-design='retro'] .set-intg-warn {
 }
 
 html[data-design='retro'] .set-intg-row {
-  border-bottom: 2px dashed var(--set-dash);
+  border-bottom: none;
 }
 
 html[data-design='retro'] .set-intg-row .set-field {
@@ -1958,7 +1958,7 @@ html[data-design='retro'] .set-intg-option {
   align-items: center;
   gap: 12px;
   padding: 10px 0;
-  border-bottom: 2px dashed var(--set-dash);
+  border-bottom: none;
 }
 
 html[data-design='retro'] .set-intg-option:last-of-type {
@@ -2165,7 +2165,7 @@ html[data-design='retro'] .set-dialog :focus-visible {
 
 /* ── Дизайн «Цифровая ВЕГА» ──
  * По дизайн-системе api.vega.chat: neutral-палитра, emerald-акцент,
- * радиус 12px, стекло, жёсткие тени только при наведении.
+ * радиус 12px, стекло, мягкие тени и лёгкий лифт при наведении.
  * Применяется только при html[data-design='digital']. */
 
 html[data-design='digital'] .set-overlay {
@@ -2182,7 +2182,10 @@ html[data-design='digital'] .set-overlay {
   --dg-glass: rgba(255, 255, 255, 0.7);
   --dg-overlay: rgba(9, 9, 11, 0.35);
   --dg-pop: 0 24px 70px -12px rgba(9, 9, 11, 0.25);
-  --dg-hard: #000000;
+  --dg-lift: 0 12px 28px -12px rgba(9, 9, 11, 0.18);
+  --dg-lift-accent: 0 10px 24px -10px rgba(5, 150, 105, 0.45);
+  --dg-btn: 0 6px 16px -8px rgba(9, 9, 11, 0.18);
+  --dg-btn-danger: 0 6px 16px -8px rgba(220, 38, 38, 0.3);
   --dg-amber: #D97706;
   --dg-danger: #DC2626;
   --dg-danger-bg: rgba(220, 38, 38, 0.08);
@@ -2203,7 +2206,10 @@ html[data-design='digital'][data-theme='dark'] .set-overlay {
   --dg-glass: rgba(24, 24, 27, 0.55);
   --dg-overlay: rgba(0, 0, 0, 0.5);
   --dg-pop: 0 24px 70px -12px rgba(0, 0, 0, 0.6);
-  --dg-hard: #CBEEF3;
+  --dg-lift: 0 12px 28px -12px rgba(0, 0, 0, 0.6);
+  --dg-lift-accent: 0 10px 24px -10px rgba(52, 211, 153, 0.3);
+  --dg-btn: 0 6px 16px -8px rgba(0, 0, 0, 0.5);
+  --dg-btn-danger: 0 6px 16px -8px rgba(248, 113, 113, 0.3);
   --dg-amber: #FBBF24;
   --dg-danger: #F87171;
   --dg-danger-bg: rgba(248, 113, 113, 0.1);
@@ -2225,7 +2231,10 @@ html[data-design='digital'][data-theme='dark'] .set-overlay {
     --dg-glass: rgba(24, 24, 27, 0.55);
     --dg-overlay: rgba(0, 0, 0, 0.5);
     --dg-pop: 0 24px 70px -12px rgba(0, 0, 0, 0.6);
-    --dg-hard: #CBEEF3;
+    --dg-lift: 0 12px 28px -12px rgba(0, 0, 0, 0.6);
+    --dg-lift-accent: 0 10px 24px -10px rgba(52, 211, 153, 0.3);
+    --dg-btn: 0 6px 16px -8px rgba(0, 0, 0, 0.5);
+    --dg-btn-danger: 0 6px 16px -8px rgba(248, 113, 113, 0.3);
     --dg-amber: #FBBF24;
     --dg-danger: #F87171;
     --dg-danger-bg: rgba(248, 113, 113, 0.1);
@@ -2318,8 +2327,8 @@ html[data-design='digital'] .set-nav-item:hover:not(.active) {
   background: var(--dg-glow);
   color: var(--dg-accent);
   border-color: transparent;
-  transform: translate(-1px, -1px);
-  box-shadow: 4px 4px 0 var(--dg-accent);
+  transform: none;
+  box-shadow: none;
 }
 
 html[data-design='digital'] .set-nav-item.active {
@@ -2444,13 +2453,13 @@ html[data-design='digital'] .set-btn:hover {
   border-color: var(--dg-accent);
   background: var(--dg-glow);
   color: var(--dg-accent);
-  transform: translate(-1px, -1px);
-  box-shadow: 4px 4px 0 var(--dg-accent);
+  transform: translateY(-1px);
+  box-shadow: var(--dg-btn);
 }
 
 html[data-design='digital'] .set-btn:active {
-  transform: translateY(1px);
-  box-shadow: 2px 2px 0 var(--dg-accent);
+  transform: translateY(0);
+  box-shadow: none;
 }
 
 html[data-design='digital'] .set-btn:disabled {
@@ -2469,7 +2478,7 @@ html[data-design='digital'] .set-btn.primary:hover {
   color: var(--dg-accent-ink);
   border-color: transparent;
   transform: translateY(-1px);
-  box-shadow: 5px 5px 0 var(--dg-hard);
+  box-shadow: var(--dg-lift-accent);
 }
 
 html[data-design='digital'] .set-btn.danger {
@@ -2480,7 +2489,8 @@ html[data-design='digital'] .set-btn.danger:hover {
   background: var(--dg-danger-bg);
   border-color: var(--dg-danger);
   color: var(--dg-danger);
-  box-shadow: 4px 4px 0 var(--dg-danger);
+  transform: translateY(-1px);
+  box-shadow: var(--dg-btn-danger);
 }
 
 html[data-design='digital'] .set-lic-title {

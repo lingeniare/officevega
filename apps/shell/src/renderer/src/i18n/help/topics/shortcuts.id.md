@@ -25,7 +25,7 @@ Setiap editor punya pengikatan tombol sendiri, dan hanya sebagian yang berlaku d
 
 - Kolom macOS memakai simbol yang familier: `⌘` Command, `⌥` Option, `⇧` Shift, `⌃` Control.
 - Kolom Windows / Linux mengeja nama tombolnya: `Ctrl`, `Alt`, `Shift`.
-- Kalau GenOffice memang butuh tombol berbeda di dua platform, tabelnya menunjukkannya. Kasus yang umum adalah `⌃H` untuk Temukan & Ganti (macOS memakai `⌘H` untuk Sembunyikan), `⌥⌘G` untuk Ke, dan tombol tutup milik Slides.
+- Kalau OfficeVega memang butuh tombol berbeda di dua platform, tabelnya menunjukkannya. Kasus yang umum adalah `⌃H` untuk Temukan & Ganti (macOS memakai `⌘H` untuk Sembunyikan), `⌥⌘G` untuk Ke, dan tombol tutup milik Slides.
 - Pintasan yang hanya berlaku saat ada seleksi ditulis di kolom Tindakan, bukan diberi kolom sendiri, supaya tabelnya tetap lebar tiga kolom.
 
 ## Word
@@ -158,7 +158,7 @@ F1 membuka **Panduan Pengguna**, bukan daftar ini. Lembar pintasannya adalah `�
 
 ## Sheets
 
-GenOffice Sheets adalah kisi yang kompatibel dengan Excel. Sebagian besar pintasan di bawah ini adalah pintasan Excel yang sudah Anda kenal.
+OfficeVega Sheets adalah kisi yang kompatibel dengan Excel. Sebagian besar pintasan di bawah ini adalah pintasan Excel yang sudah Anda kenal.
 
 > **Penyuntingan menang.** Hampir semua pintasan di Sheets diabaikan selama Anda menyunting sel atau mengetik di **Bilah Rumus**, supaya mengetik, memindahkan caret, dan Backspace tetap bermakna penyuntingan teks biasa. Kalau sebuah tombol tidak melakukan apa pun, periksa apakah Anda sedang di tengah menyunting: tekan Esc atau Enter dulu, lalu coba lagi. Perintah yang bekerja pada seleksi juga tidak melakukan apa pun selama dialog terbuka. Di mana sebuah pintasan menjadi pengecualian terhadap aturan ini, tabel menyatakannya.
 
@@ -286,7 +286,7 @@ Pintasan filter milik Excel, Ctrl+Shift+L, tidak melakukan apa pun di Windows ma
 
 ## Slides
 
-GenOffice Slides adalah editor presentasi bergaya PowerPoint. Sebagian besar tombol melakukan hal yang sama di mana pun Anda berada, tetapi beberapa berubah makna mengikuti fokus — di dalam kotak teks, atau ketika **rel thumbnail**, **kerangka garis besar**, atau **penyusun slide** punya fokus papan tik. Kasus itu ditandai di kolom Tindakan.
+OfficeVega Slides adalah editor presentasi bergaya PowerPoint. Sebagian besar tombol melakukan hal yang sama di mana pun Anda berada, tetapi beberapa berubah makna mengikuti fokus — di dalam kotak teks, atau ketika **rel thumbnail**, **kerangka garis besar**, atau **penyusun slide** punya fokus papan tik. Kasus itu ditandai di kolom Tindakan.
 
 ### Berkas dan aplikasi
 
@@ -481,7 +481,7 @@ Escape membongkar satu lapisan setiap kali — lebih dulu dialog yang terbuka, l
 
 ## Markdown
 
-GenOffice Markdown menyunting Markdown dengan pratinjau langsung di sampingnya.
+OfficeVega Markdown menyunting Markdown dengan pratinjau langsung di sampingnya.
 
 ### Berkas dan tampilan
 
@@ -522,7 +522,7 @@ Menerapkan rumus kosong akan menghapus bloknya. Editor itu juga menutup pada per
 
 ## HTML
 
-GenOffice HTML menampilkan editor kode di samping pratinjau langsung. Tombol yang bekerja pada sebuah elemen halaman hanya berlaku ketika pratinjau itu sendiri yang punya fokus papan tik.
+OfficeVega HTML menampilkan editor kode di samping pratinjau langsung. Tombol yang bekerja pada sebuah elemen halaman hanya berlaku ketika pratinjau itu sendiri yang punya fokus papan tik.
 
 ### Berkas dan tampilan sumber
 

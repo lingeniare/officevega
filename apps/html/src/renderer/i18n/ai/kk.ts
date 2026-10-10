@@ -37,6 +37,13 @@ export const kk = {
   aiNetworkError:
     'Желі мәселесі: AI қызметіне қосылу мүмкін болмады. Байланысты тексеріп, әрекетті қайталаңыз',
   aiNewChat: 'Жаңа чат',
+  aiHistoryTitle: 'History',
+  aiHistorySearch: 'Search chats…',
+  aiHistoryEmpty: 'No chats yet',
+  aiHistoryLoading: 'Loading…',
+  aiHistoryCurrent: 'current',
+  aiHistoryVegaOnly:
+    'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiNoReply: '(жауап жоқ)',
   aiOverloadedError: 'AI қызметі қазір бос емес — біраздан соң қайталап көріңіз',
   aiRegenerateTitle: 'Қайта жасау',

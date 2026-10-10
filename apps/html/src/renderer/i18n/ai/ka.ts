@@ -36,6 +36,13 @@ export const ka = {
   aiNetworkError:
     'ქსელის პრობლემა: AI სერვისთან დაკავშირება ვერ მოხერხდა. შეამოწმეთ კავშირი და სცადეთ ხელახლა',
   aiNewChat: 'ახალი ჩატი',
+  aiHistoryTitle: 'History',
+  aiHistorySearch: 'Search chats…',
+  aiHistoryEmpty: 'No chats yet',
+  aiHistoryLoading: 'Loading…',
+  aiHistoryCurrent: 'current',
+  aiHistoryVegaOnly:
+    'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiNoReply: '(პასუხის გარეშე)',
   aiOverloadedError: 'AI სერვისი ამჟამად დატვირთულია — გთხოვთ, ცოტა ხანში სცადოთ ხელახლა',
   aiRegenerateTitle: 'ხელახლა შექმნა',

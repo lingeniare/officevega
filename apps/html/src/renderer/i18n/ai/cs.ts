@@ -36,6 +36,13 @@ export const cs = {
   aiNetworkError:
     'Problém se sítí: službu AI se nepodařilo kontaktovat. Zkontrolujte připojení a zkuste to znovu',
   aiNewChat: 'Nový chat',
+  aiHistoryTitle: 'History',
+  aiHistorySearch: 'Search chats…',
+  aiHistoryEmpty: 'No chats yet',
+  aiHistoryLoading: 'Loading…',
+  aiHistoryCurrent: 'current',
+  aiHistoryVegaOnly:
+    'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiNoReply: '(bez odpovědi)',
   aiOverloadedError: 'Služba AI je právě zaneprázdněná — zkuste to prosím za chvíli',
   aiRegenerateTitle: 'Vygenerovat znovu',

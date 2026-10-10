@@ -14,6 +14,7 @@ import '@genoffice/ui/ai-panel-prefs.css'
 import '@genoffice/ui/ai-scope-quote.css'
 import './styles.css'
 import '@genoffice/ui/ai-chat.css'
+import '@genoffice/ui/ai-history-menu.css'
 import '@genoffice/ui/cup-skin.css'
 import { applyAiPanelPrefs, installScreenTips } from '@genoffice/ui'
 
@@ -33,7 +34,7 @@ void (async () => {
   const [lang, theme, design] = await Promise.all([
     window.pdfApi.getLanguage().catch(() => 'zh' as const),
     window.pdfApi.getTheme().catch(() => 'system' as const),
-    window.pdfApi.getDesign().catch(() => 'standard' as const),
+    window.pdfApi.getDesign().catch(() => 'digital' as const),
   ])
   document.documentElement.lang = htmlLang(lang as Lang)
   document.documentElement.dir = htmlDir(lang)

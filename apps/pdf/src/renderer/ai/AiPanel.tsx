@@ -1,7 +1,7 @@
 import { aiPanelWidthAtPointer, AiModelPicker, type AiModelPickerBridge } from '@genoffice/ui'
 import { useEffect, useRef, useState } from 'react'
 import type { PointerEvent as ReactPointerEvent, ReactElement } from 'react'
-import { AgentLoop, generateSuggestedQuestions, withPiiTokenGuard } from '@genoffice/agent-core'
+import { AgentLoop, fallbackChatTitle, generateChatTitle, generateSuggestedQuestions, withPiiTokenGuard } from '@genoffice/agent-core'
 import {
   imageGenerationAvailable,
   piiShieldMayApply,
@@ -11,11 +11,14 @@ import {
 } from '@genoffice/ai-provider/browser'
 import {
   AiComposer,
+  AiHistoryButton,
+  AiHistoryMenu,
   AiScopeQuote,
   AiSuggestedQuestions,
   AiTypingIndicator,
   IconPlus,
   useSuggestedQuestions,
+  type AiHistoryItem,
   type AiScopeQuoteData,
 } from '@genoffice/ui'
 import { aiLangDirective, t as tGlobal, useI18n } from '../i18n/locale'
@@ -160,6 +163,31 @@ export function AiPanel({
             tempChatId: string
             newFilePath: string
           }): Promise<{ projectId: string; chatId: string } | null>
+          beginNewChatSession(args: { filePath: string }): Promise<{
+            projectId: string
+            chatId: string
+          }>
+          listChatSessions(args: {
+            projectId?: string
+            query?: string
+            limit?: number
+          }): Promise<
+            Array<{
+              projectId: string
+              chatId: string
+              title: string
+              preview: string
+              fileName: string
+              updatedAt: string
+            }>
+          >
+          setChatTitle(args: {
+            projectId: string
+            chatId: string
+            title?: string
+            preview?: string
+            provider?: string
+          }): Promise<void>
         }
       }
     ).projectApi
@@ -333,6 +361,147 @@ export function AiPanel({
       signal,
     })
   })
+
+  // ── Chat-history menu ─────────────────────────────────────────────────
+  /** stored JSONL messages → panel entries (same mapping as the initial load) */
+  type StoredChatMessages = Array<{
+    role: 'user' | 'assistant'
+    text: string
+    tools?: Array<{ name: string; summary: string; isError?: boolean; output?: string }>
+    scope?: AiScopeQuoteData
+  }>
+  const toChatEntries = (msgs: StoredChatMessages): ChatEntry[] =>
+    msgs.map((m) => ({
+      role: m.role,
+      text: m.text,
+      tools: m.tools?.map((tool) => ({
+        name: tool.name,
+        summary: localizedToolSummary(tool.name, tool.summary),
+        isError: tool.isError,
+        output: tool.output,
+      })),
+      ...(m.scope ? { scope: m.scope } : {}),
+    }))
+
+  /** chat-history menu state */
+  const [historyOpen, setHistoryOpen] = useState(false)
+  const [historyItems, setHistoryItems] = useState<AiHistoryItem[]>([])
+  const [historyLoading, setHistoryLoading] = useState(false)
+  const [historyQuery, setHistoryQuery] = useState('')
+  /** chatIds already given a title this session (one title per chat) */
+  const titledChatsRef = useRef(new Set<string>())
+  /** effective VEGA check: history sessions + titles are written for VEGA chats only */
+  const isVegaHistory = aiProvider === 'vega'
+
+  const loadHistory = (query: string) => {
+    const store = chatStore()
+    if (!store?.listChatSessions) return
+    setHistoryLoading(true)
+    const current = chatIdsRef.current
+    void store
+      .listChatSessions({ query: query || undefined, limit: 50 })
+      .then((sessions) => {
+        setHistoryItems(
+          sessions.map((s) => ({
+            projectId: s.projectId,
+            chatId: s.chatId,
+            title: s.title,
+            preview: s.preview,
+            fileName: s.fileName,
+            updatedAt: s.updatedAt,
+            current: current?.projectId === s.projectId && current?.chatId === s.chatId,
+          })),
+        )
+      })
+      .catch(() => {
+        setHistoryItems([])
+      })
+      .finally(() => {
+        setHistoryLoading(false)
+      })
+  }
+
+  // debounced search while the menu is open; an immediate load on open
+  useEffect(() => {
+    if (!historyOpen) return
+    loadHistory(historyQuery)
+    const timer = window.setTimeout(() => loadHistory(historyQuery), 300)
+    return () => window.clearTimeout(timer)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [historyOpen, historyQuery])
+
+  const openHistory = () => {
+    setHistoryOpen(true)
+    loadHistory(historyQuery)
+  }
+
+  /** jump to a history session: loads its transcript and continues there */
+  const selectHistorySession = (item: AiHistoryItem) => {
+    const store = chatStore()
+    if (!store) return
+    stop()
+    confirmRef.current?.settle(false)
+    loopRef.current?.reset()
+    suggestTransportRef.current?.resetSession?.()
+    suggested.clear()
+    setBusy(false)
+    setChat([])
+    setHistoryOpen(false)
+    chatIdsRef.current = { projectId: item.projectId, chatId: item.chatId }
+    titledChatsRef.current.add(`${item.projectId}:${item.chatId}`)
+    void store
+      .loadChat({ projectId: item.projectId, chatId: item.chatId, limit: 200 })
+      .then((msgs) => {
+        setChat(toChatEntries(msgs))
+        loopRef.current?.restore(msgs.map((m) => ({ role: m.role, text: m.text })))
+      })
+      .catch(() => {
+        setChat([])
+      })
+    inputRef.current?.focus()
+  }
+
+  /**
+   * Writes the chat's title sidecar once per chat: an instant fallback title
+   * from the first user message, then upgraded by the fast model (VEGA only).
+   */
+  const ensureChatTitle = (userText: string, assistantText: string) => {
+    const ids = chatIdsRef.current
+    const store = chatStore()
+    if (!ids || !store?.setChatTitle) return
+    const key = `${ids.projectId}:${ids.chatId}`
+    if (titledChatsRef.current.has(key)) return
+    titledChatsRef.current.add(key)
+    if (settingsRef.current?.provider !== 'vega') return
+    const preview = userText.slice(0, 120)
+    void store
+      .setChatTitle({
+        projectId: ids.projectId,
+        chatId: ids.chatId,
+        title: fallbackChatTitle(userText),
+        preview,
+        provider: 'vega',
+      })
+      .catch(() => {
+        /* silent */
+      })
+    const transport = suggestTransportRef.current
+    if (!transport) return
+    void generateChatTitle({
+      transport,
+      user: userText,
+      assistant: assistantText,
+      langDirective: aiLangDirective(langRef.current),
+    })
+      .then((title) => {
+        if (!title) return
+        return store.setChatTitle({ projectId: ids.projectId, chatId: ids.chatId, title })
+      })
+      .catch(() => {
+        /* the fallback title stays */
+      })
+  }
+
   const apiRef = useRef(api)
   apiRef.current = api
   const onRunDoneRef = useRef(onRunDone)
@@ -499,6 +668,8 @@ export function AiPanel({
           } else {
             segTextRef.current = final || segTextRef.current
             persistRun()
+            // first completed exchange of a chat gets its history title (VEGA only)
+            if (final) ensureChatTitle(lastInstructionRef.current, final)
           }
           patchLast((last) => ({
             streaming: false,
@@ -587,6 +758,38 @@ export function AiPanel({
   }
 
   const stop = (): void => loopRef.current?.cancel()
+
+  const newChat = (): void => {
+    stop()
+    confirmRef.current?.settle(false)
+    loopRef.current?.reset()
+    // the suggestions transport owns no loop, so its session id is reset here
+    suggestTransportRef.current?.resetSession?.()
+    suggested.clear()
+    setBusy(false)
+    setChat([])
+    setHistoryOpen(false)
+    // VEGA chats start a fresh session so the previous one stays in history;
+    // other providers keep the legacy behavior (same chatId, UI-only reset).
+    const store = chatStore()
+    if (settingsRef.current?.provider === 'vega' && store?.beginNewChatSession && filePath) {
+      void store
+        .beginNewChatSession({ filePath })
+        .then((r) => {
+          chatIdsRef.current = r
+        })
+        .catch(() => {
+          /* silent */
+        })
+    } else if (settingsRef.current?.provider === 'vega' && !filePath) {
+      const ids = chatIdsRef.current
+      chatIdsRef.current = {
+        projectId: ids?.projectId ?? 'default',
+        chatId: `unsaved-${Date.now()}`,
+      }
+    }
+    inputRef.current?.focus()
+  }
 
   // One-click AI actions from the ribbon / Ask popover; while a run is active the
   // preset lands in the composer instead of being dropped silently (markdown parity)
@@ -694,17 +897,32 @@ export function AiPanel({
       <header className="ai-panel-header">
         <span className="ai-panel-title">{lang === 'ru' ? 'ВЕГА' : 'VEGA'}</span>
         <div className="ai-panel-header-actions">
+          <AiHistoryMenu
+            open={historyOpen}
+            onClose={() => setHistoryOpen(false)}
+            items={historyItems}
+            loading={historyLoading}
+            query={historyQuery}
+            onQueryChange={setHistoryQuery}
+            onSelect={selectHistorySession}
+            onNewChat={newChat}
+            disabledReason={isVegaHistory ? null : 'vega-only'}
+            strings={{
+              menuTitle: t('aiHistoryTitle'),
+              searchPlaceholder: t('aiHistorySearch'),
+              empty: t('aiHistoryEmpty'),
+              loading: t('aiHistoryLoading'),
+              newChat: t('aiNewChat'),
+              currentBadge: t('aiHistoryCurrent'),
+              vegaOnlyNote: t('aiHistoryVegaOnly'),
+            }}
+            buttonLabel={t('aiHistoryTitle')}
+            trigger={<AiHistoryButton label={t('aiHistoryTitle')} onClick={openHistory} />}
+          />
           {chat.length > 0 && (
             <button
               className="ai-header-btn"
-              onClick={() => {
-                stop()
-                loopRef.current?.reset()
-                suggestTransportRef.current?.resetSession?.()
-                suggested.clear()
-                setBusy(false)
-                setChat([])
-              }}
+              onClick={newChat}
               data-tip={t('aiNewChat')}
               aria-label={t('aiNewChat')}
             >

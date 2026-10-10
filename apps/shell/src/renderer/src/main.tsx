@@ -27,7 +27,7 @@ void Promise.all([
   // if the flag is unreadable, skip onboarding rather than block the home screen
   window.aiOffice.onboardingSeen().catch(() => true),
   window.aiOffice.getTheme().catch(() => 'system' as const),
-  window.aiOffice.getDesign().catch(() => 'standard' as const),
+  window.aiOffice.getDesign().catch(() => 'digital' as const),
 ]).then(([lang, onboardingSeen, theme, design]) => {
   document.documentElement.lang = htmlLang(lang)
   document.documentElement.dir = htmlDir(lang)
@@ -35,8 +35,8 @@ void Promise.all([
   if (theme !== 'system') {
     document.documentElement.setAttribute('data-theme', theme)
   }
-  if (design === 'retro') {
-    document.documentElement.setAttribute('data-design', 'retro')
+  if (design !== 'standard') {
+    document.documentElement.setAttribute('data-design', design)
   }
   window.aiOffice.onThemeChanged((next) => {
     if (next === 'system') document.documentElement.removeAttribute('data-theme')

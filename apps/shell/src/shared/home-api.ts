@@ -50,7 +50,7 @@ export type UiLanguage =
 /** UI theme preference */
 export type UiTheme = 'light' | 'dark' | 'system'
 
-/** UI design (skin) preference: 'standard', retro 'Ретро ВЕГА', digital 'Цифровая ВЕГА' */
+/** UI design (skin) preference: digital 'Цифровая ВЕГА' (default), retro 'Ретро ВЕГА', 'standard' */
 export type UiDesign = 'standard' | 'retro' | 'digital'
 
 /**

@@ -17,6 +17,7 @@ import '@genoffice/ui/ai-scope-quote.css'
 import '@genoffice/ui/image-dialogs.css'
 import './styles.css'
 import '@genoffice/ui/ai-chat.css'
+import '@genoffice/ui/ai-history-menu.css'
 import '@genoffice/ui/cup-skin.css'
 
 installScreenTips()
@@ -35,7 +36,7 @@ void (async () => {
   const [lang, theme, design] = await Promise.all([
     window.htmlApi.getLanguage().catch(() => 'zh' as const),
     window.htmlApi.getTheme().catch(() => 'system' as const),
-    window.htmlApi.getDesign().catch(() => 'standard' as const),
+    window.htmlApi.getDesign().catch(() => 'digital' as const),
   ])
   document.documentElement.lang = htmlLang(lang as Lang)
   document.documentElement.dir = htmlDir(lang)

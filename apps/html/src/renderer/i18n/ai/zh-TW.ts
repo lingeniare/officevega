@@ -30,6 +30,13 @@ export const zhTW = {
   aiHintIdle: 'Enter 傳送，Shift+Enter 換行',
   aiNetworkError: '網路有問題，無法連接 AI 服務。請檢查網路後重試',
   aiNewChat: '新對話',
+  aiHistoryTitle: 'History',
+  aiHistorySearch: 'Search chats…',
+  aiHistoryEmpty: 'No chats yet',
+  aiHistoryLoading: 'Loading…',
+  aiHistoryCurrent: 'current',
+  aiHistoryVegaOnly:
+    'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiNoReply: '（無回覆）',
   aiOverloadedError: 'AI 服務目前繁忙，請稍後重試',
   aiRegenerateTitle: '重新產生',

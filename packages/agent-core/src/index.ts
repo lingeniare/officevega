@@ -43,6 +43,13 @@ export { streamText } from './stream-text'
 export type { StreamTextOptions, StreamTextOutcome } from './stream-text'
 export { generateSuggestedQuestions, parseSuggestedQuestions } from './suggest'
 export type { SuggestAppKind, SuggestQuestionsInput } from './suggest'
+export {
+  CHAT_TITLE_MAX_CHARS,
+  fallbackChatTitle,
+  generateChatTitle,
+  parseChatTitle,
+} from './chat-title'
+export type { GenerateChatTitleInput } from './chat-title'
 export { createToolCallMarkupStripper } from './tool-markup'
 export type { ToolMarkupStripper } from './tool-markup'
 export type { IpcStreamChunk, IpcStreamStart, IpcTransportOptions } from './electron-transport'

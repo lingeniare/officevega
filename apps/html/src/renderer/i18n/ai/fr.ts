@@ -36,6 +36,13 @@ export const fr = {
   aiNetworkError:
     'Problème réseau : impossible de joindre le service IA. Vérifiez votre connexion et réessayez',
   aiNewChat: 'Nouvelle conversation',
+  aiHistoryTitle: 'History',
+  aiHistorySearch: 'Search chats…',
+  aiHistoryEmpty: 'No chats yet',
+  aiHistoryLoading: 'Loading…',
+  aiHistoryCurrent: 'current',
+  aiHistoryVegaOnly:
+    'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiNoReply: '(aucune réponse)',
   aiOverloadedError: "Le service d'IA est actuellement surchargé — réessayez dans un instant",
   aiRegenerateTitle: 'Régénérer',

@@ -265,6 +265,67 @@ const GLM_SIZES: Record<string, string> = {
 /** Seedream takes the aspect ratio itself as `size` (resolution defaults to 2K) */
 const ARK_RATIOS = new Set(['1:1', '3:4', '4:3', '9:16', '16:9', '2:3', '3:2', '21:9'])
 
+/**
+ * VEGA (api.vega.chat) is an OpenRouter-compatible gateway: `aspect_ratio`
+ * is validated against a strict enum (Zod `invalid_value` 400 otherwise).
+ * Values per https://www.openrouter.ai/docs/api/api-reference/images/generate-an-image
+ */
+const VEGA_ASPECT_RATIOS = new Set([
+  '1:1',
+  '1:2',
+  '1:4',
+  '1:8',
+  '2:1',
+  '2:3',
+  '2.35:1',
+  '3:2',
+  '3:4',
+  '4:1',
+  '4:3',
+  '4:5',
+  '5:2',
+  '5:4',
+  '5:7',
+  '7:5',
+  '8:1',
+  '9:16',
+  '16:9',
+  '9:19.5',
+  '19.5:9',
+  '9:20',
+  '20:9',
+  '9:21',
+  '21:9',
+])
+
+/**
+ * Normalize a free-form LLM ratio into the VEGA enum. Returns undefined for
+ * anything unsupported (including 'auto'/empty) so the caller omits the
+ * field and the provider picks its default instead of answering 400.
+ */
+export function normalizeVegaAspectRatio(raw: string | undefined): string | undefined {
+  if (!raw) return undefined
+  let s = raw.trim().toLowerCase()
+  if (!s || s === 'auto' || s === 'default' || s === 'none') return undefined
+  const aliases: Record<string, string> = {
+    square: '1:1',
+    portrait: '9:16',
+    landscape: '16:9',
+    widescreen: '16:9',
+    cinematic: '2.35:1',
+    cinema: '2.35:1',
+  }
+  if (aliases[s]) return aliases[s]
+  // unify separators: 16x9, 16/9, 16*9, 16-9, 16|9, 16 9 -> 16:9
+  s = s
+    .replace(/[,，]/g, '.')
+    .replace(/[x×х\*\/\\\|\-–—\s]+/g, ':')
+    .replace(/:{2,}/g, ':')
+    .replace(/^:+|:+$/g, '')
+  if (VEGA_ASPECT_RATIOS.has(s)) return s
+  return undefined
+}
+
 interface OpenAiImagesStyle {
   size(aspectRatio: string | undefined): string | undefined
   /** the body's size field name ('size' for OpenAI-style vendors, 'aspect_ratio' for OpenRouter-style gateways) */
@@ -283,7 +344,7 @@ function openAiImagesStyle(provider: ByokMediaProviderId): OpenAiImagesStyle {
       // OpenRouter images shape: aspect_ratio as-is, reference images as
       // input_references parts, bytes back via b64_json (verified live)
       return {
-        size: (r) => (r && r !== 'auto' ? r : undefined),
+        size: (r) => normalizeVegaAspectRatio(r),
         sizeField: 'aspect_ratio',
         bodyExtras: { response_format: 'b64_json' },
         edits: 'inline',

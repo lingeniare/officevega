@@ -32,7 +32,7 @@ afterEach(() => {
 function mockApi(overrides: Partial<HomeApi> = {}): HomeApi {
   return {
     getTheme: async () => 'system',
-    getDesign: async () => 'standard',
+    getDesign: async () => 'digital',
     setDesign: vi.fn<(design: 'standard' | 'retro' | 'digital') => Promise<void>>().mockResolvedValue(undefined),
     getDefaultSaveDir: async () => '',
     getAutoSaveDefault: async () => ({ on: false, updatedAt: 0 }),
@@ -164,7 +164,7 @@ describe('Settings design picker', () => {
       await Promise.resolve()
     })
     const items = Array.from(host.querySelectorAll<HTMLButtonElement>('.gs-dd-item'))
-    expect(items.map((i) => i.dataset.value)).toEqual(['standard', 'retro', 'digital'])
+    expect(items.map((i) => i.dataset.value)).toEqual(['digital', 'retro', 'standard'])
 
     const option = host.querySelector<HTMLButtonElement>('.gs-dd-item[data-value="digital"]')!
     expect(option.textContent).toBe('Digital VEGA')

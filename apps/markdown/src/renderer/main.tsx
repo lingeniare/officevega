@@ -16,6 +16,7 @@ import '@genoffice/ui/image-viewer.css'
 import 'katex/dist/katex.min.css'
 import './styles.css'
 import '@genoffice/ui/ai-chat.css'
+import '@genoffice/ui/ai-history-menu.css'
 import '@genoffice/ui/cup-skin.css'
 import { applyAiPanelPrefs, installScreenTips } from '@genoffice/ui'
 
@@ -41,7 +42,7 @@ void (async () => {
   const [lang, theme, design, docTheme] = await Promise.all([
     window.markdownApi.getLanguage().catch(() => 'zh' as const),
     window.markdownApi.getTheme().catch(() => 'system' as const),
-    window.markdownApi.getDesign().catch(() => 'standard' as const),
+    window.markdownApi.getDesign().catch(() => 'digital' as const),
     window.markdownApi.getDocumentTheme?.().catch(() => 'follow' as const),
   ])
   document.documentElement.lang = htmlLang(lang as Lang)

@@ -2,68 +2,72 @@
 
 ## Membuka tetapan
 
-Baris akaun di penjuru kiri bawah pada Laman Utama akan membuka panel tetapan. Ia memaparkan Log masuk apabila anda belum log masuk. Panel ini mempunyai enam bahagian: Akaun, Model AI, Media & Carian AI, Umum, Integrasi dan Perihal.
+Baris akaun di penjuru kiri bawah pada Home membuka panel tetapan. Ia memaparkan Sign in apabila anda belum log masuk. Panel ini mempunyai enam bahagian: Account, AI Model, AI Media & Search, General, Integrations dan About.
 
-![Tetapan ▸ Umum, tempat bahasa, tema, autosimpan dan suis statistik penggunaan berada](img/settings-general.png)
+![Tetapan ▸ General, tempat bahasa, tema, AutoSave dan suis statistik penggunaan berada](img/settings-general.png)
 
-Konfigurasi model mempunyai babnya sendiri; dalam **Media & Carian AI** anda menghidupkan penjanaan imej, analisis imej, analisis video, carian web dan carian fail tempatan bagi setiap pembekal.
+Konfigurasi model mempunyai babnya sendiri; dalam **AI Media & Search** anda menghidupkan penjanaan imej, analisis imej, analisis video, carian web dan carian fail setempat bagi setiap pembekal.
 
 ## Bahasa
 
-- Tetapan menawarkan **21 bahasa antara muka**: Inggeris, Cina ringkas, Jepun, Korea, Perancis, Jerman, Sepanyol, Thai, Indonesia, Rusia, Arab, Portugis, Itali, Poland, Czech, Belanda, Melayu, Ibrani, Hindi, Cina tradisional, dan Vietnam.
-- Pertukaran bahasa berkuat kuasa serta-merta dan kekal, manakala bar menu sistem dibina semula dalam bahasa baharu itu.
+- Tetapan menawarkan **21 bahasa antara muka**: Inggeris, Cina ringkas, Jepun, Korea, Perancis, Jerman, Sepanyol, Thai, Indonesia, Rusia, Arab, Portugis, Itali, Poland, Czech, Belanda, Melayu, Ibrani, Hindi, Cina tradisional dan Vietnam.
+- Pertukaran berkuat kuasa serta-merta dan kekal; bar menu asal dibina semula dalam bahasa baharu.
 
 ## Tema
 
-Tiga pilihan ialah Cerah, Gelap, dan Ikut Sistem. Mod Ikut Sistem mengikut rupa sistem pengendalian, dan editor akan mengubah warnanya mengikut tema itu tanpa kelip.
+Cerah / Gelap / Ikut sistem. Pilihan Ikut sistem mengikut rupa sistem pengendalian, dan editor bertukar mengikutnya tanpa berkelip. Suis yang sama juga menukar warna panel AI dan skrin Home, supaya seluruh aplikasi kekal dalam satu reka bentuk: pilih Cerah untuk bilik yang terang, Gelap untuk kerja malam, dan Ikut sistem untuk mengikut Windows.
 
 ## Umum
 
-- **Hantar statistik penggunaan tanpa nama** — diaktifkan secara lalai. Menggunakan Google Analytics 4 dan menghantar IP awam serta metadata pengangkutan anda; kandungan dokumen dan nama fail tidak pernah dikumpulkan, dan setiap peristiwa hanya membawa satu jenis seperti "membuka .docx". Anda boleh mematikannya di sini pada bila-bila masa.
-- **Kedudukan bar sisi AI** (kiri atau kanan), **Saiz teks panel AI** dan **Semakan ejaan dalam sembang AI**.
-- **Buka panel AI dalam dokumen baharu** — dimatikan, dokumen baharu bermula dengan panel tertutup, sekali klik sahaja.
-- **Simpan automatik semua dokumen** membolehkan AutoSave secara lalai dalam setiap editor; anda masih boleh mematikannya untuk satu tetingkap sahaja.
-- **Lokasi simpanan** dengan butang **Tukar**, dan **Apl lalai untuk dokumen Office** untuk menuntut .docx / .xlsx / .pptx bagi GenOffice.
+- **Tiada analitik penjejakan**: OfficeVega dihantar tanpa Google Analytics atau mana-mana penjejak pihak ketiga — kandungan dokumen, nama fail dan peristiwa penggunaan tidak pernah dikumpulkan atau dihantar ke mana-mana.
+- **Kedudukan bar sisi AI** (kiri atau kanan), **Saiz teks panel AI**, dan **Semakan ejaan dalam sembang AI**.
+- **Buka panel AI dalam dokumen baharu** — dimatikan: dokumen baharu bermula dengan panel tertutup, sekali klik sahaja.
+- **Simpan automatik semua dokumen** mendayakan AutoSave secara lalai dalam setiap editor; anda masih boleh mematikannya untuk satu tetingkap.
+- **Lokasi simpanan** dengan butang **Change**, dan **Default app for Office documents** untuk menjadikan OfficeVega pengendali fail .docx / .xlsx / .pptx.
 
-## Media & Carian AI
+## AI Media & Search
 
-Ia bukan suis — setiap keupayaan memilih pembekal yang menyediakannya, dan kunci serta URL asas setiap pembekal dimasukkan sekali sahaja lalu dikongsi bersama:
+Ini bukan suis — setiap keupayaan memilih pembekal yang menyediakannya, dan kunci serta URL asas pembekal dimasukkan sekali sahaja lalu dikongsi:
 
-- **Carian web**, **Penjanaan imej**, **Analisis imej** dan **Analisis video**, setiap satu dengan pembekal, model, kunci dan URL asas.
-- **Carian fail tempatan** dijalankan pada mesin ini. Di bawahnya terdapat **Susunan semula Jev** yang **dimatikan secara lalai**. Hidupkannya dan petikan 20 hasil tempatan teratas — sehingga 1,200 aksara daripada setiap dokumen, berserta nama fail dan folder — dihantar ke model Jev TypeSafe untuk disusun semula mengikut kaitan. Jika ia dimatikan, tiada apa-apa meninggalkan peranti.
+- **Web search**, **Image generation**, **Image analysis** dan **Video analysis**, setiap satu dengan pembekal, model, kunci dan URL asas. Pilih **VEGA** sebagai pembekal untuk menghalakannya melalui `api.vega.chat` menggunakan kunci log masuk anda.
+- **Local file search** berjalan pada mesin ini. Di bawahnya terdapat **Jev search reranking**, yang **dimatikan secara lalai**. Apabila dihidupkan, petikan daripada 20 hasil setempat teratas — sehingga 1,200 aksara daripada setiap dokumen, berserta nama fail dan folder — dihantar ke model Jev oleh TypeSafe untuk disusun semula mengikut kaitan. Apabila dimatikan, tiada apa yang meninggalkan peranti.
 
 ## Perihal
 
-- **Versi**, pautan GitHub projek dan butang **Beri Bintang di GitHub**.
-- **Saluran Kemas Kini**: Stabil atau Beta. Menukarnya berkuat kuasa serta-merta dan akan menyemak kemas kini; ia tidak akan menurunkan pemasangan Beta kembali ke Stabil.
+- **Version**, laman projek [officevega.com](https://officevega.com) dan halaman keluaran [officevega.com/releases](https://officevega.com/releases).
+- **Update Channel**: Stable atau Beta. Menukarnya berkuat kuasa serta-merta dan menyemak kemas kini; ia tidak akan menurunkan pemasangan Beta kembali ke Stable.
 
 ## Penetapan sebagai aplikasi lalai
 
-Tetapan boleh mendaftar GenOffice sebagai aplikasi yang mengendalikan fail .docx, .xlsx, .pptx, .pdf, dan yang lain. Pendaftaran ini dilakukan pada peringkat sistem, dan pengesahan diperlukan apabila diminta.
+Tetapan boleh mendaftarkan OfficeVega sebagai pengendali fail .docx / .xlsx / .pptx / .pdf dan yang serupa (pendaftaran aplikasi lalai pada peringkat sistem; sahkan apabila diminta).
 
 ## Notis perisian pihak ketiga dan kemas kini
 
-- Bantuan ▸ Notis Perisian Pihak Kedua memaparkan senarai penuh lesen perisian sumber terbuka yang disertakan dengan aplikasi.
-- Bantuan ▸ Semak Kemas Kini memulakan pemeriksaan secara manual. Jika terdapat versi yang lebih baharu, aplikasi akan meminta anda memasangnya.
+- Bantuan ▸ Third-party notices: senarai penuh lesen perisian sumber terbuka yang disertakan dengan aplikasi.
+- Bantuan ▸ Check for updates: memulakan semakan manual; versi yang lebih baharu akan meminta anda memasangnya.
 
-## Log masuk ke Genspark
+## Log masuk ke VEGA
 
-- Kemasukan log masuk, sama ada melalui tetapan atau senarai projek awan, menggunakan aliran **kod peranti**. GenOffice memaparkan kod tersebut dan membuka halaman log masuk dalam pelayar, dan aliran ini akan diteruskan secara automatik selepas selesai.
-- Log masuk hanya digunakan untuk dua perkara, iaitu senarai projek awan dan model yang dihoskan oleh Genspark. Tanpa log masuk, setiap fungsi setempat dan model tersuai akan terus berfungsi.
-- Log keluar boleh dilakukan dengan satu klik dalam tetapan.
+- Pintu log masuk (dalam tetapan atau senarai projek awan) menggunakan aliran **kod peranti**: OfficeVega memaparkan kod dan membuka halaman log masuk dalam pelayar; ia akan meneruskan secara automatik selepas selesai.
+- Log masuk hanya digunakan untuk senarai projek awan dan model VEGA yang dihoskan di `api.vega.chat`. Tanpa log masuk, semua fungsi setempat dan model tersuai terus berfungsi.
+- Log keluar ialah satu klik dalam tetapan.
 
-## Integrasi MCP
+## Sokongan
 
-**Integrasi** ialah panel yang menyambungkan GenOffice kepada ejen penulisan kod, dan ia ada babnya sendiri: Menyambungkan ejen penulisan kod. Versi ringkas — pilih satu laluan (baris arahan, atau MCP), ikut bahagian itu, kemudian mulakan sembang baharu dan bertanya.
+Soalan, idea dan laporan pepijat: [officevega.com/feedback](https://officevega.com/feedback), saluran Telegram [t.me/getmyai](https://t.me/getmyai), e-mel [mail@vega.chat](mailto:mail@vega.chat). Pembangun: [getmyai.io](https://getmyai.io) (Dmitry Filippov).
 
-![Tetapan ▸ Integrasi: tiga langkah, kemudian baris kemahiran dan pilihan MCP](img/settings-integrations.png)
+## Integrasi MCP (untuk pengguna mahir / klien AI)
 
-Di bawah **Pelayan HTTP tempatan**, aplikasi ini juga boleh menjalankan pelayan itu sendiri — suis pendayakan dan port — dan **Lanjutan** menambah URL semakan kesihatan serta fail log, dan bukannya meninggalkannya kepada pembantu. Ia hanya mendengarkan pada localhost.
+**Integrations** ialah panel yang menyambungkan OfficeVega kepada ejen pengekodan, dan ia mempunyai artikelnya sendiri: Menyambungkan ejen pengekodan. Ringkasnya — pilih laluan (baris arahan, atau MCP), ikuti bahagian itu, kemudian mulakan sembang baharu dan bertanya.
+
+![Tetapan ▸ Integrations: tiga langkah, kemudian baris kemahiran dan pilihan MCP](img/settings-integrations.png)
+
+Di bawah **Local HTTP server**, aplikasi boleh menjalankan pelayan itu sendiri — suis dayakan dan port — dan **Advanced** menambah URL semakan kesihatan serta fail log, bukannya membiarkannya kepada pembantu. Ia hanya mendengar pada localhost.
 
 ## Ringkasan baris arahan
 
-| Perintah           | Fungsinya                             |
+| Arahan             | Fungsinya                             |
 | ------------------ | ------------------------------------- |
-| `genoffice <fail>` | membuka fail                          |
-| `genoffice mcp`    | memulakan pelayan MCP tempatan        |
-| `genoffice --help` | memaparkan semua perintah dan pilihan |
+| `officevega <file>` | membuka fail                         |
+| `officevega mcp`    | memulakan pelayan MCP setempat       |
+| `officevega --help` | memaparkan semua arahan dan pilihan  |

@@ -1,6 +1,6 @@
 # La schermata Home: dove si trovano i tuoi file
 
-Home è la pagina iniziale di GenOffice: una barra di navigazione a sinistra, elenchi di file e schede di creazione rapida a destra.
+Home è la pagina iniziale di OfficeVega: una barra di navigazione a sinistra, elenchi di file e schede di creazione rapida a destra.
 
 ![La schermata Home](img/home-screen.png)
 
@@ -9,7 +9,7 @@ Home è la pagina iniziale di GenOffice: una barra di navigazione a sinistra, el
 - **Recenti**: i file che hai aperto di recente. Ogni riga è datata — oggi, ieri o la data.
 - **Preferiti**: i file che hai messo tra i preferiti. Passa il puntatore su una riga di file e fai clic sulla stella per aggiungerlo o rimuoverlo.
 - **Guida dell’utente**: apre questa guida.
-- **Genspark Projects**: dopo aver effettuato l'accesso al tuo account Genspark, mostra i progetti che hai creato sul web con Genspark AI; fai clic su uno per continuare a modificarlo nel browser. Sono disponibili ricerca, ordinamento per data, aggiornamento e caricamento di altri elementi.
+- **VEGA Projects**: dopo aver effettuato l'accesso al tuo account VEGA, mostra i progetti che hai creato sul web con VEGA AI; fai clic su uno per continuare a modificarlo nel browser. Sono disponibili ricerca, ordinamento per data, aggiornamento e caricamento di altri elementi.
 - **Cartelle**: le directory che aggiungi alla barra laterale con **Aggiungi cartella…**, oppure che ci trascini dal gestore di file. Ognuna diventa una radice che puoi aprire, riempire di sottocartelle, rinominare e rimuovere; una radice che va offline viene mostrata come non disponibile e può essere tolta dall'elenco. **Nuova cartella** ne crea un'altra.
 
 Qui non c’è alcuna voce Cestino. I file eliminati finiscono nel cestino di sistema, e recuperarli è compito del sistema operativo.
@@ -36,7 +36,7 @@ Spunta la casella di una riga, o fai ⌘/ctrl-clic, per comporre una selezione; 
 La casella di ricerca in alto filtra contemporaneamente due cose:
 
 - **Nomi dei file**: filtro rapido per nome.
-- **Contenuto dei file**: GenOffice indicizza i tuoi file in background (il testo dentro docx/xlsx/pptx/pdf/md/html), così cercando nel corpo del testo trovi file. L'ambito e le opzioni si impostano nelle impostazioni di ricerca.
+- **Contenuto dei file**: OfficeVega indicizza i tuoi file in background (il testo dentro docx/xlsx/pptx/pdf/md/html), così cercando nel corpo del testo trovi file. L'ambito e le opzioni si impostano nelle impostazioni di ricerca.
 
 ## Schede di avvio rapido
 
@@ -56,8 +56,8 @@ Cosa fa ogni scheda:
 
 > Suggerimento: File ▸ Nuovo nella barra dei menu crea gli stessi tipi di documento (⌘N/Ctrl+N crea per impostazione predefinita un documento di testo); trascinando un file nella finestra lo si apre.
 
-## Progetti cloud (Genspark Projects)
+## Progetti cloud (VEGA Projects)
 
-- Il primo utilizzo richiede l'accesso al tuo account Genspark (flusso con codice dispositivo: GenOffice mostra un codice e tu completi l'accesso nel browser).
+- Il primo utilizzo richiede l'accesso al tuo account VEGA (flusso con codice dispositivo: OfficeVega mostra un codice e tu completi l'accesso nel browser).
 - L'elenco dei progetti si sincronizza con il web; Apri nel browser porta a quella pagina per continuare.
 - Non effettuare l'accesso non compromette nessuna delle funzioni locali.

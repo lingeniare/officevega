@@ -19,6 +19,7 @@ import { LocaleProvider, setModuleLang } from './i18n/locale'
 import type { DocTheme, UiDesign, UiTheme } from '../shared/desktop-api'
 import './styles.css'
 import '@genoffice/ui/ai-chat.css'
+import '@genoffice/ui/ai-history-menu.css'
 import '@genoffice/ui/cup-skin.css'
 
 if (import.meta.hot) {
@@ -70,7 +71,7 @@ async function loadCellFonts(): Promise<void> {
 async function bootstrap(): Promise<void> {
   let lang: Lang = 'zh'
   let theme: UiTheme = 'system'
-  let design: UiDesign = 'standard'
+  let design: UiDesign = 'digital'
   let docTheme: DocTheme = 'follow'
   try {
     // per-promise catch: standalone runs have no app:get-theme handler, and
@@ -78,7 +79,7 @@ async function bootstrap(): Promise<void> {
     ;[lang, theme, design, docTheme] = await Promise.all([
       window.desktopApi.getLanguage().catch(() => 'zh' as const),
       window.desktopApi.getTheme().catch(() => 'system' as const),
-      window.desktopApi.getDesign().catch(() => 'standard' as const),
+      window.desktopApi.getDesign().catch(() => 'digital' as const),
       window.desktopApi.getDocumentTheme?.().catch(() => 'follow' as const),
     ])
   } catch {

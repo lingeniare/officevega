@@ -15,6 +15,7 @@ import '@genoffice/ui/ai-scope-quote.css'
 import '@genoffice/ui/image-viewer.css'
 import './styles.css'
 import '@genoffice/ui/ai-chat.css'
+import '@genoffice/ui/ai-history-menu.css'
 import '@genoffice/ui/cup-skin.css'
 import './fonts/fonts.css'
 import { applyAiPanelPrefs, installScreenTips } from '@genoffice/ui'
@@ -44,7 +45,7 @@ function applyDocumentTheme(theme: DocTheme): void {
 async function bootstrap(): Promise<void> {
   let lang: Lang = 'zh'
   let theme: UiTheme = 'system'
-  let design: UiDesign = 'standard'
+  let design: UiDesign = 'digital'
   let docTheme: DocTheme = 'follow'
   try {
     // per-promise catch: standalone runs have no app:get-theme handler, and
@@ -52,7 +53,7 @@ async function bootstrap(): Promise<void> {
     ;[lang, theme, design, docTheme] = await Promise.all([
       window.desktop.getLanguage().catch(() => 'zh' as const),
       window.desktop.getTheme().catch(() => 'system' as const),
-      window.desktop.getDesign().catch(() => 'standard' as const),
+      window.desktop.getDesign().catch(() => 'digital' as const),
       window.desktop.getDocumentTheme?.().catch(() => 'follow' as const),
     ])
   } catch {

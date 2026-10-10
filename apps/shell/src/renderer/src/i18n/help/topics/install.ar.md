@@ -1,67 +1,81 @@
-# تثبيت GenOffice
+# تثبيت OfficeVega
 
-كل نسخة منشورة على [صفحة الإصدارات](https://github.com/genspark-ai/genoffice/releases/latest). وجميعها مبنية من `main`؛ وحزّامات التثبيت لنظامي macOS وWindows موقّعة.
+كل إصدار منشور موجود في [صفحة الإصدارات](https://officevega.com/releases). جميعها مبنية من `main`، وملفات تثبيت Windows موقّعة.
 
 ## اختر الملف المناسب لجهازك
 
-| النظام                               | المتطلبات                                             | الملف             |
-| ------------------------------------ | ----------------------------------------------------- | ----------------- |
-| **macOS** — Apple Silicon            | macOS 11+                                             | `.dmg` (arm64)    |
-| **macOS** — Intel                    | macOS 11+                                             | `.dmg` (x64)      |
-| **Windows** — معظم أجهزة PC          | Windows 10+، Intel/AMD                                | حزمة `-x64.exe`   |
-| **Windows** على Arm                  | Windows 11 على Arm (Snapdragon X وما شابه)            | حزمة `-arm64.exe` |
-| **Linux** — Debian / Ubuntu          | x86_64، glibc 2.34+ (Ubuntu 22.04 أو أحدث)            | `.deb`            |
-| **Linux** — Fedora / RHEL / openSUSE | x86_64، glibc 2.34+ (Fedora 35+، RHEL 9+، Leap 15.6+) | `.rpm`            |
-| **Linux** — أي شيء آخر               | x86_64، glibc 2.34+، FUSE 2                           | `.AppImage`       |
+| المنصة                               | المتطلبات                                             | الملف                  |
+| ------------------------------------ | ----------------------------------------------------- | ---------------------- |
+| **Windows** — معظم أجهزة PC          | Windows 10+، Intel/AMD                                | ملف التثبيت `-x64.exe`   |
+| **Windows** على Arm                  | Windows 11 على Arm (Snapdragon X وما شابهه)           | ملف التثبيت `-arm64.exe` |
+<!-- ستتوفر الأنظمة الأخرى لاحقًا؛ Windows فقط حاليًا
+| **macOS** — Apple Silicon            | macOS 11+                                             | `.dmg` (arm64)         |
+| **macOS** — Intel                    | macOS 11+                                             | `.dmg` (x64)           |
+| **Linux** — Debian / Ubuntu          | x86_64، glibc 2.34+ (Ubuntu 22.04 أو أحدث)            | `.deb`                 |
+| **Linux** — Fedora / RHEL / openSUSE | x86_64، glibc 2.34+ (Fedora 35+، RHEL 9+، Leap 15.6+) | `.rpm`                 |
+| **Linux** — أي نظام آخر              | x86_64، glibc 2.34+، FUSE 2                           | `.AppImage`            |
+-->
 
-تبقى الإصدارات الأقدم على صفحة الإصدارات.
+تبقى الإصدارات الأقدم في صفحة الإصدارات.
 
+<!--
 ## على macOS
 
-افتح ملف `.dmg` واسحب **GenOffice** إلى مجلد التطبيقات. وفي نسخة Intel يطلب منك أول تشغيل تأكيد الفتح: انقر نقرًا يمينًا على التطبيق داخل التطبيقات ▸ فتح. هذا Gatekeeper أمام صورة قرص تبدو غير موقّعة، لا تنزيلًا تالفًا.
+افتح ملف `.dmg` واسحب **OfficeVega** إلى مجلد التطبيقات. في نسخة Intel يطلب التشغيل الأول تأكيد الفتح: انقر بالزر الأيمن على التطبيق داخل التطبيقات ▸ فتح. هذا إجراء Gatekeeper أمام صورة قرص تبدو غير موقّعة، وليس تنزيلًا تالفًا.
+-->
 
 ## على Windows
 
-شغّل حزمة التثبيت `.exe`. فهي تضع GenOffice في قائمة ابدأ وتسجّل `.docx` و`.xlsx` و`.pptx` و`.pdf` وما شابهها، بحيث يفتح الملف بالنقر المزدوج.
+شغّل ملف التثبيت `.exe`. يضع OfficeVega في قائمة ابدأ، ويسجّل `.docx` و`.xlsx` و`.pptx` و`.pdf` وغيرها، فيُفتح الملف بنقرة مزدوجة.
 
+<!--
 ## على Linux
 
 **Debian / Ubuntu**
 
 ```sh
-sudo apt install ./genoffice_<version>_amd64.deb
+sudo apt install ./officevega_<version>_amd64.deb
 ```
 
 **Fedora / RHEL / openSUSE**
 
 ```sh
-sudo dnf install ./genoffice-<version>.x86_64.rpm     # Fedora / RHEL family
-sudo zypper install ./genoffice-<version>.x86_64.rpm  # openSUSE
+sudo dnf install ./officevega-<version>.x86_64.rpm     # Fedora / RHEL family
+sudo zypper install ./officevega-<version>.x86_64.rpm  # openSUSE
 ```
 
-**AppImage** — يعمل من مكانه، بلا خطوة تثبيت:
+**AppImage** — يعمل من مكانه بلا خطوة تثبيت:
 
 ```sh
-chmod +x GenOffice-<version>.AppImage
-./GenOffice-<version>.AppImage
+chmod +x OfficeVega-<version>.AppImage
+./OfficeVega-<version>.AppImage
 ```
 
-يحتاج إلى بيئة تشغيل FUSE 2. وإن لم تكن ترغب في تثبيتها فشغّله مع `--appimage-extract-and-run`، وتعمل البيئة المعزولة من المجلد المستخرج.
+يحتاج إلى بيئة FUSE 2. إن لم ترغب في تثبيتها فشغّله مع `--appimage-extract-and-run`، وتعمل البيئة المعزولة من المجلد المستخرج.
+-->
 
-## النسخة التي تشغّلها
+## النسخة التي تعمل بها
 
-**الإعدادات ▸ حول** هو المكان الذي يبلّغ فيه التطبيق عن نسختك، والقناة التي يتبعها، وموقع المشروع. فحين تُنشر نسخة أحدث على تلك القناة، تعرض اللوحة نفسها التحديث؛ أما تثبيت Flatpak أو Nix أو Docker فلا يفعل، لأن الأداة التي وضعته هناك تستبدله.
+**الإعدادات ▸ حول** هو المكان الذي يعرض فيه التطبيق النسخة المثبّتة لديك، والقناة التي يتبعها، وموقع المشروع. وعندما تُنشر نسخة أحدث على تلك القناة، تعرض اللوحة نفسها التحديث.
 
-![الإعدادات ▸ حول، وهي تعرض النسخة المثبّتة، وقناة التحديث التي يتبعها التطبيق، ورابط GitHub للمشروع](img/install.png)
+![الإعدادات ▸ حول، وفيها الإصدار المثبّت، وقناة التحديث التي يتبعها التطبيق، ورابط موقع المشروع](img/install.png)
 
+<!--
 ## ثلاث طرق أخرى
 
-تغلّف الطرق الثلاث الملفات المنشورة بدل إعادة بناء التطبيق، لذا فهي تتبع الملفات الثنائية الرسمية.
+تغلّف الطرق الثلاث الملفات المنشورة بدلًا من إعادة بناء التطبيق، لذلك تتبع الملفات الثنائية الرسمية.
 
-- **Flatpak** — يثبّت ملف `.deb` عبر آلية Flatpak المعروفة بـ `extra-data` ويشغّله تحت Zypak، الذي يهيّئ البيئة المعزولة الخاصة بـ Electron. وشجرة `/app` للقراءة فقط، لذا تمرّ التحديثات عبر Flatpak بدل نافذة التحديث داخل التطبيق.
-- **Nix** — تعبير حزمة تبنيه من نسخة مصدرية عبر `nix-build packaging/nix`؛ انظر `packaging/nix`.
-- **Docker** — صورة تحويل مجمّع بلا واجهة رسومية (`packaging/docker`). تحوّل شجرة كاملة من مستندات Office وMarkdown وHTML إلى PDF عبر مسار التصدير الخاص بالتطبيق، لذا تكون النتيجة هي نفسها التي تنتجها عملية ملف ▸ تصدير. إنها أداة CLI، لا خادمًا.
+- **Flatpak** — يثبّت ملف `.deb` عبر آلية `extra-data` في Flatpak ويشغّله تحت Zypak، الذي يكيّف البيئة المعزولة الخاصة بـ Electron. مسار `/app` للقراءة فقط، لذلك تمر التحديثات عبر Flatpak بدلًا من نافذة التحديث داخل التطبيق.
+- **Nix** — تعبير حزمة تبنيه من نسخة المصدر عبر `nix-build packaging/nix`؛ انظر `packaging/nix`.
+- **Docker** — صورة تحويل جماعي بلا واجهة (`packaging/docker`). تحوّل شجرة كاملة من مستندات Office وMarkdown وHTML إلى PDF عبر مسار التصدير الخاص بالتطبيق، فتكون النتيجة مطابقة لما ينتجه الأمر ملف ▸ تصدير. إنها أداة سطر أوامر، وليست خادمًا.
+-->
 
 ## سطر الأوامر يأتي معه
 
-كل تثبيت يشحن أمر `genoffice` يتحدث إلى المحركات نفسها التي تستخدمها النافذة، فلا يتناقض الطرفان حول أي ملف. وعلى macOS وWindows يوجد داخل حزمة التطبيق؛ و`genoffice install-cli` يضعه في `PATH` لديك. انظر **سطر الأوامر والوكلاء** لمعرفة ما يمكنه فعله.
+يتضمن كل تثبيت أمر `officevega` الذي يتصل بالمحرّكات نفسها التي تعمل بها النافذة، فلا يختلف الاثنان في التعامل مع أي ملف. وهو موجود داخل حزمة التطبيق؛ والأمر `officevega install-cli` يضعه في `PATH` لديك. انظر **سطر الأوامر والوكلاء** لمعرفة ما يستطيع فعله.
+
+## الدعم
+
+- الموقع: [officevega.com](https://officevega.com)، والإصدارات: [officevega.com/releases](https://officevega.com/releases).
+- المساعدة والملاحظات: [officevega.com/feedback](https://officevega.com/feedback)، وقناة Telegram: [t.me/getmyai](https://t.me/getmyai).
+- المطوّر: [getmyai.io](https://getmyai.io) (دميتري فيليبوف)، البريد: [mail@vega.chat](mailto:mail@vega.chat).

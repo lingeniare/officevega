@@ -68,6 +68,12 @@ export const fr = {
   aiNewChatTitle: 'Nouvelle conversation',
   aiCollapseTitle: 'Réduire le panneau',
   aiHistorySep: '—— Conversation précédente ——',
+  aiHistoryTitle: 'History',
+  aiHistorySearch: 'Search chats…',
+  aiHistoryEmpty: 'No chats yet',
+  aiHistoryLoading: 'Loading…',
+  aiHistoryCurrent: 'current',
+  aiHistoryVegaOnly: 'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiEmptyTitle: "Laissez l'IA vous aider à rédiger et à modifier",
   aiEmptyBody1: 'Donnez une instruction ou posez simplement une question ;',
   aiEmptyBody2:

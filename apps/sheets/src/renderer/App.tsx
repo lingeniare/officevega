@@ -66,7 +66,7 @@ import { consumePendingUndoCarry, undoStackDepth } from './undo-carry'
 import { planPrompt } from '../ai/deterministic-planner'
 import { createSaveGate, shouldRunSaveTick } from './save-scheduler'
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
-import { useAutoSavePref, useSuggestedQuestions, type AiScopeQuoteData } from '@genoffice/ui'
+import { useAutoSavePref, useSuggestedQuestions, type AiHistoryItem, type AiScopeQuoteData } from '@genoffice/ui'
 
 import {
   CellValueType,
@@ -132,6 +132,8 @@ import {
   AgentLoop,
   COMPLETED_VIA_TOOLS_TEXT,
   composeSkills,
+  fallbackChatTitle,
+  generateChatTitle,
   generateSuggestedQuestions,
   withPiiTokenGuard,
   type AgentImage,
@@ -1119,6 +1121,13 @@ export function App({
   const workbookOpeningRef = useRef(false)
   /** Current session's projectId/chatId (resolved when the workbook opens) */
   const chatRefIdsRef = useRef<{ projectId: string; chatId: string } | null>(null)
+  /** chat-history menu state */
+  const [historyOpen, setHistoryOpen] = useState(false)
+  const [historyItems, setHistoryItems] = useState<AiHistoryItem[]>([])
+  const [historyLoading, setHistoryLoading] = useState(false)
+  const [historyQuery, setHistoryQuery] = useState('')
+  /** chatIds already given a title this session (one title per chat) */
+  const titledChatsRef = useRef(new Set<string>())
 
   // File renamed externally (in the shell Home list) → sync the title-bar file
   // name (the save path is synced by the main process)
@@ -1225,6 +1234,37 @@ export function App({
   }, [])
 
   // ── project-store: resolve chatId and load history when a workbook opens ──
+  type StoredChatMessages = Awaited<ReturnType<Window['projectApi']['loadChat']>>
+
+  /** stored JSONL messages → read-only panel entries (same mapping as the initial load) */
+  function toAiChatMessages(msgs: StoredChatMessages): AiChatMessage[] {
+    return msgs.map((m) => ({
+      role: m.role,
+      text: m.text,
+      tools:
+        m.tools?.map((tl) => ({
+          summary: localizedToolSummary(tl.name ?? '', tl.summary),
+          isError: !!tl.isError,
+          ...(tl.name ? { name: tl.name } : {}),
+          ...(tl.output ? { output: tl.output.slice(0, 2000) } : {}),
+        })) ?? [],
+      // stored metadata only: no thumbnail read for history, the chips render name/size
+      ...(m.attachments && m.attachments.length > 0
+        ? {
+            attachments: m.attachments
+              .filter((a) => a.path)
+              .map((a) => ({
+                name: a.name,
+                path: a.path ?? '',
+                ext: a.ext ?? '',
+                sizeBytes: a.sizeBytes ?? 0,
+              })),
+          }
+        : {}),
+      ...(m.scope ? { scope: m.scope } : {}),
+    }))
+  }
+
   useEffect(() => {
     const api = (window as Window & { projectApi?: typeof window.projectApi }).projectApi
     if (!api) return
@@ -1266,33 +1306,7 @@ export function App({
           limit: 200,
         })
         if (stale() || msgs.length === 0) return
-        setHistoricChat(
-          msgs.map((m) => ({
-            role: m.role,
-            text: m.text,
-            tools:
-              m.tools?.map((t) => ({
-                summary: localizedToolSummary(t.name ?? '', t.summary),
-                isError: !!t.isError,
-                ...(t.name ? { name: t.name } : {}),
-                ...(t.output ? { output: t.output.slice(0, 2000) } : {}),
-              })) ?? [],
-            // stored metadata only: no thumbnail read for history, the chips render name/size
-            ...(m.attachments && m.attachments.length > 0
-              ? {
-                  attachments: m.attachments
-                    .filter((a) => a.path)
-                    .map((a) => ({
-                      name: a.name,
-                      path: a.path ?? '',
-                      ext: a.ext ?? '',
-                      sizeBytes: a.sizeBytes ?? 0,
-                    })),
-                }
-              : {}),
-            ...(m.scope ? { scope: m.scope } : {}),
-          })),
-        )
+        setHistoricChat(toAiChatMessages(msgs))
         // Restore model context: follow-ups after reopening the file continue the
         // previous conversation (only when the loop is idle and has no history)
         agentLoopRef.current?.restore(msgs.map((m) => ({ role: m.role, text: m.text })))
@@ -1560,6 +1574,8 @@ export function App({
           // tools stores the run's complete activity)
           if (!cancelled && finalText) {
             persistChatMessage('assistant', finalText, runToolsRef.current)
+            // first completed exchange of a chat gets its history title (VEGA only)
+            ensureChatTitle(lastAiInstructionRef.current, finalText)
           }
           setAiRunScope(undefined)
           // follow-up suggestions are generated off the fast model after the reply lands
@@ -1721,6 +1737,116 @@ export function App({
     if (error !== null) setMessage(error)
   }
 
+  // ── Chat-history menu ───────────────────────────────────────────────
+  function loadHistory(query: string): void {
+    const api = window.projectApi
+    if (!api?.listChatSessions) return
+    setHistoryLoading(true)
+    const current = chatRefIdsRef.current
+    void api
+      .listChatSessions({ ...(query ? { query } : {}), limit: 50 })
+      .then((sessions) => {
+        setHistoryItems(
+          sessions.map((s) => ({
+            projectId: s.projectId,
+            chatId: s.chatId,
+            title: s.title,
+            preview: s.preview,
+            fileName: s.fileName,
+            updatedAt: s.updatedAt,
+            current: current?.projectId === s.projectId && current?.chatId === s.chatId,
+          })),
+        )
+      })
+      .catch(() => {
+        setHistoryItems([])
+      })
+      .finally(() => {
+        setHistoryLoading(false)
+      })
+  }
+
+  // debounced search while the menu is open; an immediate load on open
+  useEffect(() => {
+    if (!historyOpen) return
+    loadHistory(historyQuery)
+    const timer = window.setTimeout(() => loadHistory(historyQuery), 300)
+    return () => window.clearTimeout(timer)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [historyOpen, historyQuery])
+
+  function openHistory(): void {
+    setHistoryOpen(true)
+    loadHistory(historyQuery)
+  }
+
+  /** jump to a history session: loads its transcript and continues there */
+  function selectHistorySession(item: AiHistoryItem): void {
+    const api = window.projectApi
+    if (!api) return
+    agentLoopRef.current?.reset()
+    suggestTransportRef.current?.resetSession?.()
+    suggested.clear()
+    setAiRunScope(undefined)
+    setAiBusy(false)
+    setChat([])
+    setPreview(null)
+    lazyPreviewRef.current = null
+    setHistoryOpen(false)
+    chatRefIdsRef.current = { projectId: item.projectId, chatId: item.chatId }
+    titledChatsRef.current.add(`${item.projectId}:${item.chatId}`)
+    void api
+      .loadChat({ projectId: item.projectId, chatId: item.chatId, limit: 200 })
+      .then((msgs) => {
+        setHistoricChat(toAiChatMessages(msgs))
+        agentLoopRef.current?.restore(msgs.map((m) => ({ role: m.role, text: m.text })))
+      })
+      .catch(() => {
+        setHistoricChat([])
+      })
+  }
+
+  /**
+   * Writes the chat's title sidecar once per chat: an instant fallback title
+   * from the first user message, then upgraded by the fast model (VEGA only).
+   */
+  function ensureChatTitle(userText: string, assistantText: string): void {
+    const ids = chatRefIdsRef.current
+    const api = window.projectApi
+    if (!ids || !api?.setChatTitle) return
+    const key = `${ids.projectId}:${ids.chatId}`
+    if (titledChatsRef.current.has(key)) return
+    titledChatsRef.current.add(key)
+    if (aiSettingsRef.current?.provider !== 'vega') return
+    const preview = userText.slice(0, 120)
+    void api
+      .setChatTitle({
+        projectId: ids.projectId,
+        chatId: ids.chatId,
+        title: fallbackChatTitle(userText),
+        preview,
+        provider: 'vega',
+      })
+      .catch(() => {
+        /* silent */
+      })
+    const transport = suggestTransportRef.current
+    if (!transport) return
+    void generateChatTitle({
+      transport,
+      user: userText,
+      assistant: assistantText,
+      langDirective: aiLangDirective(),
+    })
+      .then((title) => {
+        if (!title) return
+        return api.setChatTitle({ projectId: ids.projectId, chatId: ids.chatId, title })
+      })
+      .catch(() => {
+        /* the fallback title stays */
+      })
+  }
+
   function handleNewChat(): void {
     agentLoopRef.current?.reset()
     suggestTransportRef.current?.resetSession?.()
@@ -1729,6 +1855,32 @@ export function App({
     setAiBusy(false)
     setChat([])
     setHistoricChat([])
+    setHistoryOpen(false)
+    // VEGA chats start a fresh session so the previous one stays in history;
+    // other providers keep the legacy behavior (same chatId, UI-only reset).
+    // The renderer passes what it has (sessionId, plus the path when known) —
+    // the main process resolves the file like resolveChat does.
+    const sessionId = workbookFile?.sessionId
+    if (aiSettingsRef.current?.provider === 'vega' && window.projectApi?.beginNewChatSession) {
+      if (sessionId) {
+        const beginArgs: { filePath?: string; sessionId?: string } = { sessionId }
+        if (workbookFile?.path) beginArgs.filePath = workbookFile.path
+        void window.projectApi
+          .beginNewChatSession(beginArgs as { filePath: string })
+          .then((r) => {
+            chatRefIdsRef.current = r
+          })
+          .catch(() => {
+            /* silent: the panel already reset, persistence continues on the old chat */
+          })
+      } else {
+        const ids = chatRefIdsRef.current
+        chatRefIdsRef.current = {
+          projectId: ids?.projectId ?? 'default',
+          chatId: `unsaved-${Date.now()}`,
+        }
+      }
+    }
     // Unsent composer attachments would otherwise ride into the next chat's
     // file context (availableAttachments merges sent + live) — same as docs
     // (#224) and slides. The typed draft itself is kept.
@@ -5153,6 +5305,15 @@ export function App({
         }}
         onStop={handleStopAgent}
         onNewChat={handleNewChat}
+        historyOpen={historyOpen}
+        historyItems={historyItems}
+        historyLoading={historyLoading}
+        historyQuery={historyQuery}
+        onHistoryQueryChange={setHistoryQuery}
+        onHistoryOpen={openHistory}
+        onHistoryClose={() => setHistoryOpen(false)}
+        onHistorySelect={selectHistorySession}
+        isVegaHistory={aiSettings?.provider === 'vega'}
         onUndo={handleUndo}
         aiScopeRange={aiScopeChip.range}
         aiScopeColumns={aiScopeChip.columns ?? null}

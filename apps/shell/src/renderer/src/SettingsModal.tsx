@@ -94,9 +94,9 @@ const THEME_OPTIONS = [
 ] as const satisfies readonly { value: UiTheme; labelKey: StringKey }[]
 
 const DESIGN_OPTIONS = [
-  { value: 'standard', labelKey: 'designStandard' },
-  { value: 'retro', labelKey: 'designRetro' },
   { value: 'digital', labelKey: 'designDigital' },
+  { value: 'retro', labelKey: 'designRetro' },
+  { value: 'standard', labelKey: 'designStandard' },
 ] as const satisfies readonly { value: UiDesign; labelKey: StringKey }[]
 
 // Document page theme (#1811): the canvas/paper preference the editors follow;
@@ -1830,7 +1830,7 @@ export function SettingsModal({
   }, [target])
   const [displayName, setDisplayName] = useState('')
   const [theme, setTheme] = useState<UiTheme>('system')
-  const [design, setDesign] = useState<UiDesign>('standard')
+  const [design, setDesign] = useState<UiDesign>('digital')
   const [docTheme, setDocTheme] = useState<DocTheme>('follow')
   const [saveDir, setSaveDir] = useState('')
   const [autoSaveOn, setAutoSaveOn] = useState(false)

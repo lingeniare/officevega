@@ -25,7 +25,7 @@ Každý editor má vlastní přiřazení kláves a funguje všude jen několik z
 
 - Sloupec macOS používá známé symboly: `⌘` Command, `⌥` Option, `⇧` Shift, `⌃` Control.
 - Sloupec Windows / Linux je vypisuje slovy: `Ctrl`, `Alt`, `Shift`.
-- Tam, kde GenOffice na dvou platformách skutečně potřebuje různé klávesy, tabulka to ukazuje. Běžné případy jsou `⌃H` pro Najít a nahradit (macOS má `⌘H` pro Skrýt), `⌥⌘G` pro Přejít na a klávesa zavírání v Slides.
+- Tam, kde OfficeVega na dvou platformách skutečně potřebuje různé klávesy, tabulka to ukazuje. Běžné případy jsou `⌃H` pro Najít a nahradit (macOS má `⌘H` pro Skrýt), `⌥⌘G` pro Přejít na a klávesa zavírání v Slides.
 - Chord, který funguje jen s výběrem, je zapsaný ve sloupci Akce, ne v samostatném sloupci, aby tabulka měla pořád tři sloupce.
 
 ## Word
@@ -158,7 +158,7 @@ F1 otevírá **uživatelskou příručku**, ne tento seznam. List zkratek je ⌘
 
 ## Sheets
 
-GenOffice Sheets je mřížka kompatibilní s Excelem. Většina zkratek níže jsou zkratky Excelu, které už znáte.
+OfficeVega Sheets je mřížka kompatibilní s Excelem. Většina zkratek níže jsou zkratky Excelu, které už znáte.
 
 > **Úpravy mají přednost.** Téměř každá zkratka v Sheets se během úpravy buňky nebo psaní do **řádku vzorců** ignoruje, aby psaní, pohyb kurzoru a Backspace si zachovaly svůj obvyklý význam při úpravě textu. Pokud klávesa jako by nic nedělala, zkontrolujte, jestli právě neupravujete: nejdřív stiskněte Esc nebo Enter a pak to zkuste znovu. Příkazy působící na výběr také nic nedělají, dokud je otevřené dialogové okno. Tam, kde je chord výjimkou z tohoto pravidla, uvádí to tabulka.
 
@@ -286,7 +286,7 @@ Zkratka filtru Excelu, Ctrl+Shift+L, na Windows ani Linuxu nedělá nic. Na macO
 
 ## Slides
 
-GenOffice Slides je editor prezentací ve stylu PowerPointu. Většina kláves dělá všude to samé, ale pár z nich mění význam podle fokusu — uvnitř textového pole, nebo když má fokus klávesnice **panel náhledů**, **panel osnovy** nebo **třídění snímků**. Tyto případy jsou ve sloupci Akce označené.
+OfficeVega Slides je editor prezentací ve stylu PowerPointu. Většina kláves dělá všude to samé, ale pár z nich mění význam podle fokusu — uvnitř textového pole, nebo když má fokus klávesnice **panel náhledů**, **panel osnovy** nebo **třídění snímků**. Tyto případy jsou ve sloupci Akce označené.
 
 ### Soubor a aplikace
 
@@ -481,7 +481,7 @@ Escape rozvinuje jednu vrstvu po druhé — nejdřív otevřené dialogové okno
 
 ## Markdown
 
-GenOffice Markdown upravuje Markdown s živým náhledem vedle sebe.
+OfficeVega Markdown upravuje Markdown s živým náhledem vedle sebe.
 
 ### Soubor a zobrazení
 
@@ -522,7 +522,7 @@ Použití prázdného vzorce místo toho smaže blok. Editor se také zavře př
 
 ## HTML
 
-GenOffice HTML zobrazuje editor kódu vedle živého náhledu. Klávesy, které působí na prvek stránky, fungují jen tehdy, když má samotný náhled fokus klávesnice.
+OfficeVega HTML zobrazuje editor kódu vedle živého náhledu. Klávesy, které působí na prvek stránky, fungují jen tehdy, když má samotný náhled fokus klávesnice.
 
 ### Soubor a zobrazení zdroje
 

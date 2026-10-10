@@ -139,11 +139,23 @@ const api: HtmlApi = {
 }
 
 /** Chat persistence: the shared project:* handlers are registered once by the shell (docs-main registerProjectIpc) */
-const projectApi: Pick<ProjectApi, 'resolveChat' | 'appendChat' | 'loadChat' | 'rebindChat'> = {
+const projectApi: Pick<
+  ProjectApi,
+  | 'resolveChat'
+  | 'appendChat'
+  | 'loadChat'
+  | 'rebindChat'
+  | 'beginNewChatSession'
+  | 'listChatSessions'
+  | 'setChatTitle'
+> = {
   resolveChat: (args) => ipcRenderer.invoke('project:resolveChat', args),
   appendChat: (args) => ipcRenderer.invoke('project:appendChat', args),
   loadChat: (args) => ipcRenderer.invoke('project:loadChat', args),
   rebindChat: (args) => ipcRenderer.invoke('project:rebindChat', args),
+  beginNewChatSession: (args) => ipcRenderer.invoke('project:beginNewChatSession', args),
+  listChatSessions: (args) => ipcRenderer.invoke('project:listChatSessions', args),
+  setChatTitle: (args) => ipcRenderer.invoke('project:setChatTitle', args),
 }
 
 contextBridge.exposeInMainWorld('htmlApi', api)

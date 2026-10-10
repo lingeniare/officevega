@@ -4,6 +4,8 @@ import type { PointerEvent as ReactPointerEvent, ReactElement } from 'react'
 import {
   AgentLoop,
   composeSkills,
+  fallbackChatTitle,
+  generateChatTitle,
   generateSuggestedQuestions,
   withPiiTokenGuard,
 } from '@genoffice/agent-core'
@@ -19,12 +21,15 @@ import { ATTACHMENT_IMAGE_EXTS } from '../../shared/ipc'
 import type { AttachmentAddResult, AttachmentMeta } from '../../shared/ipc'
 import {
   AiComposer,
+  AiHistoryButton,
+  AiHistoryMenu,
   AiScopeQuote,
   AiSuggestedQuestions,
   AiTypingIndicator,
   IconPlus,
   Markdown,
   useSuggestedQuestions,
+  type AiHistoryItem,
   type AiScopeQuoteData,
 } from '@genoffice/ui'
 import { aiLangDirective, t as tGlobal, useI18n } from '../i18n/locale'
@@ -625,6 +630,128 @@ export function AiPanel({
     })
   })
 
+  // ── Chat-history menu ("История") ─────────────────────────────────────
+  type StoredChatMessages = Awaited<ReturnType<NonNullable<Window['projectApi']>['loadChat']>>
+
+  /** stored metadata only: the chips render name/size, a still-readable image gets its thumbnail */
+  const restoredAtts = (m: StoredChatMessages[number]): AttachmentMeta[] | undefined =>
+    m.attachments
+      ?.filter((a) => a.path)
+      .map((a) => ({
+        name: a.name,
+        path: a.path ?? '',
+        ext: a.ext ?? '',
+        sizeBytes: a.sizeBytes ?? 0,
+      }))
+
+  /** stored JSONL messages → panel entries (same mapping as the initial load) */
+  const toChatEntries = (msgs: StoredChatMessages): ChatEntry[] =>
+    msgs.map((m) => ({
+      role: m.role,
+      text: m.text,
+      tools: m.tools?.map((tool) => ({
+        name: tool.name,
+        summary: localizedToolSummary(tool.name, tool.summary),
+        isError: tool.isError,
+        output: tool.output ? tool.output.slice(0, TOOL_OUTPUT_MAX_CHARS) : undefined,
+      })),
+      attachments: restoredAtts(m),
+      ...(m.scope ? { scope: m.scope } : {}),
+    }))
+
+  /** chat-history menu state */
+  const [historyOpen, setHistoryOpen] = useState(false)
+  const [historyItems, setHistoryItems] = useState<AiHistoryItem[]>([])
+  const [historyLoading, setHistoryLoading] = useState(false)
+  const [historyQuery, setHistoryQuery] = useState('')
+  /** chatIds already given a title this session (one title per chat) */
+  const titledChatsRef = useRef(new Set<string>())
+  /** effective VEGA check: history sessions + titles are written for VEGA chats only */
+  const isVegaHistory = aiProvider === 'vega'
+
+  const loadHistory = (query: string) => {
+    const api = window.projectApi
+    if (!api?.listChatSessions) return
+    setHistoryLoading(true)
+    const current = chatIdsRef.current
+    void api
+      .listChatSessions({ query: query || undefined, limit: 50 })
+      .then((sessions) => {
+        setHistoryItems(
+          sessions.map((s) => ({
+            projectId: s.projectId,
+            chatId: s.chatId,
+            title: s.title,
+            preview: s.preview,
+            fileName: s.fileName,
+            updatedAt: s.updatedAt,
+            current: current?.projectId === s.projectId && current?.chatId === s.chatId,
+          })),
+        )
+      })
+      .catch(() => {
+        setHistoryItems([])
+      })
+      .finally(() => {
+        setHistoryLoading(false)
+      })
+  }
+
+  // debounced search while the menu is open; an immediate load on open
+  useEffect(() => {
+    if (!historyOpen) return
+    loadHistory(historyQuery)
+    const timer = window.setTimeout(() => loadHistory(historyQuery), 300)
+    return () => window.clearTimeout(timer)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [historyOpen, historyQuery])
+
+  const openHistory = () => {
+    setHistoryOpen(true)
+    loadHistory(historyQuery)
+  }
+
+  /**
+   * Writes the chat's title sidecar once per chat: an instant fallback title
+   * from the first user message, then upgraded by the fast model (VEGA only).
+   */
+  const ensureChatTitle = (userText: string, assistantText: string) => {
+    const ids = chatIdsRef.current
+    const api = window.projectApi
+    if (!ids || !api?.setChatTitle) return
+    const key = `${ids.projectId}:${ids.chatId}`
+    if (titledChatsRef.current.has(key)) return
+    titledChatsRef.current.add(key)
+    if (settingsRef.current?.provider !== 'vega') return
+    const preview = userText.slice(0, 120)
+    void api
+      .setChatTitle({
+        projectId: ids.projectId,
+        chatId: ids.chatId,
+        title: fallbackChatTitle(userText),
+        preview,
+        provider: 'vega',
+      })
+      .catch(() => {
+        /* silent */
+      })
+    const transport = suggestTransportRef.current
+    if (!transport) return
+    void generateChatTitle({
+      transport,
+      user: userText,
+      assistant: assistantText,
+      langDirective: aiLangDirective(langRef.current),
+    })
+      .then((title) => {
+        if (!title) return
+        return api.setChatTitle({ projectId: ids.projectId, chatId: ids.chatId, title })
+      })
+      .catch(() => {
+        /* the fallback title stays */
+      })
+  }
+
   /**
    * Whole-page generation: one tool-less request whose reply is the HTML, streamed
    * into the preview mirror as it arrives. A stream that stops early leaves the user
@@ -840,6 +967,8 @@ export function AiPanel({
             tools: last.tools?.filter((tl) => !tl.running),
           }))
           persistMessage('assistant', final, runToolsRef.current)
+          // first completed exchange of a chat gets its history title (VEGA only)
+          if (!cancelled && final) ensureChatTitle(runInstructionRef.current, final)
           depsRef.current.clearHighlights()
           depsRef.current.onRunDone(runMutatedRef.current)
           queueRunRef.current = false
@@ -928,31 +1057,10 @@ export function AiPanel({
         // the user may have sent a message while history was loading — never
         // replace a live transcript (and don't clobber the loop context)
         let applied = false
-        // stored metadata only: the chips render name/size, a still-readable image gets its thumbnail
-        const restoredAtts = (m: (typeof msgs)[number]): AttachmentMeta[] | undefined =>
-          m.attachments
-            ?.filter((a) => a.path)
-            .map((a) => ({
-              name: a.name,
-              path: a.path ?? '',
-              ext: a.ext ?? '',
-              sizeBytes: a.sizeBytes ?? 0,
-            }))
         setChat((prev) => {
           if (prev.length > 0) return prev
           applied = true
-          return msgs.map((m) => ({
-            role: m.role,
-            text: m.text,
-            tools: m.tools?.map((tool) => ({
-              name: tool.name,
-              summary: localizedToolSummary(tool.name, tool.summary),
-              isError: tool.isError,
-              output: tool.output ? tool.output.slice(0, TOOL_OUTPUT_MAX_CHARS) : undefined,
-            })),
-            attachments: restoredAtts(m),
-            ...(m.scope ? { scope: m.scope } : {}),
-          }))
+          return toChatEntries(msgs)
         })
         if (applied && !loopRef.current?.busy) {
           loopRef.current?.restore(msgs.map((m) => ({ role: m.role, text: m.text })))
@@ -1138,6 +1246,78 @@ export function AiPanel({
     )
   }
 
+  /** jump to a history session: loads its transcript and continues there */
+  const selectHistorySession = (item: AiHistoryItem) => {
+    const api = window.projectApi
+    if (!api) return
+    stop()
+    loopRef.current?.reset()
+    suggestTransportRef.current?.resetSession?.()
+    suggested.clear()
+    setBusy(false)
+    setChat([])
+    setReceipts([])
+    setHistoryOpen(false)
+    chatIdsRef.current = { projectId: item.projectId, chatId: item.chatId }
+    titledChatsRef.current.add(`${item.projectId}:${item.chatId}`)
+    void api
+      .loadChat({ projectId: item.projectId, chatId: item.chatId, limit: 200 })
+      .then((msgs) => {
+        if (msgs.length === 0) return
+        setChat(toChatEntries(msgs))
+        loopRef.current?.restore(msgs.map((m) => ({ role: m.role, text: m.text })))
+        // follow-up turns can keep reading the files those messages attached
+        const seen = new Set(sentAttachmentsRef.current.map((a) => a.path))
+        for (const a of msgs.flatMap((m) => restoredAtts(m) ?? [])) {
+          if (seen.has(a.path)) continue
+          seen.add(a.path)
+          sentAttachmentsRef.current.push(a)
+        }
+      })
+      .catch(() => {
+        setChat([])
+      })
+    inputRef.current?.focus()
+  }
+
+  const newChat = (): void => {
+    stop()
+    loopRef.current?.reset()
+    // the suggestions transport owns no loop, so its session id is reset here
+    suggestTransportRef.current?.resetSession?.()
+    suggested.clear()
+    setBusy(false)
+    setChat([])
+    setReceipts([])
+    setHistoryOpen(false)
+    // VEGA chats start a fresh session so the previous one stays in history;
+    // other providers keep the legacy behavior (same chatId, UI-only reset).
+    const api = window.projectApi
+    const fp = filePathRef.current
+    if (settingsRef.current?.provider === 'vega' && api?.beginNewChatSession && fp) {
+      void api
+        .beginNewChatSession({ filePath: fp })
+        .then((r) => {
+          chatIdsRef.current = r
+        })
+        .catch(() => {
+          /* silent */
+        })
+    } else if (settingsRef.current?.provider === 'vega' && !fp) {
+      const ids = chatIdsRef.current
+      chatIdsRef.current = {
+        projectId: ids?.projectId ?? 'default',
+        chatId: `unsaved-${Date.now()}`,
+      }
+    }
+    // Unsent composer attachments would otherwise ride into the next chat's
+    // file context (availableAttachments merges sent + live).
+    setAttachments([])
+    setAttachNotice(null)
+    sentAttachmentsRef.current = []
+    inputRef.current?.focus()
+  }
+
   /** [label](htmlnav://sid/N) links in replies select that element */
   const docNav = {
     scheme: DOC_NAV_SCHEME,
@@ -1253,21 +1433,32 @@ export function AiPanel({
       <header className="ai-panel-header">
         <span className="ai-panel-title">{lang === 'ru' ? 'ВЕГА' : 'VEGA'}</span>
         <div className="ai-panel-header-actions">
+          <AiHistoryMenu
+            open={historyOpen}
+            onClose={() => setHistoryOpen(false)}
+            items={historyItems}
+            loading={historyLoading}
+            query={historyQuery}
+            onQueryChange={setHistoryQuery}
+            onSelect={selectHistorySession}
+            onNewChat={newChat}
+            disabledReason={isVegaHistory ? null : 'vega-only'}
+            strings={{
+              menuTitle: t('aiHistoryTitle'),
+              searchPlaceholder: t('aiHistorySearch'),
+              empty: t('aiHistoryEmpty'),
+              loading: t('aiHistoryLoading'),
+              newChat: t('aiNewChat'),
+              currentBadge: t('aiHistoryCurrent'),
+              vegaOnlyNote: t('aiHistoryVegaOnly'),
+            }}
+            buttonLabel={t('aiHistoryTitle')}
+            trigger={<AiHistoryButton label={t('aiHistoryTitle')} onClick={openHistory} />}
+          />
           {chat.length > 0 && (
             <button
               className="ai-header-btn"
-              onClick={() => {
-                stop()
-                loopRef.current?.reset()
-                suggestTransportRef.current?.resetSession?.()
-                suggested.clear()
-                setBusy(false)
-                setChat([])
-                setReceipts([])
-                setAttachments([])
-                setAttachNotice(null)
-                sentAttachmentsRef.current = []
-              }}
+              onClick={newChat}
               data-tip={t('aiNewChat')}
               aria-label={t('aiNewChat')}
             >

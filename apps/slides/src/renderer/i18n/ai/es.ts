@@ -33,6 +33,12 @@ export const es = {
   aiNewChat: 'Nueva conversación',
   aiCollapsePanel: 'Contraer panel',
   aiHistorySep: '—— conversación anterior ——',
+  aiHistoryTitle: 'History',
+  aiHistorySearch: 'Search chats…',
+  aiHistoryEmpty: 'No chats yet',
+  aiHistoryLoading: 'Loading…',
+  aiHistoryCurrent: 'current',
+  aiHistoryVegaOnly: 'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiEmptyTitle: 'Deja que la IA pula tus diapositivas',
   aiEmptyBody1: 'Da instrucciones o simplemente haz preguntas;',
   aiEmptyBody2:

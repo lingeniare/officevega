@@ -33,6 +33,12 @@ export const nl = {
   aiNewChat: 'Nieuwe chat',
   aiCollapsePanel: 'Paneel samenvouwen',
   aiHistorySep: '—— eerder gesprek ——',
+  aiHistoryTitle: 'History',
+  aiHistorySearch: 'Search chats…',
+  aiHistoryEmpty: 'No chats yet',
+  aiHistoryLoading: 'Loading…',
+  aiHistoryCurrent: 'current',
+  aiHistoryVegaOnly: 'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiEmptyTitle: "Laat AI uw dia's verfijnen",
   aiEmptyBody1: 'Geef instructies of stel gewoon vragen;',
   aiEmptyBody2:

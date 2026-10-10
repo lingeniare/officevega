@@ -37,6 +37,13 @@ export const tk = {
   aiNetworkError:
     'Tor meselesi: AI hyzmatyna ýetip bolmady. Baglanyşygyňyzy barlap, täzeden synanyşyň',
   aiNewChat: 'Täze söhbet',
+  aiHistoryTitle: 'History',
+  aiHistorySearch: 'Search chats…',
+  aiHistoryEmpty: 'No chats yet',
+  aiHistoryLoading: 'Loading…',
+  aiHistoryCurrent: 'current',
+  aiHistoryVegaOnly:
+    'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiNoReply: '(jogap ýok)',
   aiOverloadedError: 'AI hyzmaty häzir meşgul — birazdan täzeden synanyşyň',
   aiRegenerateTitle: 'Täzeden döret',

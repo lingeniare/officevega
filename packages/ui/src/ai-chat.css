@@ -811,7 +811,7 @@ button.ai-step-title.clickable:hover {
 
 .ai-track-btn.on {
   opacity: 1;
-  background: var(--accent-soft);
+  background: transparent;
   color: var(--accent);
 }
 

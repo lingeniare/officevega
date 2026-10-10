@@ -33,6 +33,12 @@ export const id = {
   aiNewChat: 'Obrolan baru',
   aiCollapsePanel: 'Ciutkan panel',
   aiHistorySep: '—— percakapan sebelumnya ——',
+  aiHistoryTitle: 'History',
+  aiHistorySearch: 'Search chats…',
+  aiHistoryEmpty: 'No chats yet',
+  aiHistoryLoading: 'Loading…',
+  aiHistoryCurrent: 'current',
+  aiHistoryVegaOnly: 'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiEmptyTitle: 'Biarkan AI menyempurnakan slide Anda',
   aiEmptyBody1: 'Berikan instruksi atau langsung ajukan pertanyaan;',
   aiEmptyBody2:

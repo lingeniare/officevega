@@ -3092,9 +3092,6 @@ export function Home() {
               renderSearchHeading()
             ) : (
               <div className="recents-heading">
-                <span className="section-label">
-                  {view === 'recent' ? t('secRecent') : t('secStarred')}
-                </span>
                 <span className="file-count">{fileCountLabel(listTotal, lang, t)}</span>
               </div>
             )}

@@ -32,6 +32,7 @@ import {
   forwardRendererConsole,
 } from '@genoffice/electron-utils'
 import { createI18n, getUiLang } from '@genoffice/i18n'
+import { ProjectStore } from '@genoffice/project-store'
 import { generateImageTool, documentMediaRoots } from '@genoffice/ai-search'
 import { PDF_CHANNELS } from '../shared/ipc'
 import { buildExportImagePaths, hasValidExportPageNumbers } from './export-images'
@@ -1806,6 +1807,148 @@ function registerPdfIpc(): void {
   ipcMain.handle(PDF_CHANNELS.getLanguage, () => getUiLang())
 }
 
+// ── project-store IPC (standalone mode) ───────────────────────────────────
+// In shell mode docs-main.registerProjectIpc registers these centrally (idempotent
+// guard, registers once). The standalone window below calls this function.
+
+let pdfProjectStore: ProjectStore | null = null
+let pdfProjectIpcRegistered = false
+
+function getPdfProjectStore(): ProjectStore {
+  if (!pdfProjectStore) pdfProjectStore = new ProjectStore(app.getPath('userData'))
+  return pdfProjectStore
+}
+
+export function registerProjectIpc(): void {
+  if (pdfProjectIpcRegistered) return
+  pdfProjectIpcRegistered = true
+
+  ipcMain.handle(
+    'project:resolveChat',
+    (_event, args: { filePath: string | null; tempChatId?: string }) => {
+      const store = getPdfProjectStore()
+      store.ensureDefaultProject()
+      if (!args.filePath) {
+        return { projectId: 'default', chatId: args.tempChatId ?? `unsaved-${Date.now()}` }
+      }
+      return store.resolveChatForFile(args.filePath)
+    },
+  )
+
+  ipcMain.handle(
+    'project:appendChat',
+    (
+      _event,
+      args: {
+        projectId: string
+        chatId: string
+        role: 'user' | 'assistant'
+        text: string
+        tools?: Array<{
+          name: string
+          summary: string
+          isError?: boolean
+          input?: string
+          output?: string
+        }>
+        attachments?: Array<{ name: string; path?: string; ext?: string; sizeBytes?: number }>
+        scope?: { label: string; text?: string }
+      },
+    ) => {
+      if (args.role !== 'user' && args.role !== 'assistant') {
+        throw new Error(`Invalid chat role: ${String(args.role)}`)
+      }
+      if (typeof args.text !== 'string' || args.text.length > 200_000) {
+        throw new Error('Invalid chat text: must be a string up to 200000 chars')
+      }
+      if (args.tools && !Array.isArray(args.tools)) throw new Error('Invalid chat tools')
+      if (args.attachments && !Array.isArray(args.attachments)) {
+        throw new Error('Invalid chat attachments')
+      }
+      const msg: Parameters<ProjectStore['appendChatMessage']>[2] = {
+        role: args.role,
+        text: args.text,
+      }
+      if (args.tools) msg.tools = args.tools
+      if (args.attachments) msg.attachments = args.attachments
+      if (args.scope) msg.scope = args.scope
+
+      getPdfProjectStore().appendChatMessage(args.projectId, args.chatId, msg)
+    },
+  )
+
+  ipcMain.handle(
+    'project:loadChat',
+    (_event, args: { projectId: string; chatId: string; limit?: number }) => {
+      return getPdfProjectStore().loadChat(args.projectId, args.chatId, args.limit ?? 200)
+    },
+  )
+
+  ipcMain.handle(
+    'project:rebindChat',
+    (
+      _event,
+      args: { projectId: string; tempChatId: string; newChatId?: string; newFilePath?: string },
+    ) => {
+      const store = getPdfProjectStore()
+      if (args.newFilePath) {
+        return store.rebindChatToFile(args.projectId, args.tempChatId, args.newFilePath)
+      }
+      if (args.newChatId) store.rebindChat(args.projectId, args.tempChatId, args.newChatId)
+      return { projectId: args.projectId, chatId: args.newChatId ?? args.tempChatId }
+    },
+  )
+
+  /** start a new chat session for a file (older sessions stay in history) */
+  ipcMain.handle('project:beginNewChatSession', (_event, args: { filePath: string }) => {
+    if (typeof args?.filePath !== 'string' || !args.filePath) {
+      throw new Error('Invalid filePath: must be a non-empty string')
+    }
+    return getPdfProjectStore().beginNewChatSession(args.filePath)
+  })
+
+  /** global chat history, newest first */
+  ipcMain.handle(
+    'project:listChatSessions',
+    (_event, args: { projectId?: string; query?: string; limit?: number }) => {
+      if (args && typeof args !== 'object') throw new Error('Invalid args')
+      if (args?.projectId !== undefined && typeof args.projectId !== 'string') {
+        throw new Error('Invalid projectId')
+      }
+      if (args?.query !== undefined && typeof args.query !== 'string') {
+        throw new Error('Invalid query')
+      }
+      if (args?.limit !== undefined && typeof args.limit !== 'number') {
+        throw new Error('Invalid limit')
+      }
+      return getPdfProjectStore().listChatSessions(args ?? {})
+    },
+  )
+
+  /** upsert the title/preview sidecar of a chat */
+  ipcMain.handle(
+    'project:setChatTitle',
+    (
+      _event,
+      args: { projectId: string; chatId: string; title?: string; preview?: string; provider?: string },
+    ) => {
+      if (typeof args?.projectId !== 'string' || typeof args?.chatId !== 'string') {
+        throw new Error('Invalid projectId/chatId')
+      }
+      for (const key of ['title', 'preview', 'provider'] as const) {
+        if (args[key] !== undefined && typeof args[key] !== 'string') {
+          throw new Error(`Invalid ${key}`)
+        }
+      }
+      getPdfProjectStore().setChatTitle(args.projectId, args.chatId, {
+        ...(args.title !== undefined ? { title: args.title } : {}),
+        ...(args.preview !== undefined ? { preview: args.preview } : {}),
+        ...(args.provider !== undefined ? { provider: args.provider } : {}),
+      })
+    },
+  )
+}
+
 function grantAndTrack(wc: WebContents, openPath?: string | null): void {
   const wcId = wc.id
   const allowedPaths = new Set<string>()
@@ -1889,6 +2032,7 @@ export function startPdfStandalone(): void {
   void app.whenReady().then(() => {
     installRendererProtocol({ pdf: join(__dirname, '../renderer') })
     registerPdfIpc()
+    registerProjectIpc()
     const argPath = process.argv.slice(1).find((a) => /\.pdf$/i.test(a) && existsSync(a))
     createStandaloneWindow(argPath)
   })

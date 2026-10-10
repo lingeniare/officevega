@@ -7,6 +7,8 @@ import type {
   ChatMessage,
   ChatMeta,
   ChatScope,
+  ChatSession,
+  ChatSessionQuery,
   ProjectSummary,
   TimelineEntry,
   ToolActivity,
@@ -17,6 +19,8 @@ export type {
   ChatMessage,
   ChatMeta,
   ChatScope,
+  ChatSession,
+  ChatSessionQuery,
   ProjectSummary,
   TimelineEntry,
   ToolActivity,
@@ -76,4 +80,16 @@ export interface ProjectApi {
   loadChat(args: LoadChatArgs): Promise<ChatMessage[]>
   /** Renames the JSONL file (called after the file first hits disk); returns the new projectId/chatId */
   rebindChat(args: RebindChatArgs): Promise<ResolveChatResult>
+  /** Starts a new chat session for a file; older sessions stay in the history list */
+  beginNewChatSession(args: { filePath: string }): Promise<ResolveChatResult>
+  /** Global chat history, newest first (searches title + preview + file name) */
+  listChatSessions(args: ChatSessionQuery): Promise<ChatSession[]>
+  /** Upserts the title/preview sidecar of a chat */
+  setChatTitle(args: {
+    projectId: string
+    chatId: string
+    title?: string
+    preview?: string
+    provider?: string
+  }): Promise<void>
 }

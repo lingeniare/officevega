@@ -6,7 +6,16 @@ import type { HtmlApi } from '../shared/ipc'
 declare global {
   interface Window {
     htmlApi: HtmlApi
-    projectApi?: Pick<ProjectApi, 'resolveChat' | 'appendChat' | 'loadChat' | 'rebindChat'>
+    projectApi?: Pick<
+      ProjectApi,
+      | 'resolveChat'
+      | 'appendChat'
+      | 'loadChat'
+      | 'rebindChat'
+      | 'beginNewChatSession'
+      | 'listChatSessions'
+      | 'setChatTitle'
+    >
   }
 }
 

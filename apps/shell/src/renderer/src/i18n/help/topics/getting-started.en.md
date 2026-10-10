@@ -1,6 +1,6 @@
 # Quick start: the interface and the basics
 
-GenOffice is an office suite that runs entirely on your machine: one window, one row of tabs, holding six editors — Docs (word processing), Sheets (spreadsheets), Slides (presentations), PDF, Markdown and HTML. Files are genuine .docx / .xlsx / .pptx / .pdf, fully interchangeable with Word, Excel and PowerPoint. No network required.
+OfficeVega is an office suite that runs entirely on your machine: one window, one row of tabs, holding six editors — Docs (word processing), Sheets (spreadsheets), Slides (presentations), PDF, Markdown and HTML. Files are genuine .docx / .xlsx / .pptx / .pdf, fully interchangeable with Word, Excel and PowerPoint. No network required.
 
 ## Interface overview
 
@@ -10,49 +10,50 @@ The window has three parts:
 
 - **Tab strip (top)**: every open file is a tab. The leftmost Home tab is always present and cannot be closed; the other tabs are your documents. Double-click a tab to rename its file inline.
 - **Content area**: the editor (or Home) belonging to the active tab.
-- **Menu bar**: in the system menu bar on macOS, at the window top on Windows/Linux. File/Edit/View menus switch to match the active editor.
+- **Menu bar**: at the window top on Windows. File/Edit/View menus switch to match the active editor.
 
 ## Creating a document
 
 Any of:
 
 - Click a quick-create card in the [Quick start](help://getting-started) section of **Home** (AI Docs, AI Sheets, AI Slides, ...).
-- Menu **File ▸ New**: Docs (⌘N/ctrl+N), Sheets, Slides, Markdown, HTML or PDF.
-- Drag a file onto the window, or double-click it in your file manager (if GenOffice is the default app).
+- Menu **File ▸ New**: Docs (ctrl+N), Sheets, Slides, Markdown, HTML or PDF.
+- Drag a file onto the window, or double-click it in your file manager (if OfficeVega is the default app).
 
 A new document opens untitled; the file on disk is only created at the first save.
 
 ## Opening files
 
-- Menu **File ▸ Open** (⌘O/ctrl+O) opens the system picker: .docx / .doc / .xlsx / .xls / .csv / .tsv / .pptx / .ppt / .pdf / .md / .html.
+- Menu **File ▸ Open** (ctrl+O) opens the system picker: .docx / .doc / .xlsx / .xls / .csv / .tsv / .pptx / .ppt / .pdf / .md / .html.
 - Click anything in Home's **Recent** list.
-- `genoffice <file>` from a terminal also opens files.
+- `officevega <file>` from a terminal also opens files.
 
 ## The save model
 
-- **Manual save**: ⌘S/ctrl+S, or File ▸ Save / Save As. The first save asks for location and name.
+- **Manual save**: ctrl+S, or File ▸ Save / Save As. The first save asks for location and name.
 - **Autosave** turns on only after you have saved the file manually at least once — a PDF you only read is never silently rewritten. Autosave fires shortly after content changes.
 - Closing a tab with unsaved changes asks Save / Discard / Cancel first.
 - Every write lands atomically (temp file + rename), so a power cut cannot leave half a file.
 
 ## Common shortcuts
 
-| Action           | macOS | Windows / Linux |
-| ---------------- | ----- | --------------- |
-| New document     | ⌘N    | ctrl+N          |
-| Open             | ⌘O    | ctrl+O          |
-| Save             | ⌘S    | ctrl+S          |
-| Close tab        | ⌘W    | ctrl+W          |
-| Open this manual | F1    | F1              |
-| Fold the ribbon  | ⌥⌘R   | Ctrl+F1         |
+| Action           | Windows |
+| ---------------- | ------- |
+| New document     | ctrl+N  |
+| Open             | ctrl+O  |
+| Save             | ctrl+S  |
+| Close tab        | ctrl+W  |
+| Open this manual | F1      |
+| Fold the ribbon  | Ctrl+F1 |
 
 **Folding the ribbon** works in every editor. The tab row stays and the command band below it hides; the selected tab doubles as the collapse control, so while the ribbon is folded no tab is selected and pressing any tab brings the band back. Double-clicking a tab does the same. Which way you left it is remembered per editor.
 
-Shortcuts inside each editor (format painter, find & replace, table ops, ...) are in their chapters; Docs additionally ships a searchable keyboard-shortcuts dialog (**⌘/**) covering its own chords in full.
+Shortcuts inside each editor (format painter, find & replace, table ops, ...) are in their chapters; Docs additionally ships a searchable keyboard-shortcuts dialog (**ctrl+/**) covering its own chords in full.
 
+<!--
 ## The Option+Command chords
 
-Option+Command is the layer Word reserves for structured jumps, and GenOffice fills it the same way. Docs takes most of it; Sheets takes two of its own for Excel parity; one chord works everywhere.
+Option+Command is the layer Word reserves for structured jumps, and OfficeVega fills it the same way. Docs takes most of it; Sheets takes two of its own for Excel parity; one chord works everywhere.
 
 **Docs**
 
@@ -81,7 +82,8 @@ Note that **⌥⌘0 means Normal in Docs and Outside borders in Sheets**. They n
 
 **Every editor**: **⌥⌘R / Ctrl+F1** folds the ribbon, as described above.
 
-That leaves ⌥⌘D free for GenOffice to use on macOS, if a future command wants it.
+That leaves ⌥⌘D free for OfficeVega to use on macOS, if a future command wants it.
+-->
 
 ## Where to go next
 
@@ -89,3 +91,5 @@ That leaves ⌥⌘D free for GenOffice to use on macOS, if a future command want
 - Managing many open files: [Tabs and window management](help://tabs-and-windows).
 - Having the AI do the work: [The AI assistant panel](help://ai-panel).
 - Language, theme, default apps: [Settings, language, theme and MCP integrations](help://settings-integrations).
+
+Need help? Ask at [officevega.com/feedback](https://officevega.com/feedback), follow news in the Telegram channel [t.me/getmyai](https://t.me/getmyai), or write to [mail@vega.chat](mailto:mail@vega.chat).

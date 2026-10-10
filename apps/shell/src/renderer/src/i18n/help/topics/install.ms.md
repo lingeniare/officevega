@@ -1,67 +1,81 @@
-# Pemasangan GenOffice
+# Pemasangan OfficeVega
 
-Setiap keluaran diterbitkan pada [halaman Keluaran](https://github.com/genspark-ai/genoffice/releases/latest). Semuanya datang daripada `main`; pemasang untuk macOS dan Windows adalah bertanda tangan.
+Setiap binaan diterbitkan pada [halaman Releases](https://officevega.com/releases). Semuanya datang daripada `main`; pemasang untuk Windows adalah bertanda tangan.
 
-## Memilih fail untuk mesin anda
+## Pilih fail untuk mesin anda
 
 | Platform                             | Keperluan                                             | Fail                  |
 | ------------------------------------ | ----------------------------------------------------- | --------------------- |
-| **macOS** — Apple Silicon            | macOS 11+                                             | `.dmg` (arm64)        |
-| **macOS** — Intel                    | macOS 11+                                             | `.dmg` (x64)          |
 | **Windows** — kebanyakan PC          | Windows 10+, Intel/AMD                                | pemasang `-x64.exe`   |
 | **Windows** pada Arm                 | Windows 11 pada Arm (Snapdragon X dan yang serupa)    | pemasang `-arm64.exe` |
+<!-- platform lain akan menyusul kemudian; buat masa ini Windows sahaja
+| **macOS** — Apple Silicon            | macOS 11+                                             | `.dmg` (arm64)        |
+| **macOS** — Intel                    | macOS 11+                                             | `.dmg` (x64)          |
 | **Linux** — Debian / Ubuntu          | x86_64, glibc 2.34+ (Ubuntu 22.04 atau lebih baharu)  | `.deb`                |
 | **Linux** — Fedora / RHEL / openSUSE | x86_64, glibc 2.34+ (Fedora 35+, RHEL 9+, Leap 15.6+) | `.rpm`                |
-| **Linux** — apa-apa yang lain        | x86_64, glibc 2.34+, FUSE 2                           | `.AppImage`           |
+| **Linux** — yang lain                | x86_64, glibc 2.34+, FUSE 2                           | `.AppImage`           |
+-->
 
-Versi lama kekal pada halaman Keluaran.
+Versi lama kekal pada halaman Releases.
 
+<!--
 ## Pada macOS
 
-Buka `.dmg` itu dan seret **GenOffice** ke dalam Applications. Pada keluaran Intel, pelancaran pertama akan meminta anda mengesahkan membukanya: klik kanan aplikasi itu dalam Applications ▸ Open. Itu Gatekeeper bertemu imej cakera yang kelihatan tidak bertanda tangan, bukan muat turun yang rosak.
+Buka fail `.dmg` dan seret **OfficeVega** ke dalam Applications. Pada binaan Intel, pelancaran pertama akan meminta anda mengesahkan pembukaannya: klik kanan aplikasi itu dalam Applications ▸ Open. Itu ialah Gatekeeper yang menemui imej cakera yang kelihatan tidak bertanda tangan, bukan muat turun yang rosak.
+-->
 
 ## Pada Windows
 
-Jalankan pemasang `.exe`. Ia meletakkan GenOffice dalam menu Start dan mendaftarkan `.docx`, `.xlsx`, `.pptx`, `.pdf` dan yang lain supaya mengklik dua kali pada fail membukanya.
+Jalankan pemasang `.exe`. Ia meletakkan OfficeVega dalam menu Start dan mendaftarkan `.docx`, `.xlsx`, `.pptx`, `.pdf` dan yang seumpamanya, supaya klik dua kali pada fail akan membukanya.
 
+<!--
 ## Pada Linux
 
 **Debian / Ubuntu**
 
 ```sh
-sudo apt install ./genoffice_<version>_amd64.deb
+sudo apt install ./officevega_<version>_amd64.deb
 ```
 
 **Fedora / RHEL / openSUSE**
 
 ```sh
-sudo dnf install ./genoffice-<version>.x86_64.rpm     # Fedora / RHEL family
-sudo zypper install ./genoffice-<version>.x86_64.rpm  # openSUSE
+sudo dnf install ./officevega-<version>.x86_64.rpm     # Fedora / RHEL family
+sudo zypper install ./officevega-<version>.x86_64.rpm  # openSUSE
 ```
 
 **AppImage** — ia berjalan di tempat ia berada, tanpa langkah pemasangan:
 
 ```sh
-chmod +x GenOffice-<version>.AppImage
-./GenOffice-<version>.AppImage
+chmod +x OfficeVega-<version>.AppImage
+./OfficeVega-<version>.AppImage
 ```
 
-Ia memerlukan masa larian FUSE 2. Jika anda lebih suka tidak memasangnya, jalankannya dengan `--appimage-extract-and-run` dan sandbox itu berfungsi daripada direktori yang diekstrak.
+Ia memerlukan masa larian FUSE 2. Jika anda lebih suka tidak memasangnya, jalankan dengan `--appimage-extract-and-run`, dan sandbox akan berfungsi dari direktori yang diekstrak.
+-->
 
-## Keluaran yang anda jalankan
+## Binaan yang sedang anda jalankan
 
-**Tetapan ▸ Perihal** ialah tempat aplikasi melaporkan keluaran yang anda ada, saluran yang diikutinya dan di mana projek itu terletak. Apabila keluaran yang lebih baharu diterbitkan pada saluran itu, panel yang sama menawarkan kemas kini; pemasangan Flatpak, Nix atau Docker tidak, kerana ia digantikan oleh alat yang meletakkannya di situ.
+**Tetapan ▸ Perihal** ialah tempat aplikasi melaporkan binaan yang anda ada, saluran yang diikutinya dan lokasi projek itu. Apabila binaan yang lebih baharu diterbitkan pada saluran itu, panel yang sama akan menawarkan kemas kini.
 
-![Tetapan ▸ Perihal, menunjukkan versi yang dipasang, saluran kemas kini yang diikuti aplikasi dan pautan GitHub projek](img/install.png)
+![Tetapan ▸ Perihal, menunjukkan versi yang dipasang, saluran kemas kini yang diikuti aplikasi dan pautan laman projek](img/install.png)
 
-## Tiga laluan lagi
+<!--
+## Tiga laluan lain
 
-Ketiganya membalut artifak yang diterbitkan, bukan membina semula aplikasi, jadi semuanya mengikut binari rasmi.
+Ketiga-tiganya membalut artifak yang diterbitkan dan bukannya membina semula aplikasi, jadi ia mengikut binari rasmi.
 
-- **Flatpak** — memasang `.deb` itu melalui mekanisme `extra-data` Flatpak dan menjalankannya di bawah Zypak, yang menyesuaikan sandbox Electron sendiri. Pokok `/app` ialah baca sahaja, jadi kemas kini berlaku melalui Flatpak dan bukan melalui dialog kemas kini dalam aplikasi.
-- **Nix** — ungkapan pakej yang anda bina daripada salinan sumber kod dengan `nix-build packaging/nix`; lihat `packaging/nix`.
-- **Docker** — imej penukaran pukal tanpa antara muka (`packaging/docker`). Ia menukar keseluruhan pokok dokumen Office, Markdown dan HTML kepada PDF melalui saluran eksport aplikasi itu sendiri, jadi hasilnya sama seperti yang akan dihasilkan oleh Fail ▸ Eksport. Ia utiliti CLI, bukan pelayan.
+- **Flatpak** — memasang `.deb` melalui mekanisme `extra-data` Flatpak dan menjalankannya di bawah Zypak, yang menyesuaikan sandbox Electron itu sendiri. Pokok `/app` adalah baca sahaja, jadi kemas kini berlaku melalui Flatpak dan bukan melalui dialog kemas kini dalam aplikasi.
+- **Nix** — ungkapan pakej yang anda bina daripada checkout dengan `nix-build packaging/nix`; lihat `packaging/nix`.
+- **Docker** — imej penukaran pukal tanpa antara muka (`packaging/docker`). Ia menukar keseluruhan pepohon dokumen Office, Markdown dan HTML kepada PDF melalui saluran eksport aplikasi itu sendiri, jadi outputnya sama seperti yang dihasilkan oleh Fail ▸ Eksport. Ia utiliti CLI, bukan pelayan.
+-->
 
-## Baris arahan yang disertakan
+## Baris arahan disertakan sekali
 
-Setiap pemasangan meliputi satu perintah `genoffice` yang bercakap dengan enjin yang sama seperti yang digunakan oleh tetingkap itu, jadi kedua-duanya tidak pernah berselisih tentang sesuatu fail. Pada macOS dan Windows ia berada dalam bungkus aplikasi; `genoffice install-cli` meletakkannya pada `PATH` anda. Lihat **Baris arahan dan ejen** untuk apa yang boleh ia lakukan.
+Setiap pemasangan merangkumi arahan `officevega` yang berkomunikasi dengan enjin yang sama seperti tetingkap, jadi kedua-duanya tidak pernah berbeza pendapat tentang sesuatu fail. Ia berada dalam bundle aplikasi; `officevega install-cli` meletakkannya dalam `PATH` anda. Lihat **Baris arahan dan ejen** untuk maklumat tentang apa yang ia boleh lakukan.
+
+## Sokongan
+
+- Laman web: [officevega.com](https://officevega.com), keluaran: [officevega.com/releases](https://officevega.com/releases).
+- Bantuan dan maklum balas: [officevega.com/feedback](https://officevega.com/feedback), saluran Telegram: [t.me/getmyai](https://t.me/getmyai).
+- Pembangun: [getmyai.io](https://getmyai.io) (Dmitry Filippov), e-mel: [mail@vega.chat](mailto:mail@vega.chat).

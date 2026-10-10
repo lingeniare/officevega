@@ -94,6 +94,38 @@ export interface ChatMeta {
   approxCount: number
 }
 
+/** Title/preview sidecar for one chat (stored in chats-titles.json per project) */
+export interface ChatTitleInfo {
+  title: string
+  preview: string
+  /** provider the chat ran with (history is written for VEGA chats) */
+  provider?: string
+  updatedAt: string
+}
+
+/** One history-list row: a chat session with its title and owning file */
+export interface ChatSession {
+  projectId: string
+  chatId: string
+  title: string
+  preview: string
+  /** absolute file path the chat belongs to ('' when unknown) */
+  filePath: string
+  fileName: string
+  updatedAt: string
+  provider?: string
+  approxCount: number
+}
+
+/** Filter for listChatSessions */
+export interface ChatSessionQuery {
+  /** restrict to one project; omit for the global (cross-file) history */
+  projectId?: string
+  /** case-insensitive substring over title + preview + file name */
+  query?: string
+  limit?: number
+}
+
 // ────────────────────────────────────────────────────────────
 // Extended API types (P1)
 // ────────────────────────────────────────────────────────────

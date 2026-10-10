@@ -36,6 +36,13 @@ export const vi = {
   aiNetworkError:
     'Lỗi mạng: không thể kết nối với dịch vụ AI. Vui lòng kiểm tra kết nối và thử lại',
   aiNewChat: 'Cuộc trò chuyện mới',
+  aiHistoryTitle: 'History',
+  aiHistorySearch: 'Search chats…',
+  aiHistoryEmpty: 'No chats yet',
+  aiHistoryLoading: 'Loading…',
+  aiHistoryCurrent: 'current',
+  aiHistoryVegaOnly:
+    'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiNoReply: '(không có phản hồi)',
   aiOverloadedError: 'Dịch vụ AI hiện đang bận — vui lòng thử lại sau giây lát',
   aiRegenerateTitle: 'Tạo lại',

@@ -8912,7 +8912,7 @@ body.docs-crop-active
 }
 
 .ai-track-btn.on {
-  background: var(--docs-brand-ghost-weak);
+  background: none;
   color: var(--color-brand-secondary);
 }
 

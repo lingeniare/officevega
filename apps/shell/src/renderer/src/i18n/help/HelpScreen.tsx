@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { Markdown } from '@genoffice/ui'
-import { HELP_GROUPS, HELP_TOPICS, helpBody, helpImage, searchTopics } from './help-registry'
+import { HELP_GROUPS, HELP_TOPICS, helpBody, helpImage, manualLangFor, searchTopics } from './help-registry'
 import { useI18n } from '../../locale'
 import { groupTitle, topicTitle } from './help-titles'
 // travels with the lazy chunk: this screen's styles are only wanted on this tab
@@ -12,9 +12,9 @@ import './help.css'
  * over a markdown body per topic. Rendered by the shell renderer when the
  * view is loaded at ?mode=help (the Help tab / F1 / Help menu).
  *
- * Every one of the 21 locales has its own body, title and figure set; a
- * locale with no body of its own falls back to English rather than showing a
- * gap, and the registry keeps the count visible either way.
+ * The manual ships two editions, Russian and English, picked by the system
+ * region (see `manualLangFor`); each has its own body and title set, and a
+ * missing body falls back to English rather than showing a gap.
  *
  * Interactive bits: `[label](help://topic-id)` links in topic bodies jump to
  * another topic (the shared Markdown renderer's nav hook); ArrowUp/ArrowDown
@@ -22,13 +22,11 @@ import './help.css'
  * from the body's `##` headings and scrolls to them by index.
  */
 export function HelpScreen(): React.ReactElement {
-  const { t, lang } = useI18n()
-  // the help tab has no locale of its own: it renders in the shell's UI language.
-  // `lang` is the shell's own `Lang`, which is the short code every lookup here
-  // keys on — `zh`, `ja`, `zh-TW`. `document.documentElement.lang` is the BCP-47
-  // tag instead (`zh-CN`, `ja-JP`), and handing that to a table keyed by short
-  // codes silently misses every row, so the screen showed English titles over a
-  // body in whatever language matched `startsWith('zh')`.
+  const { t } = useI18n()
+  // the manual has two editions, Russian and English, picked by the system's
+  // region: Russian for the former USSR and the CIS, English for everyone else.
+  // It does not follow the shell's UI language.
+  const lang = manualLangFor(navigator.language)
   const [query, setQuery] = useState('')
   const [activeId, setActiveId] = useState(HELP_TOPICS[0]!.id)
   // Bodies are separate chunks, so both the article and the search results are

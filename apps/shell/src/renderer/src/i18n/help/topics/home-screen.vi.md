@@ -1,6 +1,6 @@
 # Màn hình Trang chủ: tập tin của bạn ở đâu
 
-Trang chủ là trang khởi đầu của GenOffice: thanh điều hướng bên trái, danh sách tập tin và các thẻ tạo nhanh bên phải.
+Trang chủ là trang khởi đầu của OfficeVega: thanh điều hướng bên trái, danh sách tập tin và các thẻ tạo nhanh bên phải.
 
 ![Màn hình Trang chủ](img/home-screen.png)
 
@@ -9,7 +9,7 @@ Trang chủ là trang khởi đầu của GenOffice: thanh điều hướng bên
 - **Gần đây**: các tập tin bạn đã mở gần đây. Mỗi hàng đều đóng dấu thời điểm — hôm nay, hôm qua hoặc ngày.
 - **Đã gắn sao**: các tập tin bạn đã gắn sao. Rê chuột lên một hàng tập tin rồi nhấp vào ngôi sao để thêm hoặc bỏ.
 - **Hướng dẫn sử dụng**: mở sổ tay này.
-- **Genspark Projects**: sau khi đăng nhập tài khoản Genspark, mục này hiển thị các dự án bạn đã tạo bằng Genspark AI trên web; nhấp vào một dự án để tiếp tục chỉnh sửa trong trình duyệt. Có hỗ trợ tìm kiếm, sắp xếp theo thời gian, làm mới và tải thêm.
+- **VEGA Projects**: sau khi đăng nhập tài khoản VEGA, mục này hiển thị các dự án bạn đã tạo bằng VEGA AI trên web; nhấp vào một dự án để tiếp tục chỉnh sửa trong trình duyệt. Có hỗ trợ tìm kiếm, sắp xếp theo thời gian, làm mới và tải thêm.
 - **Thư mục**: các thư mục bạn thêm vào thanh bên bằng **Thêm thư mục…**, hoặc kéo vào đó từ trình quản lý tập tin. Mỗi thư mục trở thành một gốc mà bạn có thể mở, tạo thư mục con bên trong, đổi tên và gỡ bỏ; thư mục nào mất kết nối sẽ hiển thị là không khả dụng và có thể gỡ khỏi danh sách. **Thư mục mới** tạo thêm một thư mục nữa.
 
 Ở đây không có mục Thùng rác. Các tập tin đã xóa đi vào thùng rác của hệ thống, và việc khôi phục là của hệ điều hành.
@@ -36,7 +36,7 @@ Chọn ô tick của một hàng, hoặc nhấp ⌘/ctrl, để tạo một vùn
 Ô tìm kiếm ở trên khớp với hai thứ cùng lúc:
 
 - **Tên tập tin**: lọc nhanh theo tên.
-- **Nội dung tập tin**: GenOffice lập chỉ mục cho tập tin của bạn ở nền (văn bản bên trong docx/xlsx/pptx/pdf/md/html), nên tìm trong phần chữ cũng ra tập tin. Phạm vi và các công tắc nằm trong cài đặt tìm kiếm.
+- **Nội dung tập tin**: OfficeVega lập chỉ mục cho tập tin của bạn ở nền (văn bản bên trong docx/xlsx/pptx/pdf/md/html), nên tìm trong phần chữ cũng ra tập tin. Phạm vi và các công tắc nằm trong cài đặt tìm kiếm.
 
 ## Thẻ bắt đầu nhanh
 
@@ -56,8 +56,8 @@ Từng thẻ dùng để làm gì:
 
 > Gợi ý: File ▸ Mới trên dải menu tạo ra cùng những loại tài liệu đó (⌘N/Ctrl+N mặc định tạo tài liệu văn bản); kéo một tập tin vào cửa sổ nghĩa là mở nó.
 
-## Dự án trên đám mây (Genspark Projects)
+## Dự án trên đám mây (VEGA Projects)
 
-- Lần dùng đầu tiên cần đăng nhập tài khoản Genspark (luồng mã thiết bị: GenOffice hiển thị một mã, bạn hoàn tất đăng nhập trong trình duyệt).
+- Lần dùng đầu tiên cần đăng nhập tài khoản VEGA (luồng mã thiết bị: OfficeVega hiển thị một mã, bạn hoàn tất đăng nhập trong trình duyệt).
 - Danh sách dự án đồng bộ với web; Mở trong trình duyệt đưa bạn tới đó để tiếp tục.
 - Không đăng nhập không ảnh hưởng tới bất kỳ tính năng cục bộ nào.

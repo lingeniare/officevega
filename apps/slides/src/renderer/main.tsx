@@ -16,6 +16,7 @@ import '@genoffice/ui/ai-panel-prefs.css'
 import '@genoffice/ui/ai-scope-quote.css'
 import './styles.css'
 import '@genoffice/ui/ai-chat.css'
+import '@genoffice/ui/ai-history-menu.css'
 import '@genoffice/ui/cup-skin.css'
 import { applyAiPanelPrefs, installScreenTips } from '@genoffice/ui'
 
@@ -49,14 +50,14 @@ function applyDesign(design: UiDesign): void {
 async function bootstrap(): Promise<void> {
   let lang: Lang = 'zh'
   let theme: UiTheme = 'system'
-  let design: UiDesign = 'standard'
+  let design: UiDesign = 'digital'
   try {
     // per-promise catch: standalone runs have no app:get-theme handler, and
     // that rejection must not drop a resolved language
     ;[lang, theme, design] = await Promise.all([
       window.slidesApi.getLanguage().catch(() => 'zh' as const),
       window.slidesApi.getTheme().catch(() => 'system' as const),
-      window.slidesApi.getDesign().catch(() => 'standard' as const),
+      window.slidesApi.getDesign().catch(() => 'digital' as const),
     ])
   } catch {
     /* dev renderer without the preload bridge */

@@ -1,30 +1,38 @@
-# Der KI-Bereich
+# Das KI-Assistenten-Panel
 
-Jeder Editor kann den KI-Bereich aufrufen: Etwas auswählen, eine Anweisung geben und das gestreamte Ergebnis ansehen.
+Jeder Editor kann das KI-Panel aufrufen: Wählen Sie etwas aus, geben Sie eine Anweisung und sehen Sie das Ergebnis Schritt für Schritt entstehen.
 
 ## Öffnen und verwenden
 
-![Der KI-Bereich in Docs](img/ai-panel.png)
+![Das KI-Panel in Docs](img/ai-panel.png)
 
-- Einstiegspunkte: die **KI-Schaltfläche** im Menüband jedes Editors, **KI fragen** in den Kontextmenüs oder KI fragen in der Markierungsleiste.
-- Beschreiben Sie die Aufgabe in normaler Sprache (dies umformulieren / diese Spalte in Prozent umrechnen / diese Seite neu setzen …) und drücken Sie die Eingabetaste.
-- Antworten werden **gestreamt**; wenn die KI Werkzeuge braucht (Dokument lesen, bearbeiten), führt sie sie aus und macht weiter, bis die Aufgabe erledigt ist.
-- **Stopp**: unterbrechen Sie den laufenden Durchgang jederzeit.
+- Zugang: die **KI-Schaltfläche** im Menüband jedes Editors, **KI fragen** in Kontextmenüs oder KI fragen in der Markierungsleiste.
+- Beschreiben Sie die Aufgabe in einfacher Sprache (Text umschreiben / Diese Spalte in Prozent umrechnen / Diese Seite neu anordnen ...) und drücken Sie Enter.
+- Antworten erscheinen **Schritt für Schritt**; braucht die KI Werkzeuge (Dokument lesen, bearbeiten), führt sie diese aus und arbeitet weiter, bis sie fertig ist.
+- **Stopp**: Unterbrechen Sie den laufenden Vorgang jederzeit.
 
 ## Was er kann
 
-- **Docs**: umformulieren, ausbauen, übersetzen, zusammenfassen, Tabellen und Bilder einfügen, Formatierung anpassen; jeder Durchgang legt zuerst einen Snapshot an.
-- **Sheets**: Formeln, Datenfüllung, Stapeltransformationen, Formatierung.
-- **Slides**: Erzeugen eines kompletten Decks, Layout anpassen, Texte umformulieren.
-- **PDF**: Fragen und Zusammenfassungen zum ausgewählten Text oder zu ausgewählten Seiten.
-- **Markdown / HTML**: umformulieren, ausbauen, übersetzen.
+- **Docs**: umschreiben, erweitern, übersetzen, zusammenfassen, Tabellen und Bilder einfügen, Formatierung anpassen; jeder Durchgang legt vorher eine Momentaufnahme an.
+- **Sheets**: Formeln, Datenausfüllung, Massentransformationen, Formatierung.
+- **Slides**: Erstellung ganzer Präsentationen, Layoutanpassung, Umschreiben von Texten.
+- **PDF**: Fragen und Zusammenfassungen zu markiertem Text oder ausgewählten Seiten.
+- **Markdown / HTML**: umschreiben, erweitern, übersetzen.
 
-## Zurückrollen und Sicherheit
+## Chatverlauf
 
-- Der Docs-Bereich führt eine **Versionsliste**: einen Snapshot pro Durchgang, Sie können zu jedem davon zurückrollen, und auch das Zurückrollen selbst lässt sich mit Strg+Z rückgängig machen. Snapshots überstehen das erneute Öffnen des Dokuments.
-- KI-Änderungen laufen durch dieselbe Bearbeitungspipeline wie manuelle Änderungen (rückgängig machbar, speichern erforderlich) — nichts umgeht Ihre Speicherbestätigung.
+- Jede Unterhaltung wird automatisch gespeichert und bleibt auf diesem Rechner — öffnen Sie das Panel morgen wieder und machen Sie dort weiter, wo Sie aufgehört haben.
+- Starten Sie einen neuen Chat mit **Neuer Chat**; zwischen früheren Chats wechseln Sie in der Verlaufsliste oben im Panel.
+- Benennen Sie einen Chat um, um ihn schneller zu finden; löschen Sie ihn, um ihn endgültig zu entfernen. Das Löschen eines Chats berührt Ihre Dokumente nie.
 
-## Datenschutz
+## Zurücksetzen und Sicherheit
 
-- Anweisungen und der betreffende Dokumentinhalt gehen an den **von Ihnen konfigurierten Modelldienst** (Genspark gehostet oder ein eigener Endpunkt, siehe nächstes Kapitel); ohne Konfiguration wird nichts gesendet.
-- Lokale Dateien werden nirgendwohin sonst hochgeladen; BYOK-Schlüssel werden in der Einstellungsdatei der App auf diesem Rechner gespeichert und nur in den Anfrage-Headern gesendet.
+- Das Docs-Panel führt eine **Versionsliste**: eine Momentaufnahme pro Durchgang. Sie können auf jede davon zurücksetzen, und das Zurücksetzen selbst lässt sich mit Strg+Z rückgängig machen. Momentaufnahmen bleiben erhalten, wenn Sie das Dokument erneut öffnen.
+- KI-Änderungen laufen über dieselbe Bearbeitungspipeline wie manuelle Änderungen (rückgängig machbar, speicherpflichtig) — nichts umgeht Ihre Speicherbestätigung.
+
+## Datenschutz und Anonymisierung
+
+- Anweisungen und der betreffende Dokumentinhalt gehen an den **von Ihnen konfigurierten Modelldienst** (VEGA-Hosting oder ein eigener Endpunkt, nächstes Kapitel); ohne Konfiguration wird nichts gesendet.
+- **Anonymisierung (152-FZ)**: Vor dem Senden kann die App personenbezogene Daten maskieren — Namen, Telefonnummern, E-Mail-Adressen, Passdaten —, sodass das Modell sie nie sieht. Schalten Sie das unter Einstellungen ▸ KI ein; maskierte Stellen werden im Dokument automatisch wiederhergestellt.
+- **Keine Tracking-Analytik**: OfficeVega wird ohne Google Analytics oder andere Tracker von Drittanbietern ausgeliefert. Es gibt keinen Schalter für Nutzungsstatistiken, weil es nichts abzuschalten gibt — Dokumente und Chat-Inhalte verlassen nie den von Ihnen eingerichteten Weg.
+- Lokale Dateien werden nirgendwo sonst hochgeladen; BYOK-Schlüssel werden in der Einstellungsdatei der App auf diesem Rechner gespeichert und nur in Anfrage-Headern gesendet.

@@ -33,6 +33,12 @@ export const kk = {
   aiNewChat: 'Жаңа чат',
   aiCollapsePanel: 'Панельді тасалау',
   aiHistorySep: '—— алдыңғы әңгіме ——',
+  aiHistoryTitle: 'History',
+  aiHistorySearch: 'Search chats…',
+  aiHistoryEmpty: 'No chats yet',
+  aiHistoryLoading: 'Loading…',
+  aiHistoryCurrent: 'current',
+  aiHistoryVegaOnly: 'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiEmptyTitle: 'Слайдтарыңызды AI өңдесін',
   aiEmptyBody1: 'Нұсқаулар беріңіз немесе жай ғана сұрақ қойыңыз;',
   aiEmptyBody2:

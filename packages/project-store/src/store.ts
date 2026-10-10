@@ -35,6 +35,9 @@ import { basename, dirname, join } from 'node:path'
 import type {
   ChatMeta,
   ChatMessage,
+  ChatSession,
+  ChatSessionQuery,
+  ChatTitleInfo,
   ProjectData,
   ProjectIndex,
   ProjectInfo,
@@ -876,6 +879,146 @@ export class ProjectStore {
     const { projectId, chatId } = this.resolveChatForFile(filePath)
     this.renameOrMergeChat(tempProjectId, tempChatId, projectId, chatId)
     return { projectId, chatId }
+  }
+
+  // ── Chat history (titles + sessions) ─────────────────────────
+
+  private titlesPath(projectId: string): string {
+    assertSafeId(projectId, 'projectId')
+    return join(this.projectDir(projectId), 'chats-titles.json')
+  }
+
+  /** Title sidecars of one project (empty when none were set yet). */
+  getChatTitles(projectId: string): Record<string, ChatTitleInfo> {
+    return readJson<Record<string, ChatTitleInfo>>(this.titlesPath(projectId)) ?? {}
+  }
+
+  /**
+   * Upserts the title/preview sidecar of a chat. Never throws: a failed
+   * write only warns (same policy as the JSONL append path).
+   */
+  setChatTitle(
+    projectId: string,
+    chatId: string,
+    patch: { title?: string; preview?: string; provider?: string },
+  ): void {
+    assertSafeId(projectId, 'projectId')
+    assertSafeId(chatId, 'chatId')
+    const all = this.getChatTitles(projectId)
+    const prev = all[chatId]
+    const provider = patch.provider ?? prev?.provider
+    all[chatId] = {
+      title: patch.title ?? prev?.title ?? '',
+      preview: patch.preview ?? prev?.preview ?? '',
+      ...(provider ? { provider } : {}),
+      updatedAt: nowIso(),
+    }
+    writeJson(this.titlesPath(projectId), all)
+  }
+
+  /**
+   * Starts a new chat session for a file: mints a fresh chatId and points
+   * the path mapping at it, so reopening the file lands on this (latest)
+   * session while older ones stay reachable through listChatSessions.
+   * The previous session's JSONL is kept untouched.
+   */
+  beginNewChatSession(filePath: string): { projectId: string; chatId: string } {
+    const projectId = this.resolveProjectForFile(filePath)
+    const chatId = `chat-${randomBytes(6).toString('hex')}`
+    const index = this.readIndex()
+    const key = canonicalPathKey(filePath)
+    index.chatIdByPath = { ...(index.chatIdByPath ?? {}), [key]: chatId }
+    if (index.fileMap[key] === undefined) index.fileMap[key] = projectId
+    this.writeIndex(index)
+    const proj = this.readProject(projectId)
+    if (proj && !ProjectStore.ownsFile(proj.files, filePath)) {
+      proj.files.push(filePath)
+      proj.updatedAt = nowIso()
+      this.writeProject(proj)
+    }
+    return { projectId, chatId }
+  }
+
+  /**
+   * Global chat history: every stored chat across projects (or one project),
+   * newest first, with title/preview/file. Case-insensitive substring match
+   * over title + preview + file name when `query` is set.
+   */
+  listChatSessions(query: ChatSessionQuery = {}): ChatSession[] {
+    const limit =
+      Number.isFinite(query.limit) && (query.limit as number) > 0
+        ? Math.min(Math.floor(query.limit as number), 500)
+        : 50
+    const needle = query.query?.trim().toLowerCase()
+    const index = this.readIndex()
+    const projectIds =
+      query.projectId !== undefined
+        ? [query.projectId]
+        : ['default', ...index.projects.map((p) => p.id)].filter(
+            (id, i, arr) => arr.indexOf(id) === i,
+          )
+    const out: ChatSession[] = []
+    for (const projectId of projectIds) {
+      let titles: Record<string, ChatTitleInfo>
+      try {
+        titles = this.getChatTitles(projectId)
+      } catch {
+        continue
+      }
+      // reverse chatId → filePath for this project (same shape as getProjectTimeline)
+      const chatToFile = new Map<string, string>()
+      for (const [filePath, pid] of Object.entries(index.fileMap)) {
+        if (pid !== projectId) continue
+        const chatId =
+          this.findMapKey(index.chatIdByPath, filePath) !== undefined
+            ? index.chatIdByPath![this.findMapKey(index.chatIdByPath, filePath)!]!
+            : this.fallbackChatId(projectId, filePath)
+        chatToFile.set(chatId, filePath)
+      }
+      // sessions created via beginNewChatSession are keyed by canonical path too
+      for (const [mappedPath, chatId] of Object.entries(index.chatIdByPath ?? {})) {
+        if (index.fileMap[mappedPath] === projectId && !chatToFile.has(chatId)) {
+          chatToFile.set(chatId, mappedPath)
+        }
+      }
+      let metas: ChatMeta[]
+      try {
+        metas = this.listChats(projectId)
+      } catch {
+        continue
+      }
+      // chats with a title sidecar but no JSONL yet (title set before the
+      // first assistant reply materialized the file) still show up
+      const ids = new Set([...metas.map((m) => m.chatId), ...Object.keys(titles)])
+      for (const chatId of ids) {
+        const meta = metas.find((m) => m.chatId === chatId)
+        const info = titles[chatId]
+        const filePath = chatToFile.get(chatId) ?? ''
+        const fileName = filePath ? basename(filePath) : chatId
+        const title = info?.title || fileName
+        const session: ChatSession = {
+          projectId,
+          chatId,
+          title,
+          preview: info?.preview ?? '',
+          filePath,
+          fileName,
+          updatedAt:
+            info?.updatedAt && meta?.updatedAt
+              ? (info.updatedAt > meta.updatedAt ? info.updatedAt : meta.updatedAt)
+              : (info?.updatedAt ?? meta?.updatedAt ?? nowIso()),
+          ...(info?.provider ? { provider: info.provider } : {}),
+          approxCount: meta?.approxCount ?? 0,
+        }
+        if (needle) {
+          const hay = `${session.title}\n${session.preview}\n${session.fileName}`.toLowerCase()
+          if (!hay.includes(needle)) continue
+        }
+        out.push(session)
+      }
+    }
+    out.sort((a, b) => (a.updatedAt < b.updatedAt ? 1 : a.updatedAt > b.updatedAt ? -1 : 0))
+    return out.slice(0, limit)
   }
 
   /**

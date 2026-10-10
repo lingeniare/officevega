@@ -1,6 +1,6 @@
 # L’écran d’accueil : où vivent vos fichiers
 
-Accueil est la page de démarrage de GenOffice : une barre de navigation à gauche, des listes de fichiers et des cartes de création rapide à droite.
+Accueil est la page de démarrage de OfficeVega : une barre de navigation à gauche, des listes de fichiers et des cartes de création rapide à droite.
 
 ![L’écran d’accueil](img/home-screen.png)
 
@@ -9,7 +9,7 @@ Accueil est la page de démarrage de GenOffice : une barre de navigation à gauc
 - **Récents** : les fichiers que vous avez ouverts récemment. Chaque ligne est datée — aujourd’hui, hier ou la date.
 - **Favoris** : les fichiers que vous avez mis en favori. Survolez une ligne et cliquez sur l’étoile pour l’ajouter ou le retirer.
 - **Guide de l’utilisateur** : ouvre ce manuel.
-- **Genspark Projects** : après connexion à votre compte Genspark, affiche les projets que vous avez créés avec Genspark AI sur le web ; cliquez sur l’un pour continuer à modifier dans le navigateur. Recherche, tri par date, actualisation et chargement de davantage d’éléments sont pris en charge.
+- **VEGA Projects** : après connexion à votre compte VEGA, affiche les projets que vous avez créés avec VEGA AI sur le web ; cliquez sur l’un pour continuer à modifier dans le navigateur. Recherche, tri par date, actualisation et chargement de davantage d’éléments sont pris en charge.
 - **Dossiers** : les répertoires que vous ajoutez à la barre latérale avec **Ajouter un dossier…**, ou que vous y faites glisser depuis le gestionnaire de fichiers. Chacun devient une racine que vous pouvez ouvrir, dans laquelle créer des sous-dossiers, renommer et retirer ; une racine qui devient indisponible est signalée comme telle et peut être retirée de la liste. **Nouveau dossier** en crée un autre.
 
 Il n’y a pas d’entrée Corbeille ici. Les fichiers supprimés vont dans la corbeille du système, et les restaurer relève de l’OS.
@@ -36,7 +36,7 @@ Cochez la case d’une ligne, ou faites ⌘/ctrl-clic, pour composer une sélect
 La zone de recherche en haut porte sur deux choses à la fois :
 
 - **Les noms de fichiers** : filtrage rapide par nom.
-- **Le contenu des fichiers** : GenOffice indexe vos fichiers en arrière-plan (le texte des .docx/xlsx/pptx/pdf/md/html), si bien que chercher dans le corps du texte trouve aussi des fichiers. La portée et les interrupteurs se règlent dans les paramètres de recherche.
+- **Le contenu des fichiers** : OfficeVega indexe vos fichiers en arrière-plan (le texte des .docx/xlsx/pptx/pdf/md/html), si bien que chercher dans le corps du texte trouve aussi des fichiers. La portée et les interrupteurs se règlent dans les paramètres de recherche.
 
 ## Cartes de démarrage rapide
 
@@ -56,8 +56,8 @@ Ce que fait chaque carte :
 
 > Astuce : Fichier ▸ Nouveau dans la barre de menus crée les mêmes types de documents (⌘N/Ctrl+N crée un document texte par défaut) ; faire glisser un fichier dans la fenêtre l’ouvre.
 
-## Projets cloud (Genspark Projects)
+## Projets cloud (VEGA Projects)
 
-- La première utilisation exige de se connecter à votre compte Genspark (flux par code d’appareil : GenOffice affiche un code, vous terminez la connexion dans le navigateur).
+- La première utilisation exige de se connecter à votre compte VEGA (flux par code d’appareil : OfficeVega affiche un code, vous terminez la connexion dans le navigateur).
 - La liste des projets se synchronise avec le web ; Ouvrir dans le navigateur y conduit pour continuer.
 - Ne pas se connecter n’a aucune incidence sur les fonctions locales.

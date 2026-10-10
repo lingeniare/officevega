@@ -10,6 +10,7 @@ import {
   useRibbonCollapse,
   aiPanelInitiallyOpen,
   rememberAiPanelOpen,
+  type AiHistoryItem,
 } from '@genoffice/ui'
 
 import {
@@ -268,6 +269,17 @@ interface ExcelShellProps {
   readonly onSuggestionPick?: (question: string) => void
   readonly onStop: () => void
   readonly onNewChat: () => void
+  /// chat-history menu (populated by App, which owns the sessions)
+  readonly historyOpen: boolean
+  readonly historyItems: AiHistoryItem[]
+  readonly historyLoading: boolean
+  readonly historyQuery: string
+  readonly onHistoryQueryChange: (q: string) => void
+  readonly onHistoryOpen: () => void
+  readonly onHistoryClose: () => void
+  readonly onHistorySelect: (item: AiHistoryItem) => void
+  /// history sessions + titles are written for VEGA chats only
+  readonly isVegaHistory: boolean
   readonly onUndo: (steps?: number) => void
   /// A1 notation of the multi-cell selection the AI composer offers as this
   /// run's scope, or null when the resting single-cell selection carries none.
@@ -514,6 +526,15 @@ export function ExcelShell({
   onSuggestionPick,
   onStop,
   onNewChat,
+  historyOpen,
+  historyItems,
+  historyLoading,
+  historyQuery,
+  onHistoryQueryChange,
+  onHistoryOpen,
+  onHistoryClose,
+  onHistorySelect,
+  isVegaHistory,
   onUndo,
   aiScopeRange,
   aiScopeColumns,
@@ -1067,6 +1088,15 @@ export function ExcelShell({
           {...(onSuggestionPick !== undefined ? { onSuggestionPick } : {})}
           onStop={onStop}
           onNewChat={onNewChat}
+          historyOpen={historyOpen}
+          historyItems={historyItems}
+          historyLoading={historyLoading}
+          historyQuery={historyQuery}
+          onHistoryQueryChange={onHistoryQueryChange}
+          onHistoryOpen={onHistoryOpen}
+          onHistoryClose={onHistoryClose}
+          onHistorySelect={onHistorySelect}
+          isVegaHistory={isVegaHistory}
           onUndo={onUndo}
           scopeRange={aiScopeRange}
           scopeColumns={aiScopeColumns}

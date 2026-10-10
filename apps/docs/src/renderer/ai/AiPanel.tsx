@@ -5,6 +5,8 @@ import type { Block } from '@genoffice/docx-engine'
 import {
   AgentLoop,
   composeSkills,
+  fallbackChatTitle,
+  generateChatTitle,
   generateSuggestedQuestions,
   streamText,
   withPiiTokenGuard,
@@ -63,11 +65,14 @@ import { localizedToolSummary, toolLabel } from './tool-labels'
 import { Markdown } from '@genoffice/ui'
 import {
   AiComposer,
+  AiHistoryButton,
+  AiHistoryMenu,
   AiScopeQuote,
   AiSuggestedQuestions,
   AiTypingIndicator,
   IconPlus,
   useSuggestedQuestions,
+  type AiHistoryItem,
   type AiScopeQuoteData,
 } from '@genoffice/ui'
 import { VegaMark } from '../components/icons'
@@ -503,6 +508,15 @@ export function AiPanel({
   const stickToBottomRef = useRef(true)
   /** projectId/chatId of the current chat */
   const chatRefIds = useRef<{ projectId: string; chatId: string } | null>(null)
+  /** chat-history ("История") menu state */
+  const [historyOpen, setHistoryOpen] = useState(false)
+  const [historyItems, setHistoryItems] = useState<AiHistoryItem[]>([])
+  const [historyLoading, setHistoryLoading] = useState(false)
+  const [historyQuery, setHistoryQuery] = useState('')
+  /** chatIds already given a title this session (one title per chat) */
+  const titledChatsRef = useRef(new Set<string>())
+  /** effective VEGA check: history sessions + titles are written for VEGA chats only */
+  const isVegaHistory = settings.provider === 'vega'
 
   // latest props for the loop's closures (the loop instance outlives renders)
   const editorRef = useRef(editor)
@@ -602,6 +616,140 @@ export function AiPanel({
     Array<{ name: string; summary: string; isError?: boolean; input?: string; output?: string }>
   >([])
 
+  // ── Chat-history menu ("История") ─────────────────────────────────────
+  type StoredChatMessages = Awaited<ReturnType<Window['projectApi']['loadChat']>>
+
+  /** stored JSONL messages → read-only panel entries (same mapping as the initial load) */
+  const toChatEntries = (msgs: StoredChatMessages): ChatEntry[] =>
+    msgs.map((m) => ({
+      role: m.role,
+      text: m.text,
+      tools: m.tools?.map((tl) => ({
+        name: tl.name,
+        summary: localizedToolSummary(tl.name, tl.summary),
+        isError: tl.isError,
+        output: tl.output ? tl.output.slice(0, TOOL_OUTPUT_MAX_CHARS) : undefined,
+      })),
+      // stored metadata only: no thumbnail read for history, the chips render name/size
+      attachments: m.attachments
+        ?.filter((a) => a.path)
+        .map((a) => ({
+          name: a.name,
+          path: a.path ?? '',
+          ext: a.ext ?? '',
+          sizeBytes: a.sizeBytes ?? 0,
+        })),
+      ...(m.scope ? { scope: m.scope } : {}),
+    }))
+
+  const loadHistory = (query: string) => {
+    const api = window.projectApi
+    if (!api?.listChatSessions) return
+    setHistoryLoading(true)
+    const current = chatRefIds.current
+    void api
+      .listChatSessions({ query: query || undefined, limit: 50 })
+      .then((sessions) => {
+        setHistoryItems(
+          sessions.map((s) => ({
+            projectId: s.projectId,
+            chatId: s.chatId,
+            title: s.title,
+            preview: s.preview,
+            fileName: s.fileName,
+            updatedAt: s.updatedAt,
+            current: current?.projectId === s.projectId && current?.chatId === s.chatId,
+          })),
+        )
+      })
+      .catch(() => {
+        setHistoryItems([])
+      })
+      .finally(() => {
+        setHistoryLoading(false)
+      })
+  }
+
+  // debounced search while the menu is open; an immediate load on open
+  useEffect(() => {
+    if (!historyOpen) return
+    loadHistory(historyQuery)
+    const timer = window.setTimeout(() => loadHistory(historyQuery), 300)
+    return () => window.clearTimeout(timer)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [historyOpen, historyQuery])
+
+  const openHistory = () => {
+    setHistoryOpen(true)
+    loadHistory(historyQuery)
+  }
+
+  /** jump to a history session: loads its transcript and continues there */
+  const selectHistorySession = (item: AiHistoryItem) => {
+    const api = window.projectApi
+    if (!api) return
+    abandonWriter()
+    loopRef.current?.reset()
+    suggestTransportRef.current?.resetSession?.()
+    suggested.clear()
+    setBusy(false)
+    setChat([])
+    setHistoryOpen(false)
+    chatRefIds.current = { projectId: item.projectId, chatId: item.chatId }
+    titledChatsRef.current.add(`${item.projectId}:${item.chatId}`)
+    void api
+      .loadChat({ projectId: item.projectId, chatId: item.chatId, limit: 200 })
+      .then((msgs) => {
+        setHistoricChat(toChatEntries(msgs))
+        loopRef.current?.restore(msgs.map((m) => ({ role: m.role, text: m.text })))
+      })
+      .catch(() => {
+        setHistoricChat([])
+      })
+    inputRef.current?.focus()
+  }
+
+  /**
+   * Writes the chat's title sidecar once per chat: an instant fallback title
+   * from the first user message, then upgraded by the fast model (VEGA only).
+   */
+  const ensureChatTitle = (userText: string, assistantText: string) => {
+    const ids = chatRefIds.current
+    const api = window.projectApi
+    if (!ids || !api?.setChatTitle) return
+    const key = `${ids.projectId}:${ids.chatId}`
+    if (titledChatsRef.current.has(key)) return
+    titledChatsRef.current.add(key)
+    if (settingsRef.current.provider !== 'vega') return
+    const preview = userText.slice(0, 120)
+    void api
+      .setChatTitle({
+        projectId: ids.projectId,
+        chatId: ids.chatId,
+        title: fallbackChatTitle(userText),
+        preview,
+        provider: 'vega',
+      })
+      .catch(() => {
+        /* silent */
+      })
+    const transport = suggestTransportRef.current
+    if (!transport) return
+    void generateChatTitle({
+      transport,
+      user: userText,
+      assistant: assistantText,
+      langDirective: aiLangDirective(),
+    })
+      .then((title) => {
+        if (!title) return
+        return api.setChatTitle({ projectId: ids.projectId, chatId: ids.chatId, title })
+      })
+      .catch(() => {
+        /* the fallback title stays */
+      })
+  }
+
   // ── Chat-history persistence ────────────────────────────────────────────
   useEffect(() => {
     const api = (window as Window & { projectApi?: typeof window.projectApi }).projectApi
@@ -615,28 +763,7 @@ export function AiPanel({
       })
       .then((msgs) => {
         if (msgs.length === 0) return
-        setHistoricChat(
-          msgs.map((m) => ({
-            role: m.role,
-            text: m.text,
-            tools: m.tools?.map((t) => ({
-              name: t.name,
-              summary: localizedToolSummary(t.name, t.summary),
-              isError: t.isError,
-              output: t.output ? t.output.slice(0, TOOL_OUTPUT_MAX_CHARS) : undefined,
-            })),
-            // stored metadata only: no thumbnail read for history, the chips render name/size
-            attachments: m.attachments
-              ?.filter((a) => a.path)
-              .map((a) => ({
-                name: a.name,
-                path: a.path ?? '',
-                ext: a.ext ?? '',
-                sizeBytes: a.sizeBytes ?? 0,
-              })),
-            ...(m.scope ? { scope: m.scope } : {}),
-          })),
-        )
+        setHistoricChat(toChatEntries(msgs))
         // restore model context: follow-ups after reopening a file continue the previous conversation (only when the loop is idle with no history)
         loopRef.current?.restore(msgs.map((m) => ({ role: m.role, text: m.text })))
       })
@@ -957,6 +1084,8 @@ export function AiPanel({
           // Edits-only runs (tools ran, no text) persist too, or the whole turn vanishes from the restored transcript
           if (!cancelled && (finalText || runToolsRef.current.length > 0)) {
             persistMessage('assistant', finalText, runToolsRef.current)
+            // first completed exchange of a chat gets its history title (VEGA only)
+            if (finalText) ensureChatTitle(lastInstructionRef.current, finalText)
           }
         },
         onError: (error) => {
@@ -1237,6 +1366,26 @@ export function AiPanel({
     // Restored history is painted above the live turn: without this the
     // previous conversation survives "New chat" on screen (#195).
     setHistoricChat([])
+    setHistoryOpen(false)
+    // VEGA chats start a fresh session so the previous one stays in "История";
+    // other providers keep the legacy behavior (same chatId, UI-only reset).
+    const api = window.projectApi
+    if (settingsRef.current.provider === 'vega' && api?.beginNewChatSession && filePath) {
+      void api
+        .beginNewChatSession({ filePath })
+        .then((r) => {
+          chatRefIds.current = r
+        })
+        .catch(() => {
+          /* silent */
+        })
+    } else if (settingsRef.current.provider === 'vega' && !filePath) {
+      const ids = chatRefIds.current
+      chatRefIds.current = {
+        projectId: ids?.projectId ?? 'default',
+        chatId: `unsaved-${Date.now()}`,
+      }
+    }
     // Unsent composer attachments would otherwise ride into the next chat's
     // file context (availableAttachments merges sent + live). The typed
     // draft itself is kept — only staged files are dropped.
@@ -1402,6 +1551,28 @@ export function AiPanel({
       <div className="ai-panel-header">
         <span className="ai-panel-title">{t('aiPanelTitle')}</span>
         <div className="ai-panel-header-actions">
+          <AiHistoryMenu
+            open={historyOpen}
+            onClose={() => setHistoryOpen(false)}
+            items={historyItems}
+            loading={historyLoading}
+            query={historyQuery}
+            onQueryChange={setHistoryQuery}
+            onSelect={selectHistorySession}
+            onNewChat={newChat}
+            disabledReason={isVegaHistory ? null : 'vega-only'}
+            strings={{
+              menuTitle: t('aiHistoryTitle'),
+              searchPlaceholder: t('aiHistorySearch'),
+              empty: t('aiHistoryEmpty'),
+              loading: t('aiHistoryLoading'),
+              newChat: t('aiNewChatTitle'),
+              currentBadge: t('aiHistoryCurrent'),
+              vegaOnlyNote: t('aiHistoryVegaOnly'),
+            }}
+            buttonLabel={t('aiHistoryTitle')}
+            trigger={<AiHistoryButton label={t('aiHistoryTitle')} onClick={openHistory} />}
+          />
           {(chat.length > 0 || historicChat.length > 0) && (
             <button
               className="ai-header-btn"
