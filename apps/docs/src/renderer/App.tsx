@@ -5813,6 +5813,14 @@ export function App() {
         if (comments.some((c) => !c.done && ids.includes(c.id))) setShowComments(true)
       }
       const mod = e.metaKey || e.ctrlKey
+      // TOC entries render as real <a> so exported PDFs link them; their click
+      // path keeps the heading-text fallback (plain clicks must not navigate)
+      const line = (e.target as HTMLElement).closest('.doc-toc-line') as HTMLElement | null
+      if (line) {
+        e.preventDefault()
+        if (mod) jumpToAnchor(line.dataset.tocAnchor ?? '', line.dataset.tocTitle ?? '')
+        return
+      }
       // read-only display anchors are outside contenteditable and would navigate
       // the renderer in place
       const a = (e.target as HTMLElement).closest('a[href]') as HTMLAnchorElement | null
@@ -5822,8 +5830,6 @@ export function App() {
         return
       }
       if (!mod) return
-      const line = (e.target as HTMLElement).closest('.doc-toc-line') as HTMLElement | null
-      if (line) jumpToAnchor(line.dataset.tocAnchor ?? '', line.dataset.tocTitle ?? '')
     },
     [comments, openLink, jumpToAnchor],
   )

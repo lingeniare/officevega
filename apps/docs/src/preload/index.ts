@@ -13,6 +13,7 @@ import type {
   ContextMenuRequest,
   UiDesign,
   DocTheme,
+  PdfLinkPlan,
   UiTheme,
   ZoteroRendererRequest,
 } from '../shared/ipc'
@@ -173,8 +174,12 @@ const api: DesktopApi = {
     ipcRenderer.invoke('docs:export-html', defaultName, html, outPath),
   printPdfBuffer: (pageWidthTwips: number, pageHeightTwips: number, scale?: number) =>
     ipcRenderer.invoke('docs:print-pdf-buffer', pageWidthTwips, pageHeightTwips, scale),
-  saveMergedPdf: (defaultName: string, base64Parts: string[], outPath?: string) =>
-    ipcRenderer.invoke('docs:save-merged-pdf', defaultName, base64Parts, outPath),
+  saveMergedPdf: (
+    defaultName: string,
+    base64Parts: string[],
+    outPath?: string,
+    linkPlan?: PdfLinkPlan,
+  ) => ipcRenderer.invoke('docs:save-merged-pdf', defaultName, base64Parts, outPath, linkPlan),
   pickExportImagesTarget: () => ipcRenderer.invoke('docs:pick-export-images-target'),
   takeExportPdf: (pdfPath: string) => ipcRenderer.invoke('docs:take-export-pdf', pdfPath),
   writeExportImage: (dir: string, fileName: string, pngBase64: string) =>

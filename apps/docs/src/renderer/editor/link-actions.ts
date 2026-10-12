@@ -59,13 +59,33 @@ export function removeLink(editor: Editor, range: { from: number; to: number }):
   return true
 }
 
+/**
+ * Chromium's printToPDF turns <a href="#x"> into a PDF GoTo link only when a
+ * laid-out element owns id="x"; Word bookmarks live in data-bookmarks, so the
+ * rendered DOM carries shadow ids with this prefix (keeps bookmark names out
+ * of the app's own id space — a bookmark named "root" would otherwise hijack
+ * navigation to the app mount).
+ */
+export const PDF_ANCHOR_PREFIX = 'bk--'
+
+/** DOM id that makes a Word bookmark resolvable as an #anchor link target */
+export function pdfAnchorId(bookmark: string): string {
+  return `${PDF_ANCHOR_PREFIX}${bookmark}`
+}
+
+/** fragment name (no leading '#') → bookmark name: strips the DOM-only prefix */
+export function pdfAnchorName(name: string): string {
+  return name.startsWith(PDF_ANCHOR_PREFIX) ? name.slice(PDF_ANCHOR_PREFIX.length) : name
+}
+
 export type LinkTarget = { kind: 'external'; url: string } | { kind: 'anchor'; name: string } | null
 
 /** what Open Hyperlink does with an address: browser for http(s), in-document jump for #bookmark */
 export function linkTarget(href: string): LinkTarget {
   const text = href.trim()
   if (!text) return null
-  if (text.startsWith('#')) return text.length > 1 ? { kind: 'anchor', name: text.slice(1) } : null
+  if (text.startsWith('#'))
+    return text.length > 1 ? { kind: 'anchor', name: pdfAnchorName(text.slice(1)) } : null
   if (/^https?:\/\//i.test(text)) return { kind: 'external', url: text }
   // bare domains from imported documents ("www.example.com")
   if (/^www\.[^\s/]+\.[a-z]{2,}(?:[/?#].*)?$/i.test(text))

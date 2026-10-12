@@ -121,6 +121,33 @@ export interface DocsTabInfo {
   focused: boolean
 }
 
+/**
+ * Link geometry for a merged PDF export. Coordinates are measured in the
+ * renderer (DOM pixels inside each .pv-page) and converted to PDF points
+ * there — the main process just writes the annotations, since pdf-lib's
+ * copyPages drops every annotation Chromium emitted into the fragments.
+ */
+export interface PdfPlannedLink {
+  /** 'dest' jumps to a bookmarked page; 'uri' opens an external URL */
+  kind: 'dest' | 'uri'
+  /** index into the preview page list (0-based, before group slicing) */
+  page: number
+  /** [x0, y0, x1, y1] in PDF points, bottom-left origin */
+  rect: [number, number, number, number]
+  /** Word bookmark name for kind 'dest' */
+  target?: string
+  /** external URL for kind 'uri' */
+  url?: string
+}
+
+export interface PdfLinkPlan {
+  /** printed groups in the order their fragments were emitted (parallel to base64Parts) */
+  groups: { from: number; to: number }[]
+  links: PdfPlannedLink[]
+  /** bookmark name → target point (page = preview index, y in points from the page bottom) */
+  targets: Record<string, { page: number; y: number }>
+}
+
 /** commands dispatched from the native application menu to the renderer */
 export type MenuCommand =
   | 'new'
@@ -480,11 +507,14 @@ export interface DesktopApi {
     scale?: number,
   ): Promise<{ ok: boolean; base64?: string; error?: string }>
   /** Merge grouped PDF fragments in order and write to disk (missing outPath opens
-   *  the save dialog; a given outPath must come from a previous export dialog) */
+   *  the save dialog; a given outPath must come from a previous export dialog).
+   *  linkPlan carries measured link geometry: pdf-lib's copyPages drops every
+   *  annotation, so links are re-emitted on the merged doc from this plan. */
   saveMergedPdf(
     defaultName: string,
     base64Parts: string[],
     outPath?: string,
+    linkPlan?: PdfLinkPlan,
   ): Promise<{ ok: boolean; path?: string; error?: string }>
   /** Export as images: the folder picker plus a pre-authorized temp PDF path the
    *  regular PDF export writes to silently (no reveal, no open) */

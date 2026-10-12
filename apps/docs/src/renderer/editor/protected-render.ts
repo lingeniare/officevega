@@ -101,6 +101,7 @@ import {
   inferredBidi,
 } from './convert'
 import { cellDiagonalCss, cellPadPx } from './border-metrics'
+import { pdfAnchorId } from './link-actions'
 
 // Word: links and TOC entries jump on modifier+click only
 const jumpHint = () =>
@@ -124,7 +125,13 @@ export function renderFieldSpec(field: FieldDisplay): DomSpec | null {
       'data-toc-title': field.left ?? '',
       title: jumpHint(),
     }
-    if (field.anchor) attrs['data-toc-anchor'] = field.anchor
+    if (field.anchor) {
+      attrs['data-toc-anchor'] = field.anchor
+      // a real anchor element lets Chromium's printToPDF emit a GoTo link
+      // annotation in exported PDFs (the click path stays the .doc-toc-line
+      // handler, which keeps the heading-text fallback)
+      attrs.href = `#${pdfAnchorId(field.anchor)}`
+    }
     const titleAttrs: Record<string, string> = { class: 'doc-toc-title', contenteditable: 'false' }
     if (field.runStyleId) titleAttrs['data-style'] = field.runStyleId
     // direct pPr/run metrics of the entry paragraph beat the inherited body size
@@ -155,7 +162,7 @@ export function renderFieldSpec(field: FieldDisplay): DomSpec | null {
       (field.num ? numAttrs : titleAttrs).style = `padding-left:${field.indentLeftTwips / 20}pt`
     const num: DomSpec[] = field.num ? [['span', numAttrs, field.num]] : []
     return [
-      'div',
+      field.anchor ? 'a' : 'div',
       attrs,
       ...num,
       ['span', titleAttrs, field.left || '\u00a0'],

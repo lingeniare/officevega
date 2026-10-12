@@ -151,9 +151,11 @@ import type {
   DocsTabInfo,
   MenuCommand,
   OpenDocxResult,
+  PdfLinkPlan,
   SpellLanguages,
 } from '../shared/ipc'
 import { ATTACHMENT_IMAGE_EXTS } from '../shared/ipc'
+import { applyPdfLinkPlan } from './pdf-links'
 import { ClickClaims } from '../shared/context-menu-claims'
 import { findDocxPath } from '../shared/open-file'
 import { atomicWriteFile, looksLikeZip } from './atomic-write'
@@ -6386,7 +6388,13 @@ export function registerDocsIpc(): void {
   // merge grouped PDF fragments into one file in page order (pdf-lib)
   ipcMain.handle(
     'docs:save-merged-pdf',
-    async (event, defaultName: string, base64Parts: string[], outPath?: string) => {
+    async (
+      event,
+      defaultName: string,
+      base64Parts: string[],
+      outPath?: string,
+      linkPlan?: PdfLinkPlan,
+    ) => {
       let filePath = outPath ?? null
       if (filePath && !canPdfWrite(event.sender.id, filePath)) {
         return { ok: false, error: 'export target is not an authorized path' }
@@ -6408,6 +6416,14 @@ export function registerDocsIpc(): void {
           const part = await PDFDocument.load(Buffer.from(b64, 'base64'))
           const pages = await merged.copyPages(part, part.getPageIndices())
           for (const page of pages) merged.addPage(page)
+        }
+        if (linkPlan) {
+          try {
+            applyPdfLinkPlan(merged, linkPlan)
+          } catch (err) {
+            // links are best-effort: a malformed plan must not sink the export
+            console.warn('pdf link annotations failed:', err)
+          }
         }
         await atomicWriteFile(filePath, Buffer.from(await merged.save()))
         if (!isImageExportTemp(event.sender.id, filePath)) openGeneratedFile(filePath)

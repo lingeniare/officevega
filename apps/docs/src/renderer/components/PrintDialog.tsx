@@ -12,7 +12,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useI18n } from '../i18n/locale'
 import { parsePrintRange } from '../print-range'
-import { clearPrintZoom, setPrintZoom } from '../print-zoom'
+import { clearPrintZoom, installPdfAnchorIds, setPrintZoom } from '../print-zoom'
 
 type RangeMode = 'all' | 'current' | 'custom'
 
@@ -119,6 +119,7 @@ export function PrintDialog({
     // (hidden) preview keeps its layout while unselected sheets don't print.
     els.forEach((el, i) => el.classList.toggle('pv-print-skip', !sel.has(i)))
     const scale = setPrintZoom()
+    const restoreAnchors = installPdfAnchorIds()
     try {
       const r = await window.desktop.print(scale)
       if (r.ok) {
@@ -128,6 +129,7 @@ export function PrintDialog({
       if (r.error) setStatus(t('appPrintFailed', { error: r.error }))
       // not ok without an error = canceled in the system dialog: keep the dialog open
     } finally {
+      restoreAnchors()
       clearPrintZoom()
       els.forEach((el) => el.classList.remove('pv-print-skip'))
       setPrinting(false)

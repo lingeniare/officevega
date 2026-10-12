@@ -90,7 +90,9 @@ import { hangulSpaceWideningFor, setDocFontTable, setHangulSpaceWidening } from 
 import { adoptEmbeddedFonts } from './embedded-fonts'
 import { defaultEastAsiaFontFor } from './font-list'
 import { hasPrintableHeaderFooter } from './pagination'
-import { clearPrintZoom, setPrintZoom } from './print-zoom'
+import { clearPrintZoom, installPdfAnchorIds, setPrintZoom } from './print-zoom'
+import { pdfAnchorName } from './editor/link-actions'
+import type { PdfLinkPlan } from '../shared/ipc'
 import { showToast } from './components/toast-bus'
 import { buildStandaloneHtml } from './html-export'
 import { aiPanelInitiallyOpen } from '@genoffice/ui'
@@ -1219,6 +1221,57 @@ export function printDoc(ctx: FileActionContext): void {
 
 type PrintGroup = { w: number; h: number; from: number; to: number }
 
+/**
+ * Link geometry for a merged export, measured on the preview pages while they
+ * are all laid out (before any pv-print-skip toggling). pdf-lib's copyPages
+ * drops the annotations Chromium emits into each fragment, so the merged PDF
+ * gets link annotations re-emitted from this plan — that also carries links
+ * whose target lives in a different printed group, which Chromium could never
+ * resolve fragment-locally. Internal links use the same shadow ids as the
+ * single-pass print path; external http(s)/mailto links become URI actions.
+ */
+function collectPdfLinkPlan(
+  pvPages: HTMLElement[],
+  pxToTwips: (px: number) => number,
+): PdfLinkPlan {
+  const links: PdfLinkPlan['links'] = []
+  const targets: PdfLinkPlan['targets'] = {}
+  pvPages.forEach((page, i) => {
+    const pr = page.getBoundingClientRect()
+    const pageWpt = pxToTwips(parseFloat(page.style.width)) / 20
+    const pageHpt = pxToTwips(parseFloat(page.style.height)) / 20
+    if (pr.width <= 0 || pr.height <= 0 || !Number.isFinite(pageWpt) || !Number.isFinite(pageHpt))
+      return
+    const fx = pageWpt / pr.width
+    const fy = pageHpt / pr.height
+    // bookmark targets: the bookmarked block's top edge is the jump point
+    page.querySelectorAll<HTMLElement>('[data-bookmarks]').forEach((el) => {
+      const top = el.getBoundingClientRect().top - pr.top
+      for (const name of (el.dataset.bookmarks ?? '').split(' ')) {
+        if (name && !targets[name]) targets[name] = { page: i, y: pageHpt - top * fy }
+      }
+    })
+    page.querySelectorAll<HTMLAnchorElement>('a[href]').forEach((a) => {
+      const href = a.getAttribute('href') ?? ''
+      const r = a.getBoundingClientRect()
+      if (r.width <= 0 || r.height <= 0) return
+      const rect: [number, number, number, number] = [
+        (r.left - pr.left) * fx,
+        pageHpt - (r.bottom - pr.top) * fy,
+        (r.right - pr.left) * fx,
+        pageHpt - (r.top - pr.top) * fy,
+      ]
+      if (href.startsWith('#')) {
+        const target = pdfAnchorName(href.slice(1))
+        if (target) links.push({ kind: 'dest', page: i, rect, target })
+      } else if (/^(?:https?|mailto):/i.test(href)) {
+        links.push({ kind: 'uri', page: i, rect, url: href })
+      }
+    })
+  })
+  return { groups: [], links, targets }
+}
+
 function chunkPrintGroups(groups: PrintGroup[], size: number): PrintGroup[] {
   const chunked: PrintGroup[] = []
   for (const g of groups) {
@@ -1238,6 +1291,9 @@ async function printGroupsMerged(
   outPath?: string,
 ): Promise<boolean> {
   const parts: string[] = []
+  const pxToTwips = (px: number) => Math.round((px / 96) * 1440)
+  // measured before the first pv-print-skip toggle, while every page is laid out
+  const linkPlan = collectPdfLinkPlan(pvPages, pxToTwips)
   // every printToPDF flips the whole document between print and screen media;
   // pv-exporting parks the covered editor's subtree layout for the export's
   // duration so each flip only relays out the group's own pages (hundreds of
@@ -1252,9 +1308,19 @@ async function printGroupsMerged(
         page.classList.toggle('pv-print-skip', i < g.from || i > g.to)
         page.classList.toggle('pv-print-tail', i === g.to)
       })
-      const part = await window.desktop.printPdfBuffer(g.w, g.h, scale)
+      // per chunk: a preview re-render between jobs drops injected ids
+      const restoreAnchors = installPdfAnchorIds(ctx.editor?.view)
+      let part: Awaited<ReturnType<typeof window.desktop.printPdfBuffer>>
+      try {
+        part = await window.desktop.printPdfBuffer(g.w, g.h, scale)
+      } finally {
+        restoreAnchors()
+      }
       if (part.ok && part.base64) {
         parts.push(part.base64)
+        // emitted fragment order = merged page order; bisected sub-groups stay
+        // consecutive so preview index → merged index is a plain range offset
+        linkPlan.groups.push({ from: g.from, to: g.to })
         continue
       }
       if (g.to > g.from) {
@@ -1271,7 +1337,7 @@ async function printGroupsMerged(
     appRoot?.classList.remove('pv-exporting')
     pvPages.forEach((page) => page.classList.remove('pv-print-skip', 'pv-print-tail'))
   }
-  const result = await window.desktop.saveMergedPdf(fileName, parts, outPath)
+  const result = await window.desktop.saveMergedPdf(fileName, parts, outPath, linkPlan)
   const mixed = groups.some((g) => g.w !== groups[0].w || g.h !== groups[0].h)
   ctx.setStatus(
     result.ok
@@ -1342,7 +1408,13 @@ export async function exportPdf(ctx: FileActionContext, outPath?: string): Promi
       // preview open but uniform paper: single export at the preview size
       const g = groups[0]
       if (g) {
-        const result = await window.desktop.exportPdf(doc.fileName, g.w, g.h, outPath, scale)
+        const restoreAnchors = installPdfAnchorIds(ctx.editor?.view)
+        let result: Awaited<ReturnType<typeof window.desktop.exportPdf>>
+        try {
+          result = await window.desktop.exportPdf(doc.fileName, g.w, g.h, outPath, scale)
+        } finally {
+          restoreAnchors()
+        }
         if (result.ok) {
           ctx.setStatus(t('appExportedPdf', { path: result.path ?? '' }))
           return true
@@ -1408,12 +1480,18 @@ export async function exportPdf(ctx: FileActionContext, outPath?: string): Promi
       return deferExportToPreview(ctx, outPath)
     }
     const major = [...counts.values()][0]
-    const result = await window.desktop.exportPdf(
-      doc.fileName,
-      major?.w ?? ctx.section?.pageWidth ?? 12240,
-      major?.h ?? ctx.section?.pageHeight ?? 15840,
-      outPath,
-    )
+    const restoreAnchors = installPdfAnchorIds(ctx.editor?.view)
+    let result: Awaited<ReturnType<typeof window.desktop.exportPdf>>
+    try {
+      result = await window.desktop.exportPdf(
+        doc.fileName,
+        major?.w ?? ctx.section?.pageWidth ?? 12240,
+        major?.h ?? ctx.section?.pageHeight ?? 15840,
+        outPath,
+      )
+    } finally {
+      restoreAnchors()
+    }
     if (result.ok) {
       ctx.setStatus(t('appExportedPdf', { path: result.path ?? '' }))
       return true
