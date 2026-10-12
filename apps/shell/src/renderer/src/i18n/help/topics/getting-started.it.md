@@ -46,7 +46,7 @@ Un nuovo documento si apre senza titolo; il file su disco viene creato solo al p
 | Apri questo manuale           | F1      |
 | Riduci la barra multifunzione | Ctrl+F1 |
 
-**Ridurre la barra multifunzione** funziona in ogni editor. La riga di schede resta al suo posto e la banda dei comandi sottostante viene nascosta; la scheda selezionata fa anche da controllo di riduzione, quindi mentre la barra è ridotta nessuna scheda risulta selezionata e premere una scheda qualsiasi riporta la banda. Un doppio clic su una scheda fa lo stesso. Lo stato in cui l'hai lasciata viene ricordato per ogni editor.
+**Ridurre la barra multifunzione** funziona in ogni editor. La riga di schede resta al suo posto e la banda dei comandi sottostante viene nascosta; la scheda selezionata fa anche da controllo di riduzione, quindi mentre la barra multifunzione è ridotta nessuna scheda è selezionata e premere una scheda qualsiasi riporta la banda. Un doppio clic su una scheda fa lo stesso. Il modo in cui l'ha lasciata viene ricordato per ogni editor. Docs aggiunge una densità intermedia: **⌥⌘K** / Ctrl+Alt+K comprime la barra alle sole icone, ricordata allo stesso modo.
 
 Le scorciatoie interne a ogni editor (copia formato, trova e sostituisci, operazioni sulle tabelle, ...) si trovano nei rispettivi capitoli; Docs dispone inoltre di una finestra di dialogo ricercabile con tutte le scorciatoie da tastiera (**ctrl+/**) che copre ogni combinazione.
 

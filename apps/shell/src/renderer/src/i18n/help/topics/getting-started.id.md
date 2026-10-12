@@ -46,7 +46,7 @@ Dokumen baru terbuka tanpa nama; file di disk baru dibuat saat pertama kali disi
 | Buka panduan ini | F1        |
 | Lipat pita       | Ctrl+F1   |
 
-**Melipat pita** berfungsi di setiap editor. Baris tab tetap ada dan pita perintah di bawahnya disembunyikan; tab yang dipilih sekaligus berfungsi sebagai tombol lipat, jadi selama pita terlipat tidak ada tab yang dipilih, dan menekan tab mana pun akan memunculkan kembali pita tersebut. Klik dua kali pada tab memberikan hasil yang sama. Cara terakhir Anda meninggalkannya diingat untuk setiap editor.
+**Ciutkan Pita** berfungsi di setiap editor. Baris tab tetap ada dan pita perintah di bawahnya tersembunyi; tab yang sedang dipilih sekaligus menjadi kendali pencetakan, sehingga selama pita terlipat tidak ada tab yang dipilih dan menekan tab mana pun mengembalikan pita itu. Klik ganda pada tab melakukan hal yang sama. Cara Anda meninggalkannya diingat per editor. Docs menambah kepadatan menengah: **⌥⌘K** / Ctrl+Alt+K memampatkan pita menjadi ikon saja, diingat dengan cara yang sama.
 
 Pintasan di dalam masing-masing editor (penyalin format, cari dan ganti, operasi tabel, ...) dijelaskan di bab masing-masing; Docs juga menyediakan dialog pintasan keyboard yang dapat dicari (**ctrl+/**) yang mencakup seluruh kombinasi tombol miliknya.
 

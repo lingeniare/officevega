@@ -22,7 +22,7 @@
 
 - VEGA 按模型按量计费。完整价格表位于 [api.vega.chat/aimodels](https://api.vega.chat/aimodels)，在开始大型任务之前，请先查看模型的输入/输出价格。
 - 当前余额和消费情况可在 [VEGA 控制台](https://api.vega.chat/dashboard)查看，也可以从账户菜单的余额行打开。
-- 未登录时，只有免费的内置选项可以使用；登录后即可解锁价格表中的全部模型。
+- base URL 支持带路径与查询串（如网关地址），App 会正确拼接端点路径。
 
 ## CLI 集成（Codex 类）
 

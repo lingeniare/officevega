@@ -4781,7 +4781,8 @@ fn an_uncancelled_open_completes_and_keeps_its_cache_directory() {
 /// plain `read_to_string`, and it is how nearly every workbook part is loaded.
 /// `validate_entries` checks the entry *count* and the paths, never the bytes.
 /// A workbook therefore gets a full unbounded allocation out of one crafted
-/// entry, where every other ingest path in the product refuses it (#781, #1386).
+/// entry, where every other ingest path in the product refuses it
+/// (genoffice#781, genoffice#1386).
 #[test]
 fn rejects_xml_entry_that_inflates_past_its_declared_size() {
     let dir = tempfile::tempdir().unwrap();

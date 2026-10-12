@@ -46,7 +46,7 @@ Een nieuw document opent zonder titel; het bestand op schijf wordt pas aangemaak
 | Deze handleiding openen | F1      |
 | Het lint samenvouwen    | Ctrl+F1 |
 
-**Het lint samenvouwen** werkt in elke editor. De tabbalk blijft staan en de opdrachtbalk eronder verdwijnt. Het geselecteerde tabblad dient tegelijk als bedieningselement om het lint samen te vouwen; zolang het lint is samengevouwen, is er geen tabblad geselecteerd, en wie op een tabblad klikt, haalt de balk terug. Een dubbelklik op een tabblad doet hetzelfde. De stand waarin je het hebt achtergelaten, wordt per editor onthouden.
+**Het lint samenvouwen** werkt in elke editor. De tabbalk blijft staan en de opdrachtbalk eronder verdwijnt; het geselecteerde tabblad dient tegelijk als het besturingselement om het lint te vouwen, dus zolang het lint samengevouwen is, is er geen tabblad geselecteerd en drukken op een willekeurig tabblad brengt de balk terug. Een dubbelklik op een tabblad doet hetzelfde. Hoe u het hebt gelaten, wordt per editor onthouden. Docs voegt een middendichtheid toe: **⌥⌘K** / Ctrl+Alt+K comprimeert de band tot alleen pictogrammen, ook onthouden.
 
 Sneltoetsen binnen elke editor (opmaakkwast, zoeken en vervangen, tabelbewerkingen, ...) staan in de bijbehorende hoofdstukken. Docs heeft bovendien een doorzoekbaar venster met sneltoetsen (**ctrl+/**) dat alle sneltoetsen van Docs bevat.
 

@@ -22,7 +22,7 @@ Modelle und Schlüssel werden in den Einstellungen konfiguriert (die Kontenzeile
 
 - Die Abrechnung bei VEGA erfolgt nutzungsabhängig je Modell. Die vollständige Preisliste finden Sie unter [api.vega.chat/aimodels](https://api.vega.chat/aimodels) — prüfen Sie Eingabe- und Ausgabepreis eines Modells vor einem größeren Auftrag.
 - Aktuelles Guthaben und Ausgaben stehen im [VEGA-Dashboard](https://api.vega.chat/dashboard), das Sie auch über die Guthabenzeile im Kontomenü öffnen.
-- Ohne Anmeldung funktionieren nur die kostenlosen eingebauten Optionen; melden Sie sich an, um alle Modelle der Preisliste freizuschalten.
+- Basis-URLs dürfen Pfad und Abfragezeichenfolge enthalten (Gateway-Stil); Endpunktpfade werden korrekt angehängt.
 
 ## CLI-Integration (Codex-Klasse)
 

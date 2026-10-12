@@ -6,24 +6,34 @@ Setiap editor boleh memanggil panel AI. Pilih sesuatu, berikan arahan, dan lihat
 
 ![Panel AI dalam Docs](img/ai-panel.png)
 
-- Cara untuk membukanya: butang **AI** pada reben setiap editor, **Tanya AI** dalam menu konteks, atau Tanya AI pada bar anotasi.
-- Terangkan tugas dalam bahasa biasa (tulis semula ini / jadikan lajur ini peratusan / susun semula halaman ini...) dan tekan Enter.
-- Balasan dipaparkan secara berperingkat. Apabila AI memerlukan alatan (membaca dokumen, mengeditnya), ia akan menjalankannya dan meneruskan sehingga selesai.
-- **Berhenti**: hentikan pusingan semasa pada bila-bila masa.
+- Akses kepada panel ini ialah melalui **butang AI** pada reben setiap editor, **Tanya AI** dalam menu konteks, atau Tanya AI pada bar anotasi.
+- Terangkan tugas itu dalam bahasa biasa, kemudian tekan Enter.
+- Balasan dipaparkan secara berperingkat. Apabila AI memerlukan alatan, ia akan menggunakan alatan itu dan meneruskan sehingga selesai.
+- **Berhenti** boleh digunakan pada bila-bila masa untuk menghentikan pusingan semasa.
+- **Baris gilir**: ketika balasan sedang mengalir, Enter memasukkan mesej anda ke baris gilir dan bukannya membuangnya — jalur di atas kotak input mengiranya; buka untuk sunting, buang, susun semula, jeda atau kosongkan. Mesej seterusnya terhantar sendiri apabila giliran tamat; Esc masih menghentikan giliran.
 
 ## Apa yang boleh dilakukannya
 
-- **Docs**: menulis semula, mengembangkan, menterjemah dan meringkaskan; memasukkan jadual dan imej; menyesuaikan pemformatan. Setiap pusingan mengambil gambar keadaan terlebih dahulu.
-- **Sheets**: formula, mengisi data, transformasi pukal, pemformatan.
-- **Slides**: menjana keseluruhan persembahan, melaras susun atur, menulis semula teks.
-- **PDF**: soal jawab dan ringkasan berdasarkan teks atau halaman yang dipilih.
-- **Markdown / HTML**: menulis semula, mengembangkan, menterjemah.
+- **Docs**: menulis semula, melanjutkan, menterjemah, meringkas, dan memasukkan jadual serta imej. Setiap pusingan mengambil gambar keadaan lebih dahulu.
+- **Sheets**: formula, mengisi data, transformasi pukal, dan pemformatan.
+- **Slides**: menjana keseluruhan persembahan, menyelaras susun atur, dan menulis semula teks.
+- **PDF**: menjawab soalan dan meringkas berdasarkan teks atau halaman yang dipilih.
+- **Markdown dan HTML**: menulis semula, melanjutkan, dan menterjemah.
+- **Laman Utama ▸ Ask AI** menjawab daripada fail anda yang berbintang dan memetiknya — panel pangkalan pengetahuan ada bahagiannya sendiri dalam bab Laman Utama, dan panel AI Docs membawa kemahiran yang sama.
 
 ## Sejarah sembang
 
 - Setiap perbualan disimpan secara automatik dan kekal pada komputer ini — buka panel esok dan teruskan dari tempat anda berhenti.
 - Mulakan sembang baharu dengan **New chat**, dan tukar antara sembang lama dalam senarai sejarah di bahagian atas panel.
 - Namakan semula sembang untuk mencarinya dengan lebih pantas; padamkannya untuk membuangnya selama-lamanya. Memadam sembang tidak sekali-kali menjejaskan dokumen anda.
+
+## Menyembunyikan pemilihan daripada AI
+
+- Dalam Slides, HTML dan Markdown, pemilihan boleh dijauhkan daripada mata model: klik kanan ▸ **Sembunyikan pemilihan daripada AI**, beri nama pemegang tempat, dan model membaca `{{nama}}` sebagai gantinya. (Markdown melengkapkan item ini dengan togol mata-tercorek pada rebennya; milik HTML ada di panel sumber.)
+- Fail menyimpan teks sebenar — simpan, eksport dan cetak tidak terganggu, dan tanda itu kekal selepas dibuka semula. Item yang sama membatalkan penyembunyian (Markdown ada **Tunjukkan pemilihan kepada AI semula** yang berasingan).
+- HTML menyembunyikan kandungan elemen, nilai atribut dan literal rentetan dalam skrip; halaman yang diterjemahkan tidak pernah berubah.
+- Slides turut menyembunyikan gambar, video dan audio secara keseluruhan, dan slaid dengan kandungan tersembunyi tidak pernah dihantar sebagai tangkapan skrin: semakan letak automatik melangkau halaman itu dan menyebutnya.
+- Ini hanya untuk AI dalam aplikasi — CLI, alat MCP dan eksport tanpa kepala membaca fail secara terus dan masih nampak teksnya.
 
 ## Undur dan keselamatan
 

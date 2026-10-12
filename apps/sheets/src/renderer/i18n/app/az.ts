@@ -1542,4 +1542,8 @@ export const az = {
   appVisualFlipV: 'Flip Vertical',
   appVisualFlipH: 'Flip Horizontal',
   appCtxPasteVisual: 'Paste Picture or Shape',
+  appLargeFilterLoading: 'Filtr sütunu fayldan oxunur…',
+  appLargeFilterApplying: 'Filtr fayla tətbiq olunur…',
+  appPrintWorkbookTooLarge:
+    'Bu iş kitabı yaddaşa tam yüklənmək üçün çox böyükdür, ona görə çap etmək və ya PDF-ə ixrac etmək olmaz.',
 } satisfies Record<keyof typeof zh, string>

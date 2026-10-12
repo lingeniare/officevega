@@ -52,6 +52,7 @@ import {
   webSearchTool,
   imageSearchTool,
   ensureOfficeVegaLogin,
+  noteGskCallFailure,
   officeVegaApiKey,
   setOfficeVegaAuthListener,
   gskApiKey,
@@ -178,6 +179,8 @@ export function registerAiIpc(): void {
     },
   )
 
+  // a 401 on the gsk key drops the stored key and re-reads the shared config;
+  // this fork owns no gsk login flow — the sign-in button below takes over
   ipcMain.handle('ai:gsk-login', () => {
     ensureOfficeVegaLogin((url) => void shell.openExternal(url))
   })
@@ -262,8 +265,11 @@ export function registerAiIpc(): void {
     let config = resolvedConfig
     // The genspark key never enters the settings file; it is fetched from the gsk login state per request.
     // A VEGA slot likewise inherits the sign-in-issued key when its own is empty.
+    // set only when the gsk key was injected: a 401 then means that key expired
+    let gskKey = ''
     if (provider === 'genspark' && config && !config.apiKey) {
-      config = { ...config, apiKey: gskApiKey() }
+      gskKey = gskApiKey()
+      config = { ...config, apiKey: gskKey }
     } else if (provider === 'vega' && config && !config.apiKey?.trim()) {
       config = { ...config, apiKey: officeVegaApiKey() }
     }
@@ -308,6 +314,7 @@ export function registerAiIpc(): void {
         onStopReason: (reason) => {
           stopReason = reason
         },
+        onUsage: (usage) => send({ requestId, type: 'usage', usage }),
       })
       send(
         stopReason === undefined
@@ -318,6 +325,8 @@ export function registerAiIpc(): void {
       if (controller.signal.aborted) {
         send({ requestId, type: 'done' })
       } else {
+        // an expired/revoked key drops to signed-out so the inline sign-in button shows
+        noteGskCallFailure(gskKey, err)
         const msg = err instanceof Error ? err.message : String(err)
         console.error(`[ai-stream] ${requestId} (${provider}/${config.model}) failed:`, msg)
         send({

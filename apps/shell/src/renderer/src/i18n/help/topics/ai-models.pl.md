@@ -10,7 +10,7 @@ Modele i klucze konfiguruje się w ustawieniach (wiersz konta w lewym dolnym rog
 - **Własne punkty końcowe (BYOK)**: Settings ▸ AI przyjmuje bazowy adres URL i klucz API dla każdego protokołu — zgodnego z OpenAI, Anthropic, Gemini, DeepSeek, DashScope (qwen) i innych. Klucze są przechowywane w pliku ustawień aplikacji na tym komputerze i wysyłane wyłącznie w nagłówkach żądań.
 - Dla każdej funkcji można wybrać inny model: czat i generowanie tekstu, generowanie obrazów, analiza obrazów.
 - **Test połączenia**: sprawdza dostępność punktu końcowego i widoczność modelu przed zapisaniem.
-- Bazowe adresy URL mogą zawierać ścieżkę i ciąg zapytania (w stylu bramy); ścieżki punktów końcowych są dołączane poprawnie.
+- Adresy bazowe mogą zawierać ścieżkę i ciąg zapytania (w stylu bramy); ścieżki punktów końcowych są dokładnie doklejane.
 
 ## Wybór modelu
 

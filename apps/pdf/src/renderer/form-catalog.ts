@@ -3,6 +3,7 @@ import {
   LEGACY_VISUAL_SIGNATURE_CONTENT_PREFIXES,
   VISUAL_SIGNATURE_CONTENT_PREFIX,
 } from '../shared/ipc'
+import { dateFormatFromActions } from './date-format'
 
 export type FormWidgetKind = 'text' | 'checkbox' | 'radio' | 'choice' | 'signature'
 
@@ -15,6 +16,8 @@ export interface FormWidget {
   value: string
   checked: boolean
   multiLine: boolean
+  /** text: AFDate format the field validates against (Acrobat date field) */
+  dateFormat: string | null
   readOnly: boolean
   required: boolean
   maxLen: number | null
@@ -44,6 +47,8 @@ export interface FormCatalog {
   widgets: FormWidget[]
   fields: Map<string, FormField>
   byPage: Map<number, FormWidget[]>
+  /** Names of AcroForm fields with no editable widget (push buttons, widget-less data fields): still taken */
+  otherFieldNames: Set<string>
 }
 
 /** Editable widgets in the user's current visible page order. */
@@ -86,6 +91,7 @@ export interface RawFormAnnotation {
   contents?: string
   contentsObj?: { str?: string }
   genOfficeFormField?: string
+  actions?: unknown
 }
 
 function fieldValueStr(value: unknown): string {
@@ -115,6 +121,7 @@ export function widgetsFromAnnotations(annots: RawFormAnnotation[], pageIndex = 
       rect: annotation.rect as FormWidget['rect'],
       checked: false,
       multiLine: false,
+      dateFormat: null,
       readOnly: !!annotation.readOnly,
       required: !!annotation.required,
       maxLen:
@@ -136,6 +143,7 @@ export function widgetsFromAnnotations(annots: RawFormAnnotation[], pageIndex = 
         kind: 'text',
         value: fieldValueStr(annotation.fieldValue),
         multiLine: !!annotation.multiLine,
+        dateFormat: dateFormatFromActions(annotation.actions),
       })
     } else if (annotation.fieldType === 'Btn' && annotation.checkBox) {
       out.push({
@@ -257,7 +265,13 @@ export async function buildFormCatalog(doc: PDFDocumentProxy): Promise<FormCatal
     }
   }
 
-  return { widgets, fields, byPage }
+  const allNames = await (
+    doc as { getFieldObjects?: () => Promise<Record<string, unknown> | null> }
+  )
+    .getFieldObjects?.()
+    .catch(() => null)
+  const otherFieldNames = new Set(Object.keys(allNames ?? {}).filter((n) => !fields.has(n)))
+  return { widgets, fields, byPage, otherFieldNames }
 }
 
 function visualSignatureFieldName(annotation: RawFormAnnotation): string | null {

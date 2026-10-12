@@ -46,7 +46,7 @@ Dokumen baharu dibuka tanpa tajuk; fail pada cakera hanya dicipta semasa simpana
 | Buka manual ini       | F1      |
 | Runtuhkan reben       | Ctrl+F1 |
 
-**Meruntuhkan reben** berfungsi dalam setiap editor. Baris tab kekal dan jalur arahan di bawahnya tersembunyi; tab yang dipilih juga berfungsi sebagai kawalan runtuh, jadi selagi reben diruntuhkan tiada tab yang dipilih dan menekan mana-mana tab akan memaparkan semula jalur itu. Klik dua kali pada tab melakukan perkara yang sama. Keadaan terakhir yang anda tinggalkan diingati untuk setiap editor.
+**Menutupkan reben** berfungsi dalam setiap editor. Baris tab kekal ada dan jalur arahan di bawahnya hilang; tab yang dipilih sekali gus menjadi kawalan lipatan, jadi selagi reben terlipat tiada tab dipilih dan menekan mana-mana tab akan mengembalikan jalur itu. Klik dua kali pada tab melakukan perkara yang sama. Cara anda meninggalkannya diingati bagi setiap editor. Docs menambah ketumpatan pertengahan: **⌥⌘K** / Ctrl+Alt+K memampatkan jalur kepada ikon sahaja, diingati dengan cara yang sama.
 
 Pintasan dalam setiap editor (berus format, cari & ganti, operasi jadual, ...) diterangkan dalam bab masing-masing; Docs turut menyediakan dialog pintasan papan kekunci yang boleh dicari (**ctrl+/**) yang merangkumi semua pintasannya.
 

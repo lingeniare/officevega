@@ -8,7 +8,7 @@ Model dan kunci dikonfigurasi di Pengaturan (baris akun di kiri bawah Beranda):
 
 - **VEGA di server kami**: masuk (alur kode perangkat) lalu langsung pakai — tanpa konfigurasi apa pun. Permintaan dikirim ke `https://api.vega.chat`, sebuah endpoint yang kompatibel dengan OpenRouter, sehingga klien bergaya OpenRouter mana pun dapat diarahkan ke sana.
 - **Endpoint kustom (BYOK)**: Pengaturan ▸ AI menerima base URL dan kunci API untuk setiap protokol — yang kompatibel dengan OpenAI, Anthropic, Gemini, DeepSeek, DashScope (qwen), dan lainnya. Kunci disimpan di berkas pengaturan aplikasi pada mesin ini dan hanya dikirim di header permintaan.
-- Model yang berbeda dapat dipilih untuk setiap kemampuan: obrolan/pembuatan, pembuatan gambar, analisis gambar.
+- Model berbeda dapat dipilih per kemampuan: obrolan/pembuatan, pembuatan gambar, analisis gambar.
 - **Uji koneksi**: memastikan endpoint dapat dijangkau dan model terlihat sebelum disimpan.
 - Base URL boleh memuat path dan query string (gaya gateway); path endpoint akan ditambahkan dengan benar.
 

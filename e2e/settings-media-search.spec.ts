@@ -53,10 +53,14 @@ test('Decision model reranking lives in the AI Media & Search pane, saves with i
         rerank: true,
         endpoint: 'vega',
         keys: {
+          // one entry per decision endpoint, in ENDPOINT_IDS order: `toEqual` on
+          // the saved shape is the tripwire that makes adding an endpoint a
+          // deliberate act rather than a silent new key in every settings file
           vega: '',
           openrouter: '',
           direct: '',
           perplexity: '',
+          liquid: '',
           cloudflare: '',
           kev: '',
           rizzo: '',

@@ -30,7 +30,7 @@ Sáng / Tối / Theo hệ thống. Khi chọn Theo hệ thống, giao diện bá
 Đây không phải công tắc bật/tắt. Mỗi khả năng sẽ chọn nhà cung cấp phục vụ nó, còn khóa và URL cơ sở của nhà cung cấp chỉ nhập một lần và được dùng chung:
 
 - **Tìm kiếm web**, **Tạo hình ảnh**, **Phân tích hình ảnh** và **Phân tích video**, mỗi mục đều có nhà cung cấp, mô hình, khóa và URL cơ sở. Chọn **VEGA** làm nhà cung cấp để định tuyến chúng qua `api.vega.chat` bằng khóa đăng nhập của bạn.
-- **Tìm kiếm tệp cục bộ** chạy trên máy này. Bên dưới là **Sắp xếp lại kết quả tìm kiếm Jev**, **mặc định là tắt**. Khi bật, đoạn trích của 20 kết quả cục bộ hàng đầu — tối đa 1.200 ký tự cho mỗi tài liệu, cộng thêm tên tệp và tên thư mục — sẽ được gửi tới mô hình Jev của TypeSafe để sắp xếp lại theo mức độ liên quan. Khi tắt, không có gì rời khỏi thiết bị.
+- **Tìm tệp cục bộ** chạy trên máy này. Bên dưới, **xếp hạng lại tìm kiếm Jev** **tắt mặc định**. Bật lên, các trích đoạn của 20 kết quả cục bộ đầu — tới 1.200 ký tự mỗi tài liệu, cộng tên tệp và thư mục — đi tới điểm cuối quyết định bạn chọn (VEGA, Jev qua OpenRouter hay TypeSafe, Perplexity, Liquid AI d1, Cloudflare, engine cục bộ hoặc URL tùy chỉnh) để xếp lại theo mức liên quan. Tắt thì không gì rời thiết bị.
 
 ## Giới thiệu
 

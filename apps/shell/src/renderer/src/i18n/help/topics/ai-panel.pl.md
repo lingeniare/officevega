@@ -8,27 +8,31 @@ Każdy edytor może wywołać panel AI: zaznacz coś, wydaj polecenie i obserwuj
 
 - Sposoby otwarcia: **przycisk AI** na wstążce każdego edytora, **Ask AI** w menu kontekstowych lub Ask AI na pasku znaczników.
 - Opisz zadanie zwykłymi słowami (przepisz to / zamień tę kolumnę na procenty / ułóż tę stronę od nowa...) i naciśnij Enter.
-- Odpowiedzi pojawiają się **na bieżąco**. Gdy AI potrzebuje narzędzi (odczytać dokument, zmienić go), wykonuje je i kontynuuje, aż skończy.
-- **Stop**: w każdej chwili możesz przerwać bieżącą turę.
+- Odpowiedzi są renderowane **strumieniowo**; gdy AI potrzebuje narzędzi (odczytać dokument, go zmienić), wykonuje je i kontynuuje aż do końca.
+- **Zatrzymaj**: w każdej chwili przerywa bieżącą turę.
+- **Kolejka**: gdy odpowiedź się generuje, Enter odkłada wiadomość do kolejki zamiast ją porzucać — pasek nad polem ввода je liczy; rozwiń, aby edytować, usuwać, zmieniać kolejność, wstrzymać lub wyczyścić. Następna wiadomość wyśle się sama po zakończeniu tury; Esc nadal przerywa turę.
 
 ## Co potrafi
 
-- **Docs**: przepisywanie, rozwijanie, tłumaczenie i streszczanie; wstawianie tabel i obrazów; zmiana formatowania. Każda tura najpierw zapisuje migawkę.
-- **Sheets**: formuły, wypełnianie danych, zbiorcze przekształcenia i formatowanie.
-- **Slides**: generowanie całej prezentacji, korekta układu, przepisywanie treści.
-- **PDF**: pytania i streszczenia dotyczące zaznaczonego tekstu lub stron.
-- **Markdown / HTML**: przepisywanie, rozwijanie i tłumaczenie.
-
-## Historia czatów
-
-- Każda rozmowa zapisuje się automatycznie i pozostaje na tym komputerze — otwórz panel jutro i kontynuuj tam, gdzie skończyłeś.
-- Zacznij nowy czat przyciskiem **New chat**, a przełączaj się między dawnymi czatami na liście historii u góry panelu.
-- Zmień nazwę czatu, by szybciej go znaleźć; usunięcie czatu kasuje go na zawsze. Usunięcie czatu nigdy nie dotyka Twoich dokumentów.
+- **Docs**: przepisywanie/rozbudowa/tłumaczenie/streszczanie, wstawianie tabel i obrazów, zmiana formatowania; każda tura zaczyna się od migawki.
+- **Sheets**: formuły, wypełnianie danych, przekształcenia wsadowe, formatowanie.
+- **Slides**: generowanie całej prezentacji, korekta układu, przepisywanie tekstów.
+- **PDF**: pytania i odpowiedzi oraz streszczenia na podstawie zaznaczonego tekstu lub stron.
+- **Markdown / HTML**: przepisywanie, rozbudowa, tłumaczenie.
+- **Strona główna ▸ Ask AI** odpowiada z plików oznaczonych gwiazdką i je cytuje — panel bazy wiedzy ma własną sekcję w rozdziale o stronie głównej, a panel AI w Docs ma tę samą umiejętność.
 
 ## Cofanie i bezpieczeństwo
 
 - Panel w Docs prowadzi **listę wersji**: jedna migawka na turę. Możesz wrócić do dowolnej z nich, a samo cofnięcie da się cofnąć klawiszami Ctrl+Z. Migawki przetrwają ponowne otwarcie dokumentu.
 - Zmiany AI przechodzą tą samą ścieżką edycji co zmiany ręczne (można je cofnąć i wymagają zapisu) — nic nie omija Twojego potwierdzenia zapisu.
+
+## Ukrycie zaznaczenia przed AI
+
+- W Slides, HTML i Markdown zaznaczenie można schować przed oczami modelu: prawy przycisk ▸ **Ukryj zaznaczenie przed AI**, nadaj nazwę zastępczą, a model czyta `{{nazwa}}` w jego miejsce. (Markdown uzbraja tę pozycję przełącznikiem przekreślonego oka na wstążce; w HTML mieszka w panelu źródła.)
+- Plik zachowuje prawdziwy tekst — zapis, eksport i druk są nietknięte, a oznaczenie przeżywa ponowne otwarcie. Ta sama pozycja zdejmuje ukrycie (Markdown ma osobne **Pokaż zaznaczenie AI ponownie**).
+- HTML ukrywa treści elementów, wartości atrybutów i literały tekstowe w skryptach; wyrenderowana strona nigdy się nie zmienia.
+- Slides ukrywa też całe obrazy, wideo i audio, a slajd z ukrytą treścią nigdy nie jest wysyłany jako zrzut: automatyczne sprawdzanie układu pomija stronę i o tym informuje.
+- To działa tylko na AI w aplikacji — CLI, narzędzia MCP i eksport headless czytają plik wprost i wciąż widzą tekst.
 
 ## Prywatność i anonimizacja
 

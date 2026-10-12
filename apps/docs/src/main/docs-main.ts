@@ -123,6 +123,7 @@ import { listCodexModels, shutdownCodexAppServers } from '@genoffice/ai-provider
 import { listCustomModelsForIpc } from '@genoffice/ai-provider/custom-models'
 import {
   ensureOfficeVegaLogin,
+  noteGskCallFailure,
   officeVegaApiKey,
   setOfficeVegaAuthListener,
   gskApiKey,
@@ -4806,6 +4807,8 @@ export function registerAiIpc(): void {
     },
   )
 
+  // a 401 on the gsk key drops the stored key and re-reads the shared config;
+  // this fork owns no gsk login flow — the sign-in button below takes over
   ipcMain.handle('ai:gsk-login', () => {
     ensureOfficeVegaLogin((url) => void shell.openExternal(url))
   })
@@ -4892,8 +4895,11 @@ export function registerAiIpc(): void {
     let config = resolvedConfig
     // the genspark key never enters the settings file; requests take it from the gsk login state.
     // A VEGA slot likewise inherits the sign-in-issued key when its own is empty.
+    // set only when the gsk key was injected: a 401 then means that key expired
+    let gskKey = ''
     if (provider === 'genspark' && config && !config.apiKey) {
-      config = { ...config, apiKey: gskApiKey() }
+      gskKey = gskApiKey()
+      config = { ...config, apiKey: gskKey }
     } else if (provider === 'vega' && config && !config.apiKey?.trim()) {
       config = { ...config, apiKey: officeVegaApiKey() }
     }
@@ -4938,6 +4944,7 @@ export function registerAiIpc(): void {
         onStopReason: (reason) => {
           stopReason = reason
         },
+        onUsage: (usage) => send({ requestId, type: 'usage', usage }),
       })
       send({ requestId, type: 'done', stopReason })
     } catch (err) {
@@ -4946,6 +4953,8 @@ export function registerAiIpc(): void {
       } else {
         const msg = err instanceof Error ? err.message : String(err)
         console.error(`[ai-stream] ${requestId} (${provider}/${config.model}) failed:`, msg)
+        // an expired/revoked key drops to signed-out so the inline sign-in button shows
+        noteGskCallFailure(gskKey, err)
         send({
           requestId,
           type: 'error',
@@ -5101,8 +5110,11 @@ export function registerAiIpc(): void {
     // would otherwise stay on the signed-out route until the tab reloads)
     const { provider, config: resolvedConfig } = requestProvider(settings)
     let config = resolvedConfig
+    // set only when the gsk key was injected: a 401 then means that key expired
+    let gskKey = ''
     if (provider === 'genspark' && config && !config.apiKey) {
-      config = { ...config, apiKey: gskApiKey() }
+      gskKey = gskApiKey()
+      config = { ...config, apiKey: gskKey }
     } else if (provider === 'vega' && config && !config.apiKey?.trim()) {
       config = { ...config, apiKey: officeVegaApiKey() }
     }
@@ -5123,8 +5135,10 @@ export function registerAiIpc(): void {
       if (!result.ok && isAiOverloadedError(result.error)) {
         return { ok: false, error: tm('errAiBusy') }
       }
+      if (!result.ok) noteGskCallFailure(gskKey, result.error)
       return result
     } catch (err) {
+      noteGskCallFailure(gskKey, err)
       return { ok: false, error: isAiOverloadedError(err) ? tm('errAiBusy') : String(err) }
     }
   })
@@ -7264,19 +7278,21 @@ export function startDocsStandalone(): void {
   if (process.env.AI_OFFICE_USER_DATA) app.setPath('userData', process.env.AI_OFFICE_USER_DATA)
   else if (isDev) {
     // "OfficeVega Docs Dev" carried a space, against the XDG one-token
-    // convention (#1817); move the old profile once, as the shell does.
+    // convention (genoffice#1817); move the old profile once, as the shell does.
     const appData = app.getPath('appData')
     const devDir = join(appData, 'OfficeVega-Docs-Dev')
     const oldDevDir = join(appData, 'OfficeVega Docs Dev')
+    let userData = devDir
     if (existsSync(oldDevDir) && !existsSync(devDir)) {
       try {
         renameSync(oldDevDir, devDir)
       } catch {
-        // another dev instance is mid-migration or holds the directory:
-        // continuing with a fresh profile beats failing the launch
+        // another dev instance holds the directory: keep using the old one so
+        // the profile is not lost and the move is retried on the next launch
+        userData = oldDevDir
       }
     }
-    app.setPath('userData', devDir)
+    app.setPath('userData', userData)
   }
 
   const hasSingleInstanceLock = app.requestSingleInstanceLock()

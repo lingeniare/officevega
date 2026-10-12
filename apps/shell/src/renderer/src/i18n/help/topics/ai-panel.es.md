@@ -8,8 +8,9 @@ Todos los editores pueden invocar el panel de IA: seleccione algo, dé una instr
 
 - Entradas: el **botón de IA** en la cinta de opciones de cada editor, **Pedir a la IA** en los menús contextuales, o Pedir a la IA en la barra de marcado.
 - Describa la tarea en lenguaje natural (reescribir esto / convertir esta columna en porcentajes / rehacer el diseño de esta página…) y pulse Intro.
-- Las respuestas se muestran **a medida que se generan**; cuando la IA necesita herramientas (leer el documento, editarlo), las ejecuta y sigue hasta terminar.
-- **Detener**: interrumpa la respuesta en curso en cualquier momento.
+- Las respuestas se renderizan **en streaming**; cuando la IA necesita herramientas (leer el documento, editarlo), las ejecuta y sigue hasta terminar.
+- **Detener**: interrumpa la vuelta en curso en cualquier momento.
+- **Cola**: mientras se genera una respuesta, Enter pone tu mensaje en cola en lugar de descartarlo — una franja sobre el campo de entrada los cuenta; ábrela para editar, quitar, reordenar, pausar o vaciar. El siguiente mensaje se envía solo al terminar el turno; Esc sigue deteniendo el turno.
 
 ## Qué sabe hacer
 
@@ -18,12 +19,21 @@ Todos los editores pueden invocar el panel de IA: seleccione algo, dé una instr
 - **Slides**: generación de una presentación completa, ajuste del diseño, reescritura de los textos.
 - **PDF**: preguntas y resúmenes sobre el texto o las páginas seleccionadas.
 - **Markdown / HTML**: reescribir, ampliar, traducir.
+- **Inicio ▸ Ask AI** responde desde tus archivos destacados y los cita — el panel de base de conocimiento tiene su propia sección en el capítulo Inicio, y el panel de IA de Docs lleva la misma capacidad.
 
 ## Historial de chats
 
 - Cada conversación se guarda automáticamente y permanece en este equipo: abra el panel mañana y continúe donde lo dejó.
 - Empiece un chat nuevo con **Nuevo chat**; cambie entre chats anteriores en la lista del historial en la parte superior del panel.
 - Cambie el nombre de un chat para encontrarlo más rápido; bórrelo para eliminarlo para siempre. Borrar un chat nunca afecta a sus documentos.
+
+## Ocultar una selección a la IA
+
+- En Slides, HTML y Markdown una selección puede quitarse de la vista del modelo: clic derecho ▸ **Ocultar la selección a la IA**, ponle nombre al marcador, y el modelo lee `{{nombre}}` en su lugar. (Markdown arma la opción con el interruptor de ojo tachado de su cinta; la de HTML vive en el panel de código.)
+- El archivo conserva el texto real — guardar, exportar e imprimir quedan intactos, y la marca sobrevive a reabrir. La misma opción deshace el ocultamiento (Markdown tiene además **Volver a mostrar la selección a la IA**).
+- HTML oculta contenidos de elementos, valores de atributos y literales de cadena de los scripts; la página renderizada nunca cambia.
+- Slides también oculta imágenes, vídeos y audios enteros, y una diapositiva con contenido oculto nunca se envía como captura: la revisión automática de diseño se salta la página y lo avisa.
+- Esto vale solo para la IA de la aplicación — la CLI, las herramientas MCP y la exportación sin interfaz leen el archivo directamente y siguen viendo el texto.
 
 ## Restaurar y seguridad
 

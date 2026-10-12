@@ -1553,4 +1553,8 @@ export const kk = {
   appVisualFlipV: 'Flip Vertical',
   appVisualFlipH: 'Flip Horizontal',
   appCtxPasteVisual: 'Paste Picture or Shape',
+  appLargeFilterLoading: 'Сүзгі бағаны файлдан оқылуда…',
+  appLargeFilterApplying: 'Сүзгі файлға қолданылуда…',
+  appPrintWorkbookTooLarge:
+    'Бұл жұмыс кітабы жадқа толық жүктеу үшін тым үлкен, сондықтан оны басып шығару немесе PDF-ке экспорттау мүмкін емес.',
 } satisfies Record<keyof typeof zh, string>

@@ -7,7 +7,7 @@ Les modèles et les clés se configurent dans les Paramètres (la ligne de compt
 ![La fenêtre des paramètres](img/settings-general.png)
 
 - **VEGA sur ses serveurs** : connectez-vous (flux par code d’appareil) et utilisez-le — aucune configuration. Les requêtes partent vers `https://api.vega.chat`, un point de terminaison compatible OpenRouter : tout client de style OpenRouter peut donc s’y connecter.
-- **Points de terminaison personnalisés (BYOK)** : Paramètres ▸ IA demande une URL de base et une clé API par protocole — compatible OpenAI, Anthropic, Gemini, DeepSeek, DashScope (qwen) et d’autres. Les clés sont stockées dans le fichier de paramètres de l’application sur cette machine et envoyées uniquement dans les en-têtes des requêtes.
+- **Points de terminaison personnalisés (BYOK)** : Paramètres ▸ IA prend une URL de base et une clé API par protocole — compatible OpenAI, Anthropic, Gemini, DeepSeek, DashScope (qwen) et plus. Les clés sont stockées dans le fichier de paramètres de l'application sur cet ordinateur et envoyées uniquement dans les en-têtes de requête. Atlas Cloud figure parmi les protocoles intégrés.
 - Un modèle différent peut être choisi par capacité : chat/génération, génération d’images, analyse d’images.
 - **Tester la connexion** : vérifie que le point de terminaison est joignable et que le modèle est visible avant d’enregistrer.
 - Les URL de base peuvent comporter un chemin et une chaîne de requête (style passerelle) ; les chemins des points de terminaison sont ajoutés correctement.

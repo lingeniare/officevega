@@ -10,6 +10,7 @@ Každý editor umí vyvolat panel AI: vyberte něco, zadejte pokyn a sledujte v�
 - Popište úkol běžnými slovy (přepiš tohle / udělej z tohoto sloupce procenta / přeskládej tuto stránku...) a stiskněte Enter.
 - Odpovědi se vykreslují **postupně**. Když AI potřebuje nástroje (přečíst dokument, upravit jej), použije je a pokračuje, dokud nedokončí.
 - **Zastavit**: kdykoli přeruší právě probíhající krok.
+- **Fronta**: zatímco odpověď běží, Enter zařadí zprávu do fronty, místo aby ji zahodil — pruh nad polem je počítá; rozbalte ho pro úpravu, odebrání, přeřazení, pauzu nebo vymazání. Další zpráva se pošle sama koncem tahu; Esc tahu i nadále ukončuje.
 
 ## Co umí
 
@@ -18,6 +19,7 @@ Každý editor umí vyvolat panel AI: vyberte něco, zadejte pokyn a sledujte v�
 - **Slides**: vytvoření celé prezentace, úprava rozložení, přepis textů.
 - **PDF**: otázky a shrnutí nad vybraným textem nebo stránkami.
 - **Markdown / HTML**: přepsat, rozšířit, přeložit.
+- **Domů ▸ Ask AI** odpovídá z vašich souborů s hvězdičkou a cituje je — panel znalostní báze má vlastní sekci v kapitole Domů a AI panel Docs nese tutéž dovednost.
 
 ## Historie chatu
 
@@ -29,6 +31,14 @@ Každý editor umí vyvolat panel AI: vyberte něco, zadejte pokyn a sledujte v�
 
 - Panel v Docs vede **seznam verzí**: jeden snímek na každý krok. Můžete se vrátit k libovolnému z nich a samotný návrat lze vrátit zpět pomocí Ctrl+Z. Snímky přežijí i opětovné otevření dokumentu.
 - Změny od AI procházejí stejnou cestou úprav jako ruční změny (lze je vrátit zpět a vyžadují uložení) — nic neobchází vaše potvrzení uložení.
+
+## Skrýt výběr před AI
+
+- V Slides, HTML a Markdown lze výběr schovat před očima modelu: pravý klik ▸ **Skrýt výběr před AI**, pojmenujte zástupný text a model čte `{{název}}` místo něj. (Markdown položku zapíná přepínačem přeškrtnutého oka na pásu; ta HTML žije v panelu zdroje.)
+- Soubor si ponechá skutečný text — uložení, export i tisk zůstávají nedotčené a značka přežije znovuotevření. Tatáž položka skrytí zruší (Markdown má navíc **Znovu ukázat výběr AI**).
+- HTML skrývá obsah prvků, hodnoty atributů a řetězcové literály ve skriptech; vykreslená stránka se nikdy nemění.
+- Slides skrývá i celé obrázky, videa a audio a snímek se skrytým obsahem nikdy neodchází jako snímek obrazovky: automatická kontrola rozvržení stránku přeskočí a oznámí to.
+- Platí to jen pro AI v aplikaci — CLI, nástroje MCP a bezhlavý export čtou soubor přímo a text stále vidí.
 
 ## Soukromí a anonymizace
 

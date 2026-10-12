@@ -10,6 +10,7 @@ Elke editor kan het AI-paneel oproepen: selecteer iets, geef een instructie en b
 - Beschrijf de taak in gewone taal (herschrijf dit / maak van deze kolom percentages / herschik deze pagina...) en druk op Enter.
 - Antwoorden verschijnen **terwijl ze worden gegenereerd**. Heeft de AI hulpmiddelen nodig (het document lezen, het bewerken), dan voert hij die uit en gaat hij door tot hij klaar is.
 - **Stop**: onderbreek de huidige beurt op elk moment.
+- **Wachtrij**: terwijl een antwoord binnenstroomt, zet Enter uw bericht in de wachtrij in plaats van het weg te gooien — een strook boven het invoerveld telt ze; open hem om te bewerken, verwijderen, herordenen, pauzeren of wissen. Het volgende bericht verstuurt zichzelf wanneer de beurt eindigt; Esc stopt nog steeds de beurt.
 
 ## Wat het kan
 
@@ -18,6 +19,7 @@ Elke editor kan het AI-paneel oproepen: selecteer iets, geef een instructie en b
 - **Slides**: de hele presentatie genereren, de indeling bijstellen, teksten herschrijven.
 - **PDF**: vragen en antwoorden en samenvattingen op basis van geselecteerde tekst of pagina's.
 - **Markdown / HTML**: herschrijven, uitbreiden, vertalen.
+- **Start ▸ Ask AI** antwoordt uit uw bestanden met ster en citeert ze — het kennisbank-paneel heeft een eigen sectie in het hoofdstuk Start, en het AI-paneel van Docs heeft dezelfde vaardigheid.
 
 ## Gespreksgeschiedenis
 
@@ -29,6 +31,14 @@ Elke editor kan het AI-paneel oproepen: selecteer iets, geef een instructie en b
 
 - Het paneel van Docs houdt een **versielijst** bij: één momentopname per beurt. Je kunt naar elke versie teruggaan, en die terugzet is zelf met Ctrl+Z ongedaan te maken. Momentopnamen blijven bewaard als je het document opnieuw opent.
 - AI-bewerkingen lopen via dezelfde bewerkingsroute als handmatige bewerkingen (ongedaan te maken, pas vastgelegd bij opslaan) — niets slaat je opslagbevestiging over.
+
+## Een selectie voor de AI verbergen
+
+- In Slides, HTML en Markdown kan een selectie uit het zicht van het model worden gehouden: rechtsklik ▸ **Selectie voor AI verbergen**, geef de placeholder een naam, en het model leest `{{naam}}` op zijn plaats. (Markdown activeert het item met de oog-uit-schakelaar op zijn lint; die van HTML zit in het bronpaneel.)
+- Het bestand houdt de echte tekst — opslaan, exporteren en afdrukken blijven onaangetast, en de markering overleeft het opnieuw openen. Hetzelfde item maakt zichtbaar (Markdown krijgt een apart item **Selectie weer aan AI tonen**).
+- HTML verbergt elementinhouden, attribuutwaarden en stringliteraalss in scripts; de gerenderde pagina verandert nooit.
+- Slides verbergt ook hele afbeeldingen, video's en audio, en een dia met verborgen inhoud wordt nooit als screenshot verstuurd: de automatische lay-outcontrole slaat de pagina over en meldt dat.
+- Dit geldt alleen voor de AI in de app — de CLI, MCP-tools en headless-export lezen het bestand rechtstreeks en zien de tekst nog steeds.
 
 ## Privacy en anonimisering
 

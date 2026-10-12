@@ -1557,4 +1557,8 @@ export const ky = {
   appVisualFlipV: 'Flip Vertical',
   appVisualFlipH: 'Flip Horizontal',
   appCtxPasteVisual: 'Paste Picture or Shape',
+  appLargeFilterLoading: 'Чыпка мамысы файлдан окулуп жатат…',
+  appLargeFilterApplying: 'Чыпка файлга колдонулуп жатат…',
+  appPrintWorkbookTooLarge:
+    'Бул иш китеп толук жүктөө үчүн өтө чоң, ошондуктан аны басып чыгаруу же PDFге экспорттоо мүмкүн эмес.',
 } satisfies Record<keyof typeof zh, string>

@@ -1560,4 +1560,8 @@ export const uz = {
   appVisualFlipV: 'Flip Vertical',
   appVisualFlipH: 'Flip Horizontal',
   appCtxPasteVisual: 'Paste Picture or Shape',
+  appLargeFilterLoading: 'Filtr ustuni fayldan o‘qilmoqda…',
+  appLargeFilterApplying: 'Filtr faylga qo‘llanilmoqda…',
+  appPrintWorkbookTooLarge:
+    'Bu ish kitobi xotiraga to‘liq yuklash uchun juda katta, shuning uchun uni chop etish yoki PDFga eksport qilish imkonsiz.',
 } satisfies Record<keyof typeof zh, string>

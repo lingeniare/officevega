@@ -30,7 +30,7 @@ Terang / Gelap / Ikuti Sistem. Mode Ikuti Sistem mengikuti tampilan sistem opera
 Bukan sakelar — setiap kemampuan memilih vendor yang melayaninya, dan kunci serta base URL sebuah vendor cukup dimasukkan sekali lalu dipakai bersama:
 
 - **Pencarian web**, **Pembuatan gambar**, **Analisis gambar**, dan **Analisis video**, masing-masing dengan satu penyedia, satu model, satu kunci, dan satu base URL. Pilih **VEGA** sebagai vendor untuk merutekannya melalui `api.vega.chat` menggunakan kunci masuk Anda.
-- **Pencarian file lokal** berjalan di mesin ini. Di bawahnya ada **Pengurutan ulang Jev** yang **nonaktif secara bawaan**. Jika diaktifkan, cuplikan dari 20 hasil lokal teratas — hingga 1.200 karakter dari setiap dokumen, ditambah nama file dan folder — akan dikirim ke model Jev milik TypeSafe untuk diurutkan ulang berdasarkan relevansi. Saat nonaktif, tidak ada yang meninggalkan perangkat.
+- **Pencarian berkas lokal** berjalan di mesin ini. Di bawahnya, **reranking pencarian Jev** **nonaktif secara bawaan**. Diaktifkan, kutipan 20 hit lokal teratas — hingga 1.200 karakter per dokumen, plus nama berkas dan folder — pergi ke endpoint keputusan pilihan Anda (VEGA, Jev via OpenRouter atau TypeSafe, Perplexity, Liquid AI d1, Cloudflare, mesin lokal, atau URL kustom) untuk diurutkan ulang menurut relevansi. Nonaktif, tak ada yang meninggalkan perangkat.
 
 ## Tentang
 

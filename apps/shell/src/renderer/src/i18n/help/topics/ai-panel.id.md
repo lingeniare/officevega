@@ -6,10 +6,11 @@ Setiap editor dapat memunculkan panel AI: pilih sesuatu, berikan instruksi, dan 
 
 ![Panel AI di Docs](img/ai-panel.png)
 
-- Titik masuk: **tombol AI** di pita setiap editor, **Tanya AI** di menu konteks, atau Tanya AI di bilah anotasi.
-- Jelaskan tugas dengan bahasa sehari-hari (tulis ulang bagian ini / ubah kolom ini menjadi persentase / atur ulang halaman ini...) lalu tekan Enter.
-- Balasan ditampilkan **secara bertahap**; ketika AI membutuhkan alat (membaca dokumen, mengeditnya), AI akan menjalankannya dan melanjutkan hingga selesai.
-- **Berhenti**: hentikan giliran yang sedang berjalan kapan saja.
+- Titik masuknya: **tombol AI** di pita setiap editor, **Tanya AI** di menu konteks, atau Tanya AI pada bilah anotasi.
+- Jelaskan tugas dengan bahasa sehari-hari (tulis ulang ini / jadikan kolom ini persentase / tata ulang halaman ini...) lalu tekan Enter.
+- Balasan dirender **secara bertahap**; ketika AI membutuhkan alat (membaca dokumen, mengeditnya), AI menjalankannya dan melanjutkan sampai selesai.
+- **Berhenti**: hentikan putaran yang sedang berjalan kapan saja.
+- **Antrean**: saat balasan sedang mengalir, Enter menaruh pesan Anda ke antrean alih-alih membuangnya — strip di atas kotak masukan menghitungnya; buka untuk menyunting, menghapus, mengurutkan ulang, menjeda, atau mengosongkan. Pesan berikutnya terkirim sendiri saat giliran selesai; Esc tetap menghentikan giliran.
 
 ## Apa yang bisa dilakukan
 
@@ -17,18 +18,21 @@ Setiap editor dapat memunculkan panel AI: pilih sesuatu, berikan instruksi, dan 
 - **Sheets**: rumus, pengisian data, transformasi massal, format.
 - **Slides**: membuat seluruh deck, menyesuaikan tata letak, menulis ulang teks.
 - **PDF**: tanya jawab dan ringkasan berdasarkan teks atau halaman yang dipilih.
-- **Markdown / HTML**: menulis ulang, memperluas, menerjemahkan.
-
-## Riwayat percakapan
-
-- Setiap percakapan disimpan secara otomatis dan tetap berada di komputer ini — buka kembali panel besok dan lanjutkan dari tempat Anda berhenti.
-- Mulai percakapan baru dengan **Obrolan baru**; beralih antar percakapan lama lewat daftar riwayat di bagian atas panel.
-- Ganti nama percakapan agar lebih mudah ditemukan; hapus untuk menghilangkannya secara permanen. Menghapus percakapan tidak pernah mengubah dokumen Anda.
+- **Markdown / HTML**: menulis ulang, mengembangkan, menerjemahkan.
+- **Beranda ▸ Ask AI** menjawab dari berkas berbintang Anda dan mengutipnya — panel basis pengetahuan punya bagiannya sendiri di bab Beranda, dan panel AI Docs membawa keterampilan yang sama.
 
 ## Pengembalian dan keamanan
 
 - Panel Docs menyimpan **daftar versi**: satu snapshot per giliran, Anda dapat kembali ke salah satunya, dan pengembalian itu sendiri dapat dibatalkan dengan Ctrl+Z. Snapshot tetap ada setelah dokumen dibuka kembali.
 - Suntingan AI melewati alur penyuntingan yang sama dengan suntingan manual (dapat dibatalkan, dan tunduk pada proses simpan) — tidak ada yang melewati konfirmasi simpan Anda.
+
+## Menyembunyikan seleksi dari AI
+
+- Di Slides, HTML, dan Markdown sebuah seleksi bisa dijauhkan dari mata model: klik kanan ▸ **Sembunyikan seleksi dari AI**, beri nama penampung, dan model membaca `{{nama}}` sebagai gantinya. (Markdown mengaktifkan item ini dengan sakelar mata-coreng di pitaunya; milik HTML ada di panel sumber.)
+- Berkas menyimpan teks asli — menyimpan, mengekspor, dan mencetak tak tersentuh, dan tanda itu bertahan saat dibuka ulang. Item yang sama membatalkan penyembunyian (Markdown punya **Tampilkan seleksi ke AI lagi** tersendiri).
+- HTML menyembunyikan isi elemen, nilai atribut, dan literal string di skrip; halaman yang dirender tak pernah berubah.
+- Slides juga menyembunyikan gambar, video, dan audio utuh, dan slide berisi konten tersembunyi tak pernah dikirim sebagai tangkapan layar: pemeriksaan tata letak otomatis melewati halaman itu dan memberi tahu.
+- Ini hanya untuk AI di dalam aplikasi — CLI, alat MCP, dan ekspor headless membaca berkas langsung dan tetap melihat teksnya.
 
 ## Privasi dan anonimisasi
 

@@ -46,7 +46,7 @@ Nowy dokument otwiera się bez nazwy; plik na dysku powstaje dopiero przy pierws
 | Otwórz ten podręcznik   | F1      |
 | Zwiń wstążkę            | Ctrl+F1 |
 
-**Zwijanie wstążki** działa w każdym edytorze. Wiersz kart pozostaje na miejscu, a pasek poleceń pod nim znika. Wybrana karta jest jednocześnie przyciskiem zwijania, więc dopóki wstążka jest zwinięta, żadna karta nie jest wybrana, a kliknięcie dowolnej karty przywraca pasek. Podwójne kliknięcie karty robi to samo. Stan, w jakim ją zostawiono, jest zapamiętywany osobno dla każdego edytora.
+**Zwinięcie wstążki** działa w każdym edytorze. Wiersz kart pozostaje na miejscu, a pasek poleceń pod nim znika; wybrana karta jest zarazem przyciskiem zwijania, więc dopóki wstążka jest zwinięta, żadna karta nie jest wybrana, a naciśnięcie dowolnej karty przywraca pasek. Podwójne kliknięcie karty robi dokładnie to samo. Sposób, w jaki ją zostawili, jest zapamiętywany osobno dla każdego edytora. Docs dodaje środkową gęstość: **⌥⌘K** / Ctrl+Alt+K zagęszcza taśmę do samych ikon, pamiętane tak samo.
 
 Skróty używane w każdym edytorze (malarz formatów, znajdź i zamień, operacje na tabelach, ...) opisano w odpowiednich rozdziałach. Docs ma dodatkowo okno skrótów klawiaturowych z wyszukiwaniem (**ctrl+/**), które obejmuje wszystkie jego skróty.
 

@@ -10,7 +10,7 @@ Modely a klíče se nastavují v Nastavení (řádek účtu vlevo dole na domovs
 - **Vlastní koncové body (BYOK)**: Settings ▸ AI přijímá základní URL a klíč API pro každý protokol — kompatibilní s OpenAI, Anthropic, Gemini, DeepSeek, DashScope (qwen) a dalšími. Klíče se ukládají do souboru nastavení aplikace na tomto počítači a odesílají se pouze v hlavičkách požadavků.
 - Pro každou schopnost lze zvolit jiný model: chat a generování, generování obrázků, analýza obrázků.
 - **Test připojení**: před uložením ověří dostupnost koncového bodu a viditelnost modelu.
-- Základní URL může obsahovat cestu a dotaz (ve stylu brány); cesty koncových bodů se připojují správně.
+- Základní URL může obsahovat cestu a dotaz (ve stylu brány); cesty koncových bodů se správně připojují.
 
 ## Výběr modelu
 

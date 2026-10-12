@@ -1538,4 +1538,8 @@ export const ka = {
   appVisualFlipV: 'Flip Vertical',
   appVisualFlipH: 'Flip Horizontal',
   appCtxPasteVisual: 'Paste Picture or Shape',
+  appLargeFilterLoading: 'ფილტრის სვეტი ფაილიდან იკითხება…',
+  appLargeFilterApplying: 'ფილტრი ფაილზე გამოიყენება…',
+  appPrintWorkbookTooLarge:
+    'ეს სამუშაო წიგნი ძალიან დიდია მეხსიერებაში სრულად ჩასატვირთად, ამიტომ მისი დაბეჭდვა ან PDF-ში ექსპორტი შეუძლებელია.',
 } satisfies Record<keyof typeof zh, string>

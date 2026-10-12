@@ -30,7 +30,7 @@ Light / Dark / System. Opcja System podąża za wyglądem systemu, a edytory zmi
 To nie są przełączniki. Każda funkcja wybiera dostawcę, który ją obsługuje, a klucz dostawcy i bazowy adres URL wpisuje się raz i są one wspólne:
 
 - **Web search**, **Image generation**, **Image analysis** i **Video analysis**, każda z dostawcą, modelem, kluczem i bazowym adresem URL. Wybierz **VEGA** jako dostawcę, aby kierować je przez `api.vega.chat` z użyciem klucza logowania.
-- **Local file search** działa na tym komputerze. Pod nim znajduje się **Jev search reranking**, domyślnie **wyłączone**. Po włączeniu fragmenty 20 najlepszych lokalnych wyników — do 1200 znaków z każdego dokumentu oraz nazwy plików i folderów — trafiają do modelu Jev firmy TypeSafe i zostają ponownie uszeregowane według trafności. Gdy jest wyłączone, nic nie opuszcza urządzenia.
+- **Lokalne wyszukiwanie plików** działa na tej maszynie. Pod nim **przerankowanie wyszukiwania Jev** jest **domyślnie wyłączone**. Po włączeniu fragmenty top 20 lokalnych trafień — do 1 200 znaków na dokument plus nazwy plików i folderów — idą do wybranego punktu decyzyjnego (VEGA, Jev przez OpenRouter lub TypeSafe, Perplexity, Liquid AI d1, Cloudflare, lokalny silnik lub własny URL) i są porządkowane według trafności. Wyłączone — nic nie opuszcza urządzenia.
 
 ## O aplikacji
 

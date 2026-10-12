@@ -30,7 +30,7 @@ Claro / Escuro / Seguir o sistema. O modo Seguir o sistema acompanha o aspeto do
 Não são interruptores: cada capacidade escolhe o fornecedor que a serve, e a chave e o URL base de um fornecedor são introduzidos uma vez e partilhados:
 
 - **Pesquisa na web**, **Geração de imagens**, **Análise de imagens** e **Análise de vídeo**, cada uma com um fornecedor, um modelo, uma chave e um URL base. Escolha **VEGA** como fornecedor para encaminhar estas funções por `api.vega.chat` com a sua chave de sessão.
-- **A pesquisa de ficheiros locais** é executada nesta máquina. Por baixo está a **Reordenação com Jev**, **desativada por predefinição**. Se a ativar, os excertos dos 20 melhores resultados locais — até 1200 caracteres de cada documento, mais os nomes dos ficheiros e das pastas — são enviados para o modelo Jev da TypeSafe para serem reordenados por relevância. Com ela desativada, nada sai do dispositivo.
+- A **busca de arquivos local** roda nesta máquina. Abaixo dela, o **reranking de busca Jev** vem **desligado por padrão**. Ao ligar, os trechos dos 20 primeiros acertos locais — até 1.200 caracteres por documento, mais nomes de arquivos e pastas — vão para o endpoint de decisão escolhido (VEGA, Jev via OpenRouter ou TypeSafe, Perplexity, Liquid AI d1, Cloudflare, um motor local ou URL própria) para reordenar por relevância. Desligado, nada sai do aparelho.
 
 ## Sobre
 

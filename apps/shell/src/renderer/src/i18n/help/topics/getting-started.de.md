@@ -46,7 +46,7 @@ Ein neues Dokument öffnet sich ohne Namen; die Datei auf dem Datenträger entst
 | Dieses Handbuch öffnen | F1         |
 | Menüband einklappen    | Ctrl+F1    |
 
-**Das Einklappen des Menübands** funktioniert in jedem Editor. Die Tab-Zeile bleibt, der Befehlsbereich darunter wird ausgeblendet; der ausgewählte Tab dient zugleich als Einklapp-Schalter. Solange das Menüband eingeklappt ist, ist kein Tab ausgewählt, und ein Klick auf einen Tab holt den Bereich zurück. Ein Doppelklick auf einen Tab bewirkt dasselbe. Der zuletzt gewählte Zustand wird pro Editor gespeichert.
+**Das Reduzieren des Menübands** funktioniert in jedem Editor. Die Registerreihen bleibt stehen, und das Befehlsband darunter wird ausgeblendet; die ausgewählte Registerkarte dient zugleich als Reduzierungsschalter – solange das Menüband reduziert ist, ist keine Registerkarte ausgewählt, und ein Klick auf eine beliebige Karte holt das Band zurück. Ein Doppelklick auf eine Registerkarte tut dasselbe. Wie Sie es zuletzt hatten, wird pro Editor gemerkt. Docs fügt eine mittlere Dichte hinzu: **⌥⌘K** / Ctrl+Alt+K staucht das Band auf reine Icons, ebenfalls gemerkt.
 
 Tastenkürzel innerhalb der einzelnen Editoren (Format übertragen, Suchen und Ersetzen, Tabellenbefehle, ...) stehen in den jeweiligen Kapiteln. Docs bietet zusätzlich einen durchsuchbaren Dialog mit Tastenkürzeln (**ctrl+/**), der alle eigenen Kombinationen vollständig auflistet.
 

@@ -7,9 +7,9 @@ Trang chủ là trang khởi đầu của OfficeVega: thanh điều hướng bê
 ## Điều hướng trên thanh bên
 
 - **Gần đây**: các tập tin bạn đã mở gần đây. Mỗi hàng đều đóng dấu thời điểm — hôm nay, hôm qua hoặc ngày.
-- **Đã gắn sao**: các tập tin bạn đã gắn sao. Rê chuột lên một hàng tập tin rồi nhấp vào ngôi sao để thêm hoặc bỏ.
+- **Đã gắn sao**: các tập tin bạn đã gắn sao. Rê chuột lên một hàng tập tin rồi nhấp vào ngôi sao để thêm hoặc bỏ. **Chuyển vào nhóm** trong menu ⋯ xếp các tệp đánh sao vào nhóm có tên; xem Đánh sao lọc theo chúng.
 - **Hướng dẫn sử dụng**: mở sổ tay này.
-- **VEGA Projects**: sau khi đăng nhập tài khoản VEGA, mục này hiển thị các dự án bạn đã tạo bằng VEGA AI trên web; nhấp vào một dự án để tiếp tục chỉnh sửa trong trình duyệt. Có hỗ trợ tìm kiếm, sắp xếp theo thời gian, làm mới và tải thêm.
+- **Ask AI**: bảng cơ sở tri thức — hỏi và nhận câu trả lời trích dẫn từ các tệp đánh sao của bạn (xem dưới).
 - **Thư mục**: các thư mục bạn thêm vào thanh bên bằng **Thêm thư mục…**, hoặc kéo vào đó từ trình quản lý tập tin. Mỗi thư mục trở thành một gốc mà bạn có thể mở, tạo thư mục con bên trong, đổi tên và gỡ bỏ; thư mục nào mất kết nối sẽ hiển thị là không khả dụng và có thể gỡ khỏi danh sách. **Thư mục mới** tạo thêm một thư mục nữa.
 
 Ở đây không có mục Thùng rác. Các tập tin đã xóa đi vào thùng rác của hệ thống, và việc khôi phục là của hệ điều hành.
@@ -52,12 +52,14 @@ Từng thẻ dùng để làm gì:
 - **AI Markdown** (.md): tài liệu Markdown trống trong trình soạn thảo Markdown.
 - **AI HTML** (.html): trang web trống trong trình soạn thảo HTML.
 - **AI PDF** (.pdf): khác với những thẻ còn lại — nó **ngay lập tức** tạo một tập tin PDF trắng thật một trang trong thư mục đích và mở nó như một tập tin bình thường (trình soạn thảo PDF làm việc trên tập tin thật). Phù hợp để thêm chú thích, che nội dung hoặc thêm văn bản; tên tập tin có thể được đổi tự động theo nội dung ở lần lưu đầu tiên.
-- **Mở tệp cục bộ**: bộ chọn tập tin của hệ thống cho Word (.docx/.doc), Excel (.xlsx/.xlsm/.xls/.csv/.tsv), PowerPoint (.pptx/.ppt), PDF, Markdown (.md/.markdown) và trang web (.html/.htm). Có thể chọn nhiều; mỗi tập tin mở một thẻ riêng.
+- **Mở tệp cục bộ**: bộ chọn tập tin của hệ thống cho Word (.docx/.doc), Excel (.xlsx/.xlsm/.xls/.csv/.tsv), PowerPoint (.pptx/.ppt), PDF, Markdown (.md/.markdown) và trang web (.html/.htm). Có thể chọn nhiều; mỗi tập tin mở một thẻ riêng. Tệp văn bản (.txt, .json) cũng mở được ở đây — chúng vào thẳng chế độ mã nguồn của trình soạn Markdown.
 
 > Gợi ý: File ▸ Mới trên dải menu tạo ra cùng những loại tài liệu đó (⌘N/Ctrl+N mặc định tạo tài liệu văn bản); kéo một tập tin vào cửa sổ nghĩa là mở nó.
 
-## Dự án trên đám mây (VEGA Projects)
+## Hỏi cơ sở tri thức của bạn
 
-- Lần dùng đầu tiên cần đăng nhập tài khoản VEGA (luồng mã thiết bị: OfficeVega hiển thị một mã, bạn hoàn tất đăng nhập trong trình duyệt).
-- Danh sách dự án đồng bộ với web; Mở trong trình duyệt đưa bạn tới đó để tiếp tục.
-- Không đăng nhập không ảnh hưởng tới bất kỳ tính năng cục bộ nào.
+- Đánh sao tệp trước (loại nào ứng dụng đọc được đều được); đầu bảng đếm kho, và kho rỗng sẽ mời bạn đi đánh sao thứ gì đó.
+- Câu trả lời trích dẫn tệp nguồn; bấm vào trích dẫn để mở tệp trong trình soạn của nó.
+- Cần đăng nhập VEGA. Hội thoại chỉ sống trong bộ nhớ — đóng ứng dụng là hết.
+- Tìm kiếm chạy trên chỉ mục tệp cục bộ, như tìm kiếm của Trang chủ; tệp đã biến mất tự rời khỏi kho.
+- Nhóm chỉ để sắp danh sách Đánh sao — cơ sở tri thức luôn bao mọi tệp được đánh sao.

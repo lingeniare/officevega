@@ -1535,4 +1535,8 @@ export const tk = {
   appVisualFlipV: 'Flip Vertical',
   appVisualFlipH: 'Flip Horizontal',
   appCtxPasteVisual: 'Paste Picture or Shape',
+  appLargeFilterLoading: 'Filtr sütüni faýldan okalýar…',
+  appLargeFilterApplying: 'Filtr faýla ulanylýar…',
+  appPrintWorkbookTooLarge:
+    'Bu iş kitaby ýada doly ýüklemek üçin örän uly, şonuň üçin ony çap etmek ýa-da PDF-e eksport etmek bolmaýar.',
 } satisfies Record<keyof typeof zh, string>

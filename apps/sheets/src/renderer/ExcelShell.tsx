@@ -11,6 +11,7 @@ import {
   aiPanelInitiallyOpen,
   rememberAiPanelOpen,
   type AiHistoryItem,
+  type AiTokenUsageView,
 } from '@genoffice/ui'
 
 import {
@@ -239,6 +240,8 @@ interface ExcelShellProps {
   readonly sheetHasContent: boolean
   /// true while the real LLM agent is running (composer disabled meanwhile).
   readonly aiBusy: boolean
+  /** tokens billed across the session, shown beside the composer */
+  readonly sessionUsage?: AiTokenUsageView
   readonly chat: readonly AiChatMessage[]
   readonly historicChat?: readonly AiChatMessage[]
   /// Chat attachments (chips + 📎 button + drag-and-drop), same structure as the
@@ -473,6 +476,7 @@ export function ExcelShell({
   formatPainterActive,
   sheetHasContent,
   aiBusy,
+  sessionUsage,
   chat,
   historicChat,
   attachments,
@@ -1079,6 +1083,7 @@ export function ExcelShell({
           prompt={prompt}
           preview={preview}
           aiBusy={aiBusy}
+          sessionUsage={sessionUsage}
           onPromptChange={onPromptChange}
           onSend={onSend}
           privacyBadge={privacyBadge}
@@ -1086,6 +1091,11 @@ export function ExcelShell({
           onShieldToggle={onShieldToggle}
           {...(suggestedQuestions !== undefined ? { suggestedQuestions } : {})}
           {...(onSuggestionPick !== undefined ? { onSuggestionPick } : {})}
+          onSendQueued={(text, atts) => {
+            if (aiBusy) return false
+            onSend(text, atts)
+            return true
+          }}
           onStop={onStop}
           onNewChat={onNewChat}
           historyOpen={historyOpen}

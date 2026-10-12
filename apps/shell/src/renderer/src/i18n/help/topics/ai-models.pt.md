@@ -7,7 +7,7 @@ Os modelos e as chaves configuram-se nas Definições (a linha da conta no canto
 ![A janela de definições](img/settings-general.png)
 
 - **VEGA nos seus servidores**: inicie sessão (com o fluxo de código de dispositivo) e use — sem configuração nenhuma. Os pedidos seguem para `https://api.vega.chat`, um endpoint compatível com OpenRouter, por isso qualquer cliente no estilo OpenRouter pode apontar para ele.
-- **Endpoints personalizados (BYOK)**: em Definições ▸ IA indicam-se o URL base e a chave de API de cada protocolo — compatível com OpenAI, Anthropic, Gemini, DeepSeek, DashScope (qwen) e outros. As chaves ficam guardadas no ficheiro de definições da aplicação nesta máquina e são enviadas apenas nos cabeçalhos dos pedidos.
+- **Endpoints personalizados (BYOK)**: em Configurações ▸ Modelo de IA indicam-se a URL base e a chave de API de cada protocolo — o compatível com OpenAI, Anthropic, Gemini, DeepSeek, DashScope (qwen) e outros. As chaves ficam guardadas no ficheiro de definições da aplicação nesta máquina e são enviadas apenas nos cabeçalhos dos pedidos. Atlas Cloud está entre os protocolos embutidos.
 - Pode escolher um modelo diferente para cada capacidade: conversação/geração, geração de imagens, análise de imagens.
 - **Testar ligação**: confirma que o endpoint está acessível e que o modelo está visível, antes de guardar.
 - O URL base pode trazer um caminho e uma cadeia de consulta (estilo gateway); o caminho do endpoint é acrescentado corretamente.

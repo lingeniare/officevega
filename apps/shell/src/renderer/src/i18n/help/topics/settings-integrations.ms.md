@@ -30,7 +30,7 @@ Cerah / Gelap / Ikut sistem. Pilihan Ikut sistem mengikut rupa sistem pengendali
 Ini bukan suis — setiap keupayaan memilih pembekal yang menyediakannya, dan kunci serta URL asas pembekal dimasukkan sekali sahaja lalu dikongsi:
 
 - **Web search**, **Image generation**, **Image analysis** dan **Video analysis**, setiap satu dengan pembekal, model, kunci dan URL asas. Pilih **VEGA** sebagai pembekal untuk menghalakannya melalui `api.vega.chat` menggunakan kunci log masuk anda.
-- **Local file search** berjalan pada mesin ini. Di bawahnya terdapat **Jev search reranking**, yang **dimatikan secara lalai**. Apabila dihidupkan, petikan daripada 20 hasil setempat teratas — sehingga 1,200 aksara daripada setiap dokumen, berserta nama fail dan folder — dihantar ke model Jev oleh TypeSafe untuk disusun semula mengikut kaitan. Apabila dimatikan, tiada apa yang meninggalkan peranti.
+- **Carian fail setempat** berjalan pada mesin ini. Di bawahnya, **penyusunan semula carian Jev** **mati secara lalai**. Apabila dihidupkan, petikan 20 hitungan setempat teratas — sehingga 1,200 aksara setiap dokumen, bersama nama fail dan folder — pergi ke titik akhir keputusan pilihan anda (VEGA, Jev melalui OpenRouter atau TypeSafe, Perplexity, Liquid AI d1, Cloudflare, enjin setempat atau URL tersuai) untuk disusun semula mengikut kaitan. Apabila mati, tiada apa meninggalkan peranti.
 
 ## Perihal
 

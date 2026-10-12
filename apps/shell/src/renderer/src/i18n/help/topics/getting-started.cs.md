@@ -46,7 +46,7 @@ Nový dokument se otevře bez názvu; soubor na disku vznikne až při prvním u
 | Otevřít tuto příručku | F1      |
 | Sbalit pás karet      | Ctrl+F1 |
 
-**Sbalení pásu karet** funguje v každém editoru. Řádek karet zůstane na místě a pás příkazů pod ním se skryje; vybraná karta zároveň slouží jako ovládací prvek sbalení. Dokud je pás sbalený, není vybraná žádná karta a stisknutí libovolné karty pás znovu zobrazí. Dvojklik na kartu dělá totéž. Stav, v jakém jste pás nechali, se pamatuje pro každý editor zvlášť.
+**Sbalení pásu karet** funguje v každém editoru. Řádek karet zůstane na místě a pás příkazů pod ním se skryje; vybraná karta zároveň slouží jako ovládací prvek sbalení, takže dokud je pás karet sbalený, není vybraná žádná karta a stiskem libovolné karty se pás znovu ukáže. Dvojklik na kartu udělá totéž. Způsob, jakým jste to nechali, se pamatuje pro každý editor zvlášť. Docs přidává střední hustotu: **⌥⌘K** / Ctrl+Alt+K stáhne pás jen na ikony, pamatuje se stejně.
 
 Zkratky uvnitř jednotlivých editorů (formátovací štětec, najít a nahradit, práce s tabulkami, ...) najdete v příslušných kapitolách. Docs navíc nabízí prohledávatelný dialog klávesových zkratek (**ctrl+/**), který pokrývá všechny jeho zkratky.
 

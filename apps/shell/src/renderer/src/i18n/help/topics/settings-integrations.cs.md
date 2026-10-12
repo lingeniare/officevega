@@ -30,7 +30,7 @@ Light / Dark / System. Volba System sleduje vzhled operačního systému a edito
 Nejde o přepínače — každá schopnost vybírá poskytovatele, který ji obsluhuje, a klíč i základní URL poskytovatele se zadají jednou a sdílejí se:
 
 - **Web search**, **Image generation**, **Image analysis** a **Video analysis**, každá s poskytovatelem, modelem, klíčem a základní URL. Zvolte **VEGA** jako poskytovatele, aby se směřovaly přes `api.vega.chat` s vaším přihlašovacím klíčem.
-- **Local file search** běží na tomto počítači. Pod ním je **Jev search reranking**, který je **ve výchozím stavu vypnutý**. Když ho zapnete, výňatky z 20 nejlepších místních výsledků — až 1 200 znaků z každého dokumentu plus názvy souborů a složek — se odešlou modelu Jev od TypeSafe a přeřadí se podle relevance. Když je vypnutý, žádná data neopustí zařízení.
+- **Lokální hledání souborů** běží na tomto stroji. Pod ním je **Jev přeřazení výsledků** ve výchozím stavu **vypnuté**. Zapnete-li ho, výtahy top 20 lokálních zásahů — až 1 200 znaků na dokument plus názvy souborů a složek — míří na zvolený rozhodovací endpoint (VEGA, Jev přes OpenRouter nebo TypeSafe, Perplexity, Liquid AI d1, Cloudflare, lokální engine nebo vlastní URL) a přeřadí se podle relevance. Vypnuté ze zařízení nic neodchází.
 
 ## O aplikaci
 

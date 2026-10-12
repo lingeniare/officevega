@@ -30,7 +30,7 @@ Licht / Donker / Systeem. Systeem volgt het uiterlijk van het besturingssysteem 
 Geen schakelaars — elke functie kiest de provider die haar levert, en de sleutel en basis-URL van een provider vul je één keer in en worden gedeeld:
 
 - **Web search**, **Image generation**, **Image analysis** en **Video analysis**, elk met een provider, een model, een sleutel en een basis-URL. Kies **VEGA** als provider om ze via `api.vega.chat` te laten lopen met je aanmeldsleutel.
-- **Local file search** draait op deze computer. Daaronder staat **Jev search reranking**, dat **standaard uit** staat. Zet je het aan, dan worden de fragmenten van de 20 beste lokale resultaten — tot 1.200 tekens per document, plus de bestands- en mapnamen — naar het Jev-model van TypeSafe gestuurd om op relevantie te worden herordend. Staat het uit, dan verlaat er niets dit apparaat.
+- **Lokaal bestanden zoeken** draait op deze machine. Daaronder staat **Jev-herordenen van zoekresultaten** **standaard uit**. Zet u het aan, dan gaan de uittreksels van de top 20 lokale treffers — tot 1.200 tekens per document, plus bestands- en mapnamen — naar het beslis-eindpunt dat u kiest (VEGA, Jev via OpenRouter of TypeSafe, Perplexity, Liquid AI d1, Cloudflare, een lokale motor of een eigen URL) om op relevantie te herordenen. Uit staat blijft niets het apparaat verlaten.
 
 ## Over
 

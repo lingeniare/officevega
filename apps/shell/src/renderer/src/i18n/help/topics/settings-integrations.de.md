@@ -30,7 +30,7 @@ Hell / Dunkel / System. „System“ folgt dem Erscheinungsbild des Betriebssyst
 Keine Schalter — jede Fähigkeit wählt den Anbieter, der sie bereitstellt, und Schlüssel sowie Basis-URL eines Anbieters werden einmal eingegeben und gemeinsam genutzt:
 
 - **Websuche**, **Bilderzeugung**, **Bildanalyse** und **Videoanalyse**, jeweils mit Anbieter, Modell, Schlüssel und Basis-URL. Wählen Sie **VEGA** als Anbieter, um sie über `api.vega.chat` mit Ihrem Anmeldeschlüssel zu leiten.
-- **Lokale Dateisuche** läuft auf diesem Rechner. Darunter ist **Jev-Neusortierung** standardmäßig **aus**. Schalten Sie sie ein, werden die Auszüge der 20 besten lokalen Treffer — bis zu 1.200 Zeichen je Dokument, dazu die Datei- und Ordnernamen — an das Jev-Modell von TypeSafe gesendet, um nach Relevanz neu sortiert zu werden. Ist sie aus, verlässt nichts das Gerät.
+- **Lokale Dateisuche** läuft auf diesem Rechner. Darunter ist **Jev-Such-Reranking** **standardmäßig aus**. Ein schaltet es ein, gehen die Auszüge der Top-20-Treffer — bis zu 1.200 Zeichen je Dokument, plus Datei- und Ordnernamen — an den von Ihnen gewählten Entscheidungs-Endpunkt (VEGA, Jev über OpenRouter oder TypeSafe, Perplexity, Liquid AI d1, Cloudflare, ein lokales Modell oder eine eigene URL) und werden nach Relevanz neu geordnet. Aus bleibt alles auf dem Gerät.
 
 ## Info
 

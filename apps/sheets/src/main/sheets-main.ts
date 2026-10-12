@@ -103,6 +103,7 @@ import {
 } from '@genoffice/xlsx-gateway/gateway/csv-import'
 import {
   ensureOfficeVegaLogin,
+  noteGskCallFailure,
   officeVegaApiKey,
   setOfficeVegaAuthListener,
   gskApiKey,
@@ -4130,6 +4131,8 @@ export function registerSheetsAiIpc(): void {
     },
   )
 
+  // a 401 on the gsk key drops the stored key and re-reads the shared config;
+  // this fork owns no gsk login flow — the sign-in button below takes over
   ipcMain.handle(IPC_CHANNELS.aiGskLogin, () => {
     ensureOfficeVegaLogin((url) => void shell.openExternal(url))
   })
@@ -4195,8 +4198,11 @@ export function registerSheetsAiIpc(): void {
     // would otherwise stay on the signed-out route until the tab reloads)
     const { provider, config: resolvedConfig } = requestProvider(request.settings)
     let config = resolvedConfig
+    // set only when the gsk key was injected: a 401 then means that key expired
+    let gskKey = ''
     if (provider === 'genspark' && config && !config.apiKey) {
-      config = { ...config, apiKey: gskApiKey() }
+      gskKey = gskApiKey()
+      config = { ...config, apiKey: gskKey }
     } else if (provider === 'vega' && config && !config.apiKey?.trim()) {
       config = { ...config, apiKey: officeVegaApiKey() }
     }
@@ -4217,8 +4223,10 @@ export function registerSheetsAiIpc(): void {
       if (!result.ok && isAiOverloadedError(result.error)) {
         return { ok: false, error: tm('errAiBusy') }
       }
+      if (!result.ok) noteGskCallFailure(gskKey, result.error)
       return result
     } catch (err) {
+      noteGskCallFailure(gskKey, err)
       return { ok: false, error: isAiOverloadedError(err) ? tm('errAiBusy') : String(err) }
     }
   })
@@ -4238,8 +4246,11 @@ export function registerSheetsAiIpc(): void {
     let config = resolvedConfig
     // Genspark's key never enters the settings file; it is read from the gsk
     // login state per request. A VEGA slot likewise inherits the sign-in-issued key.
+    // set only when the gsk key was injected: a 401 then means that key expired
+    let gskKey = ''
     if (provider === 'genspark' && config && !config.apiKey) {
-      config = { ...config, apiKey: gskApiKey() }
+      gskKey = gskApiKey()
+      config = { ...config, apiKey: gskKey }
     } else if (provider === 'vega' && config && !config.apiKey?.trim()) {
       config = { ...config, apiKey: officeVegaApiKey() }
     }
@@ -4284,6 +4295,7 @@ export function registerSheetsAiIpc(): void {
         onStopReason: (reason) => {
           stopReason = reason
         },
+        onUsage: (usage) => send({ requestId, type: 'usage', usage }),
       })
       // sheets tsconfig sets exactOptionalPropertyTypes: an explicit
       // `stopReason: undefined` is not assignable to AiStreamChunk, so only
@@ -4299,6 +4311,8 @@ export function registerSheetsAiIpc(): void {
       } else {
         const msg = err instanceof Error ? err.message : String(err)
         console.error(`[ai-stream] ${requestId} (${provider}/${config.model}) failed:`, msg)
+        // an expired/revoked key drops to signed-out so the inline sign-in button shows
+        noteGskCallFailure(gskKey, err)
         send({
           requestId,
           type: 'error',

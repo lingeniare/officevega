@@ -526,6 +526,8 @@ export function fillLineBoxes(
       !atPageTop &&
       // a mid-paragraph page break splits the block at a line boundary
       !block.innerBreaks?.length &&
+      // an in-cell page break needs row data to act on even without a crossing
+      !block.hasCellBreak &&
       // chain anchors always need line/row data: the chain only keeps with the
       // anchor's first line(s)/row, so the whole-block height is misleading
       !(i > 0 && blocks[i - 1].keepNext && !block.keepNext)
@@ -775,7 +777,7 @@ function domTableRows(el: HTMLElement, blockHeight: number, zoomFactor: number):
   }
   return tileBoxes(tops, blockHeight).map((b, i) => {
     if (!trs[i]) return { height: b.height }
-    const { cuts, contentBottom, cells } = rowCutYs(
+    const { cuts, contentBottom, cells, forcedCuts } = rowCutYs(
       trs[i],
       b.offsetInBlock,
       b.height,
@@ -794,6 +796,7 @@ function domTableRows(el: HTMLElement, blockHeight: number, zoomFactor: number):
         ? { cantSplit: trs[i].getAttribute('data-cant-split') === '1' }
         : {}),
       ...(cuts.length > 0 ? { cutYs: cuts } : {}),
+      ...(forcedCuts && forcedCuts.length > 0 ? { forcedCuts } : {}),
       ...(cells ? { cells } : {}),
       ...(splitExtra > 0 ? { splitExtra } : {}),
     }
@@ -836,7 +839,7 @@ function rowCutYs(
   elTop: number,
   gapAbove: (top: number) => number,
   zoomFactor: number,
-): { cuts: number[]; contentBottom: number; cells?: RowCellBox[] } {
+): { cuts: number[]; contentBottom: number; cells?: RowCellBox[]; forcedCuts?: number[] } {
   const cells = Array.from(tr.children).filter((c) => c.tagName === 'TD' || c.tagName === 'TH')
   const range = rowRange()
   const cellBands: Array<Array<[number, number]>> = []
@@ -845,8 +848,30 @@ function rowCutYs(
   // Explicit page breaks the author typed inside this row. Measured, not
   // inferred: br.doc-page-br is what DocHardBreak renders, and an author who
   // pressed the break expects a page to turn even mid-line.
+  // Explicit page breaks inside this row, as offsets from the row top (px).
+  //
+  // Two shapes reach a cell, and the editor produces the second one:
+  //
+  //  - `p.page-break-before` — Ctrl+Enter splits the paragraph and sets the
+  //    flag on the new one. This is what the editor actually emits, and the
+  //    block-level reader honours it only for top-level blocks, so inside a
+  //    cell nobody was reading it.
+  //  - `br.doc-page-br` — a `w:br w:type="page"` in the source. The editor
+  //    only produces this when the caret sits at the very start of a paragraph,
+  //    and `styles.css` hides it inside table cells, so a display:none node
+  //    reports an all-zero rect and carries no usable position.
+  //
+  // A break is an instruction rather than a heuristic, so these are forced
+  // cuts: exempt from the line-safety and widow/orphan filters, which exist to
+  // avoid cutting text rather than to override the author. Word honours a
+  // mid-line paragraph break too.
+  // a page-break-before paragraph turns the page at its own top edge. (The
+  // br.doc-page-br shape is deliberately not collected: styles.css hides it
+  // inside table cells, so it measures a zero rect and carries no position.)
   const forcedCuts = forcedCutYs(
-    [...tr.querySelectorAll('br.doc-page-br')].map((br) => ({ rect: br.getBoundingClientRect() })),
+    [...tr.querySelectorAll('p.page-break-before')].map((p) => ({
+      rect: p.getBoundingClientRect(),
+    })),
     elTop,
     rowTop,
     gapAbove,
@@ -934,10 +959,17 @@ function rowCutYs(
     (max, bands) => bands.reduce((m, [, b]) => Math.max(m, b), max),
     0,
   )
+  // forced cuts travel separately from the content-line candidates: a forced
+  // cut must turn the page even when the whole row fits, which the placement
+  // gate would skip, and per-cell line splitting must not double-cut at it.
+  // A row without cell boxes (single cell, exact-height cells) splits on the
+  // cut list alone, so there the breaks have to ride along with it.
+  const hasCells = cellsOk && cellBoxes.some((c) => c.lines.length > 0)
   return {
-    cuts: cellCutYs(cellBands, rowHeight, paraBands, forcedCuts),
+    cuts: cellCutYs(cellBands, rowHeight, paraBands, hasCells ? [] : forcedCuts),
+    ...(forcedCuts.length > 0 ? { forcedCuts } : {}),
     contentBottom,
-    ...(cellsOk && cellBoxes.some((c) => c.lines.length > 0) ? { cells: cellBoxes } : {}),
+    ...(hasCells ? { cells: cellBoxes } : {}),
   }
 }
 
@@ -1027,7 +1059,7 @@ function clusterLineBands(bands: Array<[number, number]>): Array<[number, number
  *  tolerance for sub-pixel jitter). paraBands (per-paragraph line bands across
  *  all cells) add Word's widow/orphan rule to in-row breaks: a cut through a
  *  paragraph must leave at least two of its lines on each side, else the whole
- *  row pushes (Word pushes a row whose 2-line cell would split, prod100r4/32+47).
+ *  row pushes (Word pushes a row whose 2-line cell would split; corpus probe 2026-09).
  *
  *  forcedCuts are explicit page breaks the author typed (br.doc-page-br), as
  *  offsets from the row top. They are honoured whatever the heuristics say:

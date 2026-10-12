@@ -10,7 +10,7 @@ Model dan kunci dikonfigurasikan dalam Tetapan, melalui baris akaun di penjuru k
 - **Titik akhir tersuai (BYOK)**: Tetapan ▸ AI menerima URL asas dan kunci API bagi setiap protokol — serasi dengan OpenAI, Anthropic, Gemini, DeepSeek, DashScope (qwen) dan lain-lain. Kunci disimpan dalam fail tetapan aplikasi pada mesin ini dan dihantar hanya dalam pengepala permintaan.
 - Anda boleh memilih model yang berbeza bagi setiap keupayaan: sembang/penjanaan, penjanaan imej, dan analisis imej.
 - **Ujian sambungan** menyemak sama ada titik akhir boleh dicapai dan model kelihatan sebelum disimpan.
-- URL asas boleh mengandungi laluan dan rentetan pertanyaan (gaya gateway); laluan titik akhir ditambah dengan betul.
+- URL asas boleh mengandungi laluan dan rentetan pertanyaan, dan laluan titik akhir ditambah dengan betul.
 
 ## Memilih model
 

@@ -22,7 +22,7 @@ Mô hình và khóa được cấu hình trong Cài đặt (hàng tài khoản �
 
 - VEGA tính phí theo kiểu trả theo mức dùng cho từng mô hình. Bảng giá đầy đủ nằm tại [api.vega.chat/aimodels](https://api.vega.chat/aimodels) — hãy kiểm tra giá đầu vào/đầu ra của mô hình trước khi chạy một tác vụ lớn.
 - Số dư và mức chi tiêu hiện tại nằm trên [bảng điều khiển VEGA](https://api.vega.chat/dashboard), cũng có thể mở từ hàng số dư trong menu tài khoản.
-- Khi chưa đăng nhập, chỉ các tùy chọn miễn phí có sẵn mới hoạt động; đăng nhập để mở khóa mọi mô hình trong bảng giá.
+- URL cơ sở có thể kèm đường dẫn và chuỗi truy vấn (kiểu cổng kết nối); các đường dẫn điểm cuối được nối thêm một cách chính xác.
 
 ## Tích hợp CLI (kiểu Codex)
 

@@ -7,7 +7,7 @@ Modellen en sleutels stel je in via Instellingen (de accountregel linksonder op 
 ![Het venster Instellingen](img/settings-general.png)
 
 - **VEGA op zijn servers**: meld je aan (met de apparaatcode-flow) en gebruik het — zonder configuratie. Verzoeken gaan naar `https://api.vega.chat`, een OpenRouter-compatibel eindpunt, dus elke client in OpenRouter-stijl kan ermee verbinden.
-- **Eigen eindpunten (BYOK)**: Instellingen ▸ AI vraagt per protocol om een basis-URL en een API-sleutel — OpenAI-compatibel, Anthropic, Gemini, DeepSeek, DashScope (qwen) en meer. Sleutels worden opgeslagen in het instellingenbestand van de app op deze computer en alleen in aanvraagheaders verzonden.
+- **Eigen eindpunten (BYOK)**: Instellingen ▸ AI-model vraagt een basis-URL en een API-sleutel per protocol — OpenAI-compatibel, Anthropic, Gemini, DeepSeek, DashScope (qwen) en meer. Sleutels worden opgeslagen in het instellingenbestand van de app op deze machine en alleen in aanvraagheaders verzonden. Atlas Cloud behoort tot de ingebouwde protocollen.
 - Per functie kun je een ander model kiezen: chat/genereren, afbeeldingen genereren, afbeeldingsanalyse.
 - **Verbinding testen**: controleert vóór het opslaan of het eindpunt bereikbaar is en of het model zichtbaar is.
 - Basis-URL's mogen een pad en een querystring bevatten (gateway-stijl); eindpuntpaden worden correct toegevoegd.

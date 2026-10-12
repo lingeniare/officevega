@@ -79,7 +79,7 @@ pub(crate) fn zip_entry<'a>(
 /// part that inflates past that is refused rather than materialised in full.
 ///
 /// This is the path nearly every workbook part arrives through, so an uncapped
-/// read here undoes the work #781 did for media and `@genoffice/zip-gate` does
+/// read here undoes the work genoffice#781 did for media and `@genoffice/zip-gate` does
 /// for the docx and pptx hosts.
 pub(crate) fn read_zip_string(
     archive: &mut ZipArchive<File>,

@@ -8,6 +8,11 @@ export {
   type VegaDepositBadgeData,
 } from './vega-deposit'
 export { AiSuggestedQuestions, useSuggestedQuestions } from './ai-suggested-questions'
+export { AiQueueStrip } from './AiQueueStrip'
+export { useChatRunQueue, type ChatRunQueue, type QueuedChatMessage } from './chat-run-queue'
+export { AI_QUEUE_LABELS, type AiQueueStripLabels } from './strings-ai-queue'
+export { AiUsageChip, addTokenUsage, formatTokenCount, type AiTokenUsageView } from './AiUsageChip'
+export { AI_USAGE_LABELS, type AiUsageLabels } from './strings-ai-usage'
 export { AiScopeQuote, type AiScopeQuoteData } from './AiScopeQuote'
 export {
   AI_CUSTOM_FONT_MAX_PX,
@@ -72,6 +77,7 @@ export {
 export { AiTypingIndicator } from './AiTypingIndicator'
 export { IconSend, IconStop, IconArrowUp, IconPlus, IconCrown, type IconProps } from './icons'
 export { Markdown, type MarkdownNav } from './Markdown'
+export { FILE_NAV_SCHEME, createFileNav, fileNavHref, parseFileNavHref } from './file-nav'
 export { isSymbolFontFamily } from './symbol-fonts'
 export {
   BUILTIN_FONT_FAMILIES,
