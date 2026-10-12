@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { notifyStartVegaLogin } from './file-events'
 import { useI18n } from './locale'
 import type { StringKey } from './locale'
 import './onboarding.css'
@@ -10,12 +11,12 @@ interface OnboardingProps {
 
 interface Slide {
   titleKey: StringKey
-  /** 18px dark line right under the title */
+  /** 18px dark line(s) right under the title */
   subtitleKey: StringKey
-  /** 16px muted paragraph below the title block */
+  /** 16px paragraph below the title block */
   bodyKey?: StringKey
-  /** render the body in the dimmer footnote gray (slide 3's payment disclaimer) */
-  bodyDim?: boolean
+  /** '\n'-separated lines rendered as a numbered step list instead of a subtitle */
+  stepsKey?: StringKey
 }
 
 const SLIDES: readonly Slide[] = [
@@ -24,8 +25,8 @@ const SLIDES: readonly Slide[] = [
   {
     titleKey: 'onbTitle3',
     subtitleKey: 'onbBody3',
+    stepsKey: 'onbBody3',
     bodyKey: 'onbNote3',
-    bodyDim: true,
   },
 ]
 
@@ -48,6 +49,17 @@ export function Onboarding({ onDone }: OnboardingProps) {
   const next = () => {
     if (isLast) finish()
     else setIndex((current) => current + 1)
+  }
+
+  // slide 3's primary CTA: close the onboarding and kick off the same VEGA
+  // device-flow sign-in the home account chip's "Connect AI" button runs
+  const connectVega = () => {
+    if (submitting) return
+    setSubmitting(true)
+    void onDone()
+      .catch(() => false)
+      .then(() => notifyStartVegaLogin())
+      .finally(() => setSubmitting(false))
   }
 
   // move focus into the dialog on mount so keyboard users start inside it
@@ -123,14 +135,19 @@ export function Onboarding({ onDone }: OnboardingProps) {
               key={s.titleKey}
               inert={i !== index}
             >
-              <span className="onb-art onb-art-num" aria-hidden="true">
-                {i + 1}
-              </span>
               <h2 className="onb-title">{t(s.titleKey)}</h2>
-              <p className="onb-subtitle">{t(s.subtitleKey)}</p>
-              {s.bodyKey && (
-                <p className={`onb-body${s.bodyDim ? ' onb-body-dim' : ''}`}>{t(s.bodyKey)}</p>
+              {s.stepsKey ? (
+                <ol className="onb-steps">
+                  {t(s.stepsKey)
+                    .split('\n')
+                    .map((step) => (
+                      <li key={step}>{step}</li>
+                    ))}
+                </ol>
+              ) : (
+                <p className="onb-subtitle">{t(s.subtitleKey)}</p>
               )}
+              {s.bodyKey && <p className="onb-body">{t(s.bodyKey)}</p>}
             </div>
           ))}
         </div>
@@ -148,9 +165,6 @@ export function Onboarding({ onDone }: OnboardingProps) {
             ))}
           </div>
           <div className="onb-nav">
-            <button className="onb-skip" disabled={submitting} onClick={finish}>
-              {t('onbSkip')}
-            </button>
             {index > 0 && (
               <button
                 className="onb-back"
@@ -160,9 +174,20 @@ export function Onboarding({ onDone }: OnboardingProps) {
                 {t('onbBack')}
               </button>
             )}
-            <button className="onb-next" disabled={submitting} onClick={next}>
-              {isLast ? t('onbStart') : t('onbNext')}
-            </button>
+            {isLast ? (
+              <>
+                <button className="onb-quiet" disabled={submitting} onClick={finish}>
+                  {t('onbStartNoAi')}
+                </button>
+                <button className="onb-next" disabled={submitting} onClick={connectVega}>
+                  {t('onbConnectVega')}
+                </button>
+              </>
+            ) : (
+              <button className="onb-next" disabled={submitting} onClick={next}>
+                {t('onbNext')}
+              </button>
+            )}
           </div>
         </div>
       </div>

@@ -102,6 +102,25 @@ describe('provider model catalog', () => {
       expect(model).not.toContain('/')
     }
   })
+
+  it('seeds Sber with the current GigaChat lineup and a live catalog', () => {
+    const sber = AI_PROVIDERS.find((provider) => provider.id === 'sber')!
+    expect(sber.models).toContain(sber.defaultModel)
+    expect(sber.liveCatalog).toBe(true)
+    for (const model of sber.models) {
+      expect(model).toMatch(/^GigaChat-\d/)
+    }
+  })
+
+  it('seeds Yandex with folder-scoped gpt:// model URIs', () => {
+    const yandex = AI_PROVIDERS.find((provider) => provider.id === 'yandex')!
+    expect(yandex.models).toContain(yandex.defaultModel)
+    // the folder id rides inside the model URI, so the picker must stay editable
+    expect(yandex.liveCatalog).toBe(true)
+    for (const model of yandex.models) {
+      expect(model).toMatch(/^gpt:\/\//)
+    }
+  })
 })
 
 describe('resolveAiSettings', () => {

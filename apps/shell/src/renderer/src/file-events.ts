@@ -18,3 +18,21 @@ export function onFilesChanged(handler: () => void): () => void {
   target.addEventListener(FILES_CHANGED, handler)
   return () => target.removeEventListener(FILES_CHANGED, handler)
 }
+
+/**
+ * In-renderer request to start the VEGA device-flow sign-in. The onboarding's
+ * "Connect VEGA AI" CTA and Home's account chip live in the same renderer but
+ * different components, and only Home owns the waiting/code UI state — so the
+ * CTA fires this and Home runs the same startLogin its own button uses.
+ */
+const START_VEGA_LOGIN = 'start-vega-login'
+
+export function notifyStartVegaLogin(): void {
+  target.dispatchEvent(new Event(START_VEGA_LOGIN))
+}
+
+/** Subscribe; returns the unsubscribe function (effect-cleanup friendly). */
+export function onStartVegaLogin(handler: () => void): () => void {
+  target.addEventListener(START_VEGA_LOGIN, handler)
+  return () => target.removeEventListener(START_VEGA_LOGIN, handler)
+}

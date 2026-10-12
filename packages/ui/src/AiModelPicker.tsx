@@ -9,6 +9,7 @@ import type {
 import {
   aiModelPickerGroups,
   aiModelPickerSelection,
+  healVegaModelSelection,
   withAiModelSelection,
   type AiModelPickerSelection,
 } from './ai-model-picker-options'
@@ -122,6 +123,9 @@ export function AiModelPicker({
   const [liveNames, setLiveNames] = useState<Record<string, Record<string, string>>>({})
   const [liveIds, setLiveIds] = useState<Record<string, readonly string[]>>({})
   const catalogKeysRef = useRef<Record<string, string>>({})
+  /** freshest settings snapshot — the catalog reply heals against it, not the stale render closure */
+  const settingsRef = useRef<AiSettings | null>(null)
+  settingsRef.current = settings
   useEffect(() => {
     const getModels = bridge.getProviderModels
     if (!settings || !getModels) return
@@ -155,6 +159,19 @@ export function AiModelPicker({
           // settings refresh, not stay a one-row list for the window's life
           if (!cat?.models?.length) return
           catalogKeysRef.current[key] = credKey
+          // VEGA's catalog is the account's allowlist: a stored id missing from
+          // it (picked off the anonymous public catalog pre-sign-in, or
+          // hand-edited) can't be served — heal the selection to the default
+          if (g.id === 'vega') {
+            const healed = healVegaModelSelection(
+              settingsRef.current ?? ({} as AiSettings),
+              cat.models.map((m) => m.id),
+            )
+            if (healed) {
+              setSettings(healed)
+              void bridge.setSettings(healed).catch(() => {})
+            }
+          }
           if (!alive) return
           setLiveNames((prev) => ({
             ...prev,

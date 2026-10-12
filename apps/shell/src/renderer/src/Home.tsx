@@ -26,7 +26,7 @@ import type { I18n, StringKey } from './locale'
 import { SettingsModal } from './SettingsModal'
 import type { SettingsTarget } from './SettingsModal'
 import { skillUpdateDue } from './IntegrationsPane'
-import { onFilesChanged } from './file-events'
+import { onFilesChanged, onStartVegaLogin } from './file-events'
 
 /** page size of the home list; scrolling to the bottom auto-loads the next page */
 const PAGE_SIZE = 50
@@ -970,6 +970,10 @@ function AccountEntry({
       }
     })
   }
+
+  // the onboarding's "Connect VEGA AI" CTA fires this; run the identical flow
+  // the chip's own click handler starts (stable deps only: setters + refs)
+  useEffect(() => onStartVegaLogin(() => startLogin()), [])
 
   const openLoginUrl = () => void window.aiOffice.openLoginUrl?.()
 

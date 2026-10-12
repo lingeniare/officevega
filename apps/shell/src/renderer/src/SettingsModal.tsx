@@ -6,8 +6,10 @@ import {
   ComboBox,
   DEFAULT_AI_PANEL_PREFS,
   Dropdown,
+  IconCrown,
   aiPanelFontPx,
   clampAiCustomFontSize,
+  healVegaModelSelection,
 } from '@genoffice/ui'
 import type { AiFontSize, AiPanelPrefs, AiPanelSide } from '@genoffice/ui'
 import type { DecisionEndpoint, DefaultAppStatus, FileSearchSettings } from '../../shared/home-api'
@@ -424,6 +426,15 @@ function noteWithLink(note: string): ReactNode {
   )
 }
 
+/** crown marker after a license-gated option's label; the tip explains the lock */
+function LicenseCrown({ tip }: { tip: string }) {
+  return (
+    <span className="set-lic-crown" title={tip}>
+      <IconCrown size={12} />
+    </span>
+  )
+}
+
 function AiModelPane({
   t,
   account,
@@ -477,6 +488,15 @@ function AiModelPane({
         baseUrl,
         ...CHAT_MODEL_FILTER,
       })
+      // VEGA's catalog is the account's allowlist: a stored id missing from it
+      // (picked off the anonymous public catalog pre-sign-in) can't be served —
+      // heal the selection to the provider default; the autosave persists it
+      if (id === 'vega' && live.models.length) {
+        const ids = live.models.map((m) => m.id)
+        setSettings((current) =>
+          current ? (healVegaModelSelection(current, ids) ?? current) : current,
+        )
+      }
       setCatalog((current) =>
         current.map((entry) => {
           if (entry.id !== id) return entry
@@ -756,17 +776,21 @@ function AiModelPane({
           ariaLabel={t('setAiProvider')}
           options={catalog
             .filter((c) => c.id !== 'genspark' || c.id === provider)
-            .map((c) => ({
-              value: c.id,
-              label: c.label,
-              disabled: !licensed && c.id !== 'vega' && c.id !== 'genspark',
-              render: (
-                <>
-                  <ProviderLogo id={c.id} />
-                  {c.label}
-                </>
-              ),
-            }))}
+            .map((c) => {
+              const locked = !licensed && c.id !== 'vega' && c.id !== 'genspark'
+              return {
+                value: c.id,
+                label: c.label,
+                disabled: locked,
+                render: (
+                  <>
+                    <ProviderLogo id={c.id} />
+                    {c.label}
+                    {locked && <LicenseCrown tip={t('licProviderLocked')} />}
+                  </>
+                ),
+              }
+            })}
           onPick={(v) => selectProvider(v as AiSettings['provider'])}
         />
       </div>
@@ -1362,17 +1386,21 @@ function AiMediaPane({
         ariaLabel={label}
         options={options
           .filter((c) => c.id !== 'genspark' || c.id === value)
-          .map((c) => ({
-            value: c.id,
-            label: c.label,
-            disabled: !licensed && c.id !== 'vega' && c.id !== 'genspark',
-            render: (
-              <>
-                <ProviderLogo id={c.id} />
-                {c.label}
-              </>
-            ),
-          }))}
+          .map((c) => {
+            const locked = !licensed && c.id !== 'vega' && c.id !== 'genspark'
+            return {
+              value: c.id,
+              label: c.label,
+              disabled: locked,
+              render: (
+                <>
+                  <ProviderLogo id={c.id} />
+                  {c.label}
+                  {locked && <LicenseCrown tip={t('licProviderLocked')} />}
+                </>
+              ),
+            }
+          })}
         onPick={onPick}
       />
     </div>
@@ -1667,10 +1695,19 @@ function AiMediaPane({
                   className="set-dd"
                   value={licensed ? fileSearch.endpoint : 'vega'}
                   ariaLabel={t('setSearchRerankEndpoint')}
-                  options={DECISION_ENDPOINTS.map((o) => ({
-                    ...o,
-                    disabled: !licensed && o.value !== 'vega',
-                  }))}
+                  options={DECISION_ENDPOINTS.map((o) => {
+                    const locked = !licensed && o.value !== 'vega'
+                    return {
+                      ...o,
+                      disabled: locked,
+                      render: (
+                        <>
+                          {o.label}
+                          {locked && <LicenseCrown tip={t('licProviderLocked')} />}
+                        </>
+                      ),
+                    }
+                  })}
                   onPick={(v) => setFileSearch({ ...fileSearch, endpoint: v as DecisionEndpoint })}
                 />
               </div>
@@ -2364,6 +2401,19 @@ export function SettingsModal({
                     <button
                       className="set-btn"
                       onClick={() => void window.aiOffice.openFeedback?.()}
+                    >
+                      {t('setOpen')}
+                    </button>
+                  }
+                />
+                <h3 className="set-pane-title set-lic-title">{t('setOtherAiTitle')}</h3>
+                <Field
+                  label={t('setAiChatLabel')}
+                  value={lang === 'ru' ? 'ru.vega.chat' : 'vega.chat'}
+                  action={
+                    <button
+                      className="set-btn"
+                      onClick={() => void window.aiOffice.openVegaChat?.()}
                     >
                       {t('setOpen')}
                     </button>

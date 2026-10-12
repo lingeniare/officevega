@@ -25,6 +25,12 @@ export interface ResolvedEndpoint {
   bodyExtras?: Record<string, unknown>
   /** id to put on the wire when the vendor spells the configured model differently */
   model?: string
+  /**
+   * The stored apiKey is not the Bearer credential: 'gigachat-oauth' marks it
+   * as Sber's OAuth authorization key, which dispatch (stream/chat/model
+   * catalog) first exchanges for a 30-minute access token in gigachat-auth.ts.
+   */
+  authScheme?: 'gigachat-oauth'
 }
 
 export interface ProviderAdapter {
@@ -185,6 +191,7 @@ function fixedEndpoint(
     omitTemperature?: boolean
     useMaxCompletionTokens?: boolean
     bodyExtras?: Record<string, unknown>
+    authScheme?: ResolvedEndpoint['authScheme']
   },
 ) {
   return (config: AiProviderConfig): ResolvedEndpoint => {
@@ -195,6 +202,7 @@ function fixedEndpoint(
       ...(omit ? { omitTemperature: true } : {}),
       ...(extras?.useMaxCompletionTokens ? { useMaxCompletionTokens: true } : {}),
       ...(extras?.bodyExtras ? { bodyExtras: extras.bodyExtras } : {}),
+      ...(extras?.authScheme ? { authScheme: extras.authScheme } : {}),
     }
   }
 }
@@ -388,6 +396,25 @@ export const AI_PROVIDER_ADAPTERS: Record<AiProviderId, ProviderAdapter> = {
     resolveEndpoint: opencodeEndpoint(OPENCODE_GATEWAY_ROOTS.go, {
       anthropic: /^(minimax-|qwen3\.8-flash$)/,
     }),
+  },
+  sber: {
+    meta: metaOf('sber'),
+    // GigaChat analyzes images only through its own /files upload flow, never
+    // through an OpenAI image_url part — screenshots stay out of the payload
+    capabilities: { auth: 'api-key', vision: false },
+    // api.giga.chat is the unified endpoint since 2026-07 (gigachat.devices
+    // .sberbank.ru before); the stored key is the OAuth authorization key
+    resolveEndpoint: fixedEndpoint('openai-compatible', 'https://api.giga.chat/v1', {
+      authScheme: 'gigachat-oauth',
+    }),
+  },
+  yandex: {
+    meta: metaOf('yandex'),
+    // the Foundation Models chat models take text only
+    capabilities: { auth: 'api-key', vision: false },
+    // AI Studio's OpenAI-compatible endpoint; Bearer covers both API keys and
+    // IAM tokens, and the cloud folder id lives inside the gpt:// model URI
+    resolveEndpoint: fixedEndpoint('openai-compatible', 'https://llm.api.cloud.yandex.net/v1'),
   },
   custom: {
     meta: metaOf('custom'),

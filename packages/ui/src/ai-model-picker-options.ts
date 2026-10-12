@@ -110,6 +110,40 @@ export function aiModelPickerSelection(input: AiSettings): AiModelPickerSelectio
   return { provider, model }
 }
 
+/**
+ * VEGA's authenticated catalog is account-scoped (~a dozen ids): a stored id
+ * outside it — picked from the anonymous public catalog before sign-in, or
+ * hand-edited — cannot be served on the sign-in key, so the selection heals to
+ * the provider default (an off-catalog fastModel drops to "same as main").
+ * Returns null when nothing needs fixing. Only meaningful for 'vega': every
+ * other live catalog is vendor-wide, where an off-list id may still resolve.
+ */
+export function healVegaModelSelection(
+  input: AiSettings,
+  liveIds: readonly string[],
+): AiSettings | null {
+  const settings = resolveCustomEndpoints(input)
+  const meta = AI_PROVIDERS.find((m) => m.id === 'vega')
+  const config = settings.providers?.vega
+  if (!meta?.defaultModel || !config) return null
+  const model = config.model?.trim() ?? ''
+  const fast = config.fastModel?.trim() ?? ''
+  const modelBad = !!model && model !== meta.defaultModel && !liveIds.includes(model)
+  const fastBad = !!fast && fast !== meta.defaultFastModel && !liveIds.includes(fast)
+  if (!modelBad && !fastBad) return null
+  return {
+    ...settings,
+    providers: {
+      ...settings.providers,
+      vega: {
+        ...config,
+        ...(modelBad ? { model: meta.defaultModel } : {}),
+        ...(fastBad ? { fastModel: undefined } : {}),
+      },
+    },
+  }
+}
+
 export function withAiModelSelection(input: AiSettings, pick: AiModelPickerSelection): AiSettings {
   const settings = resolveCustomEndpoints(input)
   if (pick.provider === 'custom' && pick.endpoint) {

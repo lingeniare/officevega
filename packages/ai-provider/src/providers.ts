@@ -95,6 +95,9 @@ export const AI_PROVIDERS: AiProviderMeta[] = [
     // GLM 5.3 Flash, with Luna as the fast-model default (2026-10).
     models: [],
     defaultModel: 'z-ai/glm-5.3-flash',
+    // display name for the one statically listed id — the chip reads it before
+    // the live catalog lands (the catalog name then takes over)
+    modelNames: { 'z-ai/glm-5.3-flash': 'GLM 5.3 Flash' },
     defaultFastModel: 'openai/gpt-6-luna',
     keyPlaceholder: 'sk-apivega-...',
     liveCatalog: true,
@@ -482,6 +485,36 @@ export const AI_PROVIDERS: AiProviderMeta[] = [
     ],
     defaultModel: 'kimi-k2.7-code',
     keyPlaceholder: 'API Key',
+  },
+  {
+    id: 'sber',
+    label: 'Sber GigaChat',
+    // GET api.giga.chat/v1/models serves the live catalog; the Bearer it needs
+    // is a short-lived access token minted from the stored authorization key
+    // (gigachat-auth.ts), so the ids below are only the offline fallback.
+    // GigaChat-2 is the 128k lineup; 3-Ultra is the freemium personal tier.
+    models: ['GigaChat-2-Max', 'GigaChat-2-Pro', 'GigaChat-2', 'GigaChat-3-Ultra'],
+    defaultModel: 'GigaChat-2-Max',
+    keyPlaceholder: 'Authorization key',
+    liveCatalog: true,
+  },
+  {
+    id: 'yandex',
+    label: 'Yandex',
+    // Yandex addresses models by URI — gpt://<folder-id>/<model>[/<version>] —
+    // so the cloud folder id rides inside the model string: pick a template
+    // and edit <folder-id> in place (lite = Lite 5, latest = Pro 5, rc = 5.1,
+    // aliceai-llm = the AI Studio flagship). The OpenAI-compatible endpoint at
+    // llm.api.cloud.yandex.net/v1 serves both API keys and IAM tokens as Bearer.
+    models: [
+      'gpt://<folder-id>/yandexgpt-lite',
+      'gpt://<folder-id>/yandexgpt/latest',
+      'gpt://<folder-id>/yandexgpt/rc',
+      'gpt://<folder-id>/aliceai-llm',
+    ],
+    defaultModel: 'gpt://<folder-id>/yandexgpt-lite',
+    keyPlaceholder: 'AQVN... or IAM token',
+    liveCatalog: true,
   },
   {
     id: 'custom',

@@ -3,6 +3,7 @@ import { chatGemini } from './protocols/gemini'
 import { chatOpenAiCompatible } from './protocols/openai-compatible'
 import { ResponseBodyTooLargeError } from './protocols/shared'
 import { chatCodexAppServer } from './codex-app-server'
+import { gigachatAccessToken } from './gigachat-auth'
 import { getProviderAdapter, type ResolvedEndpoint } from './registry'
 import type { AiChatResponse, AiProviderConfig, AiProviderId } from './types'
 import { AI_CHAT_RESPONSE_TIMEOUT_MS, createStreamWatchdog } from './watchdog'
@@ -18,18 +19,30 @@ export async function chatForProvider(
   // non-streaming: the server generates the full answer before the headers arrive,
   // so the connect phase gets the long budget; the body read then gets the idle budget
   const wd = createStreamWatchdog(signal, AI_CHAT_RESPONSE_TIMEOUT_MS)
-  const result = wd.guard(() => {
+  const result = wd.guard(async () => {
     let endpoint: ResolvedEndpoint
     try {
       endpoint = getProviderAdapter(provider).resolveEndpoint(config)
     } catch (e) {
       // config errors (unknown provider, missing base URL) report as a failed reply, not a rejection
-      return Promise.resolve({
+      return {
         ok: false as const,
         error: e instanceof Error ? e.message : String(e),
-      })
+      }
     }
     if (endpoint.model) config = { ...config, model: endpoint.model }
+    if (endpoint.authScheme === 'gigachat-oauth') {
+      // same OAuth exchange as the streaming path, surfaced as a failed reply
+      // so the settings test button reports it instead of rejecting
+      try {
+        config = { ...config, apiKey: await gigachatAccessToken(config.apiKey, wd.signal) }
+      } catch (e) {
+        return {
+          ok: false as const,
+          error: e instanceof Error ? e.message : String(e),
+        }
+      }
+    }
     switch (endpoint.protocol) {
       case 'codex-app-server':
         return chatCodexAppServer(config, system, user, wd.signal)

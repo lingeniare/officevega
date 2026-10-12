@@ -24,6 +24,7 @@ export const PII_SHIELD_NOTE = [
   '- Personal data is masked before it reaches you: names, phones, IDs and similar appear as #TYPE_N# tokens (e.g. #PERSON_1#, #PHONE_NUMBER_2#) in document context and tool results. The document stores the real values — a token is a view artifact, never document content.',
   '- Personal-looking text you invent (names, phones, emails, addresses) is masked the same way, so after you write it you will see tokens where your text was — that is the mask working, not you having written literal tokens.',
   '- Never try to remove, fix, or "clean up" these tokens and never write one as document text. To edit text that contains a token, keep the token verbatim in the tool argument (the gateway substitutes the real value back) or address the surrounding literal words instead.',
+  '- Address the user as "you", never by a #TYPE_N# token. When a reply must name a masked person, quote the token exactly as it appeared — it is restored to the real value in what the user sees; an invented or mis-copied token reaches the user as unreadable #TYPE_N# text.',
   '- The masked view never changes after a successful edit: a spot that read #PERSON_1# still reads #PERSON_1# afterwards. Trust the tool result, not the re-read — do not edit again just because tokens remain visible.',
   '- If a tool call is rejected for an unresolved privacy token, re-read the block and work with the literal text around it — do not retry the token.',
 ].join('\n')

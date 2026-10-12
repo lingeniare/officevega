@@ -14,6 +14,10 @@ export function AppFrame({ initialOnboardingSeen }: AppFrameProps) {
   const [showOnboarding, setShowOnboarding] = useState(!initialOnboardingSeen)
   const [starPromptDocOpens, setStarPromptDocOpens] = useState<number | null>(null)
 
+  // Help → "Welcome" replays the first-run slides; the main process also
+  // switches to the home tab, so the overlay is visible when this fires
+  useEffect(() => window.aiOffice.onShowOnboarding?.(() => setShowOnboarding(true)), [])
+
   useEffect(() => {
     const applyTabs = (tabs: Awaited<ReturnType<typeof window.aiOfficeTabs.list>>) => {
       const active = tabs.find((tab) => tab.active)

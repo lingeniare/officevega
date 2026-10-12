@@ -30,6 +30,26 @@ export function setAiUserAgent(ua: string): void {
   userAgent = ua || AI_DEFAULT_USER_AGENT
 }
 
+/**
+ * Sber's endpoints (api.giga.chat, ngw.devices.sberbank.ru) terminate TLS
+ * under the Russian national root CA (Минцифры), which is in neither Node's
+ * bundled root list nor Chromium's store — every GigaChat SDK ships
+ * `verify_ssl_certs=False` for the same reason. Deliberate, host-scoped
+ * relaxation: a dedicated undici agent with rejectUnauthorized:false handles
+ * these hosts ONLY; all other traffic verifies normally. Where undici is not
+ * resolvable (browser bundles — Chromium ignores the extra init field anyway)
+ * the hook degrades to a no-op.
+ */
+const RU_CERT_HOSTS = /(^|\.)(giga\.chat|devices\.sberbank\.ru)$/i
+
+let ruCertAgent: Promise<import('undici').Dispatcher | null> | null = null
+function ruCertDispatcher(): Promise<import('undici').Dispatcher | null> {
+  ruCertAgent ??= import(/* @vite-ignore */ 'undici')
+    .then(({ Agent }) => new Agent({ connect: { rejectUnauthorized: false } }))
+    .catch(() => null)
+  return ruCertAgent
+}
+
 export function isVegaGatewayUrl(url: string | undefined): boolean {
   if (!url) return false
   try {
@@ -122,6 +142,16 @@ export function warmAiConnections(): void {
 
 export async function aiFetch(url: string, rawInit: RequestInit): Promise<Response> {
   const init = withVegaSession(url, withUserAgent(rawInit))
+  try {
+    if (RU_CERT_HOSTS.test(new URL(url).hostname)) {
+      const dispatcher = await ruCertDispatcher()
+      // `dispatcher` is an undici-only RequestInit extension — newer dom libs
+      // already declare it, older ones don't, so widen by hand to stay portable
+      if (dispatcher) (init as { dispatcher?: unknown }).dispatcher = dispatcher
+    }
+  } catch {
+    // unparseable URL: let fetch itself report it
+  }
   const signal = init.signal as AbortSignal | null | undefined
   let response: Response
   try {

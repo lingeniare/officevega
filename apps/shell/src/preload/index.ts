@@ -300,6 +300,14 @@ const homeApi: HomeApi = {
     ipcRenderer.on(HOME_CHANNELS.openSettings, listener)
     return () => ipcRenderer.removeListener(HOME_CHANNELS.openSettings, listener)
   },
+  async openModelSettings() {
+    await ipcRenderer.invoke('ai:open-model-settings')
+  },
+  onShowOnboarding(handler) {
+    const listener = () => handler()
+    ipcRenderer.on(HOME_CHANNELS.showOnboarding, listener)
+    return () => ipcRenderer.removeListener(HOME_CHANNELS.showOnboarding, listener)
+  },
   onAccountLogin(handler) {
     const listener = (_event: IpcRendererEvent, ev: AccountLoginEvent) => handler(ev)
     ipcRenderer.on(HOME_CHANNELS.accountLoginEvent, listener)
@@ -520,6 +528,9 @@ const homeApi: HomeApi = {
   },
   async openAiModels() {
     await ipcRenderer.invoke(HOME_CHANNELS.openAiModels)
+  },
+  async openVegaChat() {
+    await ipcRenderer.invoke(HOME_CHANNELS.openVegaChat)
   },
   async openFeedback() {
     await ipcRenderer.invoke(HOME_CHANNELS.openFeedback)

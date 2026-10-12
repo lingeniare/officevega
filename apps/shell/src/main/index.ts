@@ -637,6 +637,9 @@ const CREDIT_USAGE_URL = 'https://api.vega.chat/dashboard'
 const OFFICEVEGA_SITE_URL = 'https://officevega.com'
 const VEGA_API_URL = 'https://api.vega.chat'
 const VEGA_MODELS_URL = 'https://api.vega.chat/aimodels'
+// Settings → Account "Other AI services" row; the ru locale gets its own host.
+const VEGA_CHAT_URL = 'https://vega.chat'
+const VEGA_CHAT_RU_URL = 'https://ru.vega.chat'
 const FEEDBACK_URL = 'https://officevega.com/feedback'
 
 // ---- "star us on GitHub" prompt (see star-prompt.ts for the rules) ----
@@ -724,6 +727,7 @@ const tMain = createI18n({
     errUnsupportedExt: '暂不支持 .{ext} 类型',
     copySuffix: '副本',
     menuHelp: '帮助',
+    menuWelcome: '欢迎',
     menuUserGuide: '使用手册',
     thirdPartyNotices: '第三方软件声明',
     menuExportDocx: '导出为 Word…',
@@ -819,6 +823,7 @@ const tMain = createI18n({
     errUnsupportedExt: '.{ext} files are not supported',
     copySuffix: 'copy',
     menuHelp: 'Help',
+    menuWelcome: 'Welcome',
     menuUserGuide: 'User Guide',
     thirdPartyNotices: 'Third-Party Notices',
     menuExportDocx: 'Export as Word…',
@@ -921,6 +926,7 @@ const tMain = createI18n({
     errUnsupportedExt: 'Tệp .{ext} không được hỗ trợ',
     copySuffix: 'bản sao',
     menuHelp: 'Trợ giúp',
+    menuWelcome: 'Chào mừng',
     menuUserGuide: 'Hướng dẫn sử dụng',
     thirdPartyNotices: 'Thông báo của bên thứ ba',
     menuExportDocx: 'Xuất dưới dạng Word…',
@@ -1025,6 +1031,7 @@ const tMain = createI18n({
     errUnsupportedExt: '.{ext} 形式には対応していません',
     copySuffix: 'コピー',
     menuHelp: 'ヘルプ',
+    menuWelcome: 'ようこそ',
     menuUserGuide: 'ユーザーガイド',
     thirdPartyNotices: 'サードパーティソフトウェアに関する通知',
     menuExportDocx: 'Word として書き出す…',
@@ -1128,6 +1135,7 @@ const tMain = createI18n({
     errUnsupportedExt: '.{ext} 형식은 지원되지 않습니다',
     copySuffix: '복사본',
     menuHelp: '도움말',
+    menuWelcome: '환영',
     menuUserGuide: '사용자 가이드',
     thirdPartyNotices: '타사 소프트웨어 고지',
     menuExportDocx: 'Word로 내보내기…',
@@ -1230,6 +1238,7 @@ const tMain = createI18n({
     errUnsupportedExt: 'les fichiers .{ext} ne sont pas pris en charge',
     copySuffix: 'copie',
     menuHelp: 'Aide',
+    menuWelcome: 'Bienvenue',
     menuUserGuide: "Guide de l'utilisateur",
     thirdPartyNotices: 'Mentions relatives aux logiciels tiers',
     menuExportDocx: 'Exporter en Word…',
@@ -1335,6 +1344,7 @@ const tMain = createI18n({
     errUnsupportedExt: '.{ext}-Dateien werden nicht unterstützt',
     copySuffix: 'Kopie',
     menuHelp: 'Hilfe',
+    menuWelcome: 'Willkommen',
     menuUserGuide: 'Benutzerhandbuch',
     thirdPartyNotices: 'Hinweise zu Drittanbietersoftware',
     menuExportDocx: 'Als Word exportieren…',
@@ -1439,6 +1449,7 @@ const tMain = createI18n({
     errUnsupportedExt: 'los archivos .{ext} no son compatibles',
     copySuffix: 'copia',
     menuHelp: 'Ayuda',
+    menuWelcome: 'Bienvenida',
     menuUserGuide: 'Guía del usuario',
     thirdPartyNotices: 'Avisos de software de terceros',
     menuExportDocx: 'Exportar como Word…',
@@ -1543,6 +1554,7 @@ const tMain = createI18n({
     errUnsupportedExt: 'ไม่รองรับไฟล์ .{ext}',
     copySuffix: 'สำเนา',
     menuHelp: 'วิธีใช้',
+    menuWelcome: 'ยินดีต้อนรับ',
     menuUserGuide: 'คู่มือผู้ใช้',
     thirdPartyNotices: 'ประกาศเกี่ยวกับซอฟต์แวร์ของบุคคลที่สาม',
     menuExportDocx: 'ส่งออกเป็น Word…',
@@ -1643,6 +1655,7 @@ const tMain = createI18n({
     errUnsupportedExt: 'file .{ext} tidak didukung',
     copySuffix: 'salinan',
     menuHelp: 'Bantuan',
+    menuWelcome: 'Selamat datang',
     menuUserGuide: 'Panduan Pengguna',
     thirdPartyNotices: 'Pemberitahuan Perangkat Lunak Pihak Ketiga',
     menuExportDocx: 'Ekspor sebagai Word…',
@@ -1747,6 +1760,7 @@ const tMain = createI18n({
     errUnsupportedExt: 'файлы .{ext} не поддерживаются',
     copySuffix: 'копия',
     menuHelp: 'Справка',
+    menuWelcome: 'Приветствие',
     menuUserGuide: 'Руководство пользователя',
     thirdPartyNotices: 'Уведомления о стороннем ПО',
     menuExportDocx: 'Экспортировать в Word…',
@@ -1851,6 +1865,7 @@ const tMain = createI18n({
     errUnsupportedExt: 'ملفات .{ext} غير مدعومة',
     copySuffix: 'نسخة',
     menuHelp: 'تعليمات',
+    menuWelcome: 'مرحباً',
     menuUserGuide: 'دليل المستخدم',
     thirdPartyNotices: 'إشعارات برامج الجهات الخارجية',
     menuExportDocx: 'تصدير كملف Word…',
@@ -1951,6 +1966,7 @@ const tMain = createI18n({
     errUnsupportedExt: 'arquivos .{ext} não são suportados',
     copySuffix: 'cópia',
     menuHelp: 'Ajuda',
+    menuWelcome: 'Boas-vindas',
     menuUserGuide: 'Guia do Usuário',
     thirdPartyNotices: 'Avisos de software de terceiros',
     menuExportDocx: 'Exportar como Word…',
@@ -2055,6 +2071,7 @@ const tMain = createI18n({
     errUnsupportedExt: 'i file .{ext} non sono supportati',
     copySuffix: 'copia',
     menuHelp: 'Aiuto',
+    menuWelcome: 'Benvenuto',
     menuUserGuide: "Guida dell'utente",
     thirdPartyNotices: 'Note sul software di terze parti',
     menuExportDocx: 'Esporta come Word…',
@@ -2159,6 +2176,7 @@ const tMain = createI18n({
     errUnsupportedExt: 'pliki .{ext} nie są obsługiwane',
     copySuffix: 'kopia',
     menuHelp: 'Pomoc',
+    menuWelcome: 'Powitanie',
     menuUserGuide: 'Podręcznik użytkownika',
     thirdPartyNotices: 'Informacje o oprogramowaniu innych firm',
     menuExportDocx: 'Eksportuj jako Word…',
@@ -2263,6 +2281,7 @@ const tMain = createI18n({
     errUnsupportedExt: 'Soubory .{ext} nejsou podporovány',
     copySuffix: 'kopie',
     menuHelp: 'Nápověda',
+    menuWelcome: 'Vítejte',
     menuUserGuide: 'Uživatelská příručka',
     thirdPartyNotices: 'Informace o softwaru třetích stran',
     menuExportDocx: 'Exportovat jako Word…',
@@ -2365,6 +2384,7 @@ const tMain = createI18n({
     errUnsupportedExt: '.{ext}-bestanden worden niet ondersteund',
     copySuffix: 'kopie',
     menuHelp: 'Help',
+    menuWelcome: 'Welkom',
     menuUserGuide: 'Gebruikershandleiding',
     thirdPartyNotices: 'Kennisgevingen over software van derden',
     menuExportDocx: 'Exporteren als Word…',
@@ -2469,6 +2489,7 @@ const tMain = createI18n({
     errUnsupportedExt: 'fail .{ext} tidak disokong',
     copySuffix: 'salinan',
     menuHelp: 'Bantuan',
+    menuWelcome: 'Selamat datang',
     menuUserGuide: 'Panduan Pengguna',
     thirdPartyNotices: 'Notis Perisian Pihak Ketiga',
     menuExportDocx: 'Eksport sebagai Word…',
@@ -2572,6 +2593,7 @@ const tMain = createI18n({
     errUnsupportedExt: 'קובצי .{ext} אינם נתמכים',
     copySuffix: 'עותק',
     menuHelp: 'עזרה',
+    menuWelcome: 'ברוכים הבאים',
     menuUserGuide: 'מדריך למשתמש',
     thirdPartyNotices: 'הודעות על תוכנות צד שלישי',
     menuExportDocx: 'ייצוא כ-Word…',
@@ -2673,6 +2695,7 @@ const tMain = createI18n({
     errUnsupportedExt: '.{ext} फ़ाइलें समर्थित नहीं हैं',
     copySuffix: 'प्रतिलिपि',
     menuHelp: 'सहायता',
+    menuWelcome: 'स्वागत',
     menuUserGuide: 'उपयोगकर्ता गाइड',
     thirdPartyNotices: 'तृतीय-पक्ष सॉफ़्टवेयर सूचनाएँ',
     menuExportDocx: 'Word के रूप में निर्यात करें…',
@@ -2777,6 +2800,7 @@ const tMain = createI18n({
     errUnsupportedExt: '暫不支援 .{ext} 類型',
     copySuffix: '副本',
     menuHelp: '說明',
+    menuWelcome: '歡迎',
     menuUserGuide: '使用手冊',
     thirdPartyNotices: '第三方軟體聲明',
     menuExportDocx: '匯出為 Word…',
@@ -2862,6 +2886,7 @@ const tMain = createI18n({
     errBadExtension: 'Bu kengaytma qo‘llab-quvvatlanmaydi, fayl endi ochilmaydi',
     copySuffix: 'nusxa olish',
     menuHelp: 'Yordam',
+    menuWelcome: 'Xush kelibsiz',
     menuUserGuide: 'Foydalanuvchi qoʻllanmasi',
     thirdPartyNotices: 'Uchinchi tomon bildirishnomalari',
     menuExportDocx: 'Word sifatida eksport qilish…',
@@ -2965,6 +2990,7 @@ const tMain = createI18n({
     errBadExtension: 'Бұл кеңейтімге қолдау көрсетілмейді, файл енді ашылмайды',
     copySuffix: 'көшірме',
     menuHelp: 'Анықтама',
+    menuWelcome: 'Қош келдіңіз',
     menuUserGuide: 'Пайдаланушы нұсқаулығы',
     thirdPartyNotices: 'Үшінші тарап туралы ескертулер',
     menuExportDocx: 'Word ретінде экспорттау…',
@@ -3068,6 +3094,7 @@ const tMain = createI18n({
     errBadExtension: 'Bu genişlənmə dəstəklənmir və fayl artıq açılmayacaq',
     copySuffix: 'surət',
     menuHelp: 'Kömək',
+    menuWelcome: 'Xoş gəldiniz',
     menuUserGuide: 'İstifadəçi təlimatı',
     thirdPartyNotices: 'Üçüncü tərəf bildirişləri',
     menuExportDocx: 'Word kimi ixrac et…',
@@ -3170,6 +3197,7 @@ const tMain = createI18n({
     errBadExtension: 'Bu giňeltme goldanylmaýar, faýl indi açylmaz',
     copySuffix: 'göçürme',
     menuHelp: 'Kömek',
+    menuWelcome: 'Hoş geldiňiz',
     menuUserGuide: 'Ulanyjy gollanmasy',
     thirdPartyNotices: 'Üçünji tarap bildirişleri',
     menuExportDocx: 'Word görnüşinde eksport et…',
@@ -3272,6 +3300,7 @@ const tMain = createI18n({
     errBadExtension: 'Бул кеңейтме колдоого алынбайт, файл энди ачылбайт',
     copySuffix: 'көчүрмө',
     menuHelp: 'Жардам',
+    menuWelcome: 'Кош келиңиз',
     menuUserGuide: 'Колдонуучу колдонмосу',
     thirdPartyNotices: 'Үчүнчү тараптын эскертүүлөрү',
     menuExportDocx: 'Word катары экспорттоо…',
@@ -3374,6 +3403,7 @@ const tMain = createI18n({
     errBadExtension: 'Бу киңәйтмә ярдәм ителми, файл энди ачылмаячак',
     copySuffix: 'күчермәсен ясарга',
     menuHelp: 'Ярдәм',
+    menuWelcome: 'Рәхим итегез',
     menuUserGuide: 'Кулланучы кулланмасы',
     thirdPartyNotices: 'Өченче яклар турындагы белдерүләр',
     menuExportDocx: 'Word форматында экспортлау…',
@@ -3476,6 +3506,7 @@ const tMain = createI18n({
     errBadExtension: 'ეს გაფართოება არ არის მხარდაჭერილი და ფაილი ვეღარ გაიხსნება',
     copySuffix: 'ასლი',
     menuHelp: 'დახმარება',
+    menuWelcome: 'მოგესალმებით',
     menuUserGuide: 'მომხმარებლის სახელმძღვანელო',
     thirdPartyNotices: 'მესამე მხარის შეტყობინებები',
     menuExportDocx: 'Word-ად ექსპორტი…',
@@ -5206,6 +5237,12 @@ function registerHomeIpc(): void {
     })
   })
 
+  ipcMain.handle(HOME_CHANNELS.openVegaChat, () => {
+    shell.openExternal(currentLang() === 'ru' ? VEGA_CHAT_RU_URL : VEGA_CHAT_URL).catch(() => {
+      // no browser handler available; nothing actionable for the user here
+    })
+  })
+
   ipcMain.handle(HOME_CHANNELS.openFeedback, () => {
     shell.openExternal(FEEDBACK_URL).catch(() => {
       // no browser handler available; nothing actionable for the user here
@@ -5621,6 +5658,7 @@ function buildHomeMenu(): void {
       role: 'help',
       label: tm('menuHelp'),
       submenu: [
+        { label: tm('menuWelcome'), click: () => showWelcomeOnboarding() },
         { label: tm('menuUserGuide'), accelerator: 'F1', click: () => tabManager?.openHelpTab() },
         { type: 'separator' },
         { label: tm('thirdPartyNotices'), click: () => void openThirdPartyNotices() },
@@ -6480,6 +6518,21 @@ installNavigationGuard(app)
 installContextMenu(app, () => contextMenuLabels(currentLang()))
 registerLicenseIpc()
 registerAiIpc()
+// Help → "Welcome": replay the first-run onboarding over the home tab
+// (the shell renderer keeps it mounted; this just flips its state back on)
+function showWelcomeOnboarding(): void {
+  const win = shellWindow
+  if (!win || win.isDestroyed()) return
+  if (win.isMinimized()) win.restore()
+  win.show()
+  win.focus()
+  tabManager?.openHomeTab()
+  const contents = win.webContents
+  const send = () => contents.send(HOME_CHANNELS.showOnboarding)
+  if (contents.isLoading()) contents.once('did-finish-load', send)
+  else send()
+}
+
 ipcMain.handle('ai:open-model-settings', () => {
   const win = shellWindow
   if (!win || win.isDestroyed()) return

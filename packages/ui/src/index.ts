@@ -70,7 +70,7 @@ export {
   type RibbonDensity,
 } from './ribbon-collapse'
 export { AiTypingIndicator } from './AiTypingIndicator'
-export { IconSend, IconStop, IconArrowUp, IconPlus, type IconProps } from './icons'
+export { IconSend, IconStop, IconArrowUp, IconPlus, IconCrown, type IconProps } from './icons'
 export { Markdown, type MarkdownNav } from './Markdown'
 export { isSymbolFontFamily } from './symbol-fonts'
 export {
@@ -140,6 +140,7 @@ export { AiModelPicker, type AiModelPickerBridge } from './AiModelPicker'
 export {
   aiModelPickerGroups,
   aiModelPickerSelection,
+  healVegaModelSelection,
   withAiModelSelection,
   type AiModelPickerGroup,
   type AiModelPickerSelection,

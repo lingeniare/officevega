@@ -1,4 +1,5 @@
 import type { AgentMessage, AgentToolDef } from '@genoffice/agent-core'
+import { gigachatAccessToken } from './gigachat-auth'
 import { withOutputCapFallback } from './output-cap'
 import { streamAnthropic } from './protocols/anthropic'
 import { streamGemini } from './protocols/gemini'
@@ -27,6 +28,11 @@ export async function streamForProvider(
   const endpoint = getProviderAdapter(provider).resolveEndpoint(config)
   const { baseUrl } = endpoint
   if (endpoint.model) config = { ...config, model: endpoint.model }
+  if (endpoint.authScheme === 'gigachat-oauth') {
+    // the stored key is the OAuth authorization key — the Bearer header needs
+    // the access token it mints (cached per key with a re-mint margin)
+    config = { ...config, apiKey: await gigachatAccessToken(config.apiKey, cb.signal) }
+  }
   if (endpoint.protocol === 'codex-app-server') {
     return streamCodexAppServer(config, system, messages, tools, maxTokens, cb)
   }

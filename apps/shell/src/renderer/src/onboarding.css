@@ -1,7 +1,7 @@
 /* First-run onboarding: full-window overlay above the home screen.
  * Layout follows the design spec: 540×420 white
  * card, left-aligned content column, slide-2 credits offer panel, and a
- * dots-left / Skip-Back-Next-right footer. Tokens: black pill primary,
+ * dots-left / Back-Next-right footer. Tokens: black pill primary,
  * gray ramp, brand blue #0f7fff only on the credits line. */
 
 .onb-overlay {
@@ -92,22 +92,6 @@
   }
 }
 
-.onb-art {
-  display: block;
-  margin-bottom: 15px;
-  color: var(--onb-text-primary);
-}
-
-/* step numeral: keeps the old pictograms' 60px slot so the text rhythm below
- * stays put; the glyph's left edge sits on the text axis */
-.onb-art-num {
-  height: 60px;
-  font-size: 44px;
-  font-weight: 700;
-  letter-spacing: -2px;
-  line-height: 60px;
-}
-
 .onb-title {
   margin: 0;
   font-size: 28px;
@@ -122,7 +106,38 @@
   font-size: 18px;
   letter-spacing: -0.24px;
   line-height: 1.5;
+  white-space: pre-line;
   color: var(--onb-text-primary);
+}
+
+/* slide 3's setup instructions: bulleted list, dots on the text axis */
+.onb-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.onb-steps li {
+  position: relative;
+  padding-left: 18px;
+  font-size: 16px;
+  letter-spacing: -0.154px;
+  line-height: 1.5;
+  color: var(--onb-text-primary);
+}
+
+.onb-steps li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--onb-brand);
 }
 
 .onb-body {
@@ -130,12 +145,8 @@
   font-size: 16px;
   letter-spacing: -0.154px;
   line-height: 1.5;
-  color: var(--onb-text-secondary);
-}
-
-/* slide 3's credits disclaimer reads as a footnote */
-.onb-body-dim {
-  color: var(--onb-text-tertiary);
+  white-space: pre-line;
+  color: var(--onb-text-primary);
 }
 
 /* slide 3's star ask: same panel treatment as the offer, but low-key — a
@@ -277,22 +288,24 @@
   gap: 10px;
 }
 
-.onb-skip {
+/* last slide's decline option ("start without AI"): quiet text button next to
+ * the gray Back pill and the black primary CTA */
+.onb-quiet {
   border: none;
   background: none;
   padding: 10px 6px;
   font-size: 14px;
   letter-spacing: -0.154px;
-  color: var(--onb-text-tertiary);
+  color: var(--onb-text-secondary);
   cursor: pointer;
   transition: color var(--onb-transition);
 }
 
-.onb-skip:hover {
-  color: var(--onb-text-secondary);
+.onb-quiet:hover {
+  color: var(--onb-text-primary);
 }
 
-.onb-skip:disabled,
+.onb-quiet:disabled,
 .onb-back:disabled,
 .onb-next:disabled {
   opacity: 0.55;
@@ -339,7 +352,7 @@
  * brand ring, and only for keyboard focus — clicks stay ring-free */
 .onb-next:focus,
 .onb-back:focus,
-.onb-skip:focus,
+.onb-quiet:focus,
 .onb-join:focus,
 .onb-star-btn:focus,
 .onb-dot:focus {
@@ -348,7 +361,7 @@
 
 .onb-next:focus-visible,
 .onb-back:focus-visible,
-.onb-skip:focus-visible,
+.onb-quiet:focus-visible,
 .onb-join:focus-visible,
 .onb-star-btn:focus-visible,
 .onb-dot:focus-visible {

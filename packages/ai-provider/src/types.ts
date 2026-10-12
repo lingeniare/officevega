@@ -27,6 +27,8 @@ export type AiProviderId =
   | 'atlascloud'
   | 'opencode-zen'
   | 'opencode-go'
+  | 'sber'
+  | 'yandex'
   | 'custom'
 
 /** Cloud account status: the VEGA sign-in (issued sk-apivega key) is primary, the shared gsk CLI login a fallback */

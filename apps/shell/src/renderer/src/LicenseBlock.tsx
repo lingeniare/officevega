@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { IconCrown } from '@genoffice/ui'
 import type { LicenseActionResult, LicenseErrorCode, LicenseStatus } from '../../shared/license-api'
 import type { StringKey, TFunc } from './locale'
 
@@ -77,7 +78,12 @@ export function LicenseBlock({ t }: { t: TFunc }) {
 
   return (
     <>
-      <h3 className="set-pane-title set-lic-title">{t('licTitle')}</h3>
+      <h3 className="set-pane-title set-lic-title">
+        {t('licTitle')}
+        <span className="set-lic-crown set-lic-title-crown">
+          <IconCrown size={15} />
+        </span>
+      </h3>
       {status.state === 'none' ? (
         <>
           <div className="set-field-desc set-ai-note">{t('licFreeNote')}</div>

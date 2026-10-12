@@ -128,6 +128,7 @@ describe('provider registry', () => {
       ['opper', 'claude-sonnet-4-6', 'https://api.opper.ai/v3/compat'],
       ['cheaperinference', 'claude-sonnet-5', 'https://api.cheaperinference.com/v1'],
       ['atlascloud', 'deepseek-ai/deepseek-v4-pro', 'https://api.atlascloud.ai/v1'],
+      ['yandex', 'gpt://b1folder/yandexgpt-lite', 'https://llm.api.cloud.yandex.net/v1'],
     ]
     for (const [id, model, baseUrl] of cases) {
       expect(AI_PROVIDER_ADAPTERS[id].resolveEndpoint(config(model))).toEqual({
@@ -171,6 +172,22 @@ describe('provider registry', () => {
     const ling = AI_PROVIDERS.find((p) => p.id === 'ling')!
     expect(ling.models).not.toContain('Ling-3.1-flash')
     expect(ling.models).toContain('Ling-3.0-flash-VL')
+  })
+
+  it('marks Sber as gigachat-oauth (the stored key is exchanged for an access token)', () => {
+    expect(AI_PROVIDER_ADAPTERS.sber.resolveEndpoint(config('GigaChat-2-Max'))).toEqual({
+      protocol: 'openai-compatible',
+      baseUrl: 'https://api.giga.chat/v1',
+      authScheme: 'gigachat-oauth',
+    })
+    // a stored base URL still overrides (regional gateways), keeping the scheme
+    expect(
+      AI_PROVIDER_ADAPTERS.sber.resolveEndpoint(config('GigaChat-2', 'https://mirror.example/v1')),
+    ).toEqual({
+      protocol: 'openai-compatible',
+      baseUrl: 'https://mirror.example/v1',
+      authScheme: 'gigachat-oauth',
+    })
   })
 
   it('marks Kimi as fixed-sampling (K3 rejects any temperature but 1)', () => {

@@ -1,5 +1,9 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { clearModelCatalogCache, listGatewayModels } from '../src/model-catalog'
+import {
+  clearModelCatalogCache,
+  listGatewayModels,
+  listProviderModels,
+} from '../src/model-catalog'
 import { jsonResponse } from './test-utils'
 
 afterEach(() => {
@@ -68,5 +72,27 @@ describe('listGatewayModels paging', () => {
     await listGatewayModels('https://cached/v1', 'k', { output: 'text' })
     await listGatewayModels('https://cached/v1', 'k', { output: 'text' })
     expect(fetch).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('listProviderModels vega credential gate', () => {
+  it('does not probe the anonymous public catalog without a key', async () => {
+    const fetch = vi.fn()
+    vi.stubGlobal('fetch', fetch)
+    const cat = await listProviderModels('vega', { apiKey: '', model: '' })
+    expect(fetch).not.toHaveBeenCalled()
+    expect(cat.models).toEqual([])
+    expect(cat.defaultModel).toBe('z-ai/glm-5.3-flash')
+  })
+
+  it('probes once a key (issued or BYOK) exists', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi
+        .fn()
+        .mockResolvedValue(jsonResponse({ data: [entry('z-ai/glm-5.3-flash', ['text'])], total_count: 1 })),
+    )
+    const cat = await listProviderModels('vega', { apiKey: 'sk-apivega-x', model: '' })
+    expect(cat.models.map((m) => m.id)).toEqual(['z-ai/glm-5.3-flash'])
   })
 })

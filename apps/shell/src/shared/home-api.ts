@@ -297,6 +297,10 @@ export interface HomeApi {
   onAuthChanged(handler: (status: { loggedIn: boolean }) => void): () => void
   /** a tab asked for the settings modal (composer model chip → AI Model section) */
   onOpenSettings(handler: (target: { section: string }) => void): () => void
+  /** app-menu "Welcome" item: re-run the first-run onboarding over the home tab */
+  onShowOnboarding(handler: () => void): () => void
+  /** ask the main process to open the AI Model settings pane (onboarding "connect VEGA AI" CTA) */
+  openModelSettings(): Promise<void>
   /** re-open the pending login auth URL in the default browser (rescue when auto-open failed) */
   openLoginUrl(): Promise<void>
   /** log out (clears the saved API key; the login state is shared globally with the gsk CLI) */
@@ -383,6 +387,8 @@ export interface HomeApi {
   openAiProvider(): Promise<void>
   /** open api.vega.chat/aimodels in the default browser (Settings → AI Model note) */
   openAiModels(): Promise<void>
+  /** open the VEGA chat web app in the default browser; ru locale lands on ru.vega.chat */
+  openVegaChat(): Promise<void>
   /** open officevega.com/feedback in the default browser (Settings → About) */
   openFeedback(): Promise<void>
   /** whether the one-time "star us" prompt should show now (show:true also counts as shown);
@@ -607,6 +613,7 @@ export const HOME_CHANNELS = {
   // whichever UI started it (a chat panel's login button included)
   authChanged: 'ai:auth-changed',
   openSettings: 'home:open-settings',
+  showOnboarding: 'home:show-onboarding',
   accountLoginOpenUrl: 'home:account-login-open-url',
   accountLogout: 'home:account-logout',
   getAppVersion: 'home:get-app-version',
@@ -636,6 +643,7 @@ export const HOME_CHANNELS = {
   openWebsite: 'home:open-website',
   openAiProvider: 'home:open-ai-provider',
   openAiModels: 'home:open-ai-models',
+  openVegaChat: 'home:open-vega-chat',
   openFeedback: 'home:open-feedback',
   starPromptShouldShow: 'home:star-prompt-should-show',
   starPromptAction: 'home:star-prompt-action',

@@ -3,6 +3,7 @@ import { AI_PROVIDERS, defaultAiSettings } from '@genoffice/ai-provider'
 import {
   aiModelPickerGroups,
   aiModelPickerSelection,
+  healVegaModelSelection,
   withAiModelSelection,
 } from '../src/ai-model-picker-options'
 
@@ -84,6 +85,60 @@ describe('CLI vendors', () => {
     expect(aiModelPickerGroups(settings, false)).toEqual([
       { id: 'codex', label: 'Codex CLI', models: [], pinned: [] },
     ])
+  })
+})
+
+describe('healVegaModelSelection', () => {
+  const LIVE = ['anthropic/claude-haiku-5.5', 'z-ai/glm-5.3-flash', 'z-ai/glm-5.3']
+
+  it('replaces a stored id that is not on the account catalog with the default', () => {
+    const settings = defaultAiSettings()
+    settings.providers.vega = { apiKey: '', model: 'nvidia/nemotron-3.5-content-safety' }
+    const healed = healVegaModelSelection(settings, LIVE)
+    expect(healed?.providers.vega.model).toBe('z-ai/glm-5.3-flash')
+    expect(healed?.provider).toBe(settings.provider)
+    // the caller's snapshot is untouched
+    expect(settings.providers.vega.model).toBe('nvidia/nemotron-3.5-content-safety')
+  })
+
+  it('keeps a stored id that is on the catalog', () => {
+    const settings = defaultAiSettings()
+    settings.providers.vega = { apiKey: '', model: 'z-ai/glm-5.3' }
+    expect(healVegaModelSelection(settings, LIVE)).toBeNull()
+  })
+
+  it('keeps the provider default even when the catalog lacks it', () => {
+    const settings = defaultAiSettings()
+    expect(healVegaModelSelection(settings, [])).toBeNull()
+  })
+
+  it('drops an off-catalog fastModel but keeps the shipped default fast model', () => {
+    const settings = defaultAiSettings()
+    settings.providers.vega = {
+      apiKey: '',
+      model: 'z-ai/glm-5.3-flash',
+      fastModel: 'nvidia/nemotron-3.5-content-safety',
+    }
+    const healed = healVegaModelSelection(settings, LIVE)
+    expect(healed?.providers.vega.fastModel).toBeUndefined()
+    const withDefaultFast = defaultAiSettings()
+    withDefaultFast.providers.vega = {
+      apiKey: '',
+      model: 'z-ai/glm-5.3-flash',
+      fastModel: 'openai/gpt-6-luna',
+    }
+    expect(healVegaModelSelection(withDefaultFast, LIVE)).toBeNull()
+  })
+
+  it('heals the vega slot without disturbing the active BYOK provider', () => {
+    const settings = defaultAiSettings()
+    settings.provider = 'anthropic'
+    settings.providers.anthropic = { apiKey: 'k', model: 'claude-sonnet-5' }
+    settings.providers.vega = { apiKey: '', model: 'nvidia/nemotron-3.5-content-safety' }
+    const healed = healVegaModelSelection(settings, LIVE)
+    expect(healed?.provider).toBe('anthropic')
+    expect(healed?.providers.anthropic.model).toBe('claude-sonnet-5')
+    expect(healed?.providers.vega.model).toBe('z-ai/glm-5.3-flash')
   })
 })
 

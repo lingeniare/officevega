@@ -7,6 +7,7 @@
  */
 import { aiFetch } from './fetch'
 import { listCustomModels } from './custom-models'
+import { gigachatAccessToken } from './gigachat-auth'
 import { AI_PROVIDERS } from './providers'
 import { getProviderAdapter } from './registry'
 import type { AiProviderConfig, AiProviderId } from './types'
@@ -230,11 +231,21 @@ export async function listProviderModels(
     }
   }
   if (!meta?.liveCatalog) return fallback
+  // VEGA's catalog is account-scoped: an anonymous probe answers the public
+  // OpenRouter-wide list (~460 ids), letting a pre-sign-in pick land on a model
+  // the issued key cannot serve. No credential → the static default only.
+  if (provider === 'vega' && !config?.apiKey?.trim()) return fallback
   try {
     const endpoint = getProviderAdapter(provider).resolveEndpoint(
       config ?? { apiKey: '', model: '' },
     )
-    const models = await listGatewayModels(endpoint.baseUrl, config?.apiKey, filter)
+    // the catalog's Bearer is whatever the endpoint authenticates with —
+    // for sber that is the minted access token, not the stored OAuth key
+    const apiKey =
+      endpoint.authScheme === 'gigachat-oauth' && config?.apiKey
+        ? await gigachatAccessToken(config.apiKey)
+        : config?.apiKey
+    const models = await listGatewayModels(endpoint.baseUrl, apiKey, filter)
     return models.length ? { models, defaultModel: meta.defaultModel } : fallback
   } catch {
     return fallback
