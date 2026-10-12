@@ -9,6 +9,7 @@ import {
   ImageViewer,
   aiPanelInitiallyOpen,
   rememberAiPanelOpen,
+  useAiPanelPrefs,
   useAutoSavePref,
 } from '@genoffice/ui'
 import {
@@ -158,6 +159,10 @@ export default function App() {
   const [fmText, setFmText] = useState('')
   // Persisted so a closed AI panel stays closed on next launch (docs/slides parity)
   const [aiOpen, setAiOpen] = useState(() => aiPanelInitiallyOpen('mdapp.showAi'))
+  // Suite-wide "AI sidebar" switch (Settings › General): off hides the panel
+  // and its ribbon entry; aiOpen keeps the remembered state for re-enable (#1947).
+  const aiEnabled = useAiPanelPrefs().enabled
+  const aiShown = aiEnabled && aiOpen
   const [aiPreset, setAiPreset] = useState<AiPreset | null>(null)
   const [editQueue, setEditQueue] = useState<EditQueueItem[]>([])
   const editQueueRef = useRef(editQueue)
@@ -1104,7 +1109,8 @@ export default function App() {
         onToggleSpellcheck={() => setSpellcheck((v) => !v)}
         sourceMode={sourceMode}
         sourceHistory={sourceMode ? sourceHistory : undefined}
-        aiOpen={aiOpen}
+        aiOpen={aiShown}
+        aiEnabled={aiEnabled}
         onToggleAi={() => setAiOpen((v) => !v)}
         onAiPreset={(text) => {
           setAiOpen(true)
@@ -1118,8 +1124,9 @@ export default function App() {
       />
       {status === 'loading' && <div className="center-note">{t('loading')}</div>}
       <div className="app-main" style={status === 'ready' ? undefined : { display: 'none' }}>
-        <div className={`ai-dock${aiOpen ? '' : ' collapsed'}`}>
-          {!aiOpen && (
+        {aiEnabled && (
+        <div className={`ai-dock${aiShown ? '' : ' collapsed'}`}>
+          {!aiShown && (
             <button
               className="ai-rail"
               data-tip={t('aiOpenAssistant')}
@@ -1145,6 +1152,7 @@ export default function App() {
             />
           )}
         </div>
+        )}
         {outlineOpen && !sourceMode && (
           <OutlinePane
             items={outlineItems}
@@ -1273,7 +1281,7 @@ export default function App() {
         />
       )}
       {!sourceMode && <TableMenu editor={editor} scrollRef={scrollRef} zoom={zoom} />}
-      {editor && !sourceMode && status === 'ready' && (
+      {editor && !sourceMode && status === 'ready' && aiEnabled && (
         <AiAskPopover
           editor={editor}
           queueFull={editQueue.length >= EDIT_QUEUE_MAX}

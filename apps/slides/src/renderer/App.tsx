@@ -105,6 +105,7 @@ import {
   type WordArtPreset,
   aiPanelInitiallyOpen,
   rememberAiPanelOpen,
+  useAiPanelPrefs,
 } from '@genoffice/ui'
 import type { ChartPresetDef, IconDef, SmartArtDef } from './insert-presets'
 import { VegaMark, IconAiBeautify, IconAiFactCheck, IconAiImage } from './components/icons'
@@ -476,6 +477,12 @@ export function App() {
     window.slidesApi.setAutoSavePref?.(autoSave)
   }, [autoSave])
   const [showAi, setShowAi] = useState(() => aiPanelInitiallyOpen('ai-slides-show-ai'))
+  // Suite-wide "AI sidebar" switch (Settings › General): off hides the panel,
+  // rail and ribbon AI group; showAi keeps its remembered state (#1947).
+  const aiEnabled = useAiPanelPrefs().enabled
+  const aiOpen = aiEnabled && showAi
+  /** Width the ai-dock occupies: open 360 / collapsed rail 34 / none 0 */
+  const aiDockW = aiEnabled ? (showAi ? 360 : 34) : 0
   const [showFormat, setShowFormat] = useState(false)
   const [showBgFormat, setShowBgFormat] = useState(false)
   const [aiSettings, setAiSettings] = useState<AiSettings | null>(null)
@@ -689,14 +696,14 @@ export function App() {
       const viewportW =
         el?.clientWidth ||
         stageViewportSize.w ||
-        window.innerWidth - (showThumbs ? thumbsW : 0) - (showAi ? 360 : 34)
+        window.innerWidth - (showThumbs ? thumbsW : 0) - aiDockW
       const viewportH = el?.clientHeight || stageViewportSize.h || window.innerHeight - 150
       const availW = viewportW - 56
       // -72: vertical padding is 48 (AI-bar headroom) + 32, minus the same 8px slack as width
       const availH = viewportH - 72
       return Math.min(availW / s.widthPx, availH / s.heightPx)
     },
-    [showThumbs, showAi, stageViewportSize.h, stageViewportSize.w, thumbsW],
+    [showThumbs, aiDockW, stageViewportSize.h, stageViewportSize.w, thumbsW],
   )
   /** Fit zoom for display: rawFit clamped to the 0.1–1.5 auto-fit range */
   const fitZoom = useCallback(
@@ -3256,7 +3263,8 @@ export function App() {
         onZoom={previewZoom}
         showThumbs={showThumbs}
         onToggleThumbs={() => setShowThumbs((v) => !v)}
-        aiOpen={showAi}
+        aiOpen={aiOpen}
+        aiEnabled={aiEnabled}
         onToggleAi={toggleAi}
         onAiPreset={(text, opts) => pushAiPreset(text, true, undefined, undefined, opts?.slideShot)}
         onPickShape={pickShape}
@@ -3560,8 +3568,8 @@ export function App() {
       />
 
       <div className="app-main">
-        {slide && viewMode !== 'reading' && viewMode !== 'sorter' && (
-          <div className={`ai-dock${showAi && aiSettings ? '' : ' collapsed'}`}>
+        {slide && viewMode !== 'reading' && viewMode !== 'sorter' && aiEnabled && (
+          <div className={`ai-dock${aiOpen && aiSettings ? '' : ' collapsed'}`}>
             {/* always mounted once settings load: collapse must not drop state or in-flight runs */}
             {aiSettings ? (
               <AiPanel
@@ -3580,7 +3588,7 @@ export function App() {
                   void window.slidesApi.setAiSettings(next).catch(() => {})
                 }}
                 preset={aiPreset}
-                open={showAi}
+                open={aiOpen}
                 onExpand={toggleAi}
                 onCollapse={toggleAi}
                 onUndo={() => void undo()}
@@ -3946,10 +3954,11 @@ export function App() {
                             : undefined
                         }
                       >
+                        {aiEnabled && (
                         <div className="stage-ai-bar">
                           <div className="stage-ai-group">
                             <button
-                              className={`stage-ai-btn${showAi ? ' active' : ''}`}
+                              className={`stage-ai-btn${aiOpen ? ' active' : ''}`}
                               data-tip={t('aiOpenAssistant')}
                               onClick={toggleAi}
                             >
@@ -4000,6 +4009,7 @@ export function App() {
                             )}
                           </div>
                         </div>
+                        )}
                         <div
                           ref={stageScaleRef}
                           className="stage-scale"
@@ -4611,11 +4621,12 @@ export function App() {
         !cropTarget &&
         !cutoutTarget &&
         inkTool === 'select' &&
-        selectedIds.length > 0 && (
+        selectedIds.length > 0 &&
+        aiEnabled && (
           <AiAskTrigger getAnchorRect={getAskTriggerRect} onOpen={openAskPopover} />
         )}
 
-      {askState && askTargets.length > 0 && (
+      {aiEnabled && askState && askTargets.length > 0 && (
         <AiAskPopover
           targets={askTargets}
           getAnchorRect={getAskAnchorRect}

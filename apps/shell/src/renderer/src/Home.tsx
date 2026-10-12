@@ -19,7 +19,7 @@ import type {
   FileSearchRerank,
 } from '../../shared/home-api'
 import { markText } from '../../shared/text-marks'
-import { useDismissablePopover } from '@genoffice/ui'
+import { applyAiPanelPrefs, useAiPanelPrefs, useDismissablePopover } from '@genoffice/ui'
 import { appTitle } from '@genoffice/i18n'
 import { fileCountLabel, visiblePageCount } from './counts'
 import { useI18n } from './locale'
@@ -1245,6 +1245,14 @@ export function Home() {
   const [view, setView] = useState<'recent' | 'starred'>('recent')
   // the knowledge-base ask panel takes over the content area (like a selected folder)
   const [askMode, setAskMode] = useState(false)
+  // Suite-wide AI switch (#1947): off hides the Ask entry and falls back to file views.
+  // The shell renderer owns no prefs bootstrap like the app mains do, so Home
+  // seeds the shared store once and then mirrors the broadcast.
+  useEffect(() => {
+    void window.aiOffice.getAiPanelPrefs?.().then(applyAiPanelPrefs)
+    return window.aiOffice.onAiPanelPrefsChanged?.(applyAiPanelPrefs)
+  }, [])
+  const aiEnabled = useAiPanelPrefs().enabled
   const [filter, setFilter] = useState('all')
   // ── Starred groups (named buckets the Starred view can filter on) ──
   // groups that currently have at least one starred file (drives the pills)
@@ -3218,6 +3226,7 @@ export function Home() {
             <span className="nav-label">{t('navStarred')}</span>
             <span className="nav-count">{navCounts.starred}</span>
           </button>
+          {aiEnabled && (
           <button
             className={`nav-item${askMode && !selectedFolder ? ' active' : ''}`}
             onClick={() => {
@@ -3243,6 +3252,7 @@ export function Home() {
             </svg>
             <span className="nav-label">{t('navAsk')}</span>
           </button>
+          )}
           {/* the upstream cloud-projects nav entry stays out of this fork:
               OfficeVega removed CloudProjectsView with the Genspark account area */}
         </nav>
@@ -3256,7 +3266,7 @@ export function Home() {
       </aside>
       {selectedFolder && rootOf(selectedFolder, roots)?.readable ? (
         renderFolderContent()
-      ) : askMode ? (
+      ) : aiEnabled && askMode ? (
         <KbAskPanel
           onOpenPath={(path) => void window.aiOffice.openPath(path)}
           onGoToRecents={() => changeView('recent')}

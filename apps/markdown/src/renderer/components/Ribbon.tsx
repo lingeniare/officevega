@@ -62,6 +62,8 @@ interface Props {
   spellcheck: boolean
   onToggleSpellcheck: () => void
   aiOpen: boolean
+  /** Suite-wide AI switch (#1947): false hides the AI ribbon group */
+  aiEnabled?: boolean
   onToggleAi: () => void
   onAiPreset: (instruction: string) => void
   /**
@@ -208,6 +210,7 @@ export function Ribbon({
   spellcheck,
   onToggleSpellcheck,
   aiOpen,
+  aiEnabled = true,
   onToggleAi,
   onAiPreset,
   sourceMode = false,
@@ -468,6 +471,7 @@ export function Ribbon({
       </div>
 
       <div className="ribbon-body" data-ribbon-body="">
+        {aiEnabled && (
         <div className="ribbon-group">
           <div className="ribbon-group-items">
             <button
@@ -504,8 +508,9 @@ export function Ribbon({
             ))}
           </div>
         </div>
+        )}
 
-        <div className="rb-sep" />
+        {aiEnabled && <div className="rb-sep" />}
 
         {!sourceMode && (
           <div className="ribbon-group">

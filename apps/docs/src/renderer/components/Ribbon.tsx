@@ -280,6 +280,8 @@ interface RibbonProps {
   onExportImages: () => void
   onPrint: () => void
   showAi: boolean
+  /** Suite-wide AI switch (#1947): false hides the whole AI ribbon group */
+  aiEnabled?: boolean
   onToggleAi: () => void
   section: SectionSettings | null
   onSection: (next: SectionSettings) => void
@@ -734,6 +736,7 @@ function RibbonInner({
   onExportImages,
   onPrint,
   showAi,
+  aiEnabled = true,
   onToggleAi,
   section,
   onSection,
@@ -3064,6 +3067,7 @@ function RibbonInner({
         ) : tab === 'home' ? (
           <>
             {/* ---- VEGA (first slot: entry + one-click AI actions) ---- */}
+            {aiEnabled && (
             <div className="ribbon-group">
               <div className="ribbon-group-items">
                 <button
@@ -3171,8 +3175,9 @@ function RibbonInner({
               </div>
               <div className="ribbon-group-label">{lang === 'ru' ? 'ИИ' : 'AI'}</div>
             </div>
+            )}
 
-            <div className="ribbon-sep" />
+            {aiEnabled && <div className="ribbon-sep" />}
 
             {/* ---- Clipboard ---- */}
             <div className="ribbon-group">

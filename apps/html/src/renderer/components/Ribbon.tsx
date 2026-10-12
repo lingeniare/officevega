@@ -77,6 +77,8 @@ interface Props {
   view: ViewMode
   onView: (view: ViewMode) => void
   aiOpen: boolean
+  /** Suite-wide AI switch (#1947): false hides the AI ribbon group */
+  aiEnabled?: boolean
   onToggleAi: () => void
   canInsert: boolean
   /** images come from a picked file by default; `url` places a remote image instead; tables take the picker's rows × cols */
@@ -374,6 +376,7 @@ export function Ribbon(p: Props) {
       </div>
 
       <div className="ribbon-body" data-ribbon-body="">
+        {(p.aiEnabled ?? true) && (
         <div className="ribbon-group">
           <div className="ribbon-group-items">
             <button
@@ -507,8 +510,9 @@ export function Ribbon(p: Props) {
             </button>
           </div>
         </div>
+        )}
 
-        <div className="rb-sep" />
+        {(p.aiEnabled ?? true) && <div className="rb-sep" />}
 
         <div className="ribbon-group">
           <div className="ribbon-group-items">

@@ -44,11 +44,12 @@ export function aiPanelWidthAtPointer(clientX: number): number {
 
 /**
  * Initial open state of an app's AI panel: the app's remembered last state,
- * unless the user turned off "open the AI panel in new documents". Call after
- * the shell prefs have been applied (the apps await them before first render).
+ * unless the user turned off "open the AI panel in new documents" or disabled
+ * the sidebar entirely (#1947). Call after the shell prefs have been applied
+ * (the apps await them before first render).
  */
 export function aiPanelInitiallyOpen(storageKey: string): boolean {
-  if (!current.openInNewDocs) return false
+  if (!current.enabled || !current.openInNewDocs) return false
   return localStorage.getItem(storageKey) !== '0'
 }
 

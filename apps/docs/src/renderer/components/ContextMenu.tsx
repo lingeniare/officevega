@@ -83,6 +83,8 @@ interface EditorContextMenuProps {
   onViewImage: (src: string) => void
   onSaveImageAs: (src: string) => void
   onAiPreset: (instruction: string) => void
+  /** Suite-wide AI switch (#1947): false hides AI context-menu entries */
+  aiEnabled?: boolean
   /** List items: restart numbering / continue numbering (shown when the cursor is on a docListItem) */
   onRestartNumbering?: () => void
   onContinueNumbering?: () => void
@@ -134,6 +136,7 @@ export function EditorContextMenu({
   onViewImage,
   onSaveImageAs,
   onAiPreset,
+  aiEnabled = true,
   onRestartNumbering,
   onContinueNumbering,
   onSetNumberingValue,
@@ -645,14 +648,16 @@ export function EditorContextMenu({
           </div>
         </>
       )}
-      <div className="ctx-sep" />
-      {item(t('appSynonyms'), {
-        disabled: !synonymText,
-        ai: true,
-        onClick: run(() => onAiPreset(t('appSynonymsPrompt', { text: synonymText }))),
-      })}
-      <div className="ctx-item-wrap" onMouseLeave={() => setSubmenu(null)}>
-        {item(t('appTranslate'), { disabled: !hasSelection, submenuKey: 'translate', ai: true })}
+      {aiEnabled && (
+        <>
+          <div className="ctx-sep" />
+          {item(t('appSynonyms'), {
+            disabled: !synonymText,
+            ai: true,
+            onClick: run(() => onAiPreset(t('appSynonymsPrompt', { text: synonymText }))),
+          })}
+          <div className="ctx-item-wrap" onMouseLeave={() => setSubmenu(null)}>
+            {item(t('appTranslate'), { disabled: !hasSelection, submenuKey: 'translate', ai: true })}
         {submenu === 'translate' && hasSelection && (
           <div className="ctx-submenu">
             {TRANSLATE_LANGS.map(({ code }) => (
@@ -675,7 +680,9 @@ export function EditorContextMenu({
             ))}
           </div>
         )}
-      </div>
+          </div>
+        </>
+      )}
       {isFloating && (
         <>
           <div className="ctx-sep" />

@@ -22,6 +22,8 @@ export interface AiPanelPrefs {
   readonly spellcheck: boolean
   /** Off: every new document opens with the panel collapsed, ignoring the remembered state */
   readonly openInNewDocs: boolean
+  /** Off: the AI sidebar is disabled suite-wide — hidden with its toggle controls (#1947) */
+  readonly enabled: boolean
 }
 
 export const DEFAULT_AI_PANEL_PREFS: AiPanelPrefs = {
@@ -30,6 +32,7 @@ export const DEFAULT_AI_PANEL_PREFS: AiPanelPrefs = {
   customFontSize: AI_FONT_BASE_PX,
   spellcheck: true,
   openInNewDocs: true,
+  enabled: true,
 }
 
 export function isAiFontSize(value: unknown): value is AiFontSize {
@@ -62,7 +65,8 @@ export function sameAiPanelPrefs(a: AiPanelPrefs, b: AiPanelPrefs): boolean {
     a.fontSize === b.fontSize &&
     a.customFontSize === b.customFontSize &&
     a.spellcheck === b.spellcheck &&
-    a.openInNewDocs === b.openInNewDocs
+    a.openInNewDocs === b.openInNewDocs &&
+    a.enabled === b.enabled
   )
 }
 
@@ -80,5 +84,6 @@ export function normalizeAiPanelPrefs(raw: unknown): AiPanelPrefs {
       typeof obj.openInNewDocs === 'boolean'
         ? obj.openInNewDocs
         : DEFAULT_AI_PANEL_PREFS.openInNewDocs,
+    enabled: typeof obj.enabled === 'boolean' ? obj.enabled : DEFAULT_AI_PANEL_PREFS.enabled,
   }
 }

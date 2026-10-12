@@ -77,6 +77,7 @@ const fontPreviewFamily = (f: string): string | undefined =>
 
 export function RibbonHomeTab({ rb }: { rb: RibbonTabCtx }) {
   const {
+    aiEnabled,
     aiOpen,
     brushMode,
     canDistribute,
@@ -228,6 +229,7 @@ export function RibbonHomeTab({ rb }: { rb: RibbonTabCtx }) {
   }
   return (
     <>
+      {(aiEnabled ?? true) && (
       <Group label={lang === 'ru' ? 'ВЕГА' : 'VEGA'}>
         <button
           className={`rb-big ai-entry${aiOpen ? ' active' : ''}`}
@@ -319,7 +321,8 @@ export function RibbonHomeTab({ rb }: { rb: RibbonTabCtx }) {
           <span>{t('aiImageBtn')}</span>
         </button>
       </Group>
-      <div className="ribbon-sep" />
+      )}
+      {(aiEnabled ?? true) && <div className="ribbon-sep" />}
       <Group label={t('ribbonGroupClipboard')}>
         <button
           className="rb-big"

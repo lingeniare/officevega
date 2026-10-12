@@ -22,6 +22,7 @@ import {
   aiPanelInitiallyOpen,
   rememberAiPanelOpen,
   createZoomWheelClassifier,
+  useAiPanelPrefs,
   useAutoSavePref,
 } from '@genoffice/ui'
 import { appTitle } from '@genoffice/i18n'
@@ -784,6 +785,11 @@ export function App() {
   const [_recent, setRecent] = useState<string[]>([])
   const [settings, setSettings] = useState<AiSettings>(DEFAULT_SETTINGS)
   const [showAi, setShowAi] = useState(() => aiPanelInitiallyOpen('aidocs.showAi'))
+  // Suite-wide "AI sidebar" switch (Settings › General): off hides the panel
+  // and its ribbon entry everywhere — showAi keeps its remembered state so
+  // re-enabling restores the user's last layout (#1947).
+  const aiEnabled = useAiPanelPrefs().enabled
+  const aiOpen = aiEnabled && showAi
   const [spellcheck, setSpellcheck] = useState(spellcheckEnabled)
   const [largeDocSpellOff, setLargeDocSpellOff] = useState(false)
   const spellcheckActive = spellcheck && !largeDocSpellOff
@@ -815,6 +821,8 @@ export function App() {
   // for toggle-by-one in the menu path, whose closure is not re-created per render
   const darkPageRef = useRef(darkPage)
   darkPageRef.current = darkPage
+  const aiEnabledRef = useRef(aiEnabled)
+  aiEnabledRef.current = aiEnabled
   /** View ▸ Dark Mode (menu and ribbon): remember the choice, then apply it */
   const updateDarkPage = useCallback(
     (next: boolean) => {
@@ -1861,8 +1869,8 @@ export function App() {
   // keep the native View menu's checkmarks (AI Sidebar / Dark Mode) in sync
   // (the IPC field keeps its historical darkCanvas name)
   useEffect(() => {
-    window.desktop.reportViewMenuState?.({ aiSidebar: showAi, darkCanvas: darkPage })
-  }, [showAi, darkPage])
+    window.desktop.reportViewMenuState?.({ aiSidebar: aiOpen, darkCanvas: darkPage })
+  }, [aiOpen, darkPage])
 
   // Crash-recovery copy: while the document is dirty, push a serialized
   // copy to the main process every 30s; a normal save (or discarding on close) removes
@@ -5592,7 +5600,7 @@ export function App() {
           zoomFit('multi')
           break
         case 'toggle-ai':
-          setShowAi((v) => !v)
+          if (aiEnabledRef.current) setShowAi((v) => !v)
           break
         case 'toggle-dark':
           updateDarkPage(!darkPageRef.current)
@@ -5630,7 +5638,7 @@ export function App() {
           if (doc) openStats()
           break
         case 'ai-proofread':
-          if (doc) runAiProofread()
+          if (doc && aiEnabledRef.current) runAiProofread()
           break
         case 'shortcuts':
           setShowShortcuts(true)
@@ -7187,7 +7195,8 @@ export function App() {
         docDefaults={doc?.parsed.docDefaults}
         documentListPresets={documentLists}
         recentListPresets={recentLists}
-        showAi={showAi}
+        showAi={aiOpen}
+        aiEnabled={aiEnabled}
         section={sections[activeSection]?.settings ?? section}
         tableGridlines={tableGridlines}
         activeSection={sections.length > 1 ? activeSection : null}
@@ -7239,8 +7248,8 @@ export function App() {
       />
 
       <div className="app-main">
-        {doc && (
-          <div className={`ai-dock${showAi ? '' : ' collapsed'}`}>
+        {doc && aiEnabled && (
+          <div className={`ai-dock${aiOpen ? '' : ' collapsed'}`}>
             {/* always mounted: collapse must not drop state or in-flight runs */}
             <AiPanel
               key={aiPanelKey}
@@ -7256,7 +7265,7 @@ export function App() {
                 doc.isBlank ? { bullet: BLANK_BULLET_NUM_ID, ordered: BLANK_ORDERED_NUM_ID } : null
               }
               preset={aiPreset}
-              open={showAi}
+              open={aiOpen}
               onExpand={() => setShowAi(true)}
               onCollapse={() => setShowAi(false)}
               filePath={doc?.filePath ?? null}
@@ -7301,7 +7310,7 @@ export function App() {
                 onClose={closeNav}
               />
             )}
-            {doc && (
+            {doc && aiEnabled && (
               <AiAskPopover
                 editor={editor}
                 queueFull={editQueue.length >= EDIT_QUEUE_MAX}
@@ -7782,6 +7791,7 @@ export function App() {
             setShowAi(true)
             setAiPreset({ text, nonce: Date.now() })
           }}
+          aiEnabled={aiEnabled}
           onRestartNumbering={restartNumbering}
           onContinueNumbering={continueNumbering}
           onSetNumberingValue={() => setListDialog('value')}

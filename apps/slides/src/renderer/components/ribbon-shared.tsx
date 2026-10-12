@@ -303,6 +303,8 @@ export interface Props {
   showThumbs: boolean
   onToggleThumbs: () => void
   aiOpen: boolean
+  /** Suite-wide AI switch (#1947): false hides the AI ribbon group */
+  aiEnabled?: boolean
   onToggleAi: () => void
   /** Push a preset instruction to the AI panel and expand it (autoRun executes immediately) */
   /** slideShot: attach the current slide's rendering so the model sees the page (AI Beautify) */
@@ -576,6 +578,7 @@ export interface Props {
 /** Ribbon locals + props handed to the extracted tab components; rebuilt every render. */
 export interface RibbonTabCtx extends Pick<
   Props,
+  | 'aiEnabled'
   | 'aiOpen'
   | 'brushMode'
   | 'canDistribute'

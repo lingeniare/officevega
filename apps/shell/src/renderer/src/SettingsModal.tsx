@@ -2202,6 +2202,21 @@ export function SettingsModal({
                 </div>
                 <div className="set-field">
                   <div className="set-field-text">
+                    <div className="set-field-stack">
+                      <div className="set-field-label">{t('setAiEnabled')}</div>
+                      <div className="set-field-desc">{t('setAiEnabledDesc')}</div>
+                    </div>
+                  </div>
+                  <button
+                    className="set-switch"
+                    role="switch"
+                    aria-checked={aiPrefs.enabled}
+                    aria-label={t('setAiEnabled')}
+                    onClick={() => updateAiPrefs({ enabled: !aiPrefs.enabled })}
+                  />
+                </div>
+                <div className="set-field">
+                  <div className="set-field-text">
                     <label className="set-field-label">{t('setAiPanelSide')}</label>
                   </div>
                   <Dropdown

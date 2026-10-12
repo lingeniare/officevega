@@ -9,6 +9,7 @@ import {
   type FindTarget,
   aiPanelInitiallyOpen,
   rememberAiPanelOpen,
+  useAiPanelPrefs,
 } from '@genoffice/ui'
 import {
   pollUntilReady,
@@ -146,6 +147,10 @@ export default function App() {
   const [draftHtml, setDraftHtml] = useState<string | null>(null)
   const [historyState, setHistoryState] = useState({ undo: false, redo: false })
   const [aiOpen, setAiOpen] = useState(() => aiPanelInitiallyOpen('htmlapp.showAi'))
+  // Suite-wide "AI sidebar" switch (Settings › General): off hides the panel
+  // and its ribbon entry; aiOpen keeps the remembered state for re-enable (#1947).
+  const aiEnabled = useAiPanelPrefs().enabled
+  const aiShown = aiEnabled && aiOpen
   const [aiPreset, setAiPreset] = useState<AiPreset | null>(null)
   const [editQueue, setEditQueue] = useState<EditQueueItem[]>([])
   const [askMode, setAskMode] = useState<AskMode | null>(null)
@@ -1572,7 +1577,8 @@ export default function App() {
         onToggleAutoSave={setAutoSave}
         view={view}
         onView={setView}
-        aiOpen={aiOpen}
+        aiOpen={aiShown}
+        aiEnabled={aiEnabled}
         onToggleAi={() => setAiOpen((v) => !v)}
         canInsert={canvasMode === 'edit'}
         onInsert={(kind, opts) => void insertElement(kind, opts)}
@@ -1588,8 +1594,9 @@ export default function App() {
       />
 
       <div className="app-main">
-        <div className={`ai-dock${aiOpen ? '' : ' collapsed'}`}>
-          {!aiOpen && (
+        {aiEnabled && (
+        <div className={`ai-dock${aiShown ? '' : ' collapsed'}`}>
+          {!aiShown && (
             <button
               className="ai-rail"
               data-tip={t('aiOpenAssistant')}
@@ -1613,6 +1620,7 @@ export default function App() {
             onCollapse={() => setAiOpen(false)}
           />
         </div>
+        )}
         <div className="app-content">
           {findTarget && (
             <FindPanel
@@ -1801,7 +1809,7 @@ export default function App() {
           </footer>
         </div>
       </div>
-      {askTarget && askMode && canvasMode !== 'present' && (
+      {aiEnabled && askTarget && askMode && canvasMode !== 'present' && (
         <AiAskPopover
           key={askMode.kind === 'edit' ? askMode.qid : 'new'}
           target={askTarget}

@@ -168,6 +168,7 @@ import {
   RibbonCollapseButton,
   aiPanelInitiallyOpen,
   rememberAiPanelOpen,
+  useAiPanelPrefs,
   useDismissablePopover,
   useRibbonCollapse,
 } from '@genoffice/ui'
@@ -468,6 +469,10 @@ export default function App() {
   const [aiCollapsed, setAiCollapsed] = useState(
     () => !aiPanelInitiallyOpen('officevega-pdf-show-ai'),
   )
+  // Suite-wide "AI sidebar" switch (Settings › General): off hides the panel,
+  // rail and ribbon AI group; aiCollapsed keeps its remembered state (#1947).
+  const aiEnabled = useAiPanelPrefs().enabled
+  const aiHidden = aiEnabled && aiCollapsed
   useEffect(() => {
     rememberAiPanelOpen('officevega-pdf-show-ai', !aiCollapsed)
   }, [aiCollapsed])
@@ -7469,10 +7474,11 @@ export default function App() {
           {ribbonTab === 'home' && (
             <>
               {/* ---- VEGA (first slot: entry + one-click AI actions, docs parity) ---- */}
+              {aiEnabled && (
               <div className="ribbon-group">
                 <div className="ribbon-group-items">
                   <button
-                    className={`rb-big ai-entry${aiCollapsed ? '' : ' active'}`}
+                    className={`rb-big ai-entry${aiHidden ? '' : ' active'}`}
                     data-tip={t('aiOpenAssistant')}
                     onClick={() => setAiCollapsed((v) => !v)}
                   >
@@ -7550,7 +7556,8 @@ export default function App() {
                   </button>
                 </div>
               </div>
-              <div className="ribbon-sep" />
+              )}
+              {aiEnabled && <div className="ribbon-sep" />}
               {markupGroup}
               <div className="ribbon-sep" />
               {/* Edit entries lead; Search moved after page/zoom (⌘F is the common path) */}
@@ -7632,6 +7639,7 @@ export default function App() {
           )}
           {ribbonTab === 'annotate' && (
             <>
+              {aiEnabled && (
               <div className="ribbon-group">
                 <div className="ribbon-group-items">
                   <button
@@ -7692,7 +7700,8 @@ export default function App() {
                   </button>
                 </div>
               </div>
-              <div className="ribbon-sep" />
+              )}
+              {aiEnabled && <div className="ribbon-sep" />}
               {markupGroup}
               <div className="ribbon-sep" />
               <div className="ribbon-group">
@@ -7885,6 +7894,7 @@ export default function App() {
             <>
               <div className="ribbon-group">
                 <div className="ribbon-group-items">
+                  {aiEnabled && (
                   <button
                     className="rb-big ai-entry"
                     disabled={readOnly}
@@ -7897,6 +7907,7 @@ export default function App() {
                     </span>
                     <span>{t('aiFillFormBtn')}</span>
                   </button>
+                  )}
                   <button
                     className={`rb-big${pendingStaticFill === 'text' ? ' active' : ''}`}
                     disabled={readOnly}
@@ -8354,8 +8365,9 @@ export default function App() {
       <div className="app-main">
         {/* dock wrapper animates the width between panel and rail (docs-style 180ms ease);
             the panel stays mounted while collapsed so the chat history survives */}
-        <div className={`ai-dock${aiCollapsed ? ' collapsed' : ''}`}>
-          {aiCollapsed && (
+        {aiEnabled && (
+        <div className={`ai-dock${aiHidden ? ' collapsed' : ''}`}>
+          {aiHidden && (
             <button
               className="ai-rail"
               data-tip={t('aiOpenAssistant')}
@@ -8374,6 +8386,7 @@ export default function App() {
             onClearSelection={() => setAiSelection(null)}
           />
         </div>
+        )}
         <div className="app-content">
           {digitalSignatures.length > 0 && (
             <div className={`pdf-sig-banner ${overallSignatureStatus(digitalSignatures)}`}>
@@ -9974,6 +9987,7 @@ export default function App() {
                     <span className="pdf-sel-popup-sep" aria-hidden />
                   </>
                 )}
+                {aiEnabled && (
                 <button
                   type="button"
                   className="pdf-sel-ask"
@@ -9989,9 +10003,10 @@ export default function App() {
                   </svg>
                   {t('aiAskBtn')}
                 </button>
+                )}
               </div>
             )}
-            {askPop && (
+            {askPop && aiEnabled && (
               <AiAskPopover
                 rect={askPop.rect}
                 excerpt={askPop.excerpt}

@@ -1113,6 +1113,7 @@ export function Ribbon({
   showThumbs,
   onToggleThumbs,
   aiOpen,
+  aiEnabled,
   onToggleAi,
   onAiPreset,
   onPickShape,
@@ -1603,6 +1604,7 @@ export function Ribbon({
   )
 
   const tabCtx: RibbonTabCtx = {
+    aiEnabled,
     aiOpen,
     brushMode,
     canDistribute,

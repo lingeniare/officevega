@@ -10,6 +10,7 @@ import {
   useRibbonCollapse,
   aiPanelInitiallyOpen,
   rememberAiPanelOpen,
+  useAiPanelPrefs,
   type AiHistoryItem,
   type AiTokenUsageView,
 } from '@genoffice/ui'
@@ -597,6 +598,10 @@ export function ExcelShell({
   const [isCopilotOpen, setIsCopilotOpen] = useState(() =>
     aiPanelInitiallyOpen('ai-sheets-show-ai'),
   )
+  // Suite-wide "AI sidebar" switch (Settings › General): off hides the panel,
+  // rail and ribbon AI group; isCopilotOpen keeps its remembered state (#1947).
+  const aiEnabled = useAiPanelPrefs().enabled
+  const aiOpen = aiEnabled && isCopilotOpen
   useEffect(() => {
     rememberAiPanelOpen('ai-sheets-show-ai', isCopilotOpen)
   }, [isCopilotOpen])
@@ -731,8 +736,11 @@ export function ExcelShell({
       else if (!protection.protected) setProtectSheetMode('protect')
       else if (protection.hasPassword) setProtectSheetMode('unprotect')
       else onCommand('sheet-unprotect')
-    } else if (command === 'ai-open-panel') setIsCopilotOpen(true)
-    else if (command === 'ai-toggle-panel') setIsCopilotOpen((v) => !v)
+    } else if (command === 'ai-open-panel') {
+      if (aiEnabled) setIsCopilotOpen(true)
+    } else if (command === 'ai-toggle-panel') {
+      if (aiEnabled) setIsCopilotOpen((v) => !v)
+    }
     else if (command === 'chart-element-title') setChartTextTarget('title')
     else if (command === 'chart-element-axis-cat') setChartTextTarget('axis-category')
     else if (command === 'chart-element-axis-val') setChartTextTarget('axis-value')
@@ -1062,15 +1070,17 @@ export function ExcelShell({
             onPromptChange(nextPrompt)
             setAiComposerFocusNonce((n) => n + 1)
           }}
-          aiOpen={isCopilotOpen}
+          aiOpen={aiOpen}
+          aiEnabled={aiEnabled}
           onAiToggle={() => setIsCopilotOpen((open) => !open)}
         />
       </header>
 
       {/* AI panel docks on the left, full height under the ribbon (unified with docs) */}
       <div className="sheet-body">
+        {aiEnabled && (
         <AiChatPanel
-          isOpen={isCopilotOpen}
+          isOpen={aiOpen}
           hasContent={sheetHasContent}
           chat={chat}
           {...(historicChat !== undefined ? { historicChat } : {})}
@@ -1117,6 +1127,7 @@ export function ExcelShell({
           onExpand={() => setIsCopilotOpen(true)}
           onCollapse={() => setIsCopilotOpen(false)}
         />
+        )}
         <div className="sheet-main">
           <section className="workbook-area">
             <div id="univer-container" className="spreadsheet" />
@@ -1137,7 +1148,7 @@ export function ExcelShell({
               </div>
             )}
           </section>
-          {aiSelectionAskAnchor && aiScopeRange && !aiBusy && (
+          {aiEnabled && aiSelectionAskAnchor && aiScopeRange && !aiBusy && (
             <AiSelectionAsk
               anchor={aiSelectionAskAnchor}
               range={aiScopeRange}
@@ -2008,6 +2019,7 @@ function Ribbon({
   onCommand,
   onAiPreset,
   aiOpen,
+  aiEnabled,
   onAiToggle,
   onListNames,
   calcManual,
@@ -2037,6 +2049,8 @@ function Ribbon({
   readonly onAiPreset: (prompt: string) => void
   /** AI side panel visibility (docs/slides parity: the entry button toggles it) */
   readonly aiOpen: boolean
+  /** Suite-wide AI switch (#1947): false hides the AI ribbon group */
+  readonly aiEnabled?: boolean
   readonly onAiToggle: () => void
   readonly onRefreshPivot: () => string | null
   readonly onIsSelectionInPivot: () => boolean
@@ -3365,6 +3379,7 @@ function Ribbon({
             onClick={() => onCommand('workbook-statistics')}
           />
         </RibbonGroup>
+        {(aiEnabled ?? true) && (
         <RibbonGroup label={t('appGroupLanguage')}>
           <div className="ribbon-tool large" data-tip={t('appTranslateTitle')}>
             <span className="tool-icon-row">
@@ -3385,6 +3400,7 @@ function Ribbon({
             />
           </div>
         </RibbonGroup>
+        )}
         <RibbonGroup label={t('appGroupComments')}>
           <RibbonButton
             large
@@ -3479,6 +3495,7 @@ function Ribbon({
     : [...fontSizes, echoSize].sort((a, b) => a - b)
   return (
     <div className="ribbon" data-ribbon-body="">
+      {(aiEnabled ?? true) && (
       <RibbonGroup label={t('appGroupAiAssistant')}>
         <button
           className={`ribbon-tool as-button large ai-entry ${aiOpen ? 'active' : ''}`}
@@ -3550,6 +3567,7 @@ function Ribbon({
           </span>
         </button>
       </RibbonGroup>
+      )}
       <RibbonGroup label={t('appGroupClipboard')}>
         <button
           className="ribbon-tool as-button large"
