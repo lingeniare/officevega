@@ -2842,7 +2842,7 @@ export type UiDesign = 'standard' | 'retro' | 'digital'
  * Document page theme preference (genoffice#1811): what the editors' canvas/paper does
  * relative to the UI theme. 'follow' keeps the previous single-theme behavior.
  */
-export type DocTheme = 'follow' | 'light' | 'dark'
+export type DocTheme = 'follow' | 'light' | 'dark' | 'eyecare'
 
 /** shell-wide AutoSave default; updatedAt is 0 until the user has ever set it */
 export interface AutoSaveDefault {

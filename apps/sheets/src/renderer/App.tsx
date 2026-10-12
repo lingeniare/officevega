@@ -1990,7 +1990,9 @@ export function App({
     const isDarkTheme = () => {
       const docAttr = document.documentElement.getAttribute('data-doc-theme')
       if (docAttr === 'dark') return true
-      if (docAttr === 'light') return false
+      // 'eyecare' is a light page (#1903): the green tint is page-based, the
+      // canvas grid keeps its authored fills, so darkMode stays off
+      if (docAttr === 'light' || docAttr === 'eyecare') return false
       return (
         document.documentElement.getAttribute('data-theme') === 'dark' ||
         (!document.documentElement.hasAttribute('data-theme') && prefersDark.matches)

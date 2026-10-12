@@ -106,6 +106,7 @@ const DESIGN_OPTIONS = [
 const DOC_THEME_OPTIONS = [
   { value: 'follow', labelKey: 'docThemeFollowApp' },
   { value: 'light', labelKey: 'themeLight' },
+  { value: 'eyecare', labelKey: 'docThemeEyeCare' },
   { value: 'dark', labelKey: 'themeDark' },
 ] as const satisfies readonly { value: DocTheme; labelKey: StringKey }[]
 

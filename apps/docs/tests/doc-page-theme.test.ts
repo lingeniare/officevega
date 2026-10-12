@@ -32,6 +32,13 @@ describe('docThemeIsDark', () => {
     expect(docThemeIsDark()).toBe(true)
   })
 
+  it('eyecare is a light page even under the dark UI theme (#1903)', () => {
+    setAttrs('eyecare', 'dark')
+    expect(docThemeIsDark()).toBe(false)
+    setAttrs('eyecare', 'light')
+    expect(docThemeIsDark()).toBe(false)
+  })
+
   it('absent data-doc-theme follows the UI theme attribute', () => {
     setAttrs(null, 'dark')
     expect(docThemeIsDark()).toBe(true)

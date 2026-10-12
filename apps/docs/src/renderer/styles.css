@@ -4446,6 +4446,21 @@ th.cell-rev-del {
     --docs-paper-hit-active-ink: #1e1e1e;
   }
 
+  /* Eye-care page (issue 1903): WPS-style low-glare green paper. Only the paper
+     tint changes — authored colors keep their declarations (no --dk-* swap),
+     so it composes with the light ink tokens as-is. An authored page color
+     still wins (App adds .page-eyecare only when the doc has no page color),
+     and a user-toggled dark page wins over the tint. */
+  .page-eyecare:not(.page-dark) {
+    --docs-paper: #c6e8cc;
+    --docs-paper-hf-line: #a8cfae;
+    --docs-paper-grid: rgb(43 124 80 / 13%);
+    --docs-paper-stripe: #eef6e4;
+    --docs-paper-select-bg: #d7ecdf;
+    --docs-paper-field-bg: rgb(0 0 0 / 6%);
+    --docs-paper-chip-bg: #f2f8ec;
+  }
+
   /* Filled text boxes are a light island: their text contrasts with the box
      fill, not with the paper, so nothing inside them is remapped. The shared
      constants rule near the top of the file gives them the light paper values

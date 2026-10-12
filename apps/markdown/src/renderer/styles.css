@@ -216,8 +216,10 @@ button {
 
 /* Document page theme (genoffice#1811): an explicit Light under the dark UI
    theme re-scopes the paper's ink to the light values, so body copy, code,
-   tables and links read as on the light theme. Dark behaves as Follow. */
-html[data-doc-theme='light'] .doc-page {
+   tables and links read as on the light theme. Dark behaves as Follow.
+   Eye-care (issue 1903) shares the same light scope and only retints the paper. */
+html[data-doc-theme='light'] .doc-page,
+html[data-doc-theme='eyecare'] .doc-page {
   --accent: #185abd;
   --accent-dark: #124a9e;
   --accent-soft: #e8f1fb;
@@ -257,6 +259,11 @@ html[data-doc-theme='light'] .doc-page {
   color-scheme: light;
   color: var(--text);
   background: var(--md-paper-light);
+}
+
+/* WPS-style low-glare green paper (#1903); same muted tone as the docs app */
+html[data-doc-theme='eyecare'] .doc-page {
+  --md-paper-light: #c6e8cc;
 }
 
 .status-bar {

@@ -185,6 +185,7 @@ export const strings = {
     designDigital: '数字 VEGA',
     documentTheme: '文档页面主题',
     docThemeFollowApp: '跟随应用主题',
+    docThemeEyeCare: '护眼',
     saveLocation: '默认保存位置',
     setAutoSave: '所有文档自动保存',
     setAutoSaveDesc: '在每个编辑器中默认开启自动保存，仍可在单个窗口中关闭。',
@@ -686,6 +687,7 @@ export const strings = {
     designDigital: 'Digital VEGA',
     documentTheme: 'Document page theme',
     docThemeFollowApp: 'Follow app theme',
+    docThemeEyeCare: 'Eye-care',
     saveLocation: 'Save Location',
     setAutoSave: 'Auto-save all documents',
     setAutoSaveDesc:
@@ -1204,6 +1206,7 @@ export const strings = {
     designDigital: 'Digital VEGA',
     documentTheme: 'Chủ đề trang tài liệu',
     docThemeFollowApp: 'Theo chủ đề ứng dụng',
+    docThemeEyeCare: 'Bảo vệ mắt',
     saveLocation: 'Vị trí lưu',
     setAutoSave: 'Tự động lưu tất cả tài liệu',
     setAutoSaveDesc:
@@ -1733,6 +1736,7 @@ export const strings = {
     designDigital: 'Digital VEGA',
     documentTheme: 'ドキュメントページのテーマ',
     docThemeFollowApp: 'アプリのテーマに従う',
+    docThemeEyeCare: '目に優しい',
     saveLocation: '保存先',
     setAutoSave: 'すべてのドキュメントを自動保存',
     setAutoSaveDesc:
@@ -2264,6 +2268,7 @@ export const strings = {
     designDigital: 'Digital VEGA',
     documentTheme: '문서 페이지 테마',
     docThemeFollowApp: '앱 테마 따르기',
+    docThemeEyeCare: '눈 보호',
     saveLocation: '저장 위치',
     setAutoSave: '모든 문서 자동 저장',
     setAutoSaveDesc: '모든 편집기에서 자동 저장을 기본으로 켭니다. 개별 창에서는 끌 수 있습니다.',
@@ -2793,6 +2798,7 @@ export const strings = {
     designDigital: 'Digital VEGA',
     documentTheme: 'Thème de la page de document',
     docThemeFollowApp: 'Suivre le thème de l’application',
+    docThemeEyeCare: 'Confort visuel',
     saveLocation: "Emplacement d'enregistrement",
     setAutoSave: 'Enregistrer automatiquement tous les documents',
     setAutoSaveDesc:
@@ -3338,6 +3344,7 @@ export const strings = {
     designDigital: 'Digital VEGA',
     documentTheme: 'Dokumentseitenthema',
     docThemeFollowApp: 'App-Thema übernehmen',
+    docThemeEyeCare: 'Augenschonend',
     saveLocation: 'Speicherort',
     setAutoSave: 'Alle Dokumente automatisch speichern',
     setAutoSaveDesc:
@@ -3880,6 +3887,7 @@ export const strings = {
     designDigital: 'Digital VEGA',
     documentTheme: 'Tema de la página del documento',
     docThemeFollowApp: 'Seguir el tema de la aplicación',
+    docThemeEyeCare: 'Cuidado de la vista',
     saveLocation: 'Ubicación de guardado',
     setAutoSave: 'Guardar automáticamente todos los documentos',
     setAutoSaveDesc:
@@ -4414,6 +4422,7 @@ export const strings = {
     designDigital: 'Digital VEGA',
     documentTheme: 'ธีมหน้าเอกสาร',
     docThemeFollowApp: 'ตามธีมของแอป',
+    docThemeEyeCare: 'ถนอมสายตา',
     saveLocation: 'ตำแหน่งบันทึก',
     setAutoSave: 'บันทึกอัตโนมัติทุกเอกสาร',
     setAutoSaveDesc: 'เปิดบันทึกอัตโนมัติเป็นค่าเริ่มต้นในทุกตัวแก้ไข คุณยังปิดได้ในแต่ละหน้าต่าง',
@@ -4940,6 +4949,7 @@ export const strings = {
     designDigital: 'Digital VEGA',
     documentTheme: 'Tema halaman dokumen',
     docThemeFollowApp: 'Ikuti tema aplikasi',
+    docThemeEyeCare: 'Ramah mata',
     saveLocation: 'Lokasi penyimpanan',
     setAutoSave: 'Simpan otomatis semua dokumen',
     setAutoSaveDesc:
@@ -5473,6 +5483,7 @@ export const strings = {
     designDigital: 'Цифровая ВЕГА',
     documentTheme: 'Тема страницы документа',
     docThemeFollowApp: 'Как в теме приложения',
+    docThemeEyeCare: 'Берегущий глаза',
     saveLocation: 'Папка сохранения',
     setAutoSave: 'Автосохранение всех документов',
     setAutoSaveDesc:
@@ -6003,6 +6014,7 @@ export const strings = {
     designDigital: 'Digital VEGA',
     documentTheme: 'سمة صفحة المستند',
     docThemeFollowApp: 'اتباع سمة التطبيق',
+    docThemeEyeCare: 'راحة العين',
     saveLocation: 'موقع الحفظ',
     setAutoSave: 'حفظ جميع المستندات تلقائيًا',
     setAutoSaveDesc:
@@ -6523,6 +6535,7 @@ export const strings = {
     designDigital: 'Digital VEGA',
     documentTheme: 'Tema da página do documento',
     docThemeFollowApp: 'Seguir o tema do aplicativo',
+    docThemeEyeCare: 'Conforto visual',
     saveLocation: 'Local de salvamento',
     setAutoSave: 'Salvar automaticamente todos os documentos',
     setAutoSaveDesc:
@@ -7053,6 +7066,7 @@ export const strings = {
     designDigital: 'Digital VEGA',
     documentTheme: 'Tema della pagina del documento',
     docThemeFollowApp: 'Segui il tema dell’applicazione',
+    docThemeEyeCare: 'Riposo visivo',
     saveLocation: 'Posizione di salvataggio',
     setAutoSave: 'Salva automaticamente tutti i documenti',
     setAutoSaveDesc:
@@ -7580,6 +7594,7 @@ export const strings = {
     designDigital: 'Digital VEGA',
     documentTheme: 'Motyw strony dokumentu',
     docThemeFollowApp: 'Zgodnie z motywem aplikacji',
+    docThemeEyeCare: 'Ochrona wzroku',
     saveLocation: 'Lokalizacja zapisu',
     setAutoSave: 'Automatycznie zapisuj wszystkie dokumenty',
     setAutoSaveDesc:
@@ -8103,6 +8118,7 @@ export const strings = {
     designDigital: 'Digital VEGA',
     documentTheme: 'Motiv stránky dokumentu',
     docThemeFollowApp: 'Podle motivu aplikace',
+    docThemeEyeCare: 'Šetrné pro oči',
     saveLocation: 'Umístění pro ukládání',
     setAutoSave: 'Automaticky ukládat všechny dokumenty',
     setAutoSaveDesc:
@@ -8624,6 +8640,7 @@ export const strings = {
     designDigital: 'Digital VEGA',
     documentTheme: 'Documentpaginathema',
     docThemeFollowApp: 'App-thema volgen',
+    docThemeEyeCare: 'Oogvriendelijk',
     saveLocation: 'Opslaglocatie',
     setAutoSave: 'Alle documenten automatisch opslaan',
     setAutoSaveDesc:
@@ -9150,6 +9167,7 @@ export const strings = {
     designDigital: 'Digital VEGA',
     documentTheme: 'Tema halaman dokumen',
     docThemeFollowApp: 'Ikut tema aplikasi',
+    docThemeEyeCare: 'Mesra mata',
     saveLocation: 'Lokasi simpanan',
     setAutoSave: 'Simpan automatik semua dokumen',
     setAutoSaveDesc:
@@ -9676,6 +9694,7 @@ export const strings = {
     designDigital: 'Digital VEGA',
     documentTheme: 'ערכת נושא של דף המסמך',
     docThemeFollowApp: 'לפי ערכת הנושא של האפליקציה',
+    docThemeEyeCare: 'נוח לעיניים',
     saveLocation: 'מיקום שמירה',
     setAutoSave: 'שמירה אוטומטית של כל המסמכים',
     setAutoSaveDesc: 'מפעיל שמירה אוטומטית כברירת מחדל בכל עורך. עדיין אפשר לכבות אותה בחלון בודד.',
@@ -10187,6 +10206,7 @@ export const strings = {
     designDigital: 'Digital VEGA',
     documentTheme: 'दस्तावेज़ पृष्ठ थीम',
     docThemeFollowApp: 'ऐप थीम के अनुसार',
+    docThemeEyeCare: 'आँखों के अनुकूल',
     saveLocation: 'सहेजने का स्थान',
     setAutoSave: 'सभी दस्तावेज़ स्वतः सहेजें',
     setAutoSaveDesc:
@@ -10705,6 +10725,7 @@ export const strings = {
     designDigital: 'Digital VEGA',
     documentTheme: '文件頁面主題',
     docThemeFollowApp: '跟隨應用程式主題',
+    docThemeEyeCare: '護眼',
     saveLocation: '預設儲存位置',
     setAutoSave: '所有文件自動儲存',
     setAutoSaveDesc: '在每個編輯器中預設開啟自動儲存，仍可在單一視窗中關閉。',
@@ -11234,6 +11255,7 @@ export const strings = {
     themeSystem: 'Tizimga ergashish',
     documentTheme: 'Hujjat sahifasi mavzusi',
     docThemeFollowApp: 'Ilova mavzusiga ergashish',
+    docThemeEyeCare: 'Ko‘zni asraydigan',
     design: 'Design',
     designStandard: 'Standard',
     designRetro: 'Retro VEGA',
@@ -11763,6 +11785,7 @@ export const strings = {
     themeSystem: 'Жүйеге сай',
     documentTheme: 'Құжат бетінің тақырыбы',
     docThemeFollowApp: 'Қосымша тақырыбына еру',
+    docThemeEyeCare: 'Көзді сақтайтын',
     design: 'Design',
     designStandard: 'Standard',
     designRetro: 'Retro VEGA',
@@ -12287,6 +12310,7 @@ export const strings = {
     themeSystem: 'Sistemə uyğun',
     documentTheme: 'Sənəd səhifəsi mövzusu',
     docThemeFollowApp: 'Tətbiq mövzusuna əməl et',
+    docThemeEyeCare: 'Gözü qoruyan',
     design: 'Design',
     designStandard: 'Standard',
     designRetro: 'Retro VEGA',
@@ -12812,6 +12836,7 @@ export const strings = {
     themeSystem: 'Ulgama eýer',
     documentTheme: 'Resminama sahypasynyň temasy',
     docThemeFollowApp: 'Programma temasyna eýer',
+    docThemeEyeCare: 'Gözi asraýan',
     design: 'Design',
     designStandard: 'Standard',
     designRetro: 'Retro VEGA',
@@ -13339,6 +13364,7 @@ export const strings = {
     themeSystem: 'Системаны ээрчүү',
     documentTheme: 'Документ баракчасынын темасы',
     docThemeFollowApp: 'Тиркеме темасына ээ',
+    docThemeEyeCare: 'Көздү сактаган',
     design: 'Design',
     designStandard: 'Standard',
     designRetro: 'Retro VEGA',
@@ -13863,6 +13889,7 @@ export const strings = {
     themeSystem: 'Системага иярү',
     documentTheme: 'Документ бите темасы',
     docThemeFollowApp: 'Кушымта темасы буенча',
+    docThemeEyeCare: 'Күзне саклаучы',
     design: 'Design',
     designStandard: 'Standard',
     designRetro: 'Retro VEGA',
@@ -14390,6 +14417,7 @@ export const strings = {
     themeSystem: 'სისტემის მიხედვით',
     documentTheme: 'დოკუმენტის გვერდის თემა',
     docThemeFollowApp: 'აპის თემის მიხედვით',
+    docThemeEyeCare: 'მშვიდი თვალისთვის',
     design: 'Design',
     designStandard: 'Standard',
     designRetro: 'Retro VEGA',

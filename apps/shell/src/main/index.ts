@@ -581,7 +581,8 @@ let cachedDocTheme: DocTheme | null = null
 function currentDocTheme(): DocTheme {
   if (cachedDocTheme) return cachedDocTheme
   const saved = readAppSettings(APP_SETTINGS_PATH()).documentTheme
-  cachedDocTheme = saved === 'light' || saved === 'dark' ? saved : 'follow'
+  cachedDocTheme =
+    saved === 'light' || saved === 'dark' || saved === 'eyecare' ? saved : 'follow'
   return cachedDocTheme
 }
 
@@ -4960,7 +4961,8 @@ function registerHomeIpc(): void {
   ipcMain.handle('app:get-document-theme', (): DocTheme => currentDocTheme())
 
   ipcMain.handle(HOME_CHANNELS.setDocumentTheme, (_event, theme: unknown) => {
-    if (theme !== 'light' && theme !== 'dark' && theme !== 'follow') return
+    if (theme !== 'light' && theme !== 'dark' && theme !== 'follow' && theme !== 'eyecare')
+      return
     if (theme === currentDocTheme()) return
     cachedDocTheme = theme
     writeAppSetting(APP_SETTINGS_PATH(), 'documentTheme', theme)

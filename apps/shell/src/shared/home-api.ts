@@ -61,7 +61,7 @@ export type UiDesign = 'standard' | 'retro' | 'digital'
  * relative to the UI theme. 'follow' reproduces the previous single-theme
  * behavior; 'light'/'dark' pin the paper regardless of the UI theme.
  */
-export type DocTheme = 'follow' | 'light' | 'dark'
+export type DocTheme = 'follow' | 'light' | 'dark' | 'eyecare'
 
 /** shell-wide AutoSave default for every editor; updatedAt is 0 until first set */
 export interface AutoSaveDefault {

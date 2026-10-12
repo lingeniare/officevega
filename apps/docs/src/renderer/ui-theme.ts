@@ -19,8 +19,15 @@ export function uiThemeIsDark(): boolean {
 export function docThemeIsDark(): boolean {
   const attr = document.documentElement.getAttribute('data-doc-theme')
   if (attr === 'dark') return true
-  if (attr === 'light') return false
+  // 'eyecare' is a light page — only the paper tint differs (#1903)
+  if (attr === 'light' || attr === 'eyecare') return false
   return uiThemeIsDark()
+}
+
+/** explicit `data-doc-theme` pin ('light' | 'dark' | 'eyecare'), null while following the UI theme */
+export function docThemePin(): 'light' | 'dark' | 'eyecare' | null {
+  const attr = document.documentElement.getAttribute('data-doc-theme')
+  return attr === 'light' || attr === 'dark' || attr === 'eyecare' ? attr : null
 }
 
 /** live docThemeIsDark(): follows document-theme and theme broadcasts and OS appearance flips */
@@ -42,6 +49,24 @@ export function useDocThemeIsDark(): boolean {
     }
   }, [])
   return dark
+}
+
+/** live docThemePin(): follows the same broadcasts as useDocThemeIsDark */
+export function useDocThemePin(): 'light' | 'dark' | 'eyecare' | null {
+  const [pin, setPin] = useState(docThemePin)
+  useEffect(() => {
+    const update = (): void => setPin(docThemePin())
+    const offDoc = window.desktop?.onDocumentThemeChanged?.(update)
+    const offUi = window.desktop?.onThemeChanged?.(update)
+    const mq = window.matchMedia?.('(prefers-color-scheme: dark)')
+    mq?.addEventListener('change', update)
+    return () => {
+      offDoc?.()
+      offUi?.()
+      mq?.removeEventListener('change', update)
+    }
+  }, [])
+  return pin
 }
 
 /** live uiThemeIsDark(): follows theme broadcasts and OS appearance flips in system mode */

@@ -352,7 +352,7 @@ import {
 } from './editor/extensions'
 import { setDkColor } from './editor/dark-page'
 import { resolveDarkPage, writeDarkPagePref } from './dark-page-pref'
-import { useDocThemeIsDark, useUiThemeIsDark } from './ui-theme'
+import { useDocThemeIsDark, useDocThemePin, useUiThemeIsDark } from './ui-theme'
 import { type InkAnnotation, type InkTool } from './editor/ink'
 import { InkOverlay } from './components/InkOverlay'
 import {
@@ -814,6 +814,9 @@ export function App() {
   // until the user switches it off, and that choice sticks (dark-page-pref.ts)
   const themeDark = useUiThemeIsDark()
   const docThemeDark = useDocThemeIsDark()
+  // eye-care page (#1903): the doc-theme pin tints the paper green; authored
+  // colors stay untouched, an authored page color wins (same rule as dark)
+  const docPin = useDocThemePin()
   const [darkPage, setDarkPage] = useState(() => resolveDarkPage(docThemeDark))
   useEffect(() => {
     setDarkPage(resolveDarkPage(docThemeDark))
@@ -7127,6 +7130,7 @@ export function App() {
     'workspace',
     darkPage && !pageColor ? 'page-dark' : '',
     darkPage && !themeDark ? 'workspace-dark' : '',
+    docPin === 'eyecare' && !pageColor ? 'page-eyecare' : '',
   ]
     .filter(Boolean)
     .join(' ')
