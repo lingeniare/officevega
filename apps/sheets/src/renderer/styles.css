@@ -3599,6 +3599,15 @@ textarea:focus {
   line-height: 1.5;
 }
 
+.recovery-warning {
+  margin-top: 8px;
+  border: 1px solid var(--danger-border);
+  border-radius: var(--radius-8);
+  padding: 8px 10px;
+  color: var(--danger);
+  background: var(--danger-bg);
+}
+
 .recovery-file {
   display: flex;
   align-items: baseline;

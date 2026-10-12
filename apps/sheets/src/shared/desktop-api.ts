@@ -2860,6 +2860,10 @@ export interface RecoveryPromptPayload {
   fileName: string
   /** mtime of the recovery copy (epoch ms) — when the unsaved work was last autosaved */
   savedAtMs: number
+  /** the on-disk file changed after this copy was written — restore replaces those edits */
+  fileIsNewer?: boolean | undefined
+  /** localized warning sentence shown when fileIsNewer is set */
+  newerWarning?: string | undefined
 }
 
 /** MCP visible-grid bridge message (shell → renderer, correlated by requestId). */

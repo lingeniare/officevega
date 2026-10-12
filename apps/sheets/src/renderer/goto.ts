@@ -10,6 +10,8 @@ import { columnIndex } from '@genoffice/xlsx-gateway/domain/cell-address'
 export interface GoToNameEntry {
   readonly name: string
   readonly ref: string
+  /// Sheet the name is scoped to (Univer localSheetId); workbook scope when absent.
+  readonly sheetId?: string | undefined
 }
 
 const CELL_OR_RANGE = /^\$?[A-Za-z]{1,3}\$?\d+(?::\$?[A-Za-z]{1,3}\$?\d+)?$/
@@ -77,14 +79,21 @@ export function isA1Reference(ref: string): boolean {
 /// names win over addresses (names that look like cell refs are invalid
 /// anyway) and match case-insensitively. A name whose ref is a
 /// formula (e.g. OFFSET) is not a jump target and resolves to null.
+/// Excel scope applies: a name scoped to the active sheet shadows the
+/// workbook-scoped one, and a name scoped to another sheet does not resolve.
 export function resolveGoToRef(
   input: string,
   definedNames: readonly GoToNameEntry[],
+  activeSheetId?: string,
 ): string | null {
   const trimmed = input.trim()
   if (trimmed === '') return null
   const lower = trimmed.toLowerCase()
-  const named = definedNames.find((entry) => entry.name.toLowerCase() === lower)
+  const candidates = definedNames.filter((entry) => entry.name.toLowerCase() === lower)
+  const named =
+    candidates.find(
+      (entry) => entry.sheetId !== undefined && entry.sheetId === activeSheetId,
+    ) ?? candidates.find((entry) => entry.sheetId === undefined)
   if (named) {
     const ref = named.ref.replace(/^=/, '').trim()
     return isA1Reference(ref) ? ref : null

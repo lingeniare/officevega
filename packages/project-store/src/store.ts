@@ -33,6 +33,7 @@ import {
 } from 'node:fs'
 import { basename, dirname, join } from 'node:path'
 import type {
+  ChatFileSig,
   ChatMeta,
   ChatMessage,
   ChatSession,
@@ -171,6 +172,39 @@ function unresolvedPathKey(filePath: string): string {
 
 function hashPathKey(key: string): string {
   return createHash('sha256').update(key).digest('hex').slice(0, 16)
+}
+
+/**
+ * The incarnation signature of the file object currently at a path: inode +
+ * creation time. Renames keep both, in-place edits keep both, while a
+ * delete+recreate or an atomic rewrite (tmp + rename-over) replaces them —
+ * exactly the signal #1021 needs to keep an unrelated file from inheriting
+ * the previous document's chat. Returns null when the path can't be stated
+ * or the filesystem reports neither field.
+ */
+function statFileSig(filePath: string): ChatFileSig | null {
+  try {
+    const st = statSync(filePath)
+    const sig: ChatFileSig = {}
+    if (st.ino > 0) sig.i = st.ino
+    if (st.birthtimeMs > 0) sig.b = st.birthtimeMs
+    return sig.i !== undefined || sig.b !== undefined ? sig : null
+  } catch {
+    return null
+  }
+}
+
+/**
+ * A signature mismatch is a field both sides measured coming back different.
+ * Fields one side couldn't measure (0/undefined — FAT32 ino, statx-less
+ * birthtime) are not evidence: identical paths sit on one filesystem, so a
+ * field available when the signature was recorded stays available.
+ */
+function fileSigMismatch(stored: ChatFileSig, current: ChatFileSig): boolean {
+  return (
+    (stored.i !== undefined && current.i !== undefined && stored.i !== current.i) ||
+    (stored.b !== undefined && current.b !== undefined && stored.b !== current.b)
+  )
 }
 
 function readChatTail(filePath: string): string {
@@ -545,24 +579,93 @@ export class ProjectStore {
    * The chatId is registered into chatIdByPath on first resolve; from then on,
    * renaming/moving the file only changes the mapping key — the chatId stays
    * stable and history always follows the file.
+   *
+   * Each mapping also records the file's incarnation signature (inode +
+   * creation time, #1021): a file deleted or replaced outside the app while
+   * its index entry survived would otherwise hand a different document the
+   * previous one's transcript. A mismatched signature mints a fresh chatId —
+   * the old transcript stays reachable through listChatSessions. A path that
+   * cannot be stated (file missing, filesystem without inode/birthtime) keeps
+   * its chat: verification is fail-open so history is never lost by accident.
    */
   resolveChatForFile(filePath: string): { projectId: string; chatId: string } {
     const projectId = this.resolveProjectForFile(filePath)
     const index = this.readIndex()
     const key = canonicalPathKey(filePath)
     const mappedKey = this.findMapKey(index.chatIdByPath, filePath)
+    const currentSig = statFileSig(filePath)
     if (mappedKey !== undefined) {
-      const chatId = index.chatIdByPath![mappedKey]!
+      let chatId = index.chatIdByPath![mappedKey]!
+      const sigs = (index.chatSigByPath = index.chatSigByPath ?? {})
+      const storedSig = sigs[mappedKey]
+      let dirty = false
+      if (storedSig === undefined) {
+        // Legacy mapping from before signatures: record, keep the chat.
+        if (currentSig) {
+          sigs[mappedKey] = currentSig
+          dirty = true
+        }
+      } else if (currentSig !== null) {
+        if (fileSigMismatch(storedSig, currentSig)) {
+          // A different file object took this path: fresh chat, old transcript
+          // stays reachable through listChatSessions.
+          chatId = `chat-${randomBytes(6).toString('hex')}`
+          index.chatIdByPath![mappedKey] = chatId
+          dirty = true
+        }
+        // Merge so a field measurable now but unrecorded then (e.g. birthtime
+        // that appeared after a kernel upgrade) joins the signature without
+        // dropping the stored fields the current stat lacks.
+        const merged: ChatFileSig = { ...storedSig, ...currentSig }
+        if (merged.i !== storedSig.i || merged.b !== storedSig.b) {
+          sigs[mappedKey] = merged
+          dirty = true
+        }
+      }
       if (mappedKey !== key) {
         ProjectStore.rekeyEntry(index.chatIdByPath!, mappedKey, key)
-        this.writeIndex(index)
+        if (sigs[mappedKey] !== undefined) {
+          sigs[key] = sigs[mappedKey]!
+          delete sigs[mappedKey]
+        }
+        dirty = true
       }
+      if (dirty) this.writeIndex(index)
       return { projectId, chatId }
     }
-    const chatId = this.fallbackChatId(projectId, filePath)
+    let chatId = this.fallbackChatId(projectId, filePath)
+    // A chatId already bound to a different live path belongs to that file's
+    // incarnation — a rename moved the binding away with it. Handing this
+    // path the same id would resurrect the moved transcript onto an
+    // unrelated file, recreating #1021 through the rename detour.
+    const chatIdTakenElsewhere = Object.entries(index.chatIdByPath ?? {}).some(
+      ([otherPath, otherChatId]) => otherChatId === chatId && otherPath !== key,
+    )
+    if (chatIdTakenElsewhere) chatId = `chat-${randomBytes(6).toString('hex')}`
     index.chatIdByPath = { ...(index.chatIdByPath ?? {}), [key]: chatId }
+    if (currentSig) {
+      index.chatSigByPath = { ...(index.chatSigByPath ?? {}), [key]: currentSig }
+    }
     this.writeIndex(index)
     return { projectId, chatId }
+  }
+
+  /**
+   * Called after the app itself wrote the document at `filePath` (save /
+   * save-in-place). Atomic saves replace the file object, which is the exact
+   * signal resolveChatForFile reads as "a different file took this path" —
+   * refreshing the bound signature here keeps the app's own writes from
+   * minting a fresh chat on the next open (#1021). A no-op for paths with no
+   * chat mapping (recovery copies, exports, save-as targets).
+   */
+  noteFileWritten(filePath: string): void {
+    const sig = statFileSig(filePath)
+    if (!sig) return
+    const index = this.readIndex()
+    const key = this.findMapKey(index.chatIdByPath, filePath)
+    if (key === undefined) return
+    index.chatSigByPath = { ...(index.chatSigByPath ?? {}), [key]: sig }
+    this.writeIndex(index)
   }
 
   /**
@@ -633,6 +736,16 @@ export class ProjectStore {
     if (chatKey !== undefined) delete index.chatIdByPath![chatKey]
     if (displacedChatId !== undefined) delete index.chatIdByPath![displacedChatKey!]
     index.chatIdByPath = { ...(index.chatIdByPath ?? {}), [newKey]: chatId }
+    // The caller asserts the document now lives at newPath — a same-volume
+    // rename keeps the file object, a cross-volume move copy+deletes into a
+    // new one; either way the chat binds to whatever object is there now.
+    const sigs = (index.chatSigByPath = index.chatSigByPath ?? {})
+    const movedSig = chatKey !== undefined ? sigs[chatKey] : undefined
+    if (chatKey !== undefined) delete sigs[chatKey]
+    if (displacedChatKey !== undefined) delete sigs[displacedChatKey!]
+    const newSig = statFileSig(newPath) ?? movedSig
+    if (newSig !== undefined) sigs[newKey] = newSig
+    else delete sigs[newKey]
     if (displacedChatId !== undefined && displacedChatId !== chatId) {
       this.trashChat(displacedPid ?? pid ?? 'default', displacedChatId)
     }
@@ -928,6 +1041,8 @@ export class ProjectStore {
     const index = this.readIndex()
     const key = canonicalPathKey(filePath)
     index.chatIdByPath = { ...(index.chatIdByPath ?? {}), [key]: chatId }
+    const sig = statFileSig(filePath)
+    if (sig) index.chatSigByPath = { ...(index.chatSigByPath ?? {}), [key]: sig }
     if (index.fileMap[key] === undefined) index.fileMap[key] = projectId
     this.writeIndex(index)
     const proj = this.readProject(projectId)

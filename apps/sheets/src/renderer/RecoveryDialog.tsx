@@ -52,6 +52,9 @@ export function RecoveryDialog({
             <h2>{prompt.title}</h2>
           </div>
           <p className="recovery-body">{prompt.body}</p>
+          {prompt.newerWarning && (
+            <p className="recovery-body recovery-warning">{prompt.newerWarning}</p>
+          )}
           <div className="recovery-file">
             <span className="recovery-file-name" title={prompt.fileName}>
               {prompt.fileName}

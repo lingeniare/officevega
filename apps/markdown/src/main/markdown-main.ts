@@ -53,6 +53,7 @@ import {
   writeImageIntoOwnedAssets,
 } from './asset-lifecycle'
 import { createMarkdownConversionSession, writeMarkdownConversion } from './conversion-lifecycle'
+import { ProjectStore } from '@genoffice/project-store'
 import { MARKDOWN_CHANNELS, MAX_PASTED_IMAGE_BYTES } from '../shared/ipc'
 import type { ImageHostConfig } from '../shared/ipc'
 import { isImageHostUsable, normalizeImageHostConfig, uploadImageToHost } from './image-host'
@@ -729,6 +730,15 @@ async function writeTextAtomic(path: string, text: string): Promise<void> {
   await atomicWriteFile(path, Buffer.from(text, 'utf8'))
 }
 
+// The project:* IPC handlers live in the shell's shared registration
+// (docs-main in shell mode); the store itself is keyed by userData path, so
+// a lazily constructed instance here lands on the same on-disk index.
+let markdownProjectStore: ProjectStore | null = null
+function getMarkdownProjectStore(): ProjectStore {
+  if (!markdownProjectStore) markdownProjectStore = new ProjectStore(app.getPath('userData'))
+  return markdownProjectStore
+}
+
 async function resolveSaveTarget(
   e: Electron.IpcMainInvokeEvent,
   mode: SaveMode,
@@ -910,6 +920,11 @@ function registerMarkdownIpc(): void {
           if (prepared) await rollbackPreparedSaveAsAssets(prepared).catch(() => {})
           throw error
         }
+        // Same-path saves replace the file object atomically — refresh the
+        // chat binding's incarnation signature so the next open keeps its
+        // history. A new path (save-as) deliberately doesn't: a clobbered
+        // file's chat must detach instead (#1021).
+        if (!isNewPath) getMarkdownProjectStore().noteFileWritten(target)
         savePathByWc.set(e.sender.id, target)
         // keep the reload path in sync — a stale openPathByWc would make a
         // reloaded renderer load the OLD file and then save it over the new one

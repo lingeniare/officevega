@@ -2374,21 +2374,48 @@ function connectionPoint(el: SlideElement, idx: number): { x: number; y: number 
   const o = el.transform.offset
   const prst = el.type === 'shape' || el.type === 'picture' ? el.presetGeometry : undefined
   const sides = prst === 'ellipse' ? ELLIPSE_SIDES : RECT_SIDES
-  if (idx === sides.top) return { x: o.x + o.cx / 2, y: o.y }
-  if (idx === sides.left) return { x: o.x, y: o.y + o.cy / 2 }
-  if (idx === sides.bottom) return { x: o.x + o.cx / 2, y: o.y + o.cy }
-  if (idx === sides.right) return { x: o.x + o.cx, y: o.y + o.cy / 2 }
-  if (prst === 'ellipse' && idx >= 1 && idx <= 7) {
+  // Site in the shape's local box first; flipH/flipV then mirror it inside
+  // that box and rot turns it about the centre — the offset alone would leave
+  // the site behind on transformed shapes (#1581).
+  let px: number
+  let py: number
+  if (idx === sides.top) {
+    px = o.cx / 2
+    py = 0
+  } else if (idx === sides.left) {
+    px = 0
+    py = o.cy / 2
+  } else if (idx === sides.bottom) {
+    px = o.cx / 2
+    py = o.cy
+  } else if (idx === sides.right) {
+    px = o.cx
+    py = o.cy / 2
+  } else if (prst === 'ellipse' && idx >= 1 && idx <= 7) {
     // odd ellipse sites are the 45-degree points: inset (1 - 1/sqrt2)/2 of each extent
     const k = 0.1464
     const left = idx === 1 || idx === 3
     const top = idx === 1 || idx === 7
-    return {
-      x: o.x + (left ? o.cx * k : o.cx * (1 - k)),
-      y: o.y + (top ? o.cy * k : o.cy * (1 - k)),
-    }
+    px = left ? o.cx * k : o.cx * (1 - k)
+    py = top ? o.cy * k : o.cy * (1 - k)
+  } else {
+    px = o.cx / 2
+    py = o.cy / 2
   }
-  return { x: o.x + o.cx / 2, y: o.y + o.cy / 2 }
+  const t = el.transform
+  if (t.flipH) px = o.cx - px
+  if (t.flipV) py = o.cy - py
+  const rot = t.rot ?? 0
+  if (rot !== 0) {
+    const rad = ((rot / 60000) * Math.PI) / 180
+    const cos = Math.cos(rad)
+    const sin = Math.sin(rad)
+    const dx = px - o.cx / 2
+    const dy = py - o.cy / 2
+    px = o.cx / 2 + dx * cos - dy * sin
+    py = o.cy / 2 + dx * sin + dy * cos
+  }
+  return { x: o.x + px, y: o.y + py }
 }
 
 /**

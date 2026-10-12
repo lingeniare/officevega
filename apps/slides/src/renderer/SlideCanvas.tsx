@@ -1891,7 +1891,8 @@ interface AnchorPt {
 /**
  * Attachable connection points of the other elements: side midpoints of each box
  * (idx matches the engine's rectangle approximation — 0 top, 1 left, 2 bottom, 3 right).
- * Uses the unrotated model box, same as the engine's move-following computation.
+ * Sites go through the shape's flip+rotation so the snap target sits on the
+ * visible edge, matching the engine's move-following computation.
  */
 function connectorAnchors(slide: RenderSlide, excludeId: string): AnchorPt[] {
   const out: AnchorPt[] = []
@@ -1899,12 +1900,17 @@ function connectorAnchors(slide: RenderSlide, excludeId: string): AnchorPt[] {
     if (n.decoration || n.sourceId === excludeId) continue
     if (n.type === 'placeholder-chip' || isConnectorNode(n)) continue
     const b = n.box
-    out.push(
-      { targetId: n.sourceId, idx: 0, x: b.x + b.w / 2, y: b.y },
-      { targetId: n.sourceId, idx: 1, x: b.x, y: b.y + b.h / 2 },
-      { targetId: n.sourceId, idx: 2, x: b.x + b.w / 2, y: b.y + b.h },
-      { targetId: n.sourceId, idx: 3, x: b.x + b.w, y: b.y + b.h / 2 },
-    )
+    const { toStage } = boxMappers(b)
+    const sites: readonly (readonly [number, number])[] = [
+      [b.w / 2, 0],
+      [0, b.h / 2],
+      [b.w / 2, b.h],
+      [b.w, b.h / 2],
+    ]
+    for (const [idx, site] of sites.entries()) {
+      const p = toStage(site[0]!, site[1]!)
+      out.push({ targetId: n.sourceId, idx, x: p.x, y: p.y })
+    }
   }
   return out
 }

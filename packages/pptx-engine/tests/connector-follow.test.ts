@@ -56,4 +56,31 @@ describe('connector following', () => {
     expect(updateConnectorsForMoved(slide, ['nonexistent'])).toBe(0)
     expect(JSON.stringify(slide.elements.find((e) => e.connection)!.transform)).toBe(cxnBefore)
   })
+
+  it('rotates the target site about the shape centre before following (#1581)', () => {
+    const slide = parseSlide({ path: 'ppt/slides/slide1.xml', slideXml, ctx: {} })
+    const s2 = slide.elements.find((e) => e.name === 'S2')!
+    // Rotating S2 90° clockwise carries its right-edge site to the bottom edge.
+    s2.transform.rot = 5400000
+    updateConnectorsForMoved(slide, [s2.id])
+    const cxn = slide.elements.find((e) => e.connection)!
+    // Start site: centre (500,300) + (dx=500,dy=0) rotated 90° → (500,800);
+    // end site: S3 left-mid (2000,300). The run goes up-right → flipV.
+    expect(cxn.transform.offset).toEqual({ x: 500, y: 300, cx: 1500, cy: 500 })
+    expect(cxn.transform.flipH).toBe(false)
+    expect(cxn.transform.flipV).toBe(true)
+  })
+
+  it('mirrors the target site under flipH before following', () => {
+    const slide = parseSlide({ path: 'ppt/slides/slide1.xml', slideXml, ctx: {} })
+    const s2 = slide.elements.find((e) => e.name === 'S2')!
+    // flipH carries S2's right-edge site to its left edge.
+    s2.transform.flipH = true
+    updateConnectorsForMoved(slide, [s2.id])
+    const cxn = slide.elements.find((e) => e.connection)!
+    // Start site: (0,300); end site: S3 left-mid (2000,300).
+    expect(cxn.transform.offset).toEqual({ x: 0, y: 300, cx: 2000, cy: 0 })
+    expect(cxn.transform.flipH).toBe(false)
+    expect(cxn.transform.flipV).toBe(false)
+  })
 })

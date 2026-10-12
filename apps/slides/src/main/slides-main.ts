@@ -731,18 +731,19 @@ export function discardSlidesRecovery(contents: WebContents): void {
   dropUntitledRecovery(contents.id)
 }
 
-/** On open, if a recovery copy newer than the original exists, ask whether to restore (still points at the original path; only save persists it). */
+/** On open, if a recovery copy exists, always ask whether to restore (still
+ * points at the original path; only save persists it). A newer on-disk file no
+ * longer deletes the copy silently (#1020) — it only marks the prompt, and the
+ * copy goes away only when the user picks Discard. */
 async function maybeRecoverBytes(
   path: string,
   original: Uint8Array,
 ): Promise<{ bytes: Uint8Array; recovered: boolean }> {
   const asPath = autosavePathFor(path)
+  let fileIsNewer = false
   try {
     const [asStat, origStat] = await Promise.all([stat(asPath), stat(path)])
-    if (asStat.mtimeMs <= origStat.mtimeMs) {
-      await rm(asPath, { force: true })
-      return { bytes: original, recovered: false }
-    }
+    fileIsNewer = asStat.mtimeMs <= origStat.mtimeMs
   } catch {
     return { bytes: original, recovered: false }
   }
@@ -753,7 +754,9 @@ async function maybeRecoverBytes(
     defaultId: 0,
     cancelId: 1,
     message: tm('autosaveFoundTitle'),
-    detail: tm('autosaveFoundBody'),
+    detail: fileIsNewer
+      ? `${tm('autosaveFoundBody')}\n\n${tm('autosaveFileNewer')}`
+      : tm('autosaveFoundBody'),
   }
   const r = parent
     ? await dialog.showMessageBox(parent, options)
@@ -4501,6 +4504,9 @@ export function registerSlidesIpc(): void {
     try {
       const metaRevAtSave = session.metaRev ?? 0
       await savePptxToFile(session.opened, session.path)
+      // Refresh the chat binding's incarnation signature after our write so
+      // the next open keeps its history instead of minting a fresh chat (#1021).
+      getSlidesProjectStore().noteFileWritten(session.path)
       autosaveBackoff.delete(session.path)
       void rm(autosavePathFor(session.path), { force: true }).catch(() => {})
       dropUntitledRecovery(e.sender.id)

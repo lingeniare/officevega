@@ -166,6 +166,22 @@ describe('buildHeaderFooterXml', () => {
         '</headerFooter>',
     )
   })
+
+  it('doubles a bare ampersand but keeps field codes', () => {
+    expect(buildHeaderFooterXml({ center: 'R & D' }, null)).toBe(
+      '<headerFooter><oddHeader>&amp;CR &amp;&amp; D</oddHeader></headerFooter>',
+    )
+    // Recognised codes stay verbatim: letters, &[name], &"font",&nn, &&.
+    expect(
+      buildHeaderFooterXml({ center: '&P of &N &[Tab] &"Arial,Bold"&12 P&&L &D' }, null),
+    ).toBe(
+      '<headerFooter><oddHeader>&amp;C&amp;P of &amp;N &amp;[Tab] &amp;&quot;Arial,Bold&quot;&amp;12 P&amp;&amp;L &amp;D</oddHeader></headerFooter>',
+    )
+    // A trailing ampersand is literal too.
+    expect(buildHeaderFooterXml({ center: 'Fish &' }, null)).toBe(
+      '<headerFooter><oddHeader>&amp;CFish &amp;&amp;</oddHeader></headerFooter>',
+    )
+  })
 })
 
 describe('applyPageSetupState headerFooter', () => {
@@ -200,7 +216,7 @@ describe('applyPageSetupState headerFooter', () => {
       sheetName: 'S',
       header: { left: "Revenue $'000", right: 'Ref $& $1 $$' },
     })
-    expect(patched).toContain("<oddHeader>&amp;LRevenue $'000&amp;RRef $&amp; $1 $$</oddHeader>")
+    expect(patched).toContain("<oddHeader>&amp;LRevenue $'000&amp;RRef $&amp;&amp; $1 $$</oddHeader>")
     expect(patched).not.toContain('Old')
   })
 

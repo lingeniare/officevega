@@ -69,7 +69,7 @@ import {
   normalizeLang,
   setUiLang,
 } from '@genoffice/i18n'
-import { ProjectStore } from '@genoffice/project-store'
+import { canonicalPathKey, ProjectStore } from '@genoffice/project-store'
 
 import {
   AiCreditsError,
@@ -224,6 +224,7 @@ const tMain = createI18n({
       '上次会话有未保存的更改。要恢复自动保存的版本吗?恢复后,保存将直接覆盖原文件。',
     autosaveRestore: '恢复',
     autosaveDiscard: '放弃',
+    autosaveFileNewer: '磁盘上的文件比此恢复副本更新——恢复将覆盖这些较新的更改。',
     menuFile: '文件',
     menuOpenWorkbook: '打开工作簿…',
     menuSave: '保存',
@@ -281,6 +282,7 @@ const tMain = createI18n({
       'There are unsaved changes from your last session. Restore the autosaved version? Saving after a restore overwrites the original file.',
     autosaveRestore: 'Restore',
     autosaveDiscard: 'Discard',
+    autosaveFileNewer: 'The file on disk is newer than this recovered copy — restoring will replace those newer changes.',
     menuFile: 'File',
     menuOpenWorkbook: 'Open Workbook…',
     menuSave: 'Save',
@@ -342,6 +344,7 @@ const tMain = createI18n({
       'Có những thay đổi chưa được lưu từ phiên làm việc trước của bạn. Khôi phục phiên bản đã lưu tự động? Việc lưu sau khi khôi phục sẽ ghi đè lên tệp gốc.',
     autosaveRestore: 'Khôi phục',
     autosaveDiscard: 'Bỏ qua',
+    autosaveFileNewer: 'Tệp trên đĩa mới hơn bản sao khôi phục này — khôi phục sẽ thay thế những thay đổi mới hơn đó.',
     menuFile: 'Tệp',
     menuOpenWorkbook: 'Mở sổ làm việc…',
     menuSave: 'Lưu',
@@ -405,6 +408,7 @@ const tMain = createI18n({
       '前回のセッションに未保存の変更があります。自動保存版を復元しますか?復元後に保存すると、元のファイルは上書きされます。',
     autosaveRestore: '復元',
     autosaveDiscard: '破棄',
+    autosaveFileNewer: 'ディスク上のファイルはこの復元コピーより新しいです。復元すると新しい変更が置き換えられます。',
     menuFile: 'ファイル',
     menuOpenWorkbook: 'ブックを開く…',
     menuSave: '保存',
@@ -468,6 +472,7 @@ const tMain = createI18n({
       '마지막 세션에 저장되지 않은 변경 내용이 있습니다. 자동 저장 버전을 복원할까요? 복원 후 저장하면 원본 파일을 덮어씁니다.',
     autosaveRestore: '복원',
     autosaveDiscard: '취소',
+    autosaveFileNewer: '디스크의 파일이 이 복구본보다 최신입니다 — 복원하면 최신 변경 내용이 대체됩니다.',
     menuFile: '파일',
     menuOpenWorkbook: '통합 문서 열기…',
     menuSave: '저장',
@@ -531,6 +536,7 @@ const tMain = createI18n({
       "Des modifications non enregistrées existent. Restaurer la version auto-enregistrée ? Après restauration, l'enregistrement remplacera le fichier d'origine.",
     autosaveRestore: 'Restaurer',
     autosaveDiscard: 'Ignorer',
+    autosaveFileNewer: 'Le fichier sur le disque est plus récent que cette copie récupérée — la restauration remplacera ces modifications plus récentes.',
     menuFile: 'Fichier',
     menuOpenWorkbook: 'Ouvrir un classeur…',
     menuSave: 'Enregistrer',
@@ -595,6 +601,7 @@ const tMain = createI18n({
       'Es gibt ungespeicherte Änderungen. Automatisch gespeicherte Version wiederherstellen? Nach der Wiederherstellung überschreibt Speichern die Originaldatei.',
     autosaveRestore: 'Wiederherstellen',
     autosaveDiscard: 'Verwerfen',
+    autosaveFileNewer: 'Die Datei auf dem Datenträger ist neuer als diese wiederhergestellte Kopie — beim Wiederherstellen werden diese neueren Änderungen ersetzt.',
     menuFile: 'Datei',
     menuOpenWorkbook: 'Arbeitsmappe öffnen…',
     menuSave: 'Speichern',
@@ -658,6 +665,7 @@ const tMain = createI18n({
       'Hay cambios sin guardar de la última sesión. ¿Restaurar la versión autoguardada? Tras restaurar, guardar sobrescribirá el archivo original.',
     autosaveRestore: 'Restaurar',
     autosaveDiscard: 'Descartar',
+    autosaveFileNewer: 'El archivo en disco es más reciente que esta copia recuperada — restaurar reemplazará esos cambios más recientes.',
     menuFile: 'Archivo',
     menuOpenWorkbook: 'Abrir libro…',
     menuSave: 'Guardar',
@@ -720,6 +728,7 @@ const tMain = createI18n({
       'มีการเปลี่ยนแปลงที่ยังไม่ได้บันทึกจากครั้งก่อน ต้องการกู้คืนหรือไม่? หลังกู้คืน การบันทึกจะเขียนทับไฟล์ต้นฉบับ',
     autosaveRestore: 'กู้คืน',
     autosaveDiscard: 'ละทิ้ง',
+    autosaveFileNewer: 'ไฟล์บนดิสก์ใหม่กว่าสำเนาที่กู้คืนนี้ — การกู้คืนจะแทนที่การเปลี่ยนแปลงที่ใหม่กว่านั้น',
     menuFile: 'ไฟล์',
     menuOpenWorkbook: 'เปิดเวิร์กบุ๊ก…',
     menuSave: 'บันทึก',
@@ -780,6 +789,7 @@ const tMain = createI18n({
       'Ada perubahan yang belum disimpan dari sesi terakhir. Pulihkan versi tersimpan otomatis? Setelah dipulihkan, menyimpan akan menimpa file asli.',
     autosaveRestore: 'Pulihkan',
     autosaveDiscard: 'Buang',
+    autosaveFileNewer: 'File di disk lebih baru daripada salinan pemulihan ini — memulihkan akan mengganti perubahan yang lebih baru tersebut.',
     menuFile: 'File',
     menuOpenWorkbook: 'Buka Buku Kerja…',
     menuSave: 'Simpan',
@@ -842,6 +852,7 @@ const tMain = createI18n({
       'Есть несохранённые изменения из прошлого сеанса. Восстановить автосохранённую версию? После восстановления сохранение перезапишет исходный файл.',
     autosaveRestore: 'Восстановить',
     autosaveDiscard: 'Отклонить',
+    autosaveFileNewer: 'Файл на диске новее этой восстановленной копии — восстановление заменит эти более новые изменения.',
     menuFile: 'Файл',
     menuOpenWorkbook: 'Открыть книгу…',
     menuSave: 'Сохранить',
@@ -903,6 +914,7 @@ const tMain = createI18n({
       'توجد تغييرات غير محفوظة من الجلسة الأخيرة. هل تريد استعادة النسخة المحفوظة تلقائيًا؟ بعد الاستعادة، سيؤدي الحفظ إلى استبدال الملف الأصلي.',
     autosaveRestore: 'استعادة',
     autosaveDiscard: 'تجاهل',
+    autosaveFileNewer: 'الملف الموجود على القرص أحدث من هذه النسخة المستردة — سيؤدي الاسترداد إلى استبدال تلك التغييرات الأحدث.',
     menuFile: 'ملف',
     menuOpenWorkbook: 'فتح مصنف…',
     menuSave: 'حفظ',
@@ -963,6 +975,7 @@ const tMain = createI18n({
       'Há alterações não salvas da sua última sessão. Restaurar a versão salva automaticamente? Após restaurar, salvar sobrescreverá o arquivo original.',
     autosaveRestore: 'Restaurar',
     autosaveDiscard: 'Descartar',
+    autosaveFileNewer: 'O arquivo no disco é mais recente do que esta cópia recuperada — restaurar substituirá essas alterações mais recentes.',
     menuFile: 'Arquivo',
     menuOpenWorkbook: 'Abrir Pasta de Trabalho…',
     menuSave: 'Salvar',
@@ -1026,6 +1039,7 @@ const tMain = createI18n({
       "Ci sono modifiche non salvate dall'ultima sessione. Ripristinare la versione salvata automaticamente? Dopo il ripristino, il salvataggio sovrascriverà il file originale.",
     autosaveRestore: 'Ripristina',
     autosaveDiscard: 'Ignora',
+    autosaveFileNewer: 'Il file su disco è più recente di questa copia ripristinata — il ripristino sostituirà le modifiche più recenti.',
     menuFile: 'File',
     menuOpenWorkbook: 'Apri cartella di lavoro…',
     menuSave: 'Salva',
@@ -1088,6 +1102,7 @@ const tMain = createI18n({
       'Istnieją niezapisane zmiany z ostatniej sesji. Przywrócić wersję zapisaną automatycznie? Po przywróceniu zapisanie nadpisze oryginalny plik.',
     autosaveRestore: 'Przywróć',
     autosaveDiscard: 'Odrzuć',
+    autosaveFileNewer: 'Plik na dysku jest nowszy niż ta odzyskana kopia — przywrócenie zastąpi te nowsze zmiany.',
     menuFile: 'Plik',
     menuOpenWorkbook: 'Otwórz skoroszyt…',
     menuSave: 'Zapisz',
@@ -1150,6 +1165,7 @@ const tMain = createI18n({
       'Z poslední relace existují neuložené změny. Obnovit automaticky uloženou verzi? Uložení po obnovení přepíše původní soubor.',
     autosaveRestore: 'Obnovit',
     autosaveDiscard: 'Zahodit',
+    autosaveFileNewer: 'Soubor na disku je novější než tato obnovená kopie — obnovení nahradí tyto novější změny.',
     menuFile: 'Soubor',
     menuOpenWorkbook: 'Otevřít sešit…',
     menuSave: 'Uložit',
@@ -1213,6 +1229,7 @@ const tMain = createI18n({
       'Er zijn niet-opgeslagen wijzigingen van uw laatste sessie. De automatisch opgeslagen versie herstellen? Na herstel overschrijft opslaan het originele bestand.',
     autosaveRestore: 'Herstellen',
     autosaveDiscard: 'Negeren',
+    autosaveFileNewer: 'Het bestand op schijf is nieuwer dan deze herstelde kopie — herstellen vervangt die nieuwere wijzigingen.',
     menuFile: 'Bestand',
     menuOpenWorkbook: 'Werkmap openen…',
     menuSave: 'Opslaan',
@@ -1274,6 +1291,7 @@ const tMain = createI18n({
       'Terdapat perubahan yang belum disimpan daripada sesi terakhir anda. Pulihkan versi yang disimpan secara automatik? Selepas pemulihan, menyimpan akan menulis ganti fail asal.',
     autosaveRestore: 'Pulihkan',
     autosaveDiscard: 'Buang',
+    autosaveFileNewer: 'Fail pada cakera lebih baharu daripada salinan pemulihan ini — memulihkan akan menggantikan perubahan baharu itu.',
     menuFile: 'Fail',
     menuOpenWorkbook: 'Buka Buku Kerja…',
     menuSave: 'Simpan',
@@ -1335,6 +1353,7 @@ const tMain = createI18n({
       'קיימים שינויים שלא נשמרו מהפעלה הקודמת. לשחזר את הגרסה שנשמרה אוטומטית? לאחר השחזור, שמירה תדרוס את הקובץ המקורי.',
     autosaveRestore: 'שחזר',
     autosaveDiscard: 'התעלם',
+    autosaveFileNewer: 'הקובץ בדיסק חדש יותר מהעותק המשוחזר — שחזור יחליף את השינויים החדשים.',
     menuFile: 'קובץ',
     menuOpenWorkbook: 'פתיחת חוברת עבודה…',
     menuSave: 'שמירה',
@@ -1395,6 +1414,7 @@ const tMain = createI18n({
       'आपके पिछले सत्र से सहेजे नहीं गए परिवर्तन हैं। स्वतः सहेजा गया संस्करण पुनर्स्थापित करें? पुनर्स्थापना के बाद, सहेजने पर मूल फ़ाइल अधिलेखित हो जाएगी।',
     autosaveRestore: 'पुनर्स्थापित करें',
     autosaveDiscard: 'छोड़ें',
+    autosaveFileNewer: 'डिस्क पर मौजूद फ़ाइल इस पुनर्प्राप्त प्रति से नई है — पुनर्स्थापित करने से वे नए परिवर्तन बदल जाएँगे.',
     menuFile: 'फ़ाइल',
     menuOpenWorkbook: 'कार्यपुस्तिका खोलें…',
     menuSave: 'सहेजें',
@@ -1455,6 +1475,7 @@ const tMain = createI18n({
       '上次工作階段有未儲存的變更。要復原自動儲存的版本嗎?復原後,儲存將直接覆寫原檔案。',
     autosaveRestore: '復原',
     autosaveDiscard: '放棄',
+    autosaveFileNewer: 'डिस्क पर मौजूद फ़ाइल इस पुनर्प्राप्त प्रति से नई है — पुनर्स्थापित करने से वे नए परिवर्तन बदल जाएँगे.',
     menuFile: '檔案',
     menuOpenWorkbook: '開啟活頁簿…',
     menuSave: '儲存',
@@ -1514,6 +1535,7 @@ const tMain = createI18n({
       'Oxirgi seansingizdan saqlanmagan o‘zgarishlar bor. Avtomatik saqlangan versiya tiklansinmi? Tiklashdan keyin saqlash asl faylni ustiga yozadi.',
     autosaveRestore: 'Tiklash',
     autosaveDiscard: 'Bekor qilish',
+    autosaveFileNewer: 'Diskdagi fayl ushbu tiklangan nusxadan yangi — tiklash yangi o‘zgarishlarni almashtiradi.',
     menuFile: 'Fayl',
     menuOpenWorkbook: 'Ish kitobini ochish…',
     menuSave: 'Saqlash',
@@ -1576,6 +1598,7 @@ const tMain = createI18n({
       'Соңғы сеанстан сақталмаған өзгерістер бар. Автоматты сақталған нұсқаны қалпына келтіру керек пе? Қалпына келтіргеннен кейін сақтау бастапқы файлдың үстінен жазады.',
     autosaveRestore: 'Қалпына келтіру',
     autosaveDiscard: 'Бас тарту',
+    autosaveFileNewer: 'Дискідегі файл осы қалпына келтірілген көшірмеден жаңа — қалпына келтіру жаңа өзгерістерді ауыстырады.',
     menuFile: 'Файл',
     menuOpenWorkbook: 'Жұмыс кітабын ашу…',
     menuSave: 'Сақтау',
@@ -1639,6 +1662,7 @@ const tMain = createI18n({
       'Son sessiyanızdan saxlanmamış dəyişikliklər var. Avtomatik saxlanmış versiya bərpa edilsin? Bərpadan sonra yadda saxlamaq ilkin faylın üzərinə yazır.',
     autosaveRestore: 'Bərpa et',
     autosaveDiscard: 'Ləğv edin',
+    autosaveFileNewer: 'Diskdəki fayl bu bərpa olunmuş nüsxədən daha yenidir — bərpa etmək həmin yeni dəyişiklikləri əvəz edəcək.',
     menuFile: 'Fayl',
     menuOpenWorkbook: 'İş kitabını aç…',
     menuSave: 'Saxla',
@@ -1702,6 +1726,7 @@ const tMain = createI18n({
       'Soňky sessiýaňyzdan saklanmadyk üýtgeşmeler bar. Awtomatiki saklanan wersiýa dikeldilsinmi? Dikeldilenden soň saklamak asyl faýlyň üstünden ýazýar.',
     autosaveRestore: 'Dikelt',
     autosaveDiscard: 'Taşla',
+    autosaveFileNewer: 'Diskdäki faýl bu dikeldilen nusgadan täze — dikeltmek şol täze üýtgeşmeleri çalşar.',
     menuFile: 'Faýl',
     menuOpenWorkbook: 'Iş depderini aç…',
     menuSave: 'Sakla',
@@ -1765,6 +1790,7 @@ const tMain = createI18n({
       'Акыркы сеансыңыздан сакталбаган өзгөртүүлөр бар. Автоматтык сакталган версия калыбына келтирилсинби? Калыбына келтиргенден кийин сактоо баштапкы файлдын үстүнөн жазат.',
     autosaveRestore: 'Калыбына келтирүү',
     autosaveDiscard: 'Жокко чыгаруу',
+    autosaveFileNewer: 'Дисктеги файл ушул калыбына келтирилген көчүрмөдөн жаңы — калыбына келтирүү жаңы өзгөртүүлөрдү алмаштырат.',
     menuFile: 'Файл',
     menuOpenWorkbook: 'Жумуш китебин ачуу…',
     menuSave: 'Сактоо',
@@ -1827,6 +1853,7 @@ const tMain = createI18n({
       'Соңгы сессиягездән сакланмаган үзгәрешләр бар. Автоматик сакланган версияне торгызыргамы? Торгызганнан соң саклау төп файлны өстән яза.',
     autosaveRestore: 'Торгызу',
     autosaveDiscard: 'Ташлау',
+    autosaveFileNewer: 'Дисктагы файл бу калыбына китерелгән күчермәдән яңа — калыбына китерү шул яңа үзгәрешләрне алыштырачак.',
     menuFile: 'Файл',
     menuOpenWorkbook: 'Эш китабын ачу…',
     menuSave: 'Саклау',
@@ -1890,6 +1917,7 @@ const tMain = createI18n({
       'თქვენი ბოლო სესიიდან შენახული ცვლილებები არსებობს. აღვადგინოთ ავტომატურად შენახული ვერსია? აღდგენის შემდეგ შენახვა თავდაპირველ ფაილს გადააწერს.',
     autosaveRestore: 'აღდგენა',
     autosaveDiscard: 'გაუქმება',
+    autosaveFileNewer: 'დისკზე არსებული ფაილი ამ აღდგენილი ასლზე უფრო ახალია — აღდგენა ჩაანაცვლებს ამ უფრო ახალ ცვლილებებს.',
     menuFile: 'ფაილი',
     menuOpenWorkbook: 'სამუშაო წიგნის გახსნა…',
     menuSave: 'შენახვა',
@@ -2460,6 +2488,7 @@ function promptRecoveryRestore(
   contents: WebContents,
   filePath: string,
   recoveryPath: string,
+  fileIsNewer: boolean,
 ): Promise<RecoveryChoice> {
   return new Promise((resolve) => {
     let savedAtMs = Date.now()
@@ -2483,6 +2512,9 @@ function promptRecoveryRestore(
       discardLabel: tm('autosaveDiscard'),
       fileName: basename(filePath),
       savedAtMs,
+      // The on-disk file changed since the copy was written: restoring
+      // replaces those newer edits, so the prompt spells that out.
+      ...(fileIsNewer ? { fileIsNewer: true, newerWarning: tm('autosaveFileNewer') } : {}),
     })
   })
 }
@@ -2490,6 +2522,7 @@ function promptRecoveryRestore(
 /** Native message-box fallback for the rare open with no live renderer to draw the prompt. */
 async function promptRecoveryRestoreNative(
   parent?: BrowserWindow | undefined,
+  fileIsNewer?: boolean,
 ): Promise<RecoveryChoice> {
   const options = {
     type: 'question' as const,
@@ -2497,7 +2530,9 @@ async function promptRecoveryRestoreNative(
     defaultId: 0,
     cancelId: 1,
     message: tm('autosaveFoundTitle'),
-    detail: tm('autosaveFoundBody'),
+    detail: fileIsNewer
+      ? `${tm('autosaveFoundBody')}\n\n${tm('autosaveFileNewer')}`
+      : tm('autosaveFoundBody'),
   }
   const answer = parent
     ? await dialog.showMessageBox(parent, options)
@@ -2505,16 +2540,19 @@ async function promptRecoveryRestoreNative(
   return answer.response === 0 ? 'restore' : 'discard'
 }
 
-/** Recovery copy newer than the file itself, i.e. unsaved work from a lost session. */
-function pendingRecoveryFor(filePath: string): string | null {
+/**
+ * A pending recovery copy = unsaved work from a lost session. The copy is never
+ * deleted on inspection (#1020): a newer on-disk mtime only marks the prompt
+ * (restoring would replace those changes); the copy goes away when the user
+ * picks Discard or when a successful save supersedes it.
+ */
+function pendingRecoveryFor(
+  filePath: string,
+): { readonly path: string; readonly fileIsNewer: boolean } | null {
   const copy = recoveryPathFor(filePath)
   try {
     if (!existsSync(copy)) return null
-    if (statSync(copy).mtimeMs <= statSync(filePath).mtimeMs) {
-      unlinkSync(copy)
-      return null
-    }
-    return copy
+    return { path: copy, fileIsNewer: statSync(copy).mtimeMs <= statSync(filePath).mtimeMs }
   } catch {
     return null
   }
@@ -3593,6 +3631,18 @@ export function registerSheetsIpc(): void {
     // digest so the next Save does not read this write as an external change.
     const writtenSha = await sha256File(targetPath).catch(() => undefined)
     if (writtenSha !== undefined) refreshCsvDigest(entry.sessions, targetPath, writtenSha)
+    // Same condition for the chat binding: only a session exporting onto its
+    // own source keeps its history; a foreign file this write clobbered keeps
+    // its stale signature, so its next open detaches into a fresh chat (#1021).
+    for (const session of entry.sessions.values()) {
+      if (
+        session.csvSourcePath !== undefined &&
+        canonicalPathKey(session.csvSourcePath) === canonicalPathKey(targetPath)
+      ) {
+        getSheetsProjectStore().noteFileWritten(targetPath)
+        break
+      }
+    }
     return { canceled: false, path: targetPath }
   })
 
@@ -3756,6 +3806,9 @@ export function registerSheetsIpc(): void {
     }
 
     const mutation = await writeWorkbookTo(client, session, request, targetPath)
+    // The sidecar's atomic write replaced the file object — refresh the chat
+    // binding's incarnation signature so the next open keeps its history (#1021).
+    getSheetsProjectStore().noteFileWritten(targetPath)
 
     if (csvInPlace && session.csvSourcePath !== undefined && request.csvContent !== undefined) {
       // The temp copy already holds the saved bytes: refresh the session's
@@ -3771,6 +3824,7 @@ export function registerSheetsIpc(): void {
         session.csvSourcePath,
         Buffer.concat([Buffer.from([0xef, 0xbb, 0xbf]), Buffer.from(request.csvContent, 'utf8')]),
       )
+      getSheetsProjectStore().noteFileWritten(session.csvSourcePath)
     }
 
     // The sidecar session still streams the pre-save bytes; swap it for a
@@ -5067,7 +5121,7 @@ async function prepareWorkbookForOpen(
     if (recovery) {
       const choice =
         contents && !contents.isDestroyed()
-          ? await promptRecoveryRestore(contents, unsavedNew.suggestSaveAs, recovery)
+          ? await promptRecoveryRestore(contents, unsavedNew.suggestSaveAs, recovery, false)
           : await promptRecoveryRestoreNative(parent)
       // the copy is what the recovery writer keeps overwriting, so the session
       // streams from the backing file, not from the copy
@@ -5094,9 +5148,9 @@ async function prepareWorkbookForOpen(
     if (recovery) {
       const choice =
         contents && !contents.isDestroyed()
-          ? await promptRecoveryRestore(contents, path, recovery)
-          : await promptRecoveryRestoreNative(parent)
-      if (choice === 'restore') return { openPath: recovery, restoreTarget: path }
+          ? await promptRecoveryRestore(contents, path, recovery.path, recovery.fileIsNewer)
+          : await promptRecoveryRestoreNative(parent, recovery.fileIsNewer)
+      if (choice === 'restore') return { openPath: recovery.path, restoreTarget: path }
       if (choice === 'discard') clearWorkbookRecovery(path)
     }
     if (extension === 'xlsx' && (await stat(path)).size === 0) return openEmptyXlsx(path)

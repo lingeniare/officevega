@@ -9,7 +9,7 @@ import {
   shouldShowDataValidationDropdown,
 } from '../src/renderer/data-validation-dropdown'
 import { stripInvalidDataMarker } from '../src/renderer/data-validation-marker'
-import { resolveDvListSource, toUniverDvRule } from '../src/renderer/univer-sync'
+import { findDefinedName, resolveDvListSource, toUniverDvRule } from '../src/renderer/univer-sync'
 
 const listRule = {
   ranges: [{ startRow: 1, startColumn: 4, endRow: 100, endColumn: 4 }],
@@ -91,6 +91,62 @@ describe('toUniverDvRule', () => {
     expect(resolveDvListSource('tblStaff[BADGE]', undefined)).toBe('tblStaff[BADGE]')
     expect(resolveDvListSource('otherName', file)).toBe('otherName')
     expect(resolveDvListSource('$AK$3:$AK$5', file)).toBe('$AK$3:$AK$5')
+  })
+
+  it('prefers a sheet-scoped defined name over the workbook one on its sheet', () => {
+    const file = {
+      definedNames: [
+        { name: 'Rate', formula: 'Global!$A$1' },
+        { name: 'Rate', formula: 'Local!$B$2', sheetIndex: 1 },
+        { name: 'Hidden', formula: 'Local!$C$3', sheetIndex: 1 },
+      ],
+      sheets: [
+        { id: 's-global', name: 'Global', tables: [] },
+        { id: 's-local', name: 'Local', tables: [] },
+      ],
+    } as never
+    // On the scoped sheet the local name wins; elsewhere the workbook one does.
+    expect(findDefinedName(file, 'Rate', 's-local')?.formula).toBe('Local!$B$2')
+    expect(findDefinedName(file, 'Rate', 's-global')?.formula).toBe('Global!$A$1')
+    expect(findDefinedName(file, 'Rate')?.formula).toBe('Global!$A$1')
+    // A name scoped to another sheet does not resolve at all.
+    expect(findDefinedName(file, 'Hidden', 's-global')).toBeUndefined()
+    expect(findDefinedName(file, 'Hidden', 's-local')?.formula).toBe('Local!$C$3')
+    // And the DV rewrite follows the same scoping through its sheetId param.
+    const tableFile = {
+      definedNames: [
+        { name: 'staffList', formula: 'tblStaff[NAME]' },
+        { name: 'staffList', formula: 'tblLocal[BADGE]', sheetIndex: 0 },
+      ],
+      sheets: [
+        {
+          id: 's-local',
+          name: 'Payroll',
+          tables: [
+            {
+              range: { startRow: 0, endRow: 5, startColumn: 3, endColumn: 6 },
+              headerRowCount: 1,
+              name: 'tblLocal',
+              columns: ['ID', 'NAME', 'BADGE', 'ROLE'],
+            },
+          ],
+        },
+        {
+          id: 's-global',
+          name: 'HQ',
+          tables: [
+            {
+              range: { startRow: 0, endRow: 9, startColumn: 0, endColumn: 3 },
+              headerRowCount: 1,
+              name: 'tblStaff',
+              columns: ['ID', 'NAME', 'BADGE', 'ROLE'],
+              },
+          ],
+        },
+      ],
+    } as never
+    expect(resolveDvListSource('staffList', tableFile, 's-local')).toBe("'Payroll'!$F$2:$F$6")
+    expect(resolveDvListSource('staffList', tableFile, 's-global')).toBe("'HQ'!$B$2:$B$10")
   })
 })
 

@@ -228,6 +228,7 @@ const tMain = createI18n({
     autosaveFoundBody: '上次会话有未保存的更改。要恢复自动保存的版本吗?',
     autosaveRestore: '恢复',
     autosaveDiscard: '放弃',
+    autosaveFileNewer: '磁盘上的文件比此恢复副本更新——恢复将覆盖这些较新的更改。',
     btnDontSave: '不保存',
     btnCancel: '取消',
     extModifiedMsg: '文件已被其他程序修改。',
@@ -359,6 +360,7 @@ const tMain = createI18n({
       'There are unsaved changes from your last session. Restore the autosaved version?',
     autosaveRestore: 'Restore',
     autosaveDiscard: 'Discard',
+    autosaveFileNewer: 'The file on disk is newer than this recovered copy — restoring will replace those newer changes.',
     btnDontSave: "Don't Save",
     btnCancel: 'Cancel',
     extModifiedMsg: 'The file has been modified by another program.',
@@ -490,6 +492,7 @@ const tMain = createI18n({
       'Có những thay đổi chưa được lưu từ phiên làm việc trước của bạn. Khôi phục phiên bản đã lưu tự động?',
     autosaveRestore: 'Khôi phục',
     autosaveDiscard: 'Bỏ qua',
+    autosaveFileNewer: 'Tệp trên đĩa mới hơn bản sao khôi phục này — khôi phục sẽ thay thế những thay đổi mới hơn đó.',
     btnDontSave: 'Không lưu',
     btnCancel: 'Hủy',
     extModifiedMsg: 'Tệp đã được sửa đổi bởi một chương trình khác.',
@@ -622,6 +625,7 @@ const tMain = createI18n({
     autosaveFoundBody: '前回のセッションに未保存の変更があります。自動保存版を復元しますか?',
     autosaveRestore: '復元',
     autosaveDiscard: '破棄',
+    autosaveFileNewer: 'ディスク上のファイルはこの復元コピーより新しいです。復元すると新しい変更が置き換えられます。',
     btnDontSave: '保存しない',
     btnCancel: 'キャンセル',
     extModifiedMsg: 'このファイルは別のプログラムによって変更されています。',
@@ -755,6 +759,7 @@ const tMain = createI18n({
       '마지막 세션에 저장되지 않은 변경 내용이 있습니다. 자동 저장 버전을 복원할까요?',
     autosaveRestore: '복원',
     autosaveDiscard: '취소',
+    autosaveFileNewer: '디스크의 파일이 이 복구본보다 최신입니다 — 복원하면 최신 변경 내용이 대체됩니다.',
     btnDontSave: '저장 안 함',
     btnCancel: '취소',
     extModifiedMsg: '이 파일이 다른 프로그램에서 수정되었습니다.',
@@ -889,6 +894,7 @@ const tMain = createI18n({
       'Des modifications non enregistrées existent. Restaurer la version auto-enregistrée ?',
     autosaveRestore: 'Restaurer',
     autosaveDiscard: 'Ignorer',
+    autosaveFileNewer: 'Le fichier sur le disque est plus récent que cette copie récupérée — la restauration remplacera ces modifications plus récentes.',
     btnDontSave: 'Ne pas enregistrer',
     btnCancel: 'Annuler',
     extModifiedMsg: 'Le fichier a été modifié par un autre programme.',
@@ -1023,6 +1029,7 @@ const tMain = createI18n({
       'Es gibt ungespeicherte Änderungen. Automatisch gespeicherte Version wiederherstellen?',
     autosaveRestore: 'Wiederherstellen',
     autosaveDiscard: 'Verwerfen',
+    autosaveFileNewer: 'Die Datei auf dem Datenträger ist neuer als diese wiederhergestellte Kopie — beim Wiederherstellen werden diese neueren Änderungen ersetzt.',
     btnDontSave: 'Nicht speichern',
     btnCancel: 'Abbrechen',
     extModifiedMsg: 'Die Datei wurde von einem anderen Programm geändert.',
@@ -1156,6 +1163,7 @@ const tMain = createI18n({
       'Hay cambios sin guardar de la última sesión. ¿Restaurar la versión autoguardada?',
     autosaveRestore: 'Restaurar',
     autosaveDiscard: 'Descartar',
+    autosaveFileNewer: 'El archivo en disco es más reciente que esta copia recuperada — restaurar reemplazará esos cambios más recientes.',
     btnDontSave: 'No guardar',
     btnCancel: 'Cancelar',
     extModifiedMsg: 'El archivo ha sido modificado por otro programa.',
@@ -1289,6 +1297,7 @@ const tMain = createI18n({
     autosaveFoundBody: 'มีการเปลี่ยนแปลงที่ยังไม่ได้บันทึกจากครั้งก่อน ต้องการกู้คืนหรือไม่?',
     autosaveRestore: 'กู้คืน',
     autosaveDiscard: 'ละทิ้ง',
+    autosaveFileNewer: 'ไฟล์บนดิสก์ใหม่กว่าสำเนาที่กู้คืนนี้ — การกู้คืนจะแทนที่การเปลี่ยนแปลงที่ใหม่กว่านั้น',
     btnDontSave: 'ไม่บันทึก',
     btnCancel: 'ยกเลิก',
     extModifiedMsg: 'ไฟล์ถูกแก้ไขโดยโปรแกรมอื่น',
@@ -1422,6 +1431,7 @@ const tMain = createI18n({
       'Ada perubahan yang belum disimpan dari sesi terakhir. Pulihkan versi tersimpan otomatis?',
     autosaveRestore: 'Pulihkan',
     autosaveDiscard: 'Buang',
+    autosaveFileNewer: 'File di disk lebih baru daripada salinan pemulihan ini — memulihkan akan mengganti perubahan yang lebih baru tersebut.',
     btnDontSave: 'Jangan Simpan',
     btnCancel: 'Batal',
     extModifiedMsg: 'File telah diubah oleh program lain.',
@@ -1554,6 +1564,7 @@ const tMain = createI18n({
       'Есть несохранённые изменения из прошлого сеанса. Восстановить автосохранённую версию?',
     autosaveRestore: 'Восстановить',
     autosaveDiscard: 'Отклонить',
+    autosaveFileNewer: 'Файл на диске новее этой восстановленной копии — восстановление заменит эти более новые изменения.',
     btnDontSave: 'Не сохранять',
     btnCancel: 'Отмена',
     extModifiedMsg: 'Файл был изменён другой программой.',
@@ -1687,6 +1698,7 @@ const tMain = createI18n({
       'توجد تغييرات غير محفوظة من الجلسة الأخيرة. هل تريد استعادة النسخة المحفوظة تلقائيًا؟',
     autosaveRestore: 'استعادة',
     autosaveDiscard: 'تجاهل',
+    autosaveFileNewer: 'الملف الموجود على القرص أحدث من هذه النسخة المستردة — سيؤدي الاسترداد إلى استبدال تلك التغييرات الأحدث.',
     btnDontSave: 'عدم الحفظ',
     btnCancel: 'إلغاء',
     extModifiedMsg: 'تم تعديل الملف بواسطة برنامج آخر.',
@@ -1820,6 +1832,7 @@ const tMain = createI18n({
       'Há alterações não salvas da sua última sessão. Restaurar a versão salva automaticamente?',
     autosaveRestore: 'Restaurar',
     autosaveDiscard: 'Descartar',
+    autosaveFileNewer: 'O arquivo no disco é mais recente do que esta cópia recuperada — restaurar substituirá essas alterações mais recentes.',
     btnDontSave: 'Não Salvar',
     btnCancel: 'Cancelar',
     extModifiedMsg: 'O arquivo foi modificado por outro programa.',
@@ -1953,6 +1966,7 @@ const tMain = createI18n({
       "Ci sono modifiche non salvate dall'ultima sessione. Ripristinare la versione salvata automaticamente?",
     autosaveRestore: 'Ripristina',
     autosaveDiscard: 'Ignora',
+    autosaveFileNewer: 'Il file su disco è più recente di questa copia ripristinata — il ripristino sostituirà le modifiche più recenti.',
     btnDontSave: 'Non salvare',
     btnCancel: 'Annulla',
     extModifiedMsg: 'Il file è stato modificato da un altro programma.',
@@ -2086,6 +2100,7 @@ const tMain = createI18n({
       'Istnieją niezapisane zmiany z ostatniej sesji. Przywrócić wersję zapisaną automatycznie?',
     autosaveRestore: 'Przywróć',
     autosaveDiscard: 'Odrzuć',
+    autosaveFileNewer: 'Plik na dysku jest nowszy niż ta odzyskana kopia — przywrócenie zastąpi te nowsze zmiany.',
     btnDontSave: 'Nie zapisuj',
     btnCancel: 'Anuluj',
     extModifiedMsg: 'Plik został zmodyfikowany przez inny program.',
@@ -2219,6 +2234,7 @@ const tMain = createI18n({
       'Z poslední relace existují neuložené změny. Obnovit automaticky uloženou verzi?',
     autosaveRestore: 'Obnovit',
     autosaveDiscard: 'Zahodit',
+    autosaveFileNewer: 'Soubor na disku je novější než tato obnovená kopie — obnovení nahradí tyto novější změny.',
     btnDontSave: 'Neukládat',
     btnCancel: 'Zrušit',
     extModifiedMsg: 'Soubor byl změněn jiným programem.',
@@ -2352,6 +2368,7 @@ const tMain = createI18n({
       'Er zijn niet-opgeslagen wijzigingen van uw laatste sessie. De automatisch opgeslagen versie herstellen?',
     autosaveRestore: 'Herstellen',
     autosaveDiscard: 'Negeren',
+    autosaveFileNewer: 'Het bestand op schijf is nieuwer dan deze herstelde kopie — herstellen vervangt die nieuwere wijzigingen.',
     btnDontSave: 'Niet opslaan',
     btnCancel: 'Annuleren',
     extModifiedMsg: 'Het bestand is door een ander programma gewijzigd.',
@@ -2485,6 +2502,7 @@ const tMain = createI18n({
       'Terdapat perubahan yang belum disimpan daripada sesi terakhir anda. Pulihkan versi yang disimpan secara automatik?',
     autosaveRestore: 'Pulihkan',
     autosaveDiscard: 'Buang',
+    autosaveFileNewer: 'Fail pada cakera lebih baharu daripada salinan pemulihan ini — memulihkan akan menggantikan perubahan baharu itu.',
     btnDontSave: 'Jangan Simpan',
     btnCancel: 'Batal',
     extModifiedMsg: 'Fail telah diubah oleh program lain.',
@@ -2617,6 +2635,7 @@ const tMain = createI18n({
     autosaveFoundBody: 'קיימים שינויים שלא נשמרו מהפעלה הקודמת. לשחזר את הגרסה שנשמרה אוטומטית?',
     autosaveRestore: 'שחזר',
     autosaveDiscard: 'התעלם',
+    autosaveFileNewer: 'הקובץ בדיסק חדש יותר מהעותק המשוחזר — שחזור יחליף את השינויים החדשים.',
     btnDontSave: 'אל תשמור',
     btnCancel: 'ביטול',
     extModifiedMsg: 'הקובץ שונה על ידי תוכנית אחרת.',
@@ -2749,6 +2768,7 @@ const tMain = createI18n({
       'आपके पिछले सत्र से सहेजे नहीं गए परिवर्तन हैं। स्वतः सहेजा गया संस्करण पुनर्स्थापित करें?',
     autosaveRestore: 'पुनर्स्थापित करें',
     autosaveDiscard: 'छोड़ें',
+    autosaveFileNewer: 'डिस्क पर मौजूद फ़ाइल इस पुनर्प्राप्त प्रति से नई है — पुनर्स्थापित करने से वे नए परिवर्तन बदल जाएँगे.',
     btnDontSave: 'न सहेजें',
     btnCancel: 'रद्द करें',
     extModifiedMsg: 'फ़ाइल को किसी अन्य प्रोग्राम ने बदल दिया है।',
@@ -2881,6 +2901,7 @@ const tMain = createI18n({
     autosaveFoundBody: '上次工作階段有未儲存的變更。要復原自動儲存的版本嗎?',
     autosaveRestore: '復原',
     autosaveDiscard: '放棄',
+    autosaveFileNewer: 'डिस्क पर मौजूद फ़ाइल इस पुनर्प्राप्त प्रति से नई है — पुनर्स्थापित करने से वे नए परिवर्तन बदल जाएँगे.',
     btnDontSave: '不儲存',
     btnCancel: '取消',
     extModifiedMsg: '檔案已被其他程式修改。',
@@ -3012,6 +3033,7 @@ const tMain = createI18n({
       'Oxirgi seansingizdan saqlanmagan o‘zgarishlar mavjud. Avtomatik saqlangan versiya tiklansinmi?',
     autosaveRestore: 'Tiklash',
     autosaveDiscard: 'Bekor qilish',
+    autosaveFileNewer: 'Diskdagi fayl ushbu tiklangan nusxadan yangi — tiklash yangi o‘zgarishlarni almashtiradi.',
     btnDontSave: 'Saqlamaslik',
     btnCancel: 'Bekor qilish',
     extModifiedMsg: 'Fayl boshqa dastur tomonidan o‘zgartirildi.',
@@ -3145,6 +3167,7 @@ const tMain = createI18n({
       'Соңғы сеанстан сақталмаған өзгерістер бар. Автоматты сақталған нұсқаны қалпына келтіру керек пе?',
     autosaveRestore: 'Қалпына келтіру',
     autosaveDiscard: 'Бас тарту',
+    autosaveFileNewer: 'Дискідегі файл осы қалпына келтірілген көшірмеден жаңа — қалпына келтіру жаңа өзгерістерді ауыстырады.',
     btnDontSave: 'Сақтамау',
     btnCancel: 'Бас тарту',
     extModifiedMsg: 'Файлды басқа бағдарлама өзгерткен.',
@@ -3277,6 +3300,7 @@ const tMain = createI18n({
       'Son sessiyanızdan saxlanmamış dəyişikliklər var. Avtomatik saxlanmış versiya bərpa edilsin?',
     autosaveRestore: 'Bərpa et',
     autosaveDiscard: 'Ləğv edin',
+    autosaveFileNewer: 'Diskdəki fayl bu bərpa olunmuş nüsxədən daha yenidir — bərpa etmək həmin yeni dəyişiklikləri əvəz edəcək.',
     btnDontSave: 'Saxlama',
     btnCancel: 'Ləğv et',
     extModifiedMsg: 'Fayl başqa proqram tərəfindən dəyişdirilib.',
@@ -3410,6 +3434,7 @@ const tMain = createI18n({
       'Soňky sessiýaňyzdan saklanmadyk üýtgeşmeler bar. Awtomatiki saklanan wersiýa dikeldilsinmi?',
     autosaveRestore: 'Dikelt',
     autosaveDiscard: 'Taşla',
+    autosaveFileNewer: 'Diskdäki faýl bu dikeldilen nusgadan täze — dikeltmek şol täze üýtgeşmeleri çalşar.',
     btnDontSave: 'Saklama',
     btnCancel: 'Ýatyr',
     extModifiedMsg: 'Faýl başga bir programma tarapyndan üýtgedildi.',
@@ -3543,6 +3568,7 @@ const tMain = createI18n({
       'Акыркы сеансыңыздан сакталбаган өзгөртүүлөр бар. Автоматтык сакталган версия калыбына келтирилсинби?',
     autosaveRestore: 'Калыбына келтирүү',
     autosaveDiscard: 'Жокко чыгаруу',
+    autosaveFileNewer: 'Дисктеги файл ушул калыбына келтирилген көчүрмөдөн жаңы — калыбына келтирүү жаңы өзгөртүүлөрдү алмаштырат.',
     btnDontSave: 'Сактабаңыз',
     btnCancel: 'Жокко чыгаруу',
     extModifiedMsg: 'Файл башка программа тарабынан өзгөртүлдү.',
@@ -3676,6 +3702,7 @@ const tMain = createI18n({
       'Соңгы сессиягездән сакланмаган үзгәрешләр бар. Автоматик сакланган версияне торгызыргамы?',
     autosaveRestore: 'Торгызу',
     autosaveDiscard: 'Ташлау',
+    autosaveFileNewer: 'Дисктагы файл бу калыбына китерелгән күчермәдән яңа — калыбына китерү шул яңа үзгәрешләрне алыштырачак.',
     btnDontSave: 'Сакламаска',
     btnCancel: 'Баш тарту',
     extModifiedMsg: 'Файл башка программа тарафыннан үзгәртелгән.',
@@ -3808,6 +3835,7 @@ const tMain = createI18n({
       'თქვენი ბოლო სესიიდან შენახული ცვლილებები არსებობს. აღვადგინოთ ავტომატურად შენახული ვერსია?',
     autosaveRestore: 'აღდგენა',
     autosaveDiscard: 'გაუქმება',
+    autosaveFileNewer: 'დისკზე არსებული ფაილი ამ აღდგენილი ასლზე უფრო ახალია — აღდგენა ჩაანაცვლებს ამ უფრო ახალ ცვლილებებს.',
     btnDontSave: 'არ შეინახო',
     btnCancel: 'გაუქმება',
     extModifiedMsg: 'ფაილი შეცვალა სხვა პროგრამამ.',
@@ -4436,23 +4464,20 @@ interface MaybeRecoveredDocBytes {
   recovered: boolean
 }
 
-/** On open, if a recovery copy newer than the original exists, ask whether to restore
- * (still points at the original path; only save persists it). */
+/** On open, if a recovery copy exists, always ask whether to restore (still
+ * points at the original path; only save persists it). A newer on-disk file no
+ * longer deletes the copy silently (#1020) — it only marks the prompt: the
+ * copy can be the sole artifact holding pre-crash edits, and it goes away only
+ * when the user picks Discard. */
 async function maybeRecoverDocBytes(
   filePath: string,
   original: Buffer,
 ): Promise<MaybeRecoveredDocBytes> {
   const asPath = recoveryPathFor(filePath)
+  let fileIsNewer = false
   try {
     if (!existsSync(asPath)) return { bytes: original, recovered: false }
-    if (statSync(asPath).mtimeMs <= statSync(filePath).mtimeMs) {
-      // a crashed partial write bumps mtime yet corrupts the file — keep the copy
-      // then (an encrypted original is a CFB container, not a zip: intact too)
-      if (looksLikeZip(original) || isEncryptedDocx(original)) {
-        unlinkSync(asPath)
-        return { bytes: original, recovered: false }
-      }
-    }
+    fileIsNewer = statSync(asPath).mtimeMs <= statSync(filePath).mtimeMs
   } catch {
     return { bytes: original, recovered: false }
   }
@@ -4462,7 +4487,9 @@ async function maybeRecoverDocBytes(
     defaultId: 0,
     cancelId: 1,
     message: tm('autosaveFoundTitle'),
-    detail: tm('autosaveFoundBody'),
+    detail: fileIsNewer
+      ? `${tm('autosaveFoundBody')}\n\n${tm('autosaveFileNewer')}`
+      : tm('autosaveFoundBody'),
   }
   const parent = BrowserWindow.getFocusedWindow() ?? mainWindow
   const r =
@@ -5652,6 +5679,9 @@ export function registerDocsIpc(): void {
         )
         clearRecoveryCopy(filePath)
         pushRecent(filePath)
+        // The atomic write replaced the file object — refresh the chat binding's
+        // incarnation signature so the next open keeps its history (#1021).
+        getProjectStore().noteFileWritten(filePath)
         return {
           ok: true,
           passwordIntentPending,

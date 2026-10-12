@@ -148,7 +148,7 @@ export function goToReference(ctx: DataToolsContext, ref: string): string | null
   if (!workbook || !worksheet) return t('appGoToNotReady')
   const trimmed = ref.trim()
   if (trimmed === '') return t('appGoToEmpty')
-  const resolved = resolveGoToRef(trimmed, listDefinedNames(ctx))
+  const resolved = resolveGoToRef(trimmed, listDefinedNames(ctx), worksheet.getSheetId())
   if (resolved === null) {
     return t('appGoToUnresolved', { ref: trimmed })
   }
@@ -193,10 +193,16 @@ export function goToReference(ctx: DataToolsContext, ref: string): string | null
 /// All defined names of the active workbook, feeding both the Go To
 /// dialog's list and Name Box resolution.
 export function listDefinedNames(ctx: DataToolsContext): GoToNameEntry[] {
-  return univerDefinedNames(ctx.univerRef.current).map((defined) => ({
-    name: defined.getName(),
-    ref: defined.getFormulaOrRefString(),
-  }))
+  return univerDefinedNames(ctx.univerRef.current).map((defined) => {
+    // Univer reports workbook scope as the literal string 'AllDefaultWorkbook'.
+    const localSheetId = defined.getLocalSheetId()
+    const scoped = localSheetId !== undefined && localSheetId !== 'AllDefaultWorkbook'
+    return {
+      name: defined.getName(),
+      ref: defined.getFormulaOrRefString(),
+      ...(scoped ? { sheetId: localSheetId } : {}),
+    }
+  })
 }
 
 export function handleApplyFormula(ctx: DataToolsContext, formula: string): string | null {

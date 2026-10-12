@@ -50,6 +50,7 @@ import { generateImageTool, documentMediaRoots } from '@genoffice/ai-search'
 import { parseFileToText } from '@genoffice/file-parse'
 import { convertHtmlToDocx } from '../../../../packages/html2docx/src'
 import { atomicWriteFile } from './atomic-write'
+import { ProjectStore } from '@genoffice/project-store'
 import { ElectronBrowserDriver } from '../../../../packages/html2docx/src/drivers/electron'
 import {
   copyImageIntoOwnedAssets,
@@ -1352,6 +1353,15 @@ async function writeTextAtomic(path: string, text: string): Promise<void> {
   await atomicWriteFile(path, Buffer.from(text, 'utf8'))
 }
 
+// The project:* IPC handlers live in the shell's shared registration
+// (docs-main in shell mode); the store itself is keyed by userData path, so
+// a lazily constructed instance here lands on the same on-disk index.
+let htmlProjectStore: ProjectStore | null = null
+function getHtmlProjectStore(): ProjectStore {
+  if (!htmlProjectStore) htmlProjectStore = new ProjectStore(app.getPath('userData'))
+  return htmlProjectStore
+}
+
 function fileNameBase(name: string | undefined): string {
   return (name ?? '')
     .replace(/[/\\:*?"<>|]/g, '_')
@@ -1606,6 +1616,11 @@ function registerHtmlIpc(): void {
           if (prepared) await rollbackPreparedSaveAsAssets(prepared).catch(() => {})
           throw error
         }
+        // Same-path saves replace the file object atomically — refresh the
+        // chat binding's incarnation signature so the next open keeps its
+        // history. A new path (save-as) deliberately doesn't: a clobbered
+        // file's chat must detach instead (#1021).
+        if (!isNewPath) getHtmlProjectStore().noteFileWritten(target)
         savePathByWc.set(e.sender.id, target)
         // keep the reload path in sync — a stale openPathByWc would make a
         // reloaded renderer load the OLD file and then save it over the new one

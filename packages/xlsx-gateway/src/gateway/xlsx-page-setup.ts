@@ -226,8 +226,17 @@ function encodeHeaderFooterSections(parts: HeaderFooterParts): string {
   ]
   return sections
     .filter(([, text]) => text !== undefined && text !== '')
-    .map(([marker, text]) => marker + (text ?? ''))
+    .map(([marker, text]) => marker + escapeLiteralAmpersands(text ?? ''))
     .join('')
+}
+
+/// A bare `&` that starts no field code is the user's literal ampersand —
+/// Excel stores it as `&&`; left single it would act as a section/code
+/// marker and drop the text around it. Recognised codes pass through:
+/// `&P`-style single letters, `&[Page]` names, `&"Font,Style"&12` font
+/// specs, `&n` sizes, and an already-doubled `&&`.
+function escapeLiteralAmpersands(text: string): string {
+  return text.replace(/&(?![A-Za-z0-9&["])/g, '&&')
 }
 
 /// Assembles `<headerFooter>` from already-XML-escaped odd header/footer

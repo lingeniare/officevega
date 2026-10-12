@@ -6705,7 +6705,7 @@ function applyDataValidations(
   journalSuppression.active = true
   try {
     for (const [index, rule] of rules.entries()) {
-      const mapped = toUniverDvRule(rule, `file-dv-${sheetId}-${index}`, state.file)
+      const mapped = toUniverDvRule(rule, `file-dv-${sheetId}-${index}`, state.file, sheetId)
       if (!mapped) continue
       try {
         runtime.univerAPI.syncExecuteCommand('data-validation.mutation.addRule', {
@@ -6729,6 +6729,7 @@ export function toUniverDvRule(
   rule: WorkbookRangeResult['dataValidations'][number],
   uid: string,
   file?: DvListSourceContext,
+  sheetId?: string,
 ): Record<string, unknown> | null {
   const type = rule.ruleType === 'none' ? 'any' : rule.ruleType
   if (!['any', 'whole', 'decimal', 'list', 'date', 'time', 'textLength', 'custom'].includes(type)) {
@@ -6755,7 +6756,7 @@ export function toUniverDvRule(
     formula1 =
       literal.startsWith('"') && literal.endsWith('"')
         ? trimListItems(literal.slice(1, -1))
-        : `=${resolveDvListSource(literal.replace(/^=/, ''), file)}`
+        : `=${resolveDvListSource(literal.replace(/^=/, ''), file, sheetId)}`
   } else if (type === 'custom' && formula1 !== undefined) {
     formula1 = `=${formula1.replace(/^=/, '')}`
   }
@@ -6807,16 +6808,40 @@ function trimListItems(items: string): string {
 
 type DvListSourceContext = Pick<WorkbookFile, 'definedNames' | 'sheets'>
 
+/// Defined-name lookup honouring Excel scope: a sheet-scoped name shadows
+/// the same-named workbook-scoped one on its own sheet and is invisible on
+/// other sheets. sheetId is the sheet the reference lives on; omitted means
+/// workbook scope (only workbook-scoped names resolve).
+export function findDefinedName(
+  file: DvListSourceContext,
+  name: string,
+  sheetId?: string,
+): (typeof file.definedNames)[number] | undefined {
+  const lower = name.toLowerCase()
+  const matches = file.definedNames.filter(
+    (entry) => entry.name.toLowerCase() === lower,
+  )
+  if (matches.length === 0) return undefined
+  const sheetIndex =
+    sheetId === undefined ? -1 : file.sheets.findIndex((sheet) => sheet.id === sheetId)
+  const scoped = matches.find(
+    (entry) => entry.sheetIndex !== undefined && entry.sheetIndex === sheetIndex,
+  )
+  return scoped ?? matches.find((entry) => entry.sheetIndex === undefined)
+}
+
 /// A list source that is a structured reference (`tblStaff[NAME]`) or a
 /// defined name aliasing one: Univer's engine has neither, so rewrite it to
 /// the column's data rows on its sheet. Anything else stays verbatim.
-export function resolveDvListSource(source: string, file?: DvListSourceContext): string {
+export function resolveDvListSource(
+  source: string,
+  file?: DvListSourceContext,
+  sheetId?: string,
+): string {
   if (!file) return source
   let target = source.trim()
   if (/^[A-Za-z_\\][\w.\\]*$/.test(target)) {
-    const defined = file.definedNames.find(
-      (candidate) => candidate.name.toLowerCase() === target.toLowerCase(),
-    )
+    const defined = findDefinedName(file, target, sheetId)
     if (!defined) return source
     target = defined.formula.trim()
   }
@@ -7021,10 +7046,7 @@ function thresholdReader(state: LazyWorkbookState, sheetId: string): ThresholdRe
       return readCachedValues(state, sheet.id, [clipped], THRESHOLD_RANGE_CELL_CAP)
     },
     definedName(name) {
-      const lower = name.toLowerCase()
-      return (
-        state.file.definedNames.find((entry) => entry.name.toLowerCase() === lower)?.formula ?? null
-      )
+      return findDefinedName(state.file, name, sheetId)?.formula ?? null
     },
     tableColumn(tableName, columnName) {
       for (const sheet of state.file.sheets) {

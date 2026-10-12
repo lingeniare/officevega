@@ -68,4 +68,19 @@ describe('resolveGoToRef', () => {
     expect(resolveGoToRef('   ', NAMES)).toBeNull()
     expect(resolveGoToRef('C5', [])).toBe('C5')
   })
+
+  it('prefers a sheet-scoped name on its sheet and hides it elsewhere', () => {
+    const scoped = [
+      { name: 'Rate', ref: 'Global!$A$1' },
+      { name: 'Rate', ref: 'Local!$B$2', sheetId: 'sheet-2' },
+      { name: 'Hidden', ref: 'Local!$C$3', sheetId: 'sheet-2' },
+    ]
+    // On sheet-2 the scoped Rate wins; elsewhere the workbook one applies.
+    expect(resolveGoToRef('Rate', scoped, 'sheet-2')).toBe('Local!$B$2')
+    expect(resolveGoToRef('Rate', scoped, 'sheet-1')).toBe('Global!$A$1')
+    expect(resolveGoToRef('Rate', scoped)).toBe('Global!$A$1')
+    // A name scoped to another sheet is not a jump target at all.
+    expect(resolveGoToRef('Hidden', scoped, 'sheet-1')).toBeNull()
+    expect(resolveGoToRef('Hidden', scoped, 'sheet-2')).toBe('Local!$C$3')
+  })
 })

@@ -84,6 +84,28 @@ export interface ProjectIndex {
    * Old data without this map falls back to sha256(path) derivation.
    */
   chatIdByPath?: Record<string, string>
+  /**
+   * Absolute path → file incarnation signature of the file the chatId was
+   * bound to (same keys as chatIdByPath). Deleting or replacing the file
+   * changes the signature, so the next resolve mints a fresh chat instead of
+   * letting an unrelated file inherit the transcript (#1021). Renames keep
+   * the signature, so history still follows the file.
+   */
+  chatSigByPath?: Record<string, ChatFileSig>
+}
+
+/**
+ * File-object identity bound to a chat: the inode and creation time of the
+ * file the mapping was registered against. In-place edits keep both values,
+ * atomic rewrites (tmp + rename-over) change both. Fields reported as 0 by
+ * the filesystem (no inode on FAT, no birthtime on some Linux mounts) are
+ * treated as not comparable.
+ */
+export interface ChatFileSig {
+  /** inode / file index */
+  i?: number
+  /** birthtime (file creation) in milliseconds */
+  b?: number
 }
 
 export interface ChatMeta {
