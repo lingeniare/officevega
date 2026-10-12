@@ -827,7 +827,7 @@ const tMain = createI18n({
       'Вложенные изображения не содержат текста; изображение отправляется вместе с сообщением пользователя',
     errNotImage: 'неподдерживаемый тип изображения',
     errGskNotLoggedIn:
-      'Вы не вошли в ВЕГА: нажмите «Войти в ВЕГА» ниже, войдите и повторите попытку',
+      'Вы не вошли в ВЕГА: нажмите «Подключить ИИ» ниже, войдите и повторите попытку',
     errNoApiKey: 'API-ключ для {provider} не настроен',
     errAiBusy: 'Сервис ИИ сейчас перегружен — повторите попытку чуть позже',
     errNoModel: 'Имя модели не настроено',
@@ -4113,7 +4113,19 @@ export function registerSheetsAiIpc(): void {
       const vegaKey = officeVegaApiKey()
       if (!vegaKey && !hasGskAuth()) return { loggedIn: false }
       if (!withEmail) return { loggedIn: true }
-      const email = (await (vegaKey ? vegaAccountInfo() : gskLoginInfo()))?.email
+      if (vegaKey) {
+        // the account query also carries the deposit — the chat composer's
+        // VEGA balance badge reads it from the same response
+        const info = await vegaAccountInfo()
+        return {
+          loggedIn: true,
+          ...(info?.email !== undefined ? { email: info.email } : {}),
+          ...(info?.balance !== undefined ? { balance: info.balance } : {}),
+          ...(info?.balanceRub !== undefined ? { balanceRub: info.balanceRub } : {}),
+          ...(info?.currency !== undefined ? { currency: info.currency } : {}),
+        }
+      }
+      const email = (await gskLoginInfo())?.email
       return email ? { loggedIn: true, email } : { loggedIn: true }
     },
   )

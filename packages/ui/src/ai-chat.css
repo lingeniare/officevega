@@ -602,16 +602,31 @@ button.ai-step-title.clickable:hover {
   border: 1px solid var(--accent);
   border-radius: var(--radius-30);
   background: var(--accent);
-  color: #fff;
+  color: var(--color-ai-action-text);
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color var(--transition-fast);
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    transform var(--transition-fast);
 }
 
 .ai-continue-btn:hover,
 .ai-login-btn:hover {
   background: var(--accent-dark);
+  border-color: var(--accent-dark);
+}
+
+.ai-continue-btn:active,
+.ai-login-btn:active {
+  transform: translateY(1px);
+}
+
+.ai-continue-btn:focus-visible,
+.ai-login-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .ai-retry-btn {

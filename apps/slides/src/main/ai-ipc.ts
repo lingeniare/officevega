@@ -161,7 +161,19 @@ export function registerAiIpc(): void {
       const vegaKey = officeVegaApiKey()
       if (!vegaKey && !hasGskAuth()) return { loggedIn: false }
       if (!withEmail) return { loggedIn: true }
-      const email = (await (vegaKey ? vegaAccountInfo() : gskLoginInfo()))?.email
+      if (vegaKey) {
+        // the account query also carries the deposit — the chat composer's
+        // VEGA balance badge reads it from the same response
+        const info = await vegaAccountInfo()
+        return {
+          loggedIn: true,
+          ...(info?.email !== undefined ? { email: info.email } : {}),
+          ...(info?.balance !== undefined ? { balance: info.balance } : {}),
+          ...(info?.balanceRub !== undefined ? { balanceRub: info.balanceRub } : {}),
+          ...(info?.currency !== undefined ? { currency: info.currency } : {}),
+        }
+      }
+      const email = (await gskLoginInfo())?.email
       return email ? { loggedIn: true, email } : { loggedIn: true }
     },
   )

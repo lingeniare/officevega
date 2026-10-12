@@ -55,6 +55,15 @@
     !undef MUI_PAGE_CUSTOMFUNCTION_PRE
   !endif
   !insertmacro skipPageIfUpdated
+  ; MUI_PAGE_HEADER_* apply to the next inserted page only: MUI_HEADER_TEXT_PAGE
+  ; (in the license page's PRE function) consumes and unsets them, so the EULA
+  ; screen keeps the stock "Лицензионное соглашение" title. The values must be
+  ; single quoted tokens — makensis strips the quotes when ${} expands them
+  ; into the page's STR: header text; an unquoted multi-word value fails
+  ; "!define" parsing. PRIVACY-POLICY.txt is Russian-only, so the header stays
+  ; Russian for every installer language.
+  !define MUI_PAGE_HEADER_TEXT "Политика обработки ПДн"
+  !define MUI_PAGE_HEADER_SUBTEXT "Перед установкой $(^NameDA) ознакомьтесь с политикой обработки персональных данных."
   ; BUILD_RESOURCES_DIR (not ${__FILEDIR__}: the macro expands inside the
   ; template, so __FILEDIR__ would point at electron-builder's nsis dir).
   !insertmacro MUI_PAGE_LICENSE "${BUILD_RESOURCES_DIR}\PRIVACY-POLICY.txt"

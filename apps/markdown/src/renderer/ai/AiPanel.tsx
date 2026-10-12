@@ -29,6 +29,7 @@ import {
   IconPlus,
   Markdown,
   useSuggestedQuestions,
+  useVegaDeposit,
   type AiHistoryItem,
   type AiScopeQuoteData,
 } from '@genoffice/ui'
@@ -268,6 +269,13 @@ export function AiPanel({
       offAuth?.()
     }
   }, [])
+  /** VEGA deposit in the model picker group head (busy edge refetches the post-run figure) */
+  const deposit = useVegaDeposit(
+    aiProvider === 'vega',
+    lang,
+    () => window.markdownApi?.aiGskStatus?.(true) ?? Promise.resolve(null),
+    busy,
+  )
   const langRef = useRef(lang)
   langRef.current = lang
   const depsRef = useRef(deps)
@@ -1372,7 +1380,7 @@ export function AiPanel({
           privacyBadge={aiProvider === 'vega'}
           shieldOn={piiOn}
           onShieldToggle={togglePiiShield}
-          footerStart={<AiModelPicker bridge={MODEL_BRIDGE} lang={lang} />}
+          footerStart={<AiModelPicker bridge={MODEL_BRIDGE} lang={lang} deposit={deposit} />}
           textareaRef={inputRef}
           onChange={setPrompt}
           onSend={() => send(prompt)}

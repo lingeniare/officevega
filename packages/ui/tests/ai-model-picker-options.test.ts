@@ -9,23 +9,34 @@ import {
 const anthropicModels = AI_PROVIDERS.find((m) => m.id === 'anthropic')!.models
 
 describe('aiModelPickerGroups', () => {
+  // a main-resolved 'genspark' pick is what the signed-out settings read looks
+  // like today: the default 'vega' pick only survives resolution when a VEGA
+  // credential (stored key or issued sign-in key) exists
+  const signedOutSettings = () => ({ ...defaultAiSettings(), provider: 'genspark' as const })
+
   it('lists nothing while signed out with no keys', () => {
-    expect(aiModelPickerGroups(defaultAiSettings(), false)).toEqual([])
+    expect(aiModelPickerGroups(signedOutSettings(), false)).toEqual([])
   })
 
-  it('lists Genspark only when signed in', () => {
-    const ids = aiModelPickerGroups(defaultAiSettings(), true).map((g) => g.id)
+  it('lists the VEGA account group once signed in', () => {
+    const groups = aiModelPickerGroups(defaultAiSettings(), true)
+    expect(groups.map((g) => g.id)).toEqual(['vega'])
+    expect(groups[0]!.account).toBe(true)
+  })
+
+  it('lists Genspark only for a legacy genspark pick while signed in', () => {
+    const ids = aiModelPickerGroups(signedOutSettings(), true).map((g) => g.id)
     expect(ids).toEqual(['genspark'])
   })
 
   it('carries the Genspark pool display names', () => {
-    const g = aiModelPickerGroups(defaultAiSettings(), true).find((x) => x.id === 'genspark')
+    const g = aiModelPickerGroups(signedOutSettings(), true).find((x) => x.id === 'genspark')
     expect(g?.names?.['gpt-6-astra']).toBe('GPT-6 Astra')
     expect(g?.names?.['claude-opus-5-5']).toBe('Claude Opus 5.5')
   })
 
   it('adds a vendor once its key is set and puts an off-catalog model first', () => {
-    const settings = defaultAiSettings()
+    const settings = signedOutSettings()
     settings.providers.anthropic = { apiKey: 'k', model: 'claude-next' }
     const groups = aiModelPickerGroups(settings, false)
     expect(groups.map((g) => g.id)).toEqual(['anthropic'])
@@ -33,7 +44,7 @@ describe('aiModelPickerGroups', () => {
   })
 
   it('needs a base URL for custom endpoints', () => {
-    const settings = defaultAiSettings()
+    const settings = signedOutSettings()
     settings.providers.custom = { apiKey: '', model: 'llama', baseUrl: '' }
     expect(aiModelPickerGroups(settings, false)).toEqual([])
     settings.providers.custom = { apiKey: '', model: 'llama', baseUrl: 'http://localhost:11434/v1' }
@@ -67,11 +78,11 @@ describe('selection round trip', () => {
 
 describe('CLI vendors', () => {
   it('lists Codex only after the settings page stored a path or model', () => {
-    const settings = defaultAiSettings()
+    const settings = { ...defaultAiSettings(), provider: 'genspark' as const }
     expect(aiModelPickerGroups(settings, false)).toEqual([])
     settings.providers.codex = { apiKey: '', model: '', cliPath: '/usr/local/bin/codex' }
     expect(aiModelPickerGroups(settings, false)).toEqual([
-      { id: 'codex', label: 'Codex CLI', models: [] },
+      { id: 'codex', label: 'Codex CLI', models: [], pinned: [] },
     ])
   })
 })
@@ -79,6 +90,7 @@ describe('CLI vendors', () => {
 describe('custom endpoints', () => {
   const settings = () => ({
     ...defaultAiSettings(),
+    provider: 'genspark' as const,
     customEndpoints: [
       {
         id: 'a',
@@ -103,8 +115,14 @@ describe('custom endpoints', () => {
   it('lists one group per configured endpoint with its cached models', () => {
     const groups = aiModelPickerGroups(settings(), false)
     expect(groups).toEqual([
-      { id: 'custom', endpoint: 'a', label: 'Ollama', models: ['llama3'] },
-      { id: 'custom', endpoint: 'b', label: 'gw.example.com', models: ['gpt-x', 'gpt-y'] },
+      { id: 'custom', endpoint: 'a', label: 'Ollama', models: ['llama3'], pinned: ['llama3'] },
+      {
+        id: 'custom',
+        endpoint: 'b',
+        label: 'gw.example.com',
+        models: ['gpt-x', 'gpt-y'],
+        pinned: ['gpt-x'],
+      },
     ])
   })
 

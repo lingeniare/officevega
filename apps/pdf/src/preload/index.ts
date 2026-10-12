@@ -115,7 +115,7 @@ const api: PdfApi = {
   },
   openAiModelSettings: () => ipcRenderer.invoke(AI_CHANNELS.openModelSettings),
   getProviderModels: (input) => ipcRenderer.invoke(AI_CHANNELS.providerModels, input),
-  gskStatus: () => ipcRenderer.invoke(AI_CHANNELS.gskStatus),
+  gskStatus: (withEmail?: boolean) => ipcRenderer.invoke(AI_CHANNELS.gskStatus, withEmail),
   aiStream: (request) => ipcRenderer.invoke(AI_CHANNELS.stream, request),
   aiStreamCancel: (requestId) => ipcRenderer.invoke(AI_CHANNELS.streamCancel, requestId),
   onAiStream: (handler) => {

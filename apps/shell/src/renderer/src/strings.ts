@@ -5077,7 +5077,7 @@ export const strings = {
     noContent: '(пусто)',
     // Account,
     account: 'Учётная запись',
-    login: 'Войти в ВЕГА',
+    login: 'Подключить ИИ',
     loginVega: 'Войти через ВЕГА',
     loggedIn: 'Вход выполнен',
     loggedInVega: 'Выполнен вход в ВЕГА',

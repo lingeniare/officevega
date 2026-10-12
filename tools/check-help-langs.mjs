@@ -69,6 +69,17 @@ const SOURCE = 'en'
 const IDS = topicIdsFrom(readFileSync(REGISTRY, 'utf-8'))
 const LANGS = langsFrom(readFileSync(I18N, 'utf-8'))
 
+/**
+ * The manual ships two editions, Russian and English (see `manualLangFor` in
+ * help-registry.ts and HelpScreen.tsx): Russian for the former USSR / CIS,
+ * English everywhere else, with English as fallback. Only these two are
+ * bundled (`import.meta.glob('./topics/*.@(ru|en).md')`) and required here.
+ * Other UI languages in LANGS fall back to English at runtime, and legacy
+ * per-language topic files on disk are tolerated by the orphan check below
+ * but not required.
+ */
+const MANUAL_LANGS = ['en', 'ru']
+
 /** Latin- or Cyrillic-script languages: any Han character in one of these is a
  *  worker that pasted the CJK source instead of translating it. */
 const NO_HAN = new Set([
@@ -165,9 +176,9 @@ const fail = (msg) => {
   console.log(`  FAIL  ${msg}`)
 }
 
-console.log(`manual: ${IDS.length} topics x ${LANGS.length} languages\n`)
+console.log(`manual: ${IDS.length} topics x ${MANUAL_LANGS.length} languages (en, ru editions)\n`)
 
-for (const lang of LANGS) {
+for (const lang of MANUAL_LANGS) {
   const missing = []
   const structural = []
   const content = []
@@ -232,7 +243,7 @@ for (const f of readdirSync(TOPICS)) {
 
 console.log(
   problems === 0
-    ? `\nall ${LANGS.length} languages complete and structurally identical to English`
+    ? `\nall ${MANUAL_LANGS.length} manual editions complete and structurally identical to English`
     : `\n${problems} problems`,
 )
 process.exit(problems === 0 ? 0 : 1)

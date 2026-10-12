@@ -320,8 +320,8 @@ export interface MarkdownApi {
   onAiSettingsChanged(handler: () => void): () => void
   /** shell only: switch to Home and open Settings › AI Model (rejects in standalone) */
   openAiModelSettings(): Promise<void>
-  /** AI account status (shell-registered ai:gsk-status: VEGA sign-in key, gsk CLI fallback) — gates generate_image with the cloud-tools toggle */
-  aiGskStatus(): Promise<GenSparkAccountStatus>
+  /** AI account status (shell-registered ai:gsk-status: VEGA sign-in key, gsk CLI fallback) — gates generate_image with the cloud-tools toggle. withEmail also returns email + VEGA deposit (balance/balanceRub/currency) */
+  aiGskStatus(withEmail?: boolean): Promise<GenSparkAccountStatus>
   /** pushed by main on every VEGA sign-in/out — drop the cached login gate without a reload */
   onAiAuthChanged(handler: (status: { loggedIn: boolean }) => void): () => void
   aiStream(request: AiStreamRequest): Promise<void>

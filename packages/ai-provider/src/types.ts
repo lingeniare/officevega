@@ -33,6 +33,11 @@ export type AiProviderId =
 export interface GenSparkAccountStatus {
   loggedIn: boolean
   email?: string
+  /** VEGA deposit in `currency` (USD); only when the account query ran (withEmail) and the key is the issued VEGA one */
+  balance?: number
+  /** the same deposit converted to RUB at VEGA's current rate */
+  balanceRub?: number
+  currency?: string
 }
 
 export interface AiProviderConfig {

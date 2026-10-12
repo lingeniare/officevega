@@ -8,6 +8,7 @@ import {
   AiSuggestedQuestions,
   AiTypingIndicator,
   IconPlus,
+  useVegaDeposit,
   type AiHistoryItem,
   type AiScopeQuoteData,
 } from '@genoffice/ui'
@@ -352,6 +353,13 @@ export function AiChatPanel({
   const { t, lang } = useI18n()
   // Panel chrome follows the UI language; message text follows its own content (dir=auto below)
   const isRtl = lang === 'ar' || lang === 'he'
+  /** VEGA deposit in the model picker group head (busy edge refetches the post-run figure) */
+  const deposit = useVegaDeposit(
+    privacyBadge === true,
+    lang,
+    () => window.desktopApi?.aiGskStatus?.(true) ?? Promise.resolve(null),
+    aiBusy,
+  )
   const chatRef = useRef<HTMLDivElement | null>(null)
   const inputRef = useRef<HTMLTextAreaElement | null>(null)
   const stickToBottomRef = useRef(true)
@@ -924,7 +932,7 @@ export function AiChatPanel({
           onShieldToggle={onShieldToggle}
           footerStart={
             <>
-              <AiModelPicker bridge={MODEL_BRIDGE} lang={lang} />
+              <AiModelPicker bridge={MODEL_BRIDGE} lang={lang} deposit={deposit} />
               <button
                 className="ai-attach-btn"
                 onClick={onPickAttachments}

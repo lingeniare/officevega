@@ -258,7 +258,7 @@ export const ru = {
   appSettingsLoggedInEmail: 'Выполнен вход: {email}',
   appSettingsLoggedOut: 'Вход не выполнен (для функций ИИ требуется учетная запись ВЕГА)',
   appSettingsLoginPending: 'Ожидание входа в браузере…',
-  appSettingsLogin: 'Войти в ВЕГА',
+  appSettingsLogin: 'Подключить ИИ',
   appSettingsModel: 'Модель',
   appSettingsCancel: 'Отмена',
   appSettingsSave: 'Сохранить',

@@ -5,6 +5,7 @@ import type {
   AiSettings,
   AiStreamChunk,
   AiStreamRequest,
+  GenSparkAccountStatus,
   ModelFilter,
   ProviderModelCatalog,
 } from '@genoffice/ai-provider'
@@ -884,8 +885,8 @@ export interface PdfApi {
   onAiSettingsChanged(handler: () => void): () => void
   /** shell only: switch to Home and open Settings › AI Model (rejects in standalone) */
   openAiModelSettings(): Promise<void>
-  /** AI account status (VEGA sign-in key, gsk CLI fallback); gates the cloud-only generate_image tool */
-  gskStatus(): Promise<{ loggedIn: boolean }>
+  /** AI account status (VEGA sign-in key, gsk CLI fallback); gates the cloud-only generate_image tool. withEmail also returns email + VEGA deposit (balance/balanceRub/currency) */
+  gskStatus(withEmail?: boolean): Promise<GenSparkAccountStatus>
   aiStream(request: AiStreamRequest): Promise<void>
   aiStreamCancel(requestId: string): Promise<void>
   onAiStream(handler: (chunk: AiStreamChunk) => void): () => void

@@ -72,6 +72,7 @@ import {
   AiTypingIndicator,
   IconPlus,
   useSuggestedQuestions,
+  useVegaDeposit,
   type AiHistoryItem,
   type AiScopeQuoteData,
 } from '@genoffice/ui'
@@ -555,6 +556,13 @@ export function AiPanel({
       offAuth?.()
     }
   }, [])
+  /** VEGA deposit in the model picker group head (busy edge refetches the post-run figure) */
+  const deposit = useVegaDeposit(
+    settings.provider === 'vega',
+    lang,
+    () => window.desktop?.aiGskStatus?.(true) ?? Promise.resolve(null),
+    busy,
+  )
   const blocksRef = useRef(blocks)
   blocksRef.current = blocks
   const numIdFallbackRef = useRef(numIdFallback)
@@ -1950,7 +1958,7 @@ export function AiPanel({
           onPasteFiles={(files) => void onPasteFiles(files)}
           footerStart={
             <>
-              <AiModelPicker bridge={MODEL_BRIDGE} lang={lang} />
+              <AiModelPicker bridge={MODEL_BRIDGE} lang={lang} deposit={deposit} />
               <button
                 className="ai-attach-btn"
                 onClick={pickAttachments}

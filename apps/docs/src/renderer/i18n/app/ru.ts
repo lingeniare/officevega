@@ -310,7 +310,7 @@ export const ru = {
   appLoggedInEmail: 'Выполнен вход: {email}',
   appNotLoggedIn: 'Вход не выполнен (для функций ИИ требуется учетная запись ВЕГА)',
   appWaitingBrowserLogin: 'Ожидание входа через браузер…',
-  appLoginVEGA: 'Войти в ВЕГА',
+  appLoginVEGA: 'Подключить ИИ',
   appModel: 'Модель',
   appCut: 'Вырезать',
   appCopy: 'Копировать',

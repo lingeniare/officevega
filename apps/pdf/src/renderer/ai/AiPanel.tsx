@@ -18,6 +18,7 @@ import {
   AiTypingIndicator,
   IconPlus,
   useSuggestedQuestions,
+  useVegaDeposit,
   type AiHistoryItem,
   type AiScopeQuoteData,
 } from '@genoffice/ui'
@@ -341,6 +342,13 @@ export function AiPanel({
       window.removeEventListener('focus', refresh)
     }
   }, [])
+  /** VEGA deposit in the model picker group head (busy edge refetches the post-run figure) */
+  const deposit = useVegaDeposit(
+    aiProvider === 'vega',
+    lang,
+    () => window.pdfApi?.gskStatus?.(true) ?? Promise.resolve(null),
+    busy,
+  )
   const langRef = useRef(lang)
   langRef.current = lang
   /** user instruction of the latest run — the suggestion generator's "question" side */
@@ -1111,7 +1119,7 @@ export function AiPanel({
           shieldOn={piiOn}
           onShieldToggle={togglePiiShield}
           textareaRef={inputRef}
-          footerStart={<AiModelPicker bridge={MODEL_BRIDGE} lang={lang} />}
+          footerStart={<AiModelPicker bridge={MODEL_BRIDGE} lang={lang} deposit={deposit} />}
           onChange={setPrompt}
           onSend={() => send(prompt)}
           onStop={stop}

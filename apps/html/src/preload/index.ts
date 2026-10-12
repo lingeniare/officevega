@@ -123,7 +123,7 @@ const api: HtmlApi = {
   },
   openAiModelSettings: () => ipcRenderer.invoke(AI_CHANNELS.openModelSettings),
   getProviderModels: (input) => ipcRenderer.invoke(AI_CHANNELS.providerModels, input),
-  aiGskStatus: () => ipcRenderer.invoke(AI_CHANNELS.gskStatus),
+  aiGskStatus: (withEmail?: boolean) => ipcRenderer.invoke(AI_CHANNELS.gskStatus, withEmail),
   aiStream: (request) => ipcRenderer.invoke(AI_CHANNELS.stream, request),
   aiStreamCancel: (requestId) => ipcRenderer.invoke(AI_CHANNELS.streamCancel, requestId),
   onAiStream: (handler) => {

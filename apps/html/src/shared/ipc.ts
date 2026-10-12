@@ -314,8 +314,8 @@ export interface HtmlApi {
   onAiSettingsChanged(handler: () => void): () => void
   /** shell only: switch to Home and open Settings › AI Model (rejects in standalone) */
   openAiModelSettings(): Promise<void>
-  /** AI account status (shell-registered ai:gsk-status: VEGA sign-in key, gsk CLI fallback) — gates generate_image with the cloud-tools toggle */
-  aiGskStatus(): Promise<GenSparkAccountStatus>
+  /** AI account status (shell-registered ai:gsk-status: VEGA sign-in key, gsk CLI fallback) — gates generate_image with the cloud-tools toggle. withEmail also returns email + VEGA deposit (balance/balanceRub/currency) */
+  aiGskStatus(withEmail?: boolean): Promise<GenSparkAccountStatus>
   aiStream(request: AiStreamRequest): Promise<void>
   aiStreamCancel(requestId: string): Promise<void>
   onAiStream(handler: (chunk: AiStreamChunk) => void): () => void

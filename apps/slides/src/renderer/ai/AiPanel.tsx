@@ -67,6 +67,7 @@ import {
   Markdown,
   useAiPanelPrefs,
   useSuggestedQuestions,
+  useVegaDeposit,
   type AiHistoryItem,
   type AiScopeQuoteData,
 } from '@genoffice/ui'
@@ -595,6 +596,13 @@ export function AiPanel({
       offAuth?.()
     }
   }, [])
+  /** VEGA deposit in the model picker group head (busy edge refetches the post-run figure) */
+  const deposit = useVegaDeposit(
+    settings.provider === 'vega',
+    lang,
+    () => window.slidesApi?.aiGskStatus?.(true) ?? Promise.resolve(null),
+    busy,
+  )
   const imagesRef = useRef(images)
   imagesRef.current = images
   const attachmentsRef = useRef(attachments)
@@ -3011,7 +3019,7 @@ export function AiPanel({
                   }
                 />
               )}
-              <AiModelPicker bridge={MODEL_BRIDGE} lang={lang} />
+              <AiModelPicker bridge={MODEL_BRIDGE} lang={lang} deposit={deposit} />
               <button
                 className="ai-attach-btn"
                 onClick={pickAttachments}

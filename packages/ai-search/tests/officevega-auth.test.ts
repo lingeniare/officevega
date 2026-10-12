@@ -3,6 +3,7 @@ import { existsSync, mkdtempSync, readFileSync, rmSync, statSync, writeFileSync 
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import {
+  ensureOfficeVegaLogin,
   officeVegaApiKey,
   officeVegaAuthPath,
   officeVegaLoginInFlight,
@@ -420,6 +421,84 @@ describe('startOfficeVegaLogin (VEGA device flow)', () => {
     const second = await loginAndCollect()
     expect(second.at(-1)).toEqual({ phase: 'success' })
     expect(first.every((e) => e.phase === 'url')).toBe(true)
+  })
+})
+
+describe('ensureOfficeVegaLogin (fire-and-forget entry point)', () => {
+  /** a flow that polls authorization_pending forever, plus a way to end it */
+  function stubPendingFlow() {
+    const fetchMock = vi.fn(async (input: string | URL) => {
+      const url = String(input)
+      if (url.includes('/device/code')) return jsonResponse(deviceCodeOk)
+      return jsonResponse(PENDING, { status: 400 })
+    })
+    vi.stubGlobal('fetch', fetchMock)
+    return fetchMock
+  }
+
+  /** let the pending flow die so it stops polling between tests */
+  async function endInFlightFlow() {
+    vi.stubGlobal('fetch', vi.fn(async () => jsonResponse({ error: 'access_denied' }, { status: 400 })))
+    await vi.waitFor(() => expect(officeVegaLoginInFlight()).toBe(false))
+  }
+
+  it('re-opens the still-valid auth URL on a repeat click instead of doing nothing', async () => {
+    const fetchMock = stubPendingFlow()
+    const opened: string[] = []
+    ensureOfficeVegaLogin((url) => opened.push(`first:${url}`))
+    await vi.waitFor(() => expect(opened).toEqual([`first:${AUTH_URL}`]))
+
+    // the user closed the browser tab and clicked again while the flow still
+    // polls — the click must re-open the same device URL, not be swallowed
+    ensureOfficeVegaLogin((url) => opened.push(`second:${url}`))
+    expect(opened).toEqual([`first:${AUTH_URL}`, `second:${AUTH_URL}`])
+
+    // still one flow: no second /device/code request was made
+    expect(
+      fetchMock.mock.calls.filter(([u]) => String(u).includes('/device/code')),
+    ).toHaveLength(1)
+    await endInFlightFlow()
+  })
+
+  it('queues a click that lands before the device-code reply', async () => {
+    let release!: () => void
+    const gate = new Promise<void>((resolve) => {
+      release = resolve
+    })
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (input: string | URL) => {
+        const url = String(input)
+        if (url.includes('/device/code')) {
+          await gate
+          return jsonResponse(deviceCodeOk)
+        }
+        return jsonResponse(PENDING, { status: 400 })
+      }),
+    )
+    const opened: string[] = []
+    ensureOfficeVegaLogin((url) => opened.push(`first:${url}`))
+    // second click while the device-code request is still in flight — queued,
+    // not dropped
+    ensureOfficeVegaLogin((url) => opened.push(`second:${url}`))
+    release()
+    await vi.waitFor(() =>
+      expect(opened).toEqual([`first:${AUTH_URL}`, `second:${AUTH_URL}`]),
+    )
+    await endInFlightFlow()
+  })
+
+  it('starts a fresh flow once the previous one has ended', async () => {
+    const opened: string[] = []
+    stubFlow({ polls: [{ error: 'access_denied' }] })
+    ensureOfficeVegaLogin((url) => opened.push(url))
+    await vi.waitFor(() => expect(officeVegaLoginInFlight()).toBe(false))
+    expect(opened).toEqual([AUTH_URL])
+
+    stubFlow({ polls: [{ error: 'access_denied' }] })
+    ensureOfficeVegaLogin((url) => opened.push(url))
+    await vi.waitFor(() => expect(officeVegaLoginInFlight()).toBe(false))
+    expect(opened).toEqual([AUTH_URL, AUTH_URL])
   })
 })
 

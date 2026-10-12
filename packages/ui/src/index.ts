@@ -1,6 +1,12 @@
 export { AiPanelSideButton } from './AiPanelSideButton'
 export { AiComposer } from './AiComposer'
 export { AiShieldBadge } from './AiShieldBadge'
+export { AiDepositBadge } from './AiDepositBadge'
+export {
+  formatVegaDeposit,
+  useVegaDeposit,
+  type VegaDepositBadgeData,
+} from './vega-deposit'
 export { AiSuggestedQuestions, useSuggestedQuestions } from './ai-suggested-questions'
 export { AiScopeQuote, type AiScopeQuoteData } from './AiScopeQuote'
 export {

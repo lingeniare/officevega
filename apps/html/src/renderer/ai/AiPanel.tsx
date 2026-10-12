@@ -29,6 +29,7 @@ import {
   IconPlus,
   Markdown,
   useSuggestedQuestions,
+  useVegaDeposit,
   type AiHistoryItem,
   type AiScopeQuoteData,
 } from '@genoffice/ui'
@@ -1037,6 +1038,13 @@ export function AiPanel({
     window.addEventListener('focus', refresh)
     return () => window.removeEventListener('focus', refresh)
   }, [])
+  /** VEGA deposit in the model picker group head (busy edge refetches the post-run figure) */
+  const deposit = useVegaDeposit(
+    aiProvider === 'vega',
+    lang,
+    () => window.htmlApi?.aiGskStatus?.(true) ?? Promise.resolve(null),
+    busy,
+  )
 
   // ── chat-history persistence: bind to the file, restore prior transcript ──
   useEffect(() => {
@@ -1839,7 +1847,7 @@ export function AiPanel({
           onPasteText={onPasteText}
           footerStart={
             <>
-              <AiModelPicker bridge={MODEL_BRIDGE} lang={lang} />
+              <AiModelPicker bridge={MODEL_BRIDGE} lang={lang} deposit={deposit} />
               <button
                 type="button"
                 className="ai-attach-btn"

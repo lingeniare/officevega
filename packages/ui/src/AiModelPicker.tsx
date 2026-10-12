@@ -15,6 +15,8 @@ import {
 import { ProviderLogo } from './provider-logos'
 import { useDismissablePopover } from './popover-dismiss'
 import { AI_MODEL_PICKER_STRINGS } from './strings-ai-model-picker'
+import { AiDepositBadge } from './AiDepositBadge'
+import type { VegaDepositBadgeData } from './vega-deposit'
 
 /**
  * Same live-catalog filter the AI Model settings pane applies: text-out
@@ -61,9 +63,12 @@ export interface AiModelPickerBridge {
 export function AiModelPicker({
   bridge,
   lang,
+  deposit,
 }: {
   readonly bridge: AiModelPickerBridge
   readonly lang: Lang
+  /** VEGA deposit (from useVegaDeposit) — shown at the right edge of the "AI models" account group head */
+  readonly deposit?: VegaDepositBadgeData | null | undefined
 }): React.JSX.Element | null {
   const strings = AI_MODEL_PICKER_STRINGS[lang] ?? AI_MODEL_PICKER_STRINGS.en
   const [settings, setSettings] = useState<AiSettings | null>(null)
@@ -260,6 +265,9 @@ export function AiModelPicker({
                 <div className="ai-model-group-head">
                   <ProviderLogo id={g.id} />
                   <span>{g.account ? strings.aiModels : g.label}</span>
+                  {g.account && g.id === 'vega' && deposit && (
+                    <AiDepositBadge label={deposit.label} title={deposit.title} />
+                  )}
                 </div>
                 {(() => {
                   const listed = modelsOf(g)

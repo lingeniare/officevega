@@ -518,7 +518,13 @@ async function runDeviceLogin(
   emit({ phase: 'success' })
 }
 
-let activeLogin: { cancel: () => void } | null = null
+let activeLogin: {
+  cancel: () => void
+  /** verification URL of the in-flight flow — '' until its 'url' event lands */
+  pendingUrl: string
+  /** browser openers queued while the device-code request is still in flight */
+  urlWaiters: ((url: string) => void)[]
+} | null = null
 
 /**
  * Starts the OfficeVega device-code login, cancelling a previous in-flight one
@@ -535,6 +541,8 @@ export function startOfficeVegaLogin(onEvent?: (progress: GskLoginProgress) => v
       done = true
       controller.abort()
     },
+    pendingUrl: '',
+    urlWaiters: [] as ((url: string) => void)[],
   }
   activeLogin = self
   const finish = (progress: GskLoginProgress) => {
@@ -545,8 +553,19 @@ export function startOfficeVegaLogin(onEvent?: (progress: GskLoginProgress) => v
   }
   void runDeviceLogin(controller.signal, (progress) => {
     if (done) return
-    if (progress.phase === 'url') emit(progress)
-    else finish(progress)
+    if (progress.phase === 'url') {
+      if (progress.url) {
+        self.pendingUrl = progress.url
+        for (const open of self.urlWaiters.splice(0)) {
+          try {
+            open(progress.url)
+          } catch {
+            /* a broken opener must not kill the login flow */
+          }
+        }
+      }
+      emit(progress)
+    } else finish(progress)
   }).catch((e: unknown) => {
     if (controller.signal.aborted) return
     finish({
@@ -564,14 +583,25 @@ export function officeVegaLoginInFlight(): boolean {
 
 /**
  * Fire-and-forget login for entry points without progress UI. Reuses an
- * in-flight flow (restarting would strand it on a dead device code); openUrl
- * is the caller's browser opener (this module is Electron-free).
+ * in-flight flow (restarting would strand it on a dead device code) — a repeat
+ * call re-opens that flow's still-valid verification URL instead of doing
+ * nothing; openUrl is the caller's browser opener (this module is
+ * Electron-free).
  */
 export function ensureOfficeVegaLogin(openUrl: (url: string) => void): void {
-  if (officeVegaLoginInFlight()) return
-  startOfficeVegaLogin((progress) => {
-    if (progress.url) openUrl(progress.url)
-  })
+  const active = activeLogin
+  if (active) {
+    // The in-flight flow still polls a valid device code — restarting would
+    // strand it, but a repeat click must still reach the browser: re-open the
+    // URL it already emitted, or queue the opener until the code lands.
+    if (active.pendingUrl) openUrl(active.pendingUrl)
+    else active.urlWaiters.push(openUrl)
+    return
+  }
+  startOfficeVegaLogin()
+  // set synchronously inside startOfficeVegaLogin; the device-code reply is
+  // always async, so pendingUrl cannot have landed yet
+  activeLogin?.urlWaiters.push(openUrl)
 }
 
 /**

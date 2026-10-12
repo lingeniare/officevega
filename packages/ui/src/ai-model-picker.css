@@ -98,6 +98,16 @@
   font-weight: 600;
 }
 
+/* VEGA deposit on the "AI models" account row: muted figure pinned right;
+   the tooltip keeps the exact number (Settings › Account precision) */
+.ai-model-group-head .ai-deposit-badge {
+  flex-shrink: 0;
+  margin-left: auto;
+  font-weight: 400;
+  white-space: nowrap;
+  cursor: default;
+}
+
 .ai-model-item {
   display: flex;
   align-items: center;
