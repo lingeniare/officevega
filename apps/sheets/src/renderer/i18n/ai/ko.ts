@@ -17,6 +17,8 @@ export const ko = {
   aiSettingsTitle: 'AI 설정',
   aiSetUp: 'AI 설정하기',
   aiNewChat: '새 대화',
+  aiExportChat: '대화를 Markdown으로 내보내기',
+  aiExportRoleYou: '사용자',
   aiCollapsePanel: 'AI 패널 접기',
   aiHistorySep: '—— 이전 대화 ——',
   aiHistoryTitle: 'History',

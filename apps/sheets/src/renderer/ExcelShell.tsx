@@ -245,6 +245,8 @@ interface ExcelShellProps {
   readonly sessionUsage?: AiTokenUsageView
   readonly chat: readonly AiChatMessage[]
   readonly historicChat?: readonly AiChatMessage[]
+  /// open workbook name — feeds the exported AI transcript's title/file name
+  readonly docName?: string | undefined
   /// Chat attachments (chips + 📎 button + drag-and-drop), same structure as the
   /// docs/slides AI panels.
   readonly attachments: readonly AttachmentMeta[]
@@ -480,6 +482,7 @@ export function ExcelShell({
   sessionUsage,
   chat,
   historicChat,
+  docName,
   attachments,
   attachNotice,
   onPickAttachments,
@@ -1084,6 +1087,7 @@ export function ExcelShell({
           hasContent={sheetHasContent}
           chat={chat}
           {...(historicChat !== undefined ? { historicChat } : {})}
+          {...(docName !== undefined ? { docName } : {})}
           attachments={attachments}
           attachNotice={attachNotice}
           onPickAttachments={onPickAttachments}

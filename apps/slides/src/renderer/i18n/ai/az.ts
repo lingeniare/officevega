@@ -48,6 +48,8 @@ export const az = {
   aiMsgError: 'Xəta: {error}',
   aiCopied: 'Köçürüldü',
   aiCopyReply: 'Cavabı köçürün',
+  aiExportChat: 'Söhbəti Markdown-a ixrac et',
+  aiExportRoleYou: 'Siz',
   aiRegenerate: 'Yenidən yaradın',
   aiScopeSelection: '{count} element seçildi',
   aiScopeSlide: '{n}-ci slayd',

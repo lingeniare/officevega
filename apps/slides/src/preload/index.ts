@@ -361,6 +361,8 @@ const api: SlidesApi = {
   printSlides: (op: PrintSlidesOp) => ipcRenderer.invoke('slides:print', op),
   save: () => ipcRenderer.invoke('slides:save'),
   saveAs: (defaultName: string) => ipcRenderer.invoke('slides:save-as', defaultName),
+  exportAiChat: (markdown: string, suggestedName: string, dialogTitle: string) =>
+    ipcRenderer.invoke('slides:export-ai-chat', markdown, suggestedName, dialogTitle),
   onCloseSaveRequest: (handler: () => void) => {
     const listener = () => handler()
     ipcRenderer.on('slides:close-save-request', listener)

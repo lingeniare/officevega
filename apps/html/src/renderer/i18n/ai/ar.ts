@@ -4,6 +4,8 @@ export const ar = {
   aiCollapsePanel: 'طي اللوحة',
   aiComposerPlaceholder: 'اطلب من الذكاء الاصطناعي الكتابة أو التعديل…',
   aiCopyReplyTitle: 'نسخ الرد',
+  aiExportChat: 'تصدير المحادثة إلى Markdown',
+  aiExportRoleYou: 'أنت',
   aiCreditsExhausted: 'نفدت الأرصدة — أعد الشحن على api.vega.chat',
   aiEmptyTitle: 'صمّم صفحة بالذكاء الاصطناعي',
   aiEmptyBody:

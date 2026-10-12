@@ -29,10 +29,13 @@ import {
   AiSuggestedQuestions,
   AiTypingIndicator,
   AiUsageChip,
+  IconDownload,
   IconPlus,
   Markdown,
   addTokenUsage,
+  chatTranscriptToMarkdown,
   createFileNav,
+  suggestChatExportName,
   useChatRunQueue,
   useSuggestedQuestions,
   useVegaDeposit,
@@ -1381,6 +1384,19 @@ export function AiPanel({
     void window.htmlApi.openSourcePath(path)
   })
 
+  // whole-session export to a .md file (#1974): the saved file can be opened in
+  // the Markdown editor for DOCX/PDF export
+  const exportChat = (): void => {
+    const entries = chat.map((e) => ({ role: e.role, text: e.text }))
+    const docName = filePath?.split(/[\\/]/).pop() ?? t('aiOpenAssistant')
+    const md = chatTranscriptToMarkdown(entries, {
+      title: docName,
+      userLabel: t('aiExportRoleYou'),
+      assistantLabel: 'VEGA',
+    })
+    void window.htmlApi.exportAiChat(md, suggestChatExportName(docName), t('aiExportChat'))
+  }
+
   const draftNonceRef = useRef(0)
   useEffect(() => {
     if (!draft || draft.nonce === draftNonceRef.current) return
@@ -1509,6 +1525,16 @@ export function AiPanel({
             buttonLabel={t('aiHistoryTitle')}
             trigger={<AiHistoryButton label={t('aiHistoryTitle')} onClick={openHistory} />}
           />
+          {chat.length > 0 && (
+            <button
+              className="ai-header-btn"
+              onClick={exportChat}
+              data-tip={t('aiExportChat')}
+              aria-label={t('aiExportChat')}
+            >
+              <IconDownload size={15} />
+            </button>
+          )}
           {chat.length > 0 && (
             <button
               className="ai-header-btn"

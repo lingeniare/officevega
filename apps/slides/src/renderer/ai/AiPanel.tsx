@@ -65,10 +65,13 @@ import {
   AiSuggestedQuestions,
   AiUsageChip,
   IconArrowUp,
+  IconDownload,
   IconPlus,
   IconStop,
   Markdown,
   addTokenUsage,
+  chatTranscriptToMarkdown,
+  suggestChatExportName,
   useAiPanelPrefs,
   useChatRunQueue,
   useSuggestedQuestions,
@@ -2569,6 +2572,20 @@ export function AiPanel({
   const removeAttachment = (path: string) =>
     setAttachments((prev) => prev.filter((a) => a.path !== path))
 
+  // whole-session export to a .md file (#1974): historic turns first, then the
+  // live transcript; the saved file can be opened in the Markdown editor for
+  // DOCX/PDF export
+  const exportChat = (): void => {
+    const entries = [...historicChat, ...chat].map((e) => ({ role: e.role, text: e.text }))
+    const docName = currentFilePath?.split(/[\\/]/).pop() ?? t('aiPanelTitle')
+    const md = chatTranscriptToMarkdown(entries, {
+      title: docName,
+      userLabel: t('aiExportRoleYou'),
+      assistantLabel: 'VEGA',
+    })
+    void window.slidesApi.exportAiChat(md, suggestChatExportName(docName), t('aiExportChat'))
+  }
+
   const resizeCleanupRef = useRef<(() => void) | null>(null)
   useEffect(() => () => resizeCleanupRef.current?.(), [])
 
@@ -2670,6 +2687,16 @@ export function AiPanel({
             buttonLabel={t('aiHistoryTitle')}
             trigger={<AiHistoryButton label={t('aiHistoryTitle')} onClick={openHistory} />}
           />
+          {(chat.length > 0 || historicChat.length > 0) && (
+            <button
+              className="ai-header-btn"
+              onClick={exportChat}
+              data-tip={t('aiExportChat')}
+              aria-label={t('aiExportChat')}
+            >
+              <IconDownload size={15} />
+            </button>
+          )}
           {(chat.length > 0 || historicChat.length > 0) && (
             <button
               className="ai-header-btn"

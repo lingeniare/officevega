@@ -48,6 +48,8 @@ export const ja = {
   aiMsgError: 'エラー: {error}',
   aiCopied: 'コピーしました',
   aiCopyReply: '返信をコピー',
+  aiExportChat: '会話を Markdown にエクスポート',
+  aiExportRoleYou: 'あなた',
   aiRegenerate: '再生成',
   aiScopeSelection: '{count} 個の要素を選択中',
   aiScopeSlide: 'スライド {n}',

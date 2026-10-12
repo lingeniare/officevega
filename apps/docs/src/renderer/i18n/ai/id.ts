@@ -85,6 +85,8 @@ export const id = {
   aiWorking: 'Memproses',
   aiErrorPrefix: 'Kesalahan: {error}',
   aiCopyReplyTitle: 'Salin balasan',
+  aiExportChat: 'Ekspor percakapan ke Markdown',
+  aiExportRoleYou: 'Anda',
   aiCopied: 'Disalin',
   aiRegenerateTitle: 'Buat ulang',
   aiSnapshotsTitle: 'Snapshot versi',

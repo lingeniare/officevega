@@ -84,6 +84,8 @@ export const tt = {
   aiWorking: 'Эшли',
   aiErrorPrefix: 'Хата: {error}',
   aiCopyReplyTitle: 'Җавапны күчерү',
+  aiExportChat: 'Әңгәмәне Markdown-га экспортлау',
+  aiExportRoleYou: 'Сез',
   aiCopied: 'Күчерелде',
   aiRegenerateTitle: 'Яңадан ясау',
   aiSnapshotsTitle: 'Снимоклар',

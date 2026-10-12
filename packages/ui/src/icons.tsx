@@ -57,6 +57,27 @@ export function IconPlus(props: IconProps) {
   )
 }
 
+/** download arrow — export an AI chat transcript to a file (#1974) */
+export function IconDownload(props: IconProps) {
+  return (
+    <svg
+      width={props.size ?? 16}
+      height={props.size ?? 16}
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M8 2.5v8" />
+      <path d="M4.5 7 8 10.5 11.5 7" />
+      <path d="M2.5 12.5v1A1.5 1.5 0 0 0 4 15h8a1.5 1.5 0 0 0 1.5-1.5v-1" />
+    </svg>
+  )
+}
+
 /** upward arrow (↑) for the icon-only send button — VEGAChatDrawer style */
 export function IconArrowUp(props: IconProps) {
   return (

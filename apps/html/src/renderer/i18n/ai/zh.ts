@@ -3,6 +3,8 @@ export const zh = {
   aiCollapsePanel: '收起面板',
   aiComposerPlaceholder: '让 AI 撰写或修改文档…',
   aiCopyReplyTitle: '复制回复',
+  aiExportChat: '将对话导出为 Markdown',
+  aiExportRoleYou: '你',
   aiCreditsExhausted: '积分不足，请前往 api.vega.chat 充值',
   aiEmptyTitle: '用 AI 设计一个页面',
   aiEmptyBody: '落地页、报告、海报都行。说清用途和受众，AI 先出简报确认，再生成整页',

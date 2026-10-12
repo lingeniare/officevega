@@ -4,6 +4,8 @@ export const nl = {
   aiCollapsePanel: 'Paneel inklappen',
   aiComposerPlaceholder: 'Vraag AI te schrijven of bewerken…',
   aiCopyReplyTitle: 'Antwoord kopiëren',
+  aiExportChat: 'Gesprek exporteren naar Markdown',
+  aiExportRoleYou: 'Jij',
   aiCreditsExhausted: 'Credits op — waardeer op via api.vega.chat',
   aiEmptyTitle: 'Ontwerp een pagina met AI',
   aiEmptyBody:

@@ -19,6 +19,7 @@ import {
   AiSuggestedQuestions,
   AiTypingIndicator,
   AiUsageChip,
+  IconDownload,
   IconPlus,
   addTokenUsage,
   useChatRunQueue,
@@ -30,7 +31,12 @@ import {
 } from '@genoffice/ui'
 import { aiLangDirective, t as tGlobal, useI18n } from '../i18n/locale'
 import { localizedToolSummary } from './tool-labels'
-import { createFileNav, Markdown } from '@genoffice/ui'
+import {
+  createFileNav,
+  Markdown,
+  chatTranscriptToMarkdown,
+  suggestChatExportName,
+} from '@genoffice/ui'
 import sendEnterOn from '../assets/send-enter-on.png'
 import sendEnterOff from '../assets/send-enter-off.png'
 import sendStop from '../assets/send-stop.png'
@@ -935,6 +941,19 @@ export function AiPanel({
     void window.pdfApi.openSourcePath(path)
   })
 
+  // whole-session export to a .md file (#1974): the saved file can be opened in
+  // the Markdown editor for DOCX/PDF export
+  const exportChat = (): void => {
+    const entries = chat.map((e) => ({ role: e.role, text: e.text }))
+    const docName = filePath?.split(/[\\/]/).pop() ?? t('aiOpenAssistant')
+    const md = chatTranscriptToMarkdown(entries, {
+      title: docName,
+      userLabel: t('aiExportRoleYou'),
+      assistantLabel: 'VEGA',
+    })
+    void window.pdfApi.exportAiChat(md, suggestChatExportName(docName), t('aiExportChat'))
+  }
+
   return (
     <aside
       ref={asideRef}
@@ -974,6 +993,16 @@ export function AiPanel({
             buttonLabel={t('aiHistoryTitle')}
             trigger={<AiHistoryButton label={t('aiHistoryTitle')} onClick={openHistory} />}
           />
+          {chat.length > 0 && (
+            <button
+              className="ai-header-btn"
+              onClick={exportChat}
+              data-tip={t('aiExportChat')}
+              aria-label={t('aiExportChat')}
+            >
+              <IconDownload size={15} />
+            </button>
+          )}
           {chat.length > 0 && (
             <button
               className="ai-header-btn"

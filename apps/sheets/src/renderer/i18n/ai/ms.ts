@@ -18,6 +18,8 @@ export const ms = {
   aiSettingsTitle: 'Tetapan AI',
   aiSetUp: 'Sediakan AI',
   aiNewChat: 'Perbualan baharu',
+  aiExportChat: 'Eksport perbualan ke Markdown',
+  aiExportRoleYou: 'Anda',
   aiCollapsePanel: 'Runtuhkan panel AI',
   aiHistorySep: '—— Perbualan terdahulu ——',
   aiHistoryTitle: 'History',

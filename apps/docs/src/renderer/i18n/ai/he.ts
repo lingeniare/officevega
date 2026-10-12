@@ -83,6 +83,8 @@ export const he = {
   aiWorking: 'מעבד',
   aiErrorPrefix: 'שגיאה: {error}',
   aiCopyReplyTitle: 'העתקת התשובה',
+  aiExportChat: 'ייצוא השיחה ל-Markdown',
+  aiExportRoleYou: 'אתה',
   aiCopied: 'הועתק',
   aiRegenerateTitle: 'יצירה מחדש',
   aiSnapshotsTitle: 'תמונות מצב של גרסאות',

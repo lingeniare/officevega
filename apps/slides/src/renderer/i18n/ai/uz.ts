@@ -48,6 +48,8 @@ export const uz = {
   aiMsgError: 'Xato: {error}',
   aiCopied: 'Nusxalandi',
   aiCopyReply: 'Javobdan nusxa olish',
+  aiExportChat: 'Suhbatni Markdown ga eksport qilish',
+  aiExportRoleYou: 'Siz',
   aiRegenerate: 'Qayta yaratish',
   aiScopeSelection: '{count} ta element tanlangan',
   aiScopeSlide: '{n}-slayd',

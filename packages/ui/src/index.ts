@@ -12,6 +12,13 @@ export { AiQueueStrip } from './AiQueueStrip'
 export { useChatRunQueue, type ChatRunQueue, type QueuedChatMessage } from './chat-run-queue'
 export { AI_QUEUE_LABELS, type AiQueueStripLabels } from './strings-ai-queue'
 export { AiUsageChip, addTokenUsage, formatTokenCount, type AiTokenUsageView } from './AiUsageChip'
+export {
+  chatTranscriptToMarkdown,
+  chatExportTitle,
+  suggestChatExportName,
+  type ChatExportEntry,
+  type ChatExportMeta,
+} from './chat-export'
 export { AI_USAGE_LABELS, type AiUsageLabels } from './strings-ai-usage'
 export { AiScopeQuote, type AiScopeQuoteData } from './AiScopeQuote'
 export {
@@ -75,7 +82,15 @@ export {
   type RibbonDensity,
 } from './ribbon-collapse'
 export { AiTypingIndicator } from './AiTypingIndicator'
-export { IconSend, IconStop, IconArrowUp, IconPlus, IconCrown, type IconProps } from './icons'
+export {
+  IconSend,
+  IconStop,
+  IconArrowUp,
+  IconPlus,
+  IconCrown,
+  IconDownload,
+  type IconProps,
+} from './icons'
 export { Markdown, type MarkdownNav } from './Markdown'
 export { FILE_NAV_SCHEME, createFileNav, fileNavHref, parseFileNavHref } from './file-nav'
 export { isSymbolFontFamily } from './symbol-fonts'

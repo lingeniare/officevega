@@ -9,9 +9,12 @@ import {
   AiComposer,
   AiTypingIndicator,
   AiUsageChip,
+  IconDownload,
   addTokenUsage,
+  chatTranscriptToMarkdown,
   createFileNav,
   Markdown,
+  suggestChatExportName,
   type AiTokenUsageView,
 } from '@genoffice/ui'
 import type { AiSettings } from '@genoffice/ai-provider'
@@ -211,12 +214,36 @@ export function KbAskPanel({
 
   const fileNav = createFileNav((path) => onOpenPath(path))
 
+  // whole-session export to a .md file (#1974): the saved file can be opened in
+  // the Markdown editor for DOCX/PDF export
+  const exportChat = (): void => {
+    const entries = messages.map((m) => ({ role: m.role, text: m.text }))
+    const title = t('askTitle')
+    const md = chatTranscriptToMarkdown(entries, {
+      title,
+      userLabel: t('askRoleYou'),
+      assistantLabel: 'VEGA',
+    })
+    void window.aiOffice.kbExportChat(md, suggestChatExportName('ask-ai'), t('askExportChat'))
+  }
+
   return (
     <div className="kb-ask">
       {corpusCount !== null && corpusCount > 0 && (
         <div className="kb-ask-headbar">
           <b>{t('askTitle')}</b>
           <span>{t('askCorpusCount', { n: String(corpusCount) })}</span>
+          {messages.length > 0 && (
+            <button
+              type="button"
+              className="kb-ask-export"
+              onClick={exportChat}
+              data-tip={t('askExportChat')}
+              aria-label={t('askExportChat')}
+            >
+              <IconDownload size={14} />
+            </button>
+          )}
         </div>
       )}
       <div className="kb-ask-thread" ref={scrollRef}>

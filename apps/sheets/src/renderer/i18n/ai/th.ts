@@ -17,6 +17,8 @@ export const th = {
   aiSettingsTitle: 'การตั้งค่า AI',
   aiSetUp: 'ตั้งค่า AI',
   aiNewChat: 'การสนทนาใหม่',
+  aiExportChat: 'ส่งออกบทสนทนาเป็น Markdown',
+  aiExportRoleYou: 'คุณ',
   aiCollapsePanel: 'ยุบแผง AI',
   aiHistorySep: '—— การสนทนาก่อนหน้า ——',
   aiHistoryTitle: 'History',

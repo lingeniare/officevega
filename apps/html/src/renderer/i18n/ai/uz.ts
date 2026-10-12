@@ -4,6 +4,8 @@ export const uz = {
   aiCollapsePanel: 'Panelni yig‘ish',
   aiComposerPlaceholder: 'Hujjatni yozish yoki tahrirlash uchun AIdan so‘rang…',
   aiCopyReplyTitle: 'Javobdan nusxa olish',
+  aiExportChat: 'Suhbatni Markdown ga eksport qilish',
+  aiExportRoleYou: 'Siz',
   aiCreditsExhausted: 'Kreditlar tugadi — api.vega.chat saytida to‘ldiring',
   aiEmptyTitle: 'AI yordamida sahifa dizaynini yaratish',
   aiEmptyBody:

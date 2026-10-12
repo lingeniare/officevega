@@ -18,6 +18,8 @@ export const en = {
   aiSettingsTitle: 'AI Settings',
   aiSetUp: 'Set up AI',
   aiNewChat: 'New conversation',
+  aiExportChat: 'Export conversation to Markdown',
+  aiExportRoleYou: 'You',
   aiCollapsePanel: 'Collapse AI panel',
   aiHistorySep: '—— Earlier conversation ——',
   aiHistoryTitle: 'History',

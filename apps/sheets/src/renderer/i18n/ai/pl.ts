@@ -17,6 +17,8 @@ export const pl = {
   aiSettingsTitle: 'Ustawienia AI',
   aiSetUp: 'Skonfiguruj AI',
   aiNewChat: 'Nowa rozmowa',
+  aiExportChat: 'Eksportuj rozmowę do Markdown',
+  aiExportRoleYou: 'Ty',
   aiCollapsePanel: 'Zwiń panel AI',
   aiHistorySep: '—— Wcześniejsza rozmowa ——',
   aiHistoryTitle: 'History',

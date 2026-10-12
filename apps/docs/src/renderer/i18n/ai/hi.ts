@@ -85,6 +85,8 @@ export const hi = {
   aiWorking: 'प्रोसेस हो रहा है',
   aiErrorPrefix: 'त्रुटि: {error}',
   aiCopyReplyTitle: 'जवाब कॉपी करें',
+  aiExportChat: 'बातचीत को Markdown में निर्यात करें',
+  aiExportRoleYou: 'आप',
   aiCopied: 'कॉपी हो गया',
   aiRegenerateTitle: 'फिर से जनरेट करें',
   aiSnapshotsTitle: 'संस्करण स्नैपशॉट',

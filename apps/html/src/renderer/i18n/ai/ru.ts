@@ -4,6 +4,8 @@ export const ru = {
   aiCollapsePanel: 'Свернуть панель',
   aiComposerPlaceholder: 'Попросите ИИ написать или изменить…',
   aiCopyReplyTitle: 'Копировать ответ',
+  aiExportChat: 'Экспортировать диалог в Markdown',
+  aiExportRoleYou: 'Вы',
   aiCreditsExhausted: 'Кредиты закончились — пополните на api.vega.chat',
   aiEmptyTitle: 'Создайте страницу с помощью ИИ',
   aiEmptyBody:

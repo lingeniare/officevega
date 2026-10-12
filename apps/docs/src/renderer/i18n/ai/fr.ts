@@ -87,6 +87,8 @@ export const fr = {
   aiWorking: 'Traitement en cours',
   aiErrorPrefix: 'Erreur : {error}',
   aiCopyReplyTitle: 'Copier la réponse',
+  aiExportChat: 'Exporter la conversation en Markdown',
+  aiExportRoleYou: 'Vous',
   aiCopied: 'Copié',
   aiRegenerateTitle: 'Régénérer',
   aiSnapshotsTitle: 'Instantanés de version',

@@ -40,6 +40,7 @@ import {
   isHeadlessMode,
   safeExternalUrl,
   saveAsSuggestion,
+  saveTextFileWithDialog,
   showOpenDialogWithMemory,
   showSaveDialogWithMemory,
   helpMenuTemplate,
@@ -4555,6 +4556,26 @@ export function registerSlidesIpc(): void {
       return { ok: false, error: String(err) }
     }
   })
+
+  // AI chat transcript export (#1974): the renderer serializes to Markdown and
+  // picks the file name; main owns the save dialog + write
+  ipcMain.handle(
+    'slides:export-ai-chat',
+    async (e, markdown: unknown, name: unknown, title: unknown) => {
+      if (!sessions.has(e.sender.id)) return { ok: false }
+      if (typeof markdown !== 'string' || !markdown) return { ok: false }
+      const defaultName = typeof name === 'string' && name ? name : 'ai-chat.md'
+      const dialogTitle = typeof title === 'string' && title ? title : tm('menuSaveAs')
+      return saveTextFileWithDialog(dialogParent(), {
+        title: dialogTitle,
+        defaultName,
+        ext: 'md',
+        filterName: 'Markdown',
+        content: markdown,
+        fallbackDir: getDraftsDir(),
+      })
+    },
+  )
 
   // ── Export (PDF / images): the renderer renders hi-res PNGs with offscreen Konva; the main process handles dialogs/writing ──
 

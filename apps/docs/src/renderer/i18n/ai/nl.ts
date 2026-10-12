@@ -86,6 +86,8 @@ export const nl = {
   aiWorking: 'Bezig met verwerken',
   aiErrorPrefix: 'Fout: {error}',
   aiCopyReplyTitle: 'Antwoord kopiëren',
+  aiExportChat: 'Gesprek exporteren naar Markdown',
+  aiExportRoleYou: 'Jij',
   aiCopied: 'Gekopieerd',
   aiRegenerateTitle: 'Opnieuw genereren',
   aiSnapshotsTitle: 'Versiesnapshots',

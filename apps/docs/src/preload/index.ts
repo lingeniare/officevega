@@ -180,6 +180,8 @@ const api: DesktopApi = {
   writeExportImage: (dir: string, fileName: string, pngBase64: string) =>
     ipcRenderer.invoke('docs:write-export-image', dir, fileName, pngBase64),
   saveImageAs: (src: string) => ipcRenderer.invoke('docs:save-image-as', src),
+  exportAiChat: (markdown: string, suggestedName: string, dialogTitle: string) =>
+    ipcRenderer.invoke('docs:export-ai-chat', markdown, suggestedName, dialogTitle),
   onViewImage: (handler) => {
     const listener = (_event: IpcRendererEvent, src: string) => handler(src)
     ipcRenderer.on(VIEW_IMAGE_CHANNEL, listener)

@@ -85,6 +85,8 @@ export const kk = {
   aiWorking: 'Орындалуда',
   aiErrorPrefix: 'Қате: {error}',
   aiCopyReplyTitle: 'Жауапты көшіру',
+  aiExportChat: 'Сөйлесімді Markdown форматына экспорттау',
+  aiExportRoleYou: 'Сіз',
   aiCopied: 'Көшірілді',
   aiRegenerateTitle: 'Қайта жасау',
   aiSnapshotsTitle: 'Лездік суреттер',

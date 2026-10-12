@@ -83,6 +83,8 @@ export const th = {
   aiWorking: 'กำลังดำเนินการ',
   aiErrorPrefix: 'ข้อผิดพลาด: {error}',
   aiCopyReplyTitle: 'คัดลอกคำตอบ',
+  aiExportChat: 'ส่งออกบทสนทนาเป็น Markdown',
+  aiExportRoleYou: 'คุณ',
   aiCopied: 'คัดลอกแล้ว',
   aiRegenerateTitle: 'สร้างใหม่',
   aiSnapshotsTitle: 'สแนปช็อตของเวอร์ชัน',

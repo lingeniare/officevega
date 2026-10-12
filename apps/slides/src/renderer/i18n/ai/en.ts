@@ -49,6 +49,8 @@ export const en = {
   aiMsgError: 'Error: {error}',
   aiCopied: 'Copied',
   aiCopyReply: 'Copy reply',
+  aiExportChat: 'Export conversation to Markdown',
+  aiExportRoleYou: 'You',
   aiRegenerate: 'Regenerate',
   aiScopeSelection: '{count} elements selected',
   aiScopeSlide: 'Slide {n}',

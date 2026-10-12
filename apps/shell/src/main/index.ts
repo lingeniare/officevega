@@ -73,6 +73,7 @@ import {
   type HeadlessArgvParse,
   showOpenDialogWithMemory,
   showSaveDialogWithMemory,
+  saveTextFileWithDialog,
   windowMenuTemplate,
   aboutMenuItem,
   checkUpdatesMenuItem,
@@ -4647,6 +4648,26 @@ function registerHomeIpc(): void {
     }
     return readKnowledgeFilePage(path, offset)
   })
+
+  // Ask AI transcript export (#1974): the Home renderer serializes to Markdown
+  // and picks the file name; main owns the save dialog + write
+  ipcMain.handle(
+    'kb:export-chat',
+    async (event, markdown: unknown, name: unknown, title: unknown) => {
+      if (typeof markdown !== 'string' || !markdown) return { ok: false }
+      const win = BrowserWindow.fromWebContents(event.sender) ?? shellWindow
+      const defaultName = typeof name === 'string' && name ? name : 'ai-chat.md'
+      const dialogTitle = typeof title === 'string' ? title : ''
+      return saveTextFileWithDialog(win, {
+        title: dialogTitle,
+        defaultName,
+        ext: 'md',
+        filterName: 'Markdown',
+        content: markdown,
+        fallbackDir: defaultSaveDir(),
+      })
+    },
+  )
 
   ipcMain.handle(
     HOME_CHANNELS.rerankSearch,

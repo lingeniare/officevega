@@ -50,6 +50,8 @@ export const kk = {
   aiMsgError: 'Қате: {error}',
   aiCopied: 'Көшірілді',
   aiCopyReply: 'Жауапты көшіру',
+  aiExportChat: 'Сөйлесімді Markdown форматына экспорттау',
+  aiExportRoleYou: 'Сіз',
   aiRegenerate: 'Қайта жасау',
   aiScopeSelection: '{count} элемент таңдалды',
   aiScopeSlide: '{n}-слайд',

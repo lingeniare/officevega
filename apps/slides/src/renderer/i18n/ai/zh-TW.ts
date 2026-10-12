@@ -46,6 +46,8 @@ export const zhTW = {
   aiMsgError: '發生錯誤: {error}',
   aiCopied: '已複製',
   aiCopyReply: '複製回覆',
+  aiExportChat: '將對話匯出為 Markdown',
+  aiExportRoleYou: '你',
   aiRegenerate: '重新產生',
   aiScopeSelection: '已選取 {count} 個元素',
   aiScopeSlide: '第 {n} 張',

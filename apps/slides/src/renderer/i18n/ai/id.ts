@@ -50,6 +50,8 @@ export const id = {
   aiMsgError: 'Kesalahan: {error}',
   aiCopied: 'Disalin',
   aiCopyReply: 'Salin balasan',
+  aiExportChat: 'Ekspor percakapan ke Markdown',
+  aiExportRoleYou: 'Anda',
   aiRegenerate: 'Buat ulang',
   aiScopeSelection: '{count} elemen dipilih',
   aiScopeSlide: 'Slide {n}',

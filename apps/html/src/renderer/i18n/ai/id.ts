@@ -4,6 +4,8 @@ export const id = {
   aiCollapsePanel: 'Ciutkan panel',
   aiComposerPlaceholder: 'Minta AI menulis atau mengedit…',
   aiCopyReplyTitle: 'Salin balasan',
+  aiExportChat: 'Ekspor percakapan ke Markdown',
+  aiExportRoleYou: 'Anda',
   aiCreditsExhausted: 'Kredit habis — isi ulang di api.vega.chat',
   aiEmptyTitle: 'Rancang halaman dengan AI',
   aiEmptyBody:

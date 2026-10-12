@@ -84,6 +84,8 @@ export const uz = {
   aiWorking: 'Ishlanmoqda',
   aiErrorPrefix: 'Xato: {error}',
   aiCopyReplyTitle: 'Javobdan nusxa olish',
+  aiExportChat: 'Suhbatni Markdown ga eksport qilish',
+  aiExportRoleYou: 'Siz',
   aiCopied: 'Nusxalandi',
   aiRegenerateTitle: 'Qayta yaratish',
   aiSnapshotsTitle: 'Snapshotlar',

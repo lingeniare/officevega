@@ -76,6 +76,8 @@ const api: HtmlApi = {
     return () => ipcRenderer.removeListener(HTML_CHANNELS.printRequest, listener)
   },
   exportDocx: (request) => ipcRenderer.invoke(HTML_CHANNELS.exportDocx, request),
+  exportAiChat: (markdown, suggestedName, dialogTitle) =>
+    ipcRenderer.invoke(HTML_CHANNELS.exportAiChat, markdown, suggestedName, dialogTitle),
   exportPdf: (request) => ipcRenderer.invoke(HTML_CHANNELS.exportPdf, request),
   exportHtml: (request) => ipcRenderer.invoke(HTML_CHANNELS.exportHtml, request),
   printHtml: (request) => ipcRenderer.invoke(HTML_CHANNELS.printHtml, request),

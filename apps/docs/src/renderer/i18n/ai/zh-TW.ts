@@ -83,6 +83,8 @@ export const zhTW = {
   aiWorking: '繼續處理中',
   aiErrorPrefix: '出錯: {error}',
   aiCopyReplyTitle: '複製回覆',
+  aiExportChat: '將對話匯出為 Markdown',
+  aiExportRoleYou: '你',
   aiCopied: '已複製',
   aiRegenerateTitle: '重新產生',
   aiSnapshotsTitle: '版本快照',

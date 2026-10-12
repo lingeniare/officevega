@@ -4,6 +4,8 @@ export const hi = {
   aiCollapsePanel: 'पैनल संक्षिप्त करें',
   aiComposerPlaceholder: 'AI से लिखने या संपादित करने को कहें…',
   aiCopyReplyTitle: 'जवाब कॉपी करें',
+  aiExportChat: 'बातचीत को Markdown में निर्यात करें',
+  aiExportRoleYou: 'आप',
   aiCreditsExhausted: 'क्रेडिट समाप्त — api.vega.chat पर रिचार्ज करें',
   aiEmptyTitle: 'AI से पेज डिज़ाइन करें',
   aiEmptyBody:

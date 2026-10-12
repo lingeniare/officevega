@@ -82,6 +82,8 @@ export const zh = {
   aiWorking: '继续处理中',
   aiErrorPrefix: '出错: {error}',
   aiCopyReplyTitle: '复制回复',
+  aiExportChat: '将对话导出为 Markdown',
+  aiExportRoleYou: '你',
   aiCopied: '已复制',
   aiRegenerateTitle: '重新生成',
   aiSnapshotsTitle: '版本快照',

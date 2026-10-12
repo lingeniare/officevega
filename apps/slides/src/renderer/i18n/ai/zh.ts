@@ -45,6 +45,8 @@ export const zh = {
   aiMsgError: '出错: {error}',
   aiCopied: '已复制',
   aiCopyReply: '复制回复',
+  aiExportChat: '将对话导出为 Markdown',
+  aiExportRoleYou: '你',
   aiRegenerate: '重新生成',
   aiScopeSelection: '已选中 {count} 个元素',
   aiScopeSlide: '第 {n} 张',

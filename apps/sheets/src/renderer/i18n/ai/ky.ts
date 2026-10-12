@@ -20,6 +20,8 @@ export const ky = {
   aiSettingsTitle: 'AI жөндөөлөрү',
   aiSetUp: 'AI орнотуу',
   aiNewChat: 'Жаңы баарлашуу',
+  aiExportChat: 'Сүйлөмдү Markdown форматына экспорттоо',
+  aiExportRoleYou: 'Сиз',
   aiCollapsePanel: 'AI панелин жыйноо',
   aiHistorySep: '—— Мурунку маек ——',
   aiHistoryTitle: 'History',

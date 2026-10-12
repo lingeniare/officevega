@@ -86,6 +86,8 @@ export const de = {
   aiWorking: 'Wird verarbeitet',
   aiErrorPrefix: 'Fehler: {error}',
   aiCopyReplyTitle: 'Antwort kopieren',
+  aiExportChat: 'Unterhaltung als Markdown exportieren',
+  aiExportRoleYou: 'Sie',
   aiCopied: 'Kopiert',
   aiRegenerateTitle: 'Neu generieren',
   aiSnapshotsTitle: 'Versionsschnappschüsse',

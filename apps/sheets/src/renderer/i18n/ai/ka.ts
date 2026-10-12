@@ -18,6 +18,8 @@ export const ka = {
   aiSettingsTitle: 'AI-ის პარამეტრები',
   aiSetUp: 'AI-ის დაყენება',
   aiNewChat: 'ახალი საუბარი',
+  aiExportChat: 'საუბრის Markdown-ში ექსპორტი',
+  aiExportRoleYou: 'თქვენ',
   aiCollapsePanel: 'AI-ის პანელის ჩაკეცვა',
   aiHistorySep: '—— წინა საუბარი ——',
   aiHistoryTitle: 'History',

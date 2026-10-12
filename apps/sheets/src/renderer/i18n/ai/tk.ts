@@ -19,6 +19,8 @@ export const tk = {
   aiSettingsTitle: 'AI sazlamalary',
   aiSetUp: 'AI-ni sazla',
   aiNewChat: 'Täze söhbet',
+  aiExportChat: 'Söhbeti Markdown-a eksport et',
+  aiExportRoleYou: 'Siz',
   aiCollapsePanel: 'AI panelini ýygnap goý',
   aiHistorySep: '—— Öňki söhbet ——',
   aiHistoryTitle: 'History',

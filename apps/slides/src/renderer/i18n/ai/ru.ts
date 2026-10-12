@@ -49,6 +49,8 @@ export const ru = {
   aiMsgError: 'Ошибка: {error}',
   aiCopied: 'Скопировано',
   aiCopyReply: 'Копировать ответ',
+  aiExportChat: 'Экспортировать диалог в Markdown',
+  aiExportRoleYou: 'Вы',
   aiRegenerate: 'Сгенерировать заново',
   aiScopeSelection: 'Выбрано элементов: {count}',
   aiScopeSlide: 'Слайд {n}',

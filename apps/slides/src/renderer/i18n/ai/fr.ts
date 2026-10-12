@@ -50,6 +50,8 @@ export const fr = {
   aiMsgError: 'Erreur : {error}',
   aiCopied: 'Copié',
   aiCopyReply: 'Copier la réponse',
+  aiExportChat: 'Exporter la conversation en Markdown',
+  aiExportRoleYou: 'Vous',
   aiRegenerate: 'Régénérer',
   aiScopeSelection: '{count} éléments sélectionnés',
   aiScopeSlide: 'Diapositive {n}',

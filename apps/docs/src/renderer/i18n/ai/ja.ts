@@ -84,6 +84,8 @@ export const ja = {
   aiWorking: '処理中',
   aiErrorPrefix: 'エラー: {error}',
   aiCopyReplyTitle: '返信をコピー',
+  aiExportChat: '会話を Markdown にエクスポート',
+  aiExportRoleYou: 'あなた',
   aiCopied: 'コピーしました',
   aiRegenerateTitle: '再生成',
   aiSnapshotsTitle: 'バージョンスナップショット',

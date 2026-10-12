@@ -85,6 +85,8 @@ export const ru = {
   aiWorking: 'Обработка',
   aiErrorPrefix: 'Ошибка: {error}',
   aiCopyReplyTitle: 'Копировать ответ',
+  aiExportChat: 'Экспортировать диалог в Markdown',
+  aiExportRoleYou: 'Вы',
   aiCopied: 'Скопировано',
   aiRegenerateTitle: 'Создать заново',
   aiSnapshotsTitle: 'Снимки версий',

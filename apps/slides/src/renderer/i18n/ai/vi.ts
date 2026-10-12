@@ -49,6 +49,8 @@ export const vi = {
   aiMsgError: 'Lỗi: {error}',
   aiCopied: 'Đã sao chép',
   aiCopyReply: 'Sao chép phản hồi',
+  aiExportChat: 'Xuất cuộc trò chuyện ra Markdown',
+  aiExportRoleYou: 'Bạn',
   aiRegenerate: 'Tạo lại',
   aiScopeSelection: 'Đã chọn {count} phần tử',
   aiScopeSlide: 'Trang chiếu {n}',

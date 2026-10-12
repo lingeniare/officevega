@@ -4,6 +4,8 @@ export const ka = {
   aiCollapsePanel: 'ჩაკეცეთ პანელი',
   aiComposerPlaceholder: 'სთხოვეთ AI-ს დოკუმენტის დაწერა ან რედაქტირება…',
   aiCopyReplyTitle: 'პასუხის კოპირება',
+  aiExportChat: 'საუბრის Markdown-ში ექსპორტი',
+  aiExportRoleYou: 'თქვენ',
   aiCreditsExhausted: 'კრედიტები ამოიწურა — შეავსეთ api.vega.chat-ზე',
   aiEmptyTitle: 'გვერდის დიზაინი AI-ით',
   aiEmptyBody:

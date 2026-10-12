@@ -19,6 +19,7 @@ import {
   buildPrintableHtml,
   configuredDefaultSaveDir,
   contextMenuLabels,
+  saveTextFileWithDialog,
   installContextMenu,
   installNavigationGuard,
   printHtmlToPdf,
@@ -2177,6 +2178,28 @@ function registerPdfIpc(): void {
       }
     })
   }
+
+  // AI chat transcript export (#1974): the renderer serializes to Markdown and
+  // picks the file name; main owns the save dialog + write. Registered for both
+  // shell and standalone modes — the Ask AI panel exists in either.
+  ipcMain.handle(
+    PDF_CHANNELS.exportAiChat,
+    async (e, markdown: unknown, name: unknown, title: unknown) => {
+      if (typeof markdown !== 'string' || !markdown) return { ok: false }
+      const win =
+        BrowserWindow.fromWebContents(e.sender) ?? BrowserWindow.getFocusedWindow() ?? undefined
+      const defaultName = typeof name === 'string' && name ? name : 'ai-chat.md'
+      const dialogTitle = typeof title === 'string' && title ? title : ''
+      return saveTextFileWithDialog(win, {
+        title: dialogTitle,
+        defaultName,
+        ext: 'md',
+        filterName: 'Markdown',
+        content: markdown,
+        fallbackDir: configuredDefaultSaveDir(app),
+      })
+    },
+  )
 
   // Language channel shared with other modules; removeHandler tolerates duplicate registration
   ipcMain.removeHandler(PDF_CHANNELS.getLanguage)

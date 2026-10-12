@@ -47,6 +47,8 @@ export const he = {
   aiMsgError: 'שגיאה: {error}',
   aiCopied: 'הועתק',
   aiCopyReply: 'העתק תשובה',
+  aiExportChat: 'ייצוא השיחה ל-Markdown',
+  aiExportRoleYou: 'אתה',
   aiRegenerate: 'צור מחדש',
   aiScopeSelection: 'נבחרו {count} רכיבים',
   aiScopeSlide: 'שקופית {n}',

@@ -36,6 +36,8 @@ export const HTML_CHANNELS = {
   exportDocx: 'html:export-docx',
   exportPdf: 'html:export-pdf',
   exportHtml: 'html:export-html',
+  /** Saves the AI chat transcript as a .md file picked through a native dialog */
+  exportAiChat: 'html:export-ai-chat',
   consumeHeadlessExport: 'html:consume-headless-export',
   headlessExportDone: 'html:headless-export-done',
   printRequest: 'html:print-request',
@@ -288,6 +290,12 @@ export interface HtmlApi {
   exportDocx(request: ExportDocxRequest): Promise<ExportResult>
   exportPdf(request: ExportPdfRequest): Promise<ExportResult>
   exportHtml(request: ExportHtmlRequest): Promise<ExportResult>
+  /** Saves the AI chat transcript as a .md file picked through a native dialog */
+  exportAiChat(
+    markdown: string,
+    suggestedName: string,
+    dialogTitle: string,
+  ): Promise<{ ok: boolean; path?: string; error?: string }>
   /** Shell menu Print → main renders the document and opens the system print dialog */
   printHtml(request: PrintHtmlRequest): Promise<PrintResult>
   getLanguage(): Promise<Lang>

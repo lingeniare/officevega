@@ -110,6 +110,8 @@ export const IPC_CHANNELS = {
   aiProviderModels: 'ai:provider-models',
   // sheets: prefix — slides' ai:generate-image only registers once a slides view exists
   aiGenerateImage: 'sheets:ai-generate-image',
+  /// Export the AI chat transcript to a .md file via a native save dialog
+  exportAiChat: 'sheets:export-ai-chat',
   // MCP visible-grid bridge: shell pushes one command, the renderer that owns
   // the Univer workbook executes it with the built-in AI's executors
   mcpCommand: 'sheets:mcp-command',

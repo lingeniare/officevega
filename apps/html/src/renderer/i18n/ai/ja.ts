@@ -4,6 +4,8 @@ export const ja = {
   aiCollapsePanel: 'パネルを折りたたむ',
   aiComposerPlaceholder: 'AI に執筆・編集を依頼…',
   aiCopyReplyTitle: '返信をコピー',
+  aiExportChat: '会話を Markdown にエクスポート',
+  aiExportRoleYou: 'あなた',
   aiCreditsExhausted: 'クレジット不足です。api.vega.chat でチャージしてください',
   aiEmptyTitle: 'AI でページをデザイン',
   aiEmptyBody:

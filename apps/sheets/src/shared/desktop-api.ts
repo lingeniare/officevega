@@ -3049,6 +3049,12 @@ export interface DesktopApi {
   readAttachment(path: string, offset: number, maxChars: number): Promise<AttachmentReadResult>
   /// Reads an image attachment as base64 for multimodal input (≤5MB)
   readAttachmentImage(path: string): Promise<AttachmentImageResult>
+  /// Saves the AI chat transcript as a .md file picked through a native dialog
+  exportAiChat(
+    markdown: string,
+    suggestedName: string,
+    dialogTitle: string,
+  ): Promise<{ ok: boolean; path?: string; error?: string }>
   /// Absolute path of a File dropped onto the window (Electron webUtils)
   getPathForFile(file: File): string
 }

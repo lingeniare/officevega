@@ -85,6 +85,8 @@ export const ky = {
   aiWorking: 'Иштеп жатат',
   aiErrorPrefix: 'Ката: {error}',
   aiCopyReplyTitle: 'Жоопту көчүрүү',
+  aiExportChat: 'Сүйлөмдү Markdown форматына экспорттоо',
+  aiExportRoleYou: 'Сиз',
   aiCopied: 'Көчүрүлдү',
   aiRegenerateTitle: 'Кайра түзүү',
   aiSnapshotsTitle: 'Сүрөттөр',

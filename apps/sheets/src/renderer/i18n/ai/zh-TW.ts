@@ -17,6 +17,8 @@ export const zhTW = {
   aiSettingsTitle: 'AI 設定',
   aiSetUp: '設定 AI',
   aiNewChat: '新對話',
+  aiExportChat: '將對話匯出為 Markdown',
+  aiExportRoleYou: '你',
   aiCollapsePanel: '收合 AI 面板',
   aiHistorySep: '—— 以上是歷史對話 ——',
   aiHistoryTitle: 'History',

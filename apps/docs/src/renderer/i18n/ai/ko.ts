@@ -84,6 +84,8 @@ export const ko = {
   aiWorking: '처리 중',
   aiErrorPrefix: '오류: {error}',
   aiCopyReplyTitle: '답변 복사',
+  aiExportChat: '대화를 Markdown으로 내보내기',
+  aiExportRoleYou: '사용자',
   aiCopied: '복사됨',
   aiRegenerateTitle: '다시 생성',
   aiSnapshotsTitle: '버전 스냅샷',

@@ -5355,6 +5355,7 @@ export function App({
         {...(sessionUsage !== undefined ? { sessionUsage } : {})}
         chat={chat}
         historicChat={historicChat}
+        {...(workbookFile?.name !== undefined ? { docName: workbookFile.name } : {})}
         attachments={attachments}
         attachNotice={attachNotice}
         onPickAttachments={() => void handlePickAttachments()}

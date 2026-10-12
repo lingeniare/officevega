@@ -60,6 +60,7 @@ import {
   rendererUrl,
   forwardRendererConsole,
   writeJsonAtomic,
+  saveTextFileWithDialog,
 } from '@genoffice/electron-utils'
 import {
   appTitle,
@@ -4119,6 +4120,26 @@ export function registerSheetsIpc(): void {
       return filePath
         ? collectAttachments([filePath])
         : { accepted: [], rejected: [tm('errNotImage')] }
+    },
+  )
+
+  // AI chat transcript export (#1974): the renderer serializes to Markdown and
+  // picks the file name; main owns the save dialog + write
+  ipcMain.handle(
+    IPC_CHANNELS.exportAiChat,
+    async (event, markdown: unknown, name: unknown, title: unknown) => {
+      sessionFor(event)
+      if (typeof markdown !== 'string' || !markdown) return { ok: false }
+      const defaultName = typeof name === 'string' && name ? name : 'ai-chat.md'
+      const dialogTitle = typeof title === 'string' && title ? title : tm('menuSaveAs')
+      return saveTextFileWithDialog(dialogParent(event), {
+        title: dialogTitle,
+        defaultName,
+        ext: 'md',
+        filterName: 'Markdown',
+        content: markdown,
+        fallbackDir: configuredDefaultSaveDir(app),
+      })
     },
   )
 }

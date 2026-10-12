@@ -20,6 +20,8 @@ export const az = {
   aiSettingsTitle: 'AI parametrləri',
   aiSetUp: 'AI-ni quraşdır',
   aiNewChat: 'Yeni söhbət',
+  aiExportChat: 'Söhbəti Markdown-a ixrac et',
+  aiExportRoleYou: 'Siz',
   aiCollapsePanel: 'AI panelini yığ',
   aiHistorySep: '—— Əvvəlki söhbət ——',
   aiHistoryTitle: 'History',

@@ -85,6 +85,8 @@ export const ms = {
   aiWorking: 'Sedang memproses',
   aiErrorPrefix: 'Ralat: {error}',
   aiCopyReplyTitle: 'Salin balasan',
+  aiExportChat: 'Eksport perbualan ke Markdown',
+  aiExportRoleYou: 'Anda',
   aiCopied: 'Disalin',
   aiRegenerateTitle: 'Jana semula',
   aiSnapshotsTitle: 'Snapshot versi',

@@ -36,6 +36,8 @@ export const MARKDOWN_CHANNELS = {
   exportRequest: 'markdown:export-request',
   exportDocx: 'markdown:export-docx',
   exportPdf: 'markdown:export-pdf',
+  /** Saves the AI chat transcript as a .md file picked through a native dialog */
+  exportAiChat: 'markdown:export-ai-chat',
   prepareImageExport: 'markdown:prepare-image-export',
   writeExportImage: 'markdown:write-export-image',
   finishImageExport: 'markdown:finish-image-export',
@@ -287,6 +289,12 @@ export interface MarkdownApi {
   onPrintRequest(handler: () => void): () => void
   exportDocx(request: ExportDocxRequest): Promise<ExportResult>
   exportPdf(request: ExportPdfRequest): Promise<ExportResult>
+  /** Saves the AI chat transcript as a .md file picked through a native dialog */
+  exportAiChat(
+    markdown: string,
+    suggestedName: string,
+    dialogTitle: string,
+  ): Promise<{ ok: boolean; path?: string; error?: string }>
   prepareImageExport(request: Omit<ExportPdfRequest, 'outPath'>): Promise<ImageExportPreparation>
   writeExportImage(
     id: string,

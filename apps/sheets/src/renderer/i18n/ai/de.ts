@@ -19,6 +19,8 @@ export const de = {
   aiSettingsTitle: 'KI-Einstellungen',
   aiSetUp: 'KI einrichten',
   aiNewChat: 'Neue Unterhaltung',
+  aiExportChat: 'Unterhaltung als Markdown exportieren',
+  aiExportRoleYou: 'Sie',
   aiCollapsePanel: 'KI-Bereich einklappen',
   aiHistorySep: '—— Frühere Unterhaltung ——',
   aiHistoryTitle: 'History',

@@ -19,6 +19,8 @@ export const kk = {
   aiSettingsTitle: 'AI параметрлері',
   aiSetUp: 'AI орнату',
   aiNewChat: 'Жаңа әңгіме',
+  aiExportChat: 'Сөйлесімді Markdown форматына экспорттау',
+  aiExportRoleYou: 'Сіз',
   aiCollapsePanel: 'AI панелін тасалау',
   aiHistorySep: '—— Алдыңғы әңгіме ——',
   aiHistoryTitle: 'History',

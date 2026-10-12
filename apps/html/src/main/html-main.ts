@@ -31,6 +31,7 @@ import {
   installNavigationGuard,
   isHeadlessMode,
   safeExternalUrl,
+  saveTextFileWithDialog,
   showOpenDialogWithMemory,
   showSaveDialogWithMemory,
   type HeadlessExportFormat,
@@ -1824,6 +1825,27 @@ function registerHtmlIpc(): void {
       return null
     }
   })
+
+  // AI chat transcript export (#1974): the renderer serializes to Markdown and
+  // picks the file name; main owns the save dialog + write
+  ipcMain.handle(
+    HTML_CHANNELS.exportAiChat,
+    async (e, markdown: unknown, name: unknown, title: unknown) => {
+      if (typeof markdown !== 'string' || !markdown) return { ok: false }
+      const win =
+        BrowserWindow.fromWebContents(e.sender) ?? BrowserWindow.getFocusedWindow() ?? undefined
+      const defaultName = typeof name === 'string' && name ? name : 'ai-chat.md'
+      const dialogTitle = typeof title === 'string' && title ? title : tm('dlgSaveTitle')
+      return saveTextFileWithDialog(win, {
+        title: dialogTitle,
+        defaultName,
+        ext: 'md',
+        filterName: 'Markdown',
+        content: markdown,
+        fallbackDir: configuredDefaultSaveDir(app),
+      })
+    },
+  )
 
   ipcMain.handle(
     HTML_CHANNELS.exportDocx,

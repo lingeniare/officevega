@@ -50,6 +50,8 @@ export const tk = {
   aiMsgError: 'Ýalňyşlyk: {error}',
   aiCopied: 'Göçürildi',
   aiCopyReply: 'Jogaby göçür',
+  aiExportChat: 'Söhbeti Markdown-a eksport et',
+  aiExportRoleYou: 'Siz',
   aiRegenerate: 'Täzeden döret',
   aiScopeSelection: '{count} element saýlandy',
   aiScopeSlide: '{n}-nji slaýd',

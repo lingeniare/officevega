@@ -29,10 +29,13 @@ import {
   AiSuggestedQuestions,
   AiTypingIndicator,
   AiUsageChip,
+  IconDownload,
   IconPlus,
   Markdown,
   addTokenUsage,
+  chatTranscriptToMarkdown,
   createFileNav,
+  suggestChatExportName,
   useChatRunQueue,
   useSuggestedQuestions,
   useVegaDeposit,
@@ -1035,6 +1038,19 @@ export function AiPanel({
     void window.markdownApi.openSourcePath(path)
   })
 
+  // whole-session export to a .md file (#1974): the saved file opens in this
+  // same Markdown editor, where File → Export DOCX / PDF already exists
+  const exportChat = (): void => {
+    const entries = chat.map((e) => ({ role: e.role, text: e.text }))
+    const docName = filePath?.split(/[\\/]/).pop() ?? t('aiOpenAssistant')
+    const md = chatTranscriptToMarkdown(entries, {
+      title: docName,
+      userLabel: t('aiExportRoleYou'),
+      assistantLabel: 'VEGA',
+    })
+    void window.markdownApi.exportAiChat(md, suggestChatExportName(docName), t('aiExportChat'))
+  }
+
   /** submit every still-anchored queued edit as one batch run */
   const sendQueue = (): void => {
     const loop = loopRef.current
@@ -1159,6 +1175,16 @@ export function AiPanel({
             buttonLabel={t('aiHistoryTitle')}
             trigger={<AiHistoryButton label={t('aiHistoryTitle')} onClick={openHistory} />}
           />
+          {chat.length > 0 && (
+            <button
+              className="ai-header-btn"
+              onClick={exportChat}
+              data-tip={t('aiExportChat')}
+              aria-label={t('aiExportChat')}
+            >
+              <IconDownload size={15} />
+            </button>
+          )}
           {chat.length > 0 && (
             <button
               className="ai-header-btn"

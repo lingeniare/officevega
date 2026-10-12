@@ -58,6 +58,8 @@ export const PDF_CHANNELS = {
   /** renderer → shell: run the whole Save As flow (dialog + guarded write) */
   saveAsDialog: 'pdf:save-as-dialog',
   printRequest: 'pdf:print-request',
+  /** Saves the AI chat transcript as a .md file picked through a native dialog */
+  exportAiChat: 'pdf:export-ai-chat',
   fileRenamed: 'pdf:file-renamed',
   getLanguage: 'app:get-language',
   languageChanged: 'app:language-changed',
@@ -921,6 +923,12 @@ export interface PdfApi {
   save(request: SavePdfRequest): Promise<SavePdfResult>
   /** Creates a redacted working copy on first apply; subsequent applies save that copy in place. */
   requestRedactionCopy(path: string): Promise<boolean>
+  /** Saves the AI chat transcript as a .md file picked through a native dialog */
+  exportAiChat(
+    markdown: string,
+    suggestedName: string,
+    dialogTitle: string,
+  ): Promise<{ ok: boolean; path?: string; error?: string }>
   /** Content-derived naming (docs/sheets analog): propose a file base name after a save.
       The main process renames only while the file still carries the shell's auto-created
       untitled name, so user-chosen names are never touched. */

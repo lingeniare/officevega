@@ -84,6 +84,8 @@ import {
   AiSuggestedQuestions,
   AiTypingIndicator,
   IconPlus,
+  chatTranscriptToMarkdown,
+  suggestChatExportName,
   useSuggestedQuestions,
   useVegaDeposit,
   type AiHistoryItem,
@@ -1504,6 +1506,24 @@ export function AiPanel({
     window.setTimeout(() => setCopiedIdx((cur) => (cur === idx ? null : cur)), 1200)
   }
 
+  // whole-session export to a .md file (#1974): historic turns first, then the
+  // live transcript; the saved file can be opened in the Markdown editor for
+  // DOCX/PDF export
+  const exportChat = (): void => {
+    const entries = [...historicChat, ...chat].map((e) => ({ role: e.role, text: e.text }))
+    const docName = filePath?.split(/[\\/]/).pop() ?? t('aiPanelTitle')
+    const md = chatTranscriptToMarkdown(entries, {
+      title: docName,
+      userLabel: t('aiExportRoleYou'),
+      assistantLabel: 'VEGA',
+    })
+    void window.desktop.exportAiChat?.(
+      md,
+      suggestChatExportName(docName),
+      t('aiExportChat'),
+    )
+  }
+
   const mergeAttachments = (result: AttachmentAddResult | null) => {
     if (!result) return
     if (result.accepted.length > 0) {
@@ -1676,6 +1696,30 @@ export function AiPanel({
             buttonLabel={t('aiHistoryTitle')}
             trigger={<AiHistoryButton label={t('aiHistoryTitle')} onClick={openHistory} />}
           />
+          {(chat.length > 0 || historicChat.length > 0) && (
+            <button
+              className="ai-header-btn"
+              onClick={exportChat}
+              data-tip={t('aiExportChat')}
+              aria-label={t('aiExportChat')}
+            >
+              <span className="ai-feature-icon" aria-hidden="true">
+                {/* lucide: download */}
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <path d="m7 10 5 5 5-5" />
+                  <path d="M12 15V3" />
+                </svg>
+              </span>
+            </button>
+          )}
           {(chat.length > 0 || historicChat.length > 0) && (
             <button
               className="ai-header-btn"

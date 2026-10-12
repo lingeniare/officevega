@@ -18,6 +18,8 @@ export const vi = {
   aiSettingsTitle: 'Cài đặt AI',
   aiSetUp: 'Thiết lập AI',
   aiNewChat: 'Cuộc trò chuyện mới',
+  aiExportChat: 'Xuất cuộc trò chuyện ra Markdown',
+  aiExportRoleYou: 'Bạn',
   aiCollapsePanel: 'Thu gọn bảng điều khiển AI',
   aiHistorySep: '—— Cuộc trò chuyện trước đó ——',
   aiHistoryTitle: 'History',

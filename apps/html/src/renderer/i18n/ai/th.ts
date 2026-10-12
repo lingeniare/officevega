@@ -4,6 +4,8 @@ export const th = {
   aiCollapsePanel: 'ยุบแผง',
   aiComposerPlaceholder: 'ให้ AI เขียนหรือแก้ไขเอกสาร…',
   aiCopyReplyTitle: 'คัดลอกคำตอบ',
+  aiExportChat: 'ส่งออกบทสนทนาเป็น Markdown',
+  aiExportRoleYou: 'คุณ',
   aiCreditsExhausted: 'เครดิตหมด — เติมได้ที่ api.vega.chat',
   aiEmptyTitle: 'ออกแบบหน้าเว็บด้วย AI',
   aiEmptyBody:

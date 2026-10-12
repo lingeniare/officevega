@@ -84,6 +84,8 @@ export const vi = {
   aiWorking: 'Đang xử lý',
   aiErrorPrefix: 'Lỗi: {error}',
   aiCopyReplyTitle: 'Sao chép câu trả lời',
+  aiExportChat: 'Xuất cuộc trò chuyện ra Markdown',
+  aiExportRoleYou: 'Bạn',
   aiCopied: 'Đã sao chép',
   aiRegenerateTitle: 'Tạo lại',
   aiSnapshotsTitle: 'Bản chụp nhanh',

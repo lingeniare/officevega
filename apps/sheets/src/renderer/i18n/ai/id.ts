@@ -17,6 +17,8 @@ export const id = {
   aiSettingsTitle: 'Pengaturan AI',
   aiSetUp: 'Siapkan AI',
   aiNewChat: 'Percakapan baru',
+  aiExportChat: 'Ekspor percakapan ke Markdown',
+  aiExportRoleYou: 'Anda',
   aiCollapsePanel: 'Ciutkan panel AI',
   aiHistorySep: '—— Percakapan sebelumnya ——',
   aiHistoryTitle: 'History',

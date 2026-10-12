@@ -19,6 +19,8 @@ export const tt = {
   aiSettingsTitle: 'AI көйләүләре',
   aiSetUp: 'AI көйләү',
   aiNewChat: 'Яңа әңгәмә',
+  aiExportChat: 'Әңгәмәне Markdown-га экспортлау',
+  aiExportRoleYou: 'Сез',
   aiCollapsePanel: 'AI панелен җыю',
   aiHistorySep: '—— Алдагы сөйләшү ——',
   aiHistoryTitle: 'History',

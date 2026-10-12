@@ -17,6 +17,8 @@ export const ar = {
   aiSettingsTitle: 'إعدادات الذكاء الاصطناعي',
   aiSetUp: 'إعداد الذكاء الاصطناعي',
   aiNewChat: 'محادثة جديدة',
+  aiExportChat: 'تصدير المحادثة إلى Markdown',
+  aiExportRoleYou: 'أنت',
   aiCollapsePanel: 'طي لوحة الذكاء الاصطناعي',
   aiHistorySep: '—— المحادثة السابقة ——',
   aiHistoryTitle: 'History',

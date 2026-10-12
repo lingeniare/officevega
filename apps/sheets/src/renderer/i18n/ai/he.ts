@@ -17,6 +17,8 @@ export const he = {
   aiSettingsTitle: 'הגדרות AI',
   aiSetUp: 'הגדרת AI',
   aiNewChat: 'שיחה חדשה',
+  aiExportChat: 'ייצוא השיחה ל-Markdown',
+  aiExportRoleYou: 'אתה',
   aiCollapsePanel: 'כיווץ חלונית ה-AI',
   aiHistorySep: '—— השיחה הקודמת ——',
   aiHistoryTitle: 'History',

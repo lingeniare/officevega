@@ -50,6 +50,8 @@ export const nl = {
   aiMsgError: 'Fout: {error}',
   aiCopied: 'Gekopieerd',
   aiCopyReply: 'Antwoord kopiëren',
+  aiExportChat: 'Gesprek exporteren naar Markdown',
+  aiExportRoleYou: 'Jij',
   aiRegenerate: 'Opnieuw genereren',
   aiScopeSelection: '{count} elementen geselecteerd',
   aiScopeSlide: 'Dia {n}',

@@ -49,6 +49,8 @@ export const tt = {
   aiMsgError: 'Хата: {error}',
   aiCopied: 'Күчерелде',
   aiCopyReply: 'Җавапны күчерү',
+  aiExportChat: 'Әңгәмәне Markdown-га экспортлау',
+  aiExportRoleYou: 'Сез',
   aiRegenerate: 'Яңадан ясау',
   aiScopeSelection: '{count} элемент сайланды',
   aiScopeSlide: '{n} нче слайд',

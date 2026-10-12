@@ -18,6 +18,8 @@ export const hi = {
   aiSettingsTitle: 'AI सेटिंग्स',
   aiSetUp: 'AI सेट करें',
   aiNewChat: 'नई बातचीत',
+  aiExportChat: 'बातचीत को Markdown में निर्यात करें',
+  aiExportRoleYou: 'आप',
   aiCollapsePanel: 'AI पैनल संक्षिप्त करें',
   aiHistorySep: '—— पिछली बातचीत ——',
   aiHistoryTitle: 'History',

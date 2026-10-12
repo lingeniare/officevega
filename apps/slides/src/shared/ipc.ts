@@ -1701,6 +1701,12 @@ export interface SlidesApi {
   saveAs: (
     defaultName: string,
   ) => Promise<{ ok: boolean; path?: string; error?: string; slides?: RenderSlide[] }>
+  /** Saves the AI chat transcript as a .md file picked through a native dialog */
+  exportAiChat: (
+    markdown: string,
+    suggestedName: string,
+    dialogTitle: string,
+  ) => Promise<{ ok: boolean; path?: string; error?: string }>
   /** The close guard chose "Save": the main process asks the renderer to run the full save flow */
   onCloseSaveRequest: (handler: () => void) => () => void
   /** Undo/redo stack occupancy pushed by the main process (drives the QAT button gray states) */

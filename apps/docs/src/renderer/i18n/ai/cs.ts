@@ -85,6 +85,8 @@ export const cs = {
   aiWorking: 'Pracuje',
   aiErrorPrefix: 'Chyba: {error}',
   aiCopyReplyTitle: 'Kopírovat odpověď',
+  aiExportChat: 'Exportovat konverzaci do Markdown',
+  aiExportRoleYou: 'Vy',
   aiCopied: 'Zkopírováno',
   aiRegenerateTitle: 'Vygenerovat znovu',
   aiSnapshotsTitle: 'Snímky',

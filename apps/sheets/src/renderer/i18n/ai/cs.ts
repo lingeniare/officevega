@@ -18,6 +18,8 @@ export const cs = {
   aiSettingsTitle: 'Nastavení AI',
   aiSetUp: 'Nastavit AI',
   aiNewChat: 'Nová konverzace',
+  aiExportChat: 'Exportovat konverzaci do Markdown',
+  aiExportRoleYou: 'Vy',
   aiCollapsePanel: 'Sbalit panel AI',
   aiHistorySep: '—— Předchozí konverzace ——',
   aiHistoryTitle: 'History',

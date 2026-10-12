@@ -18,6 +18,8 @@ export const ru = {
   aiSettingsTitle: 'Параметры ИИ',
   aiSetUp: 'Настроить ИИ',
   aiNewChat: 'Новый диалог',
+  aiExportChat: 'Экспортировать диалог в Markdown',
+  aiExportRoleYou: 'Вы',
   aiCollapsePanel: 'Свернуть панель ИИ',
   aiHistorySep: '—— Предыдущий диалог ——',
   aiHistoryTitle: 'История',

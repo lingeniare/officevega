@@ -83,6 +83,8 @@ export const ar = {
   aiWorking: 'جارٍ المعالجة',
   aiErrorPrefix: 'خطأ: {error}',
   aiCopyReplyTitle: 'نسخ الرد',
+  aiExportChat: 'تصدير المحادثة إلى Markdown',
+  aiExportRoleYou: 'أنت',
   aiCopied: 'تم النسخ',
   aiRegenerateTitle: 'إعادة الإنشاء',
   aiSnapshotsTitle: 'لقطات الإصدارات',

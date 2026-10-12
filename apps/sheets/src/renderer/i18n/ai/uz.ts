@@ -19,6 +19,8 @@ export const uz = {
   aiSettingsTitle: 'AI sozlamalari',
   aiSetUp: 'AIni sozlash',
   aiNewChat: 'Yangi suhbat',
+  aiExportChat: 'Suhbatni Markdown ga eksport qilish',
+  aiExportRoleYou: 'Siz',
   aiCollapsePanel: 'AI panelini yig‘ish',
   aiHistorySep: '—— Avvalgi suhbat ——',
   aiHistoryTitle: 'History',

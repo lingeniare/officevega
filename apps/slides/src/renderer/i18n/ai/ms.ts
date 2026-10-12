@@ -49,6 +49,8 @@ export const ms = {
   aiMsgError: 'Ralat: {error}',
   aiCopied: 'Disalin',
   aiCopyReply: 'Salin balasan',
+  aiExportChat: 'Eksport perbualan ke Markdown',
+  aiExportRoleYou: 'Anda',
   aiRegenerate: 'Jana semula',
   aiScopeSelection: '{count} elemen dipilih',
   aiScopeSlide: 'Slaid {n}',

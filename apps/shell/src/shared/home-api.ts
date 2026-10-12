@@ -231,6 +231,12 @@ export interface HomeApi {
   kbSearch(query: { q: string; limit?: number }): Promise<KbSearchHit[]>
   /** one page of a corpus file's parsed text (path must be in kbList) */
   kbRead(path: string, offset: number): Promise<KbReadPage>
+  /** Saves the Ask AI transcript as a .md file picked through a native dialog */
+  kbExportChat(
+    markdown: string,
+    suggestedName: string,
+    dialogTitle: string,
+  ): Promise<{ ok: boolean; path?: string; error?: string }>
   /** the user's AI provider settings (shared with every app's panel) */
   aiGetSettings(): Promise<AiSettings>
   /** one streamed model turn over the shared ai:stream handler */

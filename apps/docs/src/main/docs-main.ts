@@ -55,6 +55,7 @@ import {
   safeExternalUrl,
   saveAsSuggestion,
   saveImageFromUrl,
+  saveTextFileWithDialog,
   showOpenDialogWithMemory,
   showSaveDialogWithMemory,
   aboutMenuItem,
@@ -6249,6 +6250,24 @@ export function registerDocsIpc(): void {
       fallbackDir: defaultSaveDir(),
     })
   })
+
+  ipcMain.handle(
+    'docs:export-ai-chat',
+    async (event, markdown: unknown, name: unknown, title: unknown) => {
+      if (tornDownWcIds.has(event.sender.id) || typeof markdown !== 'string' || !markdown)
+        return { ok: false }
+      const defaultName = typeof name === 'string' && name ? name : 'ai-chat.md'
+      const dialogTitle = typeof title === 'string' && title ? title : tm('dlgSaveAs')
+      return saveTextFileWithDialog(dialogParent(event), {
+        title: dialogTitle,
+        defaultName,
+        ext: 'md',
+        filterName: 'Markdown',
+        content: markdown,
+        fallbackDir: defaultSaveDir(),
+      })
+    },
+  )
 
   ipcMain.handle('docs:pick-export-images-target', async (event) => {
     let dir = testExportDir

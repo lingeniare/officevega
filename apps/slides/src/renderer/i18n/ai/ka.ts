@@ -50,6 +50,8 @@ export const ka = {
   aiMsgError: 'შეცდომა: {error}',
   aiCopied: 'კოპირებულია',
   aiCopyReply: 'პასუხის კოპირება',
+  aiExportChat: 'საუბრის Markdown-ში ექსპორტი',
+  aiExportRoleYou: 'თქვენ',
   aiRegenerate: 'ხელახლა შექმნა',
   aiScopeSelection: 'მონიშნულია {count} ელემენტი',
   aiScopeSlide: 'სლაიდი {n}',

@@ -4,6 +4,8 @@ export const tt = {
   aiCollapsePanel: 'Панельне җыю',
   aiComposerPlaceholder: 'Документны язу яки үзгәртү өчен ЯИдән сорау…',
   aiCopyReplyTitle: 'Җавапны күчерү',
+  aiExportChat: 'Әңгәмәне Markdown-га экспортлау',
+  aiExportRoleYou: 'Сез',
   aiCreditsExhausted: 'Кредитлар бетте — api.vega.chat адресында тулыландырыгыз',
   aiEmptyTitle: 'ЯИ ярдәмендә бит дизайнын ясау',
   aiEmptyBody:

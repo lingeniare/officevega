@@ -75,6 +75,8 @@ const api: PdfApi = {
     return () => ipcRenderer.removeListener(PDF_CHANNELS.saveAsFlow, listener)
   },
   requestSaveAsDialog: () => ipcRenderer.send(PDF_CHANNELS.saveAsDialog),
+  exportAiChat: (markdown: string, suggestedName: string, dialogTitle: string) =>
+    ipcRenderer.invoke(PDF_CHANNELS.exportAiChat, markdown, suggestedName, dialogTitle),
   requestOpenDialog: () => ipcRenderer.send(OPEN_FILE_DIALOG_CHANNEL),
   onPrintRequest: (handler) => {
     const listener = () => handler()

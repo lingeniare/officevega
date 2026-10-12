@@ -84,6 +84,8 @@ export const az = {
   aiWorking: 'İşləyir',
   aiErrorPrefix: 'Xəta: {error}',
   aiCopyReplyTitle: 'Cavabı köçürün',
+  aiExportChat: 'Söhbəti Markdown-a ixrac et',
+  aiExportRoleYou: 'Siz',
   aiCopied: 'Köçürüldü',
   aiRegenerateTitle: 'Yenidən yaradın',
   aiSnapshotsTitle: 'Ani görüntülər',

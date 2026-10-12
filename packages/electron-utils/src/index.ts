@@ -15,6 +15,7 @@ export {
   suggestImageFileName,
   type SaveImageResult,
 } from './save-image'
+export { saveTextFileWithDialog, type SaveTextResult } from './save-text'
 export {
   aboutMenuItem,
   appMenuLabels,

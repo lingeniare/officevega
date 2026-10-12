@@ -724,6 +724,29 @@ const desktopApi: DesktopApi = {
     if (result.error !== undefined) image.error = result.error
     return image
   },
+  async exportAiChat(markdown, suggestedName, dialogTitle) {
+    if (typeof markdown !== 'string' || markdown.length === 0) {
+      throw new Error('Invalid chat export payload.')
+    }
+    const result: unknown = await ipcRenderer.invoke(
+      IPC_CHANNELS.exportAiChat,
+      markdown,
+      typeof suggestedName === 'string' ? suggestedName : '',
+      typeof dialogTitle === 'string' ? dialogTitle : '',
+    )
+    if (
+      !isRecord(result) ||
+      typeof result.ok !== 'boolean' ||
+      !isOptionalString(result.path) ||
+      !isOptionalString(result.error)
+    ) {
+      throw new Error('Invalid chat export response.')
+    }
+    const out: { ok: boolean; path?: string; error?: string } = { ok: result.ok }
+    if (result.path !== undefined) out.path = result.path
+    if (result.error !== undefined) out.error = result.error
+    return out
+  },
   getPathForFile(file) {
     return webUtils.getPathForFile(file)
   },

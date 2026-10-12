@@ -4,6 +4,8 @@ export const ky = {
   aiCollapsePanel: 'Панелди жыйноо',
   aiComposerPlaceholder: "AI'дан документти жазууну же түзөтүүнү сураңыз…",
   aiCopyReplyTitle: 'Жоопту көчүрүү',
+  aiExportChat: 'Сүйлөмдү Markdown форматына экспорттоо',
+  aiExportRoleYou: 'Сиз',
   aiCreditsExhausted: 'Кредиттер түгөндү — api.vega.chat дарегинде толуктаңыз',
   aiEmptyTitle: 'AI менен баракча дизайнын түзүү',
   aiEmptyBody:

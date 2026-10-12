@@ -50,6 +50,8 @@ export const cs = {
   aiMsgError: 'Chyba: {error}',
   aiCopied: 'Zkopírováno',
   aiCopyReply: 'Kopírovat odpověď',
+  aiExportChat: 'Exportovat konverzaci do Markdown',
+  aiExportRoleYou: 'Vy',
   aiRegenerate: 'Vygenerovat znovu',
   aiScopeSelection: 'Vybráno prvků: {count}',
   aiScopeSlide: 'Snímek {n}',

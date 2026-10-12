@@ -48,6 +48,8 @@ export const pl = {
   aiMsgError: 'Błąd: {error}',
   aiCopied: 'Skopiowano',
   aiCopyReply: 'Kopiuj odpowiedź',
+  aiExportChat: 'Eksportuj rozmowę do Markdown',
+  aiExportRoleYou: 'Ty',
   aiRegenerate: 'Wygeneruj ponownie',
   aiScopeSelection: 'Zaznaczono elementy: {count}',
   aiScopeSlide: 'Slajd {n}',

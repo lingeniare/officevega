@@ -85,6 +85,8 @@ export const ka = {
   aiWorking: 'მუშაობს',
   aiErrorPrefix: 'შეცდომა: {error}',
   aiCopyReplyTitle: 'პასუხის კოპირება',
+  aiExportChat: 'საუბრის Markdown-ში ექსპორტი',
+  aiExportRoleYou: 'თქვენ',
   aiCopied: 'კოპირებულია',
   aiRegenerateTitle: 'ხელახლა შექმნა',
   aiSnapshotsTitle: 'სნეპშოტები',

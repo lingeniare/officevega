@@ -49,6 +49,8 @@ export const ky = {
   aiMsgError: 'Ката: {error}',
   aiCopied: 'Көчүрүлдү',
   aiCopyReply: 'Жоопту көчүрүү',
+  aiExportChat: 'Сүйлөмдү Markdown форматына экспорттоо',
+  aiExportRoleYou: 'Сиз',
   aiRegenerate: 'Кайра түзүү',
   aiScopeSelection: '{count} элемент тандалды',
   aiScopeSlide: '{n}-слайд',

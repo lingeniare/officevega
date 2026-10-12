@@ -24,6 +24,7 @@ import {
   installNavigationGuard,
   isHeadlessMode,
   safeExternalUrl,
+  saveTextFileWithDialog,
   showOpenDialogWithMemory,
   showSaveDialogWithMemory,
   installRendererProtocol,
@@ -1139,6 +1140,28 @@ function registerMarkdownIpc(): void {
       } catch (err) {
         return { ok: false, error: err instanceof Error ? err.message : String(err) }
       }
+    },
+  )
+
+  // AI chat transcript export (#1974): the renderer serializes to Markdown and
+  // picks the file name; main owns the save dialog + write. The saved .md can
+  // be opened here and re-exported to DOCX/PDF.
+  ipcMain.handle(
+    MARKDOWN_CHANNELS.exportAiChat,
+    async (e, markdown: unknown, name: unknown, title: unknown) => {
+      if (typeof markdown !== 'string' || !markdown) return { ok: false }
+      const win =
+        BrowserWindow.fromWebContents(e.sender) ?? BrowserWindow.getFocusedWindow() ?? undefined
+      const defaultName = typeof name === 'string' && name ? name : 'ai-chat.md'
+      const dialogTitle = typeof title === 'string' && title ? title : tm('dlgSaveTitle')
+      return saveTextFileWithDialog(win, {
+        title: dialogTitle,
+        defaultName,
+        ext: 'md',
+        filterName: tm('filterMarkdown'),
+        content: markdown,
+        fallbackDir: configuredDefaultSaveDir(app),
+      })
     },
   )
 

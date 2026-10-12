@@ -85,6 +85,8 @@ export const tk = {
   aiWorking: 'Işlenýär',
   aiErrorPrefix: 'Ýalňyşlyk: {error}',
   aiCopyReplyTitle: 'Jogaby göçür',
+  aiExportChat: 'Söhbeti Markdown-a eksport et',
+  aiExportRoleYou: 'Siz',
   aiCopied: 'Göçürildi',
   aiRegenerateTitle: 'Täzeden döret',
   aiSnapshotsTitle: 'Ýazgylar',

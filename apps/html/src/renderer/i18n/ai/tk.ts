@@ -4,6 +4,8 @@ export const tk = {
   aiCollapsePanel: 'Paneli ýygn',
   aiComposerPlaceholder: 'Dokumenti ýazmak ýa-da redaktirlemek üçin AI-den sora…',
   aiCopyReplyTitle: 'Jogaby göçür',
+  aiExportChat: 'Söhbeti Markdown-a eksport et',
+  aiExportRoleYou: 'Siz',
   aiCreditsExhausted: 'Kreditler gutardy — api.vega.chat salgysynda hasabyňyzy dolduryň',
   aiEmptyTitle: 'AI bilen sahypa dizaýn et',
   aiEmptyBody:

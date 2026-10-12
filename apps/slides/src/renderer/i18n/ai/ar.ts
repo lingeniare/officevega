@@ -47,6 +47,8 @@ export const ar = {
   aiMsgError: 'خطأ: {error}',
   aiCopied: 'تم النسخ',
   aiCopyReply: 'نسخ الرد',
+  aiExportChat: 'تصدير المحادثة إلى Markdown',
+  aiExportRoleYou: 'أنت',
   aiRegenerate: 'إعادة الإنشاء',
   aiScopeSelection: 'تم تحديد {count} من العناصر',
   aiScopeSlide: 'الشريحة {n}',

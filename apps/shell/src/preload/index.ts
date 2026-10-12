@@ -171,6 +171,9 @@ const homeApi: HomeApi = {
   async kbRead(path, offset) {
     return ipcRenderer.invoke('kb:read', { path, offset })
   },
+  async kbExportChat(markdown, suggestedName, dialogTitle) {
+    return ipcRenderer.invoke('kb:export-chat', markdown, suggestedName, dialogTitle)
+  },
   async aiGetSettings() {
     return ipcRenderer.invoke('ai:get-settings')
   },

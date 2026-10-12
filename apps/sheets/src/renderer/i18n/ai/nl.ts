@@ -19,6 +19,8 @@ export const nl = {
   aiSettingsTitle: 'AI-instellingen',
   aiSetUp: 'AI instellen',
   aiNewChat: 'Nieuw gesprek',
+  aiExportChat: 'Gesprek exporteren naar Markdown',
+  aiExportRoleYou: 'Jij',
   aiCollapsePanel: 'AI-paneel samenvouwen',
   aiHistorySep: '—— Eerder gesprek ——',
   aiHistoryTitle: 'History',

@@ -21,7 +21,12 @@ import { VegaMark } from '../ribbon-icons'
 import type { ChangePlan } from '@genoffice/xlsx-gateway/domain/workbook.types'
 import { ATTACHMENT_IMAGE_EXTS, type AttachmentMeta } from '../../shared/desktop-api'
 import { useI18n, type StringKey, type TFunc } from '../i18n/locale'
-import { createFileNav, Markdown } from '@genoffice/ui'
+import {
+  createFileNav,
+  Markdown,
+  chatTranscriptToMarkdown,
+  suggestChatExportName,
+} from '@genoffice/ui'
 import { SHEET_NAV_SCHEME } from './sheet-nav'
 import attachIcon from '../assets/attach-icon.png'
 import filePdfIcon from '../assets/file-pdf.png'
@@ -252,6 +257,7 @@ export function AiChatPanel({
   hasContent,
   chat,
   historicChat = [],
+  docName,
   historyOpen,
   historyItems,
   historyLoading,
@@ -296,6 +302,8 @@ export function AiChatPanel({
   readonly hasContent: boolean
   readonly chat: readonly AiChatMessage[]
   readonly historicChat?: readonly AiChatMessage[]
+  /// open workbook name — feeds the exported transcript's title/file name
+  readonly docName?: string | undefined
   /// chat-history menu (state owned by App, which owns the sessions)
   readonly historyOpen: boolean
   readonly historyItems: AiHistoryItem[]
@@ -586,6 +594,20 @@ export function AiChatPanel({
     if (paths.length > 0) onAddAttachmentPaths(paths)
   }
 
+  // whole-session export to a .md file (#1974): historic turns first, then the
+  // live transcript; the saved file can be opened in the Markdown editor for
+  // DOCX/PDF export
+  const exportChat = (): void => {
+    const entries = [...historicChat, ...chat].map((e) => ({ role: e.role, text: e.text }))
+    const title = docName ?? t('aiOpenAssistant')
+    const md = chatTranscriptToMarkdown(entries, {
+      title,
+      userLabel: t('aiExportRoleYou'),
+      assistantLabel: 'VEGA',
+    })
+    void window.desktopApi.exportAiChat(md, suggestChatExportName(title), t('aiExportChat'))
+  }
+
   /** Files pasted into the input: ones with a local path go the regular
    * attachment route; pure bitmaps like screenshots are persisted by the host */
   const onPasteFiles = (files: File[]): void => {
@@ -651,6 +673,16 @@ export function AiChatPanel({
             buttonLabel={t('aiHistoryTitle')}
             trigger={<AiHistoryButton label={t('aiHistoryTitle')} onClick={onHistoryOpen} />}
           />
+          {(chat.length > 0 || historicChat.length > 0) && (
+            <button
+              className="ai-header-btn"
+              onClick={exportChat}
+              data-tip={t('aiExportChat')}
+              aria-label={t('aiExportChat')}
+            >
+              <IconDownload size={15} />
+            </button>
+          )}
           {(chat.length > 0 || historicChat.length > 0) && (
             <button
               className="ai-header-btn"
@@ -1038,6 +1070,15 @@ function Svg({ size, children }: { size: number; children: React.ReactNode }): R
     >
       {children}
     </svg>
+  )
+}
+
+function IconDownload({ size }: { size: number }): React.JSX.Element {
+  // lucide: download — export chat to a file
+  return (
+    <Svg size={size}>
+      <path d="M8 2.5v7M5.5 7 8 9.5 10.5 7M3 11v2.2A1.3 1.3 0 0 0 4.3 14.5h7.4a1.3 1.3 0 0 0 1.3-1.3V11" />
+    </Svg>
   )
 }
 

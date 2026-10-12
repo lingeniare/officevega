@@ -499,6 +499,12 @@ export interface DesktopApi {
   ): Promise<{ ok: boolean; path?: string; error?: string }>
   /** Save a picture the renderer displays (data URL) through a Save dialog */
   saveImageAs(src: string): Promise<{ ok: boolean; path?: string; error?: string }>
+  /** Export the AI transcript: Save dialog + UTF-8 write of a .md document (#1974) */
+  exportAiChat(
+    markdown: string,
+    suggestedName: string,
+    dialogTitle: string,
+  ): Promise<{ ok: boolean; path?: string; error?: string }>
   /** Native context menu "View Image" on a chrome surface such as the AI panel */
   onViewImage(handler: (src: string) => void): () => void
   aiChat(request: AiChatRequest): Promise<AiChatResponse>

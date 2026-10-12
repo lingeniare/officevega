@@ -4,6 +4,8 @@ export const de = {
   aiCollapsePanel: 'Panel einklappen',
   aiComposerPlaceholder: 'KI schreiben oder bearbeiten lassen…',
   aiCopyReplyTitle: 'Antwort kopieren',
+  aiExportChat: 'Unterhaltung als Markdown exportieren',
+  aiExportRoleYou: 'Sie',
   aiCreditsExhausted: 'Guthaben aufgebraucht — bei api.vega.chat aufladen',
   aiEmptyTitle: 'Eine Seite mit KI gestalten',
   aiEmptyBody:

@@ -4,6 +4,8 @@ export const cs = {
   aiCollapsePanel: 'Sbalit panel',
   aiComposerPlaceholder: 'Požádejte AI o napsání nebo úpravu dokumentu…',
   aiCopyReplyTitle: 'Kopírovat odpověď',
+  aiExportChat: 'Exportovat konverzaci do Markdown',
+  aiExportRoleYou: 'Vy',
   aiCreditsExhausted: 'Došly kredity — dobijte na api.vega.chat',
   aiEmptyTitle: 'Navrhněte stránku s AI',
   aiEmptyBody:

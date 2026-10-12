@@ -4,6 +4,8 @@ export const es = {
   aiCollapsePanel: 'Contraer panel',
   aiComposerPlaceholder: 'Pide a la IA escribir o editar…',
   aiCopyReplyTitle: 'Copiar respuesta',
+  aiExportChat: 'Exportar la conversación a Markdown',
+  aiExportRoleYou: 'Tú',
   aiCreditsExhausted: 'Sin créditos — recarga en api.vega.chat',
   aiEmptyTitle: 'Diseña una página con IA',
   aiEmptyBody:
