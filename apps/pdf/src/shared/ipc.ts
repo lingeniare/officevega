@@ -65,6 +65,9 @@ export const PDF_CHANNELS = {
   languageChanged: 'app:language-changed',
   getTheme: 'app:get-theme',
   themeChanged: 'app:theme-changed',
+  getUiScale: 'app:get-ui-scale',
+  setUiScale: 'app:set-ui-scale',
+  uiScaleChanged: 'app:ui-scale-changed',
   getAiPanelPrefs: 'app:get-ai-panel-prefs',
   aiPanelPrefsChanged: 'app:ai-panel-prefs-changed',
 } as const
@@ -1033,6 +1036,10 @@ export interface PdfApi {
   onLanguageChanged(handler: (lang: Lang) => void): () => void
   getTheme(): Promise<UiTheme>
   onThemeChanged(handler: (theme: UiTheme) => void): () => void
+  /** interface zoom factor (genoffice#1913); the page scale divides by it */
+  getUiScale(): Promise<number>
+  setUiScale(factor: number): Promise<void>
+  onUiScaleChanged(handler: (factor: number) => void): () => void
   getDesign(): Promise<UiDesign>
   onDesignChanged(handler: (design: UiDesign) => void): () => void
   /** AI panel text size + chat-input spellcheck (Settings → General in the shell) */

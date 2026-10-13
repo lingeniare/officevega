@@ -1,6 +1,6 @@
 import ReactDOM from 'react-dom/client'
 import { appTitle, htmlDir, htmlLang, type Lang } from '@genoffice/i18n'
-import { applyAiPanelPrefs, installScreenTips } from '@genoffice/ui'
+import { applyAiPanelPrefs, applyUiScale, installScreenTips } from '@genoffice/ui'
 
 import '@genoffice/ui/tokens.css'
 import '@genoffice/ui/screentip.css'
@@ -107,6 +107,13 @@ async function bootstrap(): Promise<void> {
     .then(applyAiPanelPrefs)
     .catch(() => {})
   window.desktopApi?.onAiPanelPrefsChanged?.(applyAiPanelPrefs)
+  // interface zoom (genoffice#1913): sheet-ui-zoom.ts keeps it out of the
+  // persisted worksheet zoomRatio
+  await window.desktopApi
+    ?.getUiScale?.()
+    .then(applyUiScale)
+    .catch(() => {})
+  window.desktopApi?.onUiScaleChanged?.(applyUiScale)
   ReactDOM.createRoot(root!).render(
     <LocaleProvider initial={lang}>
       <App queuedWorkbookAtBoot={queuedWorkbookAtBoot === true} />

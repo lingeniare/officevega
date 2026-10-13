@@ -31,6 +31,8 @@ export const ja = {
   appScListDemote: 'リストのレベルを下げる',
   appScListPromote: 'リストのレベルを上げる',
   appScProofread: '校正',
+  appScUiZoom: 'UI ズーム',
+
   // Common
   appClose: '閉じる',
   appCancel: 'キャンセル',

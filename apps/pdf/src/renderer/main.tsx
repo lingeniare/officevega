@@ -18,7 +18,7 @@ import './styles.css'
 import '@genoffice/ui/ai-chat.css'
 import '@genoffice/ui/ai-history-menu.css'
 import '@genoffice/ui/cup-skin.css'
-import { applyAiPanelPrefs, installScreenTips } from '@genoffice/ui'
+import { applyAiPanelPrefs, applyUiScale, installScreenTips } from '@genoffice/ui'
 
 installScreenTips()
 
@@ -49,6 +49,12 @@ void (async () => {
     .then(applyAiPanelPrefs)
     .catch(() => {})
   window.pdfApi?.onAiPanelPrefsChanged?.(applyAiPanelPrefs)
+  // interface zoom (genoffice#1913): the page scale divides it back out
+  await window.pdfApi
+    ?.getUiScale?.()
+    .then(applyUiScale)
+    .catch(() => {})
+  window.pdfApi?.onUiScaleChanged?.(applyUiScale)
   createRoot(document.getElementById('root')!).render(
     <LocaleProvider initial={lang}>
       <App />

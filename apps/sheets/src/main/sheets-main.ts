@@ -2085,8 +2085,15 @@ async function createStandaloneSheetsDocument(
     if (request.type === 'pdf') {
       const bytes = await printHtmlToPdf(
         buildPrintableHtml(title, request.content),
-        () =>
-          new BrowserWindow({ show: false, webPreferences: { sandbox: true, javascript: false } }),
+        () => {
+          const w = new BrowserWindow({
+            show: false,
+            webPreferences: { sandbox: true, javascript: false },
+          })
+          // hidden print window: interface zoom must not leak into the layout (#1913)
+          w.webContents.setZoomFactor(1)
+          return w
+        },
       )
       const path = uniquePathIn(configuredDefaultSaveDir(app), `${title}.pdf`)
       await writeFile(path, bytes)
@@ -2758,6 +2765,8 @@ export async function exportSheetsPdfHeadless(
       backgroundThrottling: false,
     },
   })
+  // hidden export window: interface zoom must not leak into the layout (#1913)
+  win.webContents.setZoomFactor(1)
   registerSheetsIpc()
   registerSheetsSession(win.webContents, client)
   win.webContents.setWindowOpenHandler(() => ({ action: 'deny' }))

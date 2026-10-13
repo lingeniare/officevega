@@ -156,6 +156,26 @@ const BINDINGS: readonly Binding[] = [
   { code: 'KeyT', chord: { mod: true }, gate: 'sheet', action: command('table-create-open') },
   { code: 'F9', chord: {}, gate: 'idle', action: command('calculate-now') },
   { code: 'F9', chord: { shift: true }, gate: 'idle', action: command('calculate-sheet') },
+  // interface zoom (genoffice#1913): Ctrl+Alt+Shift+=/-/0 mirrors the editor
+  // View menus — Ctrl+Shift+ chords stay free for Excel-compatible editing
+  {
+    code: 'Equal',
+    chord: { mod: true, alt: true, shift: true },
+    gate: 'idle',
+    action: command('ui-zoom-in'),
+  },
+  {
+    code: 'Minus',
+    chord: { mod: true, alt: true, shift: true },
+    gate: 'idle',
+    action: command('ui-zoom-out'),
+  },
+  {
+    code: 'Digit0',
+    chord: { mod: true, alt: true, shift: true },
+    gate: 'idle',
+    action: command('ui-zoom-100'),
+  },
   { code: 'PageDown', chord: {}, gate: 'grid', action: command('page-row:1') },
   { code: 'PageUp', chord: {}, gate: 'grid', action: command('page-row:-1') },
   { code: 'PageDown', chord: { alt: true }, gate: 'grid', action: command('page-col:1') },

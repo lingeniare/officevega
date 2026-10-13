@@ -44,6 +44,8 @@ export async function exportPdf(
     show: false,
     webPreferences: { sandbox: true, javascript: false },
   })
+  // hidden print window: interface zoom must not leak into the layout (#1913)
+  window.webContents.setZoomFactor(1)
   try {
     await writeFile(htmlPath, request.html, 'utf8')
     await window.loadFile(htmlPath)
@@ -77,6 +79,8 @@ export async function printWorkbook(
       : {}),
     webPreferences: { sandbox: true, javascript: false },
   })
+  // hidden print window: interface zoom must not leak into the layout (#1913)
+  window.webContents.setZoomFactor(1)
   try {
     await writeFile(htmlPath, request.html, 'utf8')
     await window.loadFile(htmlPath)

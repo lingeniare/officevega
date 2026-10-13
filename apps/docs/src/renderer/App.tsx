@@ -22,8 +22,10 @@ import {
   aiPanelInitiallyOpen,
   rememberAiPanelOpen,
   createZoomWheelClassifier,
+  stepUiScale,
   useAiPanelPrefs,
   useAutoSavePref,
+  useUiScale,
 } from '@genoffice/ui'
 import { appTitle } from '@genoffice/i18n'
 import { wordRangeAtCaret } from './editor/comments'
@@ -802,6 +804,9 @@ export function App() {
   )
   const [status, setStatus] = useState('')
   const [zoom, setZoom] = useState(100)
+  // interface zoom (genoffice#1913): webContents zoom scales chrome AND the
+  // document; dividing it back out keeps `zoom` the document-only zoom
+  const uiScale = useUiScale()
   const scrollContainerRef = useRef<HTMLElement>(null)
   /** bumps after every pagination pass: the canvas' page gaps are in place */
   const [layoutRev, setLayoutRev] = useState(0)
@@ -1783,12 +1788,24 @@ export function App() {
   // below so the content there stays put (public #238); set only when the zoom
   // actually changes, else a clamped tick would leave a stale anchor behind.
   const zoomAnchorRef = useRef<{ vx: number; vy: number } | null>(null)
+  // dir ±1 steps the interface-zoom ladder; 0 resets to 100% (#1913)
+  const bumpUiScale = (dir: -1 | 0 | 1) => {
+    void window.desktop
+      .getUiScale()
+      .then((f) => window.desktop.setUiScale(dir === 0 ? 1 : stepUiScale(f, dir)))
+      .catch(() => {})
+  }
   useEffect(() => {
     const zoomWheel = createZoomWheelClassifier()
     const onWheel = (e: WheelEvent) => {
       if (!e.ctrlKey && !e.metaKey) return
       if (!(e.target as HTMLElement | null)?.closest?.('.editor-scroll')) return
       e.preventDefault()
+      if (e.shiftKey) {
+        // Ctrl+Shift+wheel zooms the interface, not the document (#1913)
+        bumpUiScale(e.deltaY < 0 ? 1 : -1)
+        return
+      }
       const intent = zoomWheel.feed(e, e.timeStamp)
       if (!intent) return
       const rect = scrollContainerRef.current?.getBoundingClientRect()
@@ -5602,6 +5619,11 @@ export function App() {
         case 'zoom-multi-page':
           zoomFit('multi')
           break
+        case 'ui-zoom-in':
+        case 'ui-zoom-out':
+        case 'ui-zoom-100':
+          bumpUiScale(command === 'ui-zoom-100' ? 0 : command === 'ui-zoom-in' ? 1 : -1)
+          break
         case 'toggle-ai':
           if (aiEnabledRef.current) setShowAi((v) => !v)
           break
@@ -7113,7 +7135,7 @@ export function App() {
       ? { ...rulerBase, marginLeft: rulerBase.marginRight, marginRight: rulerBase.marginLeft }
       : rulerBase
   const docZoomStyle = {
-    zoom: zoom / 100,
+    zoom: zoom / 100 / uiScale,
     '--page-w': canvasBox ? `${paperW}px` : undefined,
     '--page-h': canvasBox ? `${canvasBox.height}px` : undefined,
     '--section-content-w': canvasBox ? `${canvasBox.contentWidth}px` : undefined,

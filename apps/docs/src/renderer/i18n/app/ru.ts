@@ -31,6 +31,8 @@ export const ru = {
   appScListDemote: 'Понизить уровень списка',
   appScListPromote: 'Повысить уровень списка',
   appScProofread: 'Правописание',
+  appScUiZoom: 'Масштаб интерфейса',
+
   appClose: 'Закрыть',
   appCancel: 'Отмена',
   appOk: 'ОК',

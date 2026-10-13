@@ -10,6 +10,8 @@ export interface WheelZoomTarget {
   readonly getZoom: () => number | undefined
   readonly setZoom: (zoom: number) => void
   readonly isCellEditing: () => boolean
+  /** Ctrl+Shift+wheel steps the interface zoom, not the worksheet (#1913) */
+  readonly zoomUi?: (dir: -1 | 1) => void
 }
 
 type WheelLike = Pick<
@@ -18,6 +20,7 @@ type WheelLike = Pick<
   | 'deltaMode'
   | 'ctrlKey'
   | 'metaKey'
+  | 'shiftKey'
   | 'timeStamp'
   | 'preventDefault'
   | 'stopPropagation'
@@ -32,6 +35,13 @@ export function createWheelZoomStepper(target: WheelZoomTarget): (event: WheelLi
   return (event) => {
     if (!event.ctrlKey && !event.metaKey) return
     if (target.isCellEditing()) return
+    if (event.shiftKey && target.zoomUi) {
+      // a deliberate Shift+wheel chord — never feed it to the pinch classifier
+      event.preventDefault()
+      event.stopPropagation()
+      target.zoomUi(event.deltaY < 0 ? 1 : -1)
+      return
+    }
     const intent = classifier.feed(event, event.timeStamp)
     if (intent === 'pinch') return
     event.preventDefault()

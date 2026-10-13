@@ -31,6 +31,8 @@ export const nl = {
   appScListDemote: 'Lijstniveau verlagen',
   appScListPromote: 'Lijstniveau verhogen',
   appScProofread: 'Proeflezen',
+  appScUiZoom: 'Interfacezoom',
+
   appClose: 'Sluiten',
   appCancel: 'Annuleren',
   appOk: 'OK',

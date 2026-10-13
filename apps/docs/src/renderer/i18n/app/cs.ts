@@ -31,6 +31,8 @@ export const cs = {
   appScListDemote: 'Snížit úroveň položky seznamu',
   appScListPromote: 'Zvýšit úroveň položky seznamu',
   appScProofread: 'Korektura',
+  appScUiZoom: 'Zvětšení rozhraní',
+
   appClose: 'Zavřít',
   appCancel: 'Zrušit',
   appOk: 'OK',

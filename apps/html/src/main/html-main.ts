@@ -1123,6 +1123,8 @@ async function renderPrintPdf(
     show: false,
     webPreferences: { sandbox: true, javascript: false },
   })
+  // hidden print window: interface zoom must not leak into the layout (#1913)
+  printWin.webContents.setZoomFactor(1)
   try {
     await printWin.loadFile(htmlPath)
     return await printWin.webContents.printToPDF({
@@ -1152,9 +1154,12 @@ export function sendHtmlPrintRequest(contents: WebContents): void {
 // probe needs it. Print and Export-PDF therefore differ for <script>-built content.
 function printHtml(html: string, docPath: string | undefined): Promise<PrintDialogOutcome> {
   const base = docPath ? assetBaseHref(dirname(docPath)) : null
+  const printWin = new BrowserWindow({ show: false, webPreferences: { sandbox: true } })
+  // hidden print window: interface zoom must not leak into the layout (#1913)
+  printWin.webContents.setZoomFactor(1)
   return printHtmlDocument({
     html: buildPreviewDocument(html, base),
-    window: new BrowserWindow({ show: false, webPreferences: { sandbox: true } }),
+    window: printWin,
     fileName: 'print.html',
     dirPrefix: 'genoffice-html-print-',
   })
@@ -2151,6 +2156,8 @@ export async function exportHtmlHeadless(
       backgroundThrottling: false,
     },
   })
+  // hidden export window: interface zoom must not leak into the layout (#1913)
+  win.webContents.setZoomFactor(1)
   const wcId = win.webContents.id
   grantAndTrack(win.webContents, input)
   headlessExportTargets.set(wcId, { outPath, format })

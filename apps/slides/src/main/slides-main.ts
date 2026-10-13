@@ -4644,11 +4644,15 @@ export function registerSlidesIpc(): void {
       ...op,
       // hidden window: without this, throttled timers/rAF stall the
       // PRINT_READY_SCRIPT settle wait (same as the headless export window)
-      createWindow: () =>
-        new BrowserWindow({
+      createWindow: () => {
+        const w = new BrowserWindow({
           show: false,
           webPreferences: { sandbox: true, backgroundThrottling: false },
-        }),
+        })
+        // hidden print window: interface zoom must not leak into the layout (#1913)
+        w.webContents.setZoomFactor(1)
+        return w
+      },
       openExportedPdf,
     })
   })
@@ -4680,6 +4684,8 @@ export function registerSlidesIpc(): void {
           : {}),
         webPreferences: { sandbox: true },
       })
+      // hidden print window: interface zoom must not leak into the layout (#1913)
+      win.webContents.setZoomFactor(1)
       return printSlidesHtml(html, win)
     },
   )
@@ -4939,6 +4945,8 @@ export async function exportSlidesPdfHeadless(
       backgroundThrottling: false,
     },
   })
+  // hidden export window: interface zoom must not leak into the layout (#1913)
+  win.webContents.setZoomFactor(1)
   const wcId = win.webContents.id
   trackSlidesWebContents(win.webContents)
   forwardRendererConsole(win.webContents, 'slides')
@@ -5155,6 +5163,30 @@ export function buildSlidesMenu(): Menu {
           label: tm('menuActualSize'),
           accelerator: 'CmdOrCtrl+0',
           click: () => send('zoom-reset'),
+        },
+        // interface zoom (genoffice#1913): scales chrome, not the slide
+        {
+          label: tm('menuUiZoom'),
+          submenu: [
+            {
+              label: tm('menuZoomIn'),
+              // Ctrl+Shift+=/-/0 collide with document-editing chords in the
+              // suite, so interface zoom rides the free Alt triple (#1913);
+              // the mouse path is Ctrl+Shift+wheel
+              accelerator: 'CmdOrCtrl+Alt+Shift+=',
+              click: () => send('ui-zoom-in'),
+            },
+            {
+              label: tm('menuZoomOut'),
+              accelerator: 'CmdOrCtrl+Alt+Shift+-',
+              click: () => send('ui-zoom-out'),
+            },
+            {
+              label: tm('menuActualSize'),
+              accelerator: 'CmdOrCtrl+Alt+Shift+0',
+              click: () => send('ui-zoom-100'),
+            },
+          ],
         },
         { type: 'separator' },
         toggleDevToolsItem(labels),

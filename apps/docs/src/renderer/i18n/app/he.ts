@@ -31,6 +31,8 @@ export const he = {
   appScListDemote: 'הורד רמת רשימה',
   appScListPromote: 'העלה רמת רשימה',
   appScProofread: 'הגהה',
+  appScUiZoom: 'שינוי גודל ממשק',
+
   appClose: 'סגירה',
   appCancel: 'ביטול',
   appOk: 'אישור',

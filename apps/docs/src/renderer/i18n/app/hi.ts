@@ -31,6 +31,8 @@ export const hi = {
   appScListDemote: 'सूची स्तर घटाएँ',
   appScListPromote: 'सूची स्तर बढ़ाएँ',
   appScProofread: 'प्रूफ़रीडिंग',
+  appScUiZoom: 'इंटरफ़ेस ज़ूम',
+
   appClose: 'बंद करें',
   appCancel: 'रद्द करें',
   appOk: 'ठीक है',

@@ -52,6 +52,9 @@ export const HTML_CHANNELS = {
   languageChanged: 'app:language-changed',
   getTheme: 'app:get-theme',
   themeChanged: 'app:theme-changed',
+  getUiScale: 'app:get-ui-scale',
+  setUiScale: 'app:set-ui-scale',
+  uiScaleChanged: 'app:ui-scale-changed',
   getAutoSaveDefault: 'app:get-auto-save-default',
   autoSaveDefaultChanged: 'app:auto-save-default-changed',
   getAiPanelPrefs: 'app:get-ai-panel-prefs',
@@ -302,6 +305,10 @@ export interface HtmlApi {
   onLanguageChanged(handler: (lang: Lang) => void): () => void
   getTheme(): Promise<UiTheme>
   onThemeChanged(handler: (theme: UiTheme) => void): () => void
+  /** interface zoom factor (genoffice#1913); the preview zoom divides by it */
+  getUiScale(): Promise<number>
+  setUiScale(factor: number): Promise<void>
+  onUiScaleChanged(handler: (factor: number) => void): () => void
   getDesign(): Promise<UiDesign>
   onDesignChanged(handler: (design: UiDesign) => void): () => void
   getAutoSaveDefault(): Promise<AutoSaveDefault>

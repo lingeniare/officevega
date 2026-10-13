@@ -4,7 +4,7 @@ import App from './App'
 import { PresentView } from './PresentView'
 import { LocaleProvider } from './i18n/locale'
 import type { UiDesign, UiTheme } from '../shared/ipc'
-import { applyAiPanelPrefs, installScreenTips } from '@genoffice/ui'
+import { applyAiPanelPrefs, applyUiScale, installScreenTips } from '@genoffice/ui'
 import '@genoffice/ui/tokens.css'
 import '@genoffice/ui/screentip.css'
 import '@genoffice/ui/ai-model-picker.css'
@@ -51,6 +51,12 @@ void (async () => {
     .then(applyAiPanelPrefs)
     .catch(() => {})
   window.htmlApi?.onAiPanelPrefsChanged?.(applyAiPanelPrefs)
+  // interface zoom (genoffice#1913): the preview zoom divides it back out
+  await window.htmlApi
+    ?.getUiScale?.()
+    .then(applyUiScale)
+    .catch(() => {})
+  window.htmlApi?.onUiScaleChanged?.(applyUiScale)
   // a present tab/window (opened by Present → New tab) renders only its owner's preview
   const params = new URLSearchParams(location.search)
   const present = params.has('present')

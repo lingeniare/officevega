@@ -31,6 +31,8 @@ export const fr = {
   appScListDemote: 'Abaisser le niveau de liste',
   appScListPromote: 'Hausser le niveau de liste',
   appScProofread: 'Relecture',
+  appScUiZoom: 'Zoom de l’interface',
+
   appClose: 'Fermer',
   appCancel: 'Annuler',
   appOk: 'OK',

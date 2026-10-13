@@ -20,7 +20,7 @@ import './styles.css'
 import '@genoffice/ui/ai-chat.css'
 import '@genoffice/ui/ai-history-menu.css'
 import '@genoffice/ui/cup-skin.css'
-import { applyAiPanelPrefs, installScreenTips } from '@genoffice/ui'
+import { applyAiPanelPrefs, applyUiScale, installScreenTips } from '@genoffice/ui'
 
 installScreenTips()
 
@@ -78,6 +78,12 @@ async function bootstrap(): Promise<void> {
       .then(applyAiPanelPrefs)
       .catch(() => {})
     window.slidesApi?.onAiPanelPrefsChanged?.(applyAiPanelPrefs)
+    // interface zoom (genoffice#1913); the audience show fits its own stage
+    await window.slidesApi
+      ?.getUiScale?.()
+      .then(applyUiScale)
+      .catch(() => {})
+    window.slidesApi?.onUiScaleChanged?.(applyUiScale)
   }
   createRoot(document.getElementById('root')!).render(
     <React.StrictMode>

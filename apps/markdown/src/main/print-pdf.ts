@@ -12,6 +12,8 @@ export async function printMarkdownPdf(html: string): Promise<Buffer> {
       show: false,
       webPreferences: { sandbox: true, javascript: false },
     })
+    // hidden print window: interface zoom must not leak into the layout (#1913)
+    printWin.webContents.setZoomFactor(1)
     const htmlPath = join(workDir, 'print.html')
     await writeFile(htmlPath, html, 'utf8')
     await printWin.loadFile(htmlPath)

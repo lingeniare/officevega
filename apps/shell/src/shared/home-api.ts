@@ -354,6 +354,12 @@ export interface HomeApi {
   getDocumentTheme(): Promise<DocTheme>
   /** switch + persist the document page theme; broadcasts 'app:document-theme-changed' to all web contents */
   setDocumentTheme(theme: DocTheme): Promise<void>
+  /** interface zoom factor (#1913, persisted in userData/app-settings.json; default = display scaleFactor) */
+  getUiScale(): Promise<number>
+  /** switch + persist the interface zoom; applies it to all web contents and broadcasts 'app:ui-scale-changed' */
+  setUiScale(factor: number): Promise<void>
+  /** interface zoom changes (fired after setUiScale; also covers menu-driven changes from editor windows) */
+  onUiScaleChanged(handler: (factor: number) => void): () => void
   /** AutoSave default applied by every editor window (persisted in userData/app-settings.json) */
   getAutoSaveDefault(): Promise<AutoSaveDefault>
   /** persist the AutoSave default; broadcasts 'app:auto-save-default-changed' to all web contents */
@@ -653,6 +659,8 @@ export const HOME_CHANNELS = {
   setDesign: 'home:set-design',
   getDocumentTheme: 'home:get-document-theme',
   setDocumentTheme: 'home:set-document-theme',
+  getUiScale: 'home:get-ui-scale',
+  setUiScale: 'home:set-ui-scale',
   getAutoSaveDefault: 'home:get-auto-save-default',
   setAutoSaveDefault: 'home:set-auto-save-default',
   getMcpStatus: 'home:get-mcp-status',

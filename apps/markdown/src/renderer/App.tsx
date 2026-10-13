@@ -9,8 +9,10 @@ import {
   ImageViewer,
   aiPanelInitiallyOpen,
   rememberAiPanelOpen,
+  stepUiScale,
   useAiPanelPrefs,
   useAutoSavePref,
+  useUiScale,
 } from '@genoffice/ui'
 import {
   pollUntilReady,
@@ -201,6 +203,9 @@ export default function App() {
   }, [])
   const [outlineItems, setOutlineItems] = useState<OutlineItem[]>([])
   const [zoom, setZoom] = useState(100)
+  // interface zoom (genoffice#1913): webContents zoom scales chrome AND the
+  // page; dividing it back out keeps `zoom` the document-only zoom
+  const uiScale = useUiScale()
 
   const statusRef = useRef<LoadStatus>('loading')
   const dirtyRef = useRef(false)
@@ -229,6 +234,14 @@ export default function App() {
     () => setZoom((value) => Math.min(MAX_ZOOM, Math.round(value) + ZOOM_STEP)),
     [],
   )
+  /** dir ±1 steps the interface-zoom ladder; 0 resets to 100% (#1913) */
+  const bumpUiScale = useCallback((dir: -1 | 0 | 1) => {
+    if (!window.markdownApi?.getUiScale || !window.markdownApi?.setUiScale) return
+    return window.markdownApi
+      .getUiScale()
+      .then((f) => window.markdownApi.setUiScale(dir === 0 ? 1 : stepUiScale(f, dir)))
+      .catch(() => {})
+  }, [])
 
   const markDirty = useCallback(() => {
     if (statusRef.current !== 'ready' || dirtyRef.current) return
@@ -901,13 +914,17 @@ export default function App() {
         toggleSource()
       } else if (key === '=' || key === '+') {
         event.preventDefault()
-        zoomIn()
+        // Ctrl+Alt+Shift+= zooms the interface, not the page (genoffice#1913)
+        if (event.altKey && event.shiftKey) void bumpUiScale(1)
+        else zoomIn()
       } else if (key === '-' || key === '_') {
         event.preventDefault()
-        zoomOut()
+        if (event.altKey && event.shiftKey) void bumpUiScale(-1)
+        else zoomOut()
       } else if (key === '0') {
         event.preventDefault()
-        setZoom(100)
+        if (event.altKey && event.shiftKey) void bumpUiScale(0)
+        else setZoom(100)
       }
     }
     window.addEventListener('keydown', onKeyDown, true)
@@ -927,6 +944,11 @@ export default function App() {
       if (!event.ctrlKey && !event.metaKey) return
       if (!(event.target as HTMLElement | null)?.closest?.('.editor-scroll')) return
       event.preventDefault()
+      if (event.shiftKey) {
+        // Ctrl+Shift+wheel zooms the interface, not the page (genoffice#1913)
+        void bumpUiScale(event.deltaY < 0 ? 1 : -1)
+        return
+      }
       setZoom((value) => Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, value - event.deltaY * 0.6)))
     }
     window.addEventListener('wheel', onWheel, { passive: false })
@@ -1196,7 +1218,7 @@ export default function App() {
                 className={`editor-scroll${sourceViewOpen ? ' source-off' : ''}`}
                 ref={scrollRef}
               >
-                <div className="doc-page" style={{ zoom: zoom / 100 }}>
+                <div className="doc-page" style={{ zoom: zoom / 100 / uiScale }}>
                   {fmOpen && <FrontmatterPanel value={fmText} onChange={onFrontmatterChange} />}
                   <EditorContent editor={editor} />
                 </div>

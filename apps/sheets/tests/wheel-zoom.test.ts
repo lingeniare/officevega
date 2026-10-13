@@ -4,7 +4,7 @@
 import { describe, expect, it } from 'vitest'
 import { SHEET_ZOOM_MAX, SHEET_ZOOM_MIN, createWheelZoomStepper } from '../src/renderer/wheel-zoom'
 
-function harness(zoom: number, editing = false) {
+function harness(zoom: number, editing = false, zoomUi?: (dir: -1 | 1) => void) {
   const set: number[] = []
   let prevented = 0
   let stopped = 0
@@ -15,6 +15,7 @@ function harness(zoom: number, editing = false) {
       zoom = z
     },
     isCellEditing: () => editing,
+    ...(zoomUi ? { zoomUi } : {}),
   })
   const wheel = (deltaY: number, timeStamp: number, extra: Partial<WheelEvent> = {}) =>
     step({
@@ -22,6 +23,7 @@ function harness(zoom: number, editing = false) {
       deltaMode: 0,
       ctrlKey: true,
       metaKey: false,
+      shiftKey: false,
       timeStamp,
       preventDefault: () => void prevented++,
       stopPropagation: () => void stopped++,
@@ -72,6 +74,20 @@ describe('createWheelZoomStepper', () => {
     h.wheel(-120, 48, cmd)
     expect(h.set).toEqual([1.1])
     expect(h.stopped()).toBe(4)
+  })
+
+  it('Ctrl+Shift+wheel steps the interface zoom instead of the worksheet (#1913)', () => {
+    const uiDirs: number[] = []
+    const h = harness(1, false, (dir) => uiDirs.push(dir))
+    h.wheel(-100, 0, { shiftKey: true })
+    h.wheel(100, 16, { shiftKey: true })
+    expect(uiDirs).toEqual([1, -1])
+    expect(h.set).toEqual([])
+    expect(h.stopped()).toBe(2)
+    // without a zoomUi hook the chord falls back to the worksheet zoom
+    const plain = harness(1)
+    plain.wheel(-100, 0, { shiftKey: true })
+    expect(plain.set).toEqual([1.1])
   })
 
   it('ignores plain scrolling and wheel events during cell editing', () => {

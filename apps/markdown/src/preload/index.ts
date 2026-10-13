@@ -103,7 +103,19 @@ const api: MarkdownApi = {
   },
   getDocumentTheme: async () => {
     const result: unknown = await ipcRenderer.invoke(MARKDOWN_CHANNELS.getDocumentTheme)
-    return result === 'dark' || result === 'light' ? result : 'follow'
+    return result === 'dark' || result === 'light' || result === 'eyecare' ? result : 'follow'
+  },
+  getUiScale: async () => {
+    const result: unknown = await ipcRenderer.invoke(MARKDOWN_CHANNELS.getUiScale)
+    return typeof result === 'number' && result >= 0.5 && result <= 3 ? result : 1
+  },
+  setUiScale: (factor) => ipcRenderer.invoke(MARKDOWN_CHANNELS.setUiScale, factor),
+  onUiScaleChanged: (handler) => {
+    const listener = (_e: Electron.IpcRendererEvent, factor: unknown) => {
+      if (typeof factor === 'number') handler(factor)
+    }
+    ipcRenderer.on(MARKDOWN_CHANNELS.uiScaleChanged, listener)
+    return () => ipcRenderer.removeListener(MARKDOWN_CHANNELS.uiScaleChanged, listener)
   },
   onDocumentThemeChanged: (handler) => {
     const listener = (_e: Electron.IpcRendererEvent, theme: DocTheme) => handler(theme)

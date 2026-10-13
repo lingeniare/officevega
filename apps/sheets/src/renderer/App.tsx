@@ -69,6 +69,7 @@ import {
   useAutoSavePref,
   useSuggestedQuestions,
   addTokenUsage,
+  stepUiScale,
   type AiHistoryItem,
   type AiTokenUsageView,
   type AiScopeQuoteData,
@@ -489,6 +490,12 @@ import { IconsDialog } from './IconsDialog'
 import { RecommendedChartsDialog } from './RecommendedChartsDialog'
 import { installPictureTransfer } from './picture-paste'
 import { installWheelZoomSteps } from './wheel-zoom'
+import {
+  ensureSheetUiZoom,
+  noteSheetIntendedZoom,
+  zoomToDisplay,
+  zoomToIntended,
+} from './sheet-ui-zoom'
 import { ScreenshotDialog } from './ScreenshotDialog'
 import { SymbolDialog } from './SymbolDialog'
 import {
@@ -2390,9 +2397,16 @@ export function App({
       runtime.univerAPI.Event.SheetZoomChanged,
       ({ worksheet }) => {
         setAiSelectionAskAnchor(null)
-        setZoomPercent(Math.round(worksheet.getZoom() * 100))
+        noteSheetIntendedZoom(worksheet)
+        setZoomPercent(Math.round(zoomToIntended(worksheet.getZoom()) * 100))
       },
     )
+    // interface zoom change: re-assert intended/F on the active sheet; other
+    // sheets rescale when activated (ensureSheetUiZoom in ActiveSheetChanged)
+    const uiScaleDisposable = window.desktopApi?.onUiScaleChanged?.(() => {
+      const ws = runtime.univerAPI.getActiveWorkbook()?.getActiveSheet()
+      if (ws) ensureSheetUiZoom(ws)
+    })
     // In-cell editor open/closed, read by the AutoSave tick: saving reloads
     // the workbook and would wipe an in-progress edit.
     // The main-process close guard only sees what the renderer reports, so an
@@ -2427,8 +2441,10 @@ export function App({
         void loadVisibleRange(runtime, lazyWorkbookRef, activeSheet, setMessage)
         // formula view is per-sheet (sheetView/@showFormulas)
         applyShowFormulasView(runtime, lazyWorkbookRef.current, activeSheet.getSheetId())
-        // zoom is per-sheet state; echo the new sheet's level
-        setZoomPercent(Math.round(activeSheet.getZoom() * 100))
+        // zoom is per-sheet state; re-assert intended/uiScale first (#1913),
+        // then echo the new sheet's level
+        ensureSheetUiZoom(activeSheet)
+        setZoomPercent(Math.round(zoomToIntended(activeSheet.getZoom()) * 100))
         refreshSelectionFormatRef.current()
         visualViewportKeyRef.current = ''
         if (!lazyWorkbookRef.current) {
@@ -2835,7 +2851,12 @@ export function App({
             !isSheetRemoved(state.editJournal, zoom.subUnitId)
           ) {
             recordPageSetup(state.editJournal, zoom.subUnitId, {
-              zoomScale: Math.min(400, Math.max(10, Math.round(zoom.zoomRatio * 100))),
+              // zoomRatio is the display ratio (intended/uiScale); the journal
+              // persists the user-facing zoom like the status bar shows (#1913)
+              zoomScale: Math.min(
+                400,
+                Math.max(10, Math.round(zoomToIntended(zoom.zoomRatio) * 100)),
+              ),
             })
             setPendingEdits(journalSize(state.editJournal))
           }
@@ -3395,9 +3416,18 @@ export function App({
     const disposeWheelZoom = gridHost
       ? installWheelZoomSteps(gridHost, {
           isCellEditing: () => editingCellRef.current,
-          getZoom: () => runtime.univerAPI.getActiveWorkbook()?.getActiveSheet()?.getZoom(),
+          getZoom: () => {
+            const ratio = runtime.univerAPI.getActiveWorkbook()?.getActiveSheet()?.getZoom()
+            return ratio === undefined ? undefined : zoomToIntended(ratio)
+          },
           setZoom: (zoom) => {
-            runtime.univerAPI.getActiveWorkbook()?.getActiveSheet()?.zoom(zoom)
+            runtime.univerAPI.getActiveWorkbook()?.getActiveSheet()?.zoom(zoomToDisplay(zoom))
+          },
+          zoomUi: (dir) => {
+            void window.desktopApi
+              ?.getUiScale()
+              .then((f) => window.desktopApi.setUiScale(stepUiScale(f, dir)))
+              .catch(() => {})
           },
         })
       : () => undefined
@@ -3596,6 +3626,7 @@ export function App({
       outlineGutterRef.current = null
       scrollDisposable.dispose()
       zoomDisposable.dispose()
+      uiScaleDisposable?.()
       editStartDisposable.dispose()
       editEndDisposable.dispose()
       sheetDisposable.dispose()

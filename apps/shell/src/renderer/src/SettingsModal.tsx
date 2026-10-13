@@ -10,6 +10,8 @@ import {
   aiPanelFontPx,
   clampAiCustomFontSize,
   healVegaModelSelection,
+  UI_SCALE_PRESETS,
+  uiScalePercent,
 } from '@genoffice/ui'
 import type { AiFontSize, AiPanelPrefs, AiPanelSide } from '@genoffice/ui'
 import type { DecisionEndpoint, DefaultAppStatus, FileSearchSettings } from '../../shared/home-api'
@@ -1871,6 +1873,7 @@ export function SettingsModal({
   const [theme, setTheme] = useState<UiTheme>('system')
   const [design, setDesign] = useState<UiDesign>('digital')
   const [docTheme, setDocTheme] = useState<DocTheme>('follow')
+  const [uiScale, setUiScale] = useState(1)
   const [saveDir, setSaveDir] = useState('')
   const [autoSaveOn, setAutoSaveOn] = useState(false)
   const [defaultApp, setDefaultApp] = useState<DefaultAppStatus | null>(null)
@@ -1895,6 +1898,12 @@ export function SettingsModal({
     void window.aiOffice.getDocumentTheme?.().then((th) => {
       if (alive) setDocTheme(th)
     })
+    void window.aiOffice
+      .getUiScale?.()
+      .then((f) => {
+        if (alive) setUiScale(f)
+      })
+      .catch(() => undefined)
     void window.aiOffice.getDefaultSaveDir?.().then((dir) => {
       if (alive && dir) setSaveDir(dir)
     })
@@ -1958,6 +1967,17 @@ export function SettingsModal({
   const applyDocumentTheme = (next: DocTheme) => {
     setDocTheme(next)
     void window.aiOffice.setDocumentTheme(next)
+  }
+
+  // interface zoom (#1913): live-sync with View-menu zoom commands in editors
+  useEffect(() => {
+    const off = window.aiOffice.onUiScaleChanged?.((f) => setUiScale(f))
+    return () => off?.()
+  }, [])
+
+  const applyUiScaleSetting = (next: number) => {
+    setUiScale(next)
+    void window.aiOffice.setUiScale(next)
   }
 
   const updateAiPrefs = (patch: Partial<AiPanelPrefs>) => {
@@ -2199,6 +2219,28 @@ export function SettingsModal({
                       label: t(opt.labelKey),
                     }))}
                     onPick={(v) => applyDocumentTheme(v as DocTheme)}
+                  />
+                </div>
+                <div className="set-field">
+                  <div className="set-field-text">
+                    <div className="set-field-stack">
+                      <div className="set-field-label">{t('setUiScale')}</div>
+                      <div className="set-field-desc">{t('setUiScaleDesc')}</div>
+                    </div>
+                  </div>
+                  <Dropdown
+                    className="set-dd"
+                    value={String(uiScale)}
+                    ariaLabel={t('setUiScale')}
+                    options={(UI_SCALE_PRESETS.includes(uiScale as (typeof UI_SCALE_PRESETS)[number])
+                      ? UI_SCALE_PRESETS
+                      : // a non-preset scale (e.g. a 160% system default) stays selectable
+                        [...UI_SCALE_PRESETS, uiScale].sort((a, b) => a - b)
+                    ).map((p) => ({
+                      value: String(p),
+                      label: `${uiScalePercent(p)}%`,
+                    }))}
+                    onPick={(v) => applyUiScaleSetting(Number(v))}
                   />
                 </div>
                 <div className="set-field">

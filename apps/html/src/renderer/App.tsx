@@ -9,7 +9,9 @@ import {
   type FindTarget,
   aiPanelInitiallyOpen,
   rememberAiPanelOpen,
+  stepUiScale,
   useAiPanelPrefs,
+  useUiScale,
 } from '@genoffice/ui'
 import {
   pollUntilReady,
@@ -138,6 +140,9 @@ export default function App() {
   /** Present → Fullscreen: the presenting view also takes the whole screen */
   const [presentFull, setPresentFull] = useState(false)
   const [zoom, setZoom] = useState(100)
+  // interface zoom (genoffice#1913): webContents zoom scales chrome AND the
+  // preview; dividing it back out keeps `zoom` the document-only zoom
+  const uiScale = useUiScale()
   const [autoSave, setAutoSave] = useAutoSavePref('htmlapp.autoSave', window.htmlApi)
   const [findTarget, setFindTarget] = useState<FindTarget | null>(null)
   const [findFocus, setFindFocus] = useState<FindFocusRequest>({ field: 'find', nonce: 0 })
@@ -1048,7 +1053,7 @@ export default function App() {
     const stage = stageRef.current?.getBoundingClientRect()
     const host = stageRef.current?.querySelector('.preview-host')?.getBoundingClientRect()
     if (!selRect || !stage || !host) return null
-    const z = zoom / 100
+    const z = zoom / 100 / uiScale
     const left = Math.max(stage.left, host.left + selRect.x * z)
     const top = Math.max(stage.top, host.top + selRect.y * z)
     const right = Math.min(stage.right, host.left + (selRect.x + selRect.width) * z)
@@ -1232,6 +1237,14 @@ export default function App() {
 
   const zoomIn = useCallback(() => setZoom((z) => clampZoom(Math.round(z) + ZOOM_STEP)), [])
   const zoomOut = useCallback(() => setZoom((z) => clampZoom(Math.round(z) - ZOOM_STEP)), [])
+  /** dir ±1 steps the interface-zoom ladder; 0 resets to 100% (#1913) */
+  const bumpUiScale = useCallback((dir: -1 | 0 | 1) => {
+    if (!window.htmlApi?.getUiScale || !window.htmlApi?.setUiScale) return
+    return window.htmlApi
+      .getUiScale()
+      .then((f) => window.htmlApi.setUiScale(dir === 0 ? 1 : stepUiScale(f, dir)))
+      .catch(() => {})
+  }, [])
   const cycleView = useCallback(
     () => setView((v) => VIEW_MODES[(VIEW_MODES.indexOf(v) + 1) % VIEW_MODES.length]!),
     [],
@@ -1399,13 +1412,17 @@ export default function App() {
         openFind(true)
       } else if (key === '=' || key === '+') {
         event.preventDefault()
-        zoomIn()
+        // Ctrl+Alt+Shift+= zooms the interface, not the page (genoffice#1913)
+        if (event.altKey && event.shiftKey) void bumpUiScale(1)
+        else zoomIn()
       } else if (key === '-' || key === '_') {
         event.preventDefault()
-        zoomOut()
+        if (event.altKey && event.shiftKey) void bumpUiScale(-1)
+        else zoomOut()
       } else if (key === '0') {
         event.preventDefault()
-        setZoom(100)
+        if (event.altKey && event.shiftKey) void bumpUiScale(0)
+        else setZoom(100)
       } else if (key === 'b' || key === 'i') {
         if (inTextField(event.target)) return
         event.preventDefault()
@@ -1438,6 +1455,11 @@ export default function App() {
       if (canvasModeRef.current === 'present') return
       if (!(event.target as HTMLElement | null)?.closest?.('.preview-stage')) return
       event.preventDefault()
+      if (event.shiftKey) {
+        // Ctrl+Shift+wheel zooms the interface, not the page (genoffice#1913)
+        void bumpUiScale(event.deltaY < 0 ? 1 : -1)
+        return
+      }
       setZoom((z) => clampZoom(z - event.deltaY * 0.6))
     }
     window.addEventListener('wheel', onWheel, { passive: false })
@@ -1527,7 +1549,7 @@ export default function App() {
     const stage = stageRef.current?.getBoundingClientRect()
     const host = stageRef.current?.querySelector('.preview-host')?.getBoundingClientRect()
     return {
-      zoom,
+      zoom: zoom / uiScale,
       offsetX: stage && host ? host.left - stage.left : 0,
       offsetY: stage && host ? host.top - stage.top : 0,
       // the style panel floats over the right edge of the stage
@@ -1653,7 +1675,7 @@ export default function App() {
                   ref={previewRef}
                   url={previewUrl}
                   nonce={previewNonce}
-                  zoom={zoom}
+                  zoom={zoom / uiScale}
                   onMessage={onInspectorMessage}
                   onLoad={onPreviewLoad}
                   draft={draftHtml}

@@ -31,6 +31,8 @@ export const az = {
   appScListDemote: 'Siyahı elementini aşağı səviyyəyə keçir',
   appScListPromote: 'Siyahı elementini yuxarı səviyyəyə keçir',
   appScProofread: 'Yoxla',
+  appScUiZoom: 'İnterfeys miqyası',
+
   appClose: 'Bağla',
   appCancel: 'Ləğv et',
   appOk: 'OK',

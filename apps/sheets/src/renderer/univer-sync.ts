@@ -1,4 +1,5 @@
 import { keepActiveSheet } from './sheet-focus'
+import { zoomToDisplay } from './sheet-ui-zoom'
 /**
  * Univer runtime synchronization helpers for the sheets renderer.
  *
@@ -519,7 +520,11 @@ export function loadWorkbookSkeleton(runtime: UniverRuntime | null, file: Workbo
             ...toUniverFreeze(sheet.freeze),
             // Excel restores the saved normal-view zoom on open; without it
             // a sheet authored at 70% opens cropped to the 100% viewport.
-            ...(sheet.zoomScale === undefined ? {} : { zoomRatio: sheet.zoomScale / 100 }),
+            // The stored ratio is the *intended* zoom — the interface scale
+            // divides out of what Univer renders (sheet-ui-zoom.ts, #1913).
+            ...(sheet.zoomScale === undefined
+              ? {}
+              : { zoomRatio: zoomToDisplay(sheet.zoomScale / 100) }),
             columnData: createColumnData(sheet, file.styles, columnCount),
             cellData: {},
           },

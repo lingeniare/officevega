@@ -20,7 +20,7 @@ import '@genoffice/ui/ai-chat.css'
 import '@genoffice/ui/ai-history-menu.css'
 import '@genoffice/ui/cup-skin.css'
 import './fonts/fonts.css'
-import { applyAiPanelPrefs, installScreenTips } from '@genoffice/ui'
+import { applyAiPanelPrefs, applyUiScale, installScreenTips } from '@genoffice/ui'
 import { setAltChunkHtmlConverter } from '@genoffice/docx-engine'
 
 installScreenTips()
@@ -75,6 +75,13 @@ async function bootstrap(): Promise<void> {
     .then(applyAiPanelPrefs)
     .catch(() => {})
   window.desktop?.onAiPanelPrefsChanged?.(applyAiPanelPrefs)
+  // interface zoom (genoffice#1913): the factor scales chrome via webContents
+  // zoom; the document surface divides it back out (see docZoomStyle)
+  await window.desktop
+    ?.getUiScale?.()
+    .then(applyUiScale)
+    .catch(() => {})
+  window.desktop?.onUiScaleChanged?.(applyUiScale)
   createRoot(document.getElementById('root')!).render(
     <LocaleProvider initial={lang}>
       <App />

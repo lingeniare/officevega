@@ -31,6 +31,8 @@ export const ko = {
   appScListDemote: '목록 수준 내리기',
   appScListPromote: '목록 수준 올리기',
   appScProofread: '교정',
+  appScUiZoom: '인터페이스 확대',
+
   // Common
   appClose: '닫기',
   appCancel: '취소',

@@ -815,8 +815,15 @@ async function createStandaloneDocument(
     if (request.type === 'pdf') {
       const bytes = await printHtmlToPdf(
         buildPrintableHtml(title, request.content),
-        () =>
-          new BrowserWindow({ show: false, webPreferences: { sandbox: true, javascript: false } }),
+        () => {
+          const w = new BrowserWindow({
+            show: false,
+            webPreferences: { sandbox: true, javascript: false },
+          })
+          // hidden print window: interface zoom must not leak into the layout (#1913)
+          w.webContents.setZoomFactor(1)
+          return w
+        },
       )
       const path = uniqueGeneratedPdfPath(configuredDefaultSaveDir(app), `${title}.pdf`)
       await writeFile(path, bytes)

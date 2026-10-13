@@ -31,6 +31,8 @@ export const th = {
   appScListDemote: 'ลดระดับรายการ',
   appScListPromote: 'เพิ่มระดับรายการ',
   appScProofread: 'ตรวจทาน',
+  appScUiZoom: 'ซูมส่วนติดต่อผู้ใช้',
+
   appClose: 'ปิด',
   appCancel: 'ยกเลิก',
   appOk: 'ตกลง',

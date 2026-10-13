@@ -31,6 +31,8 @@ export const tt = {
   appScListDemote: 'Исемлек элементын түбәнәйтү',
   appScListPromote: 'Исемлек элементын күтәрү',
   appScProofread: 'Текстны тикшерү',
+  appScUiZoom: 'Интерфейс масштабы',
+
   appClose: 'Ябу',
   appCancel: 'Баш тарту',
   appOk: 'ОК',

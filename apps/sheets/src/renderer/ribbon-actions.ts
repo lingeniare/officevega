@@ -113,6 +113,8 @@ import {
 } from './visual-actions'
 import type { ChartDialogKind, ChartEditData, ShapeEditChanges } from './WorkbookVisuals'
 import { clampZoomPercent, clampZoomRatio, stepZoomPercent } from './zoom-range'
+import { zoomToDisplay, zoomToIntended } from './sheet-ui-zoom'
+import { stepUiScale } from '@genoffice/ui'
 
 /** The App refs/state the ribbon dispatcher needs; built fresh per call. */
 export interface RibbonCommandContext {
@@ -823,8 +825,11 @@ export function handleRibbonCommand(ctx: RibbonCommandContext, command: string):
       const percent =
         command === 'zoom-reset'
           ? 100
-          : stepZoomPercent(Math.round(worksheet.getZoom() * 100), command === 'zoom-in' ? 1 : -1)
-      worksheet.zoom(percent / 100)
+          : stepZoomPercent(
+              Math.round(zoomToIntended(worksheet.getZoom()) * 100),
+              command === 'zoom-in' ? 1 : -1,
+            )
+      worksheet.zoom(zoomToDisplay(percent / 100))
       ctx.setMessage(t('appZoom', { percent }))
       return
     }
@@ -862,7 +867,7 @@ export function handleRibbonCommand(ctx: RibbonCommandContext, command: string):
         .executeCommand('sheet.command.set-zoom-ratio', {
           unitId: workbook.getId(),
           subUnitId: worksheet.getSheetId(),
-          zoomRatio: Number(ratio.toFixed(2)),
+          zoomRatio: Number(zoomToDisplay(ratio).toFixed(2)),
         })
         .then(() =>
           runtime.univerAPI.executeCommand('sheet.command.scroll-to-cell', {
@@ -1317,11 +1322,21 @@ export function handleRibbonCommand(ctx: RibbonCommandContext, command: string):
     }
     return
   }
+  // interface zoom (#1913): shell-wide factor, independent of the sheet zoom
+  if (command === 'ui-zoom-in' || command === 'ui-zoom-out' || command === 'ui-zoom-100') {
+    const api = window.desktopApi
+    if (!api?.getUiScale || !api?.setUiScale) return
+    void api
+      .getUiScale()
+      .then((f) => api.setUiScale(command === 'ui-zoom-100' ? 1 : stepUiScale(f, command === 'ui-zoom-in' ? 1 : -1)))
+      .catch(() => {})
+    return
+  }
   if (command.startsWith('zoom:')) {
     const raw = Number(command.slice('zoom:'.length))
     if (worksheet && Number.isFinite(raw)) {
       const percent = clampZoomPercent(raw)
-      worksheet.zoom(percent / 100)
+      worksheet.zoom(zoomToDisplay(percent / 100))
       ctx.setMessage(t('appZoom', { percent }))
     }
     return

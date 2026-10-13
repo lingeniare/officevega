@@ -31,6 +31,8 @@ export const id = {
   appScListDemote: 'Turunkan Level Daftar',
   appScListPromote: 'Naikkan Level Daftar',
   appScProofread: 'Koreksi',
+  appScUiZoom: 'Zoom Antarmuka',
+
   appClose: 'Tutup',
   appCancel: 'Batal',
   appOk: 'OK',

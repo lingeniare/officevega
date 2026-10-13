@@ -106,6 +106,18 @@ const api: PdfApi = {
     ipcRenderer.on('app:design-changed', listener)
     return () => ipcRenderer.removeListener('app:design-changed', listener)
   },
+  getUiScale: async () => {
+    const result: unknown = await ipcRenderer.invoke(PDF_CHANNELS.getUiScale)
+    return typeof result === 'number' && result >= 0.5 && result <= 3 ? result : 1
+  },
+  setUiScale: (factor) => ipcRenderer.invoke(PDF_CHANNELS.setUiScale, factor),
+  onUiScaleChanged: (handler) => {
+    const listener = (_e: Electron.IpcRendererEvent, factor: unknown) => {
+      if (typeof factor === 'number') handler(factor)
+    }
+    ipcRenderer.on(PDF_CHANNELS.uiScaleChanged, listener)
+    return () => ipcRenderer.removeListener(PDF_CHANNELS.uiScaleChanged, listener)
+  },
   getAiPanelPrefs: () => ipcRenderer.invoke(PDF_CHANNELS.getAiPanelPrefs),
   setAiPanelPrefs: (patch) => ipcRenderer.invoke('app:set-ai-panel-prefs', patch),
   onAiPanelPrefsChanged: (handler) => {

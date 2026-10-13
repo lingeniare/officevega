@@ -31,6 +31,8 @@ export const vi = {
   appScListDemote: 'Giảm cấp danh sách',
   appScListPromote: 'Tăng cấp danh sách',
   appScProofread: 'Soát lỗi',
+  appScUiZoom: 'Thu phóng giao diện',
+
   appClose: 'Đóng',
   appCancel: 'Hủy',
   appOk: 'OK',

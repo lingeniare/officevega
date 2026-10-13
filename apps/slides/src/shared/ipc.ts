@@ -1268,6 +1268,9 @@ export type MenuCommand =
   | 'zoom-in'
   | 'zoom-out'
   | 'zoom-reset'
+  | 'ui-zoom-in'
+  | 'ui-zoom-out'
+  | 'ui-zoom-100'
   | 'undo'
   | 'redo'
   | 'cut'
@@ -1292,6 +1295,11 @@ export interface SlidesApi {
   getDesign: () => Promise<UiDesign>
   /** design switched from the shell home page */
   onDesignChanged: (handler: (design: UiDesign) => void) => () => void
+  /** interface zoom factor (genoffice#1913); the stage scale divides by it */
+  getUiScale: () => Promise<number>
+  /** change the shell-wide interface zoom from this window's View menu */
+  setUiScale: (factor: number) => Promise<void>
+  onUiScaleChanged: (handler: (factor: number) => void) => () => void
   /** shell-wide AutoSave default (see useAutoSavePref) */
   getAutoSaveDefault: () => Promise<AutoSaveDefault>
   onAutoSaveDefaultChanged: (handler: (value: AutoSaveDefault) => void) => () => void

@@ -1370,6 +1370,8 @@ export async function exportMarkdownPdfHeadless(
       backgroundThrottling: false,
     },
   })
+  // hidden export window: interface zoom must not leak into the layout (#1913)
+  win.webContents.setZoomFactor(1)
   const wcId = win.webContents.id
   grantAndTrack(win.webContents, input)
   headlessExportTargets.set(wcId, outPath)

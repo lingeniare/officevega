@@ -31,6 +31,8 @@ export const zhTW = {
   appScListDemote: '降低清單階層',
   appScListPromote: '提升清單階層',
   appScProofread: '校對',
+  appScUiZoom: 'इंटरफ़ेस ज़ूम',
+
   appClose: '關閉',
   appCancel: '取消',
   appOk: '確定',

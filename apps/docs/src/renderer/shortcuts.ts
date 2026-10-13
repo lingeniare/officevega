@@ -175,6 +175,9 @@ export const SHORTCUTS: readonly ShortcutDef[] = [
   { id: 'zoom-in', group: 'view', labelKey: 'ribbonZoomIn', keys: '⌘=' },
   { id: 'zoom-out', group: 'view', labelKey: 'ribbonZoomOut', keys: '⌘-' },
   { id: 'zoom-100', group: 'view', labelKey: 'ribbonZoom100Tip', keys: '⌘0' },
+  { id: 'ui-zoom-in', group: 'view', labelKey: 'appScUiZoom', labelSuffix: ' +', keys: '⌥⇧⌘=' },
+  { id: 'ui-zoom-out', group: 'view', labelKey: 'appScUiZoom', labelSuffix: ' −', keys: '⌥⇧⌘-' },
+  { id: 'ui-zoom-100', group: 'view', labelKey: 'appScUiZoom', labelSuffix: ' 100%', keys: '⌥⇧⌘0' },
   // Word for Mac uses ⌘8 for the ¶ toggle, Windows Ctrl+Shift+8; both work
   {
     id: 'formatting-marks',

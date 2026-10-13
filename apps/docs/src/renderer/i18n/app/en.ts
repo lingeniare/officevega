@@ -31,6 +31,8 @@ export const en = {
   appScListDemote: 'Demote List Item',
   appScListPromote: 'Promote List Item',
   appScProofread: 'Proofread',
+  appScUiZoom: 'Interface Zoom',
+
   appClose: 'Close',
   appCancel: 'Cancel',
   appOk: 'OK',

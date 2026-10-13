@@ -121,6 +121,18 @@ const api: SlidesApi = {
     ipcRenderer.on('app:design-changed', listener)
     return () => ipcRenderer.removeListener('app:design-changed', listener)
   },
+  getUiScale: async () => {
+    const result: unknown = await ipcRenderer.invoke('app:get-ui-scale')
+    return typeof result === 'number' && result >= 0.5 && result <= 3 ? result : 1
+  },
+  setUiScale: (factor) => ipcRenderer.invoke('app:set-ui-scale', factor),
+  onUiScaleChanged: (handler) => {
+    const listener = (_event: IpcRendererEvent, factor: unknown) => {
+      if (typeof factor === 'number') handler(factor)
+    }
+    ipcRenderer.on('app:ui-scale-changed', listener)
+    return () => ipcRenderer.removeListener('app:ui-scale-changed', listener)
+  },
   getAutoSaveDefault: () => ipcRenderer.invoke('app:get-auto-save-default'),
   onAutoSaveDefaultChanged: (handler) => {
     const listener = (_event: IpcRendererEvent, value: AutoSaveDefault) => handler(value)

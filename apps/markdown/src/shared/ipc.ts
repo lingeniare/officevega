@@ -51,6 +51,9 @@ export const MARKDOWN_CHANNELS = {
   themeChanged: 'app:theme-changed',
   getDocumentTheme: 'app:get-document-theme',
   documentThemeChanged: 'app:document-theme-changed',
+  getUiScale: 'app:get-ui-scale',
+  setUiScale: 'app:set-ui-scale',
+  uiScaleChanged: 'app:ui-scale-changed',
   getAutoSaveDefault: 'app:get-auto-save-default',
   autoSaveDefaultChanged: 'app:auto-save-default-changed',
   getAiPanelPrefs: 'app:get-ai-panel-prefs',
@@ -310,6 +313,10 @@ export interface MarkdownApi {
   onDesignChanged(handler: (design: UiDesign) => void): () => void
   getDocumentTheme(): Promise<DocTheme>
   onDocumentThemeChanged(handler: (theme: DocTheme) => void): () => void
+  /** interface zoom factor (genoffice#1913); the page zoom divides by it */
+  getUiScale(): Promise<number>
+  setUiScale(factor: number): Promise<void>
+  onUiScaleChanged(handler: (factor: number) => void): () => void
   getAutoSaveDefault(): Promise<AutoSaveDefault>
   onAutoSaveDefaultChanged(handler: (value: AutoSaveDefault) => void): () => void
   /** AI panel text size + chat-input spellcheck (Settings → General in the shell) */

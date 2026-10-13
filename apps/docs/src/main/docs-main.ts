@@ -284,6 +284,7 @@ const tMain = createI18n({
     menuSelectAll: '全选',
     menuView: '视图',
     menuZoom: '缩放',
+    menuUiZoom: '界面缩放',
     menuZoomIn: '放大',
     menuZoomOut: '缩小',
     menuZoom100: '实际大小 (100%)',
@@ -416,6 +417,7 @@ const tMain = createI18n({
     menuSelectAll: 'Select All',
     menuView: 'View',
     menuZoom: 'Zoom',
+    menuUiZoom: 'Interface Zoom',
     menuZoomIn: 'Zoom In',
     menuZoomOut: 'Zoom Out',
     menuZoom100: 'Actual Size (100%)',
@@ -550,6 +552,7 @@ const tMain = createI18n({
     menuSelectAll: 'Chọn tất cả',
     menuView: 'Xem',
     menuZoom: 'Thu phóng',
+    menuUiZoom: 'Thu phóng giao diện',
     menuZoomIn: 'Phóng to',
     menuZoomOut: 'Thu nhỏ',
     menuZoom100: 'Kích thước thực tế (100%)',
@@ -683,6 +686,7 @@ const tMain = createI18n({
     menuSelectAll: 'すべて選択',
     menuView: '表示',
     menuZoom: 'ズーム',
+    menuUiZoom: 'UI ズーム',
     menuZoomIn: '拡大',
     menuZoomOut: '縮小',
     menuZoom100: '実際のサイズ (100%)',
@@ -817,6 +821,7 @@ const tMain = createI18n({
     menuSelectAll: '모두 선택',
     menuView: '보기',
     menuZoom: '확대/축소',
+    menuUiZoom: '인터페이스 확대',
     menuZoomIn: '확대',
     menuZoomOut: '축소',
     menuZoom100: '실제 크기(100%)',
@@ -952,6 +957,7 @@ const tMain = createI18n({
     menuSelectAll: 'Tout sélectionner',
     menuView: 'Affichage',
     menuZoom: 'Zoom',
+    menuUiZoom: 'Zoom de l’interface',
     menuZoomIn: 'Zoom avant',
     menuZoomOut: 'Zoom arrière',
     menuZoom100: 'Taille réelle (100 %)',
@@ -1087,6 +1093,7 @@ const tMain = createI18n({
     menuSelectAll: 'Alles auswählen',
     menuView: 'Ansicht',
     menuZoom: 'Zoom',
+    menuUiZoom: 'Oberflächen-Zoom',
     menuZoomIn: 'Vergrößern',
     menuZoomOut: 'Verkleinern',
     menuZoom100: 'Originalgröße (100 %)',
@@ -1222,6 +1229,7 @@ const tMain = createI18n({
     menuSelectAll: 'Seleccionar todo',
     menuView: 'Ver',
     menuZoom: 'Zoom',
+    menuUiZoom: 'Zoom de interfaz',
     menuZoomIn: 'Acercar',
     menuZoomOut: 'Alejar',
     menuZoom100: 'Tamaño real (100 %)',
@@ -1355,6 +1363,7 @@ const tMain = createI18n({
     menuSelectAll: 'เลือกทั้งหมด',
     menuView: 'มุมมอง',
     menuZoom: 'ซูม',
+    menuUiZoom: 'ซูมส่วนติดต่อผู้ใช้',
     menuZoomIn: 'ขยาย',
     menuZoomOut: 'ย่อ',
     menuZoom100: 'ขนาดจริง (100%)',
@@ -1488,6 +1497,7 @@ const tMain = createI18n({
     menuSelectAll: 'Pilih Semua',
     menuView: 'Tampilan',
     menuZoom: 'Zoom',
+    menuUiZoom: 'Zoom Antarmuka',
     menuZoomIn: 'Perbesar',
     menuZoomOut: 'Perkecil',
     menuZoom100: 'Ukuran Sebenarnya (100%)',
@@ -1622,6 +1632,7 @@ const tMain = createI18n({
     menuSelectAll: 'Выделить все',
     menuView: 'Вид',
     menuZoom: 'Масштаб',
+    menuUiZoom: 'Масштаб интерфейса',
     menuZoomIn: 'Увеличить',
     menuZoomOut: 'Уменьшить',
     menuZoom100: 'Фактический размер (100%)',
@@ -1756,6 +1767,7 @@ const tMain = createI18n({
     menuSelectAll: 'تحديد الكل',
     menuView: 'عرض',
     menuZoom: 'تكبير/تصغير',
+    menuUiZoom: 'تكبير الواجهة',
     menuZoomIn: 'تكبير',
     menuZoomOut: 'تصغير',
     menuZoom100: 'الحجم الفعلي (100%)',
@@ -1890,6 +1902,7 @@ const tMain = createI18n({
     menuSelectAll: 'Selecionar Tudo',
     menuView: 'Exibir',
     menuZoom: 'Zoom',
+    menuUiZoom: 'Zoom da interface',
     menuZoomIn: 'Ampliar',
     menuZoomOut: 'Reduzir',
     menuZoom100: 'Tamanho Real (100%)',
@@ -2024,6 +2037,7 @@ const tMain = createI18n({
     menuSelectAll: 'Seleziona tutto',
     menuView: 'Visualizza',
     menuZoom: 'Zoom',
+    menuUiZoom: 'Zoom interfaccia',
     menuZoomIn: 'Ingrandisci',
     menuZoomOut: 'Riduci',
     menuZoom100: 'Dimensioni effettive (100%)',
@@ -2158,6 +2172,7 @@ const tMain = createI18n({
     menuSelectAll: 'Zaznacz wszystko',
     menuView: 'Widok',
     menuZoom: 'Powiększenie',
+    menuUiZoom: 'Powiększenie interfejsu',
     menuZoomIn: 'Powiększ',
     menuZoomOut: 'Pomniejsz',
     menuZoom100: 'Rzeczywisty rozmiar (100%)',
@@ -2292,6 +2307,7 @@ const tMain = createI18n({
     menuSelectAll: 'Vybrat vše',
     menuView: 'Zobrazení',
     menuZoom: 'Lupa',
+    menuUiZoom: 'Zvětšení rozhraní',
     menuZoomIn: 'Zvětšit',
     menuZoomOut: 'Zmenšit',
     menuZoom100: 'Skutečná velikost (100 %)',
@@ -2426,6 +2442,7 @@ const tMain = createI18n({
     menuSelectAll: 'Alles selecteren',
     menuView: 'Beeld',
     menuZoom: 'Zoomen',
+    menuUiZoom: 'Interfacezoom',
     menuZoomIn: 'Inzoomen',
     menuZoomOut: 'Uitzoomen',
     menuZoom100: 'Ware grootte (100%)',
@@ -2560,6 +2577,7 @@ const tMain = createI18n({
     menuSelectAll: 'Pilih Semua',
     menuView: 'Lihat',
     menuZoom: 'Zum',
+    menuUiZoom: 'Zum Antara Muka',
     menuZoomIn: 'Zum Masuk',
     menuZoomOut: 'Zum Keluar',
     menuZoom100: 'Saiz Sebenar (100%)',
@@ -2692,6 +2710,7 @@ const tMain = createI18n({
     menuSelectAll: 'בחר הכול',
     menuView: 'תצוגה',
     menuZoom: 'זום',
+    menuUiZoom: 'שינוי גודל ממשק',
     menuZoomIn: 'התקרבות',
     menuZoomOut: 'התרחקות',
     menuZoom100: 'גודל אמיתי (100%)',
@@ -2826,6 +2845,7 @@ const tMain = createI18n({
     menuSelectAll: 'सभी चुनें',
     menuView: 'दृश्य',
     menuZoom: 'ज़ूम',
+    menuUiZoom: 'इंटरफ़ेस ज़ूम',
     menuZoomIn: 'ज़ूम इन',
     menuZoomOut: 'ज़ूम आउट',
     menuZoom100: 'वास्तविक आकार (100%)',
@@ -2957,6 +2977,7 @@ const tMain = createI18n({
     menuSelectAll: '全選',
     menuView: '檢視',
     menuZoom: '縮放',
+    menuUiZoom: 'इंटरफ़ेस ज़ूम',
     menuZoomIn: '放大',
     menuZoomOut: '縮小',
     menuZoom100: '實際大小 (100%)',
@@ -3091,6 +3112,7 @@ const tMain = createI18n({
     menuSelectAll: 'Barchasini tanlash',
     menuView: 'Ko‘rinish',
     menuZoom: 'Zoom',
+    menuUiZoom: 'Interfeys masshtabi',
     menuZoomIn: 'Kattalashtirish',
     menuZoomOut: 'Kichraytirish',
     menuZoom100: 'Haqiqiy o‘lcham (100%)',
@@ -3224,6 +3246,7 @@ const tMain = createI18n({
     menuSelectAll: 'Барлығын таңдау',
     menuView: 'Көрініс',
     menuZoom: 'Zoom',
+    menuUiZoom: 'Интерфейс масштабы',
     menuZoomIn: 'Үлкейту',
     menuZoomOut: 'Кішірейту',
     menuZoom100: 'Нақты өлшем (100%)',
@@ -3358,6 +3381,7 @@ const tMain = createI18n({
     menuSelectAll: 'Hamısını seç',
     menuView: 'Görünüş',
     menuZoom: 'Zoom',
+    menuUiZoom: 'İnterfeys miqyası',
     menuZoomIn: 'Böyüt',
     menuZoomOut: 'Kiçilt',
     menuZoom100: 'Həqiqi ölçü (100%)',
@@ -3492,6 +3516,7 @@ const tMain = createI18n({
     menuSelectAll: 'Hemmesini saýla',
     menuView: 'Görkez',
     menuZoom: 'Zoom',
+    menuUiZoom: 'Interfeýs masshtaby',
     menuZoomIn: 'Ulalt',
     menuZoomOut: 'Kiçelt',
     menuZoom100: 'Hakyky ölçeg (100%)',
@@ -3626,6 +3651,7 @@ const tMain = createI18n({
     menuSelectAll: 'Баарын тандоо',
     menuView: 'Көрүнүш',
     menuZoom: 'Zoom',
+    menuUiZoom: 'Интерфейс масштабы',
     menuZoomIn: 'Чоңойтуу',
     menuZoomOut: 'Кичирейтүү',
     menuZoom100: 'Чыныгы өлчөм (100%)',
@@ -3759,6 +3785,7 @@ const tMain = createI18n({
     menuSelectAll: 'Барысын сайлау',
     menuView: 'Күренеш',
     menuZoom: 'Zoom',
+    menuUiZoom: 'Интерфейс масштабы',
     menuZoomIn: 'Зурайту',
     menuZoomOut: 'Кечерәйтү',
     menuZoom100: 'Чын зурлык (100%)',
@@ -3893,6 +3920,7 @@ const tMain = createI18n({
     menuSelectAll: 'ყველას არჩევა',
     menuView: 'ხედი',
     menuZoom: 'Zoom',
+    menuUiZoom: 'ინტერფეისის მასშტაბი',
     menuZoomIn: 'გადიდება',
     menuZoomOut: 'შემცირება',
     menuZoom100: 'რეალური ზომა (100%)',
@@ -6539,8 +6567,15 @@ export async function createAiDocument(
     if (type === 'pdf') {
       const bytes = await printHtmlToPdf(
         buildPrintableHtml(title, content),
-        () =>
-          new BrowserWindow({ show: false, webPreferences: { sandbox: true, javascript: false } }),
+        () => {
+          const w = new BrowserWindow({
+            show: false,
+            webPreferences: { sandbox: true, javascript: false },
+          })
+          // hidden print window: interface zoom must not leak into the layout (#1913)
+          w.webContents.setZoomFactor(1)
+          return w
+        },
       )
       const filePath = uniquePathIn(defaultSaveDir(), `${title}.pdf`)
       await writeFile(filePath, bytes)
@@ -6785,6 +6820,30 @@ export function buildDocsMenu(): void {
             { label: tm('menuMultiPage'), click: () => sendCommand('zoom-multi-page') },
           ],
         },
+        // interface zoom (genoffice#1913): scales chrome, not the document
+        {
+          label: tm('menuUiZoom'),
+          submenu: [
+            {
+              label: tm('menuZoomIn'),
+              // Ctrl+Shift+= is superscript and Ctrl+Shift+- the non-breaking
+              // hyphen here, so interface zoom rides the free Alt triple (#1913);
+              // the mouse path is Ctrl+Shift+wheel
+              accelerator: 'CmdOrCtrl+Alt+Shift+=',
+              click: () => sendCommand('ui-zoom-in'),
+            },
+            {
+              label: tm('menuZoomOut'),
+              accelerator: 'CmdOrCtrl+Alt+Shift+-',
+              click: () => sendCommand('ui-zoom-out'),
+            },
+            {
+              label: tm('menuZoom100'),
+              accelerator: 'CmdOrCtrl+Alt+Shift+0',
+              click: () => sendCommand('ui-zoom-100'),
+            },
+          ],
+        },
         { type: 'separator' },
         {
           id: 'docs-menu-ai-sidebar',
@@ -7015,6 +7074,8 @@ export async function exportDocsHeadless(
       backgroundThrottling: false,
     },
   })
+  // hidden export window: interface zoom must not leak into the layout (#1913)
+  win.webContents.setZoomFactor(1)
   const wcId = win.webContents.id
   pendingWindowOpens.set(wcId, input)
   headlessExportTargets.set(wcId, { outPath, format })

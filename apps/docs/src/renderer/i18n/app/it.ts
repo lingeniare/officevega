@@ -31,6 +31,8 @@ export const it = {
   appScListDemote: 'Riduci livello elenco',
   appScListPromote: 'Aumenta livello elenco',
   appScProofread: 'Revisione',
+  appScUiZoom: 'Zoom interfaccia',
+
   appClose: 'Chiudi',
   appCancel: 'Annulla',
   appOk: 'OK',

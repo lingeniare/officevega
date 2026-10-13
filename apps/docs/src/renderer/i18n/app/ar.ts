@@ -31,6 +31,8 @@ export const ar = {
   appScListDemote: 'تخفيض مستوى القائمة',
   appScListPromote: 'ترقية مستوى القائمة',
   appScProofread: 'تدقيق',
+  appScUiZoom: 'تكبير الواجهة',
+
   appClose: 'إغلاق',
   appCancel: 'إلغاء',
   appOk: 'موافق',

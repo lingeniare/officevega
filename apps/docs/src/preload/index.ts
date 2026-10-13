@@ -45,12 +45,24 @@ const api: DesktopApi = {
   },
   getDocumentTheme: async () => {
     const result: unknown = await ipcRenderer.invoke('app:get-document-theme')
-    return result === 'dark' || result === 'light' ? result : 'follow'
+    return result === 'dark' || result === 'light' || result === 'eyecare' ? result : 'follow'
   },
   onDocumentThemeChanged: (handler) => {
     const listener = (_event: IpcRendererEvent, theme: DocTheme) => handler(theme)
     ipcRenderer.on('app:document-theme-changed', listener)
     return () => ipcRenderer.removeListener('app:document-theme-changed', listener)
+  },
+  getUiScale: async () => {
+    const result: unknown = await ipcRenderer.invoke('app:get-ui-scale')
+    return typeof result === 'number' && result >= 0.5 && result <= 3 ? result : 1
+  },
+  setUiScale: (factor) => ipcRenderer.invoke('app:set-ui-scale', factor),
+  onUiScaleChanged: (handler) => {
+    const listener = (_event: IpcRendererEvent, factor: unknown) => {
+      if (typeof factor === 'number') handler(factor)
+    }
+    ipcRenderer.on('app:ui-scale-changed', listener)
+    return () => ipcRenderer.removeListener('app:ui-scale-changed', listener)
   },
   getAutoSaveDefault: () => ipcRenderer.invoke('app:get-auto-save-default'),
   onAutoSaveDefaultChanged: (handler) => {

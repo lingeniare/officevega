@@ -31,6 +31,8 @@ export const ka = {
   appScListDemote: 'სიის ელემენტის დაქვეითება',
   appScListPromote: 'სიის ელემენტის დაწინაურება',
   appScProofread: 'ტექსტის შემოწმება',
+  appScUiZoom: 'ინტერფეისის მასშტაბი',
+
   appClose: 'დახურვა',
   appCancel: 'გაუქმება',
   appOk: 'OK',

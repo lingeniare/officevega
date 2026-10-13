@@ -99,6 +99,18 @@ const api: HtmlApi = {
     ipcRenderer.on('app:design-changed', listener)
     return () => ipcRenderer.removeListener('app:design-changed', listener)
   },
+  getUiScale: async () => {
+    const result: unknown = await ipcRenderer.invoke(HTML_CHANNELS.getUiScale)
+    return typeof result === 'number' && result >= 0.5 && result <= 3 ? result : 1
+  },
+  setUiScale: (factor) => ipcRenderer.invoke(HTML_CHANNELS.setUiScale, factor),
+  onUiScaleChanged: (handler) => {
+    const listener = (_e: Electron.IpcRendererEvent, factor: unknown) => {
+      if (typeof factor === 'number') handler(factor)
+    }
+    ipcRenderer.on(HTML_CHANNELS.uiScaleChanged, listener)
+    return () => ipcRenderer.removeListener(HTML_CHANNELS.uiScaleChanged, listener)
+  },
   getAutoSaveDefault: () => ipcRenderer.invoke(HTML_CHANNELS.getAutoSaveDefault),
   onAutoSaveDefaultChanged: (handler) => {
     const listener = (_e: Electron.IpcRendererEvent, value: AutoSaveDefault) => handler(value)

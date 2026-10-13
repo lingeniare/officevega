@@ -31,6 +31,8 @@ export const ms = {
   appScListDemote: 'Turunkan Aras Senarai',
   appScListPromote: 'Naikkan Aras Senarai',
   appScProofread: 'Baca Pruf',
+  appScUiZoom: 'Zum Antara Muka',
+
   appClose: 'Tutup',
   appCancel: 'Batal',
   appOk: 'OK',

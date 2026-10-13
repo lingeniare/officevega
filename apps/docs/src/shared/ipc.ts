@@ -164,6 +164,9 @@ export type MenuCommand =
   | 'zoom-page-width'
   | 'zoom-whole-page'
   | 'zoom-multi-page'
+  | 'ui-zoom-in'
+  | 'ui-zoom-out'
+  | 'ui-zoom-100'
   | 'toggle-ai'
   | 'toggle-dark'
   | 'insert-table'
@@ -348,6 +351,11 @@ export interface DesktopApi {
   getDocumentTheme(): Promise<DocTheme>
   /** document page theme switched from the shell home page */
   onDocumentThemeChanged(handler: (theme: DocTheme) => void): () => void
+  /** interface zoom factor (genoffice#1913); the document zoom divides by it */
+  getUiScale(): Promise<number>
+  /** change the shell-wide interface zoom from this window's View menu */
+  setUiScale(factor: number): Promise<void>
+  onUiScaleChanged(handler: (factor: number) => void): () => void
   /** shell-wide AutoSave default (see useAutoSavePref) */
   getAutoSaveDefault(): Promise<AutoSaveDefault>
   onAutoSaveDefaultChanged(handler: (value: AutoSaveDefault) => void): () => void

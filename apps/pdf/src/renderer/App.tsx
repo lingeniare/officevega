@@ -171,6 +171,8 @@ import {
   useAiPanelPrefs,
   useDismissablePopover,
   useRibbonCollapse,
+  useUiScale,
+  stepUiScale,
 } from '@genoffice/ui'
 import { useI18n } from './i18n/locale'
 import { useAutosave } from './useAutosave'
@@ -423,6 +425,8 @@ export default function App() {
   const [pageUserUnits, setPageUserUnits] = useState<number[]>([])
   const [baseRots, setBaseRots] = useState<number[]>([])
   const [scale, setScale] = useState(1)
+  // interface zoom (#1913): `scale` stays CSS-space; user-facing = scale × uiScale
+  const uiScale = useUiScale()
   const [currentPage, setCurrentPage] = useState(1)
   const [pageInput, setPageInput] = useState('1')
   const [sidebar, setSidebar] = useState<'thumbs' | 'outline' | null>('thumbs')
@@ -1505,7 +1509,8 @@ export default function App() {
           pendingViewRestoreRef.current = savedView
           fitModeRef.current = savedView.fitMode
           if (savedView.fitMode === null)
-            setScale(Math.min(MAX_SCALE, Math.max(MIN_SCALE, savedView.scale)))
+            // savedView.scale is the user-facing zoom; scale stays CSS-space (#1913)
+            setScale(Math.min(MAX_SCALE, Math.max(MIN_SCALE, savedView.scale)) / uiScale)
         }
         setStatus('ready')
       } catch (err) {
@@ -1644,18 +1649,19 @@ export default function App() {
     const maxW = Math.max(...dims.map((s) => s.width))
     // The comments margin sits beside the pages and must fit inside the same viewport
     const availW = el.clientWidth - SCROLL_PAD * 2 - (noteMarginOn ? NOTE_MARGIN_W + PAGE_GAP : 0)
-    const next =
+    // cssRatio fills the (already interface-scaled) viewport; the user-facing
+    // zoom is cssRatio × uiScale, clamped in user space (#1913)
+    const cssRatio =
       mode === 'width'
-        ? clampScale(availW / maxW)
-        : clampScale(
-            Math.min(
-              availW / maxW,
-              (el.clientHeight - PAGE_GAP * 2) / Math.max(...dims.map((s) => s.height)),
-            ),
+        ? availW / maxW
+        : Math.min(
+            availW / maxW,
+            (el.clientHeight - PAGE_GAP * 2) / Math.max(...dims.map((s) => s.height)),
           )
+    const next = clampScale(cssRatio * uiScale) / uiScale
     anchorZoomScroll(next)
     setScale(next)
-  }, [rows, rowSize, anchorZoomScroll, noteMarginOn])
+  }, [rows, rowSize, anchorZoomScroll, noteMarginOn, uiScale])
 
   useEffect(() => {
     if (status !== 'ready') return
@@ -1716,7 +1722,8 @@ export default function App() {
           rowHeights: rows.map((row) => rowSize(row).height * scale),
           rowPages: rows.map((row) => (visPos.get(row[0]!) ?? 0) + 1),
           gap: PAGE_GAP,
-          scale,
+          // stored view zoom is user-facing; `scale` stays CSS-space (#1913)
+          scale: scale * uiScale,
           fitMode: fitModeRef.current,
         }),
       )
@@ -1734,7 +1741,7 @@ export default function App() {
       window.removeEventListener('pagehide', saveNow)
       window.clearTimeout(timer)
     }
-  }, [status, filePath, rows, rowSize, visList, scale])
+  }, [status, filePath, rows, rowSize, visList, scale, uiScale])
 
   /** Page-top offset of a visible position (used for search positioning) */
   const pageTop = useCallback((visIdx: number) => rowTop(rowOfVis(visIdx)), [rowTop, rowOfVis])
@@ -1921,17 +1928,30 @@ export default function App() {
       !formFieldFilled(field),
   )
 
-  /** Zoom keeping the content at the viewport top anchored (row-exact, see anchorZoomScroll) */
+  /** Zoom keeping the content at the viewport top anchored (row-exact, see anchorZoomScroll).
+   *  `next` is the user-facing zoom; `scale` state stays CSS-space (#1913). */
   const applyScale = (next: number, mode: FitMode) => {
     fitModeRef.current = mode
     const clamped = clampScale(next)
-    anchorZoomScroll(clamped)
-    setScale(clamped)
+    anchorZoomScroll(clamped / uiScale)
+    setScale(clamped / uiScale)
   }
 
-  const zoomIn = () => applyScale(ZOOM_STEPS.find((s) => s > scale + 0.001) ?? MAX_SCALE, null)
+  const zoomIn = () =>
+    applyScale(ZOOM_STEPS.find((s) => s > scale * uiScale + 0.001) ?? MAX_SCALE, null)
   const zoomOut = () =>
-    applyScale([...ZOOM_STEPS].reverse().find((s) => s < scale - 0.001) ?? MIN_SCALE, null)
+    applyScale(
+      [...ZOOM_STEPS].reverse().find((s) => s < scale * uiScale - 0.001) ?? MIN_SCALE,
+      null,
+    )
+  /** dir ±1 steps the interface-zoom ladder; 0 resets to 100% (#1913) */
+  const bumpUiScale = (dir: -1 | 0 | 1) => {
+    if (!window.pdfApi?.getUiScale || !window.pdfApi?.setUiScale) return
+    void window.pdfApi
+      .getUiScale()
+      .then((f) => window.pdfApi.setUiScale(dir === 0 ? 1 : stepUiScale(f, dir)))
+      .catch(() => {})
+  }
 
   const commitPageInput = () => {
     const n = Number.parseInt(pageInput, 10)
@@ -6767,14 +6787,20 @@ export default function App() {
           openPrintDlg()
         } else if (e.key === '=' || e.key === '+') {
           e.preventDefault()
-          zoomIn()
+          // Ctrl+Alt+Shift+= zooms the interface, not the page (#1913)
+          if (e.altKey && e.shiftKey) bumpUiScale(1)
+          else zoomIn()
         } else if (e.key === '-') {
           e.preventDefault()
-          zoomOut()
+          if (e.altKey && e.shiftKey) bumpUiScale(-1)
+          else zoomOut()
         } else if (e.key === '0') {
           e.preventDefault()
-          fitModeRef.current = 'width'
-          recomputeFit()
+          if (e.altKey && e.shiftKey) bumpUiScale(0)
+          else {
+            fitModeRef.current = 'width'
+            recomputeFit()
+          }
         }
         return
       }
@@ -6901,6 +6927,11 @@ export default function App() {
       if (!e.ctrlKey && !e.metaKey) return
       e.preventDefault()
       if (e.deltaY === 0) return
+      if (e.shiftKey) {
+        // Ctrl+Shift+wheel zooms the interface, not the page (#1913)
+        bumpUiScale(e.deltaY < 0 ? 1 : -1)
+        return
+      }
       // Accumulate against the queued scale so a fast pinch loses no ticks between renders
       const committed = layoutRef.current.scale
       const current = queuedScaleRef.current ?? committed
@@ -7080,7 +7111,7 @@ export default function App() {
             >
               −
             </button>
-            <span className="tb-zoom">{Math.round(scale * 100)}%</span>
+            <span className="tb-zoom">{Math.round(scale * uiScale * 100)}%</span>
             <button
               className="rb-icon"
               data-tip={t('zoomIn')}
@@ -10816,7 +10847,7 @@ export default function App() {
                 min={MIN_SCALE * 100}
                 max={MAX_SCALE * 100}
                 step={5}
-                value={Math.round(scale * 100)}
+                value={Math.round(scale * uiScale * 100)}
                 onChange={(e) => applyScale(Number(e.target.value) / 100, null)}
               />
               <button
@@ -10827,7 +10858,7 @@ export default function App() {
               >
                 +
               </button>
-              <span className="zoom-value">{Math.round(scale * 100)}%</span>
+              <span className="zoom-value">{Math.round(scale * uiScale * 100)}%</span>
             </div>
           </footer>
         </div>

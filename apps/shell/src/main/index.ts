@@ -20,6 +20,7 @@ import {
   ipcMain,
   nativeImage,
   nativeTheme,
+  screen,
   session,
   shell,
   webContents,
@@ -575,6 +576,39 @@ function currentDesign(): UiDesign {
   const saved = readAppSettings(APP_SETTINGS_PATH()).design
   cachedDesign = saved === 'standard' || saved === 'retro' || saved === 'digital' ? saved : 'digital'
   return cachedDesign
+}
+
+let cachedUiScale: number | null = null
+
+/**
+ * Interface zoom factor (genoffice#1913): applied via webContents.setZoomFactor
+ * so every chrome element scales; the editors divide their document zoom by it.
+ * Defaults to the primary display's scale factor when above 100% (the issue's
+ * "match system scale"); explicit user choice persists in app-settings.json.
+ */
+function currentUiScale(): number {
+  if (cachedUiScale != null) return cachedUiScale
+  const saved = readAppSettings(APP_SETTINGS_PATH()).uiScale
+  if (typeof saved === 'number' && Number.isFinite(saved) && saved >= 0.5 && saved <= 3) {
+    cachedUiScale = saved
+  } else {
+    let f = 1
+    try {
+      f = screen.getPrimaryDisplay().scaleFactor
+    } catch {
+      /* no display yet */
+    }
+    cachedUiScale = f > 1 ? f : 1
+  }
+  return cachedUiScale
+}
+
+function applyUiScaleToAllContents(factor: number): void {
+  for (const wc of webContents.getAllWebContents()) {
+    // devtools reports its own type at runtime (absent from the typings union)
+    if (wc.isDestroyed() || (wc.getType() as string) === 'devtools') continue
+    wc.setZoomFactor(factor)
+  }
 }
 
 let cachedDocTheme: DocTheme | null = null
@@ -5006,6 +5040,32 @@ function registerHomeIpc(): void {
     for (const wc of webContents.getAllWebContents()) wc.send('app:auto-save-default-changed', next)
   })
 
+  ipcMain.handle(HOME_CHANNELS.getUiScale, (): number => currentUiScale())
+  // editor tabs ask via the app-wide channel (symmetric with app:get-theme)
+  ipcMain.handle('app:get-ui-scale', (): number => currentUiScale())
+
+  ipcMain.handle(HOME_CHANNELS.setUiScale, (_event, factor: unknown) => {
+    if (typeof factor !== 'number' || !Number.isFinite(factor) || factor < 0.5 || factor > 3)
+      return
+    const next = Math.round(factor * 1000) / 1000
+    if (next === currentUiScale()) return
+    cachedUiScale = next
+    writeAppSetting(APP_SETTINGS_PATH(), 'uiScale', next)
+    applyUiScaleToAllContents(next)
+    for (const wc of webContents.getAllWebContents()) wc.send('app:ui-scale-changed', next)
+  })
+  // the editors' View-menu interface zoom uses the same setter (#1913)
+  ipcMain.handle('app:set-ui-scale', (_event, factor: unknown) => {
+    if (typeof factor !== 'number' || !Number.isFinite(factor) || factor < 0.5 || factor > 3)
+      return
+    const next = Math.round(factor * 1000) / 1000
+    if (next === currentUiScale()) return
+    cachedUiScale = next
+    writeAppSetting(APP_SETTINGS_PATH(), 'uiScale', next)
+    applyUiScaleToAllContents(next)
+    for (const wc of webContents.getAllWebContents()) wc.send('app:ui-scale-changed', next)
+  })
+
   ipcMain.handle(HOME_CHANNELS.getMcpStatus, () => mcpStatus())
 
   ipcMain.handle(HOME_CHANNELS.setMcpSettings, async (_event, patch: unknown) => {
@@ -6681,6 +6741,14 @@ async function runHeadlessExportEntry(
 }
 
 app.whenReady().then(async () => {
+  // interface zoom (genoffice#1913): every visible webContents — shell windows,
+  // editor WebContentsView tabs, dialogs — boots at the persisted UI scale.
+  // Print/export is unaffected: printToPDF ignores the page zoom factor.
+  app.on('web-contents-created', (_event, contents) => {
+    // devtools reports its own type at runtime (absent from the typings union)
+    if ((contents.getType() as string) === 'devtools') return
+    contents.setZoomFactor(currentUiScale())
+  })
   // first scan waits for the windows to come up; later ones follow folder changes
   setTimeout(() => ensureFileIndexer()?.refresh(), 4000)
   installRendererProtocol({

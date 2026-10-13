@@ -31,6 +31,8 @@ export const kk = {
   appScListDemote: 'Тізім элементін төмендету',
   appScListPromote: 'Тізім элементін жоғарылату',
   appScProofread: 'Мәтінді тексеру',
+  appScUiZoom: 'Интерфейс масштабы',
+
   appClose: 'Жабу',
   appCancel: 'Бас тарту',
   appOk: 'OK',

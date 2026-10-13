@@ -43,6 +43,16 @@ export {
   aiPanelWidthAtPointer,
 } from './ai-panel-prefs-store'
 export {
+  UI_SCALE_MIN,
+  UI_SCALE_MAX,
+  UI_SCALE_PRESETS,
+  clampUiScale,
+  normalizeUiScale,
+  stepUiScale,
+  uiScalePercent,
+} from './ui-scale'
+export { applyUiScale, uiScaleFactor, useUiScale } from './ui-scale-store'
+export {
   ColorPicker,
   THEME_COLORS,
   THEME_COLOR_SHADES,

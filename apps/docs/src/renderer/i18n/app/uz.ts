@@ -31,6 +31,8 @@ export const uz = {
   appScListDemote: 'Ro‘yxat bandini pasaytirish',
   appScListPromote: 'Ro‘yxat bandini ko‘tarish',
   appScProofread: 'Imlo tekshiruvi',
+  appScUiZoom: 'Interfeys masshtabi',
+
   appClose: 'Yopish',
   appCancel: 'Bekor qilish',
   appOk: 'OK',

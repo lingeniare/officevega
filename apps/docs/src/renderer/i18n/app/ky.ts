@@ -31,6 +31,8 @@ export const ky = {
   appScListDemote: 'Тизме элементин төмөндөтүү',
   appScListPromote: 'Тизме элементин жогорулатуу',
   appScProofread: 'Тексти текшерүү',
+  appScUiZoom: 'Интерфейс масштабы',
+
   appClose: 'Жабуу',
   appCancel: 'Жокко чыгаруу',
   appOk: 'ОК',

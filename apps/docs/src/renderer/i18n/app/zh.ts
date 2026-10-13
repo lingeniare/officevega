@@ -30,6 +30,8 @@ export const zh = {
   appScListDemote: '降低列表级别',
   appScListPromote: '提升列表级别',
   appScProofread: '校对',
+  appScUiZoom: '界面缩放',
+
   // Common
   appClose: '关闭',
   appCancel: '取消',

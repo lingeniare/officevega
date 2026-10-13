@@ -31,6 +31,8 @@ export const de = {
   appScListDemote: 'Listenebene verringern',
   appScListPromote: 'Listenebene erhöhen',
   appScProofread: 'Korrekturlesen',
+  appScUiZoom: 'Oberflächen-Zoom',
+
   appClose: 'Schließen',
   appCancel: 'Abbrechen',
   appOk: 'OK',

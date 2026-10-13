@@ -31,6 +31,8 @@ export const tk = {
   appScListDemote: 'Sanaw elementiniň derejesini peselt',
   appScListPromote: 'Sanaw elementiniň derejesini ýokarlandyr',
   appScProofread: 'Barla',
+  appScUiZoom: 'Interfeýs masshtaby',
+
   appClose: 'Ýap',
   appCancel: 'Ýatyr',
   appOk: 'Bolýar',

@@ -400,10 +400,10 @@ const homeApi: HomeApi = {
   },
   async getDocumentTheme() {
     const result: unknown = await ipcRenderer.invoke(HOME_CHANNELS.getDocumentTheme)
-    return result === 'dark' || result === 'light' ? result : 'follow'
+    return result === 'dark' || result === 'light' || result === 'eyecare' ? result : 'follow'
   },
   async setDocumentTheme(theme) {
-    if (theme !== 'light' && theme !== 'dark' && theme !== 'follow')
+    if (theme !== 'light' && theme !== 'dark' && theme !== 'follow' && theme !== 'eyecare')
       throw new Error('Invalid document theme.')
     await ipcRenderer.invoke(HOME_CHANNELS.setDocumentTheme, theme)
   },
@@ -527,10 +527,27 @@ const homeApi: HomeApi = {
   },
   onDocumentThemeChanged(handler) {
     const listener = (_event: Electron.IpcRendererEvent, theme: unknown) => {
-      if (theme === 'light' || theme === 'dark' || theme === 'follow') handler(theme)
+      if (theme === 'light' || theme === 'dark' || theme === 'follow' || theme === 'eyecare')
+        handler(theme)
     }
     ipcRenderer.on('app:document-theme-changed', listener)
     return () => ipcRenderer.removeListener('app:document-theme-changed', listener)
+  },
+  async getUiScale() {
+    const result: unknown = await ipcRenderer.invoke(HOME_CHANNELS.getUiScale)
+    return typeof result === 'number' && result >= 0.5 && result <= 3 ? result : 1
+  },
+  async setUiScale(factor) {
+    if (typeof factor !== 'number' || !Number.isFinite(factor) || factor < 0.5 || factor > 3)
+      throw new Error('Invalid interface scale.')
+    await ipcRenderer.invoke(HOME_CHANNELS.setUiScale, factor)
+  },
+  onUiScaleChanged(handler) {
+    const listener = (_event: Electron.IpcRendererEvent, factor: unknown) => {
+      if (typeof factor === 'number' && factor >= 0.5 && factor <= 3) handler(factor)
+    }
+    ipcRenderer.on('app:ui-scale-changed', listener)
+    return () => ipcRenderer.removeListener('app:ui-scale-changed', listener)
   },
   async openCreditUsage() {
     await ipcRenderer.invoke(HOME_CHANNELS.openCreditUsage)

@@ -2904,6 +2904,11 @@ export interface DesktopApi {
   getDocumentTheme(): Promise<DocTheme>
   /** document page theme switched from the shell home page */
   onDocumentThemeChanged(handler: (theme: DocTheme) => void): () => void
+  /** interface zoom factor (genoffice#1913); the grid zoom divides by it (sheet-ui-zoom.ts) */
+  getUiScale(): Promise<number>
+  /** change the shell-wide interface zoom from this window's keyboard shortcut */
+  setUiScale(factor: number): Promise<void>
+  onUiScaleChanged(handler: (factor: number) => void): () => void
   /** shell-wide AutoSave default (see useAutoSavePref) */
   getAutoSaveDefault(): Promise<AutoSaveDefault>
   onAutoSaveDefaultChanged(handler: (value: AutoSaveDefault) => void): () => void

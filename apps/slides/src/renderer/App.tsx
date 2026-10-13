@@ -105,7 +105,10 @@ import {
   type WordArtPreset,
   aiPanelInitiallyOpen,
   rememberAiPanelOpen,
+  stepUiScale,
+  uiScaleFactor,
   useAiPanelPrefs,
+  useUiScale,
 } from '@genoffice/ui'
 import type { ChartPresetDef, IconDef, SmartArtDef } from './insert-presets'
 import { VegaMark, IconAiBeautify, IconAiFactCheck, IconAiImage } from './components/icons'
@@ -417,6 +420,9 @@ export function App() {
   /** Latest-state bundle for the extracted action modules; refreshed every render (see action-context.ts). */
   const ctxRef = useRef<ActionCtx>(null as unknown as ActionCtx)
   const [zoom, setZoom] = useState(1)
+  // interface zoom (genoffice#1913): webContents zoom scales chrome AND the
+  // stage; dividing it back out keeps `zoom` the document-only zoom
+  const uiScale = useUiScale()
   /** unscaled layout size of .stage-scale — its transform-scaled visual size is
    * scaleBox * zoom, which the wrapper zoom-box adopts so scrolling can reach it all */
   const stageScaleRef = useRef<HTMLDivElement | null>(null)
@@ -701,9 +707,11 @@ export function App() {
       const availW = viewportW - 56
       // -72: vertical padding is 48 (AI-bar headroom) + 32, minus the same 8px slack as width
       const availH = viewportH - 72
-      return Math.min(availW / s.widthPx, availH / s.heightPx)
+      // ×uiScale (#1913): the transform applied to the stage is zoom/uiScale,
+      // so filling the CSS viewport needs zoom = cssRatio × uiScale
+      return Math.min(availW / s.widthPx, availH / s.heightPx) * uiScale
     },
-    [showThumbs, aiDockW, stageViewportSize.h, stageViewportSize.w, thumbsW],
+    [showThumbs, aiDockW, stageViewportSize.h, stageViewportSize.w, thumbsW, uiScale],
   )
   /** Fit zoom for display: rawFit clamped to the 0.1–1.5 auto-fit range */
   const fitZoom = useCallback(
@@ -1147,19 +1155,22 @@ export function App() {
             px = (ax - r.left) / applied
             py = (ay - r.top) / applied
           }
-          scaleEl.style.transform = `scale(${g.pending})`
+          // uiScale divides here too: g.pending is the user-facing zoom, the
+          // rendered transform is zoom/uiScale (#1913)
+          const cssZoom = g.pending / uiScaleFactor()
+          scaleEl.style.transform = `scale(${cssZoom})`
           const box = zoomBoxRef.current
           if (box) {
             // offsetWidth ignores the transform = unscaled layout size (same basis as scaleBox)
-            box.style.width = `${scaleEl.offsetWidth * g.pending}px`
-            box.style.height = `${scaleEl.offsetHeight * g.pending}px`
+            box.style.width = `${scaleEl.offsetWidth * cssZoom}px`
+            box.style.height = `${scaleEl.offsetHeight * cssZoom}px`
           }
           // Scroll so the anchored content point stays under the anchor (the browser
           // clamps at the scroll edges; while the content still fits it stays centered)
           if (wrap) {
             const r = scaleEl.getBoundingClientRect()
-            wrap.scrollLeft += px * g.pending - (ax - r.left)
-            wrap.scrollTop += py * g.pending - (ay - r.top)
+            wrap.scrollLeft += px * cssZoom - (ax - r.left)
+            wrap.scrollTop += py * cssZoom - (ay - r.top)
             // At/below fit the anchoring must not win over centering: the bleed's
             // scroll range would keep the offset alive after overflow turns hidden
             resetFitScroll(g.pending)
@@ -1201,6 +1212,16 @@ export function App() {
     const onWheel = (ev: WheelEvent) => {
       if (ev.ctrlKey || ev.metaKey) {
         ev.preventDefault()
+        if (ev.shiftKey) {
+          // Ctrl+Shift+wheel zooms the interface, not the slide (#1913)
+          void window.slidesApi
+            .getUiScale()
+            .then((f) =>
+              window.slidesApi.setUiScale(stepUiScale(f, ev.deltaY < 0 ? 1 : -1)),
+            )
+            .catch(() => {})
+          return
+        }
         const intent = zoomWheel.feed(ev, ev.timeStamp)
         if (!intent) return
         const anchor = { x: ev.clientX, y: ev.clientY }
@@ -2319,6 +2340,15 @@ export function App() {
       else if (cmd === 'zoom-in') previewZoom(nextPreset)
       else if (cmd === 'zoom-out') previewZoom(prevPreset)
       else if (cmd === 'zoom-reset') previewZoom(1)
+      else if (cmd === 'ui-zoom-in' || cmd === 'ui-zoom-out' || cmd === 'ui-zoom-100')
+        void window.slidesApi
+          .getUiScale()
+          .then((f) =>
+            window.slidesApi.setUiScale(
+              cmd === 'ui-zoom-100' ? 1 : stepUiScale(f, cmd === 'ui-zoom-in' ? 1 : -1),
+            ),
+          )
+          .catch(() => {})
       else if (cmd === 'undo') void undo()
       else if (cmd === 'redo') void redo()
       else if (cmd === 'cut') {
@@ -3950,7 +3980,10 @@ export function App() {
                         className="stage-zoom-box"
                         style={
                           scaleBox
-                            ? { width: scaleBox.w * zoom, height: scaleBox.h * zoom }
+                            ? {
+                                width: (scaleBox.w * zoom) / uiScale,
+                                height: (scaleBox.h * zoom) / uiScale,
+                              }
                             : undefined
                         }
                       >
@@ -4013,7 +4046,10 @@ export function App() {
                         <div
                           ref={stageScaleRef}
                           className="stage-scale"
-                          style={{ transform: `scale(${zoom})`, transformOrigin: 'top left' }}
+                          style={{
+                            transform: `scale(${zoom / uiScale})`,
+                            transformOrigin: 'top left',
+                          }}
                         >
                           <div
                             ref={stageRelRef}
