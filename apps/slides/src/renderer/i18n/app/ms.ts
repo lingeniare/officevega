@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const ms = {
   redactMenuLabel: 'Sembunyikan pilihan daripada AI',
@@ -270,4 +270,4 @@ export const ms = {
   appStatusSummaryZoomInserted: 'Slaid Zum Ringkasan disisipkan dengan {count} jubin',
   appSectionSummary: 'Seksyen Ringkasan',
   appSectionN: 'Seksyen {n}',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

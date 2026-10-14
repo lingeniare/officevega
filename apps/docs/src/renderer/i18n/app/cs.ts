@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const cs = {
   appScTitle: 'Klávesové zkratky',
@@ -345,19 +345,7 @@ export const cs = {
   appTranslate: 'Přeložit',
   appTranslateTo: 'Přeložit do jazyka {lang}',
   appLangEnglish: 'angličtina',
-  appLangSimplifiedChinese: 'zjednodušená čínština',
-  appLangJapanese: 'japonština',
-  appLangKorean: 'korejština',
-  appLangFrench: 'francouzština',
-  appLangGerman: 'němčina',
-  appLangSpanish: 'španělština',
-  appLangThai: 'thajština',
-  appLangIndonesian: 'indonéština',
   appLangRussian: 'ruština',
-  appLangArabic: 'arabština',
-  appLangPortuguese: 'portugalština',
-  appLangItalian: 'italština',
-  appLangPolish: 'polština',
   appLangCzech: 'čeština',
   appLangDutch: 'nizozemština',
   appLangMalay: 'malajština',
@@ -525,4 +513,4 @@ export const cs = {
   appLineTriple: '3 řádky',
   appGensparkAccount: 'Účet Genspark',
   appLoginGenspark: 'Přihlásit se ke Genspark',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

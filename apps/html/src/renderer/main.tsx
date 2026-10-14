@@ -36,7 +36,7 @@ function applyDesign(design: UiDesign): void {
 
 void (async () => {
   const [lang, theme, design] = await Promise.all([
-    window.htmlApi.getLanguage().catch(() => 'zh' as const),
+    window.htmlApi.getLanguage().catch(() => 'en' as const),
     window.htmlApi.getTheme().catch(() => 'system' as const),
     window.htmlApi.getDesign().catch(() => 'digital' as const),
   ])

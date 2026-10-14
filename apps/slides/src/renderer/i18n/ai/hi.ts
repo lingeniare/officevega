@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const hi = {
   aiInputPlaceholderGen: 'बनाने के लिए प्रस्तुति बताएँ, या कुछ भी पूछें',
@@ -272,4 +272,4 @@ export const hi = {
   aiStylePresetDarkHint: 'डार्क माहौल — गहरा चारकोल या नेवी बैकग्राउंड, एक चमकीला एक्सेंट, विशाल टाइपोग्राफी, सिनेमैटिक इमेजरी',
   aiStylePresetMinimalHint: 'हल्का मिनिमल — हवादार व्हाइटस्पेस, एक संयत एक्सेंट के साथ लगभग मोनोक्रोम पैलेट, शांत सटीक टाइपोग्राफी',
 
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

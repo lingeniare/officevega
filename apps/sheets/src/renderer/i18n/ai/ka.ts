@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const ka = {
   aiComposerPlaceholderBuild: 'შესაქმნელი ცხრილის, მონაცემების ან დიაგრამის აღწერა…',
@@ -127,4 +127,4 @@ export const ka = {
   aiStarterSalesPrompt: 'შექმენი კვარტალური გაყიდვების ანგარიში: სვეტები პროდუქტი, რეგიონი, ერთეული, ფასი და შემოსავალი მაგალითებით და ჯამის სტრიქონით',
   aiStarterTasks: 'პროექტის ამოცანების გეგმა',
   aiStarterTasksPrompt: 'შექმენი პროექტის ამოცანების გეგმა: სვეტები ამოცანა, პასუხისმგებელი, დაწყების თარიღი, ვადა და სტატუსი თორმეტი მაგალითი ამოცანით',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

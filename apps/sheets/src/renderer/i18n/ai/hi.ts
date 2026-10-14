@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const hi = {
   aiComposerPlaceholderBuild: 'बनाने के लिए तालिका, डेटा या चार्ट बताएँ…',
@@ -127,4 +127,4 @@ export const hi = {
   aiStarterSalesPrompt: 'त्रैमासिक बिक्री रिपोर्ट बनाएँ: उत्पाद, क्षेत्र, इकाइयाँ, मूल्य और आय कॉलम, उदाहरण पंक्तियाँ और एक कुल पंक्ति',
   aiStarterTasks: 'परियोजना कार्य योजना',
   aiStarterTasksPrompt: 'परियोजना कार्य योजना बनाएँ: कार्य, स्वामी, आरंभ तिथि, नियत तिथि और स्थिति कॉलम के साथ एक दर्जन उदाहरण कार्य',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

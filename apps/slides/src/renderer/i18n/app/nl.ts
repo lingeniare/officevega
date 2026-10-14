@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const nl = {
   redactMenuLabel: 'Selectie verbergen voor de AI',
@@ -276,4 +276,4 @@ export const nl = {
   appStatusSummaryZoomInserted: 'Samenvattingszoomdia ingevoegd met {count} tegels',
   appSectionSummary: 'Samenvattingssectie',
   appSectionN: 'Sectie {n}',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

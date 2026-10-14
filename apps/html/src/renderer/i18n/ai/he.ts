@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const he = {
   aiCollapsePanel: 'כווצו את החלונית',
@@ -186,4 +186,4 @@ export const he = {
   aiFillImagesAsk: 'ליצור {n} תמונות לעמוד?',
   aiFillImagesYes: 'צור',
   aiFillImagesNo: 'לא עכשיו',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

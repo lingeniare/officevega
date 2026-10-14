@@ -28,14 +28,7 @@ export const OPENAI_IMAGES_BASE_URL = 'https://api.openai.com/v1'
  */
 export const VEGA_BASE_URL = 'https://api.vega.chat/api/v1'
 export const GEMINI_MEDIA_BASE_URL = 'https://generativelanguage.googleapis.com/v1beta'
-export const ARK_BASE_URL = 'https://ark.cn-beijing.volces.com/api/v3'
-export const ZHIPU_BASE_URL = 'https://open.bigmodel.cn/api/paas/v4'
 export const XAI_BASE_URL = 'https://api.x.ai/v1'
-/** DashScope root: images ride /api/v1/services/aigc/..., understanding rides /compatible-mode/v1 */
-export const DASHSCOPE_BASE_URL = 'https://dashscope.aliyuncs.com'
-export const MINIMAX_BASE_URL = 'https://api.minimax.io/v1'
-/** DeepSeek's OpenAI-compatible root; the Vision + Files API live at https://api.deepseek.com */
-export const DEEPSEEK_MEDIA_BASE_URL = 'https://api.deepseek.com/v1'
 
 // Model ids verified against vendor docs 2026-09; keep chat-capable analysis
 // models in step with the chat catalog in providers.ts.
@@ -155,43 +148,6 @@ export const AI_MEDIA_PROVIDERS: AiMediaProviderMeta[] = [
     videoAnalysis: true,
   },
   {
-    id: 'doubao',
-    label: 'Doubao (Volcengine Ark)',
-    description: 'Seedream image generation and editing; Doubao Seed reads images and video',
-    keyPlaceholder: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
-    defaultBaseUrl: ARK_BASE_URL,
-    imageProtocol: 'openai-images',
-    // per the Ark model list 2026-10-12: Seedream 5.0 split into a pro cut
-    // (layer split, interactive editing, 14-language text) and a flash cut
-    // (same feature set, cheaper and faster), so 5.0 is no longer one model.
-    // The 4.5 and 4.0 IDs are both flagged for retirement there and come out.
-    // 5-0-260128 stays — only its lite alias is on the way out.
-    imageModels: [
-      'doubao-seedream-5-0-pro-260628',
-      'doubao-seedream-5-0-flash-260915',
-      'doubao-seedream-5-0-260128',
-    ],
-    defaultImageModel: 'doubao-seedream-5-0-pro-260628',
-    analysisProtocol: 'openai-chat',
-    analysisModels: ['doubao-seed-2-1-pro-260628', 'doubao-seed-2-1-turbo-260628'],
-    defaultAnalysisModel: 'doubao-seed-2-1-pro-260628',
-    videoAnalysis: true,
-  },
-  {
-    id: 'glm',
-    label: 'GLM (Zhipu)',
-    description: 'CogView image generation; GLM-V reads images and video',
-    keyPlaceholder: 'xxxxxxxx.xxxxxxxx',
-    defaultBaseUrl: ZHIPU_BASE_URL,
-    imageProtocol: 'openai-images',
-    imageModels: ['cogview-4-250304', 'cogview-3-flash'],
-    defaultImageModel: 'cogview-4-250304',
-    analysisProtocol: 'openai-chat',
-    analysisModels: ['glm-4.6v', 'glm-4.6v-flash'],
-    defaultAnalysisModel: 'glm-4.6v',
-    videoAnalysis: true,
-  },
-  {
     id: 'xai',
     label: 'Grok (xAI)',
     description: 'Grok Imagine image generation; Grok reads images',
@@ -203,50 +159,6 @@ export const AI_MEDIA_PROVIDERS: AiMediaProviderMeta[] = [
     analysisProtocol: 'openai-chat',
     analysisModels: ['grok-4.6', 'grok-4.5'],
     defaultAnalysisModel: 'grok-4.6',
-    videoAnalysis: false,
-  },
-  {
-    id: 'qwen',
-    label: 'Qwen (Alibaba Cloud)',
-    description: 'Qwen-Image generation; Qwen-VL reads images and video (DashScope)',
-    keyPlaceholder: 'sk-...',
-    defaultBaseUrl: DASHSCOPE_BASE_URL,
-    imageProtocol: 'dashscope',
-    imageModels: ['qwen-image-plus', 'qwen-image'],
-    defaultImageModel: 'qwen-image-plus',
-    analysisProtocol: 'openai-chat',
-    analysisModels: ['qwen3-vl-plus', 'qwen3-vl-flash', 'qwen3.8-max', 'qwen3.7-plus'],
-    defaultAnalysisModel: 'qwen3-vl-plus',
-    videoAnalysis: true,
-  },
-  {
-    id: 'minimax',
-    label: 'MiniMax',
-    description:
-      'Image generation; MiniMax-M3 reads images and video (use api.minimaxi.com/v1 for CN)',
-    keyPlaceholder: 'eyJ...',
-    defaultBaseUrl: MINIMAX_BASE_URL,
-    imageProtocol: 'minimax',
-    imageModels: ['image-01'],
-    defaultImageModel: 'image-01',
-    analysisProtocol: 'openai-chat',
-    analysisModels: ['MiniMax-M3'],
-    defaultAnalysisModel: 'MiniMax-M3',
-    videoAnalysis: true,
-  },
-  {
-    id: 'deepseek',
-    label: 'DeepSeek',
-    // native multimodal (V4.1 Flash = wire id deepseek-flash): reads JPEG/PNG/GIF/WebP,
-    // no image generation and no video/audio, so it only appears for image analysis
-    description: 'DeepSeek V4.1 Flash reads images (native multimodal); no image generation',
-    keyPlaceholder: 'sk-...',
-    defaultBaseUrl: DEEPSEEK_MEDIA_BASE_URL,
-    imageModels: [],
-    defaultImageModel: '',
-    analysisProtocol: 'openai-chat',
-    analysisModels: ['deepseek-flash'],
-    defaultAnalysisModel: 'deepseek-flash',
     videoAnalysis: false,
   },
   {

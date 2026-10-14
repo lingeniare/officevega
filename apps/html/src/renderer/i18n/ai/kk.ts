@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const kk = {
   aiCollapsePanel: 'Панельді тасалау',
@@ -195,4 +195,4 @@ export const kk = {
   aiFillImagesYes: 'Жасау',
   aiFillImagesNo: 'Қазір емес',
   aiClarifyPrev: 'Алдыңғы',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

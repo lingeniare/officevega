@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const uz = {
   aiCollapsePanel: 'Panelni yig‘ish',
@@ -196,4 +196,4 @@ export const uz = {
   aiFillImagesYes: 'Yaratish',
   aiFillImagesNo: 'Hozir emas',
   aiClarifyPrev: 'Oldingi',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const ms = {
   paneCancel: 'Batal',
@@ -293,4 +293,4 @@ export const ms = {
   paneShowMenuWhite: 'Skrin Putih',
   paneShowMenuEnd: 'Tamatkan Persembahan',
   panePresenterWhiteOn: 'Skrin putih (tekan W untuk kembali)',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

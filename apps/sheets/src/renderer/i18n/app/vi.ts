@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const vi = {
   appMergeWorkbooks: 'Hợp nhất sổ làm việc',
@@ -1520,4 +1520,4 @@ export const vi = {
   appVisualFlipV: 'Lật dọc',
   appVisualFlipH: 'Lật ngang',
   appCtxPasteVisual: 'Dán ảnh hoặc hình',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

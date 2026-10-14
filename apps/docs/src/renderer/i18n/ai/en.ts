@@ -1,5 +1,4 @@
-import type { zh } from './zh'
-
+/** ai strings, en: defines the key set every other locale shard must match. */
 export const en = {
   aiEmptyDraftTitle: 'Let AI draft this document for you',
   aiEmptyDraftBody1: 'Describe the topic and key points, or paste reference material;',
@@ -191,4 +190,4 @@ export const en = {
   aiCmdImages: 'Updated {count} image(s)',
   aiCmdToc: 'Inserted a table of contents ({count} entries)',
   aiCmdSkipped: ' ({count} protected block(s) skipped)',
-} satisfies Record<keyof typeof zh, string>
+}

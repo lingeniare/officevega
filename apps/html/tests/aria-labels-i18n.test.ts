@@ -5,6 +5,9 @@ import { Breadcrumb } from '../src/renderer/components/Breadcrumb'
 import { PreviewFrame } from '../src/renderer/preview/PreviewFrame'
 import { DraftPreview } from '../src/renderer/preview/DraftPreview'
 import { buildParseMap } from '../src/renderer/document/parse-map'
+import { LocaleProvider } from '../src/renderer/i18n/locale'
+
+Object.assign(window, { htmlApi: { onLanguageChanged: () => () => undefined } })
 
 beforeEach(() => vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true))
 const cleanups: Array<() => void> = []
@@ -31,40 +34,40 @@ describe('aria-label/title i18n (existing keys)', () => {
     const map = buildParseMap(text, 1)
     const target = map.elements.find((e) => e.tag === 'p') ?? map.elements[0]!
     const container = mount(
-      createElement(Breadcrumb, {
+      createElement(LocaleProvider, { initial: 'zh-TW' }, createElement(Breadcrumb, {
         text,
         map,
         sid: target.sid,
         state: 'static',
         onSelect: () => {},
-      }),
+      })),
     )
     const nav = container.querySelector('.crumbs')
     expect(nav).not.toBeNull()
-    expect(nav!.getAttribute('aria-label')).toBe('\u5143\u7d20\u8def\u5f84')
+    expect(nav!.getAttribute('aria-label')).toBe('\u5143\u7d20\u8def\u5f91')
     expect(nav!.getAttribute('aria-label')).not.toBe('element path')
   })
 
   it('PreviewFrame uses the translated preview key, not the English literal', () => {
     const container = mount(
-      createElement(PreviewFrame, {
+      createElement(LocaleProvider, { initial: 'zh-TW' }, createElement(PreviewFrame, {
         url: null,
         nonce: 0,
         zoom: 100,
         onMessage: () => {},
-      }),
+      })),
     )
     const frame = container.querySelector('iframe.preview-frame')
     expect(frame).not.toBeNull()
-    expect(frame!.getAttribute('title')).toBe('\u9884\u89c8')
+    expect(frame!.getAttribute('title')).toBe('\u9810\u89bd')
     expect(frame!.getAttribute('title')).not.toBe('preview')
   })
 
   it('DraftPreview reuses the translated preview key, not the English literal', () => {
-    const container = mount(createElement(DraftPreview, { html: '<p>hi</p>' }))
+    const container = mount(createElement(LocaleProvider, { initial: 'zh-TW' }, createElement(DraftPreview, { html: '<p>hi</p>' })))
     const frame = container.querySelector('iframe.draft-preview-frame')
     expect(frame).not.toBeNull()
-    expect(frame!.getAttribute('title')).toBe('\u9884\u89c8')
+    expect(frame!.getAttribute('title')).toBe('\u9810\u89bd')
     expect(frame!.getAttribute('title')).not.toBe('draft')
   })
 })

@@ -45,7 +45,7 @@ function applyDocumentTheme(theme: DocTheme): void {
 }
 
 async function bootstrap(): Promise<void> {
-  let lang: Lang = 'zh'
+  let lang: Lang = 'en'
   let theme: UiTheme = 'system'
   let design: UiDesign = 'digital'
   let docTheme: DocTheme = 'follow'
@@ -53,7 +53,7 @@ async function bootstrap(): Promise<void> {
     // per-promise catch: standalone runs have no app:get-theme handler, and
     // that rejection must not drop a resolved language
     ;[lang, theme, design, docTheme] = await Promise.all([
-      window.desktop.getLanguage().catch(() => 'zh' as const),
+      window.desktop.getLanguage().catch(() => 'en' as const),
       window.desktop.getTheme().catch(() => 'system' as const),
       window.desktop.getDesign().catch(() => 'digital' as const),
       window.desktop.getDocumentTheme?.().catch(() => 'follow' as const),

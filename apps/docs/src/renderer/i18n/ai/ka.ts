@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const ka = {
   aiEmptyDraftTitle: 'ნება მიეცით AI-ს, თქვენთვის შეადგინოს ეს დოკუმენტი',
@@ -192,4 +192,4 @@ export const ka = {
   aiSumAnalyzeMedia: 'მედიის ანალიზი',
   aiSumAnalyzeMediaDone: 'მედია განალიზებულია',
   aiCmdNoneUnchanged: '{count} შესაბამისი ბლოკი უცვლელი დარჩა; დოკუმენტი არ შეცვლილა.',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

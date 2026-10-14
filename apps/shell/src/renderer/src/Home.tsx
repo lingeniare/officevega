@@ -3020,7 +3020,7 @@ export function Home() {
           : hour < 18
             ? 'greetAfternoon'
             : 'greetEvening'
-    const cjk = lang === 'zh' || lang === 'zh-TW' || lang === 'ja'
+    const cjk = lang === 'zh-TW'
     const greetName = displayName || accountName
     const greeting = `${t(greetKey)}${greetName ? (cjk ? '，' : ', ') + greetName : ''}${cjk ? '。' : '. '}`
     return (

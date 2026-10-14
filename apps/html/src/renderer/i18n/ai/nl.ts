@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const nl = {
   aiCollapsePanel: 'Paneel inklappen',
@@ -193,4 +193,4 @@ export const nl = {
   aiFillImagesAsk: '{n} afbeeldingen voor de pagina genereren?',
   aiFillImagesYes: 'Genereren',
   aiFillImagesNo: 'Niet nu',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

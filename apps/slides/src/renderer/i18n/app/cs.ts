@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const cs = {
   redactMenuLabel: 'Skrýt výběr před AI',
@@ -263,4 +263,4 @@ export const cs = {
   appStatusSummaryZoomInserted: 'Vložen souhrnný snímek Zoom s {count} dlaždicemi',
   appSectionSummary: 'Souhrnný oddíl',
   appSectionN: 'Oddíl {n}',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

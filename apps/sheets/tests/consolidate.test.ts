@@ -91,11 +91,11 @@ describe('buildLabelMatrix', () => {
 
   it('rejects max/min, single-column areas, and label-less sources', () => {
     expect(buildLabelMatrix('max', areas, labels, { row: 0, column: 0 }))
-      .toMatch(/不支持/)
+      .toMatch(/not supported/)
     expect(buildLabelMatrix('sum', [area('Q1', 0, 0, 2, 1)], [['A']], { row: 0, column: 0 }))
-      .toMatch(/两列/)
+      .toMatch(/at least two columns/)
     expect(buildLabelMatrix('sum', areas, [[''], []], { row: 0, column: 0 }))
-      .toMatch(/没有找到标签/)
+      .toMatch(/No labels found/)
   })
 })
 

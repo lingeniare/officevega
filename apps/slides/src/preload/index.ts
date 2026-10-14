@@ -1,3 +1,4 @@
+import type { Lang } from '@genoffice/i18n'
 import type { AiPanelPrefs } from '@genoffice/ui'
 import { contextBridge, ipcRenderer, webUtils } from 'electron'
 import type { IpcRendererEvent } from 'electron'
@@ -104,7 +105,7 @@ const api: SlidesApi = {
   onLanguageChanged: (handler) => {
     const listener = (
       _event: IpcRendererEvent,
-      lang: 'zh' | 'en' | 'ja' | 'ko' | 'fr' | 'de' | 'es' | 'th' | 'id' | 'ru' | 'ar',
+      lang: Lang,
     ) => handler(lang)
     ipcRenderer.on('app:language-changed', listener)
     return () => ipcRenderer.removeListener('app:language-changed', listener)

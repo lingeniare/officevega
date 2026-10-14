@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const ky = {
   appScTitle: 'Баскычтоп жарлыктары',
@@ -273,19 +273,7 @@ export const ky = {
   appTranslate: 'Которуу',
   appTranslateTo: '{lang} тилине которуу',
   appLangEnglish: 'Англисче',
-  appLangSimplifiedChinese: 'Жөнөкөйлөштүрүлгөн кытайча',
-  appLangJapanese: 'Жапончо',
-  appLangKorean: 'Корейче',
-  appLangFrench: 'Французча',
-  appLangGerman: 'Немисче',
-  appLangSpanish: 'Испанча',
-  appLangThai: 'Тай',
-  appLangIndonesian: 'Индонезия',
   appLangRussian: 'Орус',
-  appLangArabic: 'Араб',
-  appLangPortuguese: 'Португал',
-  appLangItalian: 'Италия',
-  appLangPolish: 'Поляк',
   appLangCzech: 'Чех',
   appLangDutch: 'Голланд',
   appLangMalay: 'Малай',
@@ -526,4 +514,4 @@ export const ky = {
   appGoToNext: 'Next',
   appGensparkAccount: 'Genspark 账号',
   appLoginGenspark: '登录 Genspark',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

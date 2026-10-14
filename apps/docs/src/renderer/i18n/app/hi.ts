@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const hi = {
   appScTitle: 'कीबोर्ड शॉर्टकट',
@@ -345,19 +345,7 @@ export const hi = {
   appTranslate: 'अनुवाद करें',
   appTranslateTo: '{lang} में अनुवाद करें',
   appLangEnglish: 'अंग्रेज़ी',
-  appLangSimplifiedChinese: 'सरलीकृत चीनी',
-  appLangJapanese: 'जापानी',
-  appLangKorean: 'कोरियाई',
-  appLangFrench: 'फ़्रेंच',
-  appLangGerman: 'जर्मन',
-  appLangSpanish: 'स्पेनिश',
-  appLangThai: 'थाई',
-  appLangIndonesian: 'इंडोनेशियाई',
   appLangRussian: 'रूसी',
-  appLangArabic: 'अरबी',
-  appLangPortuguese: 'पुर्तगाली',
-  appLangItalian: 'इतालवी',
-  appLangPolish: 'पोलिश',
   appLangCzech: 'चेक',
   appLangDutch: 'डच',
   appLangMalay: 'मलय',
@@ -525,4 +513,4 @@ export const hi = {
   appLineTriple: '3 पंक्तियाँ',
   appGensparkAccount: 'Genspark खाता',
   appLoginGenspark: 'Genspark में साइन इन करें',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

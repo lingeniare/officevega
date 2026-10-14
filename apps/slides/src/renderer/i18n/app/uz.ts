@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const uz = {
   appPhPromptTitle: 'Sarlavha qo‘shish uchun bosing',
@@ -270,4 +270,4 @@ export const uz = {
   redactCancel: 'Cancel',
   redactInsert: 'Hide',
   redactEnable: 'Right-click a selection to hide it from the model.',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

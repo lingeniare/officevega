@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const tk = {
   aiComposerPlaceholderBuild: 'Döretmeli tablisany, maglumatlary ýa-da diagrammany beýan ediň…',
@@ -128,4 +128,4 @@ export const tk = {
   aiStarterSalesPrompt: 'Çärýeklik satuw hasabatyny döret: önüm, sebit, birlik, baha we girdeji sütünleri bilen mysal hatary we jemi hatary',
   aiStarterTasks: 'Taslama wezipe meýilnamasy',
   aiStarterTasksPrompt: 'Taslamanyň wezipe meýilnamasyny döret: wezipe, jogapkär, başlanýan senesi, möhleti we ýagdaýy sütünleri bilen bir düzine mysal wezipeler',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const ru = {
   aiInputPlaceholderGen: 'Опишите презентацию для создания или задайте вопрос',
@@ -273,4 +273,4 @@ export const ru = {
   aiStylePresetDarkHint: 'тёмная атмосфера — глубокий графитовый или тёмно-синий фон, один светящийся акцент, крупная типографика, кинематографичные образы',
   aiStylePresetMinimalHint: 'светлый минимализм — много воздуха, почти монохромная палитра с одним сдержанным акцентом, спокойная точная типографика',
 
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

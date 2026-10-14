@@ -6,44 +6,38 @@ import {
   type TranslateLang,
 } from '../src/renderer/components/translate-langs'
 
-/** The seven languages the app shipped with, in their original order. */
+/** The languages the translate menu offers, in menu order. */
 const SHIPPED: Array<[TranslateLang, string]> = [
   ['en', 'English'],
-  ['zh', 'SimplifiedChinese'],
-  ['ja', 'Japanese'],
-  ['ko', 'Korean'],
-  ['fr', 'French'],
-  ['de', 'German'],
-  ['es', 'Spanish'],
+  ['ru', 'Russian'],
+  ['cs', 'Czech'],
+  ['nl', 'Dutch'],
+  ['ms', 'Malay'],
+  ['he', 'Hebrew'],
+  ['hi', 'Hindi'],
+  ['zh-TW', 'TraditionalChinese'],
+  ['vi', 'Vietnamese'],
 ]
 
 describe('translate language keys', () => {
-  it('reproduces the seven keys that already ship, in order', () => {
-    // These strings appear in 21 locale files. A refactor that changed one
+  it('reproduces the keys that ship, in order', () => {
+    // These strings appear in every locale file. A refactor that changed one
     // would leave the menu showing a raw key, or nothing at all.
-    expect(TRANSLATE_LANGS.slice(0, 7).map((l) => appLangKey(l.code))).toEqual([
-      'appLangEnglish',
-      'appLangSimplifiedChinese',
-      'appLangJapanese',
-      'appLangKorean',
-      'appLangFrench',
-      'appLangGerman',
-      'appLangSpanish',
-    ])
-    expect(TRANSLATE_LANGS.slice(0, 7).map((l) => ribbonLangKey(l.code))).toEqual(
+    expect(TRANSLATE_LANGS.map((l) => appLangKey(l.code))).toEqual(
+      SHIPPED.map(([, k]) => `appLang${k}`),
+    )
+    expect(TRANSLATE_LANGS.map((l) => ribbonLangKey(l.code))).toEqual(
       SHIPPED.map(([, k]) => `ribbonLang${k}`),
     )
   })
 
-  it('covers every language the UI itself ships', () => {
-    // 21 locales; the translate menu must be able to offer every one of them
-    expect(TRANSLATE_LANGS).toHaveLength(21)
+  it('covers the nine languages the translate menu offers', () => {
+    expect(TRANSLATE_LANGS).toHaveLength(9)
   })
 
   it('names zh-TW explicitly, which no join-then-capitalise rule could express', () => {
     expect(appLangKey('zh-TW')).toBe('appLangTraditionalChinese')
     expect(ribbonLangKey('zh-TW')).toBe('ribbonLangTraditionalChinese')
-    expect(appLangKey('zh')).toBe('appLangSimplifiedChinese')
   })
 
   it('gives every language a distinct key on both surfaces', () => {

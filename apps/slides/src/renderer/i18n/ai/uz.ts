@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const uz = {
   aiInputPlaceholderGen: 'Yaratish uchun taqdimotni tavsiflang yoki istalgan narsani so‘rang',
@@ -275,4 +275,4 @@ export const uz = {
 
   aiClarifyPrev: 'Oldingi',
   aiPageCloudToLocal: 'cloud unavailable — generated locally',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

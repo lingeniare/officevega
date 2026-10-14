@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const ka = {
   ribbonAiCreditNote: 'იყენებს AI-ს და ხარჯავს კრედიტებს',
@@ -595,19 +595,7 @@ export const ka = {
     'მონიშნული შიგთავსის კორექტურა: გაასწორეთ ბეჭდვითი, პუნქტუაციისა და გრამატიკული შეცდომები, ორიგინალის მნიშვნელობისა და აბზაცების სტრუქტურის შეუცვლელად.',
   ribbonTranslateTo: 'თარგმნა {lang}-ზე',
   ribbonLangEnglish: 'ინგლისური',
-  ribbonLangSimplifiedChinese: 'გამარტივებული ჩინური',
-  ribbonLangJapanese: 'იაპონური',
-  ribbonLangKorean: 'კორეული',
-  ribbonLangFrench: 'ფრანგული',
-  ribbonLangGerman: 'გერმანული',
-  ribbonLangSpanish: 'ესპანური',
-  ribbonLangThai: 'ტაი',
-  ribbonLangIndonesian: 'ინდონეზიური',
   ribbonLangRussian: 'რუსული',
-  ribbonLangArabic: 'არაბული',
-  ribbonLangPortuguese: 'პორტუგალიური',
-  ribbonLangItalian: 'იტალიური',
-  ribbonLangPolish: 'პოლონური',
   ribbonLangCzech: 'ჩეხური',
   ribbonLangDutch: 'ნიდერლანდური',
   ribbonLangMalay: 'მალაიური',
@@ -976,4 +964,4 @@ export const ka = {
   ribbonRowHeightIs: 'Row height is',
   ribbonReadOnlyEdit: 'The document is read-only; tables cannot be changed',
   // File menu,
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

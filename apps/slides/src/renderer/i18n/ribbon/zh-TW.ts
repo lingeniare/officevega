@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const zhTW = {
   ribbonAiCreditNote: '將呼叫 AI 並消耗額度',
@@ -373,20 +373,8 @@ export const zhTW = {
   ribbonTranslatePrompt:
     '把目前頁的所有文字翻譯成{lang}：用工具直接取代原文，保持版面、字型大小和配色不變。',
   ribbonLangEnglish: '英文',
-  ribbonLangSimplifiedChinese: '簡體中文',
   ribbonLangTraditionalChinese: '繁體中文',
-  ribbonLangJapanese: '日文',
-  ribbonLangKorean: '韓文',
-  ribbonLangFrench: '法文',
-  ribbonLangGerman: '德文',
-  ribbonLangSpanish: '西班牙文',
-  ribbonLangThai: '泰文',
-  ribbonLangIndonesian: '印尼文',
   ribbonLangRussian: '俄文',
-  ribbonLangArabic: '阿拉伯文',
-  ribbonLangPortuguese: '葡萄牙文',
-  ribbonLangItalian: '義大利文',
-  ribbonLangPolish: '波蘭文',
   ribbonLangCzech: '捷克文',
   ribbonLangDutch: '荷蘭文',
   ribbonLangMalay: '馬來文',
@@ -749,4 +737,4 @@ export const zhTW = {
   ribbonZoomSelectedSlides: '已選取 {n} 張投影片',
   ribbonZoomSelectedSections: '已選取 {n} 個節',
   ribbonPin: '固定功能區',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

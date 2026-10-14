@@ -26,20 +26,8 @@ const LANG_NAMES = {
   ky: 'Kyrgyz (Cyrillic script)',
   tt: 'Tatar (Cyrillic script)',
   ka: 'Georgian (Georgian script)',
-  zh: 'Simplified Chinese',
   en: 'English',
-  ja: 'Japanese',
-  ko: 'Korean',
-  fr: 'French',
-  de: 'German',
-  es: 'Spanish',
-  th: 'Thai',
-  id: 'Indonesian',
   ru: 'Russian',
-  ar: 'Arabic',
-  pt: 'Brazilian Portuguese',
-  it: 'Italian',
-  pl: 'Polish',
   cs: 'Czech',
   nl: 'Dutch',
   ms: 'Malay',
@@ -404,29 +392,7 @@ const translate = (lang, text) => cache.get(cacheKey(text))?.[lang] ?? text
 // file processors
 // ---------------------------------------------------------------------------
 
-const ALL_LANGS = new Set([
-  'zh',
-  'en',
-  'ja',
-  'ko',
-  'fr',
-  'de',
-  'es',
-  'th',
-  'id',
-  'ru',
-  'ar',
-  'pt',
-  'it',
-  'pl',
-  'cs',
-  'nl',
-  'ms',
-  'he',
-  'hi',
-  'zh-TW',
-  ...NEW_LANGS,
-])
+const ALL_LANGS = new Set(['en', 'ru', 'cs', 'nl', 'ms', 'he', 'hi', 'zh-TW', ...NEW_LANGS])
 
 const touched = []
 
@@ -442,7 +408,7 @@ function processShardDir(dir) {
   if (!exp) throw new Error(`${dir}: no 'export const en = {'`)
   const openIdx = src.indexOf('{', exp.index)
   const endIdx = matchingBrace(src, openIdx)
-  const tail = src.slice(endIdx + 1) // ` satisfies Record<keyof typeof zh, string>` etc.
+  const tail = src.slice(endIdx + 1) // ` satisfies Record<keyof typeof en, string>` etc.
   const items = parseEntries(src.slice(openIdx + 1, endIdx).split('\n'), `${dir}/en.ts`)
 
   for (const lang of langs) {
@@ -523,14 +489,9 @@ function processInlineDicts(file, dicts) {
   mark(file)
 }
 
-/** pick the string for a lang: zh/en authored, others from the cache */
-function extraText(lang, en, zh) {
-  if (lang === 'zh') return zh
-  if (lang === 'en') return en
-  return translate(lang, en)
-}
 
-/** append missing [key,en,zh] entries to every <lang>.ts in a shard dir */
+
+/** append missing [key,en] entries to every <lang>.ts in a shard dir */
 function appendShardKeys(dir, entries) {
   for (const f of readdirSync(join(root, dir))) {
     if (!f.endsWith('.ts')) continue
@@ -543,7 +504,7 @@ function appendShardKeys(dir, entries) {
     const m = endRe.exec(src)
     if (!m) throw new Error(`${file}: no object tail`)
     const ins = missing
-      .map(([k, en, zh]) => `  ${k}: ${emitLit(extraText(lang, en, zh))},`)
+      .map(([k, en]) => `  ${k}: ${emitLit(en)},`)
       .join('\n')
     src = src.slice(0, m.index) + '\n' + ins + src.slice(m.index)
     writeFileSync(file, src)
@@ -551,7 +512,7 @@ function appendShardKeys(dir, entries) {
   mark(`${dir}/* (+${entries.length} keys)`)
 }
 
-/** append missing [key,en,zh] entries inside each lang block of an inline dict */
+/** append missing [key,en] entries inside each lang block of an inline dict */
 function appendInlineKeys(file, dictAnchor, entries) {
   let src = readFileSync(join(root, file), 'utf8')
   const anchorIdx = src.indexOf(dictAnchor)
@@ -572,7 +533,7 @@ function appendInlineKeys(file, dictAnchor, entries) {
     const missing = entries.filter(([k]) => !new RegExp(`\\b${k}:`).test(body))
     if (!missing.length) continue
     const ins = missing
-      .map(([k, en, zh]) => `    ${k}: ${emitLit(extraText(lang, en, zh))},`)
+      .map(([k, en]) => `    ${k}: ${emitLit(en)},`)
       .join('\n')
     edits.push([block.end, ins])
   }
@@ -668,142 +629,118 @@ const MERGERS = [
 ]
 
 // Keys the components reference but no dictionary defines yet (tooltip-detail
-// wiring in progress). Each entry: [key, enText, zhText] — en/zh authored here,
+// wiring in progress). Each entry: [key, enText] — en authored here,
 // every other language gets the LLM translation of enText.
 const EXTRA_KEYS = [
-  // [shardDirOrInlineFile, [[key, en, zh], ...]]
+  // [shardDirOrInlineFile, [[key, en], ...]]
   [
     'apps/docs/src/renderer/i18n/ribbon',
     [
-      ['ribbonMarginsTip', 'Choose the page margins', '设置页面边距'],
-      ['ribbonOrientationTip', 'Switch between portrait and landscape', '切换纵向和横向'],
-      ['ribbonPaperSizeTip', 'Choose the paper size', '选择纸张大小'],
-      ['ribbonColumnsTip', 'Split the text into columns', '将文字分栏'],
-      ['ribbonIndentLeftTip', 'Paragraph left indent, in points', '段落左缩进（磅）'],
-      ['ribbonIndentRightTip', 'Paragraph right indent, in points', '段落右缩进（磅）'],
-      ['ribbonSpaceBeforeTip', 'Spacing before the paragraph, in points', '段前间距（磅）'],
-      ['ribbonSpaceAfterTip', 'Spacing after the paragraph, in points', '段后间距（磅）'],
-      ['ribbonPositionTip', 'Choose where the object sits on the page', '选择对象在页面上的位置'],
-      ['ribbonWrapTextTip', 'Choose how text wraps around the object', '选择文字环绕对象的方式'],
+      ['ribbonMarginsTip', 'Choose the page margins'],
+      ['ribbonOrientationTip', 'Switch between portrait and landscape'],
+      ['ribbonPaperSizeTip', 'Choose the paper size'],
+      ['ribbonColumnsTip', 'Split the text into columns'],
+      ['ribbonIndentLeftTip', 'Paragraph left indent, in points'],
+      ['ribbonIndentRightTip', 'Paragraph right indent, in points'],
+      ['ribbonSpaceBeforeTip', 'Spacing before the paragraph, in points'],
+      ['ribbonSpaceAfterTip', 'Spacing after the paragraph, in points'],
+      ['ribbonPositionTip', 'Choose where the object sits on the page'],
+      ['ribbonWrapTextTip', 'Choose how text wraps around the object'],
       [
         'ribbonDropCapTip',
         'Add a large initial letter at the start of the paragraph',
-        '在段落开头添加首字下沉',
       ],
-      ['ribbonPageNumberTip', 'Insert a page number', '插入页码'],
-      ['ribbonAutoFitTip', 'Resize table columns to fit automatically', '自动调整表格列宽'],
-      ['ribbonZoomInTip', 'Zoom in', '放大'],
-      ['ribbonZoomOutTip', 'Zoom out', '缩小'],
+      ['ribbonPageNumberTip', 'Insert a page number'],
+      ['ribbonAutoFitTip', 'Resize table columns to fit automatically'],
+      ['ribbonZoomInTip', 'Zoom in'],
+      ['ribbonZoomOutTip', 'Zoom out'],
     ],
   ],
   [
     'apps/sheets/src/renderer/i18n/app',
     [
-      ['appConditionalFormattingTip', 'Highlight cells based on rules', '按规则突出显示单元格'],
+      ['appConditionalFormattingTip', 'Highlight cells based on rules'],
       [
         'appCrossHighlightTip',
         'Highlight the row and column of the active cell',
-        '高亮活动单元格所在的行和列',
       ],
-      ['appDefineNameTip', 'Define a named range', '定义命名区域'],
-      ['appEquationTip', 'Insert an equation', '插入公式'],
-      ['appFormulaBarTip', 'Show or hide the formula bar', '显示或隐藏编辑栏'],
-      ['appGridlinesTip', 'Show or hide gridlines', '显示或隐藏网格线'],
-      ['appHeadingsTip', 'Show or hide row and column headings', '显示或隐藏行列标题'],
-      ['appIconsTip', 'Insert an icon', '插入图标'],
-      ['appReplaceTip', 'Find and replace text', '查找并替换文字'],
-      ['appScreenshotTip', 'Insert a screenshot', '插入截图'],
-      ['appSymbolTip', 'Insert a symbol', '插入符号'],
+      ['appDefineNameTip', 'Define a named range'],
+      ['appEquationTip', 'Insert an equation'],
+      ['appFormulaBarTip', 'Show or hide the formula bar'],
+      ['appGridlinesTip', 'Show or hide gridlines'],
+      ['appHeadingsTip', 'Show or hide row and column headings'],
+      ['appIconsTip', 'Insert an icon'],
+      ['appReplaceTip', 'Find and replace text'],
+      ['appScreenshotTip', 'Insert a screenshot'],
+      ['appSymbolTip', 'Insert a symbol'],
     ],
   ],
   [
     'apps/slides/src/renderer/i18n/ribbon',
     [
-      ['ribbonCollapsedGroupTip', 'Show the hidden commands of this group', '显示该组隐藏的命令'],
-      ['ribbonGroupParagraphTip', 'Paragraph settings', '段落设置'],
-      ['ribbonBulletPictureTip', 'Use a picture as the bullet', '用图片作为项目符号'],
-      ['ribbonNoneTip', 'Remove bullets', '取消项目符号'],
-      ['ribbonMoreColorsTip', 'Pick a custom color', '选择自定义颜色'],
-      ['ribbonChangeChartTypeTip', 'Change the chart type', '更改图表类型'],
+      ['ribbonCollapsedGroupTip', 'Show the hidden commands of this group'],
+      ['ribbonGroupParagraphTip', 'Paragraph settings'],
+      ['ribbonBulletPictureTip', 'Use a picture as the bullet'],
+      ['ribbonNoneTip', 'Remove bullets'],
+      ['ribbonMoreColorsTip', 'Pick a custom color'],
+      ['ribbonChangeChartTypeTip', 'Change the chart type'],
       [
         'ribbonReplacePictureTip',
         'Replace the picture, keeping its formatting',
-        '替换图片，保留其格式',
       ],
-      ['ribbonTransparencyTip', 'Set the picture transparency', '设置图片透明度'],
-      ['ribbonChangeShapeTip', 'Change the selected shape', '更改所选形状'],
+      ['ribbonTransparencyTip', 'Set the picture transparency'],
+      ['ribbonChangeShapeTip', 'Change the selected shape'],
     ],
   ],
   [
     'apps/slides/src/renderer/i18n/panes',
     [
-      ['paneFormatFillTip', 'Fill options for the selection', '所选对象的填充选项'],
-      ['paneFormatOutlineTip', 'Outline options for the selection', '所选对象的轮廓选项'],
+      ['paneFormatFillTip', 'Fill options for the selection'],
+      ['paneFormatOutlineTip', 'Outline options for the selection'],
     ],
   ],
   [
     'apps/html/src/renderer/i18n/app',
     [
-      ['saveAsTip', 'Save a copy with a new name', '以新名称另存副本'],
+      ['saveAsTip', 'Save a copy with a new name'],
       ['aiThemeTip', 'Restyle the page with AI', '用 AI 重新设计页面样式'],
-      ['modePresentTip', 'Preview the page full-screen', '全屏预览页面'],
-      ['viewPreviewTip', 'Rendered preview', '渲染预览'],
-      ['viewSplitTip', 'Side-by-side source and preview', '源代码与预览并排'],
+      ['modePresentTip', 'Preview the page full-screen'],
+      ['viewPreviewTip', 'Rendered preview'],
+      ['viewSplitTip', 'Side-by-side source and preview'],
       ['viewSourceTip', 'HTML source', 'HTML 源代码'],
-      ['insertHeadingTip', 'Insert a heading', '插入标题'],
-      ['insertParagraphTip', 'Insert a paragraph', '插入段落'],
-      ['insertImageTip', 'Insert an image', '插入图片'],
-      ['insertTableTip', 'Insert a table', '插入表格'],
-      ['insertMoreTip', 'More insert options', '更多插入选项'],
+      ['insertHeadingTip', 'Insert a heading'],
+      ['insertParagraphTip', 'Insert a paragraph'],
+      ['insertImageTip', 'Insert an image'],
+      ['insertTableTip', 'Insert a table'],
+      ['insertMoreTip', 'More insert options'],
     ],
   ],
   [
     'apps/pdf/src/renderer/i18n/strings.ts',
     [
-      ['highlightTip', 'Highlight the selected text', '高亮所选文字'],
-      ['underlineTip', 'Underline the selected text', '为所选文字添加下划线'],
-      ['strikeoutTip', 'Strike through the selected text', '为所选文字添加删除线'],
-      ['drawColorTip', 'Pick the drawing color', '选择画笔颜色'],
-      ['drawInkTip', 'Draw freehand on the page', '在页面上手绘'],
-      ['drawRectTip', 'Draw a rectangle annotation', '绘制矩形标注'],
-      ['drawEllipseTip', 'Draw an ellipse annotation', '绘制椭圆标注'],
-      ['drawArrowTip', 'Draw an arrow annotation', '绘制箭头标注'],
-      ['drawNoteTip', 'Add a sticky note', '添加便签'],
-      ['nightModeTip', 'Invert colors for night reading', '反色显示以便夜间阅读'],
-      ['redactClearTip', 'Remove all redaction marks', '清除所有涂黑标记'],
-      ['redactApplyTip', 'Permanently remove the marked content', '永久删除标记的内容'],
-      ['formPreviousFieldTip', 'Go to the previous form field', '跳到上一个表单字段'],
-      ['formNextFieldTip', 'Go to the next form field', '跳到下一个表单字段'],
+      ['highlightTip', 'Highlight the selected text'],
+      ['underlineTip', 'Underline the selected text'],
+      ['strikeoutTip', 'Strike through the selected text'],
+      ['drawColorTip', 'Pick the drawing color'],
+      ['drawInkTip', 'Draw freehand on the page'],
+      ['drawRectTip', 'Draw a rectangle annotation'],
+      ['drawEllipseTip', 'Draw an ellipse annotation'],
+      ['drawArrowTip', 'Draw an arrow annotation'],
+      ['drawNoteTip', 'Add a sticky note'],
+      ['nightModeTip', 'Invert colors for night reading'],
+      ['redactClearTip', 'Remove all redaction marks'],
+      ['redactApplyTip', 'Permanently remove the marked content'],
+      ['formPreviousFieldTip', 'Go to the previous form field'],
+      ['formNextFieldTip', 'Go to the next form field'],
     ],
   ],
   [
     'apps/markdown/src/renderer/i18n/strings.ts',
-    [['saveAsTip', 'Save a copy with a new name', '以新名称另存副本']],
+    [['saveAsTip', 'Save a copy with a new name']],
   ],
 ]
 
-const OLD_LANGS = [
-  'zh',
-  'en',
-  'ja',
-  'ko',
-  'fr',
-  'de',
-  'es',
-  'th',
-  'id',
-  'ru',
-  'ar',
-  'pt',
-  'it',
-  'pl',
-  'cs',
-  'nl',
-  'ms',
-  'he',
-  'hi',
-  'zh-TW',
-]
+const OLD_LANGS = ['en', 'ru', 'cs', 'nl', 'ms', 'he', 'hi', 'zh-TW', 'vi']
 
 // ---------------------------------------------------------------------------
 // collect every English source string up-front (global dedup → fewer calls)
@@ -858,7 +795,7 @@ function checkFile(file) {
   const found = findLangDicts(src, ALL_LANGS)
   const problems = []
   for (const d of found) {
-    const refB = d.blocks.get('en') ?? d.blocks.get('zh')
+    const refB = d.blocks.get('en')
     if (!refB) continue
     const refItems = blockEntries(src, refB, `${file}:ref`)
     const refKeys = refItems.filter((i) => i.kind === 'entry').map((i) => i.key)
@@ -909,9 +846,9 @@ async function main() {
     for (const lang of langs) {
       if (!DRY) await translateAll(lang, texts)
     }
-    // existing locales only need the EXTRA_KEYS texts (zh/en are authored)
+    // existing locales only need the EXTRA_KEYS texts (en is authored)
     if (!DRY)
-      for (const lang of OLD_LANGS.filter((l) => l !== 'zh' && l !== 'en'))
+      for (const lang of OLD_LANGS.filter((l) => l !== 'en'))
         await translateAll(lang, extraTexts)
   }
   if (DRY || CHECK_ONLY) {

@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const ka = {
   appScTitle: 'კლავიატურის მალსახმობები',
@@ -275,19 +275,7 @@ export const ka = {
   appTranslate: 'თარგმნა',
   appTranslateTo: 'თარგმნა {lang}-ზე',
   appLangEnglish: 'ინგლისური',
-  appLangSimplifiedChinese: 'გამარტივებული ჩინური',
-  appLangJapanese: 'იაპონური',
-  appLangKorean: 'კორეული',
-  appLangFrench: 'ფრანგული',
-  appLangGerman: 'გერმანული',
-  appLangSpanish: 'ესპანური',
-  appLangThai: 'ტაი',
-  appLangIndonesian: 'ინდონეზიური',
   appLangRussian: 'რუსული',
-  appLangArabic: 'არაბული',
-  appLangPortuguese: 'პორტუგალიური',
-  appLangItalian: 'იტალიური',
-  appLangPolish: 'პოლონური',
   appLangCzech: 'ჩეხური',
   appLangDutch: 'ნიდერლანდური',
   appLangMalay: 'მალაიური',
@@ -529,4 +517,4 @@ export const ka = {
   appGoToNext: 'Next',
   appGensparkAccount: 'Genspark 账号',
   appLoginGenspark: '登录 Genspark',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

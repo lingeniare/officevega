@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const ky = {
   appMergeWorkbooks: 'Жумуш китептерин бириктирүү',
@@ -1561,4 +1561,4 @@ export const ky = {
   appLargeFilterApplying: 'Чыпка файлга колдонулуп жатат…',
   appPrintWorkbookTooLarge:
     'Бул иш китеп толук жүктөө үчүн өтө чоң, ошондуктан аны басып чыгаруу же PDFге экспорттоо мүмкүн эмес.',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

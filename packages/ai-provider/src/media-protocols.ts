@@ -1,10 +1,9 @@
 /**
  * Wire implementations for the BYOK media providers. Image generation speaks
- * four shapes — OpenAI Images (OpenAI, Ark/Seedream, Zhipu/CogView, xAI,
- * custom endpoints; the vendors differ in size vocabulary and edit support),
- * Gemini native output / Imagen predict, DashScope multimodal-generation
- * (Qwen-Image) and MiniMax image_generation. Understanding speaks two: OpenAI
- * chat completions (video via a video_url part where the vendor accepts one)
+ * two shapes — OpenAI Images (OpenAI, xAI, VEGA, custom endpoints; the
+ * vendors differ in size vocabulary and edit support) and Gemini native
+ * output / Imagen predict. Understanding speaks two: OpenAI chat
+ * completions (video via a video_url part where the vendor accepts one)
  * and Gemini generateContent (inline or Files API). Genspark is not here — its
  * tools go through the gsk CLI in @genoffice/ai-search.
  */
@@ -18,9 +17,7 @@ import {
   throwIfPaymentRequired,
 } from './protocols/shared'
 import {
-  DASHSCOPE_BASE_URL,
   GEMINI_MEDIA_BASE_URL,
-  MINIMAX_BASE_URL,
   OPENAI_IMAGES_BASE_URL,
   VEGA_BASE_URL,
   getMediaProviderMeta,
@@ -72,24 +69,11 @@ function metaOf(provider: ByokMediaProviderId): AiMediaProviderMeta {
 
 /** base URL of the OpenAI-shaped endpoints (images + chat) for a provider */
 function openAiBase(provider: ByokMediaProviderId, config: AiMediaProviderConfig): string {
-  if (provider === 'qwen') return endpointUrl(dashscopeRoot(config), '/compatible-mode/v1')
   const meta = metaOf(provider)
   // VEGA's endpoint is fixed — no Base URL field in settings, so a stale
   // stored value must not redirect traffic off api.vega.chat
   if (provider === 'vega') return trimSlash(meta.defaultBaseUrl || VEGA_BASE_URL)
   return trimSlash(config.baseUrl || meta.defaultBaseUrl || OPENAI_IMAGES_BASE_URL)
-}
-
-/**
- * DashScope root; a pasted compatible-mode or api/v1 URL is reduced to it. The
- * suffixes are stripped from the pathname, not the whole string: a base URL
- * carrying a query (gateway style) ends with `?...`, so an anchored replace on
- * the raw string would miss and the suffix would ride along.
- */
-function dashscopeRoot(config: AiMediaProviderConfig): string {
-  const url = new URL(config.baseUrl || DASHSCOPE_BASE_URL)
-  url.pathname = trimSlash(url.pathname).replace(/(\/compatible-mode\/v1|\/api\/v1)$/, '')
-  return url.toString()
 }
 
 function geminiBase(config: AiMediaProviderConfig): string {
@@ -241,7 +225,7 @@ function fromBase64(b64: string, declaredMime?: unknown): MediaBlob {
   }
 }
 
-// ── OpenAI Images API family (openai, doubao/Ark, glm/Zhipu, xai, custom) ──
+// ── OpenAI Images API family (openai, vega, xai, custom) ──
 
 const OPENAI_SIZES: Record<string, string> = {
   '1:1': '1024x1024',
@@ -252,18 +236,6 @@ const OPENAI_SIZES: Record<string, string> = {
   '2:3': '1024x1536',
   '3:4': '1024x1536',
 }
-/** CogView accepts a fixed grid of WxH values */
-const GLM_SIZES: Record<string, string> = {
-  '1:1': '1024x1024',
-  '16:9': '1344x768',
-  '3:2': '1344x768',
-  '4:3': '1152x864',
-  '9:16': '768x1344',
-  '2:3': '768x1344',
-  '3:4': '864x1152',
-}
-/** Seedream takes the aspect ratio itself as `size` (resolution defaults to 2K) */
-const ARK_RATIOS = new Set(['1:1', '3:4', '4:3', '9:16', '16:9', '2:3', '3:2', '21:9'])
 
 /**
  * VEGA (api.vega.chat) is an OpenRouter-compatible gateway: `aspect_ratio`
@@ -350,14 +322,6 @@ function openAiImagesStyle(provider: ByokMediaProviderId): OpenAiImagesStyle {
         edits: 'inline',
         refsField: 'input_references',
       }
-    case 'doubao':
-      return {
-        size: (r) => (r && ARK_RATIOS.has(r) ? r : '2K'),
-        bodyExtras: { response_format: 'b64_json', watermark: false },
-        edits: 'inline',
-      }
-    case 'glm':
-      return { size: (r) => (r ? GLM_SIZES[r] : undefined), bodyExtras: {}, edits: 'none' }
     case 'xai':
       // xAI rejects size/quality; bytes only on request
       return { size: () => undefined, bodyExtras: { response_format: 'b64_json' }, edits: 'none' }
@@ -447,105 +411,6 @@ async function generateImageOpenAi(
     signal,
   })
   return openAiImageResult('Image edit failed:', resp, signal)
-}
-
-// ── DashScope multimodal-generation (Qwen-Image) ───────────────────
-
-const DASHSCOPE_SIZES: Record<string, string> = {
-  '1:1': '1328*1328',
-  '16:9': '1664*928',
-  '3:2': '1664*928',
-  '4:3': '1472*1104',
-  '9:16': '928*1664',
-  '2:3': '928*1664',
-  '3:4': '1104*1472',
-}
-
-async function generateImageDashscope(
-  config: AiMediaProviderConfig,
-  model: string,
-  input: GenerateImageInput,
-  signal: AbortSignal,
-): Promise<MediaBlob> {
-  if (input.references?.length) {
-    throw new Error(
-      'Qwen-Image here generates from the prompt alone; pick another image provider for edits.',
-    )
-  }
-  const size = input.aspectRatio ? DASHSCOPE_SIZES[input.aspectRatio] : undefined
-  const resp = await aiFetch(
-    endpointUrl(dashscopeRoot(config), '/api/v1/services/aigc/multimodal-generation/generation'),
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...bearer(config) },
-      body: JSON.stringify({
-        model,
-        input: { messages: [{ role: 'user', content: [{ text: input.prompt }] }] },
-        parameters: { n: 1, watermark: false, ...(size ? { size } : {}) },
-      }),
-      signal,
-    },
-  )
-  if (!resp.ok) return failFrom('Image generation failed:', resp)
-  const json = await readJson('Image generation failed:', resp)
-  if (typeof json.code === 'string' && json.code) {
-    throw new Error(`Image generation failed: ${json.code} ${String(json.message ?? '')}`)
-  }
-  const choice = asRecord((asRecord(json.output).choices as unknown[] | undefined)?.[0])
-  const content = asRecord(choice.message).content
-  const image = Array.isArray(content)
-    ? content.map(asRecord).find((c) => typeof c.image === 'string')?.image
-    : undefined
-  if (typeof image !== 'string') {
-    throw new Error(`Image generation returned no image: ${JSON.stringify(json).slice(0, 200)}`)
-  }
-  return downloadImage('Image generation failed:', image, signal)
-}
-
-// ── MiniMax image_generation ───────────────────────────────────────
-
-const MINIMAX_RATIOS = new Set(['1:1', '16:9', '4:3', '3:2', '2:3', '3:4', '9:16', '21:9'])
-
-async function generateImageMinimax(
-  config: AiMediaProviderConfig,
-  model: string,
-  input: GenerateImageInput,
-  signal: AbortSignal,
-): Promise<MediaBlob> {
-  if (input.references?.length) {
-    throw new Error(
-      'MiniMax image-01 here generates from the prompt alone; pick another image provider for edits.',
-    )
-  }
-  const base = trimSlash(config.baseUrl || MINIMAX_BASE_URL)
-  const ratio =
-    input.aspectRatio && MINIMAX_RATIOS.has(input.aspectRatio) ? input.aspectRatio : undefined
-  const resp = await aiFetch(endpointUrl(base, '/image_generation'), {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...bearer(config) },
-    body: JSON.stringify({
-      model,
-      prompt: input.prompt,
-      n: 1,
-      response_format: 'base64',
-      ...(ratio ? { aspect_ratio: ratio } : {}),
-    }),
-    signal,
-  })
-  if (!resp.ok) return failFrom('Image generation failed:', resp)
-  const json = await readJson('Image generation failed:', resp)
-  const status = asRecord(json.base_resp)
-  if (typeof status.status_code === 'number' && status.status_code !== 0) {
-    throw new Error(
-      `Image generation failed: ${status.status_code} ${String(status.status_msg ?? '')}`,
-    )
-  }
-  const data = asRecord(json.data)
-  const b64 = (data.image_base64 as unknown[] | undefined)?.[0]
-  if (typeof b64 === 'string' && b64) return fromBase64(b64)
-  const url = (data.image_urls as unknown[] | undefined)?.[0]
-  if (typeof url === 'string' && url) return downloadImage('Image generation failed:', url, signal)
-  throw new Error(`Image generation returned no image: ${JSON.stringify(json).slice(0, 200)}`)
 }
 
 // ── OpenAI-compatible chat understanding ───────────────────────────
@@ -817,10 +682,6 @@ export async function generateImageWithProvider(
   switch (meta.imageProtocol) {
     case 'gemini':
       return generateImageGemini(config, model, input, guard)
-    case 'dashscope':
-      return generateImageDashscope(config, model, input, guard)
-    case 'minimax':
-      return generateImageMinimax(config, model, input, guard)
     case 'openai-images':
       return generateImageOpenAi(provider, config, model, input, guard)
   }

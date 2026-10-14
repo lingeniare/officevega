@@ -233,7 +233,7 @@ describe('insertToc command', () => {
       NUM_IDS,
     )
     expect(exec.isError).toBeFalsy()
-    expect(exec.output).toContain('目录')
+    expect(exec.output).toContain('table of contents')
 
     const plan = pmDocToSavePlan(editor.getJSON() as PmNode, parsed.blocks)
     const saved = await saveDocx(parsed, plan.saveBlocks)

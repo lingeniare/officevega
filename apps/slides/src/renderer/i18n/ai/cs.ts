@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const cs = {
   aiInputPlaceholderGen:
@@ -273,4 +273,4 @@ export const cs = {
   aiStylePresetDarkHint: 'temná atmosféra — hluboký antracit nebo námořnická modř, jeden zářivý akcent, nadměrná typografie, filmové obrazy',
   aiStylePresetMinimalHint: 'světlý minimalismus — vzdušné bílé plochy, téměř monochromní paleta s jedním zdrženlivým akcentem, klidná přesná typografie',
 
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

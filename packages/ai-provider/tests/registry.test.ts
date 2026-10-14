@@ -6,7 +6,6 @@ import {
   modelHasFixedSampling,
   modelLacksVision,
 } from '../src/registry'
-import { endpointUrl } from '../src/protocols/shared'
 import { AI_PROVIDERS, GENSPARK_LLM_BASE_URLS } from '../src/providers'
 import type { AiProviderConfig, AiProviderId } from '../src/types'
 
@@ -49,16 +48,6 @@ describe('provider registry', () => {
       protocol: 'gemini',
       baseUrl: 'https://generativelanguage.googleapis.com/v1beta',
       omitTemperature: true,
-    })
-    expect(AI_PROVIDER_ADAPTERS.deepseek.resolveEndpoint(config('deepseek-v4-pro'))).toEqual({
-      protocol: 'openai-compatible',
-      baseUrl: 'https://api.deepseek.com/v1',
-    })
-    // the listed V4.1 Flash name is the pool spelling; the vendor only serves `deepseek-flash`
-    expect(AI_PROVIDER_ADAPTERS.deepseek.resolveEndpoint(config('deep-seek-v4.1-flash'))).toEqual({
-      protocol: 'openai-compatible',
-      baseUrl: 'https://api.deepseek.com/v1',
-      model: 'deepseek-flash',
     })
     expect(AI_PROVIDER_ADAPTERS.openai.resolveEndpoint(config('gpt-4.1-mini'))).toEqual({
       protocol: 'openai-compatible',
@@ -104,29 +93,8 @@ describe('provider registry', () => {
 
   it('resolves the catalog additions to their OpenAI-compatible endpoints', () => {
     const cases: Array<[AiProviderId, string, string]> = [
-      ['glm', 'glm-5.3', 'https://open.bigmodel.cn/api/paas/v4'],
-      ['qwen', 'qwen3.8-max', 'https://dashscope.aliyuncs.com/compatible-mode/v1'],
-      ['doubao', 'doubao-seed-2-1-pro-260628', 'https://ark.cn-beijing.volces.com/api/v3'],
-      ['mimo', 'mimo-v2.6-pro', 'https://api.xiaomimimo.com/v1'],
-      ['mimo', 'mimo-v2.6-flash', 'https://api.xiaomimimo.com/v1'],
-      ['hunyuan', 'hy3', 'https://tokenhub.tencentcloudmaas.com/v1'],
-      ['hunyuan', 'hy4-preview', 'https://tokenhub.tencentcloudmaas.com/v1'],
-      ['ling', 'Ling-3.0-flash', 'https://api.ant-ling.com/v1'],
-      ['ling', 'Ling-3.0-flash-VL', 'https://api.ant-ling.com/v1'],
-      ['ling', 'Ling-3.0-tiny', 'https://api.ant-ling.com/v1'],
-      ['ling', 'Ling-2.6-1T', 'https://api.ant-ling.com/v1'],
-      ['ling', 'Ring-2.6-1T', 'https://api.ant-ling.com/v1'],
-      ['ling', 'Ling-2.6-flash', 'https://api.ant-ling.com/v1'],
-      ['spark', 'spark-x2.5', 'https://maas-api.cn-huabei-1.xf-yun.com/v2'],
-      ['longcat', 'LongCat-2.5-Preview', 'https://api.longcat.chat/openai/v1'],
-      ['longcat', 'LongCat-2.0', 'https://api.longcat.chat/openai/v1'],
-      ['minimax', 'MiniMax-M3', 'https://api.minimax.io/v1'],
       ['xai', 'grok-4.6', 'https://api.x.ai/v1'],
-      ['mistral', 'mistral-large-latest', 'https://api.mistral.ai/v1'],
       ['openrouter', 'openrouter/auto', 'https://openrouter.ai/api/v1'],
-      ['requesty', 'claude-sonnet-5', 'https://router.requesty.ai/v1'],
-      ['opper', 'claude-sonnet-4-6', 'https://api.opper.ai/v3/compat'],
-      ['cheaperinference', 'claude-sonnet-5', 'https://api.cheaperinference.com/v1'],
       ['atlascloud', 'deepseek-ai/deepseek-v4-pro', 'https://api.atlascloud.ai/v1'],
       ['yandex', 'gpt://b1folder/yandexgpt-lite', 'https://llm.api.cloud.yandex.net/v1'],
     ]
@@ -136,42 +104,6 @@ describe('provider registry', () => {
         baseUrl,
       })
     }
-  })
-
-  it('pins the Spark host, model id and key prefix to the iFlytek product guide', () => {
-    const spark = AI_PROVIDERS.find((p) => p.id === 'spark')!
-    expect(spark.models).toEqual(['spark-x2.5'])
-    expect(spark.defaultModel).toBe('spark-x2.5')
-    expect(spark.keyPlaceholder).toBe('ak-...')
-    const endpoint = AI_PROVIDER_ADAPTERS.spark.resolveEndpoint(config('spark-x2.5'))
-    expect(endpoint.baseUrl).toBe('https://maas-api.cn-huabei-1.xf-yun.com/v2')
-    expect(endpointUrl(endpoint.baseUrl, 'chat/completions')).toBe(
-      'https://maas-api.cn-huabei-1.xf-yun.com/v2/chat/completions',
-    )
-    for (const wrong of ['Spark-X2.5', 'spark-api-open.xf-yun.com']) {
-      expect(spark.models.join(' ')).not.toContain(wrong)
-      expect(spark.defaultModel).not.toContain(wrong)
-      expect(endpoint.baseUrl).not.toContain(wrong)
-    }
-  })
-
-  it('pins the LongCat model ids to the official pricing pages', () => {
-    const longcat = AI_PROVIDERS.find((p) => p.id === 'longcat')!
-    expect(longcat.models).toEqual(['LongCat-2.5-Preview', 'LongCat-2.0'])
-    for (const model of longcat.models) {
-      expect(AI_PROVIDER_ADAPTERS.longcat.resolveEndpoint(config(model))).toEqual({
-        protocol: 'openai-compatible',
-        baseUrl: 'https://api.longcat.chat/openai/v1',
-      })
-    }
-    expect(longcat.models).not.toContain('longcat-2.0')
-    expect(longcat.models).not.toContain('longcat-2.5-preview')
-  })
-
-  it('keeps Ling-3.1-flash off the first-party endpoint and lists the VL member', () => {
-    const ling = AI_PROVIDERS.find((p) => p.id === 'ling')!
-    expect(ling.models).not.toContain('Ling-3.1-flash')
-    expect(ling.models).toContain('Ling-3.0-flash-VL')
   })
 
   it('marks Sber as gigachat-oauth (the stored key is exchanged for an access token)', () => {
@@ -190,21 +122,12 @@ describe('provider registry', () => {
     })
   })
 
-  it('marks Kimi as fixed-sampling (K3 rejects any temperature but 1)', () => {
-    expect(AI_PROVIDER_ADAPTERS.kimi.resolveEndpoint(config('kimi-k3'))).toEqual({
-      protocol: 'openai-compatible',
-      baseUrl: 'https://api.moonshot.ai/v1',
-      omitTemperature: true,
-    })
-  })
-
   it('lets a stored base URL override a fixed endpoint (regional mirrors)', () => {
     expect(
-      AI_PROVIDER_ADAPTERS.kimi.resolveEndpoint(config('kimi-k3', 'https://api.moonshot.cn/v1')),
+      AI_PROVIDER_ADAPTERS.xai.resolveEndpoint(config('grok-4.6', 'https://x-ai-mirror.example/v1')),
     ).toEqual({
       protocol: 'openai-compatible',
-      baseUrl: 'https://api.moonshot.cn/v1',
-      omitTemperature: true,
+      baseUrl: 'https://x-ai-mirror.example/v1',
     })
     // empty string falls back to the default
     expect(AI_PROVIDER_ADAPTERS.anthropic.resolveEndpoint(config('claude-sonnet-5', ''))).toEqual({
@@ -395,61 +318,6 @@ describe('fixed-sampling models on indirect routes', () => {
     })
   })
 
-  it('omits temperature for fixed-sampling pools via Opper', () => {
-    const resolve = (model: string) => AI_PROVIDER_ADAPTERS.opper.resolveEndpoint(config(model))
-    for (const model of ['kimi-k3', 'gpt-5.5', 'gemini-3.8-flash', 'openai/gpt-5']) {
-      expect(resolve(model)).toEqual({
-        protocol: 'openai-compatible',
-        baseUrl: 'https://api.opper.ai/v3/compat',
-        omitTemperature: true,
-      })
-    }
-    // pool names and pinned vendor routes share the endpoint; sampling is unrestricted here
-    for (const model of ['claude-sonnet-4-6', 'anthropic/claude-sonnet-4-6']) {
-      expect(resolve(model)).toEqual({
-        protocol: 'openai-compatible',
-        baseUrl: 'https://api.opper.ai/v3/compat',
-      })
-    }
-  })
-
-  it('omits temperature for fixed-sampling managed policies via Requesty', () => {
-    const resolve = (model: string, baseUrl?: string) =>
-      AI_PROVIDER_ADAPTERS.requesty.resolveEndpoint(config(model, baseUrl))
-    for (const model of ['kimi-k3', 'gpt-5.6-sol', 'gemini-3.7-flash', 'openai/gpt-5.4']) {
-      expect(resolve(model)).toEqual({
-        protocol: 'openai-compatible',
-        baseUrl: 'https://router.requesty.ai/v1',
-        omitTemperature: true,
-      })
-    }
-    // the full-catalog vendor-prefixed ids work as-is on the same endpoint
-    expect(resolve('openai/gpt-4o-mini')).toEqual({
-      protocol: 'openai-compatible',
-      baseUrl: 'https://router.requesty.ai/v1',
-    })
-    // a stored base URL picks the EU router
-    expect(resolve('claude-sonnet-5', 'https://router.eu.requesty.ai/v1')).toEqual({
-      protocol: 'openai-compatible',
-      baseUrl: 'https://router.eu.requesty.ai/v1',
-    })
-  })
-
-  it('omits temperature for fixed-sampling models via Cheaper Inference', () => {
-    const resolve = (model: string) =>
-      AI_PROVIDER_ADAPTERS.cheaperinference.resolveEndpoint(config(model))
-    for (const model of ['gpt-5.4-mini', 'gpt-5.4', 'gemini-3.1-pro']) {
-      expect(resolve(model)).toEqual({
-        protocol: 'openai-compatible',
-        baseUrl: 'https://api.cheaperinference.com/v1',
-        omitTemperature: true,
-      })
-    }
-    expect(resolve('claude-sonnet-5')).toEqual({
-      protocol: 'openai-compatible',
-      baseUrl: 'https://api.cheaperinference.com/v1',
-    })
-  })
 })
 
 describe('modelLacksVision', () => {
@@ -511,13 +379,6 @@ describe('modelLacksVision', () => {
     expect(modelLacksVision('longcat-2.0')).toBe(true)
     expect(modelLacksVision('LongCat-2.5-Preview')).toBe(false)
     expect(modelLacksVision('longcat-2.5-preview-free')).toBe(false)
-  })
-
-  it('splits vision per model on the two providers that carry one multimodal id', () => {
-    for (const id of ['ling', 'longcat'] as const) {
-      expect(AI_PROVIDER_ADAPTERS[id].capabilities.vision).toBe(true)
-    }
-    expect(AI_PROVIDER_ADAPTERS.spark.capabilities.vision).toBe(false)
   })
 })
 

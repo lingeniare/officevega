@@ -6,24 +6,9 @@ export type AiProviderId =
   | 'codex'
   | 'anthropic'
   | 'gemini'
-  | 'deepseek'
   | 'openai'
-  | 'kimi'
-  | 'glm'
-  | 'qwen'
-  | 'doubao'
-  | 'mimo'
-  | 'hunyuan'
-  | 'ling'
-  | 'spark'
-  | 'longcat'
-  | 'minimax'
   | 'xai'
-  | 'mistral'
   | 'openrouter'
-  | 'requesty'
-  | 'opper'
-  | 'cheaperinference'
   | 'atlascloud'
   | 'opencode-zen'
   | 'opencode-go'
@@ -95,16 +80,11 @@ export type AiMediaProviderId =
   | 'vega'
   | 'openai'
   | 'gemini'
-  | 'doubao'
-  | 'glm'
   | 'xai'
-  | 'qwen'
-  | 'minimax'
-  | 'deepseek'
   | 'custom'
 
 /** wire shape of the image endpoint */
-export type AiImageProtocol = 'openai-images' | 'gemini' | 'dashscope' | 'minimax'
+export type AiImageProtocol = 'openai-images' | 'gemini'
 /** wire shape of the understanding endpoint */
 export type AiAnalysisProtocol = 'openai-chat' | 'gemini'
 
@@ -207,10 +187,10 @@ export interface AiSettings {
   /**
    * VEGA PII shield (api.vega.chat masks personal data as #TYPE_N# tokens
    * before a request reaches the model and restores them in the reply).
-   * Default true; false sends `X-Vega-Pii: off` on gateway requests so the
-   * shield is skipped, and disables the client-side token guard. Image
-   * payloads bypass the shield entirely either way — the filter only ever
-   * touches text.
+   * Default true; the gateway's shield is opt-in — `X-Vega-Anonymize: true`
+   * engages it, `false` keeps requests untouched, and off also disables the
+   * client-side token guard. Image payloads bypass the shield entirely
+   * either way — the filter only ever touches text.
    */
   piiShieldEnabled?: boolean
   /**

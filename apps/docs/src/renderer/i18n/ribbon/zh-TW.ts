@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const zhTW = {
   ribbonAiCreditNote: '將呼叫 AI 並消耗額度',
@@ -660,19 +660,7 @@ export const zhTW = {
   ribbonEditorSelectionPrompt: '校對選中的內容:修正錯別字、標點和語法錯誤,保持原意和段落結構不變。',
   ribbonTranslateTo: '翻譯為{lang}',
   ribbonLangEnglish: '英文',
-  ribbonLangSimplifiedChinese: '簡體中文',
-  ribbonLangJapanese: '日文',
-  ribbonLangKorean: '韓文',
-  ribbonLangFrench: '法文',
-  ribbonLangGerman: '德文',
-  ribbonLangSpanish: '西班牙文',
-  ribbonLangThai: '泰文',
-  ribbonLangIndonesian: '印尼文',
   ribbonLangRussian: '俄文',
-  ribbonLangArabic: '阿拉伯文',
-  ribbonLangPortuguese: '葡萄牙文',
-  ribbonLangItalian: '義大利文',
-  ribbonLangPolish: '波蘭文',
   ribbonLangCzech: '捷克文',
   ribbonLangDutch: '荷蘭文',
   ribbonLangMalay: '馬來文',
@@ -949,4 +937,4 @@ export const zhTW = {
   ribbonSectionBreakTip: '插入分節符號：符號前的內容保持目前節的版面設定',
   ribbonGroupPageSetupSection: '版面設定(第 {n} 節)',
   ribbonGroupParagraphSelected: '段落(選取的段落)',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

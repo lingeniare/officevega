@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const kk = {
   appScTitle: 'Пернетақта таңбашалары',
@@ -271,19 +271,7 @@ export const kk = {
   appTranslate: 'Аудару',
   appTranslateTo: '{lang} тіліне аудару',
   appLangEnglish: 'Ағылшын тілі',
-  appLangSimplifiedChinese: 'Қытай тілі (жеңілдетілген)',
-  appLangJapanese: 'Жапон тілі',
-  appLangKorean: 'Корей тілі',
-  appLangFrench: 'Француз тілі',
-  appLangGerman: 'Неміс тілі',
-  appLangSpanish: 'Испан тілі',
-  appLangThai: 'Тай',
-  appLangIndonesian: 'Индонезия',
   appLangRussian: 'Орыс',
-  appLangArabic: 'Араб',
-  appLangPortuguese: 'Португал',
-  appLangItalian: 'Итальян',
-  appLangPolish: 'Поляк',
   appLangCzech: 'Чех',
   appLangDutch: 'Голланд',
   appLangMalay: 'Малай',
@@ -525,4 +513,4 @@ export const kk = {
   appGoToNext: 'Next',
   appGensparkAccount: 'Genspark 账号',
   appLoginGenspark: '登录 Genspark',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

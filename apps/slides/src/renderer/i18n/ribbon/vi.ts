@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const vi = {
   ribbonAiCreditNote: 'Sử dụng AI và tiêu tốn tín dụng',
@@ -396,20 +396,8 @@ export const vi = {
   ribbonTranslatePrompt:
     'Dịch toàn bộ văn bản trên trang chiếu hiện tại sang {lang}: thay thế bản gốc bằng các công cụ, giữ nguyên bố cục, cỡ chữ và màu sắc.',
   ribbonLangEnglish: 'Tiếng Anh',
-  ribbonLangSimplifiedChinese: 'Tiếng Trung giản thể',
   ribbonLangTraditionalChinese: 'Tiếng Trung phồn thể',
-  ribbonLangJapanese: 'Tiếng Nhật',
-  ribbonLangKorean: 'Tiếng Hàn',
-  ribbonLangFrench: 'Tiếng Pháp',
-  ribbonLangGerman: 'Tiếng Đức',
-  ribbonLangSpanish: 'Tiếng Tây Ban Nha',
-  ribbonLangThai: 'Tiếng Thái',
-  ribbonLangIndonesian: 'Tiếng Indonesia',
   ribbonLangRussian: 'Tiếng Nga',
-  ribbonLangArabic: 'Tiếng Ả Rập',
-  ribbonLangPortuguese: 'Tiếng Bồ Đào Nha',
-  ribbonLangItalian: 'Tiếng Ý',
-  ribbonLangPolish: 'Tiếng Ba Lan',
   ribbonLangCzech: 'Tiếng Séc',
   ribbonLangDutch: 'Tiếng Hà Lan',
   ribbonLangMalay: 'Tiếng Mã Lai',
@@ -777,4 +765,4 @@ export const vi = {
   ribbonReplacePictureTip: 'Replace the picture, keeping its formatting',
   ribbonTransparencyTip: 'Set the picture transparency',
   ribbonChangeShapeTip: 'Change the selected shape',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const nl = {
   redactMenuLabel: 'Selectie verbergen voor de AI',
@@ -177,4 +177,4 @@ export const nl = {
   insertTableTip: 'Tabel invoegen',
   insertMoreTip: 'Meer invoegopties',
   ribbonPin: 'Het lint vastmaken',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

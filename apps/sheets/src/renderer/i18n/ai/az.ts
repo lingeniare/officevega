@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const az = {
   aiComposerPlaceholderBuild:
@@ -129,4 +129,4 @@ export const az = {
   aiStarterSalesPrompt: 'Rüblük satış hesabatı yaradın: məhsul, region, vahid, qiymət və gəlir sütunları ilə nümunə sətirlər və cəm sətri',
   aiStarterTasks: 'Layihə tapşırıq planı',
   aiStarterTasksPrompt: 'Layihə tapşırıq planı yaradın: tapşırıq, məsul, başlama tarixi, son tarix və status sütunları ilə bir düzünə nümunə tapşırıq',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

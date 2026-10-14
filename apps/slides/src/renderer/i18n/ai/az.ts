@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const az = {
   aiInputPlaceholderGen: 'Yaradılacaq təqdimatı təsvir edin və ya istənilən sualı verin',
@@ -272,4 +272,4 @@ export const az = {
 
   aiClarifyPrev: 'Əvvəlki',
   aiPageCloudToLocal: 'cloud unavailable — generated locally',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

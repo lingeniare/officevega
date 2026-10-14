@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const uz = {
   dlgAllowEditRangesTitle: 'Tahrirlashga ruxsat berilgan diapazonlar',
@@ -665,4 +665,4 @@ export const uz = {
   dlgSizeMoveOnly: "Move but don't size with cells",
   dlgSizeFixed: "Don't move or size with cells",
   dlgSizeInvalid: 'Enter a valid size and rotation.',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

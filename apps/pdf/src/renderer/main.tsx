@@ -34,7 +34,7 @@ function applyDesign(design: UiDesign): void {
 
 void (async () => {
   const [lang, theme, design] = await Promise.all([
-    window.pdfApi.getLanguage().catch(() => 'zh' as const),
+    window.pdfApi.getLanguage().catch(() => 'en' as const),
     window.pdfApi.getTheme().catch(() => 'system' as const),
     window.pdfApi.getDesign().catch(() => 'digital' as const),
   ])

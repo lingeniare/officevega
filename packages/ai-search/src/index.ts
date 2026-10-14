@@ -253,7 +253,7 @@ async function vegaWebSearchOnce(
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${key}`,
-          // PII shield opt-out while the setting is off; {} when enabled
+          // PII shield opt-in flag for the gateway (the setting rides along)
           ...vegaPiiHeaders(VEGA_BASE_URL),
         },
         body: JSON.stringify({

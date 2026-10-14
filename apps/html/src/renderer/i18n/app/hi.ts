@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const hi = {
   redactMenuLabel: 'चयन को AI से छिपाएँ',
@@ -175,4 +175,4 @@ export const hi = {
   insertTableTip: 'तालिका डालें',
   insertMoreTip: 'डालने के और विकल्प',
   ribbonPin: 'रिबन पिन करें',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

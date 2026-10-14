@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const vi = {
   redactMenuLabel: 'Ẩn phần đã chọn khỏi AI',
@@ -174,4 +174,4 @@ export const vi = {
   insertTableTip: 'Insert a table',
   insertMoreTip: 'More insert options',
   ribbonPin: 'Ghim Ribbon',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

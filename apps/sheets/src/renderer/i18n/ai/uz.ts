@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const uz = {
   aiComposerPlaceholderBuild: 'Yaratiladigan jadval, ma’lumotlar yoki diagrammani tavsiflang…',
@@ -128,4 +128,4 @@ export const uz = {
   aiStarterSalesPrompt: 'Choraklik sotuv hisobotini yarating: mahsulot, hudud, birlik, narx va tushum ustunlari, namunaviy qatorlar va jami qatori bilan',
   aiStarterTasks: 'Loyiha vazifalar rejasi',
   aiStarterTasksPrompt: 'Loyiha vazifalar rejasini yarating: vazifa, mas’ul, boshlanish sanasi, muddat va holat ustunlari bilan o‘nta namunaviy vazifalar',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const uz = {
   ribbonAiCreditNote: 'AI’dan foydalanadi va kreditlar sarflanadi',
@@ -597,19 +597,7 @@ export const uz = {
     'Tanlangan tarkibni tekshiring: asl ma’no va abzats tuzilishini o‘zgartirmagan holda imlo xatolari, tinish belgilari va grammatika xatolarini tuzating.',
   ribbonTranslateTo: '{lang} tiliga tarjima qilish',
   ribbonLangEnglish: 'Ingliz tili',
-  ribbonLangSimplifiedChinese: 'Soddalashtirilgan xitoy tili',
-  ribbonLangJapanese: 'Yapon tili',
-  ribbonLangKorean: 'Koreys tili',
-  ribbonLangFrench: 'Fransuz tili',
-  ribbonLangGerman: 'Nemis tili',
-  ribbonLangSpanish: 'Ispan tili',
-  ribbonLangThai: 'Tailand',
-  ribbonLangIndonesian: 'Indonez',
   ribbonLangRussian: 'Rus',
-  ribbonLangArabic: 'Arab',
-  ribbonLangPortuguese: 'Portugal',
-  ribbonLangItalian: 'Italyan',
-  ribbonLangPolish: 'Polyak',
   ribbonLangCzech: 'Chex',
   ribbonLangDutch: 'Golland',
   ribbonLangMalay: 'Malay',
@@ -980,4 +968,4 @@ export const uz = {
   ribbonRowHeightIs: 'Row height is',
   ribbonReadOnlyEdit: 'The document is read-only; tables cannot be changed',
   // File menu,
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

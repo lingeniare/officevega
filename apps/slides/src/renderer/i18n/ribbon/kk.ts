@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const kk = {
   ribbonAiCreditNote: 'AI пайдаланылады және кредиттер жұмсалады',
@@ -395,20 +395,8 @@ export const kk = {
   ribbonTranslatePrompt:
     'Ағымдағы слайдтағы барлық мәтінді {lang} тіліне аудару: орналасуын, қаріп өлшемдерін және түстерін өзгертпей, түпнұсқаны құралдар арқылы ауыстыру.',
   ribbonLangEnglish: 'Ағылшын тілі',
-  ribbonLangSimplifiedChinese: 'Қытай тілі (жеңілдетілген)',
   ribbonLangTraditionalChinese: 'Дәстүрлі қытай тілі',
-  ribbonLangJapanese: 'Жапон тілі',
-  ribbonLangKorean: 'Корей тілі',
-  ribbonLangFrench: 'Француз тілі',
-  ribbonLangGerman: 'Неміс тілі',
-  ribbonLangSpanish: 'Испан тілі',
-  ribbonLangThai: 'Тай',
-  ribbonLangIndonesian: 'Индонезия',
   ribbonLangRussian: 'Орыс',
-  ribbonLangArabic: 'Араб',
-  ribbonLangPortuguese: 'Португал',
-  ribbonLangItalian: 'Итальян',
-  ribbonLangPolish: 'Поляк',
   ribbonLangCzech: 'Чех',
   ribbonLangDutch: 'Голланд',
   ribbonLangMalay: 'Малай',
@@ -785,4 +773,4 @@ export const kk = {
   ribbonZoomSlide: 'Слайд Zoom',
   ribbonZoomSummary: 'Жиынтық Zoom',
   ribbonExpand: 'Expand the Ribbon',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

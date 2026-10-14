@@ -38,18 +38,6 @@ describe('defaultAiSettings', () => {
 })
 
 describe('provider model catalog', () => {
-  it('offers DeepSeek V4.1 Flash directly under the same versioned name as the pool', () => {
-    const genspark = AI_PROVIDERS.find((provider) => provider.id === 'genspark')!
-    const deepseek = AI_PROVIDERS.find((provider) => provider.id === 'deepseek')!
-
-    expect(deepseek.models).toContain('deep-seek-v4.1-flash')
-    expect(deepseek.models).not.toContain('deepseek-flash')
-    expect(deepseek.models).not.toContain('deepseek-v4-flash')
-    expect(deepseek.models).not.toContain('deepseek-v4-flash-vision-exp')
-    expect(genspark.models).not.toContain('deep-seek-v4-flash')
-    expect(genspark.models).not.toContain('deep-seek-v4-flash-vision-exp-openrouter')
-  })
-
   it('serves DeepSeek V4.1 Flash through the Genspark proxy under its hyphenated pool id', () => {
     const genspark = AI_PROVIDERS.find((provider) => provider.id === 'genspark')!
     expect(genspark.models).toContain('deep-seek-v4.1-flash')
@@ -67,39 +55,12 @@ describe('provider model catalog', () => {
     }
   })
 
-  it('seeds Requesty with managed policy ids (short names, no vendor prefix)', () => {
-    const requesty = AI_PROVIDERS.find((provider) => provider.id === 'requesty')!
-    expect(requesty.models).toContain(requesty.defaultModel)
-    expect(requesty.needsBaseUrl).toBeUndefined()
-    for (const model of requesty.models) {
-      expect(model).not.toContain('/')
-    }
-  })
-
-  it('seeds Opper with pool ids (bare names, no vendor prefix)', () => {
-    const opper = AI_PROVIDERS.find((provider) => provider.id === 'opper')!
-    expect(opper.models).toContain(opper.defaultModel)
-    expect(opper.needsBaseUrl).toBeUndefined()
-    for (const model of opper.models) {
-      expect(model).not.toContain('/')
-    }
-  })
-
   it('seeds Atlas Cloud with lab-namespaced model ids', () => {
     const atlas = AI_PROVIDERS.find((provider) => provider.id === 'atlascloud')!
     expect(atlas.models).toContain(atlas.defaultModel)
     expect(atlas.needsBaseUrl).toBeUndefined()
     for (const model of atlas.models) {
       expect(model).toMatch(/^[a-z0-9-]+\/[A-Za-z0-9._-]+$/)
-    }
-  })
-
-  it('seeds Cheaper Inference with bare model ids (no vendor prefix)', () => {
-    const ci = AI_PROVIDERS.find((provider) => provider.id === 'cheaperinference')!
-    expect(ci.models).toContain(ci.defaultModel)
-    expect(ci.needsBaseUrl).toBeUndefined()
-    for (const model of ci.models) {
-      expect(model).not.toContain('/')
     }
   })
 
@@ -199,25 +160,15 @@ describe('resolveAiSettings', () => {
     const resolved = resolveAiSettings(
       {
         providers: {
-          deepseek: { apiKey: 'sk-user', model: 'deepseek-reasoner' },
+          genspark: { apiKey: 'sk-user', model: 'claude-opus-4-8' },
         } as never,
       },
       defaultAiSettings(),
     )
-    expect(resolved.providers.deepseek).toEqual({
+    expect(resolved.providers.genspark).toEqual({
       apiKey: 'sk-user',
-      model: 'deep-seek-v4.1-flash',
+      model: 'claude-opus-5-5',
     })
-  })
-
-  it('rewrites the retired V4 Flash id and the vendor wire id to the listed V4.1 Flash name', () => {
-    for (const model of ['deepseek-v4-flash', 'deepseek-flash']) {
-      const resolved = resolveAiSettings(
-        { providers: { deepseek: { apiKey: 'sk-user', model } } as never },
-        defaultAiSettings(),
-      )
-      expect(resolved.providers.deepseek.model).toBe('deep-seek-v4.1-flash')
-    }
   })
 
   it('rewrites genspark model ids the proxy no longer serves', () => {
@@ -240,39 +191,33 @@ describe('resolveAiSettings', () => {
       defaultAiSettings(),
     )
     expect(gpt.providers.genspark.model).toBe('gpt-5.6-terra')
-
-    const glm = resolveAiSettings(
-      { providers: { glm: { apiKey: '', model: 'glm-5-turbo' } } as never },
-      defaultAiSettings(),
-    )
-    expect(glm.providers.glm.model).toBe('glm-5.3-flash')
   })
 
   it('leaves a still-supported model id alone', () => {
     const resolved = resolveAiSettings(
       {
         providers: {
-          deepseek: { apiKey: 'sk-user', model: 'deepseek-v4-pro' },
+          openai: { apiKey: 'sk-user', model: 'gpt-5.6-terra' },
         } as never,
       },
       defaultAiSettings(),
     )
-    expect(resolved.providers.deepseek.model).toBe('deepseek-v4-pro')
+    expect(resolved.providers.openai.model).toBe('gpt-5.6-terra')
   })
 
   it('trims whitespace pasted around stored keys and base URLs', () => {
     const resolved = resolveAiSettings(
       {
         providers: {
-          deepseek: { apiKey: ' sk-user\n', model: ' deepseek-v4-pro ' },
+          openai: { apiKey: ' sk-user\n', model: ' gpt-5.6-terra ' },
           custom: { apiKey: 'k', model: ' m ', baseUrl: ' http://localhost:1234/v1 ' },
         } as never,
       },
       defaultAiSettings(),
     )
-    expect(resolved.providers.deepseek.apiKey).toBe('sk-user')
-    expect(resolved.providers.deepseek.model).toBe('deepseek-v4-pro')
-    expect(resolved.providers.deepseek.baseUrl).toBeUndefined()
+    expect(resolved.providers.openai.apiKey).toBe('sk-user')
+    expect(resolved.providers.openai.model).toBe('gpt-5.6-terra')
+    expect(resolved.providers.openai.baseUrl).toBeUndefined()
     expect(resolved.providers.custom.model).toBe('m')
     expect(resolved.providers.custom.baseUrl).toBe('http://localhost:1234/v1')
   })
@@ -281,12 +226,12 @@ describe('resolveAiSettings', () => {
     const resolved = resolveAiSettings(
       {
         providers: {
-          deepseek: { apiKey: 'sk-user', model: ' deepseek-reasoner ' },
+          genspark: { apiKey: 'sk-user', model: ' gpt-5.6 ' },
         } as never,
       },
       defaultAiSettings(),
     )
-    expect(resolved.providers.deepseek.model).toBe('deep-seek-v4.1-flash')
+    expect(resolved.providers.genspark.model).toBe('gpt-5.6-terra')
   })
 
   it('trims the legacy single-endpoint key and base URL too', () => {
@@ -353,10 +298,10 @@ describe('activeProvider', () => {
     const settings = defaultAiSettings()
     expect(activeProvider(settings)).toBe('genspark')
 
-    settings.provider = 'kimi'
+    settings.provider = 'xai'
     expect(activeProvider(settings)).toBe('genspark') // no key yet
-    settings.providers.kimi.apiKey = 'sk-user'
-    expect(activeProvider(settings)).toBe('kimi')
+    settings.providers.xai.apiKey = 'sk-user'
+    expect(activeProvider(settings)).toBe('xai')
   })
 
   it('requires a base URL for providers that declare needsBaseUrl', () => {
@@ -396,14 +341,14 @@ describe('activeProvider', () => {
 
   it('treats whitespace-only keys, URLs, and models as unconfigured', () => {
     const settings = defaultAiSettings()
-    settings.provider = 'kimi'
-    settings.providers.kimi.apiKey = '   '
+    settings.provider = 'xai'
+    settings.providers.xai.apiKey = '   '
     expect(activeProvider(settings)).toBe('genspark')
-    settings.providers.kimi.apiKey = 'sk-user'
-    settings.providers.kimi.model = '  '
+    settings.providers.xai.apiKey = 'sk-user'
+    settings.providers.xai.model = '  '
     expect(activeProvider(settings)).toBe('genspark')
-    settings.providers.kimi.model = 'kimi-k2'
-    expect(activeProvider(settings)).toBe('kimi')
+    settings.providers.xai.model = 'grok-4.6'
+    expect(activeProvider(settings)).toBe('xai')
 
     const custom = defaultAiSettings()
     custom.provider = 'custom'
@@ -450,10 +395,10 @@ describe('requestProvider', () => {
     // the settings dialog's test-connection sends a stored-but-keyless pick;
     // re-resolving it here would silently test the fallback provider instead
     const settings = defaultAiSettings()
-    settings.provider = 'kimi'
+    settings.provider = 'xai'
     const { provider, config } = requestProvider(settings)
-    expect(provider).toBe('kimi')
-    expect(config).toBe(settings.providers.kimi)
+    expect(provider).toBe('xai')
+    expect(config).toBe(settings.providers.xai)
   })
 
   it('keeps a stored vega pick as-is (the handler injects the issued key)', () => {
@@ -600,13 +545,13 @@ describe('fastModel settings plumbing', () => {
 
   it('migrateRetiredModels remaps a retired fastModel too', () => {
     const stored = defaultAiSettings()
-    stored.providers.deepseek = {
-      ...stored.providers.deepseek,
-      model: 'deepseek-flash',
-      fastModel: 'deepseek-chat',
+    stored.providers.genspark = {
+      ...stored.providers.genspark,
+      model: 'claude-opus-4-8',
+      fastModel: 'claude-opus-4-7',
     }
     const resolved = resolveAiSettings(stored, defaultAiSettings())
-    expect(resolved.providers.deepseek.model).toBe('deep-seek-v4.1-flash')
-    expect(resolved.providers.deepseek.fastModel).toBe('deep-seek-v4.1-flash')
+    expect(resolved.providers.genspark.model).toBe('claude-opus-5-5')
+    expect(resolved.providers.genspark.fastModel).toBe('claude-opus-5-5')
   })
 })

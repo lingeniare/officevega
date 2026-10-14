@@ -61,7 +61,7 @@ describe('File menu in the quick-access row', () => {
     const { container } = renderRibbon()
     const file = fileButton(container)
     expect(file, 'File button must sit at the left of the quick-access row').not.toBeNull()
-    expect(file!.textContent).toBe('文件')
+    expect(file!.textContent).toBe('File')
     const next = file!.parentElement!.nextElementSibling
     expect(next?.classList.contains('qa-btn')).toBe(true)
   })
@@ -72,7 +72,7 @@ describe('File menu in the quick-access row', () => {
     const menu = container.querySelector('.file-menu')
     expect(menu).not.toBeNull()
     const items = [...menu!.querySelectorAll('button')]
-    expect(items[0]!.textContent).toContain('打开')
+    expect(items[0]!.textContent).toContain('Open')
     act(() => items[0]!.click())
     expect(onOpen).toHaveBeenCalledOnce()
     expect(container.querySelector('.file-menu')).toBeNull()

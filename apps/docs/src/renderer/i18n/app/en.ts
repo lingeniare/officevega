@@ -1,5 +1,4 @@
-import type { zh } from './zh'
-
+/** app strings, en: defines the key set every other locale shard must match. */
 export const en = {
   appScTitle: 'Keyboard Shortcuts',
   appScFilter: 'Search shortcuts',
@@ -340,19 +339,7 @@ export const en = {
   appTranslate: 'Translate',
   appTranslateTo: 'Translate to {lang}',
   appLangEnglish: 'English',
-  appLangSimplifiedChinese: 'Simplified Chinese',
-  appLangJapanese: 'Japanese',
-  appLangKorean: 'Korean',
-  appLangFrench: 'French',
-  appLangGerman: 'German',
-  appLangSpanish: 'Spanish',
-  appLangThai: 'Thai',
-  appLangIndonesian: 'Indonesian',
   appLangRussian: 'Russian',
-  appLangArabic: 'Arabic',
-  appLangPortuguese: 'Portuguese',
-  appLangItalian: 'Italian',
-  appLangPolish: 'Polish',
   appLangCzech: 'Czech',
   appLangDutch: 'Dutch',
   appLangMalay: 'Malay',
@@ -520,4 +507,4 @@ export const en = {
   appLineTriple: '3 lines',
   appGensparkAccount: 'Genspark account',
   appLoginGenspark: 'Sign in to Genspark',
-} satisfies Record<keyof typeof zh, string>
+}

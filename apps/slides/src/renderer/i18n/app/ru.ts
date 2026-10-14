@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const ru = {
   redactMenuLabel: 'Скрыть выделение от ИИ',
@@ -268,4 +268,4 @@ export const ru = {
   appStatusSummaryZoomInserted: 'Вставлен слайд сводного масштабирования с {count} плитками',
   appSectionSummary: 'Сводный раздел',
   appSectionN: 'Раздел {n}',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

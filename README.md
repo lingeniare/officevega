@@ -53,9 +53,8 @@ file, makes the change, and shows you exactly what it touched.
   are reranked by **[TypeSafe Jev](https://typesafe.ai/)**, the System One
   judgment model, so the file that answers your question comes first.
 - **Your keys or none.** Sign in with VEGA and skip keys, or bring your own
-  key for Claude, OpenAI, Gemini, DeepSeek, Kimi, GLM, Qwen, Doubao, MiniMax,
-  Grok, Mistral, OpenRouter, Requesty, Opper, Cheaper Inference, Atlas Cloud, or any OpenAI-compatible endpoint, local
-  servers included.
+  key for Claude, OpenAI, Gemini, Grok, OpenRouter, Atlas Cloud, OpenCode
+  Zen/Go, or any OpenAI-compatible endpoint, local servers included.
 - **Scriptable and agent-ready.** The app ships a `officevega` command line and
   a skill for Claude Code, Codex, Cursor, Gemini CLI, GitHub Copilot, OpenCode
   and Windsurf, so a coding agent can create, convert, read and edit real
@@ -245,7 +244,7 @@ document in a visible editor tab while you watch.
   formulas and charts in Sheets, slides drawn onto the canvas, every AI turn a
   snapshot you can roll back.
 - **Your model, your key.** Sign in with VEGA, or bring a key for Claude,
-  OpenAI, Gemini, DeepSeek and more, local servers and any OpenAI-compatible
+  OpenAI, Gemini, Grok and more, local servers and any OpenAI-compatible
   endpoint included.
 - **PDF done properly.** Edit text inside the page, and convert PDF to Word,
   Excel or PowerPoint on-device, with system OCR for scans.
@@ -265,13 +264,12 @@ through the VEGA proxy (Claude, GPT and Gemini families) and the agents get
 web and image search, image generation, and image/audio/video analysis.
 
 **Or bring your own key.** Settings → AI lists Claude, OpenAI, Gemini,
-DeepSeek, Kimi, GLM, Qwen, Doubao, MiniMax, Grok, Mistral, OpenRouter, Requesty, Opper,
-Cheaper Inference, Atlas Cloud and OpenCode Zen/Go, plus a custom slot for any OpenAI-compatible endpoint (base
+Grok, OpenRouter, Atlas Cloud and OpenCode Zen/Go, plus a custom slot for any OpenAI-compatible endpoint (base
 URL + key), including local model servers. Search and media have their own
 per-capability providers under **AI Media & Search**: Serper, Serply, Tavily or Parallel for
-web search, and OpenAI, Gemini, Doubao/Seedream, GLM, Grok, Qwen, MiniMax or any
+web search, and OpenAI, Gemini, Grok or any
 OpenAI-compatible images endpoint for image generation and image/video
-analysis, plus DeepSeek V4.1 Flash for image analysis.
+analysis.
 
 **TypeSafe Jev** reranks the home screen's file search. Under **AI Media & Search →
 Local file search**, switch on Decision model reranking and pick an endpoint:
@@ -578,8 +576,7 @@ convert to editable text rather than a page image.
 <summary><b>Can I use my own AI model or API key?</b></summary>
 
 Yes. Besides the keyless VEGA sign-in, OfficeVega supports bring your own
-key for Claude, OpenAI, Gemini, DeepSeek, Kimi, GLM, Qwen, Doubao, MiniMax,
-Grok, Mistral, OpenRouter, Requesty, Opper, Cheaper Inference, Atlas Cloud and OpenCode Zen/Go, plus any OpenAI-compatible
+key for Claude, OpenAI, Gemini, Grok, OpenRouter, Atlas Cloud and OpenCode Zen/Go, plus any OpenAI-compatible
 endpoint — including local model servers. Search, image generation and
 image/video analysis take their own keys under Settings → AI Media & Search.
 

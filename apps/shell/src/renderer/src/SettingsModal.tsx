@@ -60,33 +60,21 @@ import './settings.css'
 // sorted by ISO 639 language code — native-script labels have no natural
 // shared alphabet, so the code is the ordering key
 const LANG_OPTIONS = [
-  { value: 'ar', label: 'العربية' },
   { value: 'az', label: 'Azərbaycanca' },
   { value: 'cs', label: 'Čeština' },
-  { value: 'de', label: 'Deutsch' },
   { value: 'en', label: 'English' },
-  { value: 'es', label: 'Español' },
-  { value: 'fr', label: 'Français' },
   { value: 'he', label: 'עברית' },
   { value: 'hi', label: 'हिन्दी' },
-  { value: 'id', label: 'Bahasa Indonesia' },
-  { value: 'it', label: 'Italiano' },
-  { value: 'ja', label: '日本語' },
   { value: 'ka', label: 'ქართული' },
   { value: 'kk', label: 'Қазақша' },
-  { value: 'ko', label: '한국어' },
   { value: 'ky', label: 'Кыргызча' },
   { value: 'ms', label: 'Bahasa Melayu' },
   { value: 'nl', label: 'Nederlands' },
-  { value: 'pl', label: 'Polski' },
-  { value: 'pt', label: 'Português' },
   { value: 'ru', label: 'Русский' },
-  { value: 'th', label: 'ไทย' },
   { value: 'vi', label: 'Tiếng Việt' },
   { value: 'tk', label: 'Türkmençe' },
   { value: 'tt', label: 'Татарча' },
   { value: 'uz', label: 'Oʻzbekcha' },
-  { value: 'zh', label: '简体中文' },
   { value: 'zh-TW', label: '繁體中文' },
 ] as const
 

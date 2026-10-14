@@ -37,11 +37,11 @@ describe('buildCustomFilters', () => {
   })
 
   it('rejects zero and more-than-two conditions', () => {
-    expect(() => buildCustomFilters(true, [])).toThrow(/至少需要一个条件/)
+    expect(() => buildCustomFilters(true, [])).toThrow(/at least one condition/)
     expect(() => buildCustomFilters(true, [
       { operator: 'equal', val: '1' },
       { operator: 'equal', val: '2' },
       { operator: 'equal', val: '3' },
-    ])).toThrow(/最多支持两个条件/)
+    ])).toThrow(/at most two conditions/)
   })
 })

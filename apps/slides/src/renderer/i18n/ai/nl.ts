@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const nl = {
   aiInputPlaceholderGen: 'Beschrijf de presentatie om te genereren, of stel een vraag',
@@ -274,4 +274,4 @@ export const nl = {
   aiStylePresetDarkHint: 'donkere sfeer — diep antraciet of navy, één lichtend accent, oversized typografie, filmische beelden',
   aiStylePresetMinimalHint: 'licht minimal — luchtige witruimte, bijna monochroom palet met één ingetogen accent, rustige precieze typografie',
 
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

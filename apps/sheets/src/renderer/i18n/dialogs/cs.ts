@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const cs = {
   dlgAllowEditRangesTitle: 'Povolit úpravy oblastí',
@@ -661,4 +661,4 @@ export const cs = {
   dlgSizeMoveOnly: 'Přesouvat, ale neměnit velikost s buňkami',
   dlgSizeFixed: 'Nepřesouvat ani neměnit velikost s buňkami',
   dlgSizeInvalid: 'Zadejte platnou velikost a otočení.',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

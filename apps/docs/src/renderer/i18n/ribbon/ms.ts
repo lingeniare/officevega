@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const ms = {
   ribbonAiCreditNote: 'Menggunakan AI dan menggunakan kredit',
@@ -677,19 +677,7 @@ export const ms = {
     'Semak kandungan yang dipilih: betulkan kesalahan taip, tanda baca dan tatabahasa tanpa mengubah maksud asal dan struktur perenggan.',
   ribbonTranslateTo: 'Terjemah kepada {lang}',
   ribbonLangEnglish: 'bahasa Inggeris',
-  ribbonLangSimplifiedChinese: 'bahasa Cina Ringkas',
-  ribbonLangJapanese: 'bahasa Jepun',
-  ribbonLangKorean: 'bahasa Korea',
-  ribbonLangFrench: 'bahasa Perancis',
-  ribbonLangGerman: 'bahasa Jerman',
-  ribbonLangSpanish: 'bahasa Sepanyol',
-  ribbonLangThai: 'Thai',
-  ribbonLangIndonesian: 'Bahasa Indonesia',
   ribbonLangRussian: 'Rusia',
-  ribbonLangArabic: 'Arab',
-  ribbonLangPortuguese: 'Portugis',
-  ribbonLangItalian: 'Itali',
-  ribbonLangPolish: 'Poland',
   ribbonLangCzech: 'Czech',
   ribbonLangDutch: 'Belanda',
   ribbonLangMalay: 'Melayu',
@@ -977,4 +965,4 @@ export const ms = {
     'Sisipkan pemisah seksyen; kandungan sebelumnya mengekalkan persediaan halaman seksyen semasa',
   ribbonGroupPageSetupSection: 'Persediaan Halaman (Seksyen {n})',
   ribbonGroupParagraphSelected: 'Perenggan (pilihan)',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

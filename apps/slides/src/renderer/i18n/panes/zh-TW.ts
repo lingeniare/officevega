@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const zhTW = {
   paneCancel: '取消',
@@ -288,4 +288,4 @@ export const zhTW = {
   paneShowMenuWhite: '白色畫面',
   paneShowMenuEnd: '結束放映',
   panePresenterWhiteOn: '白色畫面中（按 W 鍵恢復）',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

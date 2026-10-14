@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const zhTW = {
   aiComposerPlaceholderBuild: '描述要生成的表格、資料或圖表…',
@@ -121,4 +121,4 @@ export const zhTW = {
   aiStarterSalesPrompt: '建立季度銷售報表：包含產品、地區、數量、單價和銷售額欄位，附範例資料和合計列',
   aiStarterTasks: '專案任務計畫',
   aiStarterTasksPrompt: '建立專案任務計畫表：包含任務、負責人、開始日期、截止日期和狀態欄位，並填十幾個範例任務',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

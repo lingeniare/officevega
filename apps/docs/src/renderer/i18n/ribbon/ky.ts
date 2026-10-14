@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const ky = {
   ribbonAiCreditNote: 'AI колдонулат жана кредиттер сарпталат',
@@ -597,19 +597,7 @@ export const ky = {
     'Тандалган мазмунду текшериңиз: түпкү маанисин жана абзац түзүлүшүн өзгөртпөстөн, ката жазууларды, тыныш белгилерин жана грамматикалык каталарды оңдоңуз.',
   ribbonTranslateTo: '{lang} тилине которуу',
   ribbonLangEnglish: 'Англисче',
-  ribbonLangSimplifiedChinese: 'Жөнөкөйлөштүрүлгөн кытайча',
-  ribbonLangJapanese: 'Жапончо',
-  ribbonLangKorean: 'Корейче',
-  ribbonLangFrench: 'Французча',
-  ribbonLangGerman: 'Немисче',
-  ribbonLangSpanish: 'Испанча',
-  ribbonLangThai: 'Тай',
-  ribbonLangIndonesian: 'Индонезия',
   ribbonLangRussian: 'Орус',
-  ribbonLangArabic: 'Араб',
-  ribbonLangPortuguese: 'Португал',
-  ribbonLangItalian: 'Италия',
-  ribbonLangPolish: 'Поляк',
   ribbonLangCzech: 'Чех',
   ribbonLangDutch: 'Голланд',
   ribbonLangMalay: 'Малай',
@@ -979,4 +967,4 @@ export const ky = {
   ribbonRowHeightIs: 'Row height is',
   ribbonReadOnlyEdit: 'The document is read-only; tables cannot be changed',
   // File menu,
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

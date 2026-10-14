@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const cs = {
   appMergeWorkbooks: 'Sloučit sešity',
@@ -1532,4 +1532,4 @@ export const cs = {
   appVisualFlipV: 'Převrátit svisle',
   appVisualFlipH: 'Převrátit vodorovně',
   appCtxPasteVisual: 'Vložit obrázek nebo obrazec',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

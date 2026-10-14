@@ -9,24 +9,26 @@ import {
 
 describe('univerLocaleFor', () => {
   it('maps every app language Univer has packs for', () => {
-    expect(univerLocaleFor('zh')).toBe(LocaleType.ZH_CN)
+    expect(univerLocaleFor('ru')).toBe(LocaleType.RU_RU)
+    expect(univerLocaleFor('vi')).toBe(LocaleType.VI_VN)
     expect(univerLocaleFor('zh-TW')).toBe(LocaleType.ZH_TW)
-    expect(univerLocaleFor('ja')).toBe(LocaleType.JA_JP)
-    expect(univerLocaleFor('ko')).toBe(LocaleType.KO_KR)
-    expect(univerLocaleFor('ar')).toBe(LocaleType.AR_SA)
   })
 
   it('falls back to English where Univer ships no pack', () => {
-    for (const lang of ['en', 'th', 'nl', 'ms', 'he', 'hi']) {
+    for (const lang of ['en', 'cs', 'nl', 'ms', 'he', 'hi', 'kk', 'tt']) {
+      expect(univerLocaleFor(lang)).toBeNull()
+    }
+    // removed UI languages never reach a pack either
+    for (const lang of ['zh', 'ja', 'ko', 'ar']) {
       expect(univerLocaleFor(lang)).toBeNull()
     }
   })
 
-  it('zh packs resolve and localize the DV rule name', async () => {
-    const pack = (await import('@univerjs/preset-sheets-data-validation/locales/zh-CN')) as {
+  it('zh-TW packs resolve and localize the DV rule name', async () => {
+    const pack = (await import('@univerjs/preset-sheets-data-validation/locales/zh-TW')) as {
       default: Record<string, { list?: { name?: string } }>
     }
-    expect(pack.default['sheets-data-validation']?.list?.name).toBe('值必须是列表中的值')
+    expect(pack.default['sheets-data-validation']?.list?.name).toBe('值必須是列表中的值')
   })
 })
 
@@ -52,7 +54,7 @@ describe('numberAsTextAlertLocale', () => {
   })
 
   it('localizes the title from the numfmt pack', async () => {
-    const core = (await import('@univerjs/preset-sheets-core/locales/zh-CN')).default as Record<
+    const core = (await import('@univerjs/preset-sheets-core/locales/zh-TW')).default as Record<
       string,
       Record<string, unknown>
     >
@@ -94,7 +96,7 @@ describe('insertRowsBelowLocale', () => {
   })
 
   it('leaves translated packs untouched', async () => {
-    const core = (await import('@univerjs/preset-sheets-core/locales/zh-CN')).default as Record<
+    const core = (await import('@univerjs/preset-sheets-core/locales/zh-TW')).default as Record<
       string,
       Record<string, unknown>
     >

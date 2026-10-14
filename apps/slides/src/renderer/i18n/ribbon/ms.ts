@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const ms = {
   ribbonAiCreditNote: 'Menggunakan AI dan menggunakan kredit',
@@ -401,20 +401,8 @@ export const ms = {
   ribbonTranslatePrompt:
     'Terjemahkan semua teks pada slaid semasa ke {lang}: gantikan teks asal dengan alat, sambil mengekalkan tataletak, saiz fon dan warna.',
   ribbonLangEnglish: 'Bahasa Inggeris',
-  ribbonLangSimplifiedChinese: 'Bahasa Cina Ringkas',
   ribbonLangTraditionalChinese: 'Bahasa Cina Tradisional',
-  ribbonLangJapanese: 'Bahasa Jepun',
-  ribbonLangKorean: 'Bahasa Korea',
-  ribbonLangFrench: 'Bahasa Perancis',
-  ribbonLangGerman: 'Bahasa Jerman',
-  ribbonLangSpanish: 'Bahasa Sepanyol',
-  ribbonLangThai: 'Thai',
-  ribbonLangIndonesian: 'Bahasa Indonesia',
   ribbonLangRussian: 'Rusia',
-  ribbonLangArabic: 'Arab',
-  ribbonLangPortuguese: 'Portugis',
-  ribbonLangItalian: 'Itali',
-  ribbonLangPolish: 'Poland',
   ribbonLangCzech: 'Czech',
   ribbonLangDutch: 'Belanda',
   ribbonLangMalay: 'Melayu',
@@ -785,4 +773,4 @@ export const ms = {
   ribbonZoomSelectedSlides: '{n} slaid dipilih',
   ribbonZoomSelectedSections: '{n} seksyen dipilih',
   ribbonPin: 'Semat Reben',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

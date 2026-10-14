@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const nl = {
   dlgAllowEditRangesTitle: 'Bewerken van bereiken toestaan',
@@ -661,4 +661,4 @@ export const nl = {
   dlgSizeMoveOnly: 'Verplaatsen maar grootte niet wijzigen met cellen',
   dlgSizeFixed: 'Niet verplaatsen of grootte wijzigen met cellen',
   dlgSizeInvalid: 'Voer een geldige grootte en rotatie in.',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

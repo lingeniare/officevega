@@ -12,20 +12,8 @@ export interface AiModelPickerStrings {
 }
 
 export const AI_MODEL_PICKER_STRINGS: Record<Lang, AiModelPickerStrings> = {
-  zh: { title: '模型', choose: '选择模型', manage: '管理模型…', aiModels: 'AI 模型' },
   en: { title: 'Model', choose: 'Choose model', manage: 'Manage models…', aiModels: 'AI models' },
-  ja: { title: 'モデル', choose: 'モデルを選択', manage: 'モデルを管理…', aiModels: 'AIモデル' },
-  ko: { title: '모델', choose: '모델 선택', manage: '모델 관리…', aiModels: 'AI 모델' },
-  fr: { title: 'Modèle', choose: 'Choisir un modèle', manage: 'Gérer les modèles…', aiModels: 'Modèles IA' },
-  de: { title: 'Modell', choose: 'Modell wählen', manage: 'Modelle verwalten…', aiModels: 'KI-Modelle' },
-  es: { title: 'Modelo', choose: 'Elegir modelo', manage: 'Gestionar modelos…', aiModels: 'Modelos de IA' },
-  th: { title: 'โมเดล', choose: 'เลือกโมเดล', manage: 'จัดการโมเดล…', aiModels: 'โมเดล AI' },
-  id: { title: 'Model', choose: 'Pilih model', manage: 'Kelola model…', aiModels: 'Model AI' },
   ru: { title: 'Модель', choose: 'Выбрать модель', manage: 'Управление моделями…', aiModels: 'Модели ИИ' },
-  ar: { title: 'النموذج', choose: 'اختيار النموذج', manage: 'إدارة النماذج…', aiModels: 'نماذج الذكاء الاصطناعي' },
-  pt: { title: 'Modelo', choose: 'Escolher modelo', manage: 'Gerenciar modelos…', aiModels: 'Modelos de IA' },
-  it: { title: 'Modello', choose: 'Scegli modello', manage: 'Gestisci modelli…', aiModels: 'Modelli AI' },
-  pl: { title: 'Model', choose: 'Wybierz model', manage: 'Zarządzaj modelami…', aiModels: 'Modele AI' },
   cs: { title: 'Model', choose: 'Vybrat model', manage: 'Spravovat modely…', aiModels: 'Modely AI' },
   nl: { title: 'Model', choose: 'Model kiezen', manage: 'Modellen beheren…', aiModels: 'AI-modellen' },
   ms: { title: 'Model', choose: 'Pilih model', manage: 'Urus model…', aiModels: 'Model AI' },

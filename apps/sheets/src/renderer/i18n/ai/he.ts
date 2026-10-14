@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const he = {
   aiComposerPlaceholderBuild: 'תארו את הטבלה, הנתונים או התרשים ליצירה…',
@@ -122,4 +122,4 @@ export const he = {
   aiStarterSalesPrompt: 'צור דוח מכירות רבעוני: עמודות מוצר, אזור, יחידות, מחיר והכנסה עם שורות לדוגמה ושורת סיכום',
   aiStarterTasks: 'תוכנית משימות',
   aiStarterTasksPrompt: 'צור תוכנית משימות לפרויקט: עמודות משימה, אחראי, תאריך התחלה, תאריך יעד וסטטוס עם תריסר משימות לדוגמה',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

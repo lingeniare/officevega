@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const ms = {
   aiInputPlaceholderGen: 'Terangkan pembentangan untuk dijana, atau tanya apa sahaja',
@@ -272,4 +272,4 @@ export const ms = {
   aiStylePresetDarkHint: 'suasana gelap — latar arang atau navy gelap, satu aksen bercahaya, tipografi besar, imej sinematik',
   aiStylePresetMinimalHint: 'minimal cerah — ruang kosong lapang, palet hampir monokrom dengan satu aksen terkawal, tipografi tenang tepat',
 
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

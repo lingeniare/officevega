@@ -50,14 +50,14 @@ function applyDesign(design: UiDesign): void {
 }
 
 async function bootstrap(): Promise<void> {
-  let lang: Lang = 'zh'
+  let lang: Lang = 'en'
   let theme: UiTheme = 'system'
   let design: UiDesign = 'digital'
   try {
     // per-promise catch: standalone runs have no app:get-theme handler, and
     // that rejection must not drop a resolved language
     ;[lang, theme, design] = await Promise.all([
-      window.slidesApi.getLanguage().catch(() => 'zh' as const),
+      window.slidesApi.getLanguage().catch(() => 'en' as const),
       window.slidesApi.getTheme().catch(() => 'system' as const),
       window.slidesApi.getDesign().catch(() => 'digital' as const),
     ])

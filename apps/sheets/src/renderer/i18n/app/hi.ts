@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const hi = {
   appMergeWorkbooks: 'वर्कबुक मर्ज करें',
@@ -1530,4 +1530,4 @@ export const hi = {
   appVisualFlipV: 'लंबवत पलटें',
   appVisualFlipH: 'क्षैतिज पलटें',
   appCtxPasteVisual: 'चित्र या आकृति पेस्ट करें',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

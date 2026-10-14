@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const ky = {
   aiComposerPlaceholderBuild:
@@ -129,4 +129,4 @@ export const ky = {
   aiStarterSalesPrompt: 'Чейрек жылдык сатуу отчетун түз: продукт, аймак, саны, баасы жана киреше мамылары, үлгү саптары жана жыйынтык сабы менен',
   aiStarterTasks: 'Долбоор тапшырма планы',
   aiStarterTasksPrompt: 'Долбоордун тапшырма планын түз: тапшырма, жоопкер, башталуу күнү, мөөнөтү жана абалы мамылары менен ондан ашык үлгү тапшырмалары',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

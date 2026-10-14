@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const he = {
   dlgAllowEditRangesTitle: 'אפשר עריכת טווחים',
@@ -651,4 +651,4 @@ export const he = {
   dlgSizeMoveOnly: 'הזז אך אל תשנה גודל עם התאים',
   dlgSizeFixed: 'אל תזיז ואל תשנה גודל עם התאים',
   dlgSizeInvalid: 'הזן גודל וסיבוב חוקיים.',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

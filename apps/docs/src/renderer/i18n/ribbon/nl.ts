@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const nl = {
   ribbonAiCreditNote: 'Gebruikt AI en verbruikt tegoed',
@@ -678,19 +678,7 @@ export const nl = {
     'Corrigeer de geselecteerde inhoud: herstel typefouten, interpunctie en grammaticale fouten zonder de oorspronkelijke betekenis en alineastructuur te wijzigen.',
   ribbonTranslateTo: 'Vertalen naar het {lang}',
   ribbonLangEnglish: 'Engels',
-  ribbonLangSimplifiedChinese: 'Vereenvoudigd Chinees',
-  ribbonLangJapanese: 'Japans',
-  ribbonLangKorean: 'Koreaans',
-  ribbonLangFrench: 'Frans',
-  ribbonLangGerman: 'Duits',
-  ribbonLangSpanish: 'Spaans',
-  ribbonLangThai: 'Thai',
-  ribbonLangIndonesian: 'Indonesisch',
   ribbonLangRussian: 'Russisch',
-  ribbonLangArabic: 'Arabisch',
-  ribbonLangPortuguese: 'Portugees',
-  ribbonLangItalian: 'Italiaans',
-  ribbonLangPolish: 'Pools',
   ribbonLangCzech: 'Tsjechisch',
   ribbonLangDutch: 'Nederlands',
   ribbonLangMalay: 'Maleis',
@@ -980,4 +968,4 @@ export const nl = {
     'Een sectie-einde invoegen; de inhoud ervoor behoudt de pagina-instelling van de huidige sectie',
   ribbonGroupPageSetupSection: 'Pagina-instelling (sectie {n})',
   ribbonGroupParagraphSelected: 'Alinea (selectie)',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

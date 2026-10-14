@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const vi = {
   dlgAllowEditRangesTitle: 'Cho phép chỉnh sửa dải ô',
@@ -659,4 +659,4 @@ export const vi = {
   dlgSizeMoveOnly: 'Di chuyển nhưng không đổi kích thước',
   dlgSizeFixed: 'Không di chuyển hay đổi kích thước',
   dlgSizeInvalid: 'Nhập kích thước và góc xoay hợp lệ.',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

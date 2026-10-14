@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const he = {
   redactMenuLabel: 'הסתרת הבחירה מהמודל',
@@ -172,4 +172,4 @@ export const he = {
   insertTableTip: 'הוספת טבלה',
   insertMoreTip: 'אפשרויות הוספה נוספות',
   ribbonPin: 'הצמד את רצועת הכלים',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

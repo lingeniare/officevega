@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const tk = {
   aiEmptyDraftTitle: 'Goý, AI bu resminamany siziň üçin taýýarlasyn',
@@ -192,4 +192,4 @@ export const tk = {
   aiSumAnalyzeMedia: 'Mediýany seljermek',
   aiSumAnalyzeMediaDone: 'Media seljerildi',
   aiCmdNoneUnchanged: '{count} gabat gelýän blok üýtgedilmedik; resminama üýtgedilmedi.',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

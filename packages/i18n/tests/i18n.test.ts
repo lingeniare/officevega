@@ -13,12 +13,6 @@ import {
 } from '../src/index'
 
 describe('normalizeLang', () => {
-  it('maps zh variants to zh', () => {
-    expect(normalizeLang('zh')).toBe('zh')
-    expect(normalizeLang('zh-CN')).toBe('zh')
-    expect(normalizeLang('zh-Hans-CN')).toBe('zh')
-  })
-
   it('maps traditional-script zh variants to zh-TW', () => {
     expect(normalizeLang('zh-TW')).toBe('zh-TW')
     expect(normalizeLang('ZH-TW')).toBe('zh-TW')
@@ -28,33 +22,35 @@ describe('normalizeLang', () => {
     expect(normalizeLang('zh-MO')).toBe('zh-TW')
   })
 
-  it('maps ja/ko variants to ja/ko', () => {
-    expect(normalizeLang('ja')).toBe('ja')
-    expect(normalizeLang('ja-JP')).toBe('ja')
-    expect(normalizeLang('ko')).toBe('ko')
-    expect(normalizeLang('KO-KR')).toBe('ko')
+  it('maps removed languages to en', () => {
+    expect(normalizeLang('zh')).toBe('en')
+    expect(normalizeLang('zh-CN')).toBe('en')
+    expect(normalizeLang('zh-Hans-CN')).toBe('en')
+    expect(normalizeLang('ja')).toBe('en')
+    expect(normalizeLang('ja-JP')).toBe('en')
+    expect(normalizeLang('ko')).toBe('en')
+    expect(normalizeLang('fr')).toBe('en')
+    expect(normalizeLang('fr-CA')).toBe('en')
+    expect(normalizeLang('de-DE')).toBe('en')
+    expect(normalizeLang('es-419')).toBe('en')
+    expect(normalizeLang('th-TH')).toBe('en')
+    expect(normalizeLang('id-ID')).toBe('en')
+    expect(normalizeLang('in-ID')).toBe('en')
+    expect(normalizeLang('ar-SA')).toBe('en')
+    expect(normalizeLang('pt-BR')).toBe('en')
+    expect(normalizeLang('it-IT')).toBe('en')
+    expect(normalizeLang('pl-PL')).toBe('en')
   })
 
-  it('maps the newly added languages', () => {
-    expect(normalizeLang('fr')).toBe('fr')
-    expect(normalizeLang('fr-CA')).toBe('fr')
-    expect(normalizeLang('de-DE')).toBe('de')
-    expect(normalizeLang('es-419')).toBe('es')
-    expect(normalizeLang('th-TH')).toBe('th')
-    expect(normalizeLang('id-ID')).toBe('id')
-    expect(normalizeLang('in-ID')).toBe('id')
+  it('maps the shipped languages', () => {
     expect(normalizeLang('ru-RU')).toBe('ru')
-    expect(normalizeLang('ar-SA')).toBe('ar')
-    expect(normalizeLang('pt-BR')).toBe('pt')
-    expect(normalizeLang('pt-PT')).toBe('pt')
-    expect(normalizeLang('it-IT')).toBe('it')
-    expect(normalizeLang('pl-PL')).toBe('pl')
     expect(normalizeLang('cs-CZ')).toBe('cs')
     expect(normalizeLang('nl-NL')).toBe('nl')
     expect(normalizeLang('ms-MY')).toBe('ms')
     expect(normalizeLang('he-IL')).toBe('he')
     expect(normalizeLang('iw-IL')).toBe('he')
     expect(normalizeLang('hi-IN')).toBe('hi')
+    expect(normalizeLang('vi-VN')).toBe('vi')
     expect(normalizeLang('uz-UZ')).toBe('uz')
     expect(normalizeLang('uz-Latn-UZ')).toBe('uz')
     expect(normalizeLang('kk-KZ')).toBe('kk')
@@ -81,35 +77,23 @@ describe('normalizeLang', () => {
     expect(normalizeLang('thread')).toBe('en')
     expect(normalizeLang('italian')).toBe('en')
     expect(normalizeLang('hebrew')).toBe('en')
-    expect(normalizeLang('de')).toBe('de')
-    expect(normalizeLang('de-DE')).toBe('de')
-    expect(normalizeLang('de_DE')).toBe('de')
-    expect(normalizeLang('es-419')).toBe('es')
+    expect(normalizeLang('cs')).toBe('cs')
+    expect(normalizeLang('cs-CZ')).toBe('cs')
+    expect(normalizeLang('cs_CZ')).toBe('cs')
   })
 })
 
 describe('isLang', () => {
   it('accepts only supported languages', () => {
-    expect(isLang('zh')).toBe(true)
     expect(isLang('en')).toBe(true)
-    expect(isLang('ja')).toBe(true)
-    expect(isLang('ko')).toBe(true)
-    expect(isLang('fr')).toBe(true)
-    expect(isLang('de')).toBe(true)
-    expect(isLang('es')).toBe(true)
-    expect(isLang('th')).toBe(true)
-    expect(isLang('id')).toBe(true)
     expect(isLang('ru')).toBe(true)
-    expect(isLang('ar')).toBe(true)
-    expect(isLang('pt')).toBe(true)
-    expect(isLang('it')).toBe(true)
-    expect(isLang('pl')).toBe(true)
     expect(isLang('cs')).toBe(true)
     expect(isLang('nl')).toBe(true)
     expect(isLang('ms')).toBe(true)
     expect(isLang('he')).toBe(true)
     expect(isLang('hi')).toBe(true)
     expect(isLang('zh-TW')).toBe(true)
+    expect(isLang('vi')).toBe(true)
     expect(isLang('uz')).toBe(true)
     expect(isLang('kk')).toBe(true)
     expect(isLang('az')).toBe(true)
@@ -117,6 +101,10 @@ describe('isLang', () => {
     expect(isLang('ky')).toBe(true)
     expect(isLang('tt')).toBe(true)
     expect(isLang('ka')).toBe(true)
+    expect(isLang('zh')).toBe(false)
+    expect(isLang('ja')).toBe(false)
+    expect(isLang('fr')).toBe(false)
+    expect(isLang('ar')).toBe(false)
     expect(isLang('zh-CN')).toBe(false)
     expect(isLang(42)).toBe(false)
   })
@@ -124,10 +112,10 @@ describe('isLang', () => {
 
 describe('htmlLang', () => {
   it('maps every supported language to a BCP-47 tag', () => {
-    expect(htmlLang('zh')).toBe('zh-CN')
     expect(htmlLang('en')).toBe('en-US')
-    expect(htmlLang('ja')).toBe('ja-JP')
-    expect(htmlLang('ko')).toBe('ko-KR')
+    expect(htmlLang('ru')).toBe('ru-RU')
+    expect(htmlLang('he')).toBe('he-IL')
+    expect(htmlLang('ka')).toBe('ka-GE')
     expect(htmlLang('zh-TW')).toBe('zh-TW')
     for (const lang of LANGS) expect(htmlLang(lang)).toMatch(/^[a-z]{2}-[A-Z]{2}$/)
   })
@@ -217,20 +205,8 @@ describe('shortcut rewrite order', () => {
 
 describe('createI18n', () => {
   const t = createI18n({
-    zh: { hello: '你好 {name}', plain: '文件' },
     en: { hello: 'Hello {name}', plain: 'Files' },
-    ja: { hello: 'こんにちは {name}', plain: 'ファイル' },
-    ko: { hello: '안녕하세요 {name}', plain: '파일' },
-    fr: { hello: 'Bonjour {name}', plain: 'Fichiers' },
-    de: { hello: 'Hallo {name}', plain: 'Dateien' },
-    es: { hello: 'Hola {name}', plain: 'Archivos' },
-    th: { hello: 'สวัสดี {name}', plain: 'ไฟล์' },
-    id: { hello: 'Halo {name}', plain: 'Berkas' },
     ru: { hello: 'Привет, {name}', plain: 'Файлы' },
-    ar: { hello: 'مرحباً {name}', plain: 'الملفات' },
-    pt: { hello: 'Olá {name}', plain: 'Arquivos' },
-    it: { hello: 'Ciao {name}', plain: 'File' },
-    pl: { hello: 'Cześć {name}', plain: 'Pliki' },
     cs: { hello: 'Ahoj {name}', plain: 'Soubory' },
     nl: { hello: 'Hallo {name}', plain: 'Bestanden' },
     ms: { hello: 'Helo {name}', plain: 'Fail' },
@@ -248,42 +224,35 @@ describe('createI18n', () => {
   })
 
   it('translates per language with interpolation', () => {
-    expect(t('zh', 'hello', { name: '世界' })).toBe('你好 世界')
     expect(t('en', 'hello', { name: 'world' })).toBe('Hello world')
-    expect(t('ja', 'hello', { name: '世界' })).toBe('こんにちは 世界')
-    expect(t('ko', 'plain')).toBe('파일')
+    expect(t('ru', 'hello', { name: 'мир' })).toBe('Привет, мир')
     expect(t('en', 'plain')).toBe('Files')
-    expect(t('fr', 'hello', { name: 'monde' })).toBe('Bonjour monde')
     expect(t('ru', 'plain')).toBe('Файлы')
-    expect(t('ar', 'plain')).toBe('الملفات')
-    expect(t('pt', 'hello', { name: 'mundo' })).toBe('Olá mundo')
     expect(t('he', 'plain')).toBe('קבצים')
     expect(t('cs', 'plain')).toBe('Soubory')
+    expect(t('tt', 'plain')).toBe('Файллар')
     expect(t('zh-TW', 'plain')).toBe('檔案')
   })
 
-  it('falls back en -> zh -> key for a missing entry', () => {
+  it('falls back en -> key for a missing entry', () => {
     const partial = createI18n({
-      zh: { a: 'zh-a', b: 'zh-b', c: 'zh-c' },
       en: { a: 'en-a', b: 'en-b' },
-      fr: { a: 'fr-a' },
+      ru: { a: 'ru-a' },
     } as unknown as Parameters<typeof createI18n>[0])
-    expect(partial('fr', 'a')).toBe('fr-a')
-    expect(partial('fr', 'b')).toBe('en-b')
-    expect(partial('fr', 'c')).toBe('zh-c')
-    expect(partial('fr', 'd' as 'a')).toBe('d')
+    expect(partial('ru', 'a')).toBe('ru-a')
+    expect(partial('ru', 'b')).toBe('en-b')
+    expect(partial('ru', 'c' as 'a')).toBe('c')
     expect(partial('vi', 'a')).toBe('en-a')
   })
 })
 
 describe('isRtlLang', () => {
   it('flags the right-to-left UI languages', () => {
-    expect(isRtlLang('ar')).toBe(true)
     expect(isRtlLang('he')).toBe(true)
   })
 
   it('leaves left-to-right languages and junk alone', () => {
-    expect(isRtlLang('zh')).toBe(false)
+    expect(isRtlLang('ar')).toBe(false) // removed from LANGS
     expect(isRtlLang('en')).toBe(false)
     expect(isRtlLang('zh-TW')).toBe(false)
     expect(isRtlLang('fa')).toBe(false) // not in LANGS today
@@ -300,9 +269,9 @@ describe('htmlDir', () => {
   })
 
   it('maps the right-to-left languages and nothing else', () => {
-    expect(htmlDir('ar')).toBe('rtl')
+    expect(htmlDir('ar')).toBe('ltr')
     expect(htmlDir('he')).toBe('rtl')
-    for (const lang of ['en', 'zh', 'zh-TW', 'ja', 'th', 'he'.toUpperCase()]) {
+    for (const lang of ['en', 'ru', 'zh-TW', 'vi', 'he'.toUpperCase()]) {
       expect(htmlDir(lang)).toBe('ltr')
     }
     expect(htmlDir(undefined)).toBe('ltr')

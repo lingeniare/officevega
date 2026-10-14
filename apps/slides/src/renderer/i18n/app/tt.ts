@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const tt = {
   appPhPromptTitle: 'Исем өстәү өчен басыгыз',
@@ -267,4 +267,4 @@ export const tt = {
   redactCancel: 'Cancel',
   redactInsert: 'Hide',
   redactEnable: 'Right-click a selection to hide it from the model.',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

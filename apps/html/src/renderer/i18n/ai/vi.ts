@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const vi = {
   aiCollapsePanel: 'Thu gọn bảng điều khiển',
@@ -194,4 +194,4 @@ export const vi = {
   aiFillImagesAsk: 'Generate {n} images for the page?',
   aiFillImagesYes: 'Generate',
   aiFillImagesNo: 'Not now',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

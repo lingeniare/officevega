@@ -189,24 +189,18 @@ describe('count labels', () => {
   })
 
   it('picks the singular form in every locale with plural inflection', () => {
-    expect(label('fr', 1)).toBe('1 fichier')
-    expect(label('de', 1)).toBe('1 Datei')
-    expect(label('zh', 1)).toBe('1 \u4e2a\u6587\u4ef6')
+    expect(label('ru', 1)).toBe('1 файл')
+    expect(label('cs', 1)).toBe('1 soubor')
+    expect(label('nl', 1)).toBe('1 bestand')
   })
 
-  it('follows CLDR categories: fr zero, cs few, ru one at 21, ar dual/many', () => {
-    expect(label('fr', 0)).toBe('0 fichier')
+  it('follows CLDR categories: cs few, ru one at 21', () => {
     expect(label('cs', 1)).toBe('1 soubor')
     expect(label('cs', 3)).toBe('3 soubory')
-    expect(label('cs', 5)).toBe('5 soubor\u016f')
-    expect(label('ru', 21)).toBe('21 \u0444\u0430\u0439\u043b')
-    expect(label('ru', 5)).toBe('\u0424\u0430\u0439\u043b\u043e\u0432: 5')
-    expect(label('pl', 2)).toBe('Pliki: 2')
-    expect(label('ar', 0)).toBe('لا توجد ملفات')
-    expect(label('ar', 2)).toBe('ملفان')
-    expect(label('ar', 3)).toBe('3 ملفات')
-    expect(label('ar', 11)).toBe('11 ملفًا')
-    expect(label('ar', 100)).toBe(strings.ar.fileCount.replace('{n}', '100'))
+    expect(label('cs', 5)).toBe('5 souborů')
+    expect(label('ru', 21)).toBe('21 файл')
+    expect(label('ru', 5)).toBe('Файлов: 5')
+    expect(label('ru', 100)).toBe(strings.ru.fileCount.replace('{n}', '100'))
   })
 
   it('falls back to the one/other pair in every locale', () => {

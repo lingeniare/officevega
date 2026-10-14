@@ -236,7 +236,7 @@ describe('fast model picker', () => {
     expect(written?.providers?.vega?.model).toBe('main-model')
   })
 
-  it('keeps an off-catalog fastModel visible and pickable', async () => {
+  it('heals an off-catalog fastModel back to "same as main"', async () => {
     const setAiSettings = vi.fn<HomeApi['setAiSettings']>(async () => {})
     const withFast = {
       ...baseSettings,
@@ -252,9 +252,11 @@ describe('fast model picker', () => {
       await Promise.resolve()
     })
 
-    expect(fastCombo().input.value).toBe('custom-fast')
+    // the vega catalog is the account allowlist: an unservable stored id is
+    // healed away by healVegaModelSelection, not kept as a pinned option
+    expect(fastCombo().input.value).toBe('Same as main model')
     const values = (await openFastList()).map((o) => o.dataset.value)
-    expect(values).toContain('custom-fast')
+    expect(values).not.toContain('custom-fast')
   })
 
   it('requests the chat catalog with image generators excluded', async () => {

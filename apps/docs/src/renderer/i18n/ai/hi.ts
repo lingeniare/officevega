@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const hi = {
   aiEmptyDraftTitle: 'AI को यह दस्तावेज़ ड्राफ़्ट करने दें',
@@ -190,4 +190,4 @@ export const hi = {
   aiCmdImages: '{count} चित्र अपडेट किए गए',
   aiCmdToc: 'विषय-सूची सम्मिलित की गई ({count} प्रविष्टियाँ)',
   aiCmdSkipped: ' ({count} सुरक्षित ब्लॉक छोड़े गए)',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

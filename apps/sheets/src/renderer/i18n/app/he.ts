@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const he = {
   appMergeWorkbooks: 'מיזוג חוברות עבודה',
@@ -1470,4 +1470,4 @@ export const he = {
   appVisualFlipV: 'הפוך אנכית',
   appVisualFlipH: 'הפוך אופקית',
   appCtxPasteVisual: 'הדבק תמונה או צורה',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

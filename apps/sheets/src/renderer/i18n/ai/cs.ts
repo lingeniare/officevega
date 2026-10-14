@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const cs = {
   aiComposerPlaceholderBuild: 'Popište tabulku, data nebo graf, který chcete vytvořit…',
@@ -127,4 +127,4 @@ export const cs = {
   aiStarterSalesPrompt: 'Vytvoř čtvrtletní report prodeje: sloupce produkt, region, počet kusů, cena a tržby s ukázkovými řádky a řádkem součtů',
   aiStarterTasks: 'Plán úkolů',
   aiStarterTasksPrompt: 'Vytvoř plán úkolů projektu: sloupce úkol, vlastník, datum zahájení, termín a stav s tuctem ukázkových úkolů',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

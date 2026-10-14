@@ -1,5 +1,4 @@
-import type { zh } from './zh'
-
+/** ribbon strings, en: defines the key set every other locale shard must match. */
 export const en = {
   ribbonAiCreditNote: 'Uses AI and consumes credits',
   ribbonAiRewriteConfirm:
@@ -673,19 +672,7 @@ export const en = {
     'Proofread the selected content: fix typos, punctuation and grammar errors while keeping the original meaning and paragraph structure unchanged.',
   ribbonTranslateTo: 'Translate to {lang}',
   ribbonLangEnglish: 'English',
-  ribbonLangSimplifiedChinese: 'Simplified Chinese',
-  ribbonLangJapanese: 'Japanese',
-  ribbonLangKorean: 'Korean',
-  ribbonLangFrench: 'French',
-  ribbonLangGerman: 'German',
-  ribbonLangSpanish: 'Spanish',
-  ribbonLangThai: 'Thai',
-  ribbonLangIndonesian: 'Indonesian',
   ribbonLangRussian: 'Russian',
-  ribbonLangArabic: 'Arabic',
-  ribbonLangPortuguese: 'Portuguese',
-  ribbonLangItalian: 'Italian',
-  ribbonLangPolish: 'Polish',
   ribbonLangCzech: 'Czech',
   ribbonLangDutch: 'Dutch',
   ribbonLangMalay: 'Malay',
@@ -967,4 +954,4 @@ export const en = {
     "Insert a section break; content before it keeps the current section's page setup",
   ribbonGroupPageSetupSection: 'Page Setup (Section {n})',
   ribbonGroupParagraphSelected: 'Paragraph (selection)',
-} satisfies Record<keyof typeof zh, string>
+}

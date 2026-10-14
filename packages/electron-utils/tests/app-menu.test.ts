@@ -41,28 +41,7 @@ import {
   type AppMenuLabels,
 } from '../src/index'
 
-const LANGS = [
-  'zh',
-  'en',
-  'ja',
-  'ko',
-  'fr',
-  'de',
-  'es',
-  'th',
-  'id',
-  'ru',
-  'ar',
-  'pt',
-  'it',
-  'pl',
-  'cs',
-  'nl',
-  'ms',
-  'he',
-  'hi',
-  'zh-TW',
-] as const
+const LANGS = ['en', 'ru', 'cs', 'nl', 'ms', 'he', 'hi', 'zh-TW'] as const
 
 const en = appMenuLabels('en')
 
@@ -75,7 +54,7 @@ beforeEach(() => {
 })
 
 describe('appMenuLabels', () => {
-  it('covers all 20 languages with every key non-empty', () => {
+  it('covers all 8 languages with every key non-empty', () => {
     const keys = Object.keys(en) as (keyof AppMenuLabels)[]
     for (const lang of LANGS) {
       const labels = appMenuLabels(lang)
@@ -88,9 +67,9 @@ describe('appMenuLabels', () => {
   })
 
   it('merges the context-menu clipboard labels', () => {
-    const zh = appMenuLabels('zh')
-    expect(zh.copy).toBe('复制')
-    expect(zh.selectAll).toBe('全选')
+    const ru = appMenuLabels('ru')
+    expect(ru.copy).toBe('Копировать')
+    expect(ru.selectAll).toBe('Выделить все')
   })
 })
 
@@ -114,9 +93,9 @@ describe('windowMenuTemplate', () => {
   })
 
   it('localizes the Windows submenu', () => {
-    const items = submenuOf(windowMenuTemplate('win32', appMenuLabels('zh')))
-    expect(items[0]!.label).toBe('最小化')
-    expect(items[2]!.label).toBe('关闭窗口')
+    const items = submenuOf(windowMenuTemplate('win32', appMenuLabels('ru')))
+    expect(items[0]!.label).toBe('Свернуть')
+    expect(items[2]!.label).toBe('Закрыть окно')
   })
 })
 

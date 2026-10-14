@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const zhTW = {
   appScTitle: '鍵盤快速鍵',
@@ -333,19 +333,7 @@ export const zhTW = {
   appTranslate: '翻譯',
   appTranslateTo: '翻譯成{lang}',
   appLangEnglish: '英文',
-  appLangSimplifiedChinese: '簡體中文',
-  appLangJapanese: '日文',
-  appLangKorean: '韓文',
-  appLangFrench: '法文',
-  appLangGerman: '德文',
-  appLangSpanish: '西班牙文',
-  appLangThai: '泰文',
-  appLangIndonesian: '印尼文',
   appLangRussian: '俄文',
-  appLangArabic: '阿拉伯文',
-  appLangPortuguese: '葡萄牙文',
-  appLangItalian: '義大利文',
-  appLangPolish: '波蘭文',
   appLangCzech: '捷克文',
   appLangDutch: '荷蘭文',
   appLangMalay: '馬來文',
@@ -512,4 +500,4 @@ export const zhTW = {
   appLineTriple: '3 倍行距',
   appGensparkAccount: 'Genspark 帳號',
   appLoginGenspark: '登入 Genspark',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

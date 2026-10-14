@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const ru = {
   appMergeWorkbooks: 'Объединить книги',
@@ -1549,4 +1549,4 @@ export const ru = {
   appVisualFlipV: 'Отразить сверху вниз',
   appVisualFlipH: 'Отразить слева направо',
   appCtxPasteVisual: 'Вставить рисунок или фигуру',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const ka = {
   aiInputPlaceholderGen: 'აღწერეთ შესაქმნელი პრეზენტაცია ან დასვით ნებისმიერი კითხვა',
@@ -275,4 +275,4 @@ export const ka = {
 
   aiClarifyPrev: 'წინა',
   aiPageCloudToLocal: 'cloud unavailable — generated locally',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

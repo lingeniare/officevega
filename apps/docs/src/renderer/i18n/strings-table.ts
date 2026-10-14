@@ -58,20 +58,8 @@ const ru: Record<keyof typeof en, string> = {
  * translated dialogs and lets language packs override the shard incrementally.
  */
 export const tableStrings = defineStrings({
-  zh: en,
   en,
-  ja: en,
-  ko: en,
-  fr: en,
-  de: en,
-  es: en,
-  th: en,
-  id: en,
   ru,
-  ar: en,
-  pt: en,
-  it: en,
-  pl: en,
   cs: en,
   nl: en,
   ms: en,

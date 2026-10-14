@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const vi = {
   paneCancel: 'Hủy',
@@ -290,4 +290,4 @@ export const vi = {
   panePresenterWhiteOn: 'Màn hình trắng (nhấn W để tiếp tục)',
   paneFormatFillTip: 'Fill options for the selection',
   paneFormatOutlineTip: 'Outline options for the selection',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

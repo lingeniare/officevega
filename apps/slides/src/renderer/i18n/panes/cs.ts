@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const cs = {
   paneCancel: 'Zrušit',
@@ -290,4 +290,4 @@ export const cs = {
   paneShowMenuWhite: 'Bílá obrazovka',
   paneShowMenuEnd: 'Ukončit prezentaci',
   panePresenterWhiteOn: 'Bílá obrazovka (W pro návrat)',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const nl = {
   aiEmptyDraftTitle: 'Laat AI dit document voor je opstellen',
@@ -194,4 +194,4 @@ export const nl = {
   aiCmdImages: '{count} afbeelding(en) bijgewerkt',
   aiCmdToc: 'Inhoudsopgave ingevoegd ({count} vermeldingen)',
   aiCmdSkipped: ' ({count} beveiligde blok(ken) overgeslagen)',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

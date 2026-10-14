@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const az = {
   appMergeWorkbooks: 'İş kitablarını birləşdir',
@@ -1546,4 +1546,4 @@ export const az = {
   appLargeFilterApplying: 'Filtr fayla tətbiq olunur…',
   appPrintWorkbookTooLarge:
     'Bu iş kitabı yaddaşa tam yüklənmək üçün çox böyükdür, ona görə çap etmək və ya PDF-ə ixrac etmək olmaz.',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const tt = {
   aiComposerPlaceholderBuild: 'Төзү өчен таблицаны, мәгълүматны яки диаграмманы тасвирлагыз…',
@@ -128,4 +128,4 @@ export const tt = {
   aiStarterSalesPrompt: 'Кварталь сату хисабын төзе: продукт, төбәк, берәмлек, бәя һәм керем баганалары, үрнәк юллар һәм җәмгы юл',
   aiStarterTasks: 'Проект биремнәр планы',
   aiStarterTasksPrompt: 'Проект биремнәр планын төзе: бирем, җаваплы, башлану көне, тәмамлану көне һәм халәт баганалары белән унлап үрнәк биремнәр',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

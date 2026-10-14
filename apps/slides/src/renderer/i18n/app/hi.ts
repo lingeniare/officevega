@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const hi = {
   redactMenuLabel: 'चयन को AI से छिपाएँ',
@@ -270,4 +270,4 @@ export const hi = {
   appStatusSummaryZoomInserted: '{count} टाइलों के साथ सारांश ज़ूम स्लाइड डाली गई',
   appSectionSummary: 'सारांश अनुभाग',
   appSectionN: 'अनुभाग {n}',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

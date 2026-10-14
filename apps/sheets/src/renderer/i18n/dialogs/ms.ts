@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const ms = {
   dlgAllowEditRangesTitle: 'Benarkan Edit Julat',
@@ -660,4 +660,4 @@ export const ms = {
   dlgSizeMoveOnly: 'Alih tetapi jangan ubah saiz',
   dlgSizeFixed: 'Jangan alih atau ubah saiz',
   dlgSizeInvalid: 'Masukkan saiz dan putaran yang sah.',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

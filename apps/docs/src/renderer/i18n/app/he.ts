@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const he = {
   appScTitle: 'קיצורי מקלדת',
@@ -337,19 +337,7 @@ export const he = {
   appTranslate: 'תרגום',
   appTranslateTo: 'תרגום ל{lang}',
   appLangEnglish: 'אנגלית',
-  appLangSimplifiedChinese: 'סינית פשוטה',
-  appLangJapanese: 'יפנית',
-  appLangKorean: 'קוריאנית',
-  appLangFrench: 'צרפתית',
-  appLangGerman: 'גרמנית',
-  appLangSpanish: 'ספרדית',
-  appLangThai: 'תאית',
-  appLangIndonesian: 'אינדונזית',
   appLangRussian: 'רוסית',
-  appLangArabic: 'ערבית',
-  appLangPortuguese: 'פורטוגזית',
-  appLangItalian: 'איטלקית',
-  appLangPolish: 'פולנית',
   appLangCzech: 'צ׳כית',
   appLangDutch: 'הולנדית',
   appLangMalay: 'מלאית',
@@ -517,4 +505,4 @@ export const he = {
   appLineTriple: '3 שורות',
   appGensparkAccount: 'חשבון Genspark',
   appLoginGenspark: 'התחברות ל-Genspark',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

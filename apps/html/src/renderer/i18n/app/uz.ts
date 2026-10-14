@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const uz = {
   loading: 'Yuklanmoqda…',
@@ -174,4 +174,4 @@ export const uz = {
   redactDialogPlaceholder: 'Placeholder name, e.g. client phone',
   redactCancel: 'Cancel',
   redactInsert: 'Hide',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const ka = {
   paneCancel: 'გაუქმება',
@@ -292,4 +292,4 @@ export const ka = {
   paneShowMenuScreen: 'ეკრანი',
   paneShowMenuSeeAll: 'ყველა სლაიდის ნახვა',
   paneShowMenuWhite: 'თეთრი ეკრანი',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

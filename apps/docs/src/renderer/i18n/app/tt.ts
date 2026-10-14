@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const tt = {
   appScTitle: 'Клавиатура кыска юллары',
@@ -272,19 +272,7 @@ export const tt = {
   appTranslate: 'Тәрҗемә итү',
   appTranslateTo: '{lang} теленә тәрҗемә итү',
   appLangEnglish: 'Инглизчә',
-  appLangSimplifiedChinese: 'Гади кытайча',
-  appLangJapanese: 'Японча',
-  appLangKorean: 'Кореяча',
-  appLangFrench: 'Французча',
-  appLangGerman: 'Алманча',
-  appLangSpanish: 'Испанча',
-  appLangThai: 'Тай',
-  appLangIndonesian: 'Индонезия',
   appLangRussian: 'Рус',
-  appLangArabic: 'Гарәп',
-  appLangPortuguese: 'Португал',
-  appLangItalian: 'Итальян',
-  appLangPolish: 'Поляк',
   appLangCzech: 'Чех',
   appLangDutch: 'Голланд',
   appLangMalay: 'Малай',
@@ -524,4 +512,4 @@ export const tt = {
   appGoToNext: 'Next',
   appGensparkAccount: 'Genspark 账号',
   appLoginGenspark: '登录 Genspark',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

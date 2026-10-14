@@ -70,7 +70,7 @@ describe('a 200 media response whose body is not JSON', () => {
     )
   })
 
-  it('fails DashScope/Qwen-Image with the image-failure message', async () => {
+  it('fails Grok (xAI) image generation with the image-failure message', async () => {
     vi.stubGlobal(
       'fetch',
       vi.fn(async () => htmlShell()),
@@ -78,13 +78,8 @@ describe('a 200 media response whose body is not JSON', () => {
     expectSoftFailure(
       await messageOf(
         generateImageWithProvider(
-          'qwen',
-          {
-            apiKey: 'k',
-            baseUrl: 'https://dashscope-intl.aliyuncs.com/compatible-mode/v1',
-            imageModel: 'qwen-image-plus',
-            analysisModel: '',
-          },
+          'xai',
+          { apiKey: 'k', imageModel: 'grok-imagine-image-2.0', analysisModel: '' },
           { prompt: 'a fox' },
         ),
       ),
@@ -92,7 +87,7 @@ describe('a 200 media response whose body is not JSON', () => {
     )
   })
 
-  it('fails MiniMax with the image-failure message', async () => {
+  it('fails a custom OpenAI-images endpoint with the image-failure message', async () => {
     vi.stubGlobal(
       'fetch',
       vi.fn(async () => htmlShell()),
@@ -100,8 +95,13 @@ describe('a 200 media response whose body is not JSON', () => {
     expectSoftFailure(
       await messageOf(
         generateImageWithProvider(
-          'minimax',
-          { apiKey: 'k', imageModel: 'image-01', analysisModel: '' },
+          'custom',
+          {
+            apiKey: 'k',
+            baseUrl: 'https://mirror.example.com/v1',
+            imageModel: 'image-01',
+            analysisModel: '',
+          },
           { prompt: 'a fox' },
         ),
       ),

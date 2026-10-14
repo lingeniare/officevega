@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const ru = {
   dlgAllowEditRangesTitle: 'Разрешить изменение диапазонов',
@@ -664,4 +664,4 @@ export const ru = {
   dlgSizeMoveOnly: 'Перемещать, но не изменять размеры',
   dlgSizeFixed: 'Не перемещать и не изменять размеры',
   dlgSizeInvalid: 'Введите допустимые размер и поворот.',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

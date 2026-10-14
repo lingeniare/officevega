@@ -1,5 +1,4 @@
-import type { zh } from './zh'
-
+/** ribbon strings, en: defines the key set every other locale shard must match. */
 export const en = {
   ribbonAiCreditNote: 'Uses AI and consumes credits',
   ribbonAiRewriteConfirm:
@@ -390,20 +389,8 @@ export const en = {
   ribbonTranslatePrompt:
     'Translate all text on the current slide into {lang}: replace the original with tools, keeping the layout, font sizes, and colors unchanged.',
   ribbonLangEnglish: 'English',
-  ribbonLangSimplifiedChinese: 'Simplified Chinese',
   ribbonLangTraditionalChinese: 'Traditional Chinese',
-  ribbonLangJapanese: 'Japanese',
-  ribbonLangKorean: 'Korean',
-  ribbonLangFrench: 'French',
-  ribbonLangGerman: 'German',
-  ribbonLangSpanish: 'Spanish',
-  ribbonLangThai: 'Thai',
-  ribbonLangIndonesian: 'Indonesian',
   ribbonLangRussian: 'Russian',
-  ribbonLangArabic: 'Arabic',
-  ribbonLangPortuguese: 'Portuguese',
-  ribbonLangItalian: 'Italian',
-  ribbonLangPolish: 'Polish',
   ribbonLangCzech: 'Czech',
   ribbonLangDutch: 'Dutch',
   ribbonLangMalay: 'Malay',
@@ -767,4 +754,4 @@ export const en = {
   ribbonZoomSelectedSlides: '{n} slides selected',
   ribbonZoomSelectedSections: '{n} sections selected',
   ribbonPin: 'Pin the ribbon',
-} satisfies Record<keyof typeof zh, string>
+}

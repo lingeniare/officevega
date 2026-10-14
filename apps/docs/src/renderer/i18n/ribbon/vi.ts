@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const vi = {
   ribbonAiCreditNote: 'Sử dụng AI và tiêu tốn tín dụng',
@@ -671,19 +671,7 @@ export const vi = {
     'Hiệu đính nội dung đã chọn: sửa lỗi chính tả, dấu câu và ngữ pháp trong khi vẫn giữ nguyên ý nghĩa ban đầu và cấu trúc đoạn văn.',
   ribbonTranslateTo: 'Dịch sang {lang}',
   ribbonLangEnglish: 'Tiếng Anh',
-  ribbonLangSimplifiedChinese: 'Tiếng Trung Giản thể',
-  ribbonLangJapanese: 'Tiếng Nhật',
-  ribbonLangKorean: 'Tiếng Hàn',
-  ribbonLangFrench: 'Tiếng Pháp',
-  ribbonLangGerman: 'Tiếng Đức',
-  ribbonLangSpanish: 'Tiếng Tây Ban Nha',
-  ribbonLangThai: 'Tiếng Thái',
-  ribbonLangIndonesian: 'Tiếng Indonesia',
   ribbonLangRussian: 'Tiếng Nga',
-  ribbonLangArabic: 'Tiếng Ả Rập',
-  ribbonLangPortuguese: 'Tiếng Bồ Đào Nha',
-  ribbonLangItalian: 'Tiếng Ý',
-  ribbonLangPolish: 'Tiếng Ba Lan',
   ribbonLangCzech: 'Tiếng Séc',
   ribbonLangDutch: 'Tiếng Hà Lan',
   ribbonLangMalay: 'Tiếng Mã Lai',
@@ -966,4 +954,4 @@ export const vi = {
   ribbonAutoFitTip: 'Resize table columns to fit automatically',
   ribbonZoomInTip: 'Zoom in',
   ribbonZoomOutTip: 'Zoom out',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

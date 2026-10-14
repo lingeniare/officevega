@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const zhTW = {
   aiEmptyDraftTitle: '讓 AI 幫你從零起草',
@@ -183,4 +183,4 @@ export const zhTW = {
   aiCmdImages: '已更新 {count} 張圖片',
   aiCmdToc: '已插入目錄({count} 個項目)',
   aiCmdSkipped: '(略過 {count} 個受保護區塊)',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

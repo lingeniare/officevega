@@ -378,7 +378,7 @@ export function AiChatPanel({
     submit: (text, atts) => onSendQueued?.(text, atts) ?? false,
   })
   // Panel chrome follows the UI language; message text follows its own content (dir=auto below)
-  const isRtl = lang === 'ar' || lang === 'he'
+  const isRtl = lang === 'he'
   /** VEGA deposit in the model picker group head (busy edge refetches the post-run figure) */
   const deposit = useVegaDeposit(
     privacyBadge === true,

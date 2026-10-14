@@ -1141,7 +1141,7 @@ export function AiPanel({
       ref={asideRef}
       className={`copilot${resizing ? ' ai-panel-resizing' : ''}`}
       style={{ width: '100%' }}
-      dir={lang === 'ar' || lang === 'he' ? 'rtl' : undefined}
+      dir={lang === 'he' ? 'rtl' : undefined}
     >
       <div
         className="ai-panel-resizer"

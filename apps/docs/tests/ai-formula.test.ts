@@ -54,8 +54,8 @@ describe('AI formula generation: <formula> tag', () => {
     const json = editor.getJSON() as PmNode
     const formula = json.content!.find((n) => n.type === 'docProtected')
     expect(formula).toBeDefined()
-    // freshly inserted formula blocks are labeled via t('editorEquation'); tests run under the zh default locale
-    expect(formula!.attrs!.label).toBe('公式')
+    // freshly inserted formula blocks are labeled via t('editorEquation')
+    expect(formula!.attrs!.label).toBe('Equation')
     expect(formula!.attrs!.previewText).toBe('c = \\sqrt{a^2 + b^2}')
     expect(String(formula!.attrs!.genXml)).toContain('<m:oMathPara>')
 

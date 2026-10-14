@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const hi = {
   ribbonAiCreditNote: 'AI का उपयोग करता है और क्रेडिट खर्च होते हैं',
@@ -397,20 +397,8 @@ export const hi = {
   ribbonTranslatePrompt:
     'वर्तमान स्लाइड के सभी पाठ का {lang} में अनुवाद करें: उपकरणों से मूल पाठ बदलें, लेआउट, फ़ॉन्ट आकार और रंग अपरिवर्तित रखें।',
   ribbonLangEnglish: 'अंग्रेज़ी',
-  ribbonLangSimplifiedChinese: 'सरलीकृत चीनी',
   ribbonLangTraditionalChinese: 'पारंपरिक चीनी',
-  ribbonLangJapanese: 'जापानी',
-  ribbonLangKorean: 'कोरियाई',
-  ribbonLangFrench: 'फ़्रेंच',
-  ribbonLangGerman: 'जर्मन',
-  ribbonLangSpanish: 'स्पेनिश',
-  ribbonLangThai: 'थाई',
-  ribbonLangIndonesian: 'इंडोनेशियाई',
   ribbonLangRussian: 'रूसी',
-  ribbonLangArabic: 'अरबी',
-  ribbonLangPortuguese: 'पुर्तगाली',
-  ribbonLangItalian: 'इतालवी',
-  ribbonLangPolish: 'पोलिश',
   ribbonLangCzech: 'चेक',
   ribbonLangDutch: 'डच',
   ribbonLangMalay: 'मलय',
@@ -778,4 +766,4 @@ export const hi = {
   ribbonZoomSelectedSlides: '{n} स्लाइड चयनित',
   ribbonZoomSelectedSections: '{n} अनुभाग चयनित',
   ribbonPin: 'रिबन पिन करें',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

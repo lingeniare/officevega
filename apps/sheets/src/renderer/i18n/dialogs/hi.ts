@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const hi = {
   dlgAllowEditRangesTitle: 'रेंज संपादन की अनुमति दें',
@@ -658,4 +658,4 @@ export const hi = {
   dlgSizeMoveOnly: 'कक्षों के साथ स्थानांतरित करें पर आकार न बदलें',
   dlgSizeFixed: 'कक्षों के साथ न स्थानांतरित करें न आकार बदलें',
   dlgSizeInvalid: 'मान्य आकार और घुमाव दर्ज करें।',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

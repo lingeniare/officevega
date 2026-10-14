@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const kk = {
   aiInputPlaceholderGen: 'Жасалатын презентацияны сипаттаңыз немесе кез келген сұрақ қойыңыз',
@@ -273,4 +273,4 @@ export const kk = {
 
   aiClarifyPrev: 'Алдыңғы',
   aiPageCloudToLocal: 'cloud unavailable — generated locally',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

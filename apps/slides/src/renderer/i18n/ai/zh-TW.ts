@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const zhTW = {
   aiInputPlaceholderGen: '描述要生成的簡報,或直接提問',
@@ -265,4 +265,4 @@ export const zhTW = {
   aiStylePresetDarkHint: '深色氛圍——深炭灰或藏青背景、一個發光強調色、超大字體、電影感畫面',
   aiStylePresetMinimalHint: '淺色極簡——通透留白、近單色配色加一抹克制的強調色、安靜精準的字體排印',
 
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

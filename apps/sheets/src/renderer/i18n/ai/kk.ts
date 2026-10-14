@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const kk = {
   aiComposerPlaceholderBuild: 'Жасалатын кестені, деректерді немесе диаграмманы сипаттаңыз…',
@@ -128,4 +128,4 @@ export const kk = {
   aiStarterSalesPrompt: 'Тоқсандық сату есебін жаса: өнім, аймақ, дана, баға және түсім бағандары, мысал жолдар және қорытынды жол',
   aiStarterTasks: 'Жоба тапсырмалар жоспары',
   aiStarterTasksPrompt: 'Жоба тапсырмалар жоспарын жаса: тапсырма, жауапты, басталу күні, мерзімі және мәртебе бағандары, оншама мысал тапсырмалармен',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

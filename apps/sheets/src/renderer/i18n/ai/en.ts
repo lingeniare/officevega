@@ -1,5 +1,4 @@
-import type { zh } from './zh'
-
+/** ai strings, en: defines the key set every other locale shard must match. */
 export const en = {
   aiComposerPlaceholderBuild: 'Describe the table, data, or chart to create…',
   aiEmptyBuildTitle: 'Let AI build this workbook for you',
@@ -127,4 +126,4 @@ export const en = {
   aiStarterSalesPrompt: 'Create a quarterly sales report: product, region, units, price and revenue columns, sample rows and a totals row',
   aiStarterTasks: 'Project task plan',
   aiStarterTasksPrompt: 'Create a project task plan: task, owner, start date, due date and status columns with a dozen sample tasks',
-} satisfies Record<keyof typeof zh, string>
+}

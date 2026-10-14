@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const he = {
   ribbonAiCreditNote: 'משתמש ב-AI וצורך קרדיטים',
@@ -666,19 +666,7 @@ export const he = {
     'הגה את התוכן שנבחר: תקן שגיאות הקלדה, פיסוק ודקדוק תוך שמירה על המשמעות המקורית ומבנה הפסקאות.',
   ribbonTranslateTo: 'תרגם ל{lang}',
   ribbonLangEnglish: 'אנגלית',
-  ribbonLangSimplifiedChinese: 'סינית פשוטה',
-  ribbonLangJapanese: 'יפנית',
-  ribbonLangKorean: 'קוריאנית',
-  ribbonLangFrench: 'צרפתית',
-  ribbonLangGerman: 'גרמנית',
-  ribbonLangSpanish: 'ספרדית',
-  ribbonLangThai: 'תאית',
-  ribbonLangIndonesian: 'אינדונזית',
   ribbonLangRussian: 'רוסית',
-  ribbonLangArabic: 'ערבית',
-  ribbonLangPortuguese: 'פורטוגזית',
-  ribbonLangItalian: 'איטלקית',
-  ribbonLangPolish: 'פולנית',
   ribbonLangCzech: 'צ׳כית',
   ribbonLangDutch: 'הולנדית',
   ribbonLangMalay: 'מלאית',
@@ -957,4 +945,4 @@ export const he = {
   ribbonSectionBreakTip: 'הוסף מעבר מקטע; התוכן שלפניו שומר על הגדרת העמוד של המקטע הנוכחי',
   ribbonGroupPageSetupSection: 'הגדרת עמוד (מקטע {n})',
   ribbonGroupParagraphSelected: 'פיסקה (הקטע הנבחר)',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

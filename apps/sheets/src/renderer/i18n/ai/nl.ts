@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const nl = {
   aiComposerPlaceholderBuild: 'Beschrijf de tabel, gegevens of grafiek om te maken…',
@@ -128,4 +128,4 @@ export const nl = {
   aiStarterSalesPrompt: 'Maak een kwartaalverkooprapport: kolommen product, regio, aantallen, prijs en omzet met voorbeeldrijen en een totaalrij',
   aiStarterTasks: 'Takenplan',
   aiStarterTasksPrompt: 'Maak een projecttakenplan: kolommen taak, eigenaar, startdatum, deadline en status met een dozijn voorbeeldtaken',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

@@ -74,15 +74,16 @@ export function vegaSessionHeaders(
 export function piiShieldMayApply(
   settings: Pick<AiSettings, 'provider' | 'providers' | 'piiShieldEnabled'> | null | undefined,
 ): boolean {
-  // user opt-out: the gateway gets X-Vega-Pii: off at the fetch layer, so the
-  // token guard and its prompt note would only chase tokens nobody generates
+  // user opt-out: the gateway is asked not to anonymize at the fetch layer
+  // (X-Vega-Anonymize: false), so the token guard and its prompt note would
+  // only chase tokens nobody generates
   if (settings?.piiShieldEnabled === false) return false
   if (!settings) return false
   const { provider, config } = requestProvider(settings)
   return provider === 'vega' || isVegaGatewayUrl(config?.baseUrl)
 }
 
-/** DeepSeek V4.1 Flash under the Genspark pool spelling, shared by the direct provider so the two lists read alike */
+/** DeepSeek V4.1 Flash under the Genspark pool's hyphenated spelling */
 export const DEEPSEEK_V41_FLASH = 'deep-seek-v4.1-flash'
 
 export const AI_PROVIDERS: AiProviderMeta[] = [
@@ -182,18 +183,6 @@ export const AI_PROVIDERS: AiProviderMeta[] = [
     keyPlaceholder: 'AIza...',
   },
   {
-    id: 'deepseek',
-    label: 'DeepSeek',
-    // GET api.deepseek.com/v1/models serves `deepseek-v4-pro` and
-    // `deepseek-flash` (verified 2026-09-21); the latter is V4.1 Flash with
-    // native vision. We list it under the Genspark pool spelling so both
-    // providers show the same versioned name; the adapter maps it back to
-    // the unversioned wire id (see DEEPSEEK_WIRE_IDS in registry.ts).
-    models: ['deepseek-v4-pro', DEEPSEEK_V41_FLASH],
-    defaultModel: 'deepseek-v4-pro',
-    keyPlaceholder: 'sk-...',
-  },
-  {
     id: 'openai',
     label: 'OpenAI',
     // GPT-5.6 naming: sol is the flagship (the bare `gpt-5.6` alias resolves to
@@ -207,109 +196,6 @@ export const AI_PROVIDERS: AiProviderMeta[] = [
     keyPlaceholder: 'sk-...',
   },
   {
-    id: 'kimi',
-    label: 'Kimi',
-    models: ['kimi-k3'],
-    defaultModel: 'kimi-k3',
-    keyPlaceholder: 'sk-...',
-  },
-  {
-    id: 'glm',
-    label: 'GLM',
-    // bigmodel.cn text-model lineup (2026-08); 5.3 and 5.2 share a base model.
-    // 5.3-Flash is the first multimodal GLM-5 and the documented successor to
-    // 5-Turbo, which Z.ai delisted from its price card in late August and
-    // Tencent CloudBase retires on 2026-10-30 with migration advice pointing
-    // here. 5.2 is marked deprecated on third-party catalogues but is still
-    // sold pay-as-you-go, so it stays listed.
-    models: ['glm-5.3', 'glm-5.3-flash', 'glm-5.2'],
-    defaultModel: 'glm-5.3',
-    keyPlaceholder: 'xxxxxxxx.xxxxxxxx',
-  },
-  {
-    id: 'qwen',
-    label: 'Qwen',
-    // Versioned DashScope ids: the bare qwen-max alias still points at a
-    // Qwen2.5-era snapshot, so name the 3.x tiers explicitly (2026-08).
-    // 3.8 ships as Max and Flash only — there is no 3.8-Plus tier, and
-    // 3.7-Flash is still the listed high-volume option.
-    models: ['qwen3.8-max', 'qwen3.8-flash', 'qwen3.7-plus', 'qwen3.7-flash'],
-    defaultModel: 'qwen3.8-max',
-    keyPlaceholder: 'sk-...',
-  },
-  {
-    id: 'doubao',
-    label: 'Doubao',
-    // Ark ids are dashed and date-pinned; it also accepts ep-... inference
-    // endpoint ids in the model field
-    models: ['doubao-seed-2-1-pro-260628', 'doubao-seed-2-1-turbo-260628'],
-    defaultModel: 'doubao-seed-2-1-pro-260628',
-    keyPlaceholder: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
-  },
-  {
-    id: 'mimo',
-    label: 'MiMo',
-    // Xiaomi's open-weight omni-modal pair (released 2026-09-22): Pro is the
-    // trillion-parameter flagship, Flash the efficiency/cost tier. Both take
-    // text, image, video and audio input; a -pro-ultraspeed tier also exists but
-    // is the same weights behind a faster serving path, so it is not a
-    // separate model to pick here.
-    models: ['mimo-v2.6-pro', 'mimo-v2.6-flash'],
-    defaultModel: 'mimo-v2.6-pro',
-    keyPlaceholder: 'sk-...',
-  },
-  {
-    id: 'hunyuan',
-    label: 'Hunyuan',
-    // Tencent's TokenHub chat models (docs 1823/132252, read 2026-09-30).
-    // hy4-preview is the 1M-context flagship and has deep thinking on by
-    // default; hy3 is the 256k balanced tier. Every other provider here
-    // defaults to its flagship, so this does too.
-    models: ['hy4-preview', 'hy3'],
-    defaultModel: 'hy4-preview',
-    keyPlaceholder: 'sk-...',
-  },
-  {
-    id: 'ling',
-    label: 'Ling',
-    // Ids as listed by developer.ant-ling.com (Ring = reasoning line); only
-    // Ling-3.0-flash-VL takes images, see modelLacksVision()
-    models: [
-      'Ling-3.0-flash',
-      'Ling-3.0-flash-VL',
-      'Ling-3.0-tiny',
-      'Ling-2.6-1T',
-      'Ring-2.6-1T',
-      'Ling-2.6-flash',
-    ],
-    defaultModel: 'Ling-3.0-flash',
-    keyPlaceholder: 'API Key',
-  },
-  {
-    id: 'spark',
-    label: 'Spark',
-    // iFlytek MaaS: lower-case model id and ak- key prefix are the vendor's own spelling
-    models: ['spark-x2.5'],
-    defaultModel: 'spark-x2.5',
-    keyPlaceholder: 'ak-...',
-  },
-  {
-    id: 'longcat',
-    label: 'LongCat',
-    // 2.5-Preview is the multimodal tier; 2.0 stays default so a fresh config avoids a preview
-    models: ['LongCat-2.5-Preview', 'LongCat-2.0'],
-    defaultModel: 'LongCat-2.0',
-    keyPlaceholder: 'API Key',
-  },
-  {
-    id: 'minimax',
-    label: 'MiniMax',
-    // M3 is the current agentic/tool-use model; M2.5 moved to the legacy tier
-    models: ['MiniMax-M3', 'MiniMax-M2.7'],
-    defaultModel: 'MiniMax-M3',
-    keyPlaceholder: 'eyJ...',
-  },
-  {
     id: 'xai',
     label: 'Grok',
     // 4.7 (2026-09-21) is 2.1T / 500K context at 4.6's price. 4.6 stays the
@@ -319,15 +205,6 @@ export const AI_PROVIDERS: AiProviderMeta[] = [
     models: ['grok-4.7', 'grok-4.6', 'grok-4.5'],
     defaultModel: 'grok-4.6',
     keyPlaceholder: 'xai-...',
-  },
-  {
-    id: 'mistral',
-    label: 'Mistral',
-    // `-latest` aliases track the newest GA snapshot. Medium 3.5 is Mistral's
-    // agentic tier; codestral is a code-completion/FIM model, not an agent driver.
-    models: ['mistral-medium-latest', 'mistral-large-latest', 'mistral-small-latest'],
-    defaultModel: 'mistral-medium-latest',
-    keyPlaceholder: 'API Key',
   },
   {
     id: 'openrouter',
@@ -347,61 +224,6 @@ export const AI_PROVIDERS: AiProviderMeta[] = [
     defaultModel: 'openrouter/auto',
     keyPlaceholder: 'sk-or-...',
     liveCatalog: true,
-  },
-  {
-    id: 'requesty',
-    label: 'Requesty',
-    // Managed policy ids exactly as GET router.requesty.ai/v1/models/managed
-    // lists them (2026-09-24): short stable names Requesty routes across
-    // providers, used as-is in the model field. The full vendor-prefixed
-    // catalog (GET /v1/models, e.g. openai/gpt-4o-mini) works too when typed
-    // in. Ids ending "@eu" route through EU providers only.
-    models: [
-      'claude-sonnet-5',
-      'claude-opus-5-5',
-      'claude-opus-4-8',
-      'gpt-6-sol',
-      'gpt-6-luna',
-      'gpt-5.6-sol',
-      'gpt-5.6-terra',
-      'gemini-3.7-flash',
-      'deepseek-v4-pro',
-      'kimi-k3',
-    ],
-    defaultModel: 'claude-sonnet-5',
-    keyPlaceholder: 'sk-...',
-  },
-  {
-    id: 'opper',
-    label: 'Opper',
-    // Pool ids exactly as GET api.opper.ai/v3/models lists them (2026-09-14):
-    // a bare name is an Opper pool, and Opper picks the serving provider and
-    // region per request. The vendor-prefixed catalog (anthropic/claude-sonnet-4-6,
-    // azure/gpt-5, …) pins one provider and works as-is when typed in.
-    // Full list at opper.ai/models.
-    models: [
-      'claude-sonnet-4-6',
-      'claude-opus-5',
-      'gpt-5.5',
-      'gpt-5.4-mini',
-      'gemini-3.8-flash',
-      'deepseek-v4-pro',
-      'kimi-k3',
-      'mistral-large-2512',
-    ],
-    defaultModel: 'claude-sonnet-4-6',
-    keyPlaceholder: 'API Key',
-  },
-  {
-    id: 'cheaperinference',
-    label: 'Cheaper Inference',
-    // Bare model ids as GET api.cheaperinference.com/v1/models lists them (the
-    // chat rows, type "text"): no vendor prefix, one key for every lab. Other
-    // ids from that list work as-is when typed in. Full list at
-    // cheaperinference.com/#models.
-    models: ['gpt-5.4-mini', 'gpt-5.4', 'claude-sonnet-5', 'gemini-3.1-pro'],
-    defaultModel: 'gpt-5.4-mini',
-    keyPlaceholder: 'ci_live_...',
   },
   {
     id: 'atlascloud',
@@ -633,22 +455,9 @@ export function requestProvider(settings: {
  * settings file keeps sending an id the API now rejects.
  */
 const RETIRED_MODELS: Partial<Record<AiProviderId, Record<string, string>>> = {
-  // chat/reasoner retired 2026-07-24 (thinking became a request parameter);
-  // V4 Flash and V4 Flash Vision Exp retired 2026-09-10 in favour of V4.1
-  // Flash, which carries vision natively. The vendor's own `deepseek-flash`
-  // id is folded in as well so the stored value matches the listed one.
-  deepseek: {
-    'deepseek-chat': DEEPSEEK_V41_FLASH,
-    'deepseek-reasoner': DEEPSEEK_V41_FLASH,
-    'deepseek-v4-flash': DEEPSEEK_V41_FLASH,
-    'deepseek-v4-flash-vision-exp': DEEPSEEK_V41_FLASH,
-    'deepseek-flash': DEEPSEEK_V41_FLASH,
-  },
   // proxy stopped serving bare gpt-5.6 (400) and removed the gemini route
   // entirely (405), verified 2026-08-31; gemini selections fall back to the
   // provider default since no gemini id is served at all
-  // 5-Turbo left the Z.ai price card late 2026-08; 5.3 Flash is the cheap tier now
-  glm: { 'glm-5-turbo': 'glm-5.3-flash' },
   genspark: {
     'gpt-5.6': 'gpt-5.6-terra',
     'gemini-3.1-pro-preview': 'claude-opus-5-5',

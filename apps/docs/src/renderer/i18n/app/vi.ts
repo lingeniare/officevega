@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const vi = {
   appScTitle: 'Phím tắt bàn phím',
@@ -343,19 +343,7 @@ export const vi = {
   appTranslate: 'Dịch',
   appTranslateTo: 'Dịch sang {lang}',
   appLangEnglish: 'Tiếng Anh',
-  appLangSimplifiedChinese: 'Tiếng Trung giản thể',
-  appLangJapanese: 'Tiếng Nhật',
-  appLangKorean: 'Tiếng Hàn',
-  appLangFrench: 'Tiếng Pháp',
-  appLangGerman: 'Tiếng Đức',
-  appLangSpanish: 'Tiếng Tây Ban Nha',
-  appLangThai: 'Tiếng Thái',
-  appLangIndonesian: 'Tiếng Indonesia',
   appLangRussian: 'Tiếng Nga',
-  appLangArabic: 'Tiếng Ả Rập',
-  appLangPortuguese: 'Tiếng Bồ Đào Nha',
-  appLangItalian: 'Tiếng Ý',
-  appLangPolish: 'Tiếng Ba Lan',
   appLangCzech: 'Tiếng Séc',
   appLangDutch: 'Tiếng Hà Lan',
   appLangMalay: 'Tiếng Mã Lai',
@@ -523,4 +511,4 @@ export const vi = {
   appLine115: '1.15',
   appLine25: '2.5',
   appLineTriple: '3 dòng',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

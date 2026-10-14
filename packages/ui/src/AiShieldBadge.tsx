@@ -9,10 +9,6 @@ const SHIELD_TEXT: Record<string, { on: string; off: string }> = {
     on: 'Personal data in documents, files and prompts is anonymized via the VEGA service before being sent to the LLM. Other content reaches the model unchanged — do not submit restricted information. Click to turn anonymization off',
     off: 'PII anonymization is off — documents, files and prompts reach the LLM as they are. Click to turn it back on',
   },
-  zh: {
-    on: '文档、文件和提示词中的个人数据在发送至 LLM 前会经由 VEGA 服务进行匿名化处理。其余内容将原样发送至模型——请勿提交受限信息。点击可关闭匿名化',
-    off: '个人数据匿名化已关闭——文档、文件和提示词将原样发送至 LLM。点击可重新开启',
-  },
 }
 
 function shieldText(active: boolean): string {

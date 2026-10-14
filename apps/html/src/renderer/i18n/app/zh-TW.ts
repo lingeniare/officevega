@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const zhTW = {
   redactMenuLabel: '把選中的內容對 AI 隱藏',
@@ -171,4 +171,4 @@ export const zhTW = {
   insertTableTip: '插入表格',
   insertMoreTip: '更多插入選項',
   ribbonPin: '固定功能區',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

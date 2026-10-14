@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const ru = {
   ribbonAiCreditNote: 'Использует ИИ и расходует кредиты',
@@ -398,20 +398,8 @@ export const ru = {
   ribbonTranslatePrompt:
     'Переведи весь текст текущего слайда на {lang}: замени оригинал инструментами, сохранив макет, размеры шрифта и цвета.',
   ribbonLangEnglish: 'Английский',
-  ribbonLangSimplifiedChinese: 'Китайский (упрощённое письмо)',
   ribbonLangTraditionalChinese: 'Китайский (традиционное письмо)',
-  ribbonLangJapanese: 'Японский',
-  ribbonLangKorean: 'Корейский',
-  ribbonLangFrench: 'Французский',
-  ribbonLangGerman: 'Немецкий',
-  ribbonLangSpanish: 'Испанский',
-  ribbonLangThai: 'тайский',
-  ribbonLangIndonesian: 'индонезийский',
   ribbonLangRussian: 'русский',
-  ribbonLangArabic: 'арабский',
-  ribbonLangPortuguese: 'португальский',
-  ribbonLangItalian: 'итальянский',
-  ribbonLangPolish: 'польский',
   ribbonLangCzech: 'чешский',
   ribbonLangDutch: 'нидерландский',
   ribbonLangMalay: 'малайский',
@@ -779,4 +767,4 @@ export const ru = {
   ribbonZoomSelectedSlides: 'Выбрано слайдов: {n}',
   ribbonZoomSelectedSections: 'Выбрано разделов: {n}',
   ribbonPin: 'Закрепить ленту',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

@@ -1,5 +1,4 @@
-import type { zh } from './zh'
-
+/** ai strings, en: defines the key set every other locale shard must match. */
 export const en = {
   aiCollapsePanel: 'Collapse panel',
   aiComposerPlaceholder: 'Ask AI to write or edit the document…',
@@ -190,4 +189,4 @@ export const en = {
   aiFillImagesAsk: 'Generate {n} images for the page?',
   aiFillImagesYes: 'Generate',
   aiFillImagesNo: 'Not now',
-} satisfies Record<keyof typeof zh, string>
+}

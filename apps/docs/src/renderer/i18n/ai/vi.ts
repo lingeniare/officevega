@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const vi = {
   aiEmptyDraftTitle: 'Để AI soạn thảo tài liệu này cho bạn',
@@ -191,4 +191,4 @@ export const vi = {
   aiCmdToc: 'Đã chèn mục lục ({count} mục)',
   aiCmdSkipped: ' (đã bỏ qua {count} khối được bảo vệ)',
   aiSumSetHeaderFooter: 'Update header/footer',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

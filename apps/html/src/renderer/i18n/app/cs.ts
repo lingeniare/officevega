@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const cs = {
   redactMenuLabel: 'Skrýt výběr před AI',
@@ -173,4 +173,4 @@ export const cs = {
   insertTableTip: 'Vložit tabulku',
   insertMoreTip: 'Další možnosti vložení',
   ribbonPin: 'Připnout pás karet',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

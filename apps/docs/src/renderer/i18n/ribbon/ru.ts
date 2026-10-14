@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const ru = {
   ribbonAiCreditNote: 'Использует ИИ и расходует кредиты',
@@ -675,19 +675,7 @@ export const ru = {
     'Вычитайте выделенный текст: исправьте опечатки, пунктуацию и грамматические ошибки, сохранив исходный смысл и структуру абзацев.',
   ribbonTranslateTo: 'Перевести на {lang}',
   ribbonLangEnglish: 'английский',
-  ribbonLangSimplifiedChinese: 'китайский (упрощённый)',
-  ribbonLangJapanese: 'японский',
-  ribbonLangKorean: 'корейский',
-  ribbonLangFrench: 'французский',
-  ribbonLangGerman: 'немецкий',
-  ribbonLangSpanish: 'испанский',
-  ribbonLangThai: 'тайский',
-  ribbonLangIndonesian: 'индонезийский',
   ribbonLangRussian: 'русский',
-  ribbonLangArabic: 'арабский',
-  ribbonLangPortuguese: 'португальский',
-  ribbonLangItalian: 'итальянский',
-  ribbonLangPolish: 'польский',
   ribbonLangCzech: 'чешский',
   ribbonLangDutch: 'нидерландский',
   ribbonLangMalay: 'малайский',
@@ -976,4 +964,4 @@ export const ru = {
     'Вставить разрыв раздела; содержимое до разрыва сохраняет параметры страницы текущего раздела',
   ribbonGroupPageSetupSection: 'Параметры страницы (раздел {n})',
   ribbonGroupParagraphSelected: 'Абзац (выделенный)',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

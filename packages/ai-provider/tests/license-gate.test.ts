@@ -43,10 +43,9 @@ describe('license gate on media and search providers', () => {
     const s = defaultAiSettings()
     s.media!.imageProvider = 'gemini'
     s.media!.analysisProvider = 'openai'
-    s.media!.videoAnalysisProvider = 'doubao'
+    s.media!.videoAnalysisProvider = 'gemini'
     s.media!.providers.gemini!.apiKey = 'k'
     s.media!.providers.openai!.apiKey = 'k'
-    s.media!.providers.doubao!.apiKey = 'k'
     return s
   }
 
@@ -71,7 +70,7 @@ describe('license gate on media and search providers', () => {
     const s = byokMedia()
     expect(activeMediaProvider(s, 'image')).toBe('gemini')
     expect(activeMediaProvider(s, 'analysis')).toBe('openai')
-    expect(activeMediaProvider(s, 'video')).toBe('doubao')
+    expect(activeMediaProvider(s, 'video')).toBe('gemini')
   })
 
   it('without a license a BYOK search pick degrades, keyless parallel included', () => {

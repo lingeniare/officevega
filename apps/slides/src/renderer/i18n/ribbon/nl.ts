@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const nl = {
   ribbonAiCreditNote: 'Gebruikt AI en verbruikt tegoed',
@@ -403,20 +403,8 @@ export const nl = {
   ribbonTranslatePrompt:
     'Vertaal alle tekst op de huidige dia naar {lang}: vervang het origineel met de hulpmiddelen en houd de indeling, tekengroottes en kleuren ongewijzigd.',
   ribbonLangEnglish: 'Engels',
-  ribbonLangSimplifiedChinese: 'Vereenvoudigd Chinees',
   ribbonLangTraditionalChinese: 'Traditioneel Chinees',
-  ribbonLangJapanese: 'Japans',
-  ribbonLangKorean: 'Koreaans',
-  ribbonLangFrench: 'Frans',
-  ribbonLangGerman: 'Duits',
-  ribbonLangSpanish: 'Spaans',
-  ribbonLangThai: 'Thai',
-  ribbonLangIndonesian: 'Indonesisch',
   ribbonLangRussian: 'Russisch',
-  ribbonLangArabic: 'Arabisch',
-  ribbonLangPortuguese: 'Portugees',
-  ribbonLangItalian: 'Italiaans',
-  ribbonLangPolish: 'Pools',
   ribbonLangCzech: 'Tsjechisch',
   ribbonLangDutch: 'Nederlands',
   ribbonLangMalay: 'Maleis',
@@ -786,4 +774,4 @@ export const nl = {
   ribbonZoomSelectedSlides: "{n} dia's geselecteerd",
   ribbonZoomSelectedSections: '{n} secties geselecteerd',
   ribbonPin: 'Het lint vastmaken',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

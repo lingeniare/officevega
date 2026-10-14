@@ -46,11 +46,18 @@ function renderRibbon() {
     editor,
     imageEnabled: true,
     onInsertImage: vi.fn(),
+    onImageHost: vi.fn(),
     frontmatterOpen: false,
     onToggleFrontmatter: vi.fn(),
+    sourceViewOpen: false,
+    onToggleSource: vi.fn(),
     outlineOpen: false,
     onToggleOutline: vi.fn(),
     hasOutline: false,
+    spellcheck: false,
+    onToggleSpellcheck: vi.fn(),
+    redactEnabled: false,
+    onToggleRedact: vi.fn(),
   }
   act(() => root.render(createElement(Ribbon, props)))
   cleanups.push(() => {
@@ -69,7 +76,7 @@ describe('File menu in the quick-access row', () => {
     const { container } = renderRibbon()
     const file = fileButton(container)
     expect(file, 'File button must sit at the left of the quick-access row').not.toBeNull()
-    expect(file!.textContent).toBe('文件')
+    expect(file!.textContent).toBe('File')
     // DOM order: File, then the Save quick-access icon right after the wrap
     const next = file!.parentElement!.nextElementSibling
     expect(next?.classList.contains('qa-btn')).toBe(true)
@@ -81,15 +88,15 @@ describe('File menu in the quick-access row', () => {
     const menu = container.querySelector('.file-menu')
     expect(menu).not.toBeNull()
     const items = [...menu!.querySelectorAll('button')]
-    expect(items[0]!.textContent).toContain('打开')
+    expect(items[0]!.textContent).toContain('Open')
     act(() => items[0]!.click())
     expect(onOpen).toHaveBeenCalledOnce()
     // menu closes after picking an item
     expect(container.querySelector('.file-menu')).toBeNull()
 
     act(() => fileButton(container)!.click())
-    const saveItem = [...container.querySelectorAll('.file-menu button')].find((b) =>
-      b.textContent!.includes('保存'),
+    const saveItem = [...container.querySelectorAll<HTMLButtonElement>('.file-menu button')].find(
+      (b) => b.textContent!.includes('Save'),
     )!
     act(() => saveItem.click())
     expect(onSave).toHaveBeenCalledOnce()

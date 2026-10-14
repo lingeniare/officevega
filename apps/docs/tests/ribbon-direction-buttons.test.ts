@@ -47,7 +47,7 @@ describe('paragraph direction buttons', () => {
     act(() => root.unmount())
     container.remove()
     editor.destroy()
-    setModuleLang('zh')
+    setModuleLang('en')
   })
 
   function render(lang: Lang) {

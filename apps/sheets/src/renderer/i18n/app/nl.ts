@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const nl = {
   appMergeWorkbooks: 'Werkmappen samenvoegen',
@@ -1570,4 +1570,4 @@ export const nl = {
   appVisualFlipV: 'Verticaal spiegelen',
   appVisualFlipH: 'Horizontaal spiegelen',
   appCtxPasteVisual: 'Afbeelding of vorm plakken',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

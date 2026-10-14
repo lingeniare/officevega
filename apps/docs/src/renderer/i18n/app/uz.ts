@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const uz = {
   appScTitle: 'Klaviatura yorliqlari',
@@ -274,19 +274,7 @@ export const uz = {
   appTranslate: 'Tarjima qilish',
   appTranslateTo: '{lang} tiliga tarjima qilish',
   appLangEnglish: 'Ingliz tili',
-  appLangSimplifiedChinese: 'Soddalashtirilgan xitoy tili',
-  appLangJapanese: 'Yapon tili',
-  appLangKorean: 'Koreys tili',
-  appLangFrench: 'Fransuz tili',
-  appLangGerman: 'Nemis tili',
-  appLangSpanish: 'Ispan tili',
-  appLangThai: 'Tailand',
-  appLangIndonesian: 'Indonez',
   appLangRussian: 'Rus',
-  appLangArabic: 'Arab',
-  appLangPortuguese: 'Portugal',
-  appLangItalian: 'Italyan',
-  appLangPolish: 'Polyak',
   appLangCzech: 'Chex',
   appLangDutch: 'Golland',
   appLangMalay: 'Malay',
@@ -528,4 +516,4 @@ export const uz = {
   appGoToNext: 'Next',
   appGensparkAccount: 'Genspark 账号',
   appLoginGenspark: '登录 Genspark',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

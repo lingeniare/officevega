@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const ms = {
   appScTitle: 'Pintasan Papan Kekunci',
@@ -349,19 +349,7 @@ export const ms = {
   appTranslate: 'Terjemah',
   appTranslateTo: 'Terjemah ke {lang}',
   appLangEnglish: 'Bahasa Inggeris',
-  appLangSimplifiedChinese: 'Bahasa Cina Ringkas',
-  appLangJapanese: 'Bahasa Jepun',
-  appLangKorean: 'Bahasa Korea',
-  appLangFrench: 'Bahasa Perancis',
-  appLangGerman: 'Bahasa Jerman',
-  appLangSpanish: 'Bahasa Sepanyol',
-  appLangThai: 'Thai',
-  appLangIndonesian: 'Bahasa Indonesia',
   appLangRussian: 'Rusia',
-  appLangArabic: 'Arab',
-  appLangPortuguese: 'Portugis',
-  appLangItalian: 'Itali',
-  appLangPolish: 'Poland',
   appLangCzech: 'Czech',
   appLangDutch: 'Belanda',
   appLangMalay: 'Melayu',
@@ -529,4 +517,4 @@ export const ms = {
   appLineTriple: '3 baris',
   appGensparkAccount: 'Akaun Genspark',
   appLoginGenspark: 'Log masuk ke Genspark',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

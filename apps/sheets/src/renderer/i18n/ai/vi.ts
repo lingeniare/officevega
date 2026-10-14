@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const vi = {
   aiComposerPlaceholderBuild: 'Mô tả bảng, dữ liệu hoặc biểu đồ cần tạo…',
@@ -126,4 +126,4 @@ export const vi = {
   aiStarterSalesPrompt: 'Tạo báo cáo bán hàng theo quý: các cột sản phẩm, khu vực, số lượng, đơn giá và doanh thu với các hàng mẫu và hàng tổng',
   aiStarterTasks: 'Kế hoạch công việc',
   aiStarterTasksPrompt: 'Tạo kế hoạch công việc dự án: các cột công việc, người phụ trách, ngày bắt đầu, hạn chót và trạng thái với khoảng một chục công việc mẫu',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

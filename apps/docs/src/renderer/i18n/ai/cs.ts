@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const cs = {
   aiEmptyDraftTitle: 'Nechte AI napsat návrh tohoto dokumentu za vás',
@@ -192,4 +192,4 @@ export const cs = {
   aiCmdImages: 'Aktualizováno obrázků: {count}',
   aiCmdToc: 'Vložen obsah ({count} položek)',
   aiCmdSkipped: ' (přeskočeno {count} chráněných bloků)',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

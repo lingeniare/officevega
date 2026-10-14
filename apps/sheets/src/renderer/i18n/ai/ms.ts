@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const ms = {
   aiComposerPlaceholderBuild: 'Terangkan jadual, data atau carta untuk dijana…',
@@ -126,4 +126,4 @@ export const ms = {
   aiStarterSalesPrompt: 'Bina laporan jualan suku tahunan: lajur produk, wilayah, unit, harga dan hasil dengan baris contoh dan baris jumlah',
   aiStarterTasks: 'Pelan tugas',
   aiStarterTasksPrompt: 'Bina pelan tugas projek: lajur tugas, pemilik, tarikh mula, tarikh akhir dan status dengan sedozen tugas contoh',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

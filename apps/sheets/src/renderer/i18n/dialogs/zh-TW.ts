@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const zhTW = {
   dlgAllowEditRangesTitle: '允許編輯範圍',
@@ -645,4 +645,4 @@ export const zhTW = {
   dlgSizeMoveOnly: '大小固定，位置隨儲存格而變',
   dlgSizeFixed: '大小、位置均固定',
   dlgSizeInvalid: '請輸入有效的大小和旋轉角度。',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

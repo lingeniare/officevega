@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const uz = {
   appMergeWorkbooks: 'Ish kitoblarini birlashtirish',
@@ -1564,4 +1564,4 @@ export const uz = {
   appLargeFilterApplying: 'Filtr faylga qo‘llanilmoqda…',
   appPrintWorkbookTooLarge:
     'Bu ish kitobi xotiraga to‘liq yuklash uchun juda katta, shuning uchun uni chop etish yoki PDFga eksport qilish imkonsiz.',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

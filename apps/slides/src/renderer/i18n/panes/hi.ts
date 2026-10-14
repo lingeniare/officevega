@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const hi = {
   paneCancel: 'रद्द करें',
@@ -291,4 +291,4 @@ export const hi = {
   paneShowMenuWhite: 'सफ़ेद स्क्रीन',
   paneShowMenuEnd: 'शो समाप्त करें',
   panePresenterWhiteOn: 'सफ़ेद स्क्रीन (वापस जाने के लिए W दबाएँ)',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

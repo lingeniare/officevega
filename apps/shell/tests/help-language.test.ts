@@ -53,7 +53,7 @@ async function settle(view: HTMLDivElement, expected: string): Promise<void> {
   }
 }
 
-async function renderManual(uiLang: 'en' | 'ja' | 'de' | 'ru', expected: string): Promise<HTMLDivElement> {
+async function renderManual(uiLang: 'en' | 'ru', expected: string): Promise<HTMLDivElement> {
   act(() => {
     root.render(
       createElement(LocaleProvider, { initial: uiLang, children: createElement(HelpScreen) }),

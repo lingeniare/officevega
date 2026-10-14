@@ -8,7 +8,7 @@ const read = (rel: string) => readFileSync(join(here, '..', rel), 'utf8')
 
 const appSrc = read('src/renderer/App.tsx')
 const shellSrc = read('src/renderer/ExcelShell.tsx')
-const zhSrc = read('src/renderer/i18n/app/zh.ts')
+const enSrc = read('src/renderer/i18n/app/en.ts')
 const cssSrc = read('src/renderer/styles.css')
 
 describe('File menu in the ribbon tab row', () => {
@@ -36,7 +36,7 @@ describe('File menu in the ribbon tab row', () => {
       'appFileExportCsv',
       'appFilePrint',
     ]) {
-      expect(zhSrc).toContain(`${key}:`)
+      expect(enSrc).toContain(`${key}:`)
     }
     expect(cssSrc).toContain('.ribbon-tab-file')
     expect(cssSrc).toContain('.file-menu')

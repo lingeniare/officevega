@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const vi = {
   aiInputPlaceholderGen: 'Mô tả bài thuyết trình cần tạo, hoặc hỏi bất kỳ điều gì',
@@ -272,4 +272,4 @@ export const vi = {
   aiStylePresetDarkHint: 'dark atmospheric — deep charcoal or navy background, one luminous accent, oversized typography, cinematic imagery',
   aiStylePresetMinimalHint: 'minimal light — airy whitespace, near-monochrome palette with one restrained accent, quiet precise typography',
 
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

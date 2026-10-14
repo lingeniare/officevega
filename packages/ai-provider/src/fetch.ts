@@ -73,21 +73,27 @@ export function setPiiShieldEnabled(enabled: boolean): void {
 }
 
 /**
- * The PII-shield opt-out for requests to the VEGA gateway: `X-Vega-Pii: off`
- * while the setting is off, empty object when it is on or the URL is not the
- * gateway. Callers that bypass aiFetch (ai-search's own fetch, the file-index
- * reranker) merge it into their header records the same way.
+ * The PII-shield switch for requests to the VEGA gateway. The gateway runs
+ * the shield in opt-in mode: `X-Vega-Anonymize: true` engages masking, its
+ * absence (or `false`) lets the request pass through untouched. `X-Vega-Pii:
+ * off` rides along while switched off for gateways still on the old opt-out
+ * contract. Empty object when the URL is not the gateway. Callers that
+ * bypass aiFetch (ai-search's own fetch, the file-index reranker) merge it
+ * into their header records the same way.
  */
 export function vegaPiiHeaders(url: string | undefined): Record<string, string> {
-  return !piiShieldEnabled && isVegaGatewayUrl(url) ? { 'X-Vega-Pii': 'off' } : {}
+  if (!isVegaGatewayUrl(url)) return {}
+  return piiShieldEnabled
+    ? { 'X-Vega-Anonymize': 'true' }
+    : { 'X-Vega-Anonymize': 'false', 'X-Vega-Pii': 'off' }
 }
 
 /**
  * Every request to the VEGA gateway carries X-Vega-Session (its PII shield
  * keeps a token dictionary per session). Chat protocols set a stable per-chat
  * id; anything that reaches here without one (media, one-shot calls) is its
- * own session. While the shield is switched off, X-Vega-Pii: off rides along
- * so the gateway skips masking entirely.
+ * own session. The anonymize flag itself comes from vegaPiiHeaders: explicit
+ * on/off so the gateway's opt-in shield follows the settings switch.
  */
 function withVegaSession(url: string, init: RequestInit): RequestInit {
   if (!isVegaGatewayUrl(url)) return init

@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const he = {
   ribbonAiCreditNote: 'משתמש ב-AI וצורך קרדיטים',
@@ -381,20 +381,8 @@ export const he = {
   ribbonTranslatePrompt:
     'תרגם את כל הטקסט בשקופית הנוכחית ל{lang}: החלף את המקור באמצעות הכלים, תוך שמירה על הפריסה, גודלי הגופן והצבעים.',
   ribbonLangEnglish: 'אנגלית',
-  ribbonLangSimplifiedChinese: 'סינית פשוטה',
   ribbonLangTraditionalChinese: 'סינית מסורתית',
-  ribbonLangJapanese: 'יפנית',
-  ribbonLangKorean: 'קוריאנית',
-  ribbonLangFrench: 'צרפתית',
-  ribbonLangGerman: 'גרמנית',
-  ribbonLangSpanish: 'ספרדית',
-  ribbonLangThai: 'תאית',
-  ribbonLangIndonesian: 'אינדונזית',
   ribbonLangRussian: 'רוסית',
-  ribbonLangArabic: 'ערבית',
-  ribbonLangPortuguese: 'פורטוגזית',
-  ribbonLangItalian: 'איטלקית',
-  ribbonLangPolish: 'פולנית',
   ribbonLangCzech: 'צ׳כית',
   ribbonLangDutch: 'הולנדית',
   ribbonLangMalay: 'מלאית',
@@ -757,4 +745,4 @@ export const he = {
   ribbonZoomSelectedSlides: 'נבחרו {n} שקופיות',
   ribbonZoomSelectedSections: 'נבחרו {n} מקטעים',
   ribbonPin: 'הצמד את רצועת הכלים',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

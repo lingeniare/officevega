@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const vi = {
   redactMenuLabel: 'Ẩn phần đã chọn khỏi AI',
@@ -263,4 +263,4 @@ export const vi = {
   appStatusSummaryZoomInserted: 'Đã chèn trang chiếu Thu phóng tóm tắt với {count} ô thu nhỏ',
   appSectionSummary: 'Phần tóm tắt',
   appSectionN: 'Phần {n}',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

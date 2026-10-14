@@ -175,7 +175,7 @@ describe('changing heading colors (formatting-command requests)', () => {
     ).toBe(false)
     // The tool result was passed back to the model
     const toolMsg = loop.messages[2] as { role: 'tool'; results: Array<{ output: string }> }
-    expect(toolMsg.results[0].output).toContain('已更新 2 个块的文字样式')
+    expect(toolMsg.results[0].output).toContain('Updated text style on 2 block(s)')
   })
 
   it('invalid commands return an error result, the document is unchanged, and the loop continues', async () => {

@@ -37,7 +37,7 @@
  *
  * ## Pass one language at a time
  *
- * `npx tsx tools/gen-help-shortcut-figure.ts zh en` writes the CJK figure
+ * `npx tsx tools/gen-help-shortcut-figure.ts zh-TW` writes the CJK figure
  * and then hangs: the second launch never gets its own window. Each run does
  * use a fresh userData, so this is not the single-instance lock the argv comment
  * above is about — whatever it is, the honest workaround is one language per
@@ -56,7 +56,7 @@ const SHELL_DIR = join(REPO, 'apps/shell')
 const OUT_DIR = join(REPO, 'apps/shell/src/renderer/src/i18n/help/topics/img')
 
 const LANGS = process.argv.slice(2).filter((a) => !a.startsWith('-'))
-const TARGET_LANGS = LANGS.length ? LANGS : ['zh', 'en']
+const TARGET_LANGS = LANGS.length ? LANGS : ['zh-TW', 'en']
 
 async function capture(page: Page, cdp: CDPSession): Promise<Buffer> {
   const { data } = await cdp.send('Page.captureScreenshot', {

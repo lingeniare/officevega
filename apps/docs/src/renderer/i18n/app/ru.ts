@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const ru = {
   appScTitle: 'Сочетания клавиш',
@@ -349,19 +349,7 @@ export const ru = {
   appTranslate: 'Перевод',
   appTranslateTo: 'Перевести на {lang}',
   appLangEnglish: 'английский',
-  appLangSimplifiedChinese: 'китайский (упрощенное письмо)',
-  appLangJapanese: 'японский',
-  appLangKorean: 'корейский',
-  appLangFrench: 'французский',
-  appLangGerman: 'немецкий',
-  appLangSpanish: 'испанский',
-  appLangThai: 'тайский',
-  appLangIndonesian: 'индонезийский',
   appLangRussian: 'русский',
-  appLangArabic: 'арабский',
-  appLangPortuguese: 'португальский',
-  appLangItalian: 'итальянский',
-  appLangPolish: 'польский',
   appLangCzech: 'чешский',
   appLangDutch: 'нидерландский',
   appLangMalay: 'малайский',
@@ -531,4 +519,4 @@ export const ru = {
   appLineTriple: '3 строки',
   appGensparkAccount: 'Учетная запись Genspark',
   appLoginGenspark: 'Войти в Genspark',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

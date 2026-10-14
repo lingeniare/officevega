@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const az = {
   ribbonAiCreditNote: 'AI-dan istifadə edir və kredit sərf edir',
@@ -390,20 +390,8 @@ export const az = {
   ribbonTranslatePrompt:
     'Cari slayddakı bütün mətni {lang} dilinə tərcümə et: tərtibatı, şrift ölçülərini və rəngləri dəyişmədən alətlərlə orijinalı əvəz et.',
   ribbonLangEnglish: 'İngilis dili',
-  ribbonLangSimplifiedChinese: 'Sadələşdirilmiş Çin dili',
   ribbonLangTraditionalChinese: 'Ənənəvi çin dili',
-  ribbonLangJapanese: 'Yapon dili',
-  ribbonLangKorean: 'Koreya dili',
-  ribbonLangFrench: 'Fransız dili',
-  ribbonLangGerman: 'Alman dili',
-  ribbonLangSpanish: 'İspan dili',
-  ribbonLangThai: 'Tay',
-  ribbonLangIndonesian: 'İndonez',
   ribbonLangRussian: 'Rus',
-  ribbonLangArabic: 'Ərəb',
-  ribbonLangPortuguese: 'Portuqal',
-  ribbonLangItalian: 'İtalyan',
-  ribbonLangPolish: 'Polyak',
   ribbonLangCzech: 'Çex',
   ribbonLangDutch: 'Holland',
   ribbonLangMalay: 'Malay',
@@ -777,4 +765,4 @@ export const az = {
   ribbonZoomSlide: 'Slayd Zoom',
   ribbonZoomSummary: 'Xülasə Zoom',
   ribbonExpand: 'Expand the Ribbon',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

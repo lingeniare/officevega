@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const tk = {
   appScTitle: 'Klawiatura gysga ýollary',
@@ -271,19 +271,7 @@ export const tk = {
   appTranslate: 'Terjime et',
   appTranslateTo: '{lang} diline terjime et',
   appLangEnglish: 'Iňlisçe',
-  appLangSimplifiedChinese: 'Ýönekeýleşdirilen hytaý dili',
-  appLangJapanese: 'Ýaponça',
-  appLangKorean: 'Koreýçe',
-  appLangFrench: 'Fransuzça',
-  appLangGerman: 'Nemesçe',
-  appLangSpanish: 'Ispança',
-  appLangThai: 'Taý',
-  appLangIndonesian: 'Indonez',
   appLangRussian: 'Rus',
-  appLangArabic: 'Arap',
-  appLangPortuguese: 'Portugal',
-  appLangItalian: 'Italýan',
-  appLangPolish: 'Polýak',
   appLangCzech: 'Çeh',
   appLangDutch: 'Golland',
   appLangMalay: 'Malaý',
@@ -524,4 +512,4 @@ export const tk = {
   appGoToNext: 'Next',
   appGensparkAccount: 'Genspark 账号',
   appLoginGenspark: '登录 Genspark',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

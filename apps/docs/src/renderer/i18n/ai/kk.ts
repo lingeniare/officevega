@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const kk = {
   aiEmptyDraftTitle: 'AI сіз үшін осы құжаттың жобасын жасасын',
@@ -192,4 +192,4 @@ export const kk = {
   aiSumAnalyzeMedia: 'Медианы талдау',
   aiSumAnalyzeMediaDone: 'Медиа талданды',
   aiCmdNoneUnchanged: '{count} сәйкес блок өзгеріссіз қалды; құжат өзгертілмеді.',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

@@ -64,7 +64,7 @@ export class XlsxSidecarClient {
     for (const listener of this.exitListeners) listener()
   }
 
-  async open(path: string, locale = 'zh', shortDateFormat?: string): Promise<unknown> {
+  async open(path: string, locale = 'en', shortDateFormat?: string): Promise<unknown> {
     return this.request({
       command: 'open',
       path,

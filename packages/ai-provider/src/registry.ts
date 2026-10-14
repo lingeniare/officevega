@@ -1,7 +1,7 @@
 import { ANTHROPIC_BASE_URL } from './protocols/anthropic'
 import { GEMINI_BASE_URL } from './protocols/gemini'
 import { VEGA_BASE_URL } from './media'
-import { AI_PROVIDERS, DEEPSEEK_V41_FLASH, GENSPARK_LLM_BASE_URLS } from './providers'
+import { AI_PROVIDERS, GENSPARK_LLM_BASE_URLS } from './providers'
 import type { AiProviderConfig, AiProviderId, AiProviderMeta } from './types'
 
 /** Wire protocols every provider maps onto, including the official Codex app-server bridge. */
@@ -66,16 +66,16 @@ export function modelHasFixedSampling(model: string): boolean {
  * DeepSeek V4 Pro and V4 Flash are text-only; V4.1 Flash and the -vision*
  * branches take images, so they fall through and receive screenshots.
  * Ling and LongCat are the same shape: only `Ling-3.0-flash-VL` and
- * `LongCat-2.5-Preview` take images; a text-only id added to either provider
- * must be added here too.
+ * `LongCat-2.5-Preview` take images; a text-only id added to a catalog that
+ * serves them must be added here too.
  */
 export function modelLacksVision(model: string): boolean {
   // MiniMax-M2.7 remains text-only when MiniMax-M3 enables provider vision.
   if (/(^|\/)minimax-m2\.7($|-)/i.test(model)) return true
   // Atlas Cloud serves these text-only (GET api.atlascloud.ai/v1/models gives
   // them input_modalities ["text"]), including MiniMax M3, which takes images
-  // on MiniMax's own API. Matched on the full namespaced id so the direct
-  // GLM and MiniMax providers keep their own behaviour. Its Kimi, Qwen and
+  // on MiniMax's own API. Matched on the full namespaced id so the same
+  // models on other routes keep their own behaviour. Its Kimi, Qwen and
   // GLM-5.3-Flash ids do take images and fall through.
   if (/^(?:zai-org\/glm-5\.3|minimaxai\/minimax-m(?:3|2\.5))$/i.test(model)) return true
   return (
@@ -99,19 +99,13 @@ export function modelEchoesReasoning(model: string): boolean {
 }
 
 /**
- * The direct API 400s on the versioned pool spelling we list (verified
- * 2026-09-21: GET /v1/models serves only `deepseek-flash` and `deepseek-v4-pro`).
- */
-const DEEPSEEK_WIRE_IDS: Record<string, string> = { [DEEPSEEK_V41_FLASH]: 'deepseek-flash' }
-
-/**
  * OpenCode Zen / Go (opencode.ai) are protocol passthrough gateways: each
  * model is served on exactly one vendor protocol and the other paths answer
  * 500 (verified 2026-09-03 against the public free tier), so the route is
  * picked per model id the way OpenCode's own client does (models.dev
  * `provider.npm`). The two tiers route the same vendor differently — MiniMax
  * is chat-completions on Zen but Anthropic Messages on Go — hence one table
- * each. Every Kimi id omits temperature, mirroring the direct Kimi adapter.
+ * each. Every Kimi id omits temperature, mirroring Moonshot's own API.
  */
 const OPENCODE_GATEWAY_ROOTS = {
   zen: 'https://opencode.ai/zen',
@@ -242,18 +236,6 @@ export const AI_PROVIDER_ADAPTERS: Record<AiProviderId, ProviderAdapter> = {
     capabilities: { auth: 'api-key', vision: true },
     resolveEndpoint: fixedEndpoint('gemini', GEMINI_BASE_URL),
   },
-  deepseek: {
-    meta: metaOf('deepseek'),
-    capabilities: { auth: 'api-key', vision: true },
-    resolveEndpoint(config) {
-      const wire = DEEPSEEK_WIRE_IDS[config.model]
-      // thinking stays on (vendor default); the transcript echoes reasoning_content for tool turns
-      return {
-        ...fixedEndpoint('openai-compatible', 'https://api.deepseek.com/v1')(config),
-        ...(wire ? { model: wire } : {}),
-      }
-    },
-  },
   openai: {
     meta: metaOf('openai'),
     capabilities: { auth: 'api-key', vision: true },
@@ -263,79 +245,10 @@ export const AI_PROVIDER_ADAPTERS: Record<AiProviderId, ProviderAdapter> = {
       useMaxCompletionTokens: true,
     }),
   },
-  kimi: {
-    meta: metaOf('kimi'),
-    capabilities: { auth: 'api-key', vision: true },
-    resolveEndpoint: fixedEndpoint('openai-compatible', 'https://api.moonshot.ai/v1', {
-      omitTemperature: true,
-    }),
-  },
-  glm: {
-    meta: metaOf('glm'),
-    capabilities: { auth: 'api-key', vision: false },
-    resolveEndpoint: fixedEndpoint('openai-compatible', 'https://open.bigmodel.cn/api/paas/v4'),
-  },
-  qwen: {
-    meta: metaOf('qwen'),
-    capabilities: { auth: 'api-key', vision: false },
-    resolveEndpoint: fixedEndpoint(
-      'openai-compatible',
-      'https://dashscope.aliyuncs.com/compatible-mode/v1',
-    ),
-  },
-  doubao: {
-    meta: metaOf('doubao'),
-    capabilities: { auth: 'api-key', vision: true },
-    resolveEndpoint: fixedEndpoint('openai-compatible', 'https://ark.cn-beijing.volces.com/api/v3'),
-  },
-  mimo: {
-    meta: metaOf('mimo'),
-    // the V2.6 series is omni-modal: text, image, video and audio in, text out
-    capabilities: { auth: 'api-key', vision: true },
-    resolveEndpoint: fixedEndpoint('openai-compatible', 'https://api.xiaomimimo.com/v1'),
-  },
-  hunyuan: {
-    meta: metaOf('hunyuan'),
-    // conservative: the chat models are documented for text first, so we do not
-    // hand them screenshots until a model card says otherwise
-    capabilities: { auth: 'api-key', vision: false },
-    // mainland TokenHub host; the intl one (tokenhub-intl.tencentcloudmaas.com)
-    // is reachable by storing a base URL on this provider
-    resolveEndpoint: fixedEndpoint('openai-compatible', 'https://tokenhub.tencentcloudmaas.com/v1'),
-  },
-  ling: {
-    meta: metaOf('ling'),
-    capabilities: { auth: 'api-key', vision: true },
-    resolveEndpoint: fixedEndpoint('openai-compatible', 'https://api.ant-ling.com/v1'),
-  },
-  spark: {
-    meta: metaOf('spark'),
-    capabilities: { auth: 'api-key', vision: false },
-    // endpointUrl() appends chat/completions to this documented /v2 base
-    resolveEndpoint: fixedEndpoint(
-      'openai-compatible',
-      'https://maas-api.cn-huabei-1.xf-yun.com/v2',
-    ),
-  },
-  longcat: {
-    meta: metaOf('longcat'),
-    capabilities: { auth: 'api-key', vision: true },
-    resolveEndpoint: fixedEndpoint('openai-compatible', 'https://api.longcat.chat/openai/v1'),
-  },
-  minimax: {
-    meta: metaOf('minimax'),
-    capabilities: { auth: 'api-key', vision: true },
-    resolveEndpoint: fixedEndpoint('openai-compatible', 'https://api.minimax.io/v1'),
-  },
   xai: {
     meta: metaOf('xai'),
     capabilities: { auth: 'api-key', vision: true },
     resolveEndpoint: fixedEndpoint('openai-compatible', 'https://api.x.ai/v1'),
-  },
-  mistral: {
-    meta: metaOf('mistral'),
-    capabilities: { auth: 'api-key', vision: false },
-    resolveEndpoint: fixedEndpoint('openai-compatible', 'https://api.mistral.ai/v1'),
   },
   openrouter: {
     meta: metaOf('openrouter'),
@@ -353,24 +266,6 @@ export const AI_PROVIDER_ADAPTERS: Record<AiProviderId, ProviderAdapter> = {
       baseUrl: VEGA_BASE_URL,
       ...(modelHasFixedSampling(config.model) ? { omitTemperature: true } : {}),
     }),
-  },
-  requesty: {
-    meta: metaOf('requesty'),
-    capabilities: { auth: 'api-key', vision: true },
-    // a stored base URL selects a regional router (https://router.eu.requesty.ai/v1 for the EU)
-    resolveEndpoint: fixedEndpoint('openai-compatible', 'https://router.requesty.ai/v1'),
-  },
-  opper: {
-    meta: metaOf('opper'),
-    capabilities: { auth: 'api-key', vision: true },
-    // one chat-completions endpoint for every pool and vendor route; the model id picks it
-    resolveEndpoint: fixedEndpoint('openai-compatible', 'https://api.opper.ai/v3/compat'),
-  },
-  cheaperinference: {
-    meta: metaOf('cheaperinference'),
-    capabilities: { auth: 'api-key', vision: true },
-    // one chat-completions endpoint for every model; the model id picks the lab
-    resolveEndpoint: fixedEndpoint('openai-compatible', 'https://api.cheaperinference.com/v1'),
   },
   atlascloud: {
     meta: metaOf('atlascloud'),

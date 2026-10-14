@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const cs = {
   ribbonAiCreditNote: 'Používá AI a spotřebovává kredity',
@@ -671,19 +671,7 @@ export const cs = {
     'Zkorigujte vybraný obsah: opravte překlepy, interpunkci a gramatické chyby a zachovejte původní význam i strukturu odstavců.',
   ribbonTranslateTo: 'Přeložit do jazyka {lang}',
   ribbonLangEnglish: 'angličtina',
-  ribbonLangSimplifiedChinese: 'zjednodušená čínština',
-  ribbonLangJapanese: 'japonština',
-  ribbonLangKorean: 'korejština',
-  ribbonLangFrench: 'francouzština',
-  ribbonLangGerman: 'němčina',
-  ribbonLangSpanish: 'španělština',
-  ribbonLangThai: 'thajština',
-  ribbonLangIndonesian: 'indonéština',
   ribbonLangRussian: 'ruština',
-  ribbonLangArabic: 'arabština',
-  ribbonLangPortuguese: 'portugalština',
-  ribbonLangItalian: 'italština',
-  ribbonLangPolish: 'polština',
   ribbonLangCzech: 'čeština',
   ribbonLangDutch: 'nizozemština',
   ribbonLangMalay: 'malajština',
@@ -968,4 +956,4 @@ export const cs = {
     'Vložit konec oddílu; obsah před ním si zachová aktuální vzhled stránky oddílu',
   ribbonGroupPageSetupSection: 'Vzhled stránky (oddíl {n})',
   ribbonGroupParagraphSelected: 'Odstavec (výběr)',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

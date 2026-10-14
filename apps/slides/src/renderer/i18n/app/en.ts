@@ -1,5 +1,4 @@
-import type { zh } from './zh'
-
+/** app strings, en: defines the key set every other locale shard must match. */
 export const en = {
   redactMenuLabel: 'Hide the selection from AI',
   redactDialogDesc:
@@ -261,4 +260,4 @@ export const en = {
   appStatusSummaryZoomInserted: 'Summary Zoom slide inserted with {count} tiles',
   appSectionSummary: 'Summary Section',
   appSectionN: 'Section {n}',
-} satisfies Record<keyof typeof zh, string>
+}

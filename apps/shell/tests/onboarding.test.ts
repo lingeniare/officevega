@@ -45,14 +45,10 @@ async function click(selector: string): Promise<void> {
 }
 
 describe('onboarding', () => {
-  it('lets Skip and Escape finish', async () => {
+  it('lets Escape finish', async () => {
     const onDone = vi.fn(async () => true)
     renderOnboarding(onDone)
 
-    await click('.onb-skip')
-    expect(onDone).toHaveBeenLastCalledWith()
-
-    onDone.mockClear()
     await act(async () => {
       window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
       await Promise.resolve()

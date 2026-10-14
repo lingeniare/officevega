@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const uz = {
   aiEmptyDraftTitle: 'AI siz uchun bu hujjatni qoralama qilib yozsin',
@@ -192,4 +192,4 @@ export const uz = {
   aiSumAnalyzeMedia: 'Medianı tahlil qilish',
   aiSumAnalyzeMediaDone: 'Media tahlil qilindi',
   aiCmdNoneUnchanged: '{count} ta mos blok oʻzgarmadi; hujjat oʻzgartirilmadi.',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

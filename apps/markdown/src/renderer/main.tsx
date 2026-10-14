@@ -42,7 +42,7 @@ function applyDocumentTheme(theme: DocTheme): void {
 
 void (async () => {
   const [lang, theme, design, docTheme] = await Promise.all([
-    window.markdownApi.getLanguage().catch(() => 'zh' as const),
+    window.markdownApi.getLanguage().catch(() => 'en' as const),
     window.markdownApi.getTheme().catch(() => 'system' as const),
     window.markdownApi.getDesign().catch(() => 'digital' as const),
     window.markdownApi.getDocumentTheme?.().catch(() => 'follow' as const),

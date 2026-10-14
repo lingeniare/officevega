@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const he = {
   redactMenuLabel: 'הסתרת הבחירה מהמודל',
@@ -254,4 +254,4 @@ export const he = {
   appStatusSummaryZoomInserted: 'הוזנה שקופית זום סיכום עם {count} אריחים',
   appSectionSummary: 'מקטע סיכום',
   appSectionN: 'מקטע {n}',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

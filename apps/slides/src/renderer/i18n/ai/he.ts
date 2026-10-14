@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const he = {
   aiInputPlaceholderGen: 'תארו את המצגת ליצירה, או שאלו כל דבר',
@@ -267,4 +267,4 @@ export const he = {
   aiStylePresetDarkHint: 'אווירה כהה — רקע פחם או נייבי עמוק, מבטא זוהר אחד, טיפוגרפיה ענקית, תמונות קולנועיות',
   aiStylePresetMinimalHint: 'מינימל בהיר — רווחים אווריריים, פלטה כמעט מונוכרומטית עם מבטא מרוסן אחד, טיפוגרפיה שקטה ומדויקת',
 
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

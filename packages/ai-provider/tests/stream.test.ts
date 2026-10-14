@@ -196,28 +196,12 @@ describe('streamForProvider: temperature policy', () => {
   const okTurn = () =>
     okResponse(sseStream(['data: {"choices":[{"delta":{"content":"hi"},"finish_reason":"stop"}]}']))
 
-  it('deepseek: sends the listed V4.1 Flash name under the vendor wire id', async () => {
+  it('omits temperature for fixed-sampling models (Kimi K3) and keeps 0.3 elsewhere', async () => {
     const fetchMock = vi.fn().mockImplementation(() => Promise.resolve(okTurn()))
     vi.stubGlobal('fetch', fetchMock)
     await streamForProvider(
-      'deepseek',
-      { apiKey: 'k', model: 'deep-seek-v4.1-flash' },
-      'sys',
-      [],
-      [],
-      100,
-      collector().cb,
-    )
-    const body = JSON.parse(fetchMock.mock.calls[0][1].body as string)
-    expect(body.model).toBe('deepseek-flash')
-  })
-
-  it('omits temperature for fixed-sampling endpoints (Kimi) and keeps 0.3 elsewhere', async () => {
-    const fetchMock = vi.fn().mockImplementation(() => Promise.resolve(okTurn()))
-    vi.stubGlobal('fetch', fetchMock)
-    await streamForProvider(
-      'kimi',
-      { apiKey: 'k', model: 'kimi-k3' },
+      'openrouter',
+      { apiKey: 'k', model: 'moonshotai/kimi-k3' },
       'sys',
       [],
       [],
@@ -255,8 +239,8 @@ describe('streamForProvider: temperature policy', () => {
       collector().cb,
     )
     await streamForProvider(
-      'kimi',
-      { apiKey: 'k', model: 'kimi-k3' },
+      'xai',
+      { apiKey: 'k', model: 'grok-4.6' },
       'sys',
       [],
       [],
@@ -1283,14 +1267,14 @@ describe('streamForProvider: openai-compatible', () => {
     }
   })
 
-  it('routes deepseek and openai to their fixed base URLs', async () => {
+  it('routes openai to its fixed base URL', async () => {
     const fetchMock = vi.fn().mockResolvedValue(okResponse(sseStream(['data: [DONE]'])))
     vi.stubGlobal('fetch', fetchMock)
     const { cb } = collector()
     // empty fixture streams reject with "returned no content"; only the request URL matters here
     await streamForProvider(
-      'deepseek',
-      { apiKey: 'k', model: 'deepseek-v4-pro' },
+      'openai',
+      { apiKey: 'k', model: 'gpt-4.1-mini' },
       'sys',
       [],
       [],
@@ -1298,18 +1282,18 @@ describe('streamForProvider: openai-compatible', () => {
       cb,
     ).catch(() => {})
     expect(fetchMock).toHaveBeenCalledWith(
-      'https://api.deepseek.com/v1/chat/completions',
+      'https://api.openai.com/v1/chat/completions',
       expect.anything(),
     )
   })
 
-  it('lets deepseek think: no override, and tool turns echo stored reasoning', async () => {
+  it('echo-list models ride any route: tool turns echo stored reasoning', async () => {
     const fetchMock = vi.fn().mockResolvedValue(okResponse(sseStream(['data: [DONE]'])))
     vi.stubGlobal('fetch', fetchMock)
     const { cb } = collector()
     await streamForProvider(
-      'deepseek',
-      { apiKey: 'k', model: 'deepseek-v4-pro' },
+      'atlascloud',
+      { apiKey: 'k', model: 'deepseek-ai/deepseek-v4-pro' },
       'sys',
       [
         { role: 'user', text: 'hi' },
@@ -1329,9 +1313,9 @@ describe('streamForProvider: openai-compatible', () => {
       thinking?: { type?: string }
       messages?: Array<{ role: string; reasoning_content?: string }>
     }
-    // thinking is the vendor default; the request must not pin it off
+    // no thinking override is pinned on the request
     expect(body.thinking).toBeUndefined()
-    // deepseek sits on the echo list: stored reasoning rides back on the
+    // deepseek-v4 sits on the echo list: stored reasoning rides back on the
     // assistant message
     const assistant = body.messages?.find((m) => m.role === 'assistant')
     expect(assistant?.reasoning_content).toBe('the user greeted me')
@@ -1495,7 +1479,7 @@ describe('streamForProvider: genspark', () => {
   it('never sends x-opencode-session to other gateways', async () => {
     const fetchMock = vi.fn().mockResolvedValue(okResponse(sseStream([])))
     vi.stubGlobal('fetch', fetchMock)
-    await streamForProvider('kimi', { apiKey: 'k', model: 'kimi-k3' }, 'sys', [], [], 100, {
+    await streamForProvider('openai', { apiKey: 'k', model: 'gpt-4o' }, 'sys', [], [], 100, {
       ...collector().cb,
       sessionId: 'tab-42',
     }).catch(() => {})
@@ -1533,7 +1517,7 @@ describe('streamForProvider: VEGA gateway PII shield', () => {
   it('never sends X-Vega-Session to other gateways', async () => {
     const fetchMock = vi.fn().mockResolvedValue(okResponse(sseStream([])))
     vi.stubGlobal('fetch', fetchMock)
-    await streamForProvider('kimi', { apiKey: 'k', model: 'kimi-k3' }, 'sys', [], [], 100, {
+    await streamForProvider('openai', { apiKey: 'k', model: 'gpt-4o' }, 'sys', [], [], 100, {
       ...collector().cb,
       sessionId: 'chat-7',
     }).catch(() => {})
@@ -1542,7 +1526,19 @@ describe('streamForProvider: VEGA gateway PII shield', () => {
     ).toBeUndefined()
   })
 
-  it('sends X-Vega-Pii: off to the gateway while the shield is switched off', async () => {
+  it('sends X-Vega-Anonymize: true to the gateway while the shield is on', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(okResponse(sseStream([])))
+    vi.stubGlobal('fetch', fetchMock)
+    await streamForProvider('vega', { apiKey: 'k', model: 'm' }, 'sys', [], [], 100, {
+      ...collector().cb,
+      sessionId: 's',
+    }).catch(() => {})
+    const headers = fetchMock.mock.calls[0]![1].headers as Record<string, string>
+    expect(headers['X-Vega-Anonymize']).toBe('true')
+    expect(headers['X-Vega-Pii']).toBeUndefined()
+  })
+
+  it('opts out with X-Vega-Anonymize: false to the gateway while the shield is switched off', async () => {
     const fetchMock = vi.fn().mockResolvedValue(okResponse(sseStream([])))
     vi.stubGlobal('fetch', fetchMock)
     setPiiShieldEnabled(false)
@@ -1555,42 +1551,38 @@ describe('streamForProvider: VEGA gateway PII shield', () => {
       setPiiShieldEnabled(true)
     }
     const headers = fetchMock.mock.calls[0]![1].headers as Record<string, string>
+    expect(headers['X-Vega-Anonymize']).toBe('false')
+    // the legacy opt-out header still rides along for gateways on the old contract
     expect(headers['X-Vega-Pii']).toBe('off')
   })
 
-  it('omits X-Vega-Pii while the shield is on and never sends it to other gateways', async () => {
+  it('never sends X-Vega-Anonymize/X-Vega-Pii to other gateways', async () => {
     const fetchMock = vi.fn().mockResolvedValue(okResponse(sseStream([])))
     vi.stubGlobal('fetch', fetchMock)
-    await streamForProvider('vega', { apiKey: 'k', model: 'm' }, 'sys', [], [], 100, {
+    await streamForProvider('openai', { apiKey: 'k', model: 'gpt-4o' }, 'sys', [], [], 100, {
       ...collector().cb,
       sessionId: 's',
     }).catch(() => {})
-    await streamForProvider('kimi', { apiKey: 'k', model: 'kimi-k3' }, 'sys', [], [], 100, {
-      ...collector().cb,
-      sessionId: 's',
-    }).catch(() => {})
-    // the module flag sits at its default on here, so neither gateway sees the
-    // opt-out header
-    for (const call of fetchMock.mock.calls) {
-      expect((call[1].headers as Record<string, string>)['X-Vega-Pii']).toBeUndefined()
-    }
+    const headers = fetchMock.mock.calls[0]![1].headers as Record<string, string>
+    expect(headers['X-Vega-Anonymize']).toBeUndefined()
+    expect(headers['X-Vega-Pii']).toBeUndefined()
   })
 
-  it('does not leak X-Vega-Pii to another gateway even while switched off', async () => {
+  it('does not leak X-Vega-Anonymize/X-Vega-Pii to another gateway even while switched off', async () => {
     const fetchMock = vi.fn().mockResolvedValue(okResponse(sseStream([])))
     vi.stubGlobal('fetch', fetchMock)
     setPiiShieldEnabled(false)
     try {
-      await streamForProvider('kimi', { apiKey: 'k', model: 'kimi-k3' }, 'sys', [], [], 100, {
+      await streamForProvider('openai', { apiKey: 'k', model: 'gpt-4o' }, 'sys', [], [], 100, {
         ...collector().cb,
         sessionId: 's',
       }).catch(() => {})
     } finally {
       setPiiShieldEnabled(true)
     }
-    expect(
-      (fetchMock.mock.calls[0]![1].headers as Record<string, string>)['X-Vega-Pii'],
-    ).toBeUndefined()
+    const headers = fetchMock.mock.calls[0]![1].headers as Record<string, string>
+    expect(headers['X-Vega-Anonymize']).toBeUndefined()
+    expect(headers['X-Vega-Pii']).toBeUndefined()
   })
 
   it('pii_unavailable (503) is retried and then succeeds', async () => {

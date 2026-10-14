@@ -13,7 +13,6 @@ type ExtraCategory = Exclude<Intl.LDMLPluralRule, 'one' | 'other'>
 // distinct wording; the dictionaries keep the shared one/other pair
 const FILE_COUNT_FORMS: Partial<Record<Lang, Partial<Record<ExtraCategory, string>>>> = {
   cs: { few: '{n} soubory' },
-  ar: { zero: 'لا توجد ملفات', two: 'ملفان', few: '{n} ملفات', many: '{n} ملفًا' },
 }
 
 const rulesCache = new Map<Lang, Intl.PluralRules>()

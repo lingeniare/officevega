@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const ru = {
   redactMenuLabel: 'Скрыть выделение от ИИ',
@@ -174,4 +174,4 @@ export const ru = {
   insertTableTip: 'Вставить таблицу',
   insertMoreTip: 'Дополнительные параметры вставки',
   ribbonPin: 'Закрепить ленту',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

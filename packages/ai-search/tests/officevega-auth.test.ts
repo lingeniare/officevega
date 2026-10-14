@@ -30,11 +30,16 @@ beforeEach(() => {
   process.env.OFFICEVEGA_AUTH_DIR = dir
   delete process.env.GSK_API_KEY
   delete process.env.VEGA_API_ROOT
+  // gskApiKey() reads the shared CLI key from ~/.genspark-tool-cli — isolate
+  // the home dir so a real login on the dev machine cannot leak into the tests
+  vi.stubEnv('HOME', dir)
+  vi.stubEnv('USERPROFILE', dir)
   resetOfficeVegaAuthCache()
 })
 
 afterEach(() => {
   vi.unstubAllGlobals()
+  vi.unstubAllEnvs()
   rmSync(dir, { recursive: true, force: true })
   delete process.env.OFFICEVEGA_AUTH_DIR
   delete process.env.GSK_API_KEY

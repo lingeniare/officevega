@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const hi = {
   ribbonAiCreditNote: 'AI का उपयोग करता है और क्रेडिट खर्च होते हैं',
@@ -675,19 +675,7 @@ export const hi = {
     'चयनित सामग्री को प्रूफ़रीड करें: वर्तनी, विराम चिह्न और व्याकरण की गलतियाँ सुधारें, मूल अर्थ और अनुच्छेद संरचना को अपरिवर्तित रखें।',
   ribbonTranslateTo: '{lang} में अनुवाद करें',
   ribbonLangEnglish: 'अंग्रेज़ी',
-  ribbonLangSimplifiedChinese: 'सरलीकृत चीनी',
-  ribbonLangJapanese: 'जापानी',
-  ribbonLangKorean: 'कोरियाई',
-  ribbonLangFrench: 'फ़्रेंच',
-  ribbonLangGerman: 'जर्मन',
-  ribbonLangSpanish: 'स्पेनिश',
-  ribbonLangThai: 'थाई',
-  ribbonLangIndonesian: 'इंडोनेशियाई',
   ribbonLangRussian: 'रूसी',
-  ribbonLangArabic: 'अरबी',
-  ribbonLangPortuguese: 'पुर्तगाली',
-  ribbonLangItalian: 'इतालवी',
-  ribbonLangPolish: 'पोलिश',
   ribbonLangCzech: 'चेक',
   ribbonLangDutch: 'डच',
   ribbonLangMalay: 'मलय',
@@ -973,4 +961,4 @@ export const hi = {
     'अनुभाग विराम सम्मिलित करें; उससे पहले की सामग्री वर्तमान अनुभाग की पृष्ठ सेटअप बनाए रखती है',
   ribbonGroupPageSetupSection: 'पृष्ठ सेटअप (अनुभाग {n})',
   ribbonGroupParagraphSelected: 'अनुच्छेद (चयन)',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

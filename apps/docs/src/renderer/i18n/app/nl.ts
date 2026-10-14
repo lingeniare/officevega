@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const nl = {
   appScTitle: 'Sneltoetsen',
@@ -355,19 +355,7 @@ export const nl = {
   appTranslate: 'Vertalen',
   appTranslateTo: 'Vertalen naar {lang}',
   appLangEnglish: 'Engels',
-  appLangSimplifiedChinese: 'Vereenvoudigd Chinees',
-  appLangJapanese: 'Japans',
-  appLangKorean: 'Koreaans',
-  appLangFrench: 'Frans',
-  appLangGerman: 'Duits',
-  appLangSpanish: 'Spaans',
-  appLangThai: 'Thai',
-  appLangIndonesian: 'Indonesisch',
   appLangRussian: 'Russisch',
-  appLangArabic: 'Arabisch',
-  appLangPortuguese: 'Portugees',
-  appLangItalian: 'Italiaans',
-  appLangPolish: 'Pools',
   appLangCzech: 'Tsjechisch',
   appLangDutch: 'Nederlands',
   appLangMalay: 'Maleis',
@@ -536,4 +524,4 @@ export const nl = {
   appLineTriple: '3 regels',
   appGensparkAccount: 'Genspark-account',
   appLoginGenspark: 'Aanmelden bij Genspark',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

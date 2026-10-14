@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const zhTW = {
   aiCollapsePanel: '收合面板',
@@ -182,4 +182,4 @@ export const zhTW = {
   aiFillImagesAsk: '為頁面產生 {n} 張圖片？',
   aiFillImagesYes: '產生圖片',
   aiFillImagesNo: '暫不產生',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

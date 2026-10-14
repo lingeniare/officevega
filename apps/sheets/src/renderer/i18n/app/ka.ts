@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const ka = {
   appMergeWorkbooks: 'სამუშაო წიგნების გაერთიანება',
@@ -1542,4 +1542,4 @@ export const ka = {
   appLargeFilterApplying: 'ფილტრი ფაილზე გამოიყენება…',
   appPrintWorkbookTooLarge:
     'ეს სამუშაო წიგნი ძალიან დიდია მეხსიერებაში სრულად ჩასატვირთად, ამიტომ მისი დაბეჭდვა ან PDF-ში ექსპორტი შეუძლებელია.',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

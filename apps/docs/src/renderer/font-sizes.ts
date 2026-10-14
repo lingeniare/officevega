@@ -31,10 +31,6 @@ const CJK_SIZE_NAMES_ZH = [
 ]
 const CJK_SIZE_NAMES_ZH_TW = CJK_SIZE_NAMES_ZH.map((n) => n.replace('\u53f7', '\u865f'))
 
-const NAMED_ZH: readonly NamedFontSize[] = CJK_SIZE_NAMES_ZH.map((name, i) => ({
-  name,
-  pt: CJK_SIZE_PTS[i],
-}))
 const NAMED_ZH_TW: readonly NamedFontSize[] = CJK_SIZE_NAMES_ZH_TW.map((name, i) => ({
   name,
   pt: CJK_SIZE_PTS[i],
@@ -44,21 +40,17 @@ const SIZES_CJK_UI = [
   5, 5.5, 6.5, 7.5, 8, 9, 10, 10.5, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72,
 ]
 const SIZES_LATIN_UI = [8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72]
-const SIZES_JA_UI = [8, 9, 10, 10.5, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72]
 
-/** Word's named CJK sizes shown ahead of the numeric list; empty outside zh / zh-TW */
+/** Word's named CJK sizes shown ahead of the numeric list; empty outside zh-TW */
 export function namedFontSizes(lang: Lang): readonly NamedFontSize[] {
-  return lang === 'zh' ? NAMED_ZH : lang === 'zh-TW' ? NAMED_ZH_TW : []
+  return lang === 'zh-TW' ? NAMED_ZH_TW : []
 }
 
 /** The numeric part of Word's size list for this UI language */
 export function fontSizeList(lang: Lang): readonly number[] {
   switch (lang) {
-    case 'zh':
     case 'zh-TW':
       return SIZES_CJK_UI
-    case 'ja':
-      return SIZES_JA_UI
     default:
       return SIZES_LATIN_UI
   }

@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const tt = {
   ribbonAiCreditNote: 'AI куллана һәм кредитлар сарыф итә',
@@ -391,20 +391,8 @@ export const tt = {
   ribbonTranslatePrompt:
     'Агымдагы слайдтагы бөтен текстны {lang} теленә тәрҗемә итү: урнашуны, шрифт үлчәмнәрен һәм төсләрне үзгәртмичә, кораллар ярдәмендә төп нөсхәне тәрҗемә белән алыштырыгыз.',
   ribbonLangEnglish: 'Инглизчә',
-  ribbonLangSimplifiedChinese: 'Гади кытайча',
   ribbonLangTraditionalChinese: 'Традицион кытай теле',
-  ribbonLangJapanese: 'Японча',
-  ribbonLangKorean: 'Кореяча',
-  ribbonLangFrench: 'Французча',
-  ribbonLangGerman: 'Алманча',
-  ribbonLangSpanish: 'Испанча',
-  ribbonLangThai: 'Тай',
-  ribbonLangIndonesian: 'Индонезия',
   ribbonLangRussian: 'Рус',
-  ribbonLangArabic: 'Гарәп',
-  ribbonLangPortuguese: 'Португал',
-  ribbonLangItalian: 'Итальян',
-  ribbonLangPolish: 'Поляк',
   ribbonLangCzech: 'Чех',
   ribbonLangDutch: 'Голланд',
   ribbonLangMalay: 'Малай',
@@ -779,4 +767,4 @@ export const tt = {
   ribbonZoomSlide: 'Слайд Zoom',
   ribbonZoomSummary: 'Йомгаклау Zoom',
   ribbonExpand: 'Expand the Ribbon',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

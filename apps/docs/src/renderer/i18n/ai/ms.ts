@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const ms = {
   aiEmptyDraftTitle: 'Biarkan AI merangka dokumen ini untuk anda',
@@ -190,4 +190,4 @@ export const ms = {
   aiCmdImages: '{count} imej dikemas kini',
   aiCmdToc: 'Jadual kandungan disisipkan ({count} entri)',
   aiCmdSkipped: ' ({count} blok dilindungi dilangkau)',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

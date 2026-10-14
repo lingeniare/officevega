@@ -5,9 +5,12 @@ import { Editor } from '@tiptap/core'
 import { editorExtensions } from '../src/renderer/editor/extensions'
 import { computeFormatState } from '../src/renderer/components/ribbon-format-state'
 import { Ribbon } from '../src/renderer/components/Ribbon'
+import { LocaleProvider } from '../src/renderer/i18n/locale'
 import { ribbonProps } from './helpers/ribbon-props'
 
 const setNative = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!
+
+Object.assign(window, { desktop: { onLanguageChanged: () => () => undefined } })
 
 function editorWith(runs: Array<Record<string, unknown>>) {
   const editor = new Editor({
@@ -51,7 +54,14 @@ describe('ribbon font and size combos', () => {
   let host: HTMLDivElement
   let root: Root
   const render = () =>
-    act(() => root.render(createElement(Ribbon, ribbonProps(editor, computeFormatState(editor)))))
+    act(() =>
+      root.render(
+        createElement(LocaleProvider, {
+          initial: 'zh-TW',
+          children: createElement(Ribbon, ribbonProps(editor, computeFormatState(editor))),
+        }),
+      ),
+    )
   const fontBox = () => host.querySelector<HTMLInputElement>('input.rb-font-family')!
   const sizeBox = () => host.querySelector<HTMLInputElement>('input.rb-font-size')!
   const type = (box: HTMLInputElement, text: string) =>
@@ -98,8 +108,8 @@ describe('ribbon font and size combos', () => {
     key(sizeBox(), 'Enter')
     expect(editor.getAttributes('docTextStyle').sizeHalfPoints).toBe(28)
     render()
-    // the test UI language is zh: 14pt reads as its CJK size name
-    expect(sizeBox().value).toBe('\u56db\u53f7')
+    // the test UI language is zh-TW: 14pt reads as its CJK size name
+    expect(sizeBox().value).toBe('\u56db\u865f')
     act(() => sizeBox().focus())
     type(sizeBox(), '\u5c0f\u56db')
     key(sizeBox(), 'Enter')
@@ -148,7 +158,7 @@ describe('ribbon font and size combos', () => {
   it('opens on the common fonts section and commits a list click', () => {
     act(() => host.querySelector<HTMLButtonElement>('.rb-combo-caret')!.click())
     const labels = [...menu()!.querySelectorAll('.rb-menu-group-label')].map((el) => el.textContent)
-    expect(labels[0]).toBe('\u5e38\u7528\u5b57\u4f53')
+    expect(labels[0]).toBe('\u5e38\u7528\u5b57\u578b')
     const impact = [...menu()!.querySelectorAll<HTMLButtonElement>('button')].find(
       (el) => el.textContent === 'Impact',
     )!

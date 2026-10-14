@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const ru = {
   aiEmptyDraftTitle: 'Пусть ИИ набросает этот документ за вас',
@@ -192,4 +192,4 @@ export const ru = {
   aiCmdImages: 'Обновлено изображений: {count}',
   aiCmdToc: 'Вставлено оглавление (элементов: {count})',
   aiCmdSkipped: ' (пропущено защищенных блоков: {count})',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

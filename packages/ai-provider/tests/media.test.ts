@@ -39,19 +39,6 @@ function openaiSettings(apiKey = 'sk-test', imageModel = 'gpt-image-2'): AiSetti
 }
 
 describe('media settings', () => {
-  // Ark model list 2026-10-12: Seedream 5.0 is a pro/flash pair, and both
-  // 4.5 and 4.0 are flagged for retirement there. Pinned so a future edit
-  // cannot quietly put a retired ID back or drop a live one.
-  it('offers only Seedream IDs the Ark list still serves', () => {
-    const doubao = AI_MEDIA_PROVIDERS.find((p) => p.id === 'doubao')!
-    expect(doubao.imageModels).toEqual([
-      'doubao-seedream-5-0-pro-260628',
-      'doubao-seedream-5-0-flash-260915',
-      'doubao-seedream-5-0-260128',
-    ])
-    expect(doubao.defaultImageModel).toBe('doubao-seedream-5-0-pro-260628')
-  })
-
   // the settings UI seeds imageModel from defaultImageModel and offers
   // imageModels; a default outside its own list is a value the user cannot
   // pick back
@@ -97,14 +84,14 @@ describe('media settings', () => {
     expect(media.imageProvider).toBe('gemini')
     expect(media.analysisProvider).toBe('gemini')
     expect(
-      resolveAiMediaSettings({ imageProvider: 'doubao', analysisProvider: 'qwen' })
+      resolveAiMediaSettings({ imageProvider: 'xai', analysisProvider: 'openai' })
         .analysisProvider,
-    ).toBe('qwen')
+    ).toBe('openai')
     // pre-split files used one vendor for all analysis
     expect(
-      resolveAiMediaSettings({ imageProvider: 'doubao', analysisProvider: 'qwen' })
+      resolveAiMediaSettings({ imageProvider: 'xai', analysisProvider: 'openai' })
         .videoAnalysisProvider,
-    ).toBe('qwen')
+    ).toBe('openai')
     expect(
       resolveAiMediaSettings({ analysisProvider: 'openai', videoAnalysisProvider: 'gemini' })
         .videoAnalysisProvider,
@@ -140,19 +127,19 @@ describe('media settings', () => {
     expect(activeMediaProvider(withMedia(custom), 'image')).toBe('custom')
     expect(activeMediaProvider(withMedia(custom), 'analysis')).toBe('genspark')
     expect(activeMediaConfig(withMedia(custom), 'image')?.provider).toBe('custom')
-    // MiniMax-M3 supports both image and video analysis
-    const mm = defaultAiMediaSettings()
-    mm.analysisProvider = 'minimax'
-    mm.providers.minimax.apiKey = 'k'
-    expect(activeMediaProvider(withMedia(mm), 'analysis')).toBe('minimax')
-    mm.videoAnalysisProvider = 'minimax'
-    expect(activeMediaProvider(withMedia(mm), 'video')).toBe('minimax')
-    // DeepSeek reads images (V4.1 Flash vision) but takes no video
+    // Gemini supports both image and video analysis
+    const gm = defaultAiMediaSettings()
+    gm.analysisProvider = 'gemini'
+    gm.providers.gemini.apiKey = 'AIza'
+    expect(activeMediaProvider(withMedia(gm), 'analysis')).toBe('gemini')
+    gm.videoAnalysisProvider = 'gemini'
+    expect(activeMediaProvider(withMedia(gm), 'video')).toBe('gemini')
+    // Grok reads images but takes no video
     const ds = defaultAiMediaSettings()
-    ds.analysisProvider = 'deepseek'
-    ds.providers.deepseek.apiKey = 'sk-ds'
-    expect(activeMediaProvider(withMedia(ds), 'analysis')).toBe('deepseek')
-    ds.videoAnalysisProvider = 'deepseek'
+    ds.analysisProvider = 'xai'
+    ds.providers.xai.apiKey = 'xai-k'
+    expect(activeMediaProvider(withMedia(ds), 'analysis')).toBe('xai')
+    ds.videoAnalysisProvider = 'xai'
     expect(activeMediaProvider(withMedia(ds), 'video')).toBe('genspark')
     // OpenAI reads images but not video: as the video provider it falls back
     const oa = openaiSettings()
@@ -441,45 +428,6 @@ describe('generateImageWithProvider (vendor shapes)', () => {
     ...(baseUrl ? { baseUrl } : {}),
   })
 
-  it('Ark/Seedream: aspect ratio as size, b64 requested, references inline in the body', async () => {
-    const fetchMock = vi.fn(async () => jsonResponse({ data: [{ b64_json: PNG_B64 }] }))
-    vi.stubGlobal('fetch', fetchMock)
-    await generateImageWithProvider('doubao', cfg('doubao-seedream-5-0-260128'), {
-      prompt: 'a fox',
-      aspectRatio: '16:9',
-      references: [{ bytes: PNG, mime: 'image/png' }],
-    })
-    const [url, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit]
-    expect(url).toBe('https://ark.cn-beijing.volces.com/api/v3/images/generations')
-    const body = JSON.parse(init.body as string)
-    expect(body).toMatchObject({ size: '16:9', response_format: 'b64_json', watermark: false })
-    expect(body.image).toEqual([`data:image/png;base64,${PNG_B64}`])
-  })
-
-  it('Zhipu/CogView: fixed WxH grid, URL result downloaded, no edits', async () => {
-    const fetchMock = vi.fn(async (url: string) =>
-      url.endsWith('/images/generations')
-        ? jsonResponse({ data: [{ url: 'https://cdn.example/x.png' }] })
-        : new Response(PNG, { status: 200, headers: { 'content-type': 'image/png' } }),
-    )
-    vi.stubGlobal('fetch', fetchMock)
-    const out = await generateImageWithProvider('glm', cfg('cogview-4-250304'), {
-      prompt: 'a fox',
-      aspectRatio: '9:16',
-    })
-    expect(out.mime).toBe('image/png')
-    const [url, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit]
-    expect(url).toBe('https://open.bigmodel.cn/api/paas/v4/images/generations')
-    expect(JSON.parse(init.body as string).size).toBe('768x1344')
-    expect((fetchMock.mock.calls[1] as unknown as [string])[0]).toBe('https://cdn.example/x.png')
-    await expect(
-      generateImageWithProvider('glm', cfg('cogview-4-250304'), {
-        prompt: 'x',
-        references: [{ bytes: PNG, mime: 'image/png' }],
-      }),
-    ).rejects.toThrow(/cannot edit/)
-  })
-
   it('xAI: no size field, b64 requested', async () => {
     const fetchMock = vi.fn(async () => jsonResponse({ data: [{ b64_json: PNG_B64 }] }))
     vi.stubGlobal('fetch', fetchMock)
@@ -494,57 +442,6 @@ describe('generateImageWithProvider (vendor shapes)', () => {
     expect(body.response_format).toBe('b64_json')
   })
 
-  it('DashScope/Qwen-Image: multimodal-generation body, W*H size, image URL in output.choices', async () => {
-    const fetchMock = vi.fn(async (url: string) =>
-      url.includes('multimodal-generation')
-        ? jsonResponse({
-            output: {
-              choices: [{ message: { content: [{ image: 'https://oss.example/q.png' }] } }],
-            },
-          })
-        : new Response(PNG, { status: 200, headers: { 'content-type': 'image/png' } }),
-    )
-    vi.stubGlobal('fetch', fetchMock)
-    await generateImageWithProvider(
-      'qwen',
-      cfg('qwen-image-plus', 'https://dashscope-intl.aliyuncs.com/compatible-mode/v1'),
-      { prompt: 'a fox', aspectRatio: '4:3' },
-    )
-    const [url, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit]
-    expect(url).toBe(
-      'https://dashscope-intl.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation',
-    )
-    const body = JSON.parse(init.body as string)
-    expect(body.model).toBe('qwen-image-plus')
-    expect(body.input.messages[0].content[0].text).toBe('a fox')
-    expect(body.parameters).toEqual({ n: 1, watermark: false, size: '1472*1104' })
-  })
-
-  it('MiniMax: image_generation with aspect_ratio and base64 result; base_resp errors surface', async () => {
-    const fetchMock = vi.fn(async () =>
-      jsonResponse({ data: { image_base64: [PNG_B64] }, base_resp: { status_code: 0 } }),
-    )
-    vi.stubGlobal('fetch', fetchMock)
-    const out = await generateImageWithProvider('minimax', cfg('image-01'), {
-      prompt: 'a fox',
-      aspectRatio: '16:9',
-    })
-    expect(out.mime).toBe('image/png')
-    const [url, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit]
-    expect(url).toBe('https://api.minimax.io/v1/image_generation')
-    expect(JSON.parse(init.body as string)).toMatchObject({
-      model: 'image-01',
-      aspect_ratio: '16:9',
-      response_format: 'base64',
-    })
-    vi.stubGlobal(
-      'fetch',
-      vi.fn(async () => jsonResponse({ base_resp: { status_code: 1004, status_msg: 'auth' } })),
-    )
-    await expect(
-      generateImageWithProvider('minimax', cfg('image-01'), { prompt: 'x' }),
-    ).rejects.toThrow(/1004 auth/)
-  })
 })
 
 describe('analyzeMediaWithProvider', () => {
@@ -573,19 +470,19 @@ describe('analyzeMediaWithProvider', () => {
     expect(fetchMock).toHaveBeenCalledTimes(1)
   })
 
-  it('sends video as a video_url part for vendors that take it (Qwen via compatible-mode)', async () => {
+  it('sends video as a video_url part for vendors that take it (VEGA)', async () => {
     const fetchMock = vi.fn(async () =>
       jsonResponse({ choices: [{ message: { content: 'a talk' } }] }),
     )
     vi.stubGlobal('fetch', fetchMock)
     const text = await analyzeMediaWithProvider(
-      'qwen',
+      'vega',
       { apiKey: 'k', imageModel: '', analysisModel: 'qwen3-vl-plus' },
       { media: [{ bytes: PNG, mime: 'video/mp4' }], requirements: 'summarize' },
     )
     expect(text).toBe('a talk')
     const [url, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit]
-    expect(url).toBe('https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions')
+    expect(url).toBe('https://api.vega.chat/api/v1/chat/completions')
     const body = JSON.parse(init.body as string)
     expect(body.messages[0].content[1]).toEqual({
       type: 'video_url',
@@ -593,7 +490,7 @@ describe('analyzeMediaWithProvider', () => {
     })
     await expect(
       analyzeMediaWithProvider(
-        'qwen',
+        'vega',
         { apiKey: 'k', imageModel: '', analysisModel: 'qwen3-vl-plus' },
         { media: [{ bytes: PNG, mime: 'audio/mpeg' }], requirements: 'x' },
       ),
@@ -646,25 +543,25 @@ describe('analyzeMediaWithProvider', () => {
     })
   })
 
-  it('posts DeepSeek V4.1 Flash images to the direct API and rejects video', async () => {
+  it('posts Grok images to the xAI API and rejects video', async () => {
     const fetchMock = vi.fn(async () =>
       jsonResponse({ choices: [{ message: { content: 'a logo' } }] }),
     )
     vi.stubGlobal('fetch', fetchMock)
-    const config = { apiKey: 'sk-ds', imageModel: '', analysisModel: 'deepseek-flash' }
-    const text = await analyzeMediaWithProvider('deepseek', config, {
+    const config = { apiKey: 'xai-k', imageModel: '', analysisModel: 'grok-4.6' }
+    const text = await analyzeMediaWithProvider('xai', config, {
       media: [{ bytes: PNG, mime: 'image/png' }],
       requirements: 'what is this',
     })
     expect(text).toBe('a logo')
     const [url, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit]
-    expect(url).toBe('https://api.deepseek.com/v1/chat/completions')
-    expect((init.headers as Record<string, string>).Authorization).toBe('Bearer sk-ds')
+    expect(url).toBe('https://api.x.ai/v1/chat/completions')
+    expect((init.headers as Record<string, string>).Authorization).toBe('Bearer xai-k')
     const body = JSON.parse(init.body as string)
-    expect(body.model).toBe('deepseek-flash')
+    expect(body.model).toBe('grok-4.6')
     expect(body.messages[0].content[1].image_url.url).toBe(`data:image/png;base64,${PNG_B64}`)
     await expect(
-      analyzeMediaWithProvider('deepseek', config, {
+      analyzeMediaWithProvider('xai', config, {
         media: [{ bytes: PNG, mime: 'video/mp4', name: 'clip.mp4' }],
         requirements: 'summarize',
       }),
@@ -737,76 +634,6 @@ describe('endpoint composition with a query string in the base URL', () => {
     )
     expect((fetchMock.mock.calls[0] as unknown as [string])[0]).toBe(
       'http://localhost:1234/v1/images/generations',
-    )
-  })
-
-  it('rides the compatible-mode suffix on the path, keeping the query (qwen chat)', async () => {
-    const fetchMock = vi.fn(async () => jsonResponse({ choices: [{ message: { content: 'ok' } }] }))
-    vi.stubGlobal('fetch', fetchMock)
-    await analyzeMediaWithProvider(
-      'qwen',
-      {
-        apiKey: 'k',
-        baseUrl: 'https://gw.example.com/ds?key=abc',
-        imageModel: '',
-        analysisModel: 'qwen3-vl-plus',
-      },
-      { media: [{ bytes: PNG, mime: 'image/png' }], requirements: 'describe' },
-    )
-    expect((fetchMock.mock.calls[0] as unknown as [string])[0]).toBe(
-      'https://gw.example.com/ds/compatible-mode/v1/chat/completions?key=abc',
-    )
-  })
-
-  it('builds the DashScope generation URL on the path, keeping the query (qwen image)', async () => {
-    const fetchMock = vi.fn(async (url: string) =>
-      url.includes('multimodal-generation')
-        ? jsonResponse({
-            output: {
-              choices: [{ message: { content: [{ image: 'https://oss.example/q.png' }] } }],
-            },
-          })
-        : new Response(PNG, { status: 200, headers: { 'content-type': 'image/png' } }),
-    )
-    vi.stubGlobal('fetch', fetchMock)
-    await generateImageWithProvider(
-      'qwen',
-      {
-        apiKey: 'k',
-        baseUrl: 'https://gw.example.com/ds?key=abc',
-        imageModel: 'qwen-image-plus',
-        analysisModel: '',
-      },
-      { prompt: 'a fox' },
-    )
-    expect((fetchMock.mock.calls[0] as unknown as [string])[0]).toBe(
-      'https://gw.example.com/ds/api/v1/services/aigc/multimodal-generation/generation?key=abc',
-    )
-  })
-
-  it('reduces a pasted compatible-mode URL that carries a query to the DashScope root', async () => {
-    const fetchMock = vi.fn(async (url: string) =>
-      url.includes('multimodal-generation')
-        ? jsonResponse({
-            output: {
-              choices: [{ message: { content: [{ image: 'https://oss.example/q.png' }] } }],
-            },
-          })
-        : new Response(PNG, { status: 200, headers: { 'content-type': 'image/png' } }),
-    )
-    vi.stubGlobal('fetch', fetchMock)
-    await generateImageWithProvider(
-      'qwen',
-      {
-        apiKey: 'k',
-        baseUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1?x=1',
-        imageModel: 'qwen-image-plus',
-        analysisModel: '',
-      },
-      { prompt: 'a fox' },
-    )
-    expect((fetchMock.mock.calls[0] as unknown as [string])[0]).toBe(
-      'https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation?x=1',
     )
   })
 

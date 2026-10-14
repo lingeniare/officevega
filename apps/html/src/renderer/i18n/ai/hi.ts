@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const hi = {
   aiCollapsePanel: 'पैनल संक्षिप्त करें',
@@ -191,4 +191,4 @@ export const hi = {
   aiFillImagesAsk: 'पेज के लिए {n} चित्र बनाएं?',
   aiFillImagesYes: 'बनाएं',
   aiFillImagesNo: 'अभी नहीं',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const he = {
   paneCancel: 'ביטול',
@@ -288,4 +288,4 @@ export const he = {
   paneShowMenuWhite: 'מסך לבן',
   paneShowMenuEnd: 'סיים הצגה',
   panePresenterWhiteOn: 'מסך לבן (W לחזרה)',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

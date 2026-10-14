@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const nl = {
   paneCancel: 'Annuleren',
@@ -294,4 +294,4 @@ export const nl = {
   paneShowMenuWhite: 'Wit scherm',
   paneShowMenuEnd: 'Voorstelling beëindigen',
   panePresenterWhiteOn: 'Wit scherm (W om terug te keren)',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

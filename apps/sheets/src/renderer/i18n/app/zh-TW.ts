@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const zhTW = {
   appMergeWorkbooks: '合併活頁簿',
@@ -1438,4 +1438,4 @@ export const zhTW = {
   appVisualFlipV: '垂直翻轉',
   appVisualFlipH: '水平翻轉',
   appCtxPasteVisual: '貼上圖片/圖形',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

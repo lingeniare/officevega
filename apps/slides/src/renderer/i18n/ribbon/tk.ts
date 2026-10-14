@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const tk = {
   ribbonAiCreditNote: 'AI ulanýar we kredit sarp edýär',
@@ -393,20 +393,8 @@ export const tk = {
   ribbonTranslatePrompt:
     'Häzirki slaýddaky ähli teksti {lang} diline terjime et: ýerleşişi, şrift ölçeglerini we reňkleri üýtgetmän, asyl teksti gurallar bilen çalyş.',
   ribbonLangEnglish: 'Iňlisçe',
-  ribbonLangSimplifiedChinese: 'Ýönekeýleşdirilen hytaý dili',
   ribbonLangTraditionalChinese: 'Adaty hytaý dili',
-  ribbonLangJapanese: 'Ýaponça',
-  ribbonLangKorean: 'Koreýçe',
-  ribbonLangFrench: 'Fransuzça',
-  ribbonLangGerman: 'Nemesçe',
-  ribbonLangSpanish: 'Ispança',
-  ribbonLangThai: 'Taý',
-  ribbonLangIndonesian: 'Indonez',
   ribbonLangRussian: 'Rus',
-  ribbonLangArabic: 'Arap',
-  ribbonLangPortuguese: 'Portugal',
-  ribbonLangItalian: 'Italýan',
-  ribbonLangPolish: 'Polýak',
   ribbonLangCzech: 'Çeh',
   ribbonLangDutch: 'Golland',
   ribbonLangMalay: 'Malaý',
@@ -782,4 +770,4 @@ export const tk = {
   ribbonZoomSlide: 'Slayd Zoom',
   ribbonZoomSummary: 'Gysgaça Zoom',
   ribbonExpand: 'Expand the Ribbon',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

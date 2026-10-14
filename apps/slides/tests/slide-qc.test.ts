@@ -111,20 +111,21 @@ describe('isQcEnabled', () => {
 
 describe('vision capability fallback', () => {
   it('sends MiniMax-M3 screenshots while keeping MiniMax-M2.7 text-only', () => {
-    const settings = { ...defaultAiSettings(), provider: 'minimax' as const }
-    settings.providers.minimax.model = 'MiniMax-M3'
+    const settings = { ...defaultAiSettings(), provider: 'opencode-go' as const }
+    settings.providers['opencode-go'].model = 'minimax-m3'
     expect(settingsSupportVision(settings)).toBe(true)
-    settings.providers.minimax.model = 'MiniMax-M2.7'
+    settings.providers['opencode-go'].model = 'minimax-m2.7'
     expect(settingsSupportVision(settings)).toBe(false)
   })
 
   it('uses the selected model when a provider mixes text and vision models', () => {
     const withProvider = (provider: AiProviderId) => ({ ...defaultAiSettings(), provider })
-    const deepseek = withProvider('deepseek')
-    expect(settingsSupportVision(deepseek)).toBe(false)
-    deepseek.providers.deepseek.model = 'deep-seek-v4.1-flash'
-    expect(settingsSupportVision(deepseek)).toBe(true)
-    expect(settingsSupportVision(withProvider('glm'))).toBe(false)
+    const go = withProvider('opencode-go')
+    go.providers['opencode-go'].model = 'deepseek-v4-pro'
+    expect(settingsSupportVision(go)).toBe(false)
+    go.providers['opencode-go'].model = 'deep-seek-v4.1-flash'
+    expect(settingsSupportVision(go)).toBe(true)
+    expect(settingsSupportVision(withProvider('sber'))).toBe(false)
     expect(settingsSupportVision(withProvider('gemini'))).toBe(true)
   })
 

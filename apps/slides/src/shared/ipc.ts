@@ -1,3 +1,4 @@
+import type { Lang } from '@genoffice/i18n'
 import type { AiPanelPrefs } from '@genoffice/ui'
 /**
  * slides main-process <-> renderer IPC contract (Phase 3: open/save/edit, AI not included yet).
@@ -1280,12 +1281,12 @@ export type MenuCommand =
 export interface SlidesApi {
   /** current UI language (persisted by the shell in app-settings.json) */
   getLanguage: () => Promise<
-    'zh' | 'en' | 'ja' | 'ko' | 'fr' | 'de' | 'es' | 'th' | 'id' | 'ru' | 'ar'
+    Lang
   >
   /** language switched from the shell home page */
   onLanguageChanged: (
     handler: (
-      lang: 'zh' | 'en' | 'ja' | 'ko' | 'fr' | 'de' | 'es' | 'th' | 'id' | 'ru' | 'ar',
+      lang: Lang,
     ) => void,
   ) => () => void
   /** current UI theme preference (persisted by the shell in app-settings.json) */

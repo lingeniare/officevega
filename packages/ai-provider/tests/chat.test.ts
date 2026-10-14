@@ -65,26 +65,16 @@ describe('chatForProvider', () => {
     expect(result).toEqual({ ok: true, content: 'hi there' })
   })
 
-  it('deepseek and openai hit their fixed base URLs', async () => {
+  it('openai hits its fixed base URL', async () => {
     const fetchMock = vi
       .fn()
       .mockResolvedValue(jsonResponse({ choices: [{ message: { content: 'ok' } }] }))
     vi.stubGlobal('fetch', fetchMock)
-    await chatForProvider('deepseek', { apiKey: 'k', model: 'deepseek-v4-pro' }, 'sys', 'hi')
+    await chatForProvider('openai', { apiKey: 'k', model: 'gpt-4.1-mini' }, 'sys', 'hi')
     expect(fetchMock).toHaveBeenCalledWith(
-      'https://api.deepseek.com/v1/chat/completions',
+      'https://api.openai.com/v1/chat/completions',
       expect.anything(),
     )
-  })
-
-  it('deepseek: sends the listed V4.1 Flash name under the vendor wire id', async () => {
-    const fetchMock = vi
-      .fn()
-      .mockResolvedValue(jsonResponse({ choices: [{ message: { content: 'ok' } }] }))
-    vi.stubGlobal('fetch', fetchMock)
-    await chatForProvider('deepseek', { apiKey: 'k', model: 'deep-seek-v4.1-flash' }, 'sys', 'hi')
-    const body = JSON.parse(fetchMock.mock.calls[0][1].body as string)
-    expect(body.model).toBe('deepseek-flash')
   })
 
   it('custom: uses the configured base URL', async () => {

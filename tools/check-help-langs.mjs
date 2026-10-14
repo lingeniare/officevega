@@ -82,23 +82,7 @@ const MANUAL_LANGS = ['en', 'ru']
 
 /** Latin- or Cyrillic-script languages: any Han character in one of these is a
  *  worker that pasted the CJK source instead of translating it. */
-const NO_HAN = new Set([
-  'fr',
-  'de',
-  'es',
-  'th',
-  'id',
-  'ru',
-  'ar',
-  'pt',
-  'it',
-  'pl',
-  'cs',
-  'nl',
-  'ms',
-  'hi',
-  'vi',
-])
+const NO_HAN = new Set(['ru', 'cs', 'nl', 'ms', 'hi', 'vi'])
 
 /**
  * The script a language actually writes in.
@@ -109,14 +93,9 @@ const NO_HAN = new Set([
  * perfectly, because it *is* English.
  */
 const SCRIPTS = {
-  zh: /[\u4E00-\u9FFF]/,
-  'zh-TW': /[\u4E00-\u9FFF]/,
-  ja: /[\u3040-\u30FF\u4E00-\u9FFF]/,
-  ko: /[가-힯]/,
+  'zh-TW': /[一-鿿]/,
   ru: /[Ѐ-ӿ]/,
-  ar: /[؀-ۿ]/,
   he: /[֐-׿]/,
-  th: /[฀-๿]/,
   hi: /[ऀ-ॿ]/,
 }
 

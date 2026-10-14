@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const zhTW = {
   redactMenuLabel: '把選中的內容對 AI 隱藏',
@@ -248,4 +248,4 @@ export const zhTW = {
   appStatusSummaryZoomInserted: '已插入摘要縮放頁（{count} 個縮圖）',
   appSectionSummary: '摘要節',
   appSectionN: '第 {n} 節',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

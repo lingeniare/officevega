@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const cs = {
   ribbonAiCreditNote: 'Používá AI a spotřebovává kredity',
@@ -393,20 +393,8 @@ export const cs = {
   ribbonTranslatePrompt:
     'Přelož veškerý text na aktuálním snímku do jazyka {lang}: původní text nahraď pomocí nástrojů a zachovej rozložení, velikosti písma i barvy.',
   ribbonLangEnglish: 'Angličtina',
-  ribbonLangSimplifiedChinese: 'Zjednodušená čínština',
   ribbonLangTraditionalChinese: 'Tradiční čínština',
-  ribbonLangJapanese: 'Japonština',
-  ribbonLangKorean: 'Korejština',
-  ribbonLangFrench: 'Francouzština',
-  ribbonLangGerman: 'Němčina',
-  ribbonLangSpanish: 'Španělština',
-  ribbonLangThai: 'thajština',
-  ribbonLangIndonesian: 'indonéština',
   ribbonLangRussian: 'ruština',
-  ribbonLangArabic: 'arabština',
-  ribbonLangPortuguese: 'portugalština',
-  ribbonLangItalian: 'italština',
-  ribbonLangPolish: 'polština',
   ribbonLangCzech: 'čeština',
   ribbonLangDutch: 'nizozemština',
   ribbonLangMalay: 'malajština',
@@ -773,4 +761,4 @@ export const cs = {
   ribbonZoomSelectedSlides: 'Vybráno snímků: {n}',
   ribbonZoomSelectedSections: 'Vybráno oddílů: {n}',
   ribbonPin: 'Připnout pás karet',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

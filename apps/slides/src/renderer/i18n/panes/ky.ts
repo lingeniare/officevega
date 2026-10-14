@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const ky = {
   paneCancel: 'Жокко чыгаруу',
@@ -293,4 +293,4 @@ export const ky = {
   paneShowMenuScreen: 'Экран',
   paneShowMenuSeeAll: 'Бардык слайддарды көрүү',
   paneShowMenuWhite: 'Ак экран',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>

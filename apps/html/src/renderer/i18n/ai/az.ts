@@ -1,4 +1,4 @@
-import type { zh } from './zh'
+import type { en } from './en'
 
 export const az = {
   aiCollapsePanel: 'Paneli yığışdırın',
@@ -192,4 +192,4 @@ export const az = {
   aiFillImagesYes: 'Yarat',
   aiFillImagesNo: 'İndi yox',
   aiClarifyPrev: 'Əvvəlki',
-} satisfies Record<keyof typeof zh, string>
+} satisfies Record<keyof typeof en, string>
