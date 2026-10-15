@@ -155,6 +155,9 @@ const homeApi: HomeApi = {
   async kbExportChat(markdown, suggestedName, dialogTitle) {
     return ipcRenderer.invoke('kb:export-chat', markdown, suggestedName, dialogTitle)
   },
+  async kbCreateDocument(request) {
+    return ipcRenderer.invoke('kb:create-document', request)
+  },
   async aiGetSettings() {
     return ipcRenderer.invoke('ai:get-settings')
   },
@@ -615,8 +618,12 @@ const homeApi: HomeApi = {
   async getProviderModels(input) {
     return (await ipcRenderer.invoke('ai:provider-models', input)) as ProviderModelCatalog
   },
-  async getCustomModels(baseUrl, apiKey) {
-    return (await ipcRenderer.invoke('ai:custom-models', { baseUrl, apiKey })) as CodexModelCatalog
+  async getCustomModels(baseUrl, apiKey, api) {
+    return (await ipcRenderer.invoke('ai:custom-models', {
+      baseUrl,
+      apiKey,
+      ...(api ? { api } : {}),
+    })) as CodexModelCatalog
   },
   async testAiSettings(settings) {
     const result: unknown = await ipcRenderer.invoke('ai:chat', {
@@ -750,6 +757,13 @@ const tabsApi: TabsApi = {
     const listener = () => handler()
     ipcRenderer.on('app:chrome-pressed', listener)
     return () => ipcRenderer.removeListener('app:chrome-pressed', listener)
+  },
+  onStartRename(handler) {
+    const listener = (_event: IpcRendererEvent, id: unknown) => {
+      if (typeof id === 'string') handler(id)
+    }
+    ipcRenderer.on(TABS_CHANNELS.startRename, listener)
+    return () => ipcRenderer.removeListener(TABS_CHANNELS.startRename, listener)
   },
 }
 

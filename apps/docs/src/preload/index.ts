@@ -1,7 +1,7 @@
 import type { Lang } from '@genoffice/i18n'
 import { contextBridge, ipcRenderer, webUtils } from 'electron'
 import type { IpcRendererEvent } from 'electron'
-import { VIEW_IMAGE_CHANNEL } from '../shared/ipc'
+import { VIEW_IMAGE_CHANNEL, type MarkdownImage, type PdfInternalLink } from '../shared/ipc'
 import type { AiPanelPrefs } from '@genoffice/ui'
 import type {
   AiChatRequest,
@@ -11,10 +11,10 @@ import type {
   DesktopApi,
   MenuCommand,
   AutoSaveDefault,
+  PrintJobOptions,
   ContextMenuRequest,
   UiDesign,
   DocTheme,
-  PdfLinkPlan,
   UiTheme,
   ZoteroRendererRequest,
 } from '../shared/ipc'
@@ -167,13 +167,15 @@ const api: DesktopApi = {
   getRecentFiles: () => ipcRenderer.invoke('docs:recent'),
   pickImage: () => ipcRenderer.invoke('docs:pick-image'),
   fontMetrics: (family: string) => ipcRenderer.invoke('docs:font-metrics', family),
-  print: (scale?: number) => ipcRenderer.invoke('docs:print', scale),
+  print: (scale?: number, job?: PrintJobOptions) => ipcRenderer.invoke('docs:print', scale, job),
+  listPrinters: () => ipcRenderer.invoke('docs:printers'),
   exportPdf: (
     defaultName: string,
     pageWidthTwips: number,
     pageHeightTwips: number,
     outPath?: string,
     scale?: number,
+    links?: PdfInternalLink[],
   ) =>
     ipcRenderer.invoke(
       'docs:export-pdf',
@@ -182,17 +184,24 @@ const api: DesktopApi = {
       pageHeightTwips,
       outPath,
       scale,
+      links,
     ),
   exportHtml: (defaultName: string, html: string, outPath?: string) =>
     ipcRenderer.invoke('docs:export-html', defaultName, html, outPath),
+  exportMarkdown: (
+    defaultName: string,
+    markdown: string,
+    images: MarkdownImage[],
+    outPath?: string,
+  ) => ipcRenderer.invoke('docs:export-markdown', defaultName, markdown, images, outPath),
   printPdfBuffer: (pageWidthTwips: number, pageHeightTwips: number, scale?: number) =>
     ipcRenderer.invoke('docs:print-pdf-buffer', pageWidthTwips, pageHeightTwips, scale),
   saveMergedPdf: (
     defaultName: string,
     base64Parts: string[],
     outPath?: string,
-    linkPlan?: PdfLinkPlan,
-  ) => ipcRenderer.invoke('docs:save-merged-pdf', defaultName, base64Parts, outPath, linkPlan),
+    links?: PdfInternalLink[],
+  ) => ipcRenderer.invoke('docs:save-merged-pdf', defaultName, base64Parts, outPath, links),
   pickExportImagesTarget: () => ipcRenderer.invoke('docs:pick-export-images-target'),
   takeExportPdf: (pdfPath: string) => ipcRenderer.invoke('docs:take-export-pdf', pdfPath),
   writeExportImage: (dir: string, fileName: string, pngBase64: string) =>

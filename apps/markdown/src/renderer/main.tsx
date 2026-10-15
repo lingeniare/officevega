@@ -20,7 +20,9 @@ import './styles.css'
 import '@genoffice/ui/ai-chat.css'
 import '@genoffice/ui/ai-history-menu.css'
 import '@genoffice/ui/cup-skin.css'
+import './markdown-themes.css'
 import { applyAiPanelPrefs, applyUiScale, installScreenTips } from '@genoffice/ui'
+import type { MarkdownTheme } from '../shared/markdown-theme'
 
 installScreenTips()
 
@@ -34,6 +36,12 @@ function applyDesign(design: UiDesign): void {
   else document.documentElement.setAttribute('data-design', design)
 }
 
+function applyMarkdownTheme(theme: MarkdownTheme): void {
+  // a picked paper theme overrides the light/dark document theme for the paper
+  if (theme === 'default') document.documentElement.removeAttribute('data-markdown-theme')
+  else document.documentElement.setAttribute('data-markdown-theme', theme)
+}
+
 function applyDocumentTheme(theme: DocTheme): void {
   // data-doc-theme drives the preview paper (genoffice#1811); absent means 'follow' the UI theme
   if (theme === 'follow') document.documentElement.removeAttribute('data-doc-theme')
@@ -41,17 +49,19 @@ function applyDocumentTheme(theme: DocTheme): void {
 }
 
 void (async () => {
-  const [lang, theme, design, docTheme] = await Promise.all([
+  const [lang, theme, design, docTheme, mdTheme] = await Promise.all([
     window.markdownApi.getLanguage().catch(() => 'en' as const),
     window.markdownApi.getTheme().catch(() => 'system' as const),
     window.markdownApi.getDesign().catch(() => 'digital' as const),
     window.markdownApi.getDocumentTheme?.().catch(() => 'follow' as const),
+    window.markdownApi.getMarkdownTheme?.().catch(() => 'default' as const),
   ])
   document.documentElement.lang = htmlLang(lang as Lang)
   document.documentElement.dir = htmlDir(lang)
   applyTheme(theme)
   applyDesign(design)
   applyDocumentTheme(docTheme ?? 'follow')
+  applyMarkdownTheme(mdTheme)
   window.markdownApi.onThemeChanged(applyTheme)
   window.markdownApi.onDesignChanged(applyDesign)
   window.markdownApi.onDocumentThemeChanged?.(applyDocumentTheme)

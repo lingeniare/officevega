@@ -1564,4 +1564,8 @@ export const uz = {
   appLargeFilterApplying: 'Filtr faylga qo‘llanilmoqda…',
   appPrintWorkbookTooLarge:
     'Bu ish kitobi xotiraga to‘liq yuklash uchun juda katta, shuning uchun uni chop etish yoki PDFga eksport qilish imkonsiz.',
+  appRibbonCompact: 'Compact Ribbon (icons only)',
+  appRightToLeft: 'Right-to-Left',
+  appRightToLeftOn: 'Grid direction: right-to-left.',
+  appRightToLeftOff: 'Grid direction: left-to-right.',
 } satisfies Record<keyof typeof en, string>

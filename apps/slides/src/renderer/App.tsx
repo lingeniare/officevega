@@ -485,7 +485,7 @@ export function App() {
   const [showAi, setShowAi] = useState(() => aiPanelInitiallyOpen('ai-slides-show-ai'))
   // Suite-wide "AI sidebar" switch (Settings › General): off hides the panel,
   // rail and ribbon AI group; showAi keeps its remembered state (#1947).
-  const aiEnabled = useAiPanelPrefs().enabled
+  const aiEnabled = useAiPanelPrefs().showAiSidebar
   const aiOpen = aiEnabled && showAi
   /** Width the ai-dock occupies: open 360 / collapsed rail 34 / none 0 */
   const aiDockW = aiEnabled ? (showAi ? 360 : 34) : 0
@@ -3641,7 +3641,7 @@ export function App() {
                   setEditQueue((prev) => prev.filter((it) => !keys.includes(it.key)))
                 }
               />
-            ) : (
+            ) : aiEnabled ? (
               <button
                 className="ai-rail"
                 onClick={toggleAi}
@@ -3650,7 +3650,7 @@ export function App() {
               >
                 <VegaMark size={22} />
               </button>
-            )}
+            ) : null}
           </div>
         )}
         <div className="app-content">

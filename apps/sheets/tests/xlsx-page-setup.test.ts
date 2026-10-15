@@ -167,19 +167,19 @@ describe('buildHeaderFooterXml', () => {
     )
   })
 
-  it('doubles a bare ampersand but keeps field codes', () => {
+  it('writes a stray ampersand as the && literal code and keeps real codes', () => {
     expect(buildHeaderFooterXml({ center: 'R & D' }, null)).toBe(
       '<headerFooter><oddHeader>&amp;CR &amp;&amp; D</oddHeader></headerFooter>',
     )
-    // Recognised codes stay verbatim: letters, &[name], &"font",&nn, &&.
     expect(
-      buildHeaderFooterXml({ center: '&P of &N &[Tab] &"Arial,Bold"&12 P&&L &D' }, null),
+      buildHeaderFooterXml(
+        { left: 'A && B &', right: 'Tom&Jerry &P/&N &[Page] &"Arial,Bold"&12x' },
+        null,
+      ),
     ).toBe(
-      '<headerFooter><oddHeader>&amp;C&amp;P of &amp;N &amp;[Tab] &amp;&quot;Arial,Bold&quot;&amp;12 P&amp;&amp;L &amp;D</oddHeader></headerFooter>',
-    )
-    // A trailing ampersand is literal too.
-    expect(buildHeaderFooterXml({ center: 'Fish &' }, null)).toBe(
-      '<headerFooter><oddHeader>&amp;CFish &amp;&amp;</oddHeader></headerFooter>',
+      '<headerFooter><oddHeader>&amp;LA &amp;&amp; B &amp;&amp;' +
+        '&amp;RTom&amp;&amp;Jerry &amp;P/&amp;N &amp;[Page] &amp;&quot;Arial,Bold&quot;&amp;12x</oddHeader>' +
+        '</headerFooter>',
     )
   })
 })
@@ -216,7 +216,9 @@ describe('applyPageSetupState headerFooter', () => {
       sheetName: 'S',
       header: { left: "Revenue $'000", right: 'Ref $& $1 $$' },
     })
-    expect(patched).toContain("<oddHeader>&amp;LRevenue $'000&amp;RRef $&amp;&amp; $1 $$</oddHeader>")
+    expect(patched).toContain(
+      "<oddHeader>&amp;LRevenue $'000&amp;RRef $&amp;&amp; $1 $$</oddHeader>",
+    )
     expect(patched).not.toContain('Old')
   })
 
@@ -436,5 +438,35 @@ describe('applyPageSetupState page breaks', () => {
   it('drops a zero break id instead of writing an invalid brk', () => {
     const xml = applyPageSetupState(BARE, { sheetName: 'S', rowBreaks: [0] })
     expect(xml).toBe(BARE)
+  })
+})
+
+describe('applyPageSetupState rightToLeft', () => {
+  it('writes rightToLeft="1" onto the sheetView and keeps the other attributes', () => {
+    const xml = applyPageSetupState(WITH_VIEW, { sheetName: 'S', rightToLeft: true })
+    expect(xml).toContain('<sheetView rightToLeft="1" workbookViewId="0"/>')
+    const headed = applyPageSetupState(
+      '<worksheet><sheetViews><sheetView showGridLines="0" workbookViewId="0"/></sheetViews><sheetData/></worksheet>',
+      { sheetName: 'S', rightToLeft: true },
+    )
+    expect(headed).toContain('showGridLines="0"')
+    expect(headed).toContain('rightToLeft="1"')
+  })
+
+  it('drops the attribute on false and leaves a sheet without one unchanged', () => {
+    const rtl =
+      '<worksheet><sheetViews><sheetView rightToLeft="1" workbookViewId="0"/></sheetViews><sheetData/></worksheet>'
+    expect(applyPageSetupState(rtl, { sheetName: 'S', rightToLeft: false })).toBe(
+      '<worksheet><sheetViews><sheetView workbookViewId="0"/></sheetViews><sheetData/></worksheet>',
+    )
+    expect(applyPageSetupState(WITH_VIEW, { sheetName: 'S', rightToLeft: false })).toBe(WITH_VIEW)
+  })
+
+  it('creates a sheetViews section on a bare worksheet when mirrored', () => {
+    const xml = applyPageSetupState(BARE, { sheetName: 'S', rightToLeft: true })
+    expect(xml).toBe(
+      '<worksheet><sheetViews><sheetView workbookViewId="0" rightToLeft="1"/></sheetViews>' +
+        '<sheetData/></worksheet>',
+    )
   })
 })

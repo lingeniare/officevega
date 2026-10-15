@@ -1,78 +1,59 @@
 /**
- * Link annotations for a merged PDF export. pdf-lib's copyPages drops every
- * annotation, so the fragments Chromium emitted lose their links; the merged
- * document re-emits them from the renderer's measured geometry (PdfLinkPlan):
- * internal links become direct /Dest [page /XYZ 0 y null] jumps — resolvable
- * across printed groups, which fragment-local named destinations never could
- * be — and external http(s)/mailto links become /URI actions.
- *
- * Electron-free so vitest can exercise it with an in-memory PDFDocument.
+ * GoTo link annotations for exported PDFs. Chromium only emits an internal
+ * link when the fragment resolves to an element with a matching `id` inside
+ * the same print job; the paginated preview prints clones without ids and in
+ * page chunks, so the renderer measures the links and they are stamped here
+ * after the (merged) document exists. Electron-free for unit tests.
  */
-import {
-  PDFArray,
-  PDFDocument,
-  PDFName,
-  PDFRef,
-  PDFString,
-} from 'pdf-lib'
-import type { PdfLinkPlan } from '../shared/ipc'
+import { PDFArray, PDFName, type PDFDocument } from 'pdf-lib'
+import type { PdfInternalLink } from '../shared/ipc'
 
-/** preview page index → merged page index, following the emitted group order */
-function mergedPageIndex(plan: PdfLinkPlan): Map<number, number> {
-  const index = new Map<number, number>()
-  let offset = 0
-  for (const g of plan.groups) {
-    for (let i = g.from; i <= g.to; i++) index.set(i, offset + (i - g.from))
-    offset += g.to - g.from + 1
+const MAX_LINKS = 20_000
+
+const frac = (v: unknown): v is number =>
+  typeof v === 'number' && Number.isFinite(v) && v >= 0 && v <= 1
+
+const pageIndex = (v: unknown): v is number =>
+  typeof v === 'number' && Number.isInteger(v) && v >= 0
+
+/** renderer-supplied links filtered to well-formed, in-range entries */
+export function sanitizePdfLinks(links: unknown, pageCount: number): PdfInternalLink[] {
+  if (!Array.isArray(links)) return []
+  const out: PdfInternalLink[] = []
+  for (const l of links as Array<Record<string, unknown>>) {
+    if (out.length >= MAX_LINKS) break
+    if (!l || typeof l !== 'object') continue
+    const { page, x, y, w, h, toPage, toY } = l
+    if (!pageIndex(page) || !pageIndex(toPage) || page >= pageCount || toPage >= pageCount) continue
+    if (!frac(x) || !frac(y) || !frac(w) || !frac(h) || !frac(toY)) continue
+    if (w <= 0 || h <= 0 || x + w > 1.0001 || y + h > 1.0001) continue
+    out.push({ page, x, y, w, h, toPage, toY })
   }
-  return index
+  return out
 }
 
-/**
- * Writes one /Link annotation per planned link onto the merged pages.
- * Returns the number of annotations applied; links whose target page or
- * bookmark can't be resolved are skipped rather than failing the export.
- */
-export function applyPdfLinkPlan(doc: PDFDocument, plan: PdfLinkPlan): number {
-  const index = mergedPageIndex(plan)
-  const pages = doc.getPages()
-  let applied = 0
-  for (const link of plan.links) {
-    const mi = index.get(link.page)
-    const page = mi == null ? undefined : pages[mi]
-    if (!page) continue
-    let extra: Record<string, unknown>
-    if (link.kind === 'dest') {
-      const target = link.target ? plan.targets[link.target] : undefined
-      const targetPage = target == null ? undefined : pages[index.get(target.page) ?? -1]
-      if (!target || !targetPage) continue
-      extra = { Dest: [targetPage.ref, PDFName.of('XYZ'), 0, target.y, null] }
-    } else {
-      if (!link.url) continue
-      extra = {
-        A: doc.context.obj({
-          Type: PDFName.of('Action'),
-          S: PDFName.of('URI'),
-          URI: PDFString.of(link.url),
-        }),
-      }
+export function addPdfInternalLinks(pdf: PDFDocument, links: PdfInternalLink[]): number {
+  const pages = pdf.getPages()
+  let added = 0
+  for (const l of sanitizePdfLinks(links, pages.length)) {
+    const page = pages[l.page]
+    const target = pages[l.toPage]
+    const pw = page.getWidth()
+    const ph = page.getHeight()
+    const annot = pdf.context.obj({
+      Type: 'Annot',
+      Subtype: 'Link',
+      Rect: [l.x * pw, ph - (l.y + l.h) * ph, (l.x + l.w) * pw, ph - l.y * ph],
+      Border: [0, 0, 0],
+      Dest: [target.ref, 'XYZ', null, target.getHeight() * (1 - l.toY), null],
+    })
+    let annots = page.node.lookup(PDFName.of('Annots'))
+    if (!(annots instanceof PDFArray)) {
+      annots = pdf.context.obj([])
+      page.node.set(PDFName.of('Annots'), annots)
     }
-    const annot = doc.context.register(
-      doc.context.obj({
-        Type: PDFName.of('Annot'),
-        Subtype: PDFName.of('Link'),
-        // print flag (matches the annotation style Chromium writes)
-        F: 4,
-        Border: [0, 0, 0],
-        Rect: link.rect,
-        ...extra,
-      }),
-    )
-    const existing = page.node.get(PDFName.of('Annots'))
-    const resolved = existing instanceof PDFRef ? doc.context.lookup(existing) : existing
-    if (resolved instanceof PDFArray) resolved.push(annot)
-    else page.node.set(PDFName.of('Annots'), doc.context.obj([annot]))
-    applied++
+    ;(annots as PDFArray).push(pdf.context.register(annot))
+    added += 1
   }
-  return applied
+  return added
 }

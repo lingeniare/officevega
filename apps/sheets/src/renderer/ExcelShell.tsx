@@ -205,7 +205,19 @@ function toggleFormulaBarExpand(): void {
 }
 
 /// Review > Translate targets, shown in their native names (never localized).
-const TRANSLATE_LANGUAGES = ['English', 'Русский'] as const
+const TRANSLATE_LANGUAGES = [
+  'English',
+  '简体中文',
+  '繁體中文',
+  '日本語',
+  '한국어',
+  'Español',
+  'Français',
+  'Deutsch',
+  'Português',
+  'Русский',
+  'العربية',
+] as const
 
 /// Glyph icons live in ribbon-icons.tsx, drawn to the shared icon standard
 /// (24×24 canvas, 1.5px strokes, round caps/joins); unmapped glyphs render
@@ -432,6 +444,8 @@ export interface PageLayoutEcho {
   readonly printHeadings?: boolean | undefined
   readonly showGridlines: boolean
   readonly showHeadings: boolean
+  /// Mirrored grid (column A at the right edge) for the active sheet.
+  readonly rightToLeft: boolean
   readonly printArea?: string | null | undefined
   readonly printTitles?: string | null | undefined
   readonly header?: HeaderFooterParts | null | undefined
@@ -584,14 +598,20 @@ export function ExcelShell({
       inside: () => [fileWrapRef.current],
     },
   )
-  const collapse = useRibbonCollapse('ai-sheets-ribbon-collapsed')
+  const collapse = useRibbonCollapse('ai-sheets-ribbon-collapsed', {
+    collapse: t('appRibbonCollapse'),
+    expand: t('appRibbonExpand'),
+    // ⌥⌘K / Ctrl+Alt+K: the icon-only middle density (docs parity, see #362)
+    compact: t('appRibbonCompact'),
+    expandFull: t('appRibbonExpand'),
+  })
   // Persisted so a closed AI panel stays closed on next launch (docs/slides parity)
   const [isCopilotOpen, setIsCopilotOpen] = useState(() =>
     aiPanelInitiallyOpen('ai-sheets-show-ai'),
   )
   // Suite-wide "AI sidebar" switch (Settings › General): off hides the panel,
   // rail and ribbon AI group; isCopilotOpen keeps its remembered state (#1947).
-  const aiEnabled = useAiPanelPrefs().enabled
+  const aiEnabled = useAiPanelPrefs().showAiSidebar
   const aiOpen = aiEnabled && isCopilotOpen
   useEffect(() => {
     rememberAiPanelOpen('ai-sheets-show-ai', isCopilotOpen)
@@ -3311,6 +3331,14 @@ function Ribbon({
             >
               <i className="check-box">{pageLayout.showHeadings ? '✓' : ''}</i>
               {t('appHeadings')}
+            </button>
+            <button
+              className="check-item"
+              data-tip={t('appRightToLeft')}
+              onClick={() => onCommand('toggle-right-to-left')}
+            >
+              <i className="check-box">{pageLayout.rightToLeft ? '✓' : ''}</i>
+              {t('appRightToLeft')}
             </button>
             <button
               className="check-item"

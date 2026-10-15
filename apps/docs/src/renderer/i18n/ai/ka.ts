@@ -192,4 +192,17 @@ export const ka = {
   aiSumAnalyzeMedia: 'მედიის ანალიზი',
   aiSumAnalyzeMediaDone: 'მედია განალიზებულია',
   aiCmdNoneUnchanged: '{count} შესაბამისი ბლოკი უცვლელი დარჩა; დოკუმენტი არ შეცვლილა.',
+  aiStarterMindMap: 'Generate a mind map of this document',
+  aiMindMapBtn: 'AI Mind Map',
+  aiMindMapPrompt:
+    'Generate a mind map of this document, organizing the main topics and key concepts by its section structure',
+  aiSumMindMap: 'Generate mind map',
+  aiMindMapTitle: 'Mind map',
+  aiMindMapNodes: '{count} nodes',
+  aiMindMapAskPrompt: 'Tell me about "{label}" in this document',
+  aiMindMapJump: 'Jump to the cited block',
+  aiMindMapExport: 'Export PNG',
+  aiMindMapReset: 'Reset view',
+  aiMindMapExpand: 'Expand branch',
+  aiMindMapCollapse: 'Collapse branch',
 } satisfies Record<keyof typeof en, string>

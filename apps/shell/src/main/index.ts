@@ -12,10 +12,13 @@ import {
 } from 'node:fs'
 import { randomUUID } from 'node:crypto'
 import { basename, dirname, extname, join, resolve } from 'node:path'
+import { mkdtemp, rm } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
 import {
   BrowserWindow,
   Menu,
   app,
+  clipboard,
   dialog,
   ipcMain,
   nativeImage,
@@ -29,6 +32,13 @@ import type { MenuItemConstructorOptions, NativeImage, WebContents } from 'elect
 import { atomicCopyFile, atomicWriteFile } from './atomic-write'
 import { registerLicenseIpc } from './license/service'
 import { tabStripOverlay } from './title-bar-overlay'
+import {
+  applyUiScaleTo,
+  applyUiScaleToAll,
+  changeUiScale,
+  onUiScaleChanged,
+  setUiScale,
+} from './ui-scale'
 import menuDocxIcon1x from './assets/menu-docx.png?asset'
 import menuDocxIcon2x from './assets/menu-docx@2x.png?asset'
 import menuXlsxIcon1x from './assets/menu-xlsx.png?asset'
@@ -334,9 +344,21 @@ import extractWorkerPath from './file-index/extract-worker?modulePath'
 import { FileIndexer } from './file-index/indexer'
 import { FileIndexStore } from './file-index/store'
 import { normalizeFileSearchSettings, probeDecision, SearchReranker } from './file-index/rerank'
-import { listKnowledgeFiles, readKnowledgeFilePage, searchKnowledgeBase } from './knowledge-base'
+import {
+  createKnowledgeDocument,
+  listKnowledgeFiles,
+  parseKbCreateRequest,
+  readKnowledgeFilePage,
+  searchKnowledgeBase,
+} from './knowledge-base'
+import { createFileViaCli } from './mcp/headless-cli'
+import { sanitizeFileBase } from './mcp/tools/document-tools'
 import { runHeadlessExport, type HeadlessExporters } from './headless-export'
 import { TabManager } from './tab-manager'
+import { tabMenuTemplate, type TabMenuActions, isProgramFile } from './tab-menu'
+import { runTabDocumentAction, type TabDocumentAction } from './tab-document-actions'
+import { duplicateDocumentFile } from './tab-duplicate'
+import { closeTabsInOrder, createRecentlyClosedTracker } from './tab-lifecycle'
 import { installShellCloseGuard } from './window-close-guard'
 import {
   activateDetached,
@@ -374,6 +396,17 @@ import { isUpdateChannel, type UpdateChannel } from '../shared/update-api'
  * Renderers load from each module's build output (apps/docs/out,
  * apps/sheets/out), so build those before running the shell.
  */
+
+// When the launcher (the CLI's export spawn, a terminal, a script) has gone away,
+// the inherited stdio pipes are closed and the next console.* or Node warning
+// write fails with EPIPE. Node's console drops its error listener before the
+// async failure fires, so without a persistent one Electron shows an
+// "Uncaught Exception: write EPIPE" dialog on quit.
+for (const stream of [process.stdout, process.stderr]) {
+  stream?.on('error', (err: NodeJS.ErrnoException) => {
+    if (err.code !== 'EPIPE') throw err
+  })
+}
 
 // ANY unpacked run (`npm run shell`, `npm run dev`, `npx electron .`) must not
 // share the installed app's userData or single-instance lock — otherwise a dev
@@ -420,7 +453,7 @@ if (headlessArgv.kind !== 'none') {
   app.dock?.hide()
 }
 
-// The product renames ("AI Office" → GenOffice → GetOffice → VegaOffice → OfficeVega) changed the userData path; migrate old user data once
+// The product renames ("AI Office" → OfficeVega → GetOffice → VegaOffice → OfficeVega) changed the userData path; migrate old user data once
 {
   const newDir = app.getPath('userData')
   const newEmpty = !existsSync(newDir) || readdirSync(newDir).length === 0
@@ -454,6 +487,18 @@ const SLIDES_OUT = app.isPackaged
 const PDF_OUT = app.isPackaged
   ? join(process.resourcesPath, 'modules', 'pdf')
   : join(APPS_ROOT, 'pdf', 'out')
+let cliRunner: ReturnType<typeof createCliRunner> | null = null
+/** the bundled officevega CLI on the app's own Node runtime (MCP headless tools, Ask AI create_document) */
+function bundledCliRunner(): ReturnType<typeof createCliRunner> {
+  cliRunner ??= createCliRunner({
+    executable: process.execPath,
+    entry: app.isPackaged
+      ? join(process.resourcesPath, 'cli', 'officevega.cjs')
+      : join(APPS_ROOT, '..', 'packages', 'cli', 'dist', 'officevega.cjs'),
+  })
+  return cliRunner
+}
+
 const MARKDOWN_OUT = app.isPackaged
   ? join(process.resourcesPath, 'modules', 'markdown')
   : join(APPS_ROOT, 'markdown', 'out')
@@ -603,14 +648,6 @@ function currentUiScale(): number {
   return cachedUiScale
 }
 
-function applyUiScaleToAllContents(factor: number): void {
-  for (const wc of webContents.getAllWebContents()) {
-    // devtools reports its own type at runtime (absent from the typings union)
-    if (wc.isDestroyed() || (wc.getType() as string) === 'devtools') continue
-    wc.setZoomFactor(factor)
-  }
-}
-
 let cachedDocTheme: DocTheme | null = null
 
 function currentDocTheme(): DocTheme {
@@ -665,7 +702,7 @@ function currentAiPanelPrefs(): AiPanelPrefs {
     customFontSize: saved.aiPanelCustomFontSize,
     spellcheck: saved.aiPanelSpellcheck,
     openInNewDocs: saved.aiPanelOpenInNewDocs,
-    enabled: saved.aiPanelEnabled,
+    showAiSidebar: saved.aiPanelShowSidebar ?? saved.aiPanelEnabled,
   })
   return cachedAiPanelPrefs
 }
@@ -711,6 +748,22 @@ function recordStarPromptDocOpen(): void {
 
 const tMain = createI18n({
   en: {
+    menuTabSave: 'Save',
+    menuTabSaveAs: 'Save As…',
+    menuTabPrint: 'Print…',
+    menuTabRename: 'Rename',
+    menuTabDuplicate: 'Duplicate (copy the saved file)',
+    menuTabSplitBeside: 'Split side by side',
+    menuTabCopyPath: 'Copy path',
+    menuTabCopyName: 'Copy file name',
+    menuTabReveal: 'Show in folder',
+    menuTabOpenDefault: 'Open with the default app',
+    menuTabMoveLeft: 'Move left',
+    menuTabMoveRight: 'Move right',
+    menuTabCloseOthers: 'Close other tabs',
+    menuTabCloseRight: 'Close tabs to the right',
+    menuTabCloseAll: 'Close all tabs',
+    menuTabReopen: 'Reopen closed tab',
     dlgAddFolderRoot: 'Add Folder to Home',
     watchdogTitle: 'Document is using too many resources',
     watchdogBody:
@@ -720,9 +773,13 @@ const tMain = createI18n({
     errFolderRootUnusable: 'The selected folder cannot be read',
     menuFile: 'File',
     menuSectionNew: 'New',
+    menuView: 'View',
+    menuUiZoomIn: 'Interface Zoom In',
+    menuUiZoomOut: 'Interface Zoom Out',
+    menuUiZoomReset: 'Reset Interface Zoom',
+    menuOpenInNewWindow: 'Open in New Window',
     menuNewDoc: 'Document',
     menuNewSheet: 'Spreadsheet',
-    menuOpenInNewWindow: 'Open in New Window',
     untitledSheet: 'Untitled Spreadsheet',
     untitledDoc: 'Untitled Document',
     untitledDeck: 'Untitled Presentation',
@@ -746,7 +803,6 @@ const tMain = createI18n({
     menuWindow: 'Window',
     menuHome: 'Home',
     backToHome: 'Back to Home',
-    menuSettings: 'Settings…',
     dlgOpenTitle: 'Open File',
     filterSupported: 'Supported Files',
     filterWord: 'Word Documents',
@@ -767,12 +823,12 @@ const tMain = createI18n({
     errUnsupportedExt: '.{ext} files are not supported',
     copySuffix: 'copy',
     menuHelp: 'Help',
-    menuWelcome: 'Welcome',
     menuUserGuide: 'User Guide',
     thirdPartyNotices: 'Third-Party Notices',
     menuExportDocx: 'Export as Word…',
     btnCancel: 'Cancel',
     pdfDocxFailedMsg: 'Export as Word failed',
+    pdfConvertFailedMsg: 'Export as Markdown / HTML failed',
     pdfDocxBusyMsg: 'A Word export is already in progress. Please wait for it to finish.',
     menuExportPptx: 'Export as PowerPoint…',
     pdfPptxFailedMsg: 'Export as PowerPoint failed',
@@ -788,6 +844,11 @@ const tMain = createI18n({
     pdfXlsxLocalSkippedDetail:
       'Pages {pages} could not be converted to cells; their worksheets carry a notice row instead.',
     pdfDocxLocalScannedMsg: 'Scanned document detected',
+    pdfMdLocalMissingMsg: 'Some content is missing from the Markdown',
+    pdfMdLocalScannedDetail:
+      'No editable text could be recognized, so the Markdown file has no usable content.',
+    pdfMdLocalDroppedDetail:
+      'Page(s) {pages} could not be reliably reconstructed; Markdown cannot carry images, so their content is missing.',
     pdfDocxLocalScannedDetail:
       'The pages were exported as images to preserve their appearance; no editable text could be recognized.',
     pdfDocxLocalDegradedMsg: 'Some pages were exported as images',
@@ -813,9 +874,26 @@ const tMain = createI18n({
     dlgPickSaveDir: 'Choose Default Save Location',
     errSaveDirUnusable:
       'The selected folder is not writable and cannot be used as the default save location',
+    menuSettings: 'Settings…',
+    menuWelcome: 'Welcome',
   },
-  
   ru: {
+    menuTabSave: 'Сохранить',
+    menuTabSaveAs: 'Сохранить как…',
+    menuTabPrint: 'Печать…',
+    menuTabRename: 'Переименовать',
+    menuTabDuplicate: 'Создать копию (сохранённый файл)',
+    menuTabSplitBeside: 'Разделить экран',
+    menuTabCopyPath: 'Копировать путь',
+    menuTabCopyName: 'Копировать имя файла',
+    menuTabReveal: 'Показать в папке',
+    menuTabOpenDefault: 'Открыть в приложении по умолчанию',
+    menuTabMoveLeft: 'Переместить влево',
+    menuTabMoveRight: 'Переместить вправо',
+    menuTabCloseOthers: 'Закрыть другие вкладки',
+    menuTabCloseRight: 'Закрыть вкладки справа',
+    menuTabCloseAll: 'Закрыть все вкладки',
+    menuTabReopen: 'Открыть закрытую вкладку',
     dlgAddFolderRoot: 'Добавить папку на главную',
     watchdogTitle: 'Документ потребляет слишком много ресурсов',
     watchdogBody:
@@ -825,9 +903,9 @@ const tMain = createI18n({
     errFolderRootUnusable: 'Не удалось прочитать выбранную папку',
     menuFile: 'Файл',
     menuSectionNew: 'Создать',
+    menuOpenInNewWindow: 'Открыть в новом окне',
     menuNewDoc: 'Документ',
     menuNewSheet: 'Таблица',
-    menuOpenInNewWindow: 'Открыть в новом окне',
     untitledSheet: 'Таблица без названия',
     untitledDoc: 'Документ без названия',
     untitledDeck: 'Презентация без названия',
@@ -848,10 +926,13 @@ const tMain = createI18n({
     menuSaveAs: 'Сохранить как…',
     menuClose: 'Закрыть',
     menuEdit: 'Правка',
+    menuView: 'Вид',
+    menuUiZoomIn: 'Увеличить интерфейс',
+    menuUiZoomOut: 'Уменьшить интерфейс',
+    menuUiZoomReset: 'Сбросить масштаб интерфейса к 100%',
     menuWindow: 'Окно',
     menuHome: 'Главная',
     backToHome: 'Вернуться на главную',
-    menuSettings: 'Настройки…',
     dlgOpenTitle: 'Открытие файла',
     filterSupported: 'Поддерживаемые файлы',
     filterWord: 'Документы Word',
@@ -872,12 +953,12 @@ const tMain = createI18n({
     errUnsupportedExt: 'файлы .{ext} не поддерживаются',
     copySuffix: 'копия',
     menuHelp: 'Справка',
-    menuWelcome: 'Приветствие',
     menuUserGuide: 'Руководство пользователя',
     thirdPartyNotices: 'Уведомления о стороннем ПО',
     menuExportDocx: 'Экспортировать в Word…',
     btnCancel: 'Отмена',
     pdfDocxFailedMsg: 'Не удалось экспортировать в Word',
+    pdfConvertFailedMsg: 'Не удалось экспортировать в Markdown / HTML',
     pdfDocxBusyMsg: 'Экспорт в Word уже выполняется. Дождитесь его завершения.',
     menuExportPptx: 'Экспортировать в PowerPoint…',
     pdfPptxFailedMsg: 'Не удалось экспортировать в PowerPoint',
@@ -893,6 +974,11 @@ const tMain = createI18n({
     pdfXlsxLocalSkippedDetail:
       'Страницы {pages} не удалось преобразовать в ячейки; на их листах добавлена строка с уведомлением.',
     pdfDocxLocalScannedMsg: 'Обнаружен отсканированный документ',
+    pdfMdLocalMissingMsg: 'В Markdown отсутствует часть содержимого',
+    pdfMdLocalScannedDetail:
+      'Редактируемый текст распознать не удалось, поэтому файл Markdown не содержит полезного содержимого.',
+    pdfMdLocalDroppedDetail:
+      'Страницы {pages} не удалось надёжно восстановить; Markdown не может содержать изображения, поэтому их содержимое отсутствует.',
     pdfDocxLocalScannedDetail:
       'Страницы экспортированы как изображения, чтобы сохранить их вид. Редактируемый текст распознать не удалось.',
     pdfDocxLocalDegradedMsg: 'Некоторые страницы экспортированы как изображения',
@@ -919,13 +1005,9 @@ const tMain = createI18n({
     dlgPickSaveDir: 'Выбрать папку сохранения по умолчанию',
     errSaveDirUnusable:
       'Выбранная папка недоступна для записи и не может использоваться как папка сохранения по умолчанию',
+    menuSettings: 'Настройки…',
+    menuWelcome: 'Приветствие',
   },
-  
-  
-  
-  
-  
-  
   uz: {
     menuFile: 'Fayl',
     menuSectionNew: 'Yangi',
@@ -1019,7 +1101,7 @@ const tMain = createI18n({
     dlgPickSaveDir: 'Standart saqlash joyini tanlang',
     errSaveDirUnusable:
       'Tanlangan jildga yozib bo‘lmaydi va undan standart saqlash joyi sifatida foydalanib bo‘lmaydi',
-      dlgAddFolderRoot: 'Jildni Bosh sahifaga qoʻshish',
+    dlgAddFolderRoot: 'Jildni Bosh sahifaga qoʻshish',
     errFolderRootUnusable: 'Tanlangan jild oʻqilmaydi',
     menuExportImages: 'Rasmlar sifatida eksport qilish…',
     menuOpenInNewWindow: 'Yangi oynada ochish',
@@ -1029,7 +1111,33 @@ const tMain = createI18n({
     watchdogWait: 'Kutishda davom etish',
     watchdogClose: 'Hujjatni yopish',
     errDuplicateFailed: 'Fayl nusxasi yaratilmadi',
-},
+    menuTabSave: 'Save',
+    menuTabSaveAs: 'Save As…',
+    menuTabPrint: 'Print…',
+    menuTabRename: 'Rename',
+    menuTabDuplicate: 'Duplicate (copy the saved file)',
+    menuTabSplitBeside: 'Split side by side',
+    menuTabCopyPath: 'Copy path',
+    menuTabCopyName: 'Copy file name',
+    menuTabReveal: 'Show in folder',
+    menuTabOpenDefault: 'Open with the default app',
+    menuTabMoveLeft: 'Move left',
+    menuTabMoveRight: 'Move right',
+    menuTabCloseOthers: 'Close other tabs',
+    menuTabCloseRight: 'Close tabs to the right',
+    menuTabCloseAll: 'Close all tabs',
+    menuTabReopen: 'Reopen closed tab',
+    menuView: 'View',
+    menuUiZoomIn: 'Interface Zoom In',
+    menuUiZoomOut: 'Interface Zoom Out',
+    menuUiZoomReset: 'Reset Interface Zoom',
+    pdfConvertFailedMsg: 'Export as Markdown / HTML failed',
+    pdfMdLocalMissingMsg: 'Some content is missing from the Markdown',
+    pdfMdLocalScannedDetail:
+      'No editable text could be recognized, so the Markdown file has no usable content.',
+    pdfMdLocalDroppedDetail:
+      'Page(s) {pages} could not be reliably reconstructed; Markdown cannot carry images, so their content is missing.',
+  },
   kk: {
     menuFile: 'Файл',
     menuSectionNew: 'Жаңа',
@@ -1123,7 +1231,7 @@ const tMain = createI18n({
     dlgPickSaveDir: 'Әдепкі сақтау орнын таңдау',
     errSaveDirUnusable:
       'Таңдалған қалтаға жазу мүмкін емес, оны әдепкі сақтау орны ретінде пайдалану мүмкін емес',
-      dlgAddFolderRoot: 'Қалтаны Басты бетке қосу',
+    dlgAddFolderRoot: 'Қалтаны Басты бетке қосу',
     errFolderRootUnusable: 'Таңдалған қалта оқылмайды',
     menuExportImages: 'Суреттер түрінде экспорттау…',
     menuOpenInNewWindow: 'Жаңа терезеде ашу',
@@ -1133,7 +1241,33 @@ const tMain = createI18n({
     watchdogWait: 'Күте беру',
     watchdogClose: 'Құжатты жабу',
     errDuplicateFailed: 'Файлдың көшірмесін жасау мүмкін болмады',
-},
+    menuTabSave: 'Save',
+    menuTabSaveAs: 'Save As…',
+    menuTabPrint: 'Print…',
+    menuTabRename: 'Rename',
+    menuTabDuplicate: 'Duplicate (copy the saved file)',
+    menuTabSplitBeside: 'Split side by side',
+    menuTabCopyPath: 'Copy path',
+    menuTabCopyName: 'Copy file name',
+    menuTabReveal: 'Show in folder',
+    menuTabOpenDefault: 'Open with the default app',
+    menuTabMoveLeft: 'Move left',
+    menuTabMoveRight: 'Move right',
+    menuTabCloseOthers: 'Close other tabs',
+    menuTabCloseRight: 'Close tabs to the right',
+    menuTabCloseAll: 'Close all tabs',
+    menuTabReopen: 'Reopen closed tab',
+    menuView: 'View',
+    menuUiZoomIn: 'Interface Zoom In',
+    menuUiZoomOut: 'Interface Zoom Out',
+    menuUiZoomReset: 'Reset Interface Zoom',
+    pdfConvertFailedMsg: 'Export as Markdown / HTML failed',
+    pdfMdLocalMissingMsg: 'Some content is missing from the Markdown',
+    pdfMdLocalScannedDetail:
+      'No editable text could be recognized, so the Markdown file has no usable content.',
+    pdfMdLocalDroppedDetail:
+      'Page(s) {pages} could not be reliably reconstructed; Markdown cannot carry images, so their content is missing.',
+  },
   az: {
     menuFile: 'Fayl',
     menuSectionNew: 'Yeni',
@@ -1226,7 +1360,7 @@ const tMain = createI18n({
     dlgPickSaveDir: 'Defolt yadda saxlama məkanını seçin',
     errSaveDirUnusable:
       'Seçilmiş qovluğa yazmaq mümkün deyil və o, standart saxlama yeri kimi istifadə edilə bilməz',
-      dlgAddFolderRoot: 'Qovluğu Ana səhifəyə əlavə et',
+    dlgAddFolderRoot: 'Qovluğu Ana səhifəyə əlavə et',
     errFolderRootUnusable: 'Seçilmiş qovluq oxuna bilmir',
     menuExportImages: 'Şəkillər kimi ixrac et…',
     menuOpenInNewWindow: 'Yeni pəncərədə aç',
@@ -1236,7 +1370,33 @@ const tMain = createI18n({
     watchdogWait: 'Gözləməyə davam et',
     watchdogClose: 'Sənədi bağla',
     errDuplicateFailed: 'Faylın dublikatını yaratmaq alınmadı',
-},
+    menuTabSave: 'Save',
+    menuTabSaveAs: 'Save As…',
+    menuTabPrint: 'Print…',
+    menuTabRename: 'Rename',
+    menuTabDuplicate: 'Duplicate (copy the saved file)',
+    menuTabSplitBeside: 'Split side by side',
+    menuTabCopyPath: 'Copy path',
+    menuTabCopyName: 'Copy file name',
+    menuTabReveal: 'Show in folder',
+    menuTabOpenDefault: 'Open with the default app',
+    menuTabMoveLeft: 'Move left',
+    menuTabMoveRight: 'Move right',
+    menuTabCloseOthers: 'Close other tabs',
+    menuTabCloseRight: 'Close tabs to the right',
+    menuTabCloseAll: 'Close all tabs',
+    menuTabReopen: 'Reopen closed tab',
+    menuView: 'View',
+    menuUiZoomIn: 'Interface Zoom In',
+    menuUiZoomOut: 'Interface Zoom Out',
+    menuUiZoomReset: 'Reset Interface Zoom',
+    pdfConvertFailedMsg: 'Export as Markdown / HTML failed',
+    pdfMdLocalMissingMsg: 'Some content is missing from the Markdown',
+    pdfMdLocalScannedDetail:
+      'No editable text could be recognized, so the Markdown file has no usable content.',
+    pdfMdLocalDroppedDetail:
+      'Page(s) {pages} could not be reliably reconstructed; Markdown cannot carry images, so their content is missing.',
+  },
   tk: {
     menuFile: 'Faýl',
     menuSectionNew: 'Täze',
@@ -1329,7 +1489,7 @@ const tMain = createI18n({
     dlgPickSaveDir: 'Bellenen ýatda saklama ýerini saýla',
     errSaveDirUnusable:
       'Saýlanan bukja ýazmak mümkin däl we ony deslapky ýatda saklama ýeri hökmünde ulanyp bolmaýar',
-      dlgAddFolderRoot: 'Bujany Baş sahypa goşuň',
+    dlgAddFolderRoot: 'Bujany Baş sahypa goşuň',
     errFolderRootUnusable: 'Saýlanan buja okalmaýar',
     menuExportImages: 'Suratlar hökmünde eksport ediň…',
     menuOpenInNewWindow: 'Täze penjirä açyň',
@@ -1339,7 +1499,33 @@ const tMain = createI18n({
     watchdogWait: 'Garaşyp durmak',
     watchdogClose: 'Resminamany ýap',
     errDuplicateFailed: 'Faýly göçürip bolmady',
-},
+    menuTabSave: 'Save',
+    menuTabSaveAs: 'Save As…',
+    menuTabPrint: 'Print…',
+    menuTabRename: 'Rename',
+    menuTabDuplicate: 'Duplicate (copy the saved file)',
+    menuTabSplitBeside: 'Split side by side',
+    menuTabCopyPath: 'Copy path',
+    menuTabCopyName: 'Copy file name',
+    menuTabReveal: 'Show in folder',
+    menuTabOpenDefault: 'Open with the default app',
+    menuTabMoveLeft: 'Move left',
+    menuTabMoveRight: 'Move right',
+    menuTabCloseOthers: 'Close other tabs',
+    menuTabCloseRight: 'Close tabs to the right',
+    menuTabCloseAll: 'Close all tabs',
+    menuTabReopen: 'Reopen closed tab',
+    menuView: 'View',
+    menuUiZoomIn: 'Interface Zoom In',
+    menuUiZoomOut: 'Interface Zoom Out',
+    menuUiZoomReset: 'Reset Interface Zoom',
+    pdfConvertFailedMsg: 'Export as Markdown / HTML failed',
+    pdfMdLocalMissingMsg: 'Some content is missing from the Markdown',
+    pdfMdLocalScannedDetail:
+      'No editable text could be recognized, so the Markdown file has no usable content.',
+    pdfMdLocalDroppedDetail:
+      'Page(s) {pages} could not be reliably reconstructed; Markdown cannot carry images, so their content is missing.',
+  },
   ky: {
     menuFile: 'Файл',
     menuSectionNew: 'Жаңы',
@@ -1432,7 +1618,7 @@ const tMain = createI18n({
     dlgPickSaveDir: 'Демейки сактоо ордун тандоо',
     errSaveDirUnusable:
       'Тандалган папкага жазууга болбойт, аны демейки сактоо жайгашкан жери катары колдонууга мүмкүн эмес',
-      dlgAddFolderRoot: 'Папканы Башкы бетке кошуу',
+    dlgAddFolderRoot: 'Папканы Башкы бетке кошуу',
     errFolderRootUnusable: 'Тандалган папка окулбайт',
     menuExportImages: 'Сүрөттөр катары экспорттоо…',
     menuOpenInNewWindow: 'Жаңа терезеде ачуу',
@@ -1442,7 +1628,33 @@ const tMain = createI18n({
     watchdogWait: 'Күтө берүү',
     watchdogClose: 'Документти жабуу',
     errDuplicateFailed: 'Файлдын көчүрмөсүн түзүү мүмкүн болбоду',
-},
+    menuTabSave: 'Save',
+    menuTabSaveAs: 'Save As…',
+    menuTabPrint: 'Print…',
+    menuTabRename: 'Rename',
+    menuTabDuplicate: 'Duplicate (copy the saved file)',
+    menuTabSplitBeside: 'Split side by side',
+    menuTabCopyPath: 'Copy path',
+    menuTabCopyName: 'Copy file name',
+    menuTabReveal: 'Show in folder',
+    menuTabOpenDefault: 'Open with the default app',
+    menuTabMoveLeft: 'Move left',
+    menuTabMoveRight: 'Move right',
+    menuTabCloseOthers: 'Close other tabs',
+    menuTabCloseRight: 'Close tabs to the right',
+    menuTabCloseAll: 'Close all tabs',
+    menuTabReopen: 'Reopen closed tab',
+    menuView: 'View',
+    menuUiZoomIn: 'Interface Zoom In',
+    menuUiZoomOut: 'Interface Zoom Out',
+    menuUiZoomReset: 'Reset Interface Zoom',
+    pdfConvertFailedMsg: 'Export as Markdown / HTML failed',
+    pdfMdLocalMissingMsg: 'Some content is missing from the Markdown',
+    pdfMdLocalScannedDetail:
+      'No editable text could be recognized, so the Markdown file has no usable content.',
+    pdfMdLocalDroppedDetail:
+      'Page(s) {pages} could not be reliably reconstructed; Markdown cannot carry images, so their content is missing.',
+  },
   tt: {
     menuFile: 'Файл',
     menuSectionNew: 'Яңа',
@@ -1536,7 +1748,7 @@ const tMain = createI18n({
     dlgPickSaveDir: 'Килешү буенча саклау урынын сайлагыз',
     errSaveDirUnusable:
       'Сайланган папкага язу мөмкин түгел, аны килешү буенча саклау урыны итеп кулланып булмый',
-      dlgAddFolderRoot: 'Папканы Баш биткә өстәү',
+    dlgAddFolderRoot: 'Папканы Баш биткә өстәү',
     errFolderRootUnusable: 'Сайланган папка укылмый',
     menuExportImages: 'Рәсемнәр итеп экспортлау…',
     menuOpenInNewWindow: 'Яңа тәрәзәдә ачу',
@@ -1546,7 +1758,33 @@ const tMain = createI18n({
     watchdogWait: 'Көтүдә дәвам итү',
     watchdogClose: 'Документны ябу',
     errDuplicateFailed: 'Файлның күчермәсен ясап булмады',
-},
+    menuTabSave: 'Save',
+    menuTabSaveAs: 'Save As…',
+    menuTabPrint: 'Print…',
+    menuTabRename: 'Rename',
+    menuTabDuplicate: 'Duplicate (copy the saved file)',
+    menuTabSplitBeside: 'Split side by side',
+    menuTabCopyPath: 'Copy path',
+    menuTabCopyName: 'Copy file name',
+    menuTabReveal: 'Show in folder',
+    menuTabOpenDefault: 'Open with the default app',
+    menuTabMoveLeft: 'Move left',
+    menuTabMoveRight: 'Move right',
+    menuTabCloseOthers: 'Close other tabs',
+    menuTabCloseRight: 'Close tabs to the right',
+    menuTabCloseAll: 'Close all tabs',
+    menuTabReopen: 'Reopen closed tab',
+    menuView: 'View',
+    menuUiZoomIn: 'Interface Zoom In',
+    menuUiZoomOut: 'Interface Zoom Out',
+    menuUiZoomReset: 'Reset Interface Zoom',
+    pdfConvertFailedMsg: 'Export as Markdown / HTML failed',
+    pdfMdLocalMissingMsg: 'Some content is missing from the Markdown',
+    pdfMdLocalScannedDetail:
+      'No editable text could be recognized, so the Markdown file has no usable content.',
+    pdfMdLocalDroppedDetail:
+      'Page(s) {pages} could not be reliably reconstructed; Markdown cannot carry images, so their content is missing.',
+  },
   ka: {
     menuFile: 'ფაილი',
     menuSectionNew: 'ახალი',
@@ -1639,7 +1877,7 @@ const tMain = createI18n({
     dlgPickSaveDir: 'აირჩიეთ ნაგულისხმევი შენახვის მდებარეობა',
     errSaveDirUnusable:
       'არჩეულ საქაღალდეში ჩაწერა შეუძლებელია და ის ნაგულისხმევ შენახვის ადგილად ვერ გამოიყენება',
-      dlgAddFolderRoot: 'საქაღალდის დამატება მთავარში',
+    dlgAddFolderRoot: 'საქაღალდის დამატება მთავარში',
     errFolderRootUnusable: 'არჩეული საქაღალდე ვერ იკითხება',
     menuExportImages: 'სურათებად ექსპორტი…',
     menuOpenInNewWindow: 'ახალ ფანჯარაში გახსნა',
@@ -1650,7 +1888,33 @@ const tMain = createI18n({
     watchdogWait: 'ლოდინის გაგრძელება',
     watchdogClose: 'დოკუმენტის დახურვა',
     errDuplicateFailed: 'ფაილის დუბლირება ვერ მოხერხდა',
-},
+    menuTabSave: 'Save',
+    menuTabSaveAs: 'Save As…',
+    menuTabPrint: 'Print…',
+    menuTabRename: 'Rename',
+    menuTabDuplicate: 'Duplicate (copy the saved file)',
+    menuTabSplitBeside: 'Split side by side',
+    menuTabCopyPath: 'Copy path',
+    menuTabCopyName: 'Copy file name',
+    menuTabReveal: 'Show in folder',
+    menuTabOpenDefault: 'Open with the default app',
+    menuTabMoveLeft: 'Move left',
+    menuTabMoveRight: 'Move right',
+    menuTabCloseOthers: 'Close other tabs',
+    menuTabCloseRight: 'Close tabs to the right',
+    menuTabCloseAll: 'Close all tabs',
+    menuTabReopen: 'Reopen closed tab',
+    menuView: 'View',
+    menuUiZoomIn: 'Interface Zoom In',
+    menuUiZoomOut: 'Interface Zoom Out',
+    menuUiZoomReset: 'Reset Interface Zoom',
+    pdfConvertFailedMsg: 'Export as Markdown / HTML failed',
+    pdfMdLocalMissingMsg: 'Some content is missing from the Markdown',
+    pdfMdLocalScannedDetail:
+      'No editable text could be recognized, so the Markdown file has no usable content.',
+    pdfMdLocalDroppedDetail:
+      'Page(s) {pages} could not be reliably reconstructed; Markdown cannot carry images, so their content is missing.',
+  },
 })
 
 const tm = (key: Parameters<typeof tMain>[1], params?: Parameters<typeof tMain>[2]) =>
@@ -1845,9 +2109,9 @@ function ensureFileIndexer(): FileIndexer | null {
 }
 
 const SEARCH_EXT_FAMILY: Record<string, readonly string[]> = {
-  docx: ['docx', 'doc'],
-  xlsx: ['xlsx', 'xlsm', 'xls', 'csv', 'tsv'],
-  pptx: ['pptx', 'ppt'],
+  docx: ['docx', 'doc', 'odt', 'ott'],
+  xlsx: ['xlsx', 'xlsm', 'xls', 'csv', 'tsv', 'ods', 'ots'],
+  pptx: ['pptx', 'ppt', 'odp', 'otp'],
   md: ['md', 'markdown', 'txt', 'json'],
   html: ['html', 'htm'],
 }
@@ -1945,11 +2209,100 @@ function applyMenuFor(kind: TabKind): void {
       buildHomeMenu()
   }
   withUserGuide()
+  withViewMenu()
+}
+
+/**
+ * The View › interface-scale items, shared by the home menu and every editor
+ * tab. CmdOrCtrl+Alt (not Shift): Shift+= is Sheets insert-cells and Docs
+ * superscript, and the View menu now exists on editor tabs too, where those
+ * accelerators are taken.
+ */
+function uiScaleMenuItems(): MenuItemConstructorOptions[] {
+  return [
+    {
+      label: tm('menuUiZoomIn'),
+      accelerator: 'CmdOrCtrl+Alt+=',
+      click: () => changeUiScale(APP_SETTINGS_PATH(), 1),
+    },
+    {
+      label: tm('menuUiZoomOut'),
+      accelerator: 'CmdOrCtrl+Alt+-',
+      click: () => changeUiScale(APP_SETTINGS_PATH(), -1),
+    },
+    { type: 'separator' },
+    {
+      label: tm('menuUiZoomReset'),
+      accelerator: 'CmdOrCtrl+Alt+0',
+      click: () => changeUiScale(APP_SETTINGS_PATH(), 0),
+    },
+  ]
+}
+
+function viewMenuTemplate(): MenuItemConstructorOptions {
+  return { label: tm('menuView'), submenu: uiScaleMenuItems() }
+}
+
+/**
+ * Interface-scale items in the View menu of every tab kind. Editor menus are
+ * built in the editor apps (docs/sheets/slides) or by the three shell-owned
+ * builders, so rather than teaching seven menu builders about the scale, the
+ * current menu is post-processed here — the same shape as withUserGuide below.
+ * An existing View menu (docs, slides: document zoom) gains the items after a
+ * separator; the rest get a fresh View menu inserted before the Help menu that
+ * withUserGuide has just guaranteed.
+ */
+function withViewMenu(): void {
+  const menu = Menu.getApplicationMenu()
+  if (!menu) return
+  const hasScale = menu.items.some((item) =>
+    item.submenu?.items.some((i) => i.accelerator === 'CmdOrCtrl+Alt+='),
+  )
+  if (hasScale) return
+  const view = menu.items.find((item) => item.label === tm('menuView'))
+  if (view?.submenu) {
+    // build the separator together with the items: Electron drops a separator
+    // that sits alone in a template
+    for (const item of Menu.buildFromTemplate([{ type: 'separator' }, ...uiScaleMenuItems()])
+      .items) {
+      view.submenu.append(item)
+    }
+    return
+  }
+  const viewItem = Menu.buildFromTemplate([viewMenuTemplate()]).items[0]!
+  const helpIdx = menu.items.findIndex((item) => item.role === 'help')
+  if (helpIdx === -1) menu.append(viewItem)
+  else menu.insert(helpIdx, viewItem)
+}
+
+/**
+ * Stamp the stored interface scale into every renderer — now, and for any
+ * window created later.
+ *
+ * `web-contents-created` is the hook that covers all three window kinds at
+ * once: the shell window, every tab's WebContentsView, and a detached editor
+ * window. Each gets it on `did-finish-load`, because a stylesheet inserted
+ * before the document exists is thrown away.
+ */
+function installUiScale(): void {
+  app.on('web-contents-created', (_event, contents) => {
+    contents.on('did-finish-load', () => applyUiScaleTo(contents, currentUiScale()))
+  })
+  applyUiScaleToAll(currentUiScale())
+  // A scale change moves the tab strip, so the editor views below it have to
+  // move too — and the Windows/Linux caption band is sized from it.
+  onUiScaleChanged((scale) => {
+    cachedUiScale = scale
+    tabManager?.layout()
+    refreshTitleBarOverlay()
+  })
 }
 
 function refreshTitleBarOverlay(): void {
   if (process.platform === 'darwin' || !shellWindow || shellWindow.isDestroyed()) return
-  shellWindow.setTitleBarOverlay(tabStripOverlay(nativeTheme.shouldUseDarkColors))
+  shellWindow.setTitleBarOverlay(
+    tabStripOverlay(nativeTheme.shouldUseDarkColors, currentUiScale()),
+  )
 }
 
 function createShellWindow(): void {
@@ -1971,7 +2324,7 @@ function createShellWindow(): void {
           // stays registered for its accelerators and opens from the strip's
           // menu button (Alt still reveals the native bar where one exists)
           titleBarStyle: 'hidden' as const,
-          titleBarOverlay: tabStripOverlay(nativeTheme.shouldUseDarkColors),
+          titleBarOverlay: tabStripOverlay(nativeTheme.shouldUseDarkColors, currentUiScale()),
           autoHideMenuBar: true,
         }),
     webPreferences: {
@@ -2018,14 +2371,17 @@ function createShellWindow(): void {
               : kind === 'html'
                 ? tm('untitledHtml')
                 : tm('untitledSheet'),
+    // the tab strip is interface chrome, so its height follows the scale
+    () => currentUiScale(),
   )
   tabManager = manager
+  manager.setClosedListener((closed) => recentlyClosed.push(closed))
 
   // Docking: a detached window dragged over this window's tab strip hands its
   // document back. The strip reports the insertion slot for each preview
   // (lastDockIndex); the slot is consumed by the dock that follows.
   setDockHost({
-    band: () => dockBandFor(win),
+    band: () => dockBandFor(win, currentUiScale()),
     preview: (x) => {
       if (!win.isDestroyed())
         win.webContents.send(TABS_CHANNELS.dockPreview, x === null ? null : { x })
@@ -2214,8 +2570,13 @@ const OPEN_DIALOG_EXTENSIONS = [
   'xls',
   'csv',
   'tsv',
+  'ods',
+  'ots',
   'pptx',
   'ppt',
+  'odt',
+  'odp',
+  'otp',
   'pdf',
   'md',
   'markdown',
@@ -2750,6 +3111,27 @@ function registerHomeIpc(): void {
     },
   )
 
+  ipcMain.handle('kb:create-document', async (_event, raw: unknown): Promise<unknown> => {
+    const req = parseKbCreateRequest(raw)
+    return createKnowledgeDocument(
+      {
+        dir: defaultSaveDir,
+        uniquePath: uniquePathIn,
+        sanitizeBase: sanitizeFileBase,
+        writeText: (path, text) => atomicWriteFile(path, Buffer.from(text, 'utf8')),
+        markdownToDocx: async (markdown, out) => {
+          await createFileViaCli(bundledCliRunner(), {
+            type: 'docx',
+            input: { name: 'content.md', content: markdown },
+            out,
+          })
+        },
+        recordRecent: recordRecentFile,
+      },
+      req,
+    )
+  })
+
   ipcMain.handle(
     HOME_CHANNELS.rerankSearch,
     async (_event, raw: unknown): Promise<FileSearchRerank | null> => {
@@ -2839,9 +3221,12 @@ function registerHomeIpc(): void {
       title: tm('dlgOpenTitle'),
       filters: [
         { name: tm('filterSupported'), extensions: OPEN_DIALOG_EXTENSIONS },
-        { name: tm('filterWord'), extensions: ['docx', 'doc'] },
-        { name: tm('filterExcel'), extensions: ['xlsx', 'xlsm', 'xls', 'csv', 'tsv'] },
-        { name: tm('filterPpt'), extensions: ['pptx', 'ppt'] },
+        { name: tm('filterWord'), extensions: ['docx', 'doc', 'odt', 'ott'] },
+        {
+          name: tm('filterExcel'),
+          extensions: ['xlsx', 'xlsm', 'xls', 'csv', 'tsv', 'ods', 'ots'],
+        },
+        { name: tm('filterPpt'), extensions: ['pptx', 'ppt', 'odp', 'otp'] },
         { name: tm('filterPdf'), extensions: ['pdf'] },
         { name: tm('filterMarkdown'), extensions: ['md', 'markdown', 'txt', 'json'] },
         { name: tm('filterHtml'), extensions: ['html', 'htm'] },
@@ -2938,21 +3323,7 @@ function registerHomeIpc(): void {
   ipcMain.handle(HOME_CHANNELS.duplicateFile, async (_event, path: unknown) => {
     if (typeof path !== 'string' || !existsSync(path)) return
     if (!isUserVisibleFile(path, fileTargetSources())) return
-    const ext = extname(path)
-    const base = basename(path, ext)
-    const dir = dirname(path)
-    for (let i = 1; ; i++) {
-      const target = join(dir, `${base} ${tm('copySuffix')}${i === 1 ? '' : ` ${i}`}${ext}`)
-      if (existsSync(target)) continue
-      try {
-        await atomicCopyFile(path, target)
-      } catch (err) {
-        showErrorDialog(shellWindow, tm('errDuplicateFailed'), err)
-        return
-      }
-      recordRecentFile(target)
-      return
-    }
+    await duplicateFile(path)
   })
 
   ipcMain.handle(HOME_CHANNELS.deleteFiles, async (_event, paths: unknown) => {
@@ -3097,8 +3468,7 @@ function registerHomeIpc(): void {
     const next = Math.round(factor * 1000) / 1000
     if (next === currentUiScale()) return
     cachedUiScale = next
-    writeAppSetting(APP_SETTINGS_PATH(), 'uiScale', next)
-    applyUiScaleToAllContents(next)
+    setUiScale(APP_SETTINGS_PATH(), next)
     for (const wc of webContents.getAllWebContents()) wc.send('app:ui-scale-changed', next)
   })
   // the editors' View-menu interface zoom uses the same setter (#1913)
@@ -3108,8 +3478,7 @@ function registerHomeIpc(): void {
     const next = Math.round(factor * 1000) / 1000
     if (next === currentUiScale()) return
     cachedUiScale = next
-    writeAppSetting(APP_SETTINGS_PATH(), 'uiScale', next)
-    applyUiScaleToAllContents(next)
+    setUiScale(APP_SETTINGS_PATH(), next)
     for (const wc of webContents.getAllWebContents()) wc.send('app:ui-scale-changed', next)
   })
 
@@ -3175,7 +3544,12 @@ function registerHomeIpc(): void {
       customFontSize: 'customFontSize' in raw ? raw.customFontSize : prev.customFontSize,
       spellcheck: 'spellcheck' in raw ? raw.spellcheck : prev.spellcheck,
       openInNewDocs: 'openInNewDocs' in raw ? raw.openInNewDocs : prev.openInNewDocs,
-      enabled: 'enabled' in raw ? raw.enabled : prev.enabled,
+      showAiSidebar:
+        'showAiSidebar' in raw
+          ? raw.showAiSidebar
+          : 'enabled' in raw
+            ? raw.enabled
+            : prev.showAiSidebar,
     })
     if (sameAiPanelPrefs(next, prev)) return prev
     cachedAiPanelPrefs = next
@@ -3185,7 +3559,7 @@ function registerHomeIpc(): void {
       aiPanelCustomFontSize: next.customFontSize,
       aiPanelSpellcheck: next.spellcheck,
       aiPanelOpenInNewDocs: next.openInNewDocs,
-      aiPanelEnabled: next.enabled,
+      aiPanelShowSidebar: next.showAiSidebar,
     })
     for (const wc of webContents.getAllWebContents()) wc.send('app:ai-panel-prefs-changed', next)
     return next
@@ -3596,6 +3970,84 @@ function activeHtmlTarget() {
   return activeEditorTarget('html', () => tabManager?.activeHtmlTab())
 }
 
+/** files of tabs that were closed, newest last, so "Reopen closed tab" can bring them back */
+const recentlyClosed = createRecentlyClosedTracker()
+
+function duplicateFile(path: string): Promise<string | undefined> {
+  return duplicateDocumentFile(path, {
+    copySuffix: tm('copySuffix'),
+    recordRecentFile,
+    onError: (error) => showErrorDialog(shellWindow, tm('errDuplicateFailed'), error),
+  })
+}
+
+/** The shell's side of every entry of the tab menu (see tab-menu.ts for what is offered). */
+function tabMenuActions(): TabMenuActions {
+  const documentAction = (id: string, action: TabDocumentAction) => {
+    if (!tabManager) return
+    runTabDocumentAction(
+      {
+        tabs: tabManager,
+        savePdf: (contents) => {
+          void flushPdfSave(contents)
+        },
+        savePdfAs: (target) => {
+          void savePdfAs(target)
+        },
+        printPdf: sendPdfPrintRequest,
+        saveMarkdown: (contents, mode) => {
+          void requestMarkdownSave(contents, mode)
+        },
+        printMarkdown: sendMarkdownPrintRequest,
+        saveHtml: (contents, mode) => {
+          void requestHtmlSave(contents, mode)
+        },
+        printHtml: sendHtmlPrintRequest,
+      },
+      id,
+      action,
+    )
+  }
+  return {
+    save: (id) => documentAction(id, 'save'),
+    saveAs: (id) => documentAction(id, 'saveAs'),
+    print: (id) => documentAction(id, 'print'),
+    openInNewWindow: (id) => detachTabToWindow(id),
+    // two windows side by side, each on its own half of the screen the tab is on
+    splitBeside: (id) => {
+      if (!tabManager || !shellWindow) return
+      const record = tabManager.detachTab(id)
+      if (!record) return
+      const win = createDetachedEditorWindow({ ...record, applyMenuFor })
+      const area = screen.getDisplayMatching(shellWindow.getBounds()).workArea
+      const half = Math.floor(area.width / 2)
+      if (shellWindow.isMaximized()) shellWindow.unmaximize()
+      if (shellWindow.isFullScreen()) shellWindow.setFullScreen(false)
+      shellWindow.setBounds({ x: area.x, y: area.y, width: half, height: area.height })
+      win.setBounds({ x: area.x + half, y: area.y, width: area.width - half, height: area.height })
+      win.focus()
+    },
+    rename: (id) => {
+      if (shellWindow && !shellWindow.isDestroyed())
+        shellWindow.webContents.send(TABS_CHANNELS.startRename, id)
+    },
+    duplicate: (path) => {
+      void duplicateFile(path).then((target) => {
+        if (target) openDocumentPath(target)
+      })
+    },
+    copyText: (text) => clipboard.writeText(text),
+    reveal: (path) => shell.showItemInFolder(path),
+    openDefault: (path) => {
+      // a document tab is a document, never a program; keep it that way for a renamed one
+      if (!isProgramFile(path)) void shell.openPath(path)
+    },
+    move: (id, toIndex) => tabManager?.reorderTab(id, toIndex),
+    closeTabs: (ids) => void (tabManager && closeTabsInOrder(tabManager, ids)),
+    reopenClosed: () => recentlyClosed.reopenNext(openDocumentPath, existsSync),
+  }
+}
+
 function registerTabsIpc(): void {
   ipcMain.on(TABS_CHANNELS.chromePressed, (event) => broadcastChromePressed(event.sender))
   ipcMain.handle(TABS_CHANNELS.list, () => tabManager?.list() ?? [])
@@ -3667,20 +4119,14 @@ function registerTabsIpc(): void {
     if (!tabManager || !shellWindow || typeof id !== 'string') return
     const tab = tabManager.list().find((t) => t.id === id)
     if (!tab || tab.kind === 'home') return
-    const template: MenuItemConstructorOptions[] = []
-    // every document tab except a chrome-free Present tab (a live preview of
-    // another tab's document — it has nothing of its own to move)
-    if (tabManager.canDetachTab(id)) {
-      template.push({
-        label: tm('menuOpenInNewWindow'),
-        click: () => detachTabToWindow(id),
-      })
-      template.push({ type: 'separator' })
-    }
-    template.push({
-      label: tm('menuClose'),
-      enabled: tab.closable,
-      click: () => void tabManager?.closeTab(id),
+    const template = tabMenuTemplate({
+      tab,
+      tabs: tabManager.list(),
+      canDetach: tabManager.canDetachTab(id),
+      fileExists: !!tab.filePath && existsSync(tab.filePath),
+      canReopen: recentlyClosed.getEntries().length > 0,
+      tm,
+      actions: tabMenuActions(),
     })
     Menu.buildFromTemplate(template).popup({
       window: shellWindow,
@@ -3832,6 +4278,7 @@ function buildHomeMenu(): void {
         { role: 'close', label: tm('menuClose') },
       ],
     },
+    viewMenuTemplate(),
     editMenuTemplate(process.platform, appMenuLabels(currentLang())),
     windowMenuTemplate(process.platform, appMenuLabels(currentLang())),
     {
@@ -4151,8 +4598,7 @@ function buildHtmlMenu(): void {
     waiter/target grant or clears its autosave pause early */
 let savingPdfAs = false
 
-async function savePdfAs(): Promise<void> {
-  const tab = activePdfTarget()
+async function savePdfAs(tab = activePdfTarget()): Promise<void> {
   const host = pdfHostWindow(tab)
   if (!tab?.filePath || !host || savingPdfAs) return
   savingPdfAs = true
@@ -4195,7 +4641,7 @@ let exportingPdfDocx = false
  * edits, pick the destination, convert in-process via PDFium wasm, write the
  * file and open it in a Docs tab. No login, no credits.
  */
-async function exportPdfAsDocxLocal(): Promise<void> {
+async function exportPdfAsDocxLocal(format: 'docx' | 'md' | 'html' = 'docx'): Promise<void> {
   const tab = activePdfTarget()
   const host = pdfHostWindow(tab)
   if (!tab?.filePath || !host) return
@@ -4210,18 +4656,30 @@ async function exportPdfAsDocxLocal(): Promise<void> {
   try {
     if (!(await flushPdfSave(tab.webContents, true))) return
     const picked = await showSaveDialogWithMemory(dialog, host, {
-      defaultPath: tab.filePath.replace(/\.pdf$/i, '.docx'),
-      filters: [{ name: tm('filterWord'), extensions: ['docx'] }],
+      defaultPath: tab.filePath.replace(/\.pdf$/i, `.${format}`),
+      filters: [
+        format === 'docx'
+          ? { name: tm('filterWord'), extensions: ['docx'] }
+          : format === 'md'
+            ? { name: 'Markdown', extensions: ['md'] }
+            : { name: tm('filterHtml'), extensions: ['html'] },
+      ],
     })
     if (picked.canceled || !picked.filePath) return
     // If the destination is already open in a docs tab, close it first (its
     // normal unsaved-changes guard applies) so the converted file opens fresh
     // instead of leaving a stale tab whose next save would clobber the result.
-    const staleTabId = tabManager?.findDocsTabByPath(picked.filePath)
+    const findStaleTab = () =>
+      format === 'docx'
+        ? tabManager?.findDocsTabByPath(picked.filePath)
+        : format === 'md'
+          ? tabManager?.findMarkdownTabByPath(picked.filePath)
+          : tabManager?.findHtmlTabByPath(picked.filePath)
+    const staleTabId = findStaleTab()
     if (staleTabId) {
       await tabManager?.closeTab(staleTabId)
       tabManager?.activateTab(tab.id)
-      if (tabManager?.findDocsTabByPath(picked.filePath)) return
+      if (findStaleTab()) return
     }
     host.setProgressBar(2)
     // encrypted PDFs prompt for the password (P23), looping on wrong entries;
@@ -4255,7 +4713,8 @@ async function exportPdfAsDocxLocal(): Promise<void> {
       },
     )
     if (result === null) return
-    await atomicWriteFile(picked.filePath, result.docx)
+    if (format === 'docx') await atomicWriteFile(picked.filePath, result.docx)
+    else await exportDocxBytesHeadless(result.docx, picked.filePath, format, basename(pdfPath))
 
     // degrade transparency (plan §7.6 dual-track split): whole scan → say so
     // once; individual image-fallback pages → name them;
@@ -4265,28 +4724,41 @@ async function exportPdfAsDocxLocal(): Promise<void> {
     const imagePages = result.pageResults
       .filter((r) => r.status !== 'ok' && r.status !== 'ocr')
       .map((r) => r.page)
-    if (result.scannedDocument) {
+    // Markdown cannot carry the image fallback, so for it those pages are
+    // missing rather than "exported as images"; HTML keeps them like Word
+    const imagesLost = format === 'md'
+    // scannedDocument means "mostly scanned"; for Markdown only a document
+    // where every page is an unrecognized scan is really empty (degraded
+    // pages had text, so even a fully degraded file is reported page by page)
+    const nothingLeft = imagesLost
+      ? result.pageResults.every((r) => r.status === 'scanned')
+      : result.scannedDocument
+    if (nothingLeft) {
       await dialog.showMessageBox(host, {
         type: 'info',
-        message: tm('pdfDocxLocalScannedMsg'),
-        detail: tm('pdfDocxLocalScannedDetail'),
+        message: tm(imagesLost ? 'pdfMdLocalMissingMsg' : 'pdfDocxLocalScannedMsg'),
+        detail: tm(imagesLost ? 'pdfMdLocalScannedDetail' : 'pdfDocxLocalScannedDetail'),
       })
     } else if (imagePages.length > 0 && ocrPages.length > 0) {
       // mixed documents surface BOTH facts in one dialog: which pages shipped
       // as images and which carry machine-read text the user should proofread
       await dialog.showMessageBox(host, {
         type: 'info',
-        message: tm('pdfDocxLocalDegradedMsg'),
+        message: tm(imagesLost ? 'pdfMdLocalMissingMsg' : 'pdfDocxLocalDegradedMsg'),
         detail:
-          tm('pdfDocxLocalDegradedDetail', { pages: imagePages.join(', ') }) +
+          tm(imagesLost ? 'pdfMdLocalDroppedDetail' : 'pdfDocxLocalDegradedDetail', {
+            pages: imagePages.join(', '),
+          }) +
           '\n\n' +
           tm('pdfDocxLocalOcrDetail', { pages: ocrPages.join(', ') }),
       })
     } else if (imagePages.length > 0) {
       await dialog.showMessageBox(host, {
         type: 'info',
-        message: tm('pdfDocxLocalDegradedMsg'),
-        detail: tm('pdfDocxLocalDegradedDetail', { pages: imagePages.join(', ') }),
+        message: tm(imagesLost ? 'pdfMdLocalMissingMsg' : 'pdfDocxLocalDegradedMsg'),
+        detail: tm(imagesLost ? 'pdfMdLocalDroppedDetail' : 'pdfDocxLocalDegradedDetail', {
+          pages: imagePages.join(', '),
+        }),
       })
     } else if (ocrPages.length > 0) {
       await dialog.showMessageBox(host, {
@@ -4315,7 +4787,7 @@ async function exportPdfAsDocxLocal(): Promise<void> {
             : String(err)
       void dialog.showMessageBox(host, {
         type: 'error',
-        message: tm('pdfDocxFailedMsg'),
+        message: tm(format === 'docx' ? 'pdfDocxFailedMsg' : 'pdfConvertFailedMsg'),
         detail,
       })
     }
@@ -4325,6 +4797,26 @@ async function exportPdfAsDocxLocal(): Promise<void> {
     closePdfPasswordDialog()
     exportingPdfDocx = false
     if (host && !host.isDestroyed()) host.setProgressBar(-1)
+  }
+}
+
+/**
+ * Markdown / HTML come out of the Word reconstruction: the in-memory .docx
+ * is parked in a temp dir and the hidden Docs exporter serializes it.
+ */
+async function exportDocxBytesHeadless(
+  docx: Uint8Array,
+  outPath: string,
+  format: 'md' | 'html',
+  sourceName: string,
+): Promise<void> {
+  const dir = await mkdtemp(join(tmpdir(), 'genoffice-pdf-convert-'))
+  try {
+    const docxPath = join(dir, sourceName.replace(/\.pdf$/i, '') + '.docx')
+    await atomicWriteFile(docxPath, docx)
+    await exportDocsHeadless(docxPath, outPath, format)
+  } finally {
+    await rm(dir, { recursive: true, force: true }).catch(() => {})
   }
 }
 
@@ -4555,7 +5047,7 @@ async function exportPdfAsXlsxLocal(): Promise<void> {
 ipcMain.handle(PDF_CHANNELS.convertOffice, async (e, format: unknown) => {
   // only the active pdf tab may trigger a conversion (its file is the source)
   if (activePdfTarget()?.webContents.id !== e.sender.id) return
-  if (format === 'docx') await exportPdfAsDocxLocal()
+  if (format === 'docx' || format === 'md' || format === 'html') await exportPdfAsDocxLocal(format)
   else if (format === 'xlsx') await exportPdfAsXlsxLocal()
   else if (format === 'pptx') await exportPdfAsPptxLocal()
 })
@@ -4792,9 +5284,8 @@ app.whenReady().then(async () => {
   // editor WebContentsView tabs, dialogs — boots at the persisted UI scale.
   // Print/export is unaffected: printToPDF ignores the page zoom factor.
   app.on('web-contents-created', (_event, contents) => {
-    // devtools reports its own type at runtime (absent from the typings union)
-    if ((contents.getType() as string) === 'devtools') return
-    contents.setZoomFactor(currentUiScale())
+    // zoom at creation too — did-finish-load (installUiScale) would flash at 1x
+    applyUiScaleTo(contents, currentUiScale())
   })
   // first scan waits for the windows to come up; later ones follow folder changes
   setTimeout(() => ensureFileIndexer()?.refresh(), 4000)
@@ -4961,12 +5452,7 @@ app.whenReady().then(async () => {
     // the headless create_*/read_* tools delegate to the bundled officevega CLI
     // (the same engines, no second implementation); it runs on the app's own
     // Node runtime via ELECTRON_RUN_AS_NODE
-    cliRunner: createCliRunner({
-      executable: process.execPath,
-      entry: app.isPackaged
-        ? join(process.resourcesPath, 'cli', 'officevega.cjs')
-        : join(APPS_ROOT, '..', 'packages', 'cli', 'dist', 'officevega.cjs'),
-    }),
+    cliRunner: bundledCliRunner(),
     // lets the content tools take a `document` argument (tab id or path) and edit
     // a tab the *user* has open, with no create_session involved
     resolveTarget: createOpenTargetResolver({
@@ -4990,6 +5476,7 @@ app.whenReady().then(async () => {
   void startMcpFromSettings(currentMcpSettings()).catch((error) => {
     console.error('[mcp] failed to start on boot:', error)
   })
+  installUiScale()
   createShellWindow()
   // deferred to ready: labels need currentLang(), which reads app.getLocale()
   installBackToHomeItems()

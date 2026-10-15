@@ -67,8 +67,9 @@ details and requirements in [Download](#download).
 
 ## Demo
 
-Six apps, one AI panel, a file search reranked by TypeSafe Jev, and a
-command line for your coding agent. Every
+Six apps, one AI panel, a file search reranked by TypeSafe Jev, an Ask AI
+that answers from your starred files with sources, and a command line for
+your coding agent. Every
 screenshot is the real app on macOS, with the AI driven from the prompt you
 can read in the panel.
 
@@ -212,7 +213,7 @@ same engines as the apps, without opening a window.
 </tr>
 </table>
 
-### 9 · MCP — the same tools over the Model Context Protocol
+### 10 · MCP — the same tools over the Model Context Protocol
 
 Every `officevega` command is also an MCP tool. Claude Code, Claude Desktop,
 Cursor and any other MCP client can start `officevega mcp` themselves, with no

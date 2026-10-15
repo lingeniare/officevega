@@ -187,7 +187,19 @@ const themeDisplayName = (tp: SlideThemePreset, t: (key: StringKey) => string): 
 /** Translation target languages (for AI proofread/translate presets) */
 const TRANSLATE_TARGETS: StringKey[] = [
   'ribbonLangEnglish',
+  'ribbonLangSimplifiedChinese',
+  'ribbonLangJapanese',
+  'ribbonLangKorean',
+  'ribbonLangFrench',
+  'ribbonLangGerman',
+  'ribbonLangSpanish',
+  'ribbonLangThai',
+  'ribbonLangIndonesian',
   'ribbonLangRussian',
+  'ribbonLangArabic',
+  'ribbonLangPortuguese',
+  'ribbonLangItalian',
+  'ribbonLangPolish',
   'ribbonLangCzech',
   'ribbonLangDutch',
   'ribbonLangMalay',
@@ -1383,7 +1395,13 @@ export function Ribbon({
   // Expanded/collapsed widths are cached per group so the required width is
   // computable in every state (before the first fold the collapsed width is
   // an estimate, corrected by measurement as soon as the group first folds).
-  const collapse = useRibbonCollapse('ai-slides-ribbon-collapsed')
+  const collapse = useRibbonCollapse('ai-slides-ribbon-collapsed', {
+    collapse: t('ribbonCollapse'),
+    expand: t('ribbonExpand'),
+    // ⌥⌘K / Ctrl+Alt+K: the icon-only middle density (docs parity, see #362)
+    compact: t('ribbonCompact'),
+    expandFull: t('ribbonExpand'),
+  })
   const bodyRef = useRef<HTMLDivElement | null>(null)
   const inlineWidthsRef = useRef(new Map<string, number>())
   const collapsedWidthsRef = useRef(new Map<string, number>())

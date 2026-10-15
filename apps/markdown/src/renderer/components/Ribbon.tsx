@@ -9,6 +9,7 @@ import {
   useRibbonCollapse,
 } from '@genoffice/ui'
 import { useI18n } from '../i18n/locale'
+import { MARKDOWN_THEME_IDS, type MarkdownTheme } from '../../shared/markdown-theme'
 import type { StringKey } from '../i18n/locale'
 import type { ExportFormat } from '../../shared/ipc'
 import { VegaMark } from '../ai/AiPanel'
@@ -32,6 +33,7 @@ import {
   IconTable,
   IconTaskList,
   IconUndo,
+  IconPalette,
 } from './icons'
 
 interface Props {
@@ -61,6 +63,8 @@ interface Props {
   hasOutline: boolean
   spellcheck: boolean
   onToggleSpellcheck: () => void
+  mdTheme: MarkdownTheme
+  onMarkdownTheme: (theme: MarkdownTheme) => void
   aiOpen: boolean
   /** Suite-wide AI switch (#1947): false hides the AI ribbon group */
   aiEnabled?: boolean
@@ -110,8 +114,8 @@ const toggleStyle = (editor: Editor | null, style: StylableMark) =>
 const toggleList = (editor: Editor | null, list: ListKind) =>
   editor && uiOp(editor, { op: 'toggleList', target: 'selection', list })
 
-/** lucide: file-text / wand-sparkles / brush, same set as the docs ribbon */
-function AiFeatureIcon({ kind }: { kind: 'summarize' | 'polish' | 'tidy' }) {
+/** doc + sparkle / pen + sparkle / lines + sparkle, same glyphs as the docs ribbon */
+function AiFeatureIcon({ kind }: { kind: 'summarize' | 'polish' | 'tidy' | 'mindmap' }) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -149,7 +153,81 @@ function AiFeatureIcon({ kind }: { kind: 'summarize' | 'polish' | 'tidy' }) {
           <path d="M7.07 14.94c-1.66 0-3 1.35-3 3.02 0 1.33-2.5 1.52-2 2.02 1.08 1.1 2.49 2.02 4 2.02 2.2 0 4-1.8 4-4.04a3.01 3.01 0 0 0-3-3.02z" />
         </>
       )}
+      {kind === 'mindmap' && (
+        <>
+          <rect x="2.5" y="9.5" width="6" height="5" rx="1.5" />
+          <rect x="15.5" y="4" width="6" height="5" rx="1.5" />
+          <rect x="15.5" y="15" width="6" height="5" rx="1.5" />
+          <path d="M8.5 12h3.5M12 12V6.5h3.5M12 12v5.5h3.5" />
+        </>
+      )}
+      {kind !== 'polish' && (
+        <path d="M17 14L17.2579 14.697C17.5961 15.611 17.7652 16.068 18.0986 16.4014C18.432 16.7348 18.889 16.9039 19.803 17.2421L20.5 17.5L19.803 17.7579C18.889 18.0961 18.432 18.2652 18.0986 18.5986C17.7652 18.932 17.5961 19.389 17.2579 20.303L17 21L16.7421 20.303C16.4039 19.389 16.2348 18.932 15.9014 18.5986C15.568 18.2652 15.111 18.0961 14.197 17.7579L13.5 17.5L14.197 17.2421C15.111 16.9039 15.568 16.7348 15.9014 16.4014C16.2348 16.068 16.4039 15.611 16.7421 14.697L17 14Z" />
+      )}
     </svg>
+  )
+}
+
+const MARKDOWN_THEME_LABELS: Record<Exclude<MarkdownTheme, 'default'>, string> = {
+  'notion-light': 'Notion Light',
+  'notion-dark': 'Notion Dark',
+  'drake-dark': 'Drake Dark',
+  blubook: 'Blubook',
+  nord: 'Nord',
+  newsprint: 'Newsprint',
+}
+
+/** Paper theme picker: a ribbon button with a small theme list. Selecting a
+ *  theme persists through the caller and re-scopes the paper via
+ *  data-markdown-theme (see markdown-themes.css). */
+function ThemePicker({
+  mdTheme,
+  disabled,
+  onPick,
+}: {
+  mdTheme: MarkdownTheme
+  disabled?: boolean
+  onPick: (theme: MarkdownTheme) => void
+}) {
+  const { t } = useI18n()
+  const [open, setOpen] = useState(false)
+  const wrapRef = useRef<HTMLDivElement | null>(null)
+  useDismissablePopover(open, () => setOpen(false), {
+    inside: () => [wrapRef.current],
+  })
+  return (
+    <div className="md-theme-wrap" ref={wrapRef}>
+      <IconBtn
+        title={t('mdThemeTitle')}
+        active={open}
+        disabled={disabled}
+        onClick={() => setOpen((v) => !v)}
+      >
+        <IconPalette size={18} />
+      </IconBtn>
+      {open && (
+        <div className="md-theme-menu" role="menu" aria-label={t('mdThemeTitle')}>
+          {(
+            ['default', ...MARKDOWN_THEME_IDS.filter((id) => id !== 'default')] as MarkdownTheme[]
+          ).map((id) => (
+            <button
+              key={id}
+              type="button"
+              role="menuitemradio"
+              aria-checked={mdTheme === id}
+              className={`md-theme-item${mdTheme === id ? ' on' : ''}`}
+              onClick={() => {
+                setOpen(false)
+                if (id !== mdTheme) onPick(id)
+              }}
+            >
+              {id === 'default' ? t('mdThemeDefault') : MARKDOWN_THEME_LABELS[id]}
+              {mdTheme === id && <span className="md-theme-check">✓</span>}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
   )
 }
 
@@ -209,6 +287,8 @@ export function Ribbon({
   hasOutline,
   spellcheck,
   onToggleSpellcheck,
+  mdTheme,
+  onMarkdownTheme,
   aiOpen,
   aiEnabled = true,
   onToggleAi,
@@ -303,6 +383,7 @@ export function Ribbon({
       btn: 'aiTidyBtn',
       prompt: () => t(hasSelection() ? 'aiTidySelectionPrompt' : 'aiTidyPrompt'),
     },
+    { kind: 'mindmap', btn: 'aiMindMapBtn', prompt: () => t('aiMindMapPrompt') },
   ] as const
 
   return (
@@ -694,6 +775,11 @@ export function Ribbon({
                 <IconOutlineView size={ICON} />
               </IconBtn>
             )}
+            <ThemePicker
+              mdTheme={mdTheme}
+              disabled={disabled || sourceMode || sourceViewOpen}
+              onPick={onMarkdownTheme}
+            />
             <IconBtn
               title={t('spellcheck')}
               active={spellcheck}

@@ -15,6 +15,7 @@ import {
   type MdOp,
 } from '../editor/ops'
 import { t } from '../i18n/locale'
+import { MIND_MAP_LIMITS, MIND_MAP_TOOL, parseMindMapTree } from './mind-map'
 import {
   DraftLanding,
   type AiDocWriter,
@@ -271,6 +272,7 @@ export const AGENT_TOOLS: AgentToolDef[] = [
     inputSchema: { type: 'object', properties: {}, required: [] },
     readonly: true,
   },
+  MIND_MAP_TOOL,
 ]
 
 // ── executor ──
@@ -575,6 +577,26 @@ export function executeTool(
             done: t('aiToolGenImageDone'),
           })
         })
+    }
+
+    case 'generate_mindmap': {
+      const summary = t('aiToolMindMap')
+      const parsed = parseMindMapTree(call.input, doc.childCount)
+      if (!parsed.ok) return fail(parsed.error, summary)
+      const focus = typeof call.input.focus === 'string' ? call.input.focus.trim() : ''
+      const trimmedNote = parsed.trimmed
+        ? ` (trimmed to the ${MIND_MAP_LIMITS.maxNodes}-node / depth-${MIND_MAP_LIMITS.maxDepth} limit)`
+        : ''
+      return {
+        output:
+          `Mind map rendered as an interactive card in the chat: ${parsed.nodeCount} nodes, depth ${parsed.depth}` +
+          `${focus ? `, focused on "${focus.slice(0, MIND_MAP_LIMITS.maxFocusChars)}"` : ''}${trimmedNote}. ` +
+          'The user can expand branches, click a node to ask about it, jump to the cited block, or export the map. ' +
+          'Do not repeat the map content; reply with one short sentence.',
+        mutated: false,
+        summary,
+        display: { kind: 'mindmap', tree: parsed.tree },
+      }
     }
 
     default:

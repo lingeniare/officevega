@@ -58,7 +58,7 @@ const FILE_ICONS: Record<string, string> = {
    width, so it ellipsizes and a hover ScreenTip carries the full list. Keep in
    sync with the main-process open-dialog filter (OPEN_DIALOG_EXTENSIONS). */
 const OPEN_LOCAL_EXTENSIONS =
-  '.docx / .xlsx / .xlsm / .xls / .csv / .tsv / .pptx / .pdf / .md / .html'
+  '.docx / .odt / .ott / .xlsx / .xlsm / .xls / .csv / .tsv / .ods / .ots / .pptx / .odp / .otp / .pdf / .md / .html'
 
 /** drag payload of home file/folder rows (JSON array of absolute paths) */
 const DRAG_PATHS_MIME = 'application/x-officevega-paths'
@@ -71,7 +71,7 @@ const TREE_STATE_KEY = 'home.folderTree'
  * Width of the viewport that `position: fixed` elements anchor to. The layout
  * engine owns this coordinate system, so documentElement's client rect is the
  * value to compute menu offsets from; window.innerWidth can disagree on scaled
- * Linux desktops, which pushed row menus past the window's left edge (#1946).
+ * Linux desktops, which pushed row menus past the window's left edge (genoffice#1946).
  */
 function fixedViewportWidth(): number {
   return document.documentElement.clientWidth
@@ -241,9 +241,9 @@ const FILTERS: { key: string; label: StringKey }[] = [
 
 /** sidebar filter keys that stand for a family of extensions (mirrors recent-files.ts) */
 const FILTER_FAMILY: Record<string, readonly string[]> = {
-  docx: ['docx', 'doc'],
-  xlsx: ['xlsx', 'xlsm', 'xls', 'csv', 'tsv'],
-  pptx: ['pptx', 'ppt'],
+  docx: ['docx', 'doc', 'odt', 'ott'],
+  xlsx: ['xlsx', 'xlsm', 'xls', 'csv', 'tsv', 'ods', 'ots'],
+  pptx: ['pptx', 'ppt', 'odp', 'otp'],
   md: ['md', 'markdown', 'txt', 'json'],
   html: ['html', 'htm'],
 }
@@ -1252,7 +1252,7 @@ export function Home() {
     void window.aiOffice.getAiPanelPrefs?.().then(applyAiPanelPrefs)
     return window.aiOffice.onAiPanelPrefsChanged?.(applyAiPanelPrefs)
   }, [])
-  const aiEnabled = useAiPanelPrefs().enabled
+  const aiEnabled = useAiPanelPrefs().showAiSidebar
   const [filter, setFilter] = useState('all')
   // ── Starred groups (named buckets the Starred view can filter on) ──
   // groups that currently have at least one starred file (drives the pills)

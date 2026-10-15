@@ -71,38 +71,6 @@ describe('removeLink', () => {
   })
 })
 
-describe('rendered link/anchor ids (#1975)', () => {
-  it('writes internal hrefs as #bk--<bookmark>; targets stay data-bookmarks only', () => {
-    const editor = new Editor({
-      element: document.createElement('div'),
-      extensions: editorExtensions,
-      content: {
-        type: 'doc',
-        content: [
-          {
-            type: 'docParagraph',
-            attrs: { docxIndex: null, bookmarks: ['_Toc1'] },
-            content: [
-              {
-                type: 'text',
-                text: 'jump',
-                marks: [{ type: 'link', attrs: { href: '#_Toc1' } }],
-              },
-            ],
-          },
-        ],
-      },
-    })
-    live.push(editor)
-    const html = editor.getHTML()
-    expect(html).toContain('data-bookmarks="_Toc1"')
-    expect(html).toContain('href="#bk--_Toc1"')
-    // no bk-- id at rest — exports install one on the print surface only so the
-    // hidden editor copy can't shadow the printed clone's anchor resolution
-    expect(html).not.toContain('id="bk--_Toc1"')
-  })
-})
-
 describe('linkTarget', () => {
   it('classifies browser links, bookmarks and the rest', () => {
     expect(linkTarget('https://a.b/c')).toEqual({ kind: 'external', url: 'https://a.b/c' })
@@ -112,9 +80,6 @@ describe('linkTarget', () => {
       url: 'https://www.example.com/x',
     })
     expect(linkTarget('#_Toc123')).toEqual({ kind: 'anchor', name: '_Toc123' })
-    // renderHTML prefixes internal hrefs with the shadow-anchor id; the click
-    // path must map it back to the Word bookmark name
-    expect(linkTarget('#bk--_Toc123')).toEqual({ kind: 'anchor', name: '_Toc123' })
     expect(linkTarget('#')).toBeNull()
     expect(linkTarget('javascript:alert(1)')).toBeNull()
     expect(linkTarget('file:///etc/passwd')).toBeNull()

@@ -1,5 +1,6 @@
 import type {
   AiChatResponse,
+  AiCustomProtocol,
   AiMediaProviderConfig,
   AiMediaProviderId,
   AiMediaProviderMeta,
@@ -218,6 +219,12 @@ export interface HomeApi {
     suggestedName: string,
     dialogTitle: string,
   ): Promise<{ ok: boolean; path?: string; error?: string }>
+  /** write the AI's markdown as a new .md / .docx in the save folder; resolves to its path */
+  kbCreateDocument(request: {
+    title: string
+    format: 'md' | 'docx'
+    content: string
+  }): Promise<{ path: string }>
   /** the user's AI provider settings (shared with every app's panel) */
   aiGetSettings(): Promise<AiSettings>
   /** one streamed model turn over the shared ai:stream handler */
@@ -439,8 +446,12 @@ export interface HomeApi {
     /** drop catalog ids ending with any of these suffixes (':free', '-latest', 'meta') */
     excludeSuffixes?: readonly string[]
   }): Promise<ProviderModelCatalog>
-  /** live model list advertised by a user-hosted OpenAI-compatible endpoint; empty when it cannot answer */
-  getCustomModels(baseUrl: string, apiKey?: string): Promise<CodexModelCatalog>
+  /** live model list advertised by a user-hosted endpoint, probed on the route its declared protocol speaks; empty when it cannot answer */
+  getCustomModels(
+    baseUrl: string,
+    apiKey?: string,
+    api?: AiCustomProtocol,
+  ): Promise<CodexModelCatalog>
   /** one-shot round trip against the given (possibly unsaved) settings — the settings-UI connection test */
   testAiSettings(settings: AiSettings): Promise<AiChatResponse>
   /** image generation / media analysis provider catalog */

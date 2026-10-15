@@ -1561,4 +1561,8 @@ export const ky = {
   appLargeFilterApplying: 'Чыпка файлга колдонулуп жатат…',
   appPrintWorkbookTooLarge:
     'Бул иш китеп толук жүктөө үчүн өтө чоң, ошондуктан аны басып чыгаруу же PDFге экспорттоо мүмкүн эмес.',
+  appRibbonCompact: 'Compact Ribbon (icons only)',
+  appRightToLeft: 'Right-to-Left',
+  appRightToLeftOn: 'Grid direction: right-to-left.',
+  appRightToLeftOff: 'Grid direction: left-to-right.',
 } satisfies Record<keyof typeof en, string>

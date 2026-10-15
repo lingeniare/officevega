@@ -60,6 +60,7 @@ export { safeExternalUrl, type SafeExternalUrlOptions } from './safe-external-ur
 export {
   fetchWithSsrfGuard,
   isBlockedAddress,
+  isFakeIpDnsArtifact,
   isSafeRemoteUrl,
   type FetchWithSsrfGuardOptions,
 } from './safe-remote-url'
@@ -116,3 +117,4 @@ export {
   type PrintDocumentOptions,
 } from './print-window'
 export { abortOnDestroyed, type DestroyableSender } from './abort-on-destroyed'
+export { recoveryCopyDiskNewer } from './recovery-copy'

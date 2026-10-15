@@ -1557,4 +1557,8 @@ export const kk = {
   appLargeFilterApplying: 'Сүзгі файлға қолданылуда…',
   appPrintWorkbookTooLarge:
     'Бұл жұмыс кітабы жадқа толық жүктеу үшін тым үлкен, сондықтан оны басып шығару немесе PDF-ке экспорттау мүмкін емес.',
+  appRibbonCompact: 'Compact Ribbon (icons only)',
+  appRightToLeft: 'Right-to-Left',
+  appRightToLeftOn: 'Grid direction: right-to-left.',
+  appRightToLeftOff: 'Grid direction: left-to-right.',
 } satisfies Record<keyof typeof en, string>

@@ -1,7 +1,7 @@
 /** Main-process i18n strings for OfficeVega Slides (dialogs, native menus, export, autosave prompts). */
 import { createI18n, getUiLang } from '@genoffice/i18n'
 
-export const tMain = createI18n({
+const tMain = createI18n({
   en: {
     dlgInsertImage: 'Insert Image',
     dlgReplacePicture: 'Replace Picture',
@@ -26,11 +26,12 @@ export const tMain = createI18n({
     filterAll: 'All Files',
     untitledDeck: 'Untitled Presentation',
     autosaveFoundTitle: 'Recovered version found',
+    autosaveDiskNewer:
+      'Note: the file on disk was modified after this recovery copy was saved. Restoring replaces those newer changes.',
     autosaveFoundBody:
       'There are unsaved changes from your last session. Restore the autosaved version?',
     autosaveRestore: 'Restore',
     autosaveDiscard: 'Discard',
-    autosaveFileNewer: 'The file on disk is newer than this recovered copy — restoring will replace those newer changes.',
     closeUnsavedMsg: 'This presentation has unsaved changes.',
     closeUnsavedDetail: 'Do you want to save them before closing?',
     btnDontSave: "Don't Save",
@@ -41,6 +42,12 @@ export const tMain = createI18n({
     mediaAviBody:
       'The AVI format is not supported by the built-in player, so it cannot be played inside the app. The file is embedded as-is and still plays in PowerPoint after export.',
     legacyPptTitle: 'Cannot open legacy .ppt',
+    odpImportMsg: 'Convert this .{ext} presentation?',
+    odpImportDetail:
+      'OfficeVega edits .pptx, not ODF. Each page becomes a slide with its text boxes and pictures placed at their original positions; masters, placeholder layouts, tables and shape styling are not preserved. The original file is never changed; the converted .pptx is a separate copy that later saves write to.',
+    odpImportConvertBtn: 'Convert and open',
+    odpImportFailedTitle: 'Cannot convert this .odp',
+    odpImportFailedBody: 'The file may be damaged or not a valid ODF presentation.',
     legacyPptBody:
       'This is a PowerPoint 97-2003 (.ppt) binary file. Only .pptx is supported. Open it in PowerPoint/WPS/Keynote and "Save As .pptx", then try again.',
     legacyPptOk: 'OK',
@@ -111,11 +118,11 @@ export const tMain = createI18n({
     menuPaste: 'Paste',
     menuView: 'View',
     menuZoomIn: 'Zoom In',
-    menuUiZoom: 'Interface Zoom',
     menuZoomOut: 'Zoom Out',
     menuActualSize: 'Actual Size',
+    autosaveFileNewer: 'The file on disk is newer than this recovered copy — restoring will replace those newer changes.',
+    menuUiZoom: 'Interface Zoom',
   },
-  
   ru: {
     dlgInsertImage: 'Вставка рисунка',
     dlgReplacePicture: 'Заменить рисунок',
@@ -140,11 +147,12 @@ export const tMain = createI18n({
     filterAll: 'Все файлы',
     untitledDeck: 'Презентация без названия',
     autosaveFoundTitle: 'Найдена восстановленная версия',
+    autosaveDiskNewer:
+      'Внимание: файл на диске был изменён после сохранения этой копии восстановления. Восстановление заменит эти более новые изменения.',
     autosaveFoundBody:
       'Есть несохранённые изменения из прошлого сеанса. Восстановить автосохранённую версию?',
     autosaveRestore: 'Восстановить',
     autosaveDiscard: 'Отклонить',
-    autosaveFileNewer: 'Файл на диске новее этой восстановленной копии — восстановление заменит эти более новые изменения.',
     closeUnsavedMsg: 'В этой презентации есть несохранённые изменения.',
     closeUnsavedDetail: 'Сохранить их перед закрытием?',
     btnDontSave: 'Не сохранять',
@@ -155,6 +163,12 @@ export const tMain = createI18n({
     mediaAviBody:
       'Формат AVI не поддерживается встроенным проигрывателем, воспроизведение в приложении невозможно. Файл встраивается без изменений и по-прежнему воспроизводится в PowerPoint после экспорта.',
     legacyPptTitle: 'Не удаётся открыть формат .ppt',
+    odpImportMsg: 'Преобразовать эту презентацию .{ext}?',
+    odpImportDetail:
+      'OfficeVega редактирует .pptx, а не ODF. Каждая страница становится слайдом, текстовые поля и изображения располагаются на исходных местах; образцы, макеты заполнителей, таблицы и стили фигур не сохраняются. Исходный файл никогда не изменяется; преобразованный .pptx — отдельная копия, в которую записывается дальнейшее сохранение.',
+    odpImportConvertBtn: 'Преобразовать и открыть',
+    odpImportFailedTitle: 'Не удалось преобразовать этот .odp',
+    odpImportFailedBody: 'Возможно, файл повреждён или не является допустимой презентацией ODF.',
     legacyPptBody:
       'Это двоичный файл PowerPoint 97-2003 (.ppt). Поддерживается только .pptx. Откройте в PowerPoint и сохраните как .pptx.',
     legacyPptOk: 'ОК',
@@ -230,16 +244,11 @@ export const tMain = createI18n({
     menuPaste: 'Вставить',
     menuView: 'Вид',
     menuZoomIn: 'Увеличить',
-    menuUiZoom: 'Масштаб интерфейса',
     menuZoomOut: 'Уменьшить',
     menuActualSize: 'Реальный размер',
+    autosaveFileNewer: 'Файл на диске новее этой восстановленной копии — восстановление заменит эти более новые изменения.',
+    menuUiZoom: 'Масштаб интерфейса',
   },
-  
-  
-  
-  
-  
-  
   uz: {
     dlgInsertImage: 'Rasm qo‘shish',
     dlgReplacePicture: 'Rasmni almashtirish',
@@ -355,8 +364,16 @@ export const tMain = createI18n({
     menuUiZoom: 'Interfeys masshtabi',
     menuZoomOut: 'Kichraytirish',
     menuActualSize: 'Haqiqiy o‘lcham',
-      dlgSavePicture: 'Rasm sifatida saqlash',
-},
+    dlgSavePicture: 'Rasm sifatida saqlash',
+    autosaveDiskNewer:
+      'Note: the file on disk was modified after this recovery copy was saved. Restoring replaces those newer changes.',
+    odpImportMsg: 'Convert this .{ext} presentation?',
+    odpImportDetail:
+      'OfficeVega edits .pptx, not ODF. Each page becomes a slide with its text boxes and pictures placed at their original positions; masters, placeholder layouts, tables and shape styling are not preserved. The original file is never changed; the converted .pptx is a separate copy that later saves write to.',
+    odpImportConvertBtn: 'Convert and open',
+    odpImportFailedTitle: 'Cannot convert this .odp',
+    odpImportFailedBody: 'The file may be damaged or not a valid ODF presentation.',
+  },
   kk: {
     dlgInsertImage: 'Сурет кірістіру',
     dlgReplacePicture: 'Суретті ауыстыру',
@@ -470,8 +487,16 @@ export const tMain = createI18n({
     menuUiZoom: 'Интерфейс масштабы',
     menuZoomOut: 'Кішірейту',
     menuActualSize: 'Нақты өлшемі',
-      dlgSavePicture: 'Сурет ретінде сақтау',
-},
+    dlgSavePicture: 'Сурет ретінде сақтау',
+    autosaveDiskNewer:
+      'Note: the file on disk was modified after this recovery copy was saved. Restoring replaces those newer changes.',
+    odpImportMsg: 'Convert this .{ext} presentation?',
+    odpImportDetail:
+      'OfficeVega edits .pptx, not ODF. Each page becomes a slide with its text boxes and pictures placed at their original positions; masters, placeholder layouts, tables and shape styling are not preserved. The original file is never changed; the converted .pptx is a separate copy that later saves write to.',
+    odpImportConvertBtn: 'Convert and open',
+    odpImportFailedTitle: 'Cannot convert this .odp',
+    odpImportFailedBody: 'The file may be damaged or not a valid ODF presentation.',
+  },
   az: {
     dlgInsertImage: 'Şəkil daxil et',
     dlgReplacePicture: 'Şəkli əvəz et',
@@ -588,8 +613,16 @@ export const tMain = createI18n({
     menuUiZoom: 'İnterfeys miqyası',
     menuZoomOut: 'Kiçilt',
     menuActualSize: 'Həqiqi ölçü',
-      dlgSavePicture: 'Şəkil kimi saxla',
-},
+    dlgSavePicture: 'Şəkil kimi saxla',
+    autosaveDiskNewer:
+      'Note: the file on disk was modified after this recovery copy was saved. Restoring replaces those newer changes.',
+    odpImportMsg: 'Convert this .{ext} presentation?',
+    odpImportDetail:
+      'OfficeVega edits .pptx, not ODF. Each page becomes a slide with its text boxes and pictures placed at their original positions; masters, placeholder layouts, tables and shape styling are not preserved. The original file is never changed; the converted .pptx is a separate copy that later saves write to.',
+    odpImportConvertBtn: 'Convert and open',
+    odpImportFailedTitle: 'Cannot convert this .odp',
+    odpImportFailedBody: 'The file may be damaged or not a valid ODF presentation.',
+  },
   tk: {
     dlgInsertImage: 'Surat goý',
     dlgReplacePicture: 'Suraty çalyş',
@@ -706,8 +739,16 @@ export const tMain = createI18n({
     menuUiZoom: 'Interfeýs masshtaby',
     menuZoomOut: 'Kiçelt',
     menuActualSize: 'Hakyky ölçeg',
-      dlgSavePicture: 'Surat hökmünde sakla',
-},
+    dlgSavePicture: 'Surat hökmünde sakla',
+    autosaveDiskNewer:
+      'Note: the file on disk was modified after this recovery copy was saved. Restoring replaces those newer changes.',
+    odpImportMsg: 'Convert this .{ext} presentation?',
+    odpImportDetail:
+      'OfficeVega edits .pptx, not ODF. Each page becomes a slide with its text boxes and pictures placed at their original positions; masters, placeholder layouts, tables and shape styling are not preserved. The original file is never changed; the converted .pptx is a separate copy that later saves write to.',
+    odpImportConvertBtn: 'Convert and open',
+    odpImportFailedTitle: 'Cannot convert this .odp',
+    odpImportFailedBody: 'The file may be damaged or not a valid ODF presentation.',
+  },
   ky: {
     dlgInsertImage: 'Сүрөт киргизүү',
     dlgReplacePicture: 'Сүрөттү алмаштыруу',
@@ -823,8 +864,16 @@ export const tMain = createI18n({
     menuUiZoom: 'Интерфейс масштабы',
     menuZoomOut: 'Кичирейтүү',
     menuActualSize: 'Чыныгы өлчөм',
-      dlgSavePicture: 'Сүрөт катары сактоо',
-},
+    dlgSavePicture: 'Сүрөт катары сактоо',
+    autosaveDiskNewer:
+      'Note: the file on disk was modified after this recovery copy was saved. Restoring replaces those newer changes.',
+    odpImportMsg: 'Convert this .{ext} presentation?',
+    odpImportDetail:
+      'OfficeVega edits .pptx, not ODF. Each page becomes a slide with its text boxes and pictures placed at their original positions; masters, placeholder layouts, tables and shape styling are not preserved. The original file is never changed; the converted .pptx is a separate copy that later saves write to.',
+    odpImportConvertBtn: 'Convert and open',
+    odpImportFailedTitle: 'Cannot convert this .odp',
+    odpImportFailedBody: 'The file may be damaged or not a valid ODF presentation.',
+  },
   tt: {
     dlgInsertImage: 'Рәсем кертү',
     dlgReplacePicture: 'Рәсемне алыштыру',
@@ -937,8 +986,16 @@ export const tMain = createI18n({
     menuUiZoom: 'Интерфейс масштабы',
     menuZoomOut: 'Кечерәйтү',
     menuActualSize: 'Чынбарлыктагы зурлык',
-      dlgSavePicture: 'Рәсем итеп саклау',
-},
+    dlgSavePicture: 'Рәсем итеп саклау',
+    autosaveDiskNewer:
+      'Note: the file on disk was modified after this recovery copy was saved. Restoring replaces those newer changes.',
+    odpImportMsg: 'Convert this .{ext} presentation?',
+    odpImportDetail:
+      'OfficeVega edits .pptx, not ODF. Each page becomes a slide with its text boxes and pictures placed at their original positions; masters, placeholder layouts, tables and shape styling are not preserved. The original file is never changed; the converted .pptx is a separate copy that later saves write to.',
+    odpImportConvertBtn: 'Convert and open',
+    odpImportFailedTitle: 'Cannot convert this .odp',
+    odpImportFailedBody: 'The file may be damaged or not a valid ODF presentation.',
+  },
   ka: {
     dlgInsertImage: 'სურათის ჩასმა',
     dlgReplacePicture: 'სურათის ჩანაცვლება',
@@ -1055,8 +1112,16 @@ export const tMain = createI18n({
     menuUiZoom: 'ინტერფეისის მასშტაბი',
     menuZoomOut: 'შემცირება',
     menuActualSize: 'რეალური ზომა',
-      dlgSavePicture: 'სურათად შენახვა',
-},
+    dlgSavePicture: 'სურათად შენახვა',
+    autosaveDiskNewer:
+      'Note: the file on disk was modified after this recovery copy was saved. Restoring replaces those newer changes.',
+    odpImportMsg: 'Convert this .{ext} presentation?',
+    odpImportDetail:
+      'OfficeVega edits .pptx, not ODF. Each page becomes a slide with its text boxes and pictures placed at their original positions; masters, placeholder layouts, tables and shape styling are not preserved. The original file is never changed; the converted .pptx is a separate copy that later saves write to.',
+    odpImportConvertBtn: 'Convert and open',
+    odpImportFailedTitle: 'Cannot convert this .odp',
+    odpImportFailedBody: 'The file may be damaged or not a valid ODF presentation.',
+  },
 })
 
 /** Translate with the current UI language. */

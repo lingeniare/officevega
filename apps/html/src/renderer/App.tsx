@@ -154,7 +154,7 @@ export default function App() {
   const [aiOpen, setAiOpen] = useState(() => aiPanelInitiallyOpen('htmlapp.showAi'))
   // Suite-wide "AI sidebar" switch (Settings › General): off hides the panel
   // and its ribbon entry; aiOpen keeps the remembered state for re-enable (#1947).
-  const aiEnabled = useAiPanelPrefs().enabled
+  const aiEnabled = useAiPanelPrefs().showAiSidebar
   const aiShown = aiEnabled && aiOpen
   const [aiPreset, setAiPreset] = useState<AiPreset | null>(null)
   const [editQueue, setEditQueue] = useState<EditQueueItem[]>([])

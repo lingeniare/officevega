@@ -60,6 +60,7 @@ import {
   rendererUrl,
   forwardRendererConsole,
   writeJsonAtomic,
+  recoveryCopyDiskNewer,
   saveTextFileWithDialog,
 } from '@genoffice/electron-utils'
 import {
@@ -86,6 +87,7 @@ import {
   setAiUserAgent,
   setPiiShieldEnabled,
   setRescueFetch,
+  resolveProfileCredential,
   warmAiConnections,
   streamForProvider,
   listProviderModels,
@@ -199,6 +201,10 @@ const tMain = createI18n({
     filterSpreadsheets: 'Spreadsheets',
     filterXlsx: 'Excel Workbooks',
     filterXlsm: 'Excel Macro-Enabled Workbooks',
+    odsImportMsg: 'Convert this .{ext} workbook?',
+    odsImportDetail:
+      'OfficeVega edits .xlsx, not ODF. Values, formulas and dates carry over (formulas are rewritten into Excel syntax, and any that cannot be rewritten safely keeps its current result). Styles, column widths and charts are not carried over. The original file is never changed; the converted copy saves as .xlsx the first time you save.',
+    odsImportConvertBtn: 'Convert and open',
     dlgAddAttachment: 'Add Attachments',
     filterSupported: 'Supported Files',
     filterAll: 'All Files',
@@ -221,11 +227,12 @@ const tMain = createI18n({
     errImgBadType: 'The file is not a PNG/JPEG/GIF image.',
     errDiskChanged: 'The workbook changed on disk after it was opened — use Save As instead.',
     autosaveFoundTitle: 'Recovered version found',
+    autosaveDiskNewer:
+      'Note: the file on disk was modified after this recovery copy was saved. Restoring replaces those newer changes.',
     autosaveFoundBody:
       'There are unsaved changes from your last session. Restore the autosaved version? Saving after a restore overwrites the original file.',
     autosaveRestore: 'Restore',
     autosaveDiscard: 'Discard',
-    autosaveFileNewer: 'The file on disk is newer than this recovered copy — restoring will replace those newer changes.',
     menuFile: 'File',
     menuOpenWorkbook: 'Open Workbook…',
     menuSave: 'Save',
@@ -254,12 +261,16 @@ const tMain = createI18n({
     csvKeepFormatMsg: 'Keep saving in CSV format?',
     csvKeepFormatDetail:
       'CSV keeps plain values of a single sheet only — formulas, formatting, and any additional sheets are not saved to the .csv file.',
+    autosaveFileNewer: 'The file on disk is newer than this recovered copy — restoring will replace those newer changes.',
   },
-  
   ru: {
     filterSpreadsheets: 'Электронные таблицы',
     filterXlsx: 'Книги Excel',
     filterXlsm: 'Книги Excel с поддержкой макросов',
+    odsImportMsg: 'Преобразовать эту книгу .{ext}?',
+    odsImportDetail:
+      'OfficeVega редактирует .xlsx, а не ODF. Значения, формулы и даты переносятся (формулы переписываются в синтаксис Excel; те, что нельзя переписать безопасно, сохраняют текущий результат). Стили, ширина столбцов и диаграммы не переносятся. Исходный файл никогда не изменяется; преобразованная копия при первом сохранении записывается как .xlsx.',
+    odsImportConvertBtn: 'Преобразовать и открыть',
     dlgAddAttachment: 'Добавить вложения',
     filterSupported: 'Поддерживаемые файлы',
     filterAll: 'Все файлы',
@@ -284,11 +295,12 @@ const tMain = createI18n({
     errImgBadType: 'Этот файл не является изображением PNG/JPEG/GIF.',
     errDiskChanged: 'Книга была изменена на диске после открытия — используйте «Сохранить как».',
     autosaveFoundTitle: 'Найдена восстановленная версия',
+    autosaveDiskNewer:
+      'Внимание: файл на диске был изменён после сохранения этой копии восстановления. Восстановление заменит эти более новые изменения.',
     autosaveFoundBody:
       'Есть несохранённые изменения из прошлого сеанса. Восстановить автосохранённую версию? После восстановления сохранение перезапишет исходный файл.',
     autosaveRestore: 'Восстановить',
     autosaveDiscard: 'Отклонить',
-    autosaveFileNewer: 'Файл на диске новее этой восстановленной копии — восстановление заменит эти более новые изменения.',
     menuFile: 'Файл',
     menuOpenWorkbook: 'Открыть книгу…',
     menuSave: 'Сохранить',
@@ -318,13 +330,8 @@ const tMain = createI18n({
     csvKeepFormatMsg: 'Продолжить сохранение в формате CSV?',
     csvKeepFormatDetail:
       'CSV сохраняет только значения одного листа — формулы, форматирование и дополнительные листы не сохраняются в файле .csv.',
+    autosaveFileNewer: 'Файл на диске новее этой восстановленной копии — восстановление заменит эти более новые изменения.',
   },
-  
-  
-  
-  
-  
-  
   uz: {
     filterSpreadsheets: 'Elektron jadvallar',
     filterXlsx: 'Excel ish kitoblari',
@@ -388,6 +395,12 @@ const tMain = createI18n({
     csvKeepFormatMsg: 'CSV formatida saqlash davom ettirilsinmi?',
     csvKeepFormatDetail:
       'CSV faqat bitta varaqning oddiy qiymatlarini saqlaydi — formulalar, formatlash va qo‘shimcha varaqlar .csv fayliga saqlanmaydi.',
+    odsImportMsg: 'Convert this .{ext} workbook?',
+    odsImportDetail:
+      'OfficeVega edits .xlsx, not ODF. Values, formulas and dates carry over (formulas are rewritten into Excel syntax, and any that cannot be rewritten safely keeps its current result). Styles, column widths and charts are not carried over. The original file is never changed; the converted copy saves as .xlsx the first time you save.',
+    odsImportConvertBtn: 'Convert and open',
+    autosaveDiskNewer:
+      'Note: the file on disk was modified after this recovery copy was saved. Restoring replaces those newer changes.',
   },
   kk: {
     filterSpreadsheets: 'Электрондық кестелер',
@@ -451,6 +464,12 @@ const tMain = createI18n({
     csvKeepFormatMsg: 'CSV пішімінде сақтауды жалғастыру керек пе?',
     csvKeepFormatDetail:
       'CSV тек бір парақтың қарапайым мәндерін сақтайды — формулалар, пішімдеу және қосымша парақтар .csv файлына сақталмайды.',
+    odsImportMsg: 'Convert this .{ext} workbook?',
+    odsImportDetail:
+      'OfficeVega edits .xlsx, not ODF. Values, formulas and dates carry over (formulas are rewritten into Excel syntax, and any that cannot be rewritten safely keeps its current result). Styles, column widths and charts are not carried over. The original file is never changed; the converted copy saves as .xlsx the first time you save.',
+    odsImportConvertBtn: 'Convert and open',
+    autosaveDiskNewer:
+      'Note: the file on disk was modified after this recovery copy was saved. Restoring replaces those newer changes.',
   },
   az: {
     filterSpreadsheets: 'Elektron cədvəllər',
@@ -515,6 +534,12 @@ const tMain = createI18n({
     csvKeepFormatMsg: 'CSV formatında saxlamağa davam edilsin?',
     csvKeepFormatDetail:
       'CSV yalnız bir vərəqin düz dəyərlərini saxlayır — düsturlar, formatlaşdırma və əlavə vərəqlər .csv faylında saxlanmır.',
+    odsImportMsg: 'Convert this .{ext} workbook?',
+    odsImportDetail:
+      'OfficeVega edits .xlsx, not ODF. Values, formulas and dates carry over (formulas are rewritten into Excel syntax, and any that cannot be rewritten safely keeps its current result). Styles, column widths and charts are not carried over. The original file is never changed; the converted copy saves as .xlsx the first time you save.',
+    odsImportConvertBtn: 'Convert and open',
+    autosaveDiskNewer:
+      'Note: the file on disk was modified after this recovery copy was saved. Restoring replaces those newer changes.',
   },
   tk: {
     filterSpreadsheets: 'Elektron tablisalar',
@@ -579,6 +604,12 @@ const tMain = createI18n({
     csvKeepFormatMsg: 'CSV görnüşinde saklamagy dowam etmelimi?',
     csvKeepFormatDetail:
       'CSV diňe bir sahypanyň ýönekeý bahalaryny saklaýar — formulalar, formatlama we goşmaça sahypalar .csv faýlyna ýazylmaýar.',
+    odsImportMsg: 'Convert this .{ext} workbook?',
+    odsImportDetail:
+      'OfficeVega edits .xlsx, not ODF. Values, formulas and dates carry over (formulas are rewritten into Excel syntax, and any that cannot be rewritten safely keeps its current result). Styles, column widths and charts are not carried over. The original file is never changed; the converted copy saves as .xlsx the first time you save.',
+    odsImportConvertBtn: 'Convert and open',
+    autosaveDiskNewer:
+      'Note: the file on disk was modified after this recovery copy was saved. Restoring replaces those newer changes.',
   },
   ky: {
     filterSpreadsheets: 'Электрондук жадыбалдар',
@@ -643,6 +674,12 @@ const tMain = createI18n({
     csvKeepFormatMsg: 'CSV форматында сактоону улантасызбы?',
     csvKeepFormatDetail:
       'CSV бир гана барактын жөнөкөй маанилерин сактайт — формулалар, форматтоо жана кошумча барактар .csv файлына сакталбайт.',
+    odsImportMsg: 'Convert this .{ext} workbook?',
+    odsImportDetail:
+      'OfficeVega edits .xlsx, not ODF. Values, formulas and dates carry over (formulas are rewritten into Excel syntax, and any that cannot be rewritten safely keeps its current result). Styles, column widths and charts are not carried over. The original file is never changed; the converted copy saves as .xlsx the first time you save.',
+    odsImportConvertBtn: 'Convert and open',
+    autosaveDiskNewer:
+      'Note: the file on disk was modified after this recovery copy was saved. Restoring replaces those newer changes.',
   },
   tt: {
     filterSpreadsheets: 'Электрон таблицалар',
@@ -706,6 +743,12 @@ const tMain = createI18n({
     csvKeepFormatMsg: 'CSV форматында саклауны дәвам итәргәме?',
     csvKeepFormatDetail:
       'CSV бары тик бер битнең гади кыйммәтләрен саклый — формулалар, форматлау һәм өстәмә битләр .csv файлына сакланмый.',
+    odsImportMsg: 'Convert this .{ext} workbook?',
+    odsImportDetail:
+      'OfficeVega edits .xlsx, not ODF. Values, formulas and dates carry over (formulas are rewritten into Excel syntax, and any that cannot be rewritten safely keeps its current result). Styles, column widths and charts are not carried over. The original file is never changed; the converted copy saves as .xlsx the first time you save.',
+    odsImportConvertBtn: 'Convert and open',
+    autosaveDiskNewer:
+      'Note: the file on disk was modified after this recovery copy was saved. Restoring replaces those newer changes.',
   },
   ka: {
     filterSpreadsheets: 'ელექტრონული ცხრილები',
@@ -770,6 +813,12 @@ const tMain = createI18n({
     csvKeepFormatMsg: 'გავაგრძელოთ CSV ფორმატში შენახვა?',
     csvKeepFormatDetail:
       'CSV ინახავს მხოლოდ ერთი ფურცლის მარტივ მნიშვნელობებს — ფორმულები, ფორმატირება და დამატებითი ფურცლები .csv ფაილში არ შეინახება.',
+    odsImportMsg: 'Convert this .{ext} workbook?',
+    odsImportDetail:
+      'OfficeVega edits .xlsx, not ODF. Values, formulas and dates carry over (formulas are rewritten into Excel syntax, and any that cannot be rewritten safely keeps its current result). Styles, column widths and charts are not carried over. The original file is never changed; the converted copy saves as .xlsx the first time you save.',
+    odsImportConvertBtn: 'Convert and open',
+    autosaveDiskNewer:
+      'Note: the file on disk was modified after this recovery copy was saved. Restoring replaces those newer changes.',
   },
 })
 const tm = (key: Parameters<typeof tMain>[1], params?: Parameters<typeof tMain>[2]) =>
@@ -1033,8 +1082,10 @@ async function saveFileDialog(event: IpcMainInvokeEvent, options: SaveDialogOpti
 }
 
 /** Workbook file extensions the open pipeline accepts. Single source for the
- *  picker filters, the merge-source check, and the crash re-open check. */
-const WORKBOOK_EXTS = new Set(['xlsx', 'xlsm', 'xls', 'csv', 'tsv'])
+ *  picker filters, the merge-source check, and the crash re-open check.
+ *  .ods opens through the same import conversion as .xls. */
+const WORKBOOK_EXTS = new Set(['xlsx', 'xlsm', 'xls', 'csv', 'tsv', 'ods', 'ots'])
+const WORKBOOK_FILTER_EXTENSIONS = [...WORKBOOK_EXTS]
 
 /** register a tab's webContents/client pair and wire up cleanup on teardown */
 /** Clients whose process-death notification is already wired. A sidecar client
@@ -1318,7 +1369,7 @@ function promptRecoveryRestore(
   contents: WebContents,
   filePath: string,
   recoveryPath: string,
-  fileIsNewer: boolean,
+  onDisk = true,
 ): Promise<RecoveryChoice> {
   return new Promise((resolve) => {
     let savedAtMs = Date.now()
@@ -1326,6 +1377,17 @@ function promptRecoveryRestore(
       savedAtMs = statSync(recoveryPath).mtimeMs
     } catch {
       /* copy vanished: the prompt still works, just without a precise time */
+    }
+    let fileIsNewer = false
+    if (onDisk) {
+      try {
+        fileIsNewer = recoveryCopyDiskNewer(
+          statSync(recoveryPath).mtimeMs,
+          statSync(filePath).mtimeMs,
+        )
+      } catch {
+        fileIsNewer = false
+      }
     }
     const settle = (choice: RecoveryChoice): void => {
       recoveryPromptWaiters.delete(contents.id)
@@ -1337,7 +1399,7 @@ function promptRecoveryRestore(
     contents.once('destroyed', onDestroyed)
     contents.send(IPC_CHANNELS.recoveryPrompt, {
       title: tm('autosaveFoundTitle'),
-      body: tm('autosaveFoundBody'),
+      body: recoveryPromptBody(filePath, recoveryPath, onDisk),
       restoreLabel: tm('autosaveRestore'),
       discardLabel: tm('autosaveDiscard'),
       fileName: basename(filePath),
@@ -1351,8 +1413,10 @@ function promptRecoveryRestore(
 
 /** Native message-box fallback for the rare open with no live renderer to draw the prompt. */
 async function promptRecoveryRestoreNative(
+  filePath: string,
+  recoveryPath: string,
   parent?: BrowserWindow | undefined,
-  fileIsNewer?: boolean,
+  onDisk = true,
 ): Promise<RecoveryChoice> {
   const options = {
     type: 'question' as const,
@@ -1360,9 +1424,7 @@ async function promptRecoveryRestoreNative(
     defaultId: 0,
     cancelId: 1,
     message: tm('autosaveFoundTitle'),
-    detail: fileIsNewer
-      ? `${tm('autosaveFoundBody')}\n\n${tm('autosaveFileNewer')}`
-      : tm('autosaveFoundBody'),
+    detail: recoveryPromptBody(filePath, recoveryPath, onDisk),
   }
   const answer = parent
     ? await dialog.showMessageBox(parent, options)
@@ -1370,21 +1432,27 @@ async function promptRecoveryRestoreNative(
   return answer.response === 0 ? 'restore' : 'discard'
 }
 
-/**
- * A pending recovery copy = unsaved work from a lost session. The copy is never
- * deleted on inspection (#1020): a newer on-disk mtime only marks the prompt
- * (restoring would replace those changes); the copy goes away when the user
- * picks Discard or when a successful save supersedes it.
- */
-function pendingRecoveryFor(
-  filePath: string,
-): { readonly path: string; readonly fileIsNewer: boolean } | null {
+/** Recovery copy left by a lost session. A newer original does not discard it (the copy
+ * may hold the only pre-crash edits): the prompt just says the disk file is newer. */
+function pendingRecoveryFor(filePath: string): string | null {
   const copy = recoveryPathFor(filePath)
   try {
-    if (!existsSync(copy)) return null
-    return { path: copy, fileIsNewer: statSync(copy).mtimeMs <= statSync(filePath).mtimeMs }
+    return existsSync(copy) ? copy : null
   } catch {
     return null
+  }
+}
+
+function recoveryPromptBody(filePath: string, recoveryPath: string, onDisk: boolean): string {
+  const body = tm('autosaveFoundBody')
+  // an unsaved workbook's would-be name is not the file restore writes to
+  if (!onDisk) return body
+  try {
+    return recoveryCopyDiskNewer(statSync(recoveryPath).mtimeMs, statSync(filePath).mtimeMs)
+      ? `${body}\n\n${tm('autosaveDiskNewer')}`
+      : body
+  } catch {
+    return body
   }
 }
 
@@ -1996,9 +2064,7 @@ export function registerSheetsIpc(): void {
     if (!path) {
       const selection = await openFileDialog(event, {
         properties: ['openFile'],
-        filters: [
-          { name: tm('filterSpreadsheets'), extensions: ['xlsx', 'xlsm', 'xls', 'csv', 'tsv'] },
-        ],
+        filters: [{ name: tm('filterSpreadsheets'), extensions: WORKBOOK_FILTER_EXTENSIONS }],
       })
       if (selection.canceled || !selection.filePaths[0]) return null
       path = selection.filePaths[0]
@@ -2009,6 +2075,8 @@ export function registerSheetsIpc(): void {
       event.sender,
       dialogParent(event),
     )
+    // a declined import (an .ods the user chose not to convert) opens nothing
+    if (!prepared) return null
     // The recovery prompt (or the file dialog / import conversion) can outlive
     // the tab: once the renderer is destroyed, its 'destroyed' handler has
     // already run closeAllSessions and dropped the tab entry, so a session
@@ -2107,6 +2175,9 @@ export function registerSheetsIpc(): void {
           dialogParent(event),
           { skipRecoveryPrompt: true },
         )
+        // imports are never declined on this path (no per-file prompt), but a
+        // declined open must skip the file rather than abort the batch
+        if (!prepared) continue
         if (event.sender.isDestroyed()) {
           await discardPreparedOpen(prepared)
           break
@@ -2138,9 +2209,7 @@ export function registerSheetsIpc(): void {
   ipcMain.handle(IPC_CHANNELS.selectWorkbooksForMerge, async (event) => {
     const selection = await openFileDialog(event, {
       properties: ['openFile', 'multiSelections'],
-      filters: [
-        { name: tm('filterSpreadsheets'), extensions: ['xlsx', 'xlsm', 'xls', 'csv', 'tsv'] },
-      ],
+      filters: [{ name: tm('filterSpreadsheets'), extensions: WORKBOOK_FILTER_EXTENSIONS }],
     })
     if (selection.canceled || selection.filePaths.length === 0) return null
     return openMergeSources(event, selection.filePaths)
@@ -3112,6 +3181,8 @@ export function registerSheetsAiIpc(): void {
     } else if (provider === 'vega' && config && !config.apiKey?.trim()) {
       config = { ...config, apiKey: officeVegaApiKey() }
     }
+    // a custom endpoint may name an environment variable instead of storing a key
+    config = config ? resolveProfileCredential(config) : config
     if (!config || (provider !== 'codex' && !config.apiKey)) {
       return {
         ok: false,
@@ -3160,6 +3231,8 @@ export function registerSheetsAiIpc(): void {
     } else if (provider === 'vega' && config && !config.apiKey?.trim()) {
       config = { ...config, apiKey: officeVegaApiKey() }
     }
+    // a custom endpoint may name an environment variable instead of storing a key
+    config = config ? resolveProfileCredential(config) : config
     const send = (chunk: AiStreamChunk) => {
       if (!event.sender.isDestroyed()) event.sender.send(IPC_CHANNELS.aiStreamChunk, chunk)
     }
@@ -3924,7 +3997,46 @@ async function openEmptyXlsx(path: string): Promise<{
   return { openPath, importTempDir: directory, restoreTarget: path, emptySource: true }
 }
 
-/// .xls and .tsv open as a converted copy in the temp dir; the session
+/** which legacy charset an Excel CSV most likely uses, judged by the UI language */
+function legacyCsvCharset(): string | undefined {
+  // officevega: Lang no longer covers zh/ja/ko — keep the map but on plain
+  // strings; entries for unshipped UI languages are simply unreachable
+  const byLang: Record<string, string> = {
+    zh: 'gb18030',
+    'zh-TW': 'big5',
+    ja: 'shift_jis',
+    ko: 'euc-kr',
+  }
+  return byLang[getUiLang()]
+}
+
+/**
+ * Confirm an .ods/.ots import before it converts. Unlike .xls, the loss here is not
+ * "what the editor did not touch survives": reading ODF re-enters the workbook
+ * model as a brand-new .xlsx, so styles beyond date formats are dropped by
+ * construction. Returns false when the user declines, which cancels the open.
+ * Batch opens pass skipRecoveryPrompt and never reach this.
+ */
+async function promptOdsImport(
+  parent: BrowserWindow | undefined,
+  extension: string,
+): Promise<boolean> {
+  const options = {
+    type: 'warning' as const,
+    message: tm('odsImportMsg', { ext: extension }),
+    detail: tm('odsImportDetail'),
+    buttons: [tm('odsImportConvertBtn'), tm('btnCancel')],
+    defaultId: 0,
+    cancelId: 1,
+    noLink: true,
+  }
+  const { response } = parent
+    ? await dialog.showMessageBox(parent, options)
+    : await dialog.showMessageBox(options)
+  return response === 0
+}
+
+/// .xls, .tsv and the ODF imports (.ods/.ots) open as a converted copy in the temp dir; the session
 /// remembers the original's .xlsx sibling as the Save As default. .csv converts
 /// the same way but keeps its file identity, so Save writes values back to it.
 async function prepareWorkbookForOpen(
@@ -3943,7 +4055,7 @@ async function prepareWorkbookForOpen(
   restoreTarget?: string
   emptySource?: boolean
   unsavedNew?: boolean
-}> {
+} | null> {
   // A shell-created "New spreadsheet" opens from a temp directory and has no
   // user-visible file yet: Save As produces it, and closing unsaved discards
   // the directory. The mark is consumed once the session exists (see
@@ -3963,7 +4075,7 @@ async function prepareWorkbookForOpen(
       const choice =
         contents && !contents.isDestroyed()
           ? await promptRecoveryRestore(contents, unsavedNew.suggestSaveAs, recovery, false)
-          : await promptRecoveryRestoreNative(parent)
+          : await promptRecoveryRestoreNative(unsavedNew.suggestSaveAs, recovery, parent, false)
       // the copy is what the recovery writer keeps overwriting, so the session
       // streams from the backing file, not from the copy
       if (choice === 'restore') {
@@ -3978,7 +4090,14 @@ async function prepareWorkbookForOpen(
     return { openPath: path, ...base }
   }
   const extension = path.slice(path.lastIndexOf('.') + 1).toLowerCase()
-  if (extension !== 'csv' && extension !== 'tsv' && extension !== 'xls') {
+  // ODF has no editable representation here at all (.ots is the same package
+  // with a -template mimetype): the user confirms the lossy .xlsx copy first,
+  // and declining leaves the file unopened and unwritten.
+  const odfImport = extension === 'ods' || extension === 'ots'
+  if (odfImport && !options?.skipRecoveryPrompt && !(await promptOdsImport(parent, extension))) {
+    return null
+  }
+  if (!odfImport && extension !== 'csv' && extension !== 'tsv' && extension !== 'xls') {
     // Unsaved work from a lost session: offer the recovery copy. Restoring
     // opens it with restoreTarget pointing back at the original, so a plain
     // Save writes straight back over the file the user opened — the restore
@@ -3989,9 +4108,9 @@ async function prepareWorkbookForOpen(
     if (recovery) {
       const choice =
         contents && !contents.isDestroyed()
-          ? await promptRecoveryRestore(contents, path, recovery.path, recovery.fileIsNewer)
-          : await promptRecoveryRestoreNative(parent, recovery.fileIsNewer)
-      if (choice === 'restore') return { openPath: recovery.path, restoreTarget: path }
+          ? await promptRecoveryRestore(contents, path, recovery)
+          : await promptRecoveryRestoreNative(path, recovery, parent)
+      if (choice === 'restore') return { openPath: recovery, restoreTarget: path }
       if (choice === 'discard') clearWorkbookRecovery(path)
     }
     if (extension === 'xlsx' && (await stat(path)).size === 0) return openEmptyXlsx(path)

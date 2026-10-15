@@ -1540,4 +1540,8 @@ export const tt = {
   appLargeFilterApplying: 'Фильтр файлга кулланыла…',
   appPrintWorkbookTooLarge:
     'Бу эш китабы хәтергә тулысынча йөкләр өчен артык зур, шуңа аны бастырырга яки PDFка экспортларга мөмкин түгел.',
+  appRibbonCompact: 'Compact Ribbon (icons only)',
+  appRightToLeft: 'Right-to-Left',
+  appRightToLeftOn: 'Grid direction: right-to-left.',
+  appRightToLeftOff: 'Grid direction: left-to-right.',
 } satisfies Record<keyof typeof en, string>

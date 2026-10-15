@@ -114,9 +114,6 @@ const fillFormStrings = {
 }
 
 const localizedFillFormStrings = {
-  
-  
-  
   uz: {
     ribbonTabFillForm: 'Formani to‘ldirish',
     formPreviousField: 'Oldingi maydon',
@@ -480,6 +477,7 @@ export const strings = {
     ribbonTabPage: 'Pages',
     ribbonCollapse: 'Collapse the Ribbon',
     ribbonExpand: 'Expand the Ribbon',
+    ribbonCompact: 'Compact Ribbon (icons only)',
     ribbonTabView: 'View',
     aiSummarizeBtn: 'AI Summarize',
     aiKeyPointsBtn: 'AI Key Points',
@@ -532,14 +530,6 @@ export const strings = {
     strikeout: 'Strikethrough',
     aiOpenAssistant: 'Open AI assistant',
     aiNewChat: 'New chat',
-    aiExportChat: 'Export conversation to Markdown',
-    aiExportRoleYou: 'You',
-    aiHistoryTitle: 'History',
-    aiHistorySearch: 'Search chats…',
-    aiHistoryEmpty: 'No chats yet',
-    aiHistoryLoading: 'Loading…',
-    aiHistoryCurrent: 'current',
-    aiHistoryVegaOnly: 'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
     aiCollapsePanel: 'Collapse panel',
     aiEmptyTitle: 'Ask about this PDF',
     aiEmptyBody: 'Summarize, explain, or find information in the document',
@@ -687,7 +677,6 @@ export const strings = {
     aiToolReplacePages: 'Replace pages {pages} with pages from another PDF',
     aiToolImageSearch: 'Search images "{query}"',
     aiToolGenImage: 'Generate image',
-    aiToolGeneric: 'Run action',
     aiToolListImages: 'List document images',
     aiToolInsertText: 'Insert text on page {page}',
     aiToolListInsertedText: 'List inserted text',
@@ -784,6 +773,8 @@ export const strings = {
     convertToWord: 'PDF to Word',
     convertToExcel: 'PDF to Excel',
     convertToPpt: 'PDF to PPT',
+    convertToMarkdown: 'PDF to Markdown',
+    convertToHtml: 'PDF to HTML',
     nightMode: 'Night mode',
     twoPage: 'Two pages',
     singlePage: 'Single page',
@@ -821,6 +812,15 @@ export const strings = {
     propCreated: 'Created',
     propModified: 'Modified',
     // Ribbon File menu
+    aiExportChat: 'Export conversation to Markdown',
+    aiExportRoleYou: 'You',
+    aiHistoryTitle: 'History',
+    aiHistorySearch: 'Search chats…',
+    aiHistoryEmpty: 'No chats yet',
+    aiHistoryLoading: 'Loading…',
+    aiHistoryCurrent: 'current',
+    aiHistoryVegaOnly: 'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
+    aiToolGeneric: 'Run action',
     fileTab: 'File',
     fileOpen: 'Open…',
     fileSaveAs: 'Save As…',
@@ -840,7 +840,6 @@ export const strings = {
     drawNoteTip: 'Add a sticky note',    ribbonPin: 'Pin the ribbon',
 
   },
-  
   ru: {
     ...fillFormStringsFor('ru'),
     ...certSignStringsFor('ru'),
@@ -850,6 +849,7 @@ export const strings = {
     ribbonTabPage: 'Страницы',
     ribbonCollapse: 'Свернуть ленту',
     ribbonExpand: 'Развернуть ленту',
+    ribbonCompact: 'Компактная лента (только значки)',
     ribbonTabView: 'Вид',
     aiSummarizeBtn: 'ИИ-резюме',
     aiKeyPointsBtn: 'Ключевые пункты ИИ',
@@ -903,14 +903,6 @@ export const strings = {
     strikeout: 'Зачеркнуть',
     aiOpenAssistant: 'Открыть ИИ-ассистента',
     aiNewChat: 'Новый чат',
-    aiExportChat: 'Экспортировать диалог в Markdown',
-    aiExportRoleYou: 'Вы',
-    aiHistoryTitle: 'История',
-    aiHistorySearch: 'Поиск по чатам…',
-    aiHistoryEmpty: 'Чатов пока нет',
-    aiHistoryLoading: 'Загрузка…',
-    aiHistoryCurrent: 'текущий',
-    aiHistoryVegaOnly: 'История сохраняется только при провайдере VEGA. Старые чаты видны ниже.',
     aiCollapsePanel: 'Свернуть панель',
     aiEmptyTitle: 'Спросите об этом PDF',
     aiEmptyBody: 'Резюмировать, объяснить или найти информацию в документе',
@@ -1058,7 +1050,6 @@ export const strings = {
     aiToolReplacePages: 'Заменить страницы {pages} страницами из другого PDF',
     aiToolImageSearch: 'Поиск изображений «{query}»',
     aiToolGenImage: 'Генерация изображения',
-    aiToolGeneric: 'Выполнение действия',
     aiToolListImages: 'Чтение изображений документа',
     aiToolInsertText: 'Вставка текста на стр. {page}',
     aiToolListInsertedText: 'Список вставленного текста',
@@ -1158,6 +1149,8 @@ export const strings = {
     convertToWord: 'PDF в Word',
     convertToExcel: 'PDF в Excel',
     convertToPpt: 'PDF в PPT',
+    convertToMarkdown: 'PDF в Markdown',
+    convertToHtml: 'PDF в HTML',
     nightMode: 'Ночной режим',
     twoPage: 'Разворот',
     singlePage: 'Одна страница',
@@ -1195,6 +1188,15 @@ export const strings = {
     propCreated: 'Создан',
     propModified: 'Изменён',
     // Ribbon File menu
+    aiExportChat: 'Экспортировать диалог в Markdown',
+    aiExportRoleYou: 'Вы',
+    aiHistoryTitle: 'История',
+    aiHistorySearch: 'Поиск по чатам…',
+    aiHistoryEmpty: 'Чатов пока нет',
+    aiHistoryLoading: 'Загрузка…',
+    aiHistoryCurrent: 'текущий',
+    aiHistoryVegaOnly: 'История сохраняется только при провайдере VEGA. Старые чаты видны ниже.',
+    aiToolGeneric: 'Выполнение действия',
     fileTab: 'Файл',
     fileOpen: 'Открыть…',
     fileSaveAs: 'Сохранить как…',
@@ -1214,12 +1216,6 @@ export const strings = {
     drawNoteTip: 'Добавить заметку',    ribbonPin: 'Закрепить ленту',
 
   },
-  
-  
-  
-  
-  
-  
   uz: {
     ...certSignStringsFor('uz'),
     ...fillFormStringsFor('uz'),
@@ -1593,8 +1589,12 @@ export const strings = {
     drawRectTip: 'To‘g‘ri to‘rtburchak izohini chizing',
     drawEllipseTip: 'Ellips izohini chizing',
     drawArrowTip: 'Strelka izohini chizing',
-    drawNoteTip: 'Yopishqoq eslatma qo‘shing',    ribbonExpand: 'Expand the Ribbon',
+    drawNoteTip: 'Yopishqoq eslatma qo‘shing',
 
+    ribbonExpand: 'Expand the Ribbon',
+    ribbonCompact: 'Compact Ribbon (icons only)',
+    convertToMarkdown: 'PDF to Markdown',
+    convertToHtml: 'PDF to HTML',
   },
   kk: {
     ...certSignStringsFor('kk'),
@@ -1967,8 +1967,12 @@ export const strings = {
     drawRectTip: 'Тік төртбұрыш аңғартпасын салу',
     drawEllipseTip: 'Эллипс аңғартпасын салу',
     drawArrowTip: 'Көрсеткі аңғартпасын салу',
-    drawNoteTip: 'Жабысқақ жазба қосу',    ribbonExpand: 'Expand the Ribbon',
+    drawNoteTip: 'Жабысқақ жазба қосу',
 
+    ribbonExpand: 'Expand the Ribbon',
+    ribbonCompact: 'Compact Ribbon (icons only)',
+    convertToMarkdown: 'PDF to Markdown',
+    convertToHtml: 'PDF to HTML',
   },
   az: {
     ...certSignStringsFor('az'),
@@ -2339,8 +2343,12 @@ export const strings = {
     drawRectTip: 'Düzbucaqlı annotasiyası çəkin',
     drawEllipseTip: 'Ellips annotasiyası çəkin',
     drawArrowTip: 'Ox annotasiyası çəkin',
-    drawNoteTip: 'Yapışqan qeyd əlavə edin',    ribbonExpand: 'Expand the Ribbon',
+    drawNoteTip: 'Yapışqan qeyd əlavə edin',
 
+    ribbonExpand: 'Expand the Ribbon',
+    ribbonCompact: 'Compact Ribbon (icons only)',
+    convertToMarkdown: 'PDF to Markdown',
+    convertToHtml: 'PDF to HTML',
   },
   tk: {
     ...certSignStringsFor('tk'),
@@ -2712,8 +2720,12 @@ export const strings = {
     drawRectTip: 'Gönüburçluk belligini çekiň',
     drawEllipseTip: 'Ellips belligini çekiň',
     drawArrowTip: 'Ok belligini çekiň',
-    drawNoteTip: 'Ýelmeşýän bellik goşuň',    ribbonExpand: 'Expand the Ribbon',
+    drawNoteTip: 'Ýelmeşýän bellik goşuň',
 
+    ribbonExpand: 'Expand the Ribbon',
+    ribbonCompact: 'Compact Ribbon (icons only)',
+    convertToMarkdown: 'PDF to Markdown',
+    convertToHtml: 'PDF to HTML',
   },
   ky: {
     ...certSignStringsFor('ky'),
@@ -3089,8 +3101,12 @@ export const strings = {
     drawRectTip: 'Тик төрт бурчтуу аннотация тартуу',
     drawEllipseTip: 'Эллипс аннотациясын тартуу',
     drawArrowTip: 'Жебе аннотациясын тартуу',
-    drawNoteTip: 'Жабышма жазуу кошуу',    ribbonExpand: 'Expand the Ribbon',
+    drawNoteTip: 'Жабышма жазуу кошуу',
 
+    ribbonExpand: 'Expand the Ribbon',
+    ribbonCompact: 'Compact Ribbon (icons only)',
+    convertToMarkdown: 'PDF to Markdown',
+    convertToHtml: 'PDF to HTML',
   },
   tt: {
     ...certSignStringsFor('tt'),
@@ -3463,8 +3479,12 @@ export const strings = {
     drawRectTip: 'Турыпочмаклык аңлатмасы ясарга',
     drawEllipseTip: 'Эллипс аңлатмасы ясарга',
     drawArrowTip: 'Ук аңлатмасы ясарга',
-    drawNoteTip: 'Беркетмә язарга',    ribbonExpand: 'Expand the Ribbon',
+    drawNoteTip: 'Беркетмә язарга',
 
+    ribbonExpand: 'Expand the Ribbon',
+    ribbonCompact: 'Compact Ribbon (icons only)',
+    convertToMarkdown: 'PDF to Markdown',
+    convertToHtml: 'PDF to HTML',
   },
   ka: {
     ...certSignStringsFor('ka'),
@@ -3837,7 +3857,11 @@ export const strings = {
     drawRectTip: 'მართკუთხედის ანოტაციის დახატვა',
     drawEllipseTip: 'ელიფსის ანოტაციის დახატვა',
     drawArrowTip: 'ისრის ანოტაციის დახატვა',
-    drawNoteTip: 'წებოვანი ჩანაწერის დამატება',    ribbonExpand: 'Expand the Ribbon',
+    drawNoteTip: 'წებოვანი ჩანაწერის დამატება',
 
+    ribbonExpand: 'Expand the Ribbon',
+    ribbonCompact: 'Compact Ribbon (icons only)',
+    convertToMarkdown: 'PDF to Markdown',
+    convertToHtml: 'PDF to HTML',
   },
 }

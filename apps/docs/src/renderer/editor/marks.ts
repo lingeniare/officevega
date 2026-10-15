@@ -8,7 +8,6 @@ import { isEastAsianFontName } from '../font-list'
 import { t } from '../i18n/locale'
 import { dkBackground } from './dark-page'
 import { runBorderDecls } from './run-border'
-import { PDF_ANCHOR_PREFIX, pdfAnchorId, pdfAnchorName } from './link-actions'
 import { fillInk } from './shading-ink'
 import { textColorDecls } from './text-color'
 import type { RevisionDisplayMode } from './revision-view'
@@ -125,34 +124,25 @@ export const LinkMark = Mark.create({
       {
         tag: 'a[href]',
         getAttrs: (el) => {
-          const domHref = (el as HTMLElement).getAttribute('href') ?? ''
-          // undo the render-side shadow-anchor prefix (PDF export plumbing,
-          // not document data): #bk--name → #name
-          const href = domHref.startsWith(`#${PDF_ANCHOR_PREFIX}`)
-            ? `#${pdfAnchorName(domHref.slice(1))}`
-            : domHref
+          const href = (el as HTMLElement).getAttribute('href') ?? ''
           const title = (el as HTMLElement).getAttribute('title')
-          // the render-side hover fallback (title = bookmark href) is
-          // display-only — parsing it back as a stored tooltip would write
-          // w:tooltip into the saved docx
+          // the render-side hover fallback (title = href) is display-only —
+          // parsing it back as a stored tooltip would write w:tooltip into
+          // the saved docx
           return { href, tooltip: title === href ? null : title }
         },
       },
     ]
   },
   renderHTML({ mark }) {
-    const href = String(mark.attrs.href ?? '')
     return [
       'a',
       {
-        // the DOM href carries the shadow-anchor id so Chromium's printToPDF
-        // can resolve it into a PDF destination; the mark attr stays the
-        // Word bookmark name (document data)
-        href: href.length > 1 && href.startsWith('#') ? `#${pdfAnchorId(href.slice(1))}` : href,
+        href: mark.attrs.href,
         class: mark.attrs.plain ? 'doc-link doc-link-plain' : 'doc-link',
         // Word parity: hovering a link shows its target even without a
         // stored tooltip (links were uninspectable)
-        title: mark.attrs.tooltip ? String(mark.attrs.tooltip) : href,
+        title: mark.attrs.tooltip ? String(mark.attrs.tooltip) : String(mark.attrs.href ?? ''),
       },
       0,
     ]
@@ -193,6 +183,7 @@ export const InsMark = Mark.create({
     return {
       author: { default: '' },
       date: { default: null as string | null },
+      dateUtc: { default: null as string | null },
       id: { default: null as string | null },
     }
   },
@@ -220,6 +211,7 @@ export const DelMark = Mark.create({
     return {
       author: { default: '' },
       date: { default: null as string | null },
+      dateUtc: { default: null as string | null },
       id: { default: null as string | null },
     }
   },
@@ -370,6 +362,7 @@ export const RprChangeMark = Mark.create({
     return {
       author: { default: '' },
       date: { default: null as string | null },
+      dateUtc: { default: null as string | null },
       id: { default: null as string | null },
       old: { default: null as Record<string, unknown> | null, rendered: false },
     }
@@ -781,6 +774,8 @@ export const TextStyleMark = Mark.create({
       style: styles.join(';'),
     }
     if (mark.attrs.styleId) attrs['data-style'] = String(mark.attrs.styleId)
+    // cs-slot run: styles.css .doc-cs-mixed collapses its line box
+    if (mark.attrs.csFont) attrs['data-cs'] = ''
     {
       const ink = fillInk(shading)
       if (ink) attrs['data-ink'] = ink

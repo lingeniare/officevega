@@ -1539,4 +1539,8 @@ export const tk = {
   appLargeFilterApplying: 'Filtr faýla ulanylýar…',
   appPrintWorkbookTooLarge:
     'Bu iş kitaby ýada doly ýüklemek üçin örän uly, şonuň üçin ony çap etmek ýa-da PDF-e eksport etmek bolmaýar.',
+  appRibbonCompact: 'Compact Ribbon (icons only)',
+  appRightToLeft: 'Right-to-Left',
+  appRightToLeftOn: 'Grid direction: right-to-left.',
+  appRightToLeftOff: 'Grid direction: left-to-right.',
 } satisfies Record<keyof typeof en, string>

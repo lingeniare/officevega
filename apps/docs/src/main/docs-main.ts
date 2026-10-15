@@ -74,6 +74,7 @@ import {
   MAX_REMOTE_IMAGE_BYTES,
   readBodyCapped,
   writeJsonAtomic,
+  recoveryCopyDiskNewer,
 } from '@genoffice/electron-utils'
 import { configureMetricsCache, familyVerticalMetrics } from '@genoffice/font-metrics'
 import { appTitle, createI18n, getUiLang, normalizeLang, setUiLang } from '@genoffice/i18n'
@@ -89,6 +90,7 @@ import type {
 import { parseFileToText } from '@genoffice/file-parse'
 import { convertHtmlToDocx } from '../../../../packages/html2docx/src'
 import { ElectronBrowserDriver } from '../../../../packages/html2docx/src/drivers/electron'
+import { convertOdtToDocx } from '../../../../packages/odf2ooxml/src'
 import {
   AiCreditsError,
   AiTimeoutError,
@@ -111,6 +113,7 @@ import {
   setAiUserAgent,
   setPiiShieldEnabled,
   setRescueFetch,
+  resolveProfileCredential,
   warmAiConnections,
   streamForProvider,
   type AiChatRequest,
@@ -121,6 +124,7 @@ import {
   type LegacyAiSettings,
 } from '@genoffice/ai-provider'
 import { listCodexModels, shutdownCodexAppServers } from '@genoffice/ai-provider/codex-app-server'
+import { startAiTrace } from '@genoffice/ai-provider/trace'
 import { listCustomModelsForIpc } from '@genoffice/ai-provider/custom-models'
 import {
   ensureOfficeVegaLogin,
@@ -151,14 +155,16 @@ import type {
   DocsTabInfo,
   MenuCommand,
   OpenDocxResult,
-  PdfLinkPlan,
   SpellLanguages,
 } from '../shared/ipc'
-import { ATTACHMENT_IMAGE_EXTS } from '../shared/ipc'
-import { applyPdfLinkPlan } from './pdf-links'
+import { ATTACHMENT_IMAGE_EXTS, MARKDOWN_MEDIA_DIR_TOKEN, type MarkdownImage } from '../shared/ipc'
 import { ClickClaims } from '../shared/context-menu-claims'
-import { findDocxPath } from '../shared/open-file'
-import { atomicWriteFile, looksLikeZip } from './atomic-write'
+import {
+  OPENABLE_DOC_EXTENSIONS,
+  findOpenableDocPath,
+  isOpenableDocPath,
+} from '../shared/open-file'
+import { atomicWriteFile } from './atomic-write'
 import {
   adoptLazyMediaHashes,
   forgetLazyMediaOwner,
@@ -190,7 +196,8 @@ import {
 } from './docx-encryption'
 import { isExternallyModified, type DiskFileState } from './external-change'
 import { copyImageDisplaySize, validCopyImageDataUrl } from './copy-image-guard'
-import { printScaleOption, validPrintGeometry } from './print-args'
+import { printJobOptions, printScaleOption, validPrintGeometry } from './print-args'
+import { addPdfInternalLinks } from './pdf-links'
 import {
   assignStarredGroup,
   dropStarredItems,
@@ -221,6 +228,10 @@ const tMain = createI18n({
   en: {
     dlgOpenDoc: 'Open Document',
     filterWord: 'Word Documents',
+    odtImportMsg: 'Convert this .{ext} document?',
+    odtImportDetail:
+      'OfficeVega edits .docx, not ODF. Body text, headings, lists, tables and images carry over; footnotes, comments and text boxes are not fully preserved. The original file is never changed; the converted .docx is a separate copy that later saves write to.',
+    odtImportConvertBtn: 'Convert and open',
     dlgSaveAs: 'Save As',
     closeUnsavedMsg: 'This document has unsaved changes.',
     closeUnsavedDetail: 'Do you want to save them before closing?',
@@ -228,11 +239,12 @@ const tMain = createI18n({
     closeNoReplyDetail: 'Close anyway? Unsaved changes will be lost.',
     btnCloseAnyway: 'Close Anyway',
     autosaveFoundTitle: 'Recovered version found',
+    autosaveDiskNewer:
+      'Note: the file on disk was modified after this recovery copy was saved. Restoring replaces those newer changes.',
     autosaveFoundBody:
       'There are unsaved changes from your last session. Restore the autosaved version?',
     autosaveRestore: 'Restore',
     autosaveDiscard: 'Discard',
-    autosaveFileNewer: 'The file on disk is newer than this recovered copy — restoring will replace those newer changes.',
     btnDontSave: "Don't Save",
     btnCancel: 'Cancel',
     extModifiedMsg: 'The file has been modified by another program.',
@@ -245,6 +257,7 @@ const tMain = createI18n({
     filterAll: 'All Files',
     dlgExportPdf: 'Export as PDF',
     dlgExportHtml: 'Export as HTML',
+    dlgExportMarkdown: 'Export as Markdown',
     dlgPickExportDir: 'Choose Export Folder',
     errUnsupportedExt: '.{ext} files are not supported',
     errNotFile: 'not a file',
@@ -271,6 +284,7 @@ const tMain = createI18n({
     menuPageSetup: 'Page Setup…',
     menuExportPdf: 'Export as PDF…',
     menuExportHtml: 'Export as HTML…',
+    menuExportMarkdown: 'Export as Markdown…',
     menuExportImages: 'Export as Images…',
     menuPrint: 'Print…',
     menuEdit: 'Edit',
@@ -285,7 +299,6 @@ const tMain = createI18n({
     menuSelectAll: 'Select All',
     menuView: 'View',
     menuZoom: 'Zoom',
-    menuUiZoom: 'Interface Zoom',
     menuZoomIn: 'Zoom In',
     menuZoomOut: 'Zoom Out',
     menuZoom100: 'Actual Size (100%)',
@@ -350,11 +363,16 @@ const tMain = createI18n({
     menuWindow: 'Window',
     menuHelp: 'Help',
     menuShortcuts: 'Keyboard Shortcuts',
+    autosaveFileNewer: 'The file on disk is newer than this recovered copy — restoring will replace those newer changes.',
+    menuUiZoom: 'Interface Zoom',
   },
-  
   ru: {
     dlgOpenDoc: 'Открыть документ',
     filterWord: 'Документы Word',
+    odtImportMsg: 'Преобразовать этот документ .{ext}?',
+    odtImportDetail:
+      'OfficeVega редактирует .docx, а не ODF. Текст, заголовки, списки, таблицы и изображения переносятся; сноски, примечания и надписи сохраняются не полностью. Исходный файл никогда не изменяется; преобразованный .docx — отдельная копия, в которую записывается дальнейшее сохранение.',
+    odtImportConvertBtn: 'Преобразовать и открыть',
     dlgSaveAs: 'Сохранить как',
     closeUnsavedMsg: 'В этом документе есть несохранённые изменения.',
     closeUnsavedDetail: 'Сохранить их перед закрытием?',
@@ -362,11 +380,12 @@ const tMain = createI18n({
     closeNoReplyDetail: 'Всё равно закрыть? Несохранённые изменения будут потеряны.',
     btnCloseAnyway: 'Закрыть всё равно',
     autosaveFoundTitle: 'Найдена восстановленная версия',
+    autosaveDiskNewer:
+      'Внимание: файл на диске был изменён после сохранения этой копии восстановления. Восстановление заменит эти более новые изменения.',
     autosaveFoundBody:
       'Есть несохранённые изменения из прошлого сеанса. Восстановить автосохранённую версию?',
     autosaveRestore: 'Восстановить',
     autosaveDiscard: 'Отклонить',
-    autosaveFileNewer: 'Файл на диске новее этой восстановленной копии — восстановление заменит эти более новые изменения.',
     btnDontSave: 'Не сохранять',
     btnCancel: 'Отмена',
     extModifiedMsg: 'Файл был изменён другой программой.',
@@ -379,6 +398,7 @@ const tMain = createI18n({
     filterAll: 'Все файлы',
     dlgExportPdf: 'Экспорт в PDF',
     dlgExportHtml: 'Экспорт в HTML',
+    dlgExportMarkdown: 'Экспорт в Markdown',
     dlgPickExportDir: 'Выбор папки для экспорта',
     errUnsupportedExt: 'файлы .{ext} не поддерживаются',
     errNotFile: 'не является файлом',
@@ -407,6 +427,7 @@ const tMain = createI18n({
     menuPageSetup: 'Параметры страницы…',
     menuExportPdf: 'Экспорт в PDF…',
     menuExportHtml: 'Экспорт в HTML…',
+    menuExportMarkdown: 'Экспорт в Markdown…',
     menuExportImages: 'Экспорт в изображения…',
     menuPrint: 'Печать…',
     menuEdit: 'Правка',
@@ -421,7 +442,6 @@ const tMain = createI18n({
     menuSelectAll: 'Выделить все',
     menuView: 'Вид',
     menuZoom: 'Масштаб',
-    menuUiZoom: 'Масштаб интерфейса',
     menuZoomIn: 'Увеличить',
     menuZoomOut: 'Уменьшить',
     menuZoom100: 'Фактический размер (100%)',
@@ -486,13 +506,9 @@ const tMain = createI18n({
     menuWindow: 'Окно',
     menuHelp: 'Справка',
     menuShortcuts: 'Сочетания клавиш',
+    autosaveFileNewer: 'Файл на диске новее этой восстановленной копии — восстановление заменит эти более новые изменения.',
+    menuUiZoom: 'Масштаб интерфейса',
   },
-  
-  
-  
-  
-  
-  
   uz: {
     dlgOpenDoc: 'Hujjatni ochish',
     filterWord: 'Word hujjatlari',
@@ -627,6 +643,14 @@ const tMain = createI18n({
     menuWindow: 'Oyna',
     menuHelp: 'Yordam',
     menuShortcuts: 'Klaviatura yorliqlari',
+    odtImportMsg: 'Convert this .{ext} document?',
+    odtImportDetail:
+      'OfficeVega edits .docx, not ODF. Body text, headings, lists, tables and images carry over; footnotes, comments and text boxes are not fully preserved. The original file is never changed; the converted .docx is a separate copy that later saves write to.',
+    odtImportConvertBtn: 'Convert and open',
+    autosaveDiskNewer:
+      'Note: the file on disk was modified after this recovery copy was saved. Restoring replaces those newer changes.',
+    dlgExportMarkdown: 'Export as Markdown',
+    menuExportMarkdown: 'Export as Markdown…',
   },
   kk: {
     dlgOpenDoc: 'Құжатты ашу',
@@ -761,6 +785,14 @@ const tMain = createI18n({
     menuWindow: 'Терезе',
     menuHelp: 'Анықтама',
     menuShortcuts: 'Пернетақта таңбашалары',
+    odtImportMsg: 'Convert this .{ext} document?',
+    odtImportDetail:
+      'OfficeVega edits .docx, not ODF. Body text, headings, lists, tables and images carry over; footnotes, comments and text boxes are not fully preserved. The original file is never changed; the converted .docx is a separate copy that later saves write to.',
+    odtImportConvertBtn: 'Convert and open',
+    autosaveDiskNewer:
+      'Note: the file on disk was modified after this recovery copy was saved. Restoring replaces those newer changes.',
+    dlgExportMarkdown: 'Export as Markdown',
+    menuExportMarkdown: 'Export as Markdown…',
   },
   az: {
     dlgOpenDoc: 'Sənədi aç',
@@ -896,6 +928,14 @@ const tMain = createI18n({
     menuWindow: 'Pəncərə',
     menuHelp: 'Kömək',
     menuShortcuts: 'Klaviatura qısayolları',
+    odtImportMsg: 'Convert this .{ext} document?',
+    odtImportDetail:
+      'OfficeVega edits .docx, not ODF. Body text, headings, lists, tables and images carry over; footnotes, comments and text boxes are not fully preserved. The original file is never changed; the converted .docx is a separate copy that later saves write to.',
+    odtImportConvertBtn: 'Convert and open',
+    autosaveDiskNewer:
+      'Note: the file on disk was modified after this recovery copy was saved. Restoring replaces those newer changes.',
+    dlgExportMarkdown: 'Export as Markdown',
+    menuExportMarkdown: 'Export as Markdown…',
   },
   tk: {
     dlgOpenDoc: 'Resminamany aç',
@@ -1031,6 +1071,14 @@ const tMain = createI18n({
     menuWindow: 'Penjire',
     menuHelp: 'Kömek',
     menuShortcuts: 'Klawiatura gysga ýollary',
+    odtImportMsg: 'Convert this .{ext} document?',
+    odtImportDetail:
+      'OfficeVega edits .docx, not ODF. Body text, headings, lists, tables and images carry over; footnotes, comments and text boxes are not fully preserved. The original file is never changed; the converted .docx is a separate copy that later saves write to.',
+    odtImportConvertBtn: 'Convert and open',
+    autosaveDiskNewer:
+      'Note: the file on disk was modified after this recovery copy was saved. Restoring replaces those newer changes.',
+    dlgExportMarkdown: 'Export as Markdown',
+    menuExportMarkdown: 'Export as Markdown…',
   },
   ky: {
     dlgOpenDoc: 'Документти ачуу',
@@ -1166,6 +1214,14 @@ const tMain = createI18n({
     menuWindow: 'Терезе',
     menuHelp: 'Жардам',
     menuShortcuts: 'Баскычтоп жарлыктары',
+    odtImportMsg: 'Convert this .{ext} document?',
+    odtImportDetail:
+      'OfficeVega edits .docx, not ODF. Body text, headings, lists, tables and images carry over; footnotes, comments and text boxes are not fully preserved. The original file is never changed; the converted .docx is a separate copy that later saves write to.',
+    odtImportConvertBtn: 'Convert and open',
+    autosaveDiskNewer:
+      'Note: the file on disk was modified after this recovery copy was saved. Restoring replaces those newer changes.',
+    dlgExportMarkdown: 'Export as Markdown',
+    menuExportMarkdown: 'Export as Markdown…',
   },
   tt: {
     dlgOpenDoc: 'Документны ачу',
@@ -1300,6 +1356,14 @@ const tMain = createI18n({
     menuWindow: 'Тәрәзә',
     menuHelp: 'Ярдәм',
     menuShortcuts: 'Клавиатура кыска юллары',
+    odtImportMsg: 'Convert this .{ext} document?',
+    odtImportDetail:
+      'OfficeVega edits .docx, not ODF. Body text, headings, lists, tables and images carry over; footnotes, comments and text boxes are not fully preserved. The original file is never changed; the converted .docx is a separate copy that later saves write to.',
+    odtImportConvertBtn: 'Convert and open',
+    autosaveDiskNewer:
+      'Note: the file on disk was modified after this recovery copy was saved. Restoring replaces those newer changes.',
+    dlgExportMarkdown: 'Export as Markdown',
+    menuExportMarkdown: 'Export as Markdown…',
   },
   ka: {
     dlgOpenDoc: 'დოკუმენტის გახსნა',
@@ -1435,6 +1499,14 @@ const tMain = createI18n({
     menuWindow: 'ფანჯარა',
     menuHelp: 'დახმარება',
     menuShortcuts: 'კლავიატურის მალსახმობები',
+    odtImportMsg: 'Convert this .{ext} document?',
+    odtImportDetail:
+      'OfficeVega edits .docx, not ODF. Body text, headings, lists, tables and images carry over; footnotes, comments and text boxes are not fully preserved. The original file is never changed; the converted .docx is a separate copy that later saves write to.',
+    odtImportConvertBtn: 'Convert and open',
+    autosaveDiskNewer:
+      'Note: the file on disk was modified after this recovery copy was saved. Restoring replaces those newer changes.',
+    dlgExportMarkdown: 'Export as Markdown',
+    menuExportMarkdown: 'Export as Markdown…',
   },
 })
 const tm = (key: Parameters<typeof tMain>[1], params?: Parameters<typeof tMain>[2]) =>
@@ -1467,7 +1539,7 @@ export function configureDocsRuntime(config: DocsRuntimeConfig): void {
 
 let mainWindow: BrowserWindow | null = null
 let rendererReady = false
-let pendingOpenPath = findDocxPath(process.argv)
+let pendingOpenPath = findOpenableDocPath(process.argv)
 /** documents queued for windows/tabs spawned via New Tab, keyed by webContents id */
 const pendingWindowOpens = new Map<number, string>()
 /** webContents ids that should open as a new blank doc instead of the start screen */
@@ -1567,7 +1639,9 @@ async function opensAsPasswordPrompt(filePath: string, wcId: number): Promise<bo
 }
 
 export function openExternalDocx(filePath: string | null): void {
-  if (!filePath || !/\.docx$/i.test(filePath)) return
+  if (!filePath) return
+  // .odt/.ott join the flow as an import (converted .docx copy), like the shell route
+  if (!isOpenableDocPath(filePath)) return
   const win = BrowserWindow.getFocusedWindow() ?? mainWindow
   if (!rendererReady || !win) {
     pendingOpenPath = filePath
@@ -1575,14 +1649,16 @@ export function openExternalDocx(filePath: string | null): void {
   }
   void (async () => {
     const wcId = win.webContents.id
+    const prepared = await prepareDocumentForOpen(filePath, win)
+    if (!prepared) return null
     if (
       rendererReady &&
-      !(await opensAsPasswordPrompt(filePath, wcId)) &&
+      !(await opensAsPasswordPrompt(prepared, wcId)) &&
       !(await requestDocsClose(win.webContents, win))
     ) {
       return
     }
-    return loadDocx(filePath, wcId)
+    return loadDocx(prepared, wcId)
   })()
     .then((result) => {
       if (!result || win.isDestroyed()) return
@@ -1945,20 +2021,18 @@ interface MaybeRecoveredDocBytes {
   recovered: boolean
 }
 
-/** On open, if a recovery copy exists, always ask whether to restore (still
- * points at the original path; only save persists it). A newer on-disk file no
- * longer deletes the copy silently (#1020) — it only marks the prompt: the
- * copy can be the sole artifact holding pre-crash edits, and it goes away only
- * when the user picks Discard. */
+/** On open, if a recovery copy exists, ask whether to restore (still points at the
+ * original path; only save persists it). A newer original does not discard the copy:
+ * it may hold the only pre-crash edits, so the prompt just says the disk file is newer. */
 async function maybeRecoverDocBytes(
   filePath: string,
   original: Buffer,
 ): Promise<MaybeRecoveredDocBytes> {
   const asPath = recoveryPathFor(filePath)
-  let fileIsNewer = false
+  let diskNewer: boolean
   try {
     if (!existsSync(asPath)) return { bytes: original, recovered: false }
-    fileIsNewer = statSync(asPath).mtimeMs <= statSync(filePath).mtimeMs
+    diskNewer = recoveryCopyDiskNewer(statSync(asPath).mtimeMs, statSync(filePath).mtimeMs)
   } catch {
     return { bytes: original, recovered: false }
   }
@@ -1968,8 +2042,8 @@ async function maybeRecoverDocBytes(
     defaultId: 0,
     cancelId: 1,
     message: tm('autosaveFoundTitle'),
-    detail: fileIsNewer
-      ? `${tm('autosaveFoundBody')}\n\n${tm('autosaveFileNewer')}`
+    detail: diskNewer
+      ? `${tm('autosaveFoundBody')}\n\n${tm('autosaveDiskNewer')}`
       : tm('autosaveFoundBody'),
   }
   const parent = BrowserWindow.getFocusedWindow() ?? mainWindow
@@ -1996,6 +2070,59 @@ async function showOpenError(wcId: number, detail: string): Promise<void> {
   const options = { type: 'error' as const, message: tm('dlgOpenDoc'), detail }
   if (parent && !parent.isDestroyed()) await dialog.showMessageBox(parent, options)
   else await dialog.showMessageBox(options)
+}
+
+/**
+ * An .odt opens only as a converted .docx copy: confirm the lossy import,
+ * pick the destination (the sibling .docx by default), convert, write the
+ * file and open it — the explicit-destination flow the PDF "Export as Word"
+ * path already uses, so every later Save lands in the copy the user chose.
+ * Anything that is not an .odt passes through unchanged; null cancels the open.
+ */
+async function prepareDocumentForOpen(
+  filePath: string,
+  parent?: BrowserWindow | undefined,
+): Promise<string | null> {
+  const extension = filePath.toLowerCase().match(/\.([a-z0-9]+)$/)?.[1] ?? ''
+  if (extension !== 'odt' && extension !== 'ott') return filePath
+  const options = {
+    type: 'warning' as const,
+    message: tm('odtImportMsg', { ext: extension }),
+    detail: tm('odtImportDetail'),
+    buttons: [tm('odtImportConvertBtn'), tm('btnCancel')],
+    defaultId: 0,
+    cancelId: 1,
+    noLink: true,
+  }
+  const { response } = parent
+    ? await dialog.showMessageBox(parent, options)
+    : await dialog.showMessageBox(options)
+  if (response !== 0) return null
+  const picked = await showSaveDialogWithMemory(
+    dialog,
+    parent,
+    {
+      title: tm('dlgSaveAs'),
+      defaultPath: join(dirname(filePath), basename(filePath).replace(/\.(odt|ott)$/i, '.docx')),
+      filters: [{ name: tm('filterWord'), extensions: ['docx'] }],
+    },
+    defaultSaveDir(),
+  )
+  if (picked.canceled || !picked.filePath) return null
+  try {
+    const result = await convertOdtToDocx(new Uint8Array(await readFile(filePath)))
+    await atomicWriteFile(picked.filePath, Buffer.from(result.docx))
+  } catch {
+    if (parent && !parent.isDestroyed()) {
+      await dialog.showMessageBox(parent, {
+        type: 'error',
+        message: tm('dlgOpenDoc'),
+        detail: `${basename(filePath)}: ${tm('errUnreadable')}`,
+      })
+    }
+    return null
+  }
+  return picked.filePath
 }
 
 async function loadDocx(
@@ -2411,6 +2538,8 @@ export function registerAiIpc(): void {
     } else if (provider === 'vega' && config && !config.apiKey?.trim()) {
       config = { ...config, apiKey: officeVegaApiKey() }
     }
+    // a custom endpoint may name an environment variable instead of storing a key
+    config = config ? resolveProfileCredential(config) : config
     const send = (chunk: AiStreamChunk) => {
       if (!event.sender.isDestroyed()) event.sender.send('ai:stream-chunk', chunk)
     }
@@ -2440,22 +2569,50 @@ export function registerAiIpc(): void {
       lastPing = now
       send({ requestId, type: 'ping' })
     }
+    const trace = startAiTrace({
+      requestId,
+      sessionId: request.sessionId,
+      source: event.sender.getURL(),
+      provider,
+      model: config.model,
+      maxTokens,
+      system,
+      messages,
+      tools,
+    })
     try {
       let stopReason: string | undefined
       await streamForProvider(provider, config, system, messages, tools, maxTokens, {
         ...(request.sessionId ? { sessionId: request.sessionId } : {}),
         signal: controller.signal,
-        onDelta: (text) => send({ requestId, type: 'delta', text }),
-        onReasoningDelta: (text) => send({ requestId, type: 'reasoning', text }),
-        onToolCall: (toolCall) => send({ requestId, type: 'tool-call', toolCall }),
+        onDelta: (text) => {
+          trace?.onDelta(text)
+          send({ requestId, type: 'delta', text })
+        },
+        onReasoningDelta: (text) => {
+          trace?.onReasoningDelta(text)
+          send({ requestId, type: 'reasoning', text })
+        },
+        onToolCall: (toolCall) => {
+          trace?.onToolCall(toolCall)
+          send({ requestId, type: 'tool-call', toolCall })
+        },
         onActivity: ping,
         onStopReason: (reason) => {
           stopReason = reason
+          trace?.onStopReason(reason)
         },
-        onUsage: (usage) => send({ requestId, type: 'usage', usage }),
+        onUsage: (usage) => {
+          trace?.onUsage(usage)
+          send({ requestId, type: 'usage', usage })
+        },
       })
+      trace?.finish()
       send({ requestId, type: 'done', stopReason })
     } catch (err) {
+      trace?.finish(
+        controller.signal.aborted ? 'aborted' : err instanceof Error ? err.message : String(err),
+      )
       if (controller.signal.aborted) {
         send({ requestId, type: 'done' })
       } else {
@@ -2626,6 +2783,8 @@ export function registerAiIpc(): void {
     } else if (provider === 'vega' && config && !config.apiKey?.trim()) {
       config = { ...config, apiKey: officeVegaApiKey() }
     }
+    // a custom endpoint may name an environment variable instead of storing a key
+    config = config ? resolveProfileCredential(config) : config
     if (!config || (provider !== 'codex' && !config.apiKey)) {
       return {
         ok: false,
@@ -2935,14 +3094,20 @@ export function registerDocsIpc(): void {
   ipcMain.handle('docs:open', async (event) => {
     const result = await openDialog(event, {
       title: tm('dlgOpenDoc'),
-      filters: [{ name: tm('filterWord'), extensions: ['docx'] }],
+      filters: [{ name: tm('filterWord'), extensions: [...OPENABLE_DOC_EXTENSIONS] }],
       properties: ['openFile'],
     })
     if (result.canceled || result.filePaths.length === 0) return null
-    return loadDocx(result.filePaths[0], event.sender.id)
+    const prepared = await prepareDocumentForOpen(result.filePaths[0], dialogParent(event))
+    if (!prepared) return null
+    return loadDocx(prepared, event.sender.id)
   })
 
-  ipcMain.handle('docs:open-path', (event, filePath: string) => loadDocx(filePath, event.sender.id))
+  ipcMain.handle('docs:open-path', async (event, filePath: string) => {
+    const prepared = await prepareDocumentForOpen(filePath, dialogParent(event))
+    if (!prepared) return null
+    return loadDocx(prepared, event.sender.id)
+  })
 
   // w:altChunk HTML: the same html2docx chain as the HTML app's export, in a
   // hidden window; the renderer parses the result and shows its blocks
@@ -3047,17 +3212,22 @@ export function registerDocsIpc(): void {
     },
   )
 
-  ipcMain.handle('docs:consume-pending-open', (event) => {
+  ipcMain.handle('docs:consume-pending-open', async (event) => {
     rendererReady = true
     // a tab spawned via New Tab loads the document queued for it specifically
     const queued = pendingWindowOpens.get(event.sender.id)
     if (queued) {
       pendingWindowOpens.delete(event.sender.id)
-      return loadDocx(queued, event.sender.id)
+      const prepared = await prepareDocumentForOpen(queued, dialogParent(event))
+      if (!prepared) return null
+      return loadDocx(prepared, event.sender.id)
     }
     const filePath = pendingOpenPath
     pendingOpenPath = null
-    return filePath ? loadDocx(filePath, event.sender.id) : null
+    if (!filePath) return null
+    const prepared = await prepareDocumentForOpen(filePath, dialogParent(event))
+    if (!prepared) return null
+    return loadDocx(prepared, event.sender.id)
   })
 
   /** returns true when this tab was opened via "New Document" and should start blank */
@@ -3648,18 +3818,30 @@ export function registerDocsIpc(): void {
   // renderer print scale (inverse of the preview's print zoom, see print-zoom.ts)
   // Infinity passes a `> 0` check, so require finiteness before handing it to Chromium.
   const pdfScale = (scale?: number) => printScaleOption(scale)
+  const withInternalLinks = async (data: Buffer, links: unknown): Promise<Buffer> => {
+    if (!Array.isArray(links) || links.length === 0) return data
+    const { PDFDocument } = await import('pdf-lib')
+    const pdf = await PDFDocument.load(data)
+    if (addPdfInternalLinks(pdf, links) === 0) return data
+    return Buffer.from(await pdf.save())
+  }
   const printScale = (scale?: number) =>
     typeof scale === 'number' && Number.isFinite(scale) && scale > 0 && scale !== 1
       ? { scaleFactor: Math.round(scale * 100) }
       : {}
 
-  ipcMain.handle('docs:print', async (event, scale?: number) => {
+  ipcMain.handle('docs:printers', async (event) => {
+    const printers = await event.sender.getPrintersAsync()
+    return printers.map((p) => ({ name: p.name, displayName: p.displayName || p.name }))
+  })
+
+  ipcMain.handle('docs:print', async (event, scale?: number, job?: unknown) => {
     // print the calling tab's own content; zero margins — the docx page padding provides them.
-    // Resolves when the system dialog is dismissed; the print dialog stays open on cancel
-    // (ok=false without error) and surfaces real failures.
+    // Resolves when the system dialog is dismissed (or the silent job is queued); the print
+    // dialog stays open on cancel (ok=false without error) and surfaces real failures.
     return new Promise<{ ok: boolean; error?: string }>((resolve) => {
       event.sender.print(
-        { margins: { marginType: 'none' }, ...printScale(scale) },
+        { margins: { marginType: 'none' }, ...printScale(scale), ...printJobOptions(job) },
         (success, failureReason) => {
           resolve({
             ok: success,
@@ -3679,6 +3861,7 @@ export function registerDocsIpc(): void {
       pageHeightTwips: number,
       outPath?: string,
       scale?: number,
+      links?: unknown,
     ) => {
       // Renderer-supplied page geometry reaches Chromium printToPDF verbatim:
       // reject non-finite/out-of-range sizes (0.1in..50in) and scales (0.1..5),
@@ -3703,7 +3886,7 @@ export function registerDocsIpc(): void {
         allowPdfWrite(event.sender.id, filePath)
       }
       try {
-        const data = await event.sender.printToPDF({
+        const printed = await event.sender.printToPDF({
           printBackground: true,
           // custom pageSize is in inches; the docx page padding provides the margins
           pageSize: {
@@ -3713,6 +3896,7 @@ export function registerDocsIpc(): void {
           margins: { top: 0, bottom: 0, left: 0, right: 0 },
           ...pdfScale(scale),
         })
+        const data = await withInternalLinks(printed, links)
         await atomicWriteFile(filePath, data)
         if (!isImageExportTemp(event.sender.id, filePath)) openGeneratedFile(filePath)
         return { ok: true, path: filePath }
@@ -3837,6 +4021,49 @@ export function registerDocsIpc(): void {
     },
   )
 
+  ipcMain.handle(
+    'docs:export-markdown',
+    async (
+      event,
+      defaultName: string,
+      markdown: string,
+      images: MarkdownImage[],
+      outPath?: string,
+    ) => {
+      if (typeof markdown !== 'string' || !markdown) return { ok: false, error: 'empty document' }
+      if (!Array.isArray(images)) return { ok: false, error: 'bad image list' }
+      let filePath = outPath ?? null
+      if (filePath && !canPdfWrite(event.sender.id, filePath)) {
+        return { ok: false, error: 'export target is not an authorized path' }
+      }
+      if (!filePath) {
+        const result = await saveDialog(event, {
+          title: tm('dlgExportMarkdown'),
+          defaultPath: defaultName.replace(/\.docx$/i, '') + '.md',
+          filters: [{ name: 'Markdown', extensions: ['md'] }],
+        })
+        if (result.canceled || !result.filePath) return { ok: false }
+        filePath = result.filePath
+        allowPdfWrite(event.sender.id, filePath)
+      }
+      try {
+        const written = await writeMarkdownMedia(filePath, images)
+        // the Markdown destination was escaped before the swap: parentheses must not survive it
+        const mediaDir = encodeURIComponent(
+          basename(filePath).replace(/\.md$/i, '') + '_files',
+        ).replace(/[()]/g, (c) => (c === '(' ? '%28' : '%29'))
+        await atomicWriteFile(
+          filePath,
+          Buffer.from(markdown.split(`${MARKDOWN_MEDIA_DIR_TOKEN}/`).join(`${mediaDir}/`), 'utf8'),
+        )
+        openGeneratedFile(filePath)
+        return { ok: true, path: filePath, imagesDropped: images.length - written }
+      } catch (err) {
+        return { ok: false, error: String(err), path: filePath }
+      }
+    },
+  )
+
   // mixed paper-size export: the renderer prints group by group per size (other pages hidden via CSS); this produces one group's bytes
   ipcMain.handle(
     'docs:print-pdf-buffer',
@@ -3871,7 +4098,7 @@ export function registerDocsIpc(): void {
       defaultName: string,
       base64Parts: string[],
       outPath?: string,
-      linkPlan?: PdfLinkPlan,
+      links?: unknown,
     ) => {
       let filePath = outPath ?? null
       if (filePath && !canPdfWrite(event.sender.id, filePath)) {
@@ -3895,14 +4122,7 @@ export function registerDocsIpc(): void {
           const pages = await merged.copyPages(part, part.getPageIndices())
           for (const page of pages) merged.addPage(page)
         }
-        if (linkPlan) {
-          try {
-            applyPdfLinkPlan(merged, linkPlan)
-          } catch (err) {
-            // links are best-effort: a malformed plan must not sink the export
-            console.warn('pdf link annotations failed:', err)
-          }
-        }
+        if (Array.isArray(links) && links.length > 0) addPdfInternalLinks(merged, links)
         await atomicWriteFile(filePath, Buffer.from(await merged.save()))
         if (!isImageExportTemp(event.sender.id, filePath)) openGeneratedFile(filePath)
         return { ok: true, path: filePath }
@@ -3965,6 +4185,30 @@ export function setDocsShellHooks(hooks: DocsShellHooks | null): void {
 /** After writing an exported/AI-generated file: open it in the right tab
  * (shell) or reveal it in the folder (standalone). Tab-opening failure must
  * not report the write itself as failed — the file is already persisted. */
+/**
+ * Pictures of a Markdown export land in `<file>_files/` next to it, like a
+ * browser's "save page" folder. Returns how many were written; unreadable
+ * sources are skipped and the reference in the Markdown dangles.
+ */
+async function writeMarkdownMedia(mdPath: string, images: MarkdownImage[]): Promise<number> {
+  if (images.length === 0) return 0
+  const dir = join(dirname(mdPath), basename(mdPath).replace(/\.md$/i, '') + '_files')
+  let written = 0
+  for (const img of images) {
+    if (typeof img?.name !== 'string' || !/^image\d+\.\w+$/.test(img.name)) continue
+    if (typeof img.src !== 'string') continue
+    const data = /^data:image\/[\w.+-]+;base64,(.*)$/s.exec(img.src)
+    const body = data
+      ? Buffer.from(data[1], 'base64')
+      : ((await readLazyMedia(img.src).catch(() => null))?.body ?? null)
+    if (!body || body.length === 0) continue
+    if (written === 0) await mkdir(dir, { recursive: true })
+    await atomicWriteFile(join(dir, img.name), body)
+    written++
+  }
+  return written
+}
+
 function openGeneratedFile(path: string): void {
   // Headless export has no tab strip and no user: revealing the file in Finder
   // would be the only visible effect of a run that must stay silent.
@@ -4201,6 +4445,7 @@ export function buildDocsMenu(): void {
         { label: tm('menuPageSetup'), click: () => sendCommand('page-setup') },
         { label: tm('menuExportPdf'), click: () => sendCommand('export-pdf') },
         { label: tm('menuExportHtml'), click: () => sendCommand('export-html') },
+        { label: tm('menuExportMarkdown'), click: () => sendCommand('export-markdown') },
         { label: tm('menuExportImages'), click: () => sendCommand('export-images') },
         {
           label: tm('menuPrint'),
@@ -4883,7 +5128,7 @@ export function startDocsStandalone(): void {
   })
 
   app.on('second-instance', (_event, argv) => {
-    openExternalDocx(findDocxPath(argv))
+    openExternalDocx(findOpenableDocPath(argv))
     mainWindow?.show()
     mainWindow?.focus()
   })

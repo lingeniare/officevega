@@ -1,93 +1,58 @@
-/**
- * #1975: merged-PDF link annotations. pdf-lib copyPages drops every Annots
- * entry, so applyPdfLinkPlan re-emits them from renderer-measured geometry:
- * internal links become direct [page /XYZ 0 y null] dests that survive
- * cross-chunk references, external links become /URI actions.
- */
 import { describe, expect, it } from 'vitest'
-import {
-  PDFArray,
-  PDFDict,
-  PDFDocument,
-  PDFName,
-  PDFNumber,
-  PDFString,
-  type PDFRef,
-} from 'pdf-lib'
-import { applyPdfLinkPlan } from '../src/main/pdf-links'
-import type { PdfLinkPlan } from '../src/shared/ipc'
+import { PDFArray, PDFDict, PDFDocument, PDFName } from 'pdf-lib'
+import { addPdfInternalLinks, sanitizePdfLinks } from '../src/main/pdf-links'
 
-async function mergedTwoFragments(): Promise<PDFDocument> {
-  // two 1-page "fragments" mimicking two printToPDF chunks
-  const merged = await PDFDocument.create()
-  for (let i = 0; i < 2; i++) {
-    const part = await PDFDocument.create()
-    part.addPage([600, 800])
-    const pages = await merged.copyPages(part, part.getPageIndices())
-    for (const p of pages) merged.addPage(p)
-  }
-  return merged
-}
-
-function annotDict(doc: PDFDocument, pageIndex: number, annotIndex = 0): PDFDict {
-  const annots = doc.context.lookup(
-    doc.getPages()[pageIndex].node.get(PDFName.of('Annots')),
-  ) as PDFArray
-  return doc.context.lookup(annots.get(annotIndex) as PDFRef) as PDFDict
-}
-
-describe('applyPdfLinkPlan', () => {
-  it('emits a direct Dest for an internal link, retargeted across group boundaries', async () => {
-    const doc = await mergedTwoFragments()
-    // fragment 1 printed preview page 0; fragment 2 printed preview page 1
-    const plan: PdfLinkPlan = {
-      groups: [{ from: 0, to: 0 }, { from: 1, to: 1 }],
-      links: [
-        {
-          kind: 'dest',
-          page: 0,
-          rect: [30, 800, 100, 815],
-          target: '_Toc42',
-        },
-      ],
-      targets: { _Toc42: { page: 1, y: 700 } },
-    }
-    expect(applyPdfLinkPlan(doc, plan)).toBe(1)
-    const annot = annotDict(doc, 0)
-    expect(annot.get(PDFName.of('Subtype'))?.toString()).toBe('/Link')
-    // Dest is an inline array [pageRef /XYZ 0 y null], not a named dest
-    const dest = annot.get(PDFName.of('Dest')) as PDFArray
-    expect(dest.get(0)).toBe(doc.getPages()[1].ref)
-    expect((dest.get(3) as PDFNumber).asNumber()).toBe(700)
-    expect(annot.get(PDFName.of('Rect'))?.toString()).toBe('[ 30 800 100 815 ]')
+describe('sanitizePdfLinks', () => {
+  it('drops malformed, out-of-range and out-of-page entries', () => {
+    const good = { page: 0, x: 0.1, y: 0.2, w: 0.3, h: 0.05, toPage: 1, toY: 0.5 }
+    expect(
+      sanitizePdfLinks(
+        [
+          good,
+          { ...good, page: 2 },
+          { ...good, toPage: -1 },
+          { ...good, x: 0.9, w: 0.2 },
+          { ...good, h: 0 },
+          { ...good, toY: Number.NaN },
+          null,
+          'x',
+        ],
+        2,
+      ),
+    ).toEqual([good])
+    expect(sanitizePdfLinks('nope', 2)).toEqual([])
   })
+})
 
-  it('emits a URI action for external links', async () => {
-    const doc = await mergedTwoFragments()
-    const plan: PdfLinkPlan = {
-      groups: [{ from: 0, to: 1 }],
-      links: [{ kind: 'uri', page: 1, rect: [10, 10, 50, 20], url: 'https://example.com/x' }],
-      targets: {},
-    }
-    expect(applyPdfLinkPlan(doc, plan)).toBe(1)
-    const annot = annotDict(doc, 1)
-    const action = doc.context.lookup(annot.get(PDFName.of('A')) as PDFRef) as PDFDict
-    expect(action.get(PDFName.of('S'))?.toString()).toBe('/URI')
-    expect((action.get(PDFName.of('URI')) as PDFString).decodeText()).toBe(
-      'https://example.com/x',
+describe('addPdfInternalLinks', () => {
+  it('stamps GoTo annotations in PDF coordinates and keeps existing annots', async () => {
+    const pdf = await PDFDocument.create()
+    const p0 = pdf.addPage([200, 400])
+    const p1 = pdf.addPage([300, 600])
+    const existing = pdf.context.register(
+      pdf.context.obj({ Type: 'Annot', Subtype: 'Link', Rect: [0, 0, 1, 1] }),
     )
-  })
+    p0.node.set(PDFName.of('Annots'), pdf.context.obj([existing]))
 
-  it('skips links whose target bookmark or page is unknown instead of failing', async () => {
-    const doc = await mergedTwoFragments()
-    const plan: PdfLinkPlan = {
-      groups: [{ from: 0, to: 1 }],
-      links: [
-        { kind: 'dest', page: 0, rect: [0, 0, 1, 1], target: 'missing' },
-        { kind: 'dest', page: 99, rect: [0, 0, 1, 1], target: 'ok' },
-      ],
-      targets: { ok: { page: 0, y: 100 } },
-    }
-    expect(applyPdfLinkPlan(doc, plan)).toBe(0)
+    const n = addPdfInternalLinks(pdf, [
+      { page: 0, x: 0.1, y: 0.25, w: 0.5, h: 0.05, toPage: 1, toY: 0.5 },
+      { page: 5, x: 0, y: 0, w: 1, h: 1, toPage: 0, toY: 0 },
+    ])
+    expect(n).toBe(1)
+
+    const annots = p0.node.lookup(PDFName.of('Annots'), PDFArray)
+    expect(annots.size()).toBe(2)
+    const link = annots.lookup(1, PDFDict)
+    expect(link.get(PDFName.of('Subtype'))?.toString()).toBe('/Link')
+    const rect = link
+      .lookup(PDFName.of('Rect'), PDFArray)
+      .asArray()
+      .map((v) => Number(v.toString()))
+    expect(rect).toEqual([20, 280, 120, 300])
+    const dest = link.lookup(PDFName.of('Dest'), PDFArray)
+    expect(dest.get(0)).toBe(p1.ref)
+    expect(dest.get(1).toString()).toBe('/XYZ')
+    expect(Number(dest.get(3).toString())).toBe(300)
+    expect(p1.node.lookup(PDFName.of('Annots'))).toBeUndefined()
   })
 })

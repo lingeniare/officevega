@@ -1542,4 +1542,8 @@ export const ka = {
   appLargeFilterApplying: 'ფილტრი ფაილზე გამოიყენება…',
   appPrintWorkbookTooLarge:
     'ეს სამუშაო წიგნი ძალიან დიდია მეხსიერებაში სრულად ჩასატვირთად, ამიტომ მისი დაბეჭდვა ან PDF-ში ექსპორტი შეუძლებელია.',
+  appRibbonCompact: 'Compact Ribbon (icons only)',
+  appRightToLeft: 'Right-to-Left',
+  appRightToLeftOn: 'Grid direction: right-to-left.',
+  appRightToLeftOff: 'Grid direction: left-to-right.',
 } satisfies Record<keyof typeof en, string>

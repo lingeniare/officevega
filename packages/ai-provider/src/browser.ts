@@ -1,6 +1,10 @@
 /** Browser-safe settings surface. Keep Node-backed transports out of renderer bundles. */
 export type {
+  AiCustomCompat,
   AiCustomEndpoint,
+  AiCustomModelProfile,
+  AiCustomProfile,
+  AiCustomProtocol,
   AiProviderConfig,
   AiProviderId,
   AiProviderMeta,
@@ -29,7 +33,14 @@ export {
   selectCustomEndpoint,
   upsertCustomEndpoint,
 } from './custom-endpoints'
-export { getProviderAdapter, modelLacksVision } from './registry'
+export {
+  AI_CUSTOM_PROTOCOLS,
+  declaredModelProfile,
+  normalizeCustomProfile,
+  resolveCustomProfile,
+} from './custom-profile'
+export type { ResolvedCustomProfile } from './custom-profile'
+export { endpointSupportsVision, getProviderAdapter, modelLacksVision } from './registry'
 export {
   AI_MEDIA_PROVIDERS,
   imageGenerationAvailable,

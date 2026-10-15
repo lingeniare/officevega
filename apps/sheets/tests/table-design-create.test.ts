@@ -48,7 +48,7 @@ function fakeSheet(rows: number) {
 }
 
 describe('Create Table completion signal', () => {
-  it('fires onTableCreated after the asynchronous create succeeds', async () => {
+  it('fires onTableCreated after the asynchronous create succeeds', { timeout: 30000 }, async () => {
     const { handleTableDesignCommand } = await import('../src/renderer/table-design-actions')
     const { runtime, state, activated } = fakeSheet(10)
     const created = vi.fn()

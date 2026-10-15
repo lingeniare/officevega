@@ -1,6 +1,6 @@
 import { aiPanelWidthAtPointer, AiModelPicker, type AiModelPickerBridge } from '@genoffice/ui'
 import { useEffect, useRef, useState } from 'react'
-import type { PointerEvent as ReactPointerEvent, ReactElement } from 'react'
+import type { PointerEvent as ReactPointerEvent, ReactElement, ReactNode } from 'react'
 import {
   AgentLoop,
   composeSkills,
@@ -9,6 +9,7 @@ import {
   generateSuggestedQuestions,
   streamText,
   withPiiTokenGuard,
+  type MindMapTreeNode,
 } from '@genoffice/agent-core'
 import {
   imageGenerationAvailable,
@@ -53,6 +54,7 @@ import { localizedToolSummary, toolLabel } from './tool-labels'
 import { clearAiHighlights } from '../editor/aiHighlight'
 import { setInactiveSelectionShown } from '../editor/inactiveSelection'
 import { createMarkdownSkill, MARKDOWN_RULES } from './markdown-skill'
+import { MindMapCard } from './MindMapCard'
 import {
   buildDocWriterRequest,
   countMarkdownBlocks,
@@ -130,6 +132,9 @@ interface ChatEntry {
   /** the run failed and this user message was rolled back out of the model context */
   undelivered?: boolean
   tools?: ToolActivity[]
+  /** interactive mind map from generate_mindmap's side-channel display (session-only;
+   * the persisted transcript keeps the tool call, so a reopened file can regenerate) */
+  mindmap?: MindMapTreeNode
   /** the selection this user message targeted, frozen at send */
   scope?: AiScopeQuoteData
   /** tokens the provider billed for this reply, summed across its turns (absent when unreported) */
@@ -686,6 +691,9 @@ export function AiPanel({
               [...prev, { label, time, doc: snapshotBefore }].slice(-MAX_SNAPSHOTS),
             )
           }
+          // mind maps ride the UI-only display side channel onto the message
+          const display = execution.display
+          const mindmap = display?.kind === 'mindmap' ? display.tree : undefined
           const activity: ToolActivity = {
             name: call.name,
             // agent-core error paths carry the raw tool name — localize it
@@ -702,7 +710,7 @@ export function AiPanel({
             const at = tools.findIndex((tl) => tl.running && tl.callId === call.id)
             if (at >= 0) tools[at] = activity
             else tools.push(activity)
-            return { tools }
+            return { tools, ...(mindmap ? { mindmap } : {}) }
           })
         },
         onTurnEnd: () => {
@@ -1231,6 +1239,15 @@ export function AiPanel({
               >
                 <span className="ai-starter-text">{t('aiQuickPolish')}</span>
               </button>
+              <button
+                className="ai-starter"
+                onClick={() => {
+                  setPrompt(t('aiQuickMindMapPrompt'))
+                  inputRef.current?.focus()
+                }}
+              >
+                {t('aiQuickMindMap')}
+              </button>
             </div>
           </div>
         )}
@@ -1281,6 +1298,19 @@ export function AiPanel({
                 )
               )}
               {hasTools && <ToolChipList tools={entry.tools!} />}
+              {entry.mindmap && (
+                <MindMapCard
+                  tree={entry.mindmap}
+                  onAsk={(label) => {
+                    setPrompt(t('aiMindMapAskPrompt', { label }))
+                    inputRef.current?.focus()
+                  }}
+                  onJumpBlock={(index) => {
+                    const current = depsRef.current.getEditor()
+                    if (current) navigateToBlock(current, index)
+                  }}
+                />
+              )}
               {entry.usage && (
                 <div className="ai-message-usage">
                   <AiUsageChip usage={entry.usage} lang={lang} />
