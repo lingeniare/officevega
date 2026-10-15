@@ -7,14 +7,6 @@ export function visiblePageCount(page: Pick<RecentPage, 'total'>): number {
   return page.total
 }
 
-type ExtraCategory = Exclude<Intl.LDMLPluralRule, 'one' | 'other'>
-
-// forms beyond one/other, only for locales whose CLDR categories need
-// distinct wording; the dictionaries keep the shared one/other pair
-const FILE_COUNT_FORMS: Partial<Record<Lang, Partial<Record<ExtraCategory, string>>>> = {
-  cs: { few: '{n} soubory' },
-}
-
 const rulesCache = new Map<Lang, Intl.PluralRules>()
 
 export function fileCountLabel(
@@ -28,8 +20,5 @@ export function fileCountLabel(
     rulesCache.set(lang, rules)
   }
   const category = rules.select(count)
-  const extra =
-    category === 'one' || category === 'other' ? undefined : FILE_COUNT_FORMS[lang]?.[category]
-  if (extra) return extra.replace('{n}', String(count))
   return t(category === 'one' ? 'fileCountOne' : 'fileCount', { n: count })
 }

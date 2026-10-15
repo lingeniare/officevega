@@ -37,112 +37,12 @@ export const zoteroStrings = defineStrings({
       'В сносках или концевых сносках этого документа есть цитаты Zotero, которые «Офис ВЕГА» пока не может обновлять. Команды Zotero здесь отключены, чтобы библиография осталась целой.',
     zoteroGroup: 'Zotero',
   },
-  cs: {
-    zoteroCitation: 'Citace Zotero',
-    zoteroCitationTip: 'Přidat citaci pomocí Zotera; pro úpravu umístěte kurzor do citace',
-    zoteroBibliography: 'Bibliografie Zotero',
-    zoteroBibliographyTip: 'Přidat nebo upravit bibliografii pomocí Zotera',
-    zoteroRefresh: 'Aktualizovat',
-    zoteroRefreshTip: 'Aktualizovat všechny citace a bibliografie Zotero',
-    zoteroDocumentSettings: 'Nastavení dokumentu',
-    zoteroDocumentSettingsTip: 'Nastavení dokumentu Zotero',
-    zoteroDocumentPreferences: 'Předvolby dokumentu',
-    zoteroRemoveCodes: 'Odebrat kódy polí',
-    zoteroConnectionError: 'K Zoteru se nelze připojit. Spusťte Zotero a nechte je otevřené.',
-    zoteroOperationError: 'Operace Zotero se nezdařila.',
-    zoteroNoteFieldsUnsupported:
-      'Tento dokument obsahuje citace Zotero v poznámkách pod čarou nebo vysvětlivkách, které OfficeVega zatím neumí aktualizovat. Příkazy Zotero jsou zde vypnuté, aby bibliografie zůstala nedotčená.',
-    zoteroGroup: 'Zotero',
-  },
-  nl: {
-    zoteroCitation: 'Zotero-citatie',
-    zoteroCitationTip:
-      'Voeg een citatie toe met Zotero; plaats de cursor in een citatie om die te bewerken',
-    zoteroBibliography: 'Zotero-bibliografie',
-    zoteroBibliographyTip: 'Voeg de bibliografie toe of bewerk deze met Zotero',
-    zoteroRefresh: 'Vernieuwen',
-    zoteroRefreshTip: 'Vernieuw alle Zotero-citaties en bibliografieën',
-    zoteroDocumentSettings: 'Documentinstellingen',
-    zoteroDocumentSettingsTip: 'Zotero-documentinstellingen',
-    zoteroDocumentPreferences: 'Documentvoorkeuren',
-    zoteroRemoveCodes: 'Veldcodes verwijderen',
-    zoteroConnectionError:
-      'Kan geen verbinding maken met Zotero. Start Zotero en laat het geopend.',
-    zoteroOperationError: 'De Zotero-bewerking is mislukt.',
-    zoteroNoteFieldsUnsupported:
-      'Dit document bevat Zotero-citaties in voet- of eindnoten die OfficeVega nog niet kan bijwerken. Zotero-opdrachten zijn hier uitgeschakeld zodat de bibliografie intact blijft.',
-    zoteroGroup: 'Zotero',
-  },
-  ms: {
-    zoteroCitation: 'Petikan Zotero',
-    zoteroCitationTip:
-      'Tambah petikan dengan Zotero; letakkan kursor dalam petikan untuk mengeditnya',
-    zoteroBibliography: 'Bibliografi Zotero',
-    zoteroBibliographyTip: 'Tambah atau edit bibliografi dengan Zotero',
-    zoteroRefresh: 'Segar semula',
-    zoteroRefreshTip: 'Segar semula semua petikan dan bibliografi Zotero',
-    zoteroDocumentSettings: 'Tetapan Dokumen',
-    zoteroDocumentSettingsTip: 'Tetapan dokumen Zotero',
-    zoteroDocumentPreferences: 'Keutamaan Dokumen',
-    zoteroRemoveCodes: 'Buang Kod Medan',
-    zoteroConnectionError:
-      'Tidak dapat menyambung ke Zotero. Mulakan Zotero dan biarkannya terbuka.',
-    zoteroOperationError: 'Operasi Zotero gagal.',
-    zoteroNoteFieldsUnsupported:
-      'Dokumen ini mempunyai petikan Zotero dalam nota kaki atau nota hujung yang belum boleh dikemas kini oleh OfficeVega. Perintah Zotero dimatikan di sini supaya bibliografi kekal utuh.',
-    zoteroGroup: 'Zotero',
-  },
-  he: {
-    zoteroCitation: 'ציטוט Zotero',
-    zoteroCitationTip: 'הוספת ציטוט באמצעות Zotero; יש למקם את הסמן בציטוט כדי לערוך אותו',
-    zoteroBibliography: 'ביבליוגרפיה של Zotero',
-    zoteroBibliographyTip: 'הוספה או עריכה של הביבליוגרפיה באמצעות Zotero',
-    zoteroRefresh: 'רענון',
-    zoteroRefreshTip: 'רענון כל הציטוטים והביבליוגרפיות של Zotero',
-    zoteroDocumentSettings: 'הגדרות מסמך',
-    zoteroDocumentSettingsTip: 'הגדרות מסמך Zotero',
-    zoteroDocumentPreferences: 'העדפות מסמך',
-    zoteroRemoveCodes: 'הסרת קודי שדה',
-    zoteroConnectionError: 'לא ניתן להתחבר ל-Zotero. יש להפעיל את Zotero ולהשאיר אותו פתוח.',
-    zoteroOperationError: 'פעולת Zotero נכשלה.',
-    zoteroNoteFieldsUnsupported:
-      'מסמך זה מכיל ציטוטים של Zotero בהערות שוליים או הערות סיום, ש-OfficeVega עדיין אינו יכול לעדכן. פקודות Zotero מושבתות כאן כדי לשמור על הביבליוגרפיה שלמה.',
-    zoteroGroup: 'Zotero',
-  },
-  hi: {
-    zoteroCitation: 'Zotero उद्धरण',
-    zoteroCitationTip: 'Zotero से उद्धरण जोड़ें; संपादित करने के लिए कर्सर को उद्धरण में रखें',
-    zoteroBibliography: 'Zotero ग्रंथ सूची',
-    zoteroBibliographyTip: 'Zotero से ग्रंथ सूची जोड़ें या संपादित करें',
-    zoteroRefresh: 'रीफ़्रेश करें',
-    zoteroRefreshTip: 'सभी Zotero उद्धरण और ग्रंथ सूचियाँ रीफ़्रेश करें',
-    zoteroDocumentSettings: 'दस्तावेज़ सेटिंग',
-    zoteroDocumentSettingsTip: 'Zotero दस्तावेज़ सेटिंग',
-    zoteroDocumentPreferences: 'दस्तावेज़ प्राथमिकताएँ',
-    zoteroRemoveCodes: 'फ़ील्ड कोड हटाएँ',
-    zoteroConnectionError: 'Zotero से कनेक्ट नहीं हो सका। Zotero शुरू करें और उसे खुला रखें।',
-    zoteroOperationError: 'Zotero कार्रवाई विफल रही।',
-    zoteroNoteFieldsUnsupported:
-      'इस दस्तावेज़ के फ़ुटनोट या एंडनोट में Zotero उद्धरण हैं, जिन्हें OfficeVega अभी अपडेट नहीं कर सकता। ग्रंथसूची को सुरक्षित रखने के लिए यहाँ Zotero कमांड बंद हैं।',
-    zoteroGroup: 'Zotero',
-  },
-  'zh-TW': {
-    zoteroCitation: 'Zotero 引文',
-    zoteroCitationTip: '使用 Zotero 新增引文；游標位於現有引文中時可編輯',
-    zoteroBibliography: 'Zotero 參考文獻',
-    zoteroBibliographyTip: '使用 Zotero 新增或編輯參考文獻',
-    zoteroRefresh: '重新整理',
-    zoteroRefreshTip: '重新整理所有 Zotero 引文和參考文獻',
-    zoteroDocumentSettings: '文件設定',
-    zoteroDocumentSettingsTip: 'Zotero 文件設定',
-    zoteroDocumentPreferences: '文件偏好設定',
-    zoteroRemoveCodes: '移除欄位代碼',
-    zoteroConnectionError: '無法連線至 Zotero。請先啟動 Zotero，並保持桌面程式執行。',
-    zoteroOperationError: 'Zotero 操作失敗。',
-    zoteroNoteFieldsUnsupported:
-      '此文件的註腳或章節附註中含有 Zotero 引文，OfficeVega 目前還無法更新它們。為保持參考文獻完整，已停用此文件的 Zotero 命令。',
-    zoteroGroup: 'Zotero',
-  },
+  
+  
+  
+  
+  
+  
   uz: {
     zoteroCitation: 'Zotero iqtibosi',
     zoteroCitationTip:
@@ -275,22 +175,5 @@ export const zoteroStrings = defineStrings({
       'ამ დოკუმენტში სქოლიოებში ან ბოლო შენიშვნებში Zotero-ს ციტატებია, რომელთა განახლებაც OfficeVega-ს ჯერ არ შეუძლია. აქ Zotero-ს ბრძანებები გამორთულია, რათა ბიბლიოგრაფია უცვლელი დარჩეს.',
     zoteroGroup: 'Zotero',
   },
-  vi: {
-    zoteroCitation: 'Trích dẫn Zotero',
-    zoteroCitationTip: 'Thêm trích dẫn bằng Zotero; đặt con trỏ vào trích dẫn để chỉnh sửa',
-    zoteroBibliography: 'Danh mục tài liệu tham khảo Zotero',
-    zoteroBibliographyTip: 'Thêm hoặc chỉnh sửa danh mục tài liệu tham khảo bằng Zotero',
-    zoteroRefresh: 'Làm mới',
-    zoteroRefreshTip: 'Làm mới tất cả trích dẫn và danh mục tài liệu tham khảo Zotero',
-    zoteroDocumentSettings: 'Cài đặt tài liệu',
-    zoteroDocumentSettingsTip: 'Cài đặt tài liệu Zotero',
-    zoteroDocumentPreferences: 'Tùy chọn tài liệu',
-    zoteroRemoveCodes: 'Xóa mã trường',
-    zoteroConnectionError:
-      'Không thể kết nối với Zotero. Hãy khởi động Zotero và giữ ứng dụng luôn chạy.',
-    zoteroOperationError: 'Thao tác Zotero thất bại.',
-    zoteroNoteFieldsUnsupported:
-      'Tài liệu này có chứa trích dẫn Zotero trong chú thích cuối trang hoặc chú thích cuối tài liệu mà OfficeVega. Các lệnh Zotero đã bị tắt tại đây để giữ nguyên danh mục tài liệu tham khảo.',
-    zoteroGroup: 'Zotero',
-  },
+  
 })

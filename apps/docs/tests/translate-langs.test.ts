@@ -10,13 +10,6 @@ import {
 const SHIPPED: Array<[TranslateLang, string]> = [
   ['en', 'English'],
   ['ru', 'Russian'],
-  ['cs', 'Czech'],
-  ['nl', 'Dutch'],
-  ['ms', 'Malay'],
-  ['he', 'Hebrew'],
-  ['hi', 'Hindi'],
-  ['zh-TW', 'TraditionalChinese'],
-  ['vi', 'Vietnamese'],
 ]
 
 describe('translate language keys', () => {
@@ -31,13 +24,8 @@ describe('translate language keys', () => {
     )
   })
 
-  it('covers the nine languages the translate menu offers', () => {
-    expect(TRANSLATE_LANGS).toHaveLength(9)
-  })
-
-  it('names zh-TW explicitly, which no join-then-capitalise rule could express', () => {
-    expect(appLangKey('zh-TW')).toBe('appLangTraditionalChinese')
-    expect(ribbonLangKey('zh-TW')).toBe('ribbonLangTraditionalChinese')
+  it('covers the two languages the translate menu offers', () => {
+    expect(TRANSLATE_LANGS).toHaveLength(2)
   })
 
   it('gives every language a distinct key on both surfaces', () => {
@@ -48,10 +36,9 @@ describe('translate language keys', () => {
   })
 
   it('spells keys out in full rather than abbreviating the code', () => {
-    // a "smart" rule would produce appLangEn / appLangZh-tw and break every
-    // one of these against the strings that already exist
+    // a "smart" rule would produce appLangEn / appLangRu and break the
+    // strings that already exist
     expect(appLangKey('en')).not.toBe('appLangEn')
-    expect(appLangKey('zh-TW')).not.toContain('-')
     for (const { key } of TRANSLATE_LANGS) expect(key.length).toBeGreaterThan(2)
   })
 

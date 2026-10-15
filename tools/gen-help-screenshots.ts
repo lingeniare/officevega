@@ -49,7 +49,7 @@ const OUT_DIR = join(REPO, 'apps/shell/src/renderer/src/i18n/help/topics/img')
 
 /** The UI languages the manual ships figures for; see the registry's language set. */
 const LANGS = process.argv.slice(2).filter((a) => !a.startsWith('-'))
-const TARGET_LANGS = LANGS.length ? LANGS : ['zh-TW', 'en']
+const TARGET_LANGS = LANGS.length ? LANGS : ['en']
 
 /** A one-page PDF, written by hand so the capture needs no PDF library. */
 function minimalPdf(): Buffer {

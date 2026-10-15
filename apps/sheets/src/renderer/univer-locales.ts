@@ -1,10 +1,10 @@
 /**
  * Univer UI locale wiring. createUniver boots with en-US (the packs
  * are needed synchronously); once the runtime exists, the app language picks
- * the matching Univer language packs — every preset ships all 19 — and
- * switches LocaleService, which re-renders the whole Univer React tree
- * (rule-management panels, dialogs, menus). UI languages Univer has no pack
- * for (nl/ms/he/hi/cs and the Central Asian locales) stay English.
+ * the matching Univer language packs and switches LocaleService, which
+ * re-renders the whole Univer React tree (rule-management panels, dialogs,
+ * menus). UI languages Univer has no pack for stay English — of the shipped
+ * nine, only Russian has a pack.
  */
 import { LocaleService, LocaleType, mergeLocales, type ILocales } from '@univerjs/core'
 
@@ -29,36 +29,6 @@ const UNIVER_LOCALES: Record<
         import('@univerjs/preset-sheets-note/locales/ru-RU'),
         import('@univerjs/preset-sheets-sort/locales/ru-RU'),
         import('@univerjs/preset-sheets-table/locales/ru-RU'),
-      ]),
-  },
-  vi: {
-    type: LocaleType.VI_VN,
-    load: () =>
-      Promise.all([
-        import('@univerjs/preset-sheets-core/locales/vi-VN'),
-        import('@univerjs/preset-sheets-conditional-formatting/locales/vi-VN'),
-        import('@univerjs/preset-sheets-data-validation/locales/vi-VN'),
-        import('@univerjs/preset-sheets-drawing/locales/vi-VN'),
-        import('@univerjs/preset-sheets-filter/locales/vi-VN'),
-        import('@univerjs/preset-sheets-find-replace/locales/vi-VN'),
-        import('@univerjs/preset-sheets-note/locales/vi-VN'),
-        import('@univerjs/preset-sheets-sort/locales/vi-VN'),
-        import('@univerjs/preset-sheets-table/locales/vi-VN'),
-      ]),
-  },
-  'zh-TW': {
-    type: LocaleType.ZH_TW,
-    load: () =>
-      Promise.all([
-        import('@univerjs/preset-sheets-core/locales/zh-TW'),
-        import('@univerjs/preset-sheets-conditional-formatting/locales/zh-TW'),
-        import('@univerjs/preset-sheets-data-validation/locales/zh-TW'),
-        import('@univerjs/preset-sheets-drawing/locales/zh-TW'),
-        import('@univerjs/preset-sheets-filter/locales/zh-TW'),
-        import('@univerjs/preset-sheets-find-replace/locales/zh-TW'),
-        import('@univerjs/preset-sheets-note/locales/zh-TW'),
-        import('@univerjs/preset-sheets-sort/locales/zh-TW'),
-        import('@univerjs/preset-sheets-table/locales/zh-TW'),
       ]),
   },
 }

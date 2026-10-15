@@ -205,7 +205,7 @@ function toggleFormulaBarExpand(): void {
 }
 
 /// Review > Translate targets, shown in their native names (never localized).
-const TRANSLATE_LANGUAGES = ['English', '繁體中文', 'Русский'] as const
+const TRANSLATE_LANGUAGES = ['English', 'Русский'] as const
 
 /// Glyph icons live in ribbon-icons.tsx, drawn to the shared icon standard
 /// (24×24 canvas, 1.5px strokes, round caps/joins); unmapped glyphs render

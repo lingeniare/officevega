@@ -66,7 +66,6 @@ const INHERITED_TEXT_STYLE_ATTRS = [
   'highlight',
   'shading',
   'styleId',
-  'cs',
 ] as const
 
 /** docTextStyle attrs of the run carrying the most live characters in the block */

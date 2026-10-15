@@ -24,76 +24,13 @@ export const CROP_EDGE_LABELS: Record<Lang, Record<CropEdge, string>> = {
     sw: 'Нижний левый край',
     w: 'Левый край',
   },
-  cs: {
-    nw: 'Horní levý okraj',
-    n: 'Horní okraj',
-    ne: 'Horní pravý okraj',
-    e: 'Pravý okraj',
-    se: 'Dolní pravý okraj',
-    s: 'Dolní okraj',
-    sw: 'Dolní levý okraj',
-    w: 'Levý okraj',
-  },
-  nl: {
-    nw: 'Linkerbovenrand',
-    n: 'Bovenrand',
-    ne: 'Rechterbovenrand',
-    e: 'Rechterrand',
-    se: 'Rechteronderrand',
-    s: 'Onderrand',
-    sw: 'Linkeronderrand',
-    w: 'Linkerrand',
-  },
-  ms: {
-    nw: 'Tepi kiri atas',
-    n: 'Tepi atas',
-    ne: 'Tepi kanan atas',
-    e: 'Tepi kanan',
-    se: 'Tepi kanan bawah',
-    s: 'Tepi bawah',
-    sw: 'Tepi kiri bawah',
-    w: 'Tepi kiri',
-  },
-  he: {
-    nw: 'הקצה העליון השמאלי',
-    n: 'הקצה העליון',
-    ne: 'הקצה העליון הימני',
-    e: 'הקצה הימני',
-    se: 'הקצה התחתון הימני',
-    s: 'הקצה התחתון',
-    sw: 'הקצה התחתון השמאלי',
-    w: 'הקצה השמאלי',
-  },
-  hi: {
-    nw: 'ऊपरी बायाँ किनारा',
-    n: 'ऊपरी किनारा',
-    ne: 'ऊपरी दायाँ किनारा',
-    e: 'दायाँ किनारा',
-    se: 'निचला दायाँ किनारा',
-    s: 'निचला किनारा',
-    sw: 'निचला बायाँ किनारा',
-    w: 'बायाँ किनारा',
-  },
-  'zh-TW': {
-    nw: '左上邊緣',
-    n: '上邊緣',
-    ne: '右上邊緣',
-    e: '右邊緣',
-    se: '右下邊緣',
-    s: '下邊緣',
-    sw: '左下邊緣',
-    w: '左邊緣',
-  },
-  vi: {
-    nw: '左上邊緣',
-    n: '上邊緣',
-    ne: '右上邊緣',
-    e: '右邊緣',
-    se: '右下邊緣',
-    s: '下邊緣',
-    sw: '左下邊緣',
-    w: '左邊緣',
-  },
+  
+  
+  
+  
+  
+  
+  
   uz: {
     nw: 'Top left edge',
     n: 'Top edge',

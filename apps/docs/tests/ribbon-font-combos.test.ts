@@ -57,7 +57,7 @@ describe('ribbon font and size combos', () => {
     act(() =>
       root.render(
         createElement(LocaleProvider, {
-          initial: 'zh-TW',
+          initial: 'en',
           children: createElement(Ribbon, ribbonProps(editor, computeFormatState(editor))),
         }),
       ),
@@ -108,10 +108,9 @@ describe('ribbon font and size combos', () => {
     key(sizeBox(), 'Enter')
     expect(editor.getAttributes('docTextStyle').sizeHalfPoints).toBe(28)
     render()
-    // the test UI language is zh-TW: 14pt reads as its CJK size name
-    expect(sizeBox().value).toBe('\u56db\u865f')
+    expect(sizeBox().value).toBe('14')
     act(() => sizeBox().focus())
-    type(sizeBox(), '\u5c0f\u56db')
+    type(sizeBox(), '12')
     key(sizeBox(), 'Enter')
     expect(editor.getAttributes('docTextStyle').sizeHalfPoints).toBe(24)
   })
@@ -158,7 +157,7 @@ describe('ribbon font and size combos', () => {
   it('opens on the common fonts section and commits a list click', () => {
     act(() => host.querySelector<HTMLButtonElement>('.rb-combo-caret')!.click())
     const labels = [...menu()!.querySelectorAll('.rb-menu-group-label')].map((el) => el.textContent)
-    expect(labels[0]).toBe('\u5e38\u7528\u5b57\u578b')
+    expect(labels[0]).toBe('Common fonts')
     const impact = [...menu()!.querySelectorAll<HTMLButtonElement>('button')].find(
       (el) => el.textContent === 'Impact',
     )!

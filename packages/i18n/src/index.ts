@@ -1,69 +1,25 @@
-export type Lang =
-  | 'en'
-  | 'ru'
-  | 'cs'
-  | 'nl'
-  | 'ms'
-  | 'he'
-  | 'hi'
-  | 'zh-TW'
-  | 'vi'
-  | 'uz'
-  | 'kk'
-  | 'az'
-  | 'tk'
-  | 'ky'
-  | 'tt'
-  | 'ka'
+export type Lang = 'en' | 'ru' | 'uz' | 'kk' | 'az' | 'tk' | 'ky' | 'tt' | 'ka'
 
-export const LANGS: readonly Lang[] = [
-  'en',
-  'ru',
-  'cs',
-  'nl',
-  'ms',
-  'he',
-  'hi',
-  'zh-TW',
-  'vi',
-  'uz',
-  'kk',
-  'az',
-  'tk',
-  'ky',
-  'tt',
-  'ka',
-]
+export const LANGS: readonly Lang[] = ['en', 'ru', 'uz', 'kk', 'az', 'tk', 'ky', 'tt', 'ka']
 
 export function isLang(value: unknown): value is Lang {
   return typeof value === 'string' && (LANGS as readonly string[]).includes(value)
 }
 
-/** map a raw locale string ('ru-RU', 'zh-Hant', 'kk-KZ', …) to a supported Lang */
+/** map a raw locale string ('ru-RU', 'kk-KZ', …) to a supported Lang */
 export function normalizeLang(raw: string | null | undefined): Lang {
   const value = raw?.trim().toLowerCase()
   if (!value) return 'en'
-  // traditional-script Chinese variants still resolve: zh is gone but zh-TW ships
-  if (/^zh[-_](tw|hk|mo|hant)/.test(value)) return 'zh-TW'
   for (const lang of LANGS) {
-    if (lang === 'en' || lang === 'zh-TW') continue
+    if (lang === 'en') continue
     if (value === lang || value.startsWith(`${lang}-`) || value.startsWith(`${lang}_`)) return lang
   }
-  // 'iw' is the legacy ISO code for Hebrew
-  if (/^iw\b/.test(value) || /^iw[-_]/.test(value)) return 'he'
   return 'en'
 }
 
 const HTML_LANGS: Record<Lang, string> = {
   en: 'en-US',
   ru: 'ru-RU',
-  cs: 'cs-CZ',
-  nl: 'nl-NL',
-  ms: 'ms-MY',
-  he: 'he-IL',
-  hi: 'hi-IN',
-  'zh-TW': 'zh-TW',
-  vi: 'vi-VN',
   uz: 'uz-UZ',
   kk: 'kk-KZ',
   az: 'az-AZ',
@@ -91,7 +47,7 @@ export function appTitle(lang: Lang, suffix?: string): string {
 }
 
 /** Languages whose script reads right-to-left: UI chrome flips direction for them */
-const RTL_LANGS: readonly Lang[] = ['he']
+const RTL_LANGS: readonly Lang[] = []
 
 /** Whether this UI language lays out right-to-left (drives the renderers' html dir) */
 export function isRtlLang(lang: string | undefined | null): boolean {

@@ -24,17 +24,11 @@ export function isEastAsianFontName(name: string): boolean {
 }
 
 /**
- * docDefaults w:eastAsia font for new blank documents, matching what Word
- * ships per market (zh-TW → PMingLiU). English and every other language
- * return undefined — like en-US Word, whose theme leaves the East Asian slot
+ * docDefaults w:eastAsia font for new blank documents. Every shipped language
+ * returns undefined — like en-US Word, whose theme leaves the East Asian slot
  * empty and lets per-script substitution kick in only when CJK text actually
  * appears. Latin default stays Calibri for every language.
  */
 export function defaultEastAsiaFontFor(lang: Lang): string | undefined {
-  switch (lang) {
-    case 'zh-TW':
-      return 'PMingLiU'
-    default:
-      return undefined
-  }
+  return undefined
 }

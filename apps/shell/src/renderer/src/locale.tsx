@@ -54,13 +54,13 @@ export interface I18n {
 const DATE_LOCALES: Record<Lang, string> = {
   en: 'en-US',
   ru: 'ru-RU',
-  cs: 'cs-CZ',
-  nl: 'nl-NL',
-  ms: 'ms-MY',
-  he: 'he-IL',
-  hi: 'hi-IN',
-  'zh-TW': 'zh-TW',
-  vi: 'vi-VN',
+  
+  
+  
+  
+  
+  
+  
   uz: 'uz-UZ',
   kk: 'kk-KZ',
   az: 'az-AZ',

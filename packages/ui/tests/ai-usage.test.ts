@@ -43,7 +43,7 @@ describe('addTokenUsage', () => {
 
 describe('AI_USAGE_LABELS', () => {
   it('covers every ui language', () => {
-    expect(Object.keys(AI_USAGE_LABELS).length).toBeGreaterThanOrEqual(16)
+    expect(Object.keys(AI_USAGE_LABELS).length).toBe(9)
     for (const [lang, labels] of Object.entries(AI_USAGE_LABELS)) {
       expect(labels.runTitle.length, lang).toBeGreaterThan(0)
       expect(labels.sessionTitle.length, lang).toBeGreaterThan(0)

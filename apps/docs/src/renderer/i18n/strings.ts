@@ -22,63 +22,14 @@ export const strings = {
     ...aiStrings.ru,
     ...zoteroStrings.ru,
   },
-  cs: {
-    ...appStrings.cs,
-    ...ribbonStrings.cs,
-    ...tableStrings.cs,
-    ...editorStrings.cs,
-    ...aiStrings.cs,
-    ...zoteroStrings.cs,
-  },
-  nl: {
-    ...appStrings.nl,
-    ...ribbonStrings.nl,
-    ...tableStrings.nl,
-    ...editorStrings.nl,
-    ...aiStrings.nl,
-    ...zoteroStrings.nl,
-  },
-  ms: {
-    ...appStrings.ms,
-    ...ribbonStrings.ms,
-    ...tableStrings.ms,
-    ...editorStrings.ms,
-    ...aiStrings.ms,
-    ...zoteroStrings.ms,
-  },
-  he: {
-    ...appStrings.he,
-    ...ribbonStrings.he,
-    ...tableStrings.he,
-    ...editorStrings.he,
-    ...aiStrings.he,
-    ...zoteroStrings.he,
-  },
-  hi: {
-    ...appStrings.hi,
-    ...ribbonStrings.hi,
-    ...tableStrings.hi,
-    ...editorStrings.hi,
-    ...aiStrings.hi,
-    ...zoteroStrings.hi,
-  },
+  
+  
+  
+  
+  
 
-  vi: {
-    ...appStrings.vi,
-    ...ribbonStrings.vi,
-    ...tableStrings.vi,
-    ...editorStrings.vi,
-    ...aiStrings.vi,
-    ...zoteroStrings.vi,
-  },
-  'zh-TW': {
-    ...appStrings['zh-TW'],
-    ...ribbonStrings['zh-TW'],
-    ...tableStrings['zh-TW'],
-    ...editorStrings['zh-TW'],
-    ...aiStrings['zh-TW'],
-    ...zoteroStrings['zh-TW'],
-  },
+  
+  
   uz: {
     ...appStrings.uz,
     ...ribbonStrings.uz,

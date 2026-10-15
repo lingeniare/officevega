@@ -190,14 +190,11 @@ describe('count labels', () => {
 
   it('picks the singular form in every locale with plural inflection', () => {
     expect(label('ru', 1)).toBe('1 файл')
-    expect(label('cs', 1)).toBe('1 soubor')
-    expect(label('nl', 1)).toBe('1 bestand')
+    expect(label('kk', 1)).toBe('1 файл')
+    expect(label('uz', 1)).toBe('1 ta fayl')
   })
 
-  it('follows CLDR categories: cs few, ru one at 21', () => {
-    expect(label('cs', 1)).toBe('1 soubor')
-    expect(label('cs', 3)).toBe('3 soubory')
-    expect(label('cs', 5)).toBe('5 souborů')
+  it('follows CLDR categories: ru one at 21', () => {
     expect(label('ru', 21)).toBe('21 файл')
     expect(label('ru', 5)).toBe('Файлов: 5')
     expect(label('ru', 100)).toBe(strings.ru.fileCount.replace('{n}', '100'))

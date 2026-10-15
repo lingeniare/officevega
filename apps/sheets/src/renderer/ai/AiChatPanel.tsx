@@ -21,6 +21,7 @@ import { VegaMark } from '../ribbon-icons'
 import type { ChangePlan } from '@genoffice/xlsx-gateway/domain/workbook.types'
 import { ATTACHMENT_IMAGE_EXTS, type AttachmentMeta } from '../../shared/desktop-api'
 import { useI18n, type StringKey, type TFunc } from '../i18n/locale'
+import { htmlDir } from '@genoffice/i18n'
 import {
   createFileNav,
   Markdown,
@@ -378,7 +379,7 @@ export function AiChatPanel({
     submit: (text, atts) => onSendQueued?.(text, atts) ?? false,
   })
   // Panel chrome follows the UI language; message text follows its own content (dir=auto below)
-  const isRtl = lang === 'he'
+  const isRtl = htmlDir(lang) === 'rtl'
   /** VEGA deposit in the model picker group head (busy edge refetches the post-run figure) */
   const deposit = useVegaDeposit(
     privacyBadge === true,

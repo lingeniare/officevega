@@ -5,7 +5,7 @@ import { act, createElement } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { Editor } from '@tiptap/core'
 import { TextSelection } from '@tiptap/pm/state'
-import type { Lang } from '@genoffice/i18n'
+import { LANGS, type Lang } from '@genoffice/i18n'
 import { editorExtensions } from '../src/renderer/editor/extensions'
 import { computeFormatState } from '../src/renderer/components/ribbon-format-state'
 import { Ribbon } from '../src/renderer/components/Ribbon'
@@ -77,8 +77,10 @@ describe('paragraph direction buttons', () => {
     expect(render('en')).not.toBeNull()
   })
 
-  it('always shows them under an RTL UI language', () => {
+  it('has no RTL UI language anymore — every UI language is LTR', () => {
+    // the shipped set lost its RTL members; the buttons now key off the
+    // paragraph under the cursor only
     placeCursor(2)
-    expect(render('he')).not.toBeNull()
+    for (const lang of LANGS) expect(render(lang)).toBeNull()
   })
 })

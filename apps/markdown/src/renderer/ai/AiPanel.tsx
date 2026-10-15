@@ -48,6 +48,7 @@ import sendEnterOn from '../assets/send-enter-on.png'
 import sendEnterOff from '../assets/send-enter-off.png'
 import sendStop from '../assets/send-stop.png'
 import { aiLangDirective, t as tGlobal, useI18n } from '../i18n/locale'
+import { htmlDir } from '@genoffice/i18n'
 import { localizedToolSummary, toolLabel } from './tool-labels'
 import { clearAiHighlights } from '../editor/aiHighlight'
 import { setInactiveSelectionShown } from '../editor/inactiveSelection'
@@ -1141,7 +1142,7 @@ export function AiPanel({
       ref={asideRef}
       className={`copilot${resizing ? ' ai-panel-resizing' : ''}`}
       style={{ width: '100%' }}
-      dir={lang === 'he' ? 'rtl' : undefined}
+      dir={htmlDir(lang) === 'rtl' ? 'rtl' : undefined}
     >
       <div
         className="ai-panel-resizer"

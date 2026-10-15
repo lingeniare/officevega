@@ -44,13 +44,6 @@ import { TABS_CHANNELS } from '../shared/tabs-api'
 const UI_LANGUAGES: readonly UiLanguage[] = [
   'en',
   'ru',
-  'cs',
-  'nl',
-  'ms',
-  'he',
-  'hi',
-  'zh-TW',
-  'vi',
   'uz',
   'kk',
   'az',

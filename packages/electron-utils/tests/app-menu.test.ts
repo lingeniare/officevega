@@ -41,7 +41,7 @@ import {
   type AppMenuLabels,
 } from '../src/index'
 
-const LANGS = ['en', 'ru', 'cs', 'nl', 'ms', 'he', 'hi', 'zh-TW'] as const
+const LANGS = ['en', 'ru', 'uz', 'kk', 'az', 'tk', 'ky', 'tt', 'ka'] as const
 
 const en = appMenuLabels('en')
 
@@ -54,7 +54,7 @@ beforeEach(() => {
 })
 
 describe('appMenuLabels', () => {
-  it('covers all 8 languages with every key non-empty', () => {
+  it('covers all 9 languages with every key non-empty', () => {
     const keys = Object.keys(en) as (keyof AppMenuLabels)[]
     for (const lang of LANGS) {
       const labels = appMenuLabels(lang)

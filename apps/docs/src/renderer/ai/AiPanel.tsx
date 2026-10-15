@@ -73,6 +73,7 @@ import { currentDocGeneration } from '../file-actions'
 import { createFilesSkill } from './files-skill'
 import { boundChatHistory } from './chat-retention'
 import { createElectronTransport } from './transport'
+import { isRtlLang } from '@genoffice/i18n'
 import { useI18n, t as tModule, aiLangDirective, type StringKey } from '../i18n/locale'
 import { localizedToolSummary, toolLabel } from './tool-labels'
 import { createFileNav, Markdown } from '@genoffice/ui'
@@ -404,7 +405,7 @@ export function AiPanel({
 }: AiPanelProps) {
   const { t, lang } = useI18n()
   // Panel chrome follows the UI language; message text follows its own content (dir=auto below)
-  const isRtl = lang === 'he'
+  const isRtl = isRtlLang(lang)
   const [input, setInput] = useState('')
   const [busy, setBusy] = useState(false)
   /** messages queued while a reply runs; the pump re-runs them through runWith on settle */

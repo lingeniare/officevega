@@ -24,7 +24,6 @@ describe('chatForProvider', () => {
       'anthropic',
       { apiKey: 'k', model: 'claude-sonnet-5' },
       'sys',
-      'hi',
     )
     expect(result).toEqual({ ok: true, content: 'hello world' })
   })
@@ -60,7 +59,6 @@ describe('chatForProvider', () => {
       'gemini',
       { apiKey: 'k', model: 'gemini-2.5-flash' },
       'sys',
-      'hi',
     )
     expect(result).toEqual({ ok: true, content: 'hi there' })
   })
@@ -86,7 +84,6 @@ describe('chatForProvider', () => {
       'custom',
       { apiKey: 'k', model: 'm', baseUrl: 'https://my-endpoint.example.com/v1' },
       'sys',
-      'hi',
     )
     expect(fetchMock).toHaveBeenCalledWith(
       'https://my-endpoint.example.com/v1/chat/completions',
@@ -111,7 +108,6 @@ describe('chatForProvider', () => {
       'custom',
       { apiKey: '', model: 'llama3', baseUrl: 'http://localhost:11434/v1' },
       'sys',
-      'hi',
     )
     const headers = fetchMock.mock.calls[0]![1].headers as Record<string, string>
     expect(headers.Authorization).toBeUndefined()
@@ -121,7 +117,6 @@ describe('chatForProvider', () => {
       'custom',
       { apiKey: 'k', model: 'm', baseUrl: 'https://my-endpoint.example.com/v1' },
       'sys',
-      'hi',
     )
     expect((fetchMock.mock.calls[0]![1].headers as Record<string, string>).Authorization).toBe(
       'Bearer k',
@@ -185,7 +180,6 @@ describe('chatForProvider', () => {
       'openai',
       { apiKey: 'k', model: 'gpt-4.1-mini' },
       'sys',
-      'hi',
     )
     expect(result).toEqual({ ok: false, error: 'AI returned an empty response' })
   })
@@ -211,7 +205,6 @@ describe('chatForProvider', () => {
       'openai',
       { apiKey: 'k', model: 'gpt-4.1-mini' },
       'sys',
-      'hi',
     )
 
     expect(result).toEqual({ ok: false, error: expect.stringMatching(/Response body exceeded/) })
@@ -233,7 +226,6 @@ describe('chatForProvider', () => {
       'openai',
       { apiKey: 'k', model: 'gpt-4.1-mini' },
       'sys',
-      'hi',
     )
     expect(result).toEqual({ ok: false, error: 'AI returned a non-JSON response: ' })
   })

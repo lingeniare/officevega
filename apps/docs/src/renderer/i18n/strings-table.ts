@@ -60,13 +60,13 @@ const ru: Record<keyof typeof en, string> = {
 export const tableStrings = defineStrings({
   en,
   ru,
-  cs: en,
-  nl: en,
-  ms: en,
-  he: en,
-  hi: en,
-  'zh-TW': en,
-  vi: en,
+  
+  
+  
+  
+  
+  
+  
   uz: en,
   kk: en,
   az: en,

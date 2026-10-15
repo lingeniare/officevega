@@ -8,52 +8,16 @@ export interface NamedFontSize {
 export const FONT_SIZE_MIN_PT = 1
 export const FONT_SIZE_MAX_PT = 1638
 
-// Word's CJK size scale (chuhao ... bahao); zh-TW writes the "hao" character
-// in its Traditional form
-const CJK_SIZE_PTS = [42, 36, 26, 24, 22, 18, 16, 15, 14, 12, 10.5, 9, 7.5, 6.5, 5.5, 5]
-const CJK_SIZE_NAMES_ZH = [
-  '\u521d\u53f7',
-  '\u5c0f\u521d',
-  '\u4e00\u53f7',
-  '\u5c0f\u4e00',
-  '\u4e8c\u53f7',
-  '\u5c0f\u4e8c',
-  '\u4e09\u53f7',
-  '\u5c0f\u4e09',
-  '\u56db\u53f7',
-  '\u5c0f\u56db',
-  '\u4e94\u53f7',
-  '\u5c0f\u4e94',
-  '\u516d\u53f7',
-  '\u5c0f\u516d',
-  '\u4e03\u53f7',
-  '\u516b\u53f7',
-]
-const CJK_SIZE_NAMES_ZH_TW = CJK_SIZE_NAMES_ZH.map((n) => n.replace('\u53f7', '\u865f'))
+const SIZES_UI = [8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72]
 
-const NAMED_ZH_TW: readonly NamedFontSize[] = CJK_SIZE_NAMES_ZH_TW.map((name, i) => ({
-  name,
-  pt: CJK_SIZE_PTS[i],
-}))
-
-const SIZES_CJK_UI = [
-  5, 5.5, 6.5, 7.5, 8, 9, 10, 10.5, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72,
-]
-const SIZES_LATIN_UI = [8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72]
-
-/** Word's named CJK sizes shown ahead of the numeric list; empty outside zh-TW */
+/** Word's named CJK sizes shown ahead of the numeric list; no shipped language has any */
 export function namedFontSizes(lang: Lang): readonly NamedFontSize[] {
-  return lang === 'zh-TW' ? NAMED_ZH_TW : []
+  return []
 }
 
 /** The numeric part of Word's size list for this UI language */
 export function fontSizeList(lang: Lang): readonly number[] {
-  switch (lang) {
-    case 'zh-TW':
-      return SIZES_CJK_UI
-    default:
-      return SIZES_LATIN_UI
-  }
+  return SIZES_UI
 }
 
 /** Every dropdown row: named sizes first, then the numeric list */
@@ -65,7 +29,7 @@ function sameSize(a: number, b: number): boolean {
   return Math.round(a * 2) === Math.round(b * 2)
 }
 
-/** What the size box shows: the CJK name when the size has one in this UI, else the number */
+/** What the size box shows: a named size when the UI has one, else the number */
 export function fontSizeLabel(pt: number, lang: Lang): string {
   return namedFontSizes(lang).find((n) => sameSize(n.pt, pt))?.name ?? String(pt)
 }
@@ -74,7 +38,7 @@ export function clampFontSize(pt: number): number {
   return Math.min(FONT_SIZE_MAX_PT, Math.max(FONT_SIZE_MIN_PT, Math.round(pt * 2) / 2))
 }
 
-/** Typed text \u2192 points: a CJK size name, or a number rounded to half points; null when unusable */
+/** Typed text → points: a named size, or a number rounded to half points; null when unusable */
 export function parseFontSize(text: string, lang: Lang): number | null {
   const raw = text.trim().normalize('NFKC')
   if (!raw) return null

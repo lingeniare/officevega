@@ -54,6 +54,7 @@ import {
   type QcPageOutcome,
 } from './slide-qc'
 import { useI18n, t as tGlobal, aiLangDirective, type TFunc, type StringKey } from '../i18n/locale'
+import { htmlDir } from '@genoffice/i18n'
 import { localizedToolSummary, toolLabel } from './tool-labels'
 import {
   AiHistoryButton,
@@ -426,7 +427,7 @@ export function AiPanel({
 }: AiPanelProps) {
   const { t, lang } = useI18n()
   // Panel chrome follows the UI language; message text follows its own content (dir=auto below)
-  const isRtl = lang === 'he'
+  const isRtl = htmlDir(lang) === 'rtl'
   const [input, setInput] = useState('')
   // Shared AI panel pref (Settings → General): the bespoke slides composer
   // must honor it like the shared AiComposer does.

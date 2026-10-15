@@ -105,18 +105,20 @@ describe('buildContextMenuItems', () => {
 describe('contextMenuLabels', () => {
   it('covers every language and falls back to English', () => {
     expect(contextMenuLabels('ru').copy).toBe('Копировать')
-    expect(contextMenuLabels('zh-TW').paste).toBe('貼上')
+    expect(contextMenuLabels('ka').paste).toBe('ჩასმა')
     expect(contextMenuLabels('xx')).toEqual(contextMenuLabels('en'))
   })
 
   it('falls back to the base language for regional variants', () => {
     expect(contextMenuLabels('ru-RU').copy).toBe(contextMenuLabels('ru').copy)
-    expect(contextMenuLabels('cs-CZ').copy).toBe(contextMenuLabels('cs').copy)
-    expect(contextMenuLabels('he-IL').copy).toBe(contextMenuLabels('he').copy)
+    expect(contextMenuLabels('uz-UZ').copy).toBe(contextMenuLabels('uz').copy)
+    expect(contextMenuLabels('kk-KZ').copy).toBe(contextMenuLabels('kk').copy)
     expect(appMenuLabels('ru-RU').window).toBe(appMenuLabels('ru').window)
-    expect(appMenuLabels('cs-CZ').window).toBe(appMenuLabels('cs').window)
+    expect(appMenuLabels('ka-GE').window).toBe(appMenuLabels('ka').window)
     // a removed base code degrades to English, never to another language
     expect(contextMenuLabels('zh-Hant')).toEqual(contextMenuLabels('en'))
+    expect(contextMenuLabels('cs-CZ')).toEqual(contextMenuLabels('en'))
+    expect(contextMenuLabels('he-IL')).toEqual(contextMenuLabels('en'))
   })
 })
 

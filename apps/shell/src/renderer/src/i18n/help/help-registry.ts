@@ -354,12 +354,9 @@ export function helpImage(href: string, lang?: string): string | undefined {
 }
 
 /**
- * The bundle suffix a UI language maps to.
- *
- * `zh-TW` is a real file suffix, not a `zh` variant: the two scripts are
- * written differently enough that one shared body would leave half of each
- * reading in the wrong orthography. Everything else is its own suffix, and an
- * unknown one falls through to English rather than to a file that is not there.
+ * The bundle suffix a UI language maps to. Only the languages that ship a
+ * manual edition resolve to their own suffix; everything else falls through
+ * to English rather than to a file that is not there.
  */
 export function helpLangSuffix(lang: string): string {
   return (LANGS as readonly string[]).includes(lang) ? lang : 'en'

@@ -14,7 +14,7 @@ describe('documentSkeleton', () => {
     expect(documentSkeleton('en')).toContain('<html lang="en-US">')
     expect(documentSkeleton('ru')).toContain('<html lang="ru-RU">')
     // a region-less tag would be wrong for a locale that has one
-    expect(documentSkeleton('zh-TW')).toContain('<html lang="zh-TW">')
+    expect(documentSkeleton('ka')).toContain('<html lang="ka-GE">')
   })
 
   it('declares the encoding before any content', () => {
@@ -25,7 +25,7 @@ describe('documentSkeleton', () => {
   })
 
   it('carries the three structural elements a page needs', () => {
-    const html = documentSkeleton('nl')
+    const html = documentSkeleton('kk')
     expect(html).toContain('<head>')
     expect(html).toContain('<title></title>')
     expect(html).toContain('<body></body>')
@@ -39,8 +39,8 @@ describe('documentSkeleton', () => {
 
   it('differs only in the lang tag across languages', () => {
     const ru = documentSkeleton('ru')
-    const cs = documentSkeleton('cs')
-    expect(ru.replace('ru-RU', 'LANG')).toBe(cs.replace('cs-CZ', 'LANG'))
+    const ka = documentSkeleton('ka')
+    expect(ru.replace('ru-RU', 'LANG')).toBe(ka.replace('ka-GE', 'LANG'))
   })
 
   it('ends with a newline, so appending to it does not join lines', () => {

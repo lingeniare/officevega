@@ -18,8 +18,8 @@ describe('home-screen locale tables', () => {
   it('includes the expected UI languages', () => {
     expect(locales).toContain('en')
     expect(locales).toContain('ru')
-    expect(locales).toContain('zh-TW')
-    expect(locales.length).toBe(16)
+    expect(locales).toContain('ka')
+    expect(locales.length).toBe(9)
   })
 
   it.each(locales)('locale %s has exactly the en key set', (locale) => {

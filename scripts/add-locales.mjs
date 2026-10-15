@@ -28,12 +28,6 @@ const LANG_NAMES = {
   ka: 'Georgian (Georgian script)',
   en: 'English',
   ru: 'Russian',
-  cs: 'Czech',
-  nl: 'Dutch',
-  ms: 'Malay',
-  he: 'Hebrew',
-  hi: 'Hindi',
-  'zh-TW': 'Traditional Chinese (Taiwan)',
 }
 
 const API_KEY = process.env.VEGA_API_KEY ?? process.env.OPENAI_API_KEY ?? ''
@@ -392,7 +386,7 @@ const translate = (lang, text) => cache.get(cacheKey(text))?.[lang] ?? text
 // file processors
 // ---------------------------------------------------------------------------
 
-const ALL_LANGS = new Set(['en', 'ru', 'cs', 'nl', 'ms', 'he', 'hi', 'zh-TW', ...NEW_LANGS])
+const ALL_LANGS = new Set(['en', 'ru', ...NEW_LANGS])
 
 const touched = []
 
@@ -428,14 +422,14 @@ function patchAggregator(file, dirName) {
   let src = readFileSync(join(root, file), 'utf8')
   const missing = langs.filter((l) => !src.includes(`from './${dirName}/${l}'`))
   if (!missing.length) return // already patched
-  const importAnchor = `import { zhTW } from './${dirName}/zh-TW'`
-  if (!src.includes(importAnchor)) throw new Error(`${file}: no zhTW import`)
+  const importAnchor = `import { ka } from './${dirName}/ka'`
+  if (!src.includes(importAnchor)) throw new Error(`${file}: no ka import`)
   src = src.replace(
     importAnchor,
     `${importAnchor}\n${missing.map((l) => `import { ${l} } from './${dirName}/${l}'`).join('\n')}`,
   )
-  const dictAnchor = `  'zh-TW': zhTW,`
-  if (!src.includes(dictAnchor)) throw new Error(`${file}: no zh-TW dict entry`)
+  const dictAnchor = `  ka,`
+  if (!src.includes(dictAnchor)) throw new Error(`${file}: no ka dict entry`)
   src = src.replace(dictAnchor, `${dictAnchor}\n${missing.map((l) => `  ${l},`).join('\n')}`)
   writeFileSync(join(root, file), src)
   mark(file)
@@ -543,12 +537,12 @@ function appendInlineKeys(file, dictAnchor, entries) {
   mark(`${file} (+${entries.length} keys)`)
 }
 
-/** merger strings.ts: clone the 'zh-TW' spread entry per new lang */
+/** merger strings.ts: clone the ka spread entry per new lang */
 function processMerger(file) {
   let src = readFileSync(join(root, file), 'utf8')
-  const re = /^ {2}'zh-TW': \{[^}]*\},\n?/m
+  const re = /^ {2}ka: \{[^}]*\},\n?/m
   const m = re.exec(src)
-  if (!m) throw new Error(`${file}: no zh-TW merger entry`)
+  if (!m) throw new Error(`${file}: no ka merger entry`)
   const tpl = m[0]
   const clone = langs
     .filter((l) => !new RegExp(`^ {2}${l}: \\{`, 'm').test(src))
@@ -557,8 +551,8 @@ function processMerger(file) {
         `  ${l}: ` +
         tpl
           .slice(tpl.indexOf('{'))
-          .replace(/\['zh-TW'\]/g, `.${l}`)
-          .replace(/zh-TW/g, l),
+          .replace(/\['ka'\]/g, `.${l}`)
+          .replace(/\bka\b/g, l),
     )
     .join('')
   src = src.slice(0, m.index + tpl.length) + clone + src.slice(m.index + tpl.length)
@@ -740,7 +734,7 @@ const EXTRA_KEYS = [
   ],
 ]
 
-const OLD_LANGS = ['en', 'ru', 'cs', 'nl', 'ms', 'he', 'hi', 'zh-TW', 'vi']
+const OLD_LANGS = ['en', 'ru']
 
 // ---------------------------------------------------------------------------
 // collect every English source string up-front (global dedup → fewer calls)

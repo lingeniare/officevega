@@ -34,7 +34,7 @@ describe('aria-label/title i18n (existing keys)', () => {
     const map = buildParseMap(text, 1)
     const target = map.elements.find((e) => e.tag === 'p') ?? map.elements[0]!
     const container = mount(
-      createElement(LocaleProvider, { initial: 'zh-TW' }, createElement(Breadcrumb, {
+      createElement(LocaleProvider, { initial: 'ru' }, createElement(Breadcrumb, {
         text,
         map,
         sid: target.sid,
@@ -44,13 +44,13 @@ describe('aria-label/title i18n (existing keys)', () => {
     )
     const nav = container.querySelector('.crumbs')
     expect(nav).not.toBeNull()
-    expect(nav!.getAttribute('aria-label')).toBe('\u5143\u7d20\u8def\u5f91')
+    expect(nav!.getAttribute('aria-label')).toBe('Путь к элементу')
     expect(nav!.getAttribute('aria-label')).not.toBe('element path')
   })
 
   it('PreviewFrame uses the translated preview key, not the English literal', () => {
     const container = mount(
-      createElement(LocaleProvider, { initial: 'zh-TW' }, createElement(PreviewFrame, {
+      createElement(LocaleProvider, { initial: 'ru' }, createElement(PreviewFrame, {
         url: null,
         nonce: 0,
         zoom: 100,
@@ -59,15 +59,15 @@ describe('aria-label/title i18n (existing keys)', () => {
     )
     const frame = container.querySelector('iframe.preview-frame')
     expect(frame).not.toBeNull()
-    expect(frame!.getAttribute('title')).toBe('\u9810\u89bd')
+    expect(frame!.getAttribute('title')).toBe('Просмотр')
     expect(frame!.getAttribute('title')).not.toBe('preview')
   })
 
   it('DraftPreview reuses the translated preview key, not the English literal', () => {
-    const container = mount(createElement(LocaleProvider, { initial: 'zh-TW' }, createElement(DraftPreview, { html: '<p>hi</p>' })))
+    const container = mount(createElement(LocaleProvider, { initial: 'ru' }, createElement(DraftPreview, { html: '<p>hi</p>' })))
     const frame = container.querySelector('iframe.draft-preview-frame')
     expect(frame).not.toBeNull()
-    expect(frame!.getAttribute('title')).toBe('\u9810\u89bd')
+    expect(frame!.getAttribute('title')).toBe('Просмотр')
     expect(frame!.getAttribute('title')).not.toBe('draft')
   })
 })

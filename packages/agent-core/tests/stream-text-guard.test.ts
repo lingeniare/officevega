@@ -22,7 +22,6 @@ function withTimeout<T>(promise: Promise<T>, ms = 1000): Promise<T> {
   const timeout = new Promise<never>((_, reject) => {
     timer = setTimeout(
       () => reject(new Error(`timed out after ${ms}ms (promise never settled)`)),
-      ms,
     )
   })
   return Promise.race([promise, timeout]).finally(() => clearTimeout(timer))

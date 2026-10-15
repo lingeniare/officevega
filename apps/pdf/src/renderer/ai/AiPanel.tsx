@@ -30,6 +30,7 @@ import {
   type AiTokenUsageView,
 } from '@genoffice/ui'
 import { aiLangDirective, t as tGlobal, useI18n } from '../i18n/locale'
+import { htmlDir } from '@genoffice/i18n'
 import { localizedToolSummary } from './tool-labels'
 import {
   createFileNav,
@@ -959,7 +960,7 @@ export function AiPanel({
       ref={asideRef}
       className={`copilot${resizing ? ' ai-panel-resizing' : ''}`}
       style={{ width: '100%' }}
-      dir={lang === 'he' ? 'rtl' : undefined}
+      dir={htmlDir(lang) === 'rtl' ? 'rtl' : undefined}
     >
       <div
         className="ai-panel-resizer"

@@ -43,24 +43,13 @@ export const BUILTIN_FONT_FAMILIES: readonly string[] = [
 ]
 
 export function fontFamiliesFor(lang: Lang): readonly string[] {
-  switch (lang) {
-    case 'zh-TW':
-      return [
-        ...TRADITIONAL_CJK_FAMILIES,
-        ...LATIN,
-        ...SIMPLIFIED_CJK_FAMILIES,
-        ...JAPANESE_FAMILIES,
-        ...KOREAN_FAMILIES,
-      ]
-    default:
-      return [
-        ...LATIN,
-        ...JAPANESE_FAMILIES,
-        ...SIMPLIFIED_CJK_FAMILIES,
-        ...KOREAN_FAMILIES,
-        ...TRADITIONAL_CJK_FAMILIES,
-      ]
-  }
+  return [
+    ...LATIN,
+    ...JAPANESE_FAMILIES,
+    ...SIMPLIFIED_CJK_FAMILIES,
+    ...KOREAN_FAMILIES,
+    ...TRADITIONAL_CJK_FAMILIES,
+  ]
 }
 
 /**

@@ -146,7 +146,7 @@ describe('systemFamiliesBesidesCandidates', () => {
 
 describe('candidate lists', () => {
   it('carry Windows, macOS and downloadable names for the same script', () => {
-    const sc = fontFamiliesFor('zh-TW')
+    const sc = fontFamiliesFor('en')
     expect(sc).toContain(candidateFor('SimSun')) // Windows
     expect(sc).toContain('PingFang SC') // macOS
     expect(sc).toContain('Songti SC') // macOS serif
@@ -155,7 +155,7 @@ describe('candidate lists', () => {
 
   it('offer a serif next to the sans for every CJK script', () => {
     for (const [lang, sans, serif] of [
-      ['zh-TW', 'Noto Sans TC', 'Noto Serif TC'],
+      ['en', 'Noto Sans TC', 'Noto Serif TC'],
     ] as const) {
       const list = fontFamiliesFor(lang)
       expect(list).toContain(sans)

@@ -41,69 +41,13 @@ const LABELS: Record<string, ContextMenuLabels> = {
     copyImage: 'Копировать изображение',
     saveImageAs: 'Сохранить изображение как…',
   },
-  cs: {
-    cut: 'Vyjmout',
-    copy: 'Kopírovat',
-    paste: 'Vložit',
-    selectAll: 'Vybrat vše',
-    viewImage: 'Zobrazit obrázek',
-    copyImage: 'Kopírovat obrázek',
-    saveImageAs: 'Uložit obrázek jako…',
-  },
-  nl: {
-    cut: 'Knippen',
-    copy: 'Kopiëren',
-    paste: 'Plakken',
-    selectAll: 'Alles selecteren',
-    viewImage: 'Afbeelding bekijken',
-    copyImage: 'Afbeelding kopiëren',
-    saveImageAs: 'Afbeelding opslaan als…',
-  },
-  ms: {
-    cut: 'Potong',
-    copy: 'Salin',
-    paste: 'Tampal',
-    selectAll: 'Pilih Semua',
-    viewImage: 'Lihat Imej',
-    copyImage: 'Salin Imej',
-    saveImageAs: 'Simpan Imej Sebagai…',
-  },
-  he: {
-    cut: 'גזור',
-    copy: 'העתק',
-    paste: 'הדבק',
-    selectAll: 'בחר הכול',
-    viewImage: 'הצג תמונה',
-    copyImage: 'העתק תמונה',
-    saveImageAs: 'שמור תמונה בשם…',
-  },
-  hi: {
-    cut: 'काटें',
-    copy: 'कॉपी करें',
-    paste: 'चिपकाएँ',
-    selectAll: 'सभी चुनें',
-    viewImage: 'छवि देखें',
-    copyImage: 'छवि कॉपी करें',
-    saveImageAs: 'छवि इस रूप में सहेजें…',
-  },
-  vi: {
-    cut: 'Cắt',
-    copy: 'Sao chép',
-    paste: 'Dán',
-    selectAll: 'Chọn tất cả',
-    viewImage: 'Xem ảnh',
-    copyImage: 'Sao chép ảnh',
-    saveImageAs: 'Lưu ảnh thành…',
-  },
-  'zh-TW': {
-    cut: '剪下',
-    copy: '複製',
-    paste: '貼上',
-    selectAll: '全選',
-    viewImage: '檢視圖片',
-    copyImage: '複製圖片',
-    saveImageAs: '另存圖片為…',
-  },
+  
+  
+  
+  
+  
+  
+  
   uz: {
     cut: 'Kesish',
     copy: 'Nusxalash',

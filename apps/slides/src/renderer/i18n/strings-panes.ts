@@ -1,13 +1,6 @@
 import { defineStrings } from '@genoffice/i18n'
 import { en } from './panes/en'
 import { ru } from './panes/ru'
-import { cs } from './panes/cs'
-import { nl } from './panes/nl'
-import { ms } from './panes/ms'
-import { he } from './panes/he'
-import { hi } from './panes/hi'
-import { zhTW } from './panes/zh-TW'
-import { vi } from './panes/vi'
 import { uz } from './panes/uz'
 import { kk } from './panes/kk'
 import { az } from './panes/az'
@@ -20,13 +13,6 @@ import { ka } from './panes/ka'
 export const paneStrings = defineStrings({
   en,
   ru,
-  cs,
-  nl,
-  ms,
-  he,
-  hi,
-  'zh-TW': zhTW,
-  vi,
   uz,
   kk,
   az,

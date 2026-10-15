@@ -57,15 +57,7 @@ const sheetsLabels = extractLabels(join(root, 'apps/sheets/src/main/sheets-main.
   'menuExportCsv',
   'menuPrint',
 ])
-sheetsLabels['zh-TW'] = {
-  menuFile: '檔案',
-  menuOpenWorkbook: '開啟活頁簿…',
-  menuSave: '儲存',
-  menuSaveAs: '另存新檔…',
-  menuExportPdf: '匯出 PDF…',
-  menuExportCsv: '匯出 CSV…',
-  menuPrint: '列印…',
-}
+
 const sheetsDir = join(root, 'apps/sheets/src/renderer/i18n/app')
 for (const f of readdirSync(sheetsDir)) {
   const lang = f.replace('.ts', '')

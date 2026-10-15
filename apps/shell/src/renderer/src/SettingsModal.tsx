@@ -61,21 +61,14 @@ import './settings.css'
 // shared alphabet, so the code is the ordering key
 const LANG_OPTIONS = [
   { value: 'az', label: 'Azərbaycanca' },
-  { value: 'cs', label: 'Čeština' },
   { value: 'en', label: 'English' },
-  { value: 'he', label: 'עברית' },
-  { value: 'hi', label: 'हिन्दी' },
   { value: 'ka', label: 'ქართული' },
   { value: 'kk', label: 'Қазақша' },
   { value: 'ky', label: 'Кыргызча' },
-  { value: 'ms', label: 'Bahasa Melayu' },
-  { value: 'nl', label: 'Nederlands' },
   { value: 'ru', label: 'Русский' },
-  { value: 'vi', label: 'Tiếng Việt' },
   { value: 'tk', label: 'Türkmençe' },
   { value: 'tt', label: 'Татарча' },
   { value: 'uz', label: 'Oʻzbekcha' },
-  { value: 'zh-TW', label: '繁體中文' },
 ] as const
 
 // GenMail's option order: follow-system first, then the manual picks

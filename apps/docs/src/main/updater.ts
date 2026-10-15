@@ -29,14 +29,7 @@ const tUpd = createI18n({
     updInstall: 'Restart & Install',
     updLater: 'Remind me later',
   },
-  vi: {
-    updTitle: 'Cập nhật phần mềm',
-    updHeadline: 'Đã có phiên bản mới',
-    updDesc:
-      'Bản cập nhật này bao gồm các cải tiến hiệu suất và sửa lỗi. Chúng tôi khuyên bạn nên cập nhật ngay bây giờ.',
-    updInstall: 'Khởi động lại & Cài đặt',
-    updLater: 'Nhắc tôi sau',
-  },
+  
   ru: {
     updTitle: 'Обновление программы',
     updHeadline: 'Доступна новая версия',
@@ -45,52 +38,12 @@ const tUpd = createI18n({
     updInstall: 'Перезапустить и установить',
     updLater: 'Напомнить позже',
   },
-  cs: {
-    updTitle: 'Aktualizace softwaru',
-    updHeadline: 'Je k dispozici nová verze',
-    updDesc:
-      'Tato aktualizace obsahuje vylepšení výkonu a opravy chyb. Doporučujeme aktualizovat nyní.',
-    updInstall: 'Restartovat a nainstalovat',
-    updLater: 'Připomenout později',
-  },
-  nl: {
-    updTitle: 'Software-update',
-    updHeadline: 'Er is een nieuwe versie beschikbaar',
-    updDesc:
-      'Deze update bevat prestatieverbeteringen en foutoplossingen. We raden aan nu bij te werken.',
-    updInstall: 'Opnieuw starten en installeren',
-    updLater: 'Later herinneren',
-  },
-  ms: {
-    updTitle: 'Kemas Kini Perisian',
-    updHeadline: 'Versi baharu tersedia',
-    updDesc:
-      'Kemas kini ini merangkumi penambahbaikan prestasi dan pembetulan pepijat. Kami syorkan kemas kini sekarang.',
-    updInstall: 'Mula Semula & Pasang',
-    updLater: 'Ingatkan kemudian',
-  },
-  he: {
-    updTitle: 'עדכון תוכנה',
-    updHeadline: 'גרסה חדשה זמינה',
-    updDesc: 'עדכון זה כולל שיפורי ביצועים ותיקוני באגים. מומלץ לעדכן עכשיו.',
-    updInstall: 'הפעל מחדש והתקן',
-    updLater: 'הזכר לי מאוחר יותר',
-  },
-  hi: {
-    updTitle: 'सॉफ़्टवेयर अपडेट',
-    updHeadline: 'नया संस्करण उपलब्ध है',
-    updDesc:
-      'इस अपडेट में प्रदर्शन सुधार और बग फ़िक्स शामिल हैं। हम अभी अपडेट करने की सलाह देते हैं।',
-    updInstall: 'पुनरारंभ करें और इंस्टॉल करें',
-    updLater: 'बाद में याद दिलाएँ',
-  },
-  'zh-TW': {
-    updTitle: '軟體更新',
-    updHeadline: '發現新版本',
-    updDesc: '新版本包含效能改進與問題修復，建議立即更新。',
-    updInstall: '立即重新啟動安裝',
-    updLater: '稍後再說',
-  },
+  
+  
+  
+  
+  
+  
   uz: {
     updTitle: 'Dasturiy ta’minotni yangilash',
     updHeadline: 'Yangi versiya mavjud',

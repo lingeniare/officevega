@@ -15,21 +15,14 @@ import {
 
 const LOCALES = [
   'az',
-  'cs',
   'en',
-  'he',
-  'hi',
   'ka',
   'kk',
   'ky',
-  'ms',
-  'nl',
   'ru',
   'tk',
   'tt',
   'uz',
-  'vi',
-  'zh-TW',
 ] as const
 
 const DOCS_APP = join(__dirname, '..', 'src', 'renderer', 'i18n', 'app')
@@ -54,15 +47,15 @@ function expectComplete(dir: string, family: 'appLang' | 'ribbonLang', label: st
 }
 
 describe('translate target strings exist for every locale', () => {
-  it('docs: the right-click menu has a name for all 9 languages, in all 16 locales', () => {
+  it('docs: the right-click menu has a name for all 2 languages, in all 9 locales', () => {
     expectComplete(DOCS_APP, 'appLang', 'docs app i18n')
   })
 
-  it('docs: the ribbon dropdown has a name for all 9 languages, in all 16 locales', () => {
+  it('docs: the ribbon dropdown has a name for all 2 languages, in all 9 locales', () => {
     expectComplete(DOCS_RIBBON, 'ribbonLang', 'docs ribbon i18n')
   })
 
-  it('slides: the ribbon dropdown has a name for all 9 languages, in all 16 locales', () => {
+  it('slides: the ribbon dropdown has a name for all 2 languages, in all 9 locales', () => {
     expectComplete(SLIDES_RIBBON, 'ribbonLang', 'slides ribbon i18n')
   })
 })
@@ -101,21 +94,10 @@ describe('the shipped strings are translated, not raw keys or copies', () => {
   it('a non-latin locale writes its own script, not a latin transliteration', () => {
     // guards the failure the review caught: a row that is really another
     // language's text pasted in (Thai file shipping "Bahasa Indonesia")
-    const he = readFileSync(join(DOCS_APP, 'he.ts'), 'utf8')
-    const hebrew = /appLangHebrew:\s*'([^']*)'/.exec(he)?.[1] ?? ''
-    expect(hebrew).not.toBe('Hebrew')
-    expect(hebrew).toMatch(/[\u0590-\u05FF]/)
-  })
-
-  it('zh-TW keeps the traditional forms', () => {
-    const src = readFileSync(join(DOCS_APP, 'zh-TW.ts'), 'utf8')
-    // Written as \u escapes so this file stays ASCII and does not trip the
-    // comment-language gate, while still asserting the glyphs.
-    const traditional = '\u7e41\u9ad4\u4e2d\u6587'
-    const simplified = '\u7b80\u4f53\u4e2d\u6587'
-    const row = (key: string) => new RegExp(`${key}:\\s*'[^']*'`).exec(src)?.[0] ?? ''
-    expect(row('appLangTraditionalChinese')).toContain(traditional)
-    expect(row('appLangTraditionalChinese')).not.toContain(simplified)
+    const kk = readFileSync(join(DOCS_APP, 'kk.ts'), 'utf8')
+    const russian = /appLangRussian:\s*'([^']*)'/.exec(kk)?.[1] ?? ''
+    expect(russian).not.toBe('Russian')
+    expect(russian).toMatch(/[Ѐ-ӿ]/)
   })
 })
 

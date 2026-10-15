@@ -61,23 +61,7 @@ const tUpd = createI18n({
     updCheckFailed: "Couldn't check for updates. Check your network and try again.",
     updOpenDownload: 'Open Download Page',
   },
-  vi: {
-    updTitle: 'Cập nhật phần mềm',
-    updHeadline: 'Đã có phiên bản mới',
-    updDesc:
-      'Bản cập nhật này bao gồm các cải tiến hiệu suất và sửa lỗi. Chúng tôi khuyên bạn nên cập nhật ngay bây giờ.',
-    updDownload: 'Cập nhật ngay',
-    updLater: 'Thu nhỏ',
-    updInstall: 'Khởi động lại & Cài đặt',
-    updDownloading: 'Đang tải xuống bản cập nhật…',
-    updFailed: 'Tải xuống bản cập nhật thất bại. Kiểm tra mạng của bạn và thử lại.',
-    updRetry: 'Thử lại',
-    updManual:
-      'Cập nhật tự động thất bại. Vui lòng lấy phiên bản mới nhất từ trang tải xuống và cài đặt thủ công.',
-    updUpToDate: 'Bạn đang sử dụng phiên bản mới nhất (phiên bản {version}).',
-    updCheckFailed: 'Không thể kiểm tra bản cập nhật. Kiểm tra mạng của bạn và thử lại.',
-    updOpenDownload: 'Mở trang tải xuống',
-  },
+  
   ru: {
     updTitle: 'Обновление программы',
     updHeadline: 'Доступна новая версия',
@@ -95,105 +79,12 @@ const tUpd = createI18n({
     updCheckFailed: 'Не удалось проверить обновления. Проверьте сеть и повторите попытку.',
     updOpenDownload: 'Открыть страницу загрузки',
   },
-  cs: {
-    updTitle: 'Aktualizace softwaru',
-    updHeadline: 'Je k dispozici nová verze',
-    updDesc:
-      'Tato aktualizace obsahuje vylepšení výkonu a opravy chyb. Doporučujeme aktualizovat hned.',
-    updDownload: 'Aktualizovat nyní',
-    updLater: 'Minimalizovat',
-    updInstall: 'Restartovat a nainstalovat',
-    updDownloading: 'Stahování aktualizace…',
-    updFailed: 'Stažení aktualizace se nezdařilo. Zkontrolujte síť a zkuste to znovu.',
-    updRetry: 'Zkusit znovu',
-    updManual:
-      'Automatická aktualizace se nezdařila. Stáhněte si nejnovější verzi ze stránky pro stažení a nainstalujte ji ručně.',
-    updUpToDate: 'Máte aktuální verzi ({version}).',
-    updCheckFailed: 'Aktualizace se nepodařilo zkontrolovat. Zkontrolujte síť a zkuste to znovu.',
-    updOpenDownload: 'Otevřít stránku pro stažení',
-  },
-  nl: {
-    updTitle: 'Software-update',
-    updHeadline: 'Er is een nieuwe versie beschikbaar',
-    updDesc:
-      'Deze update bevat prestatieverbeteringen en foutoplossingen. We raden aan nu bij te werken.',
-    updDownload: 'Nu bijwerken',
-    updLater: 'Minimaliseren',
-    updInstall: 'Opnieuw starten en installeren',
-    updDownloading: 'Update wordt gedownload…',
-    updFailed: 'Download mislukt. Controleer uw netwerk en probeer het opnieuw.',
-    updRetry: 'Opnieuw proberen',
-    updManual:
-      'Automatische update mislukt. Download de nieuwste versie via de downloadpagina en installeer deze handmatig.',
-    updUpToDate: 'U bent up-to-date (versie {version}).',
-    updCheckFailed:
-      'Kan niet controleren op updates. Controleer uw netwerk en probeer het opnieuw.',
-    updOpenDownload: 'Downloadpagina openen',
-  },
-  ms: {
-    updTitle: 'Kemas Kini Perisian',
-    updHeadline: 'Versi baharu tersedia',
-    updDesc:
-      'Kemas kini ini merangkumi penambahbaikan prestasi dan pembetulan pepijat. Kami syorkan kemas kini sekarang.',
-    updDownload: 'Kemas Kini Sekarang',
-    updLater: 'Minimumkan',
-    updInstall: 'Mula Semula & Pasang',
-    updDownloading: 'Memuat turun kemas kini…',
-    updFailed: 'Muat turun gagal. Semak rangkaian anda dan cuba lagi.',
-    updRetry: 'Cuba Lagi',
-    updManual:
-      'Kemas kini automatik gagal. Sila muat turun versi terkini dari halaman muat turun dan pasang secara manual.',
-    updUpToDate: 'Anda menggunakan versi terkini (versi {version}).',
-    updCheckFailed: 'Tidak dapat menyemak kemas kini. Semak rangkaian anda dan cuba lagi.',
-    updOpenDownload: 'Buka Halaman Muat Turun',
-  },
-  he: {
-    updTitle: 'עדכון תוכנה',
-    updHeadline: 'גרסה חדשה זמינה',
-    updDesc: 'עדכון זה כולל שיפורי ביצועים ותיקוני באגים. מומלץ לעדכן עכשיו.',
-    updDownload: 'עדכן עכשיו',
-    updLater: 'מזער',
-    updInstall: 'הפעל מחדש והתקן',
-    updDownloading: 'מוריד את העדכון…',
-    updFailed: 'ההורדה נכשלה. בדוק את הרשת ונסה שוב.',
-    updRetry: 'נסה שוב',
-    updManual: 'העדכון האוטומטי נכשל. הורד את הגרסה העדכנית מדף ההורדות והתקן אותה ידנית.',
-    updUpToDate: 'הגרסה שלך עדכנית (גרסה {version}).',
-    updCheckFailed: 'לא ניתן לבדוק עדכונים. בדקו את הרשת ונסו שוב.',
-    updOpenDownload: 'פתח את דף ההורדות',
-  },
-  hi: {
-    updTitle: 'सॉफ़्टवेयर अपडेट',
-    updHeadline: 'नया संस्करण उपलब्ध है',
-    updDesc:
-      'इस अपडेट में प्रदर्शन सुधार और बग फ़िक्स शामिल हैं। हम अभी अपडेट करने की सलाह देते हैं।',
-    updDownload: 'अभी अपडेट करें',
-    updLater: 'छोटा करें',
-    updInstall: 'पुनरारंभ करें और इंस्टॉल करें',
-    updDownloading: 'अपडेट डाउनलोड हो रहा है…',
-    updFailed: 'डाउनलोड विफल रहा। अपना नेटवर्क जाँचें और पुनः प्रयास करें।',
-    updRetry: 'पुनः प्रयास करें',
-    updManual:
-      'स्वचालित अपडेट विफल रहा। कृपया डाउनलोड पृष्ठ से नवीनतम संस्करण प्राप्त करें और मैन्युअल रूप से इंस्टॉल करें।',
-    updUpToDate: 'आप अपडेटेड हैं (संस्करण {version}).',
-    updCheckFailed: 'अपडेट जांच नहीं हो सकी। अपना नेटवर्क जांचें और फिर से प्रयास करें।',
-    updOpenDownload: 'डाउनलोड पृष्ठ खोलें',
-  },
-  'zh-TW': {
-    updTitle: '軟體更新',
-    updHeadline: '發現新版本',
-    updDesc: '新版本包含效能改進與問題修復，建議立即更新。',
-    updDownload: '立即更新',
-    updLater: '最小化',
-    updInstall: '立即重新啟動安裝',
-    updDownloading: '正在下載更新…',
-    updFailed: '更新下載失敗，請檢查網路後重試。',
-    updRetry: '重試',
-    updManual: '自動更新失敗，請從下載頁面取得最新版本並手動安裝。',
-    updUpToDate: '已是最新版本（{version}）。',
-    updCheckFailed: '無法檢查更新，請檢查網路後重試。',
-    updOpenDownload: '前往下載頁面',
-  },
+  
+  
+  
+  
+  
+  
   uz: {
     updTitle: 'Dasturiy ta’minotni yangilash',
     updHeadline: 'Yangi versiya mavjud',

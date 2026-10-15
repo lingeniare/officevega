@@ -3020,9 +3020,8 @@ export function Home() {
           : hour < 18
             ? 'greetAfternoon'
             : 'greetEvening'
-    const cjk = lang === 'zh-TW'
     const greetName = displayName || accountName
-    const greeting = `${t(greetKey)}${greetName ? (cjk ? '，' : ', ') + greetName : ''}${cjk ? '。' : '. '}`
+    const greeting = `${t(greetKey)}${greetName ? `, ${greetName}` : ''}. `
     return (
       <main className="content">
         <section className="quick-start" aria-label={t('secQuickStart')}>

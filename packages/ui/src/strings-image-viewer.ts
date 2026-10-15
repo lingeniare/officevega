@@ -5,13 +5,13 @@ import type { Lang } from '@genoffice/i18n'
 export const IMAGE_VIEWER_TITLES: Record<Lang, string> = {
   en: 'Image viewer',
   ru: 'Просмотр изображений',
-  cs: 'Prohlížeč obrázků',
-  nl: 'Afbeeldingviewer',
-  ms: 'Pemapar imej',
-  he: 'מציג תמונות',
-  hi: 'चित्र व्यूअर',
-  'zh-TW': '圖片檢視器',
-  vi: 'Trình xem ảnh',
+  
+  
+  
+  
+  
+  
+  
   uz: 'Image viewer',
   kk: 'Image viewer',
   az: 'Image viewer',
