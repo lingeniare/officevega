@@ -217,12 +217,6 @@ html.officevega-popover-open .ribbon-tabs {
   color: var(--text-primary);
 }
 
-.qa-save-as {
-  width: auto;
-  padding: 0 8px;
-  white-space: nowrap;
-}
-
 .qa-btn svg {
   display: block;
   margin: 0 auto;
@@ -1014,10 +1008,6 @@ html.officevega-popover-open .ribbon-tabs {
   transition: all var(--transition-fast);
 }
 
-.ai-header-btn:hover {
-  background: var(--color-bg-subtle);
-}
-
 .ai-chat {
   display: flex;
   flex: 1;
@@ -1635,16 +1625,12 @@ html.officevega-popover-open .ribbon-tabs {
   color: var(--color-text-secondary);
   font-size: var(--text-caption);
   cursor: pointer;
-  transition: background-color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .ai-msg-tool-btn svg {
   width: 20px;
   height: 20px;
-}
-
-.ai-msg-tool-btn:hover {
-  background: var(--color-bg-subtle);
 }
 
 .ai-msg-tool-btn:focus-visible {
@@ -2042,50 +2028,6 @@ html.officevega-popover-open .ribbon-tabs {
   text-overflow: ellipsis;
 }
 
-.ai-send-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  padding: 0;
-  margin-left: auto;
-  flex-shrink: 0;
-  border: none;
-  border-radius: 35%;
-  background: transparent;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-}
-
-.ai-send-btn img {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-.ai-send-btn:hover:not(:disabled) {
-  filter: brightness(0.92);
-}
-
-.ai-send-btn:active:not(:disabled) {
-  filter: brightness(0.88);
-  transform: scale(0.98);
-}
-
-.ai-send-btn:disabled {
-  cursor: default;
-}
-
-/* Stop button while generating: brand-supplied art (white square on black), transparent button chrome */
-.ai-send-btn.ai-stop-btn {
-  background: transparent;
-}
-
-.ai-send-btn.ai-stop-btn:hover {
-  filter: brightness(0.92);
-}
-
 .ai-msg-undelivered {
   margin-top: 6px;
   display: flex;
@@ -2237,7 +2179,6 @@ html.officevega-popover-open .ribbon-tabs {
 }
 
 .ai-ask-pop-close:hover {
-  background: var(--hover);
   color: var(--text);
 }
 

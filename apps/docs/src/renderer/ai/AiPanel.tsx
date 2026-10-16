@@ -87,6 +87,7 @@ import {
   AiScopeQuote,
   AiSuggestedQuestions,
   AiTypingIndicator,
+  IconDownload,
   IconPlus,
   chatTranscriptToMarkdown,
   suggestChatExportName,
@@ -1728,21 +1729,7 @@ export function AiPanel({
               data-tip={t('aiExportChat')}
               aria-label={t('aiExportChat')}
             >
-              <span className="ai-feature-icon" aria-hidden="true">
-                {/* lucide: download */}
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                  <path d="m7 10 5 5 5-5" />
-                  <path d="M12 15V3" />
-                </svg>
-              </span>
+              <IconDownload size={16} />
             </button>
           )}
           {(chat.length > 0 || historicChat.length > 0) && (
@@ -1856,11 +1843,6 @@ export function AiPanel({
                 </div>
               ) : (
                 <span dir="auto">{entry.text}</span>
-              )}
-              {entry.role === 'assistant' && entry.usage && (
-                <div className="ai-message-usage">
-                  <AiUsageChip usage={entry.usage} lang={lang} />
-                </div>
               )}
               {entry.tools && entry.tools.length > 0 && <ToolChipList tools={entry.tools} />}
               {entry.mindmap && (
@@ -2295,9 +2277,9 @@ function RollbackButton({ disabled, onClick }: { disabled: boolean; onClick: () 
   )
 }
 
-/** Tool activity group: a single quiet summary row
- *  that auto-opens while tools run, auto-collapses into "Worked · N steps" when they finish,
- *  and a manual toggle that always wins. Rows inside are step rows with 1px connectors. */
+/** Tool activity group: a summary row ("Worked · N steps") over the step list,
+ *  expanded by default; a manual toggle always wins.
+ *  Rows inside are step rows with 1px connectors. */
 function ToolChipList({ tools }: { tools: ToolActivity[] }) {
   const { t: tr } = useI18n()
   const [expanded, setExpanded] = useState<Set<number>>(new Set())
@@ -2313,7 +2295,7 @@ function ToolChipList({ tools }: { tools: ToolActivity[] }) {
   }
 
   const anyRunning = tools.some((tool) => tool.running)
-  const open = userOpen ?? anyRunning
+  const open = userOpen ?? true
   const label = anyRunning ? tr('aiGroupWorking') : tr('aiWorkedSteps', { n: tools.length })
 
   return (

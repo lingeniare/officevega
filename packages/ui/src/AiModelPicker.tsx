@@ -283,7 +283,10 @@ export function AiModelPicker({
                   <ProviderLogo id={g.id} />
                   <span>{g.account ? strings.aiModels : g.label}</span>
                   {g.account && g.id === 'vega' && deposit && (
-                    <AiDepositBadge label={deposit.label} title={deposit.title} />
+                    <AiDepositBadge
+                      label={`${strings.deposit} ${deposit.label}`}
+                      title={deposit.title}
+                    />
                   )}
                 </div>
                 {(() => {

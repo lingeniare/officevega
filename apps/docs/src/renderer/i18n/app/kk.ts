@@ -195,6 +195,7 @@ export const kk = {
   appAutoSave: 'Автоматты сақтау',
   appAutoSaveTip: 'Автоматты сақтау (әр 30 секунд сайын және терезе фокусын жоғалтқанда)',
   appSaveShortcutTip: 'Сақтау (⌘S)',
+  appSaveAsTip: 'Басқаша сақтау (⇧⌘S)',
   appUndo: 'Болдырмау',
   appRedo: 'Қайта орындау',
   appStartOpening: 'Ашылуда…',

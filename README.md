@@ -274,7 +274,7 @@ analysis.
 
 **TypeSafe Jev** reranks the home screen's file search. Under **AI Media & Search →
 Local file search**, switch on Decision model reranking and pick an endpoint:
-[OpenRouter](https://openrouter.ai/typesafe) (model `typesafe/jev-1.13`) or
+[OpenRouter](https://openrouter.ai/typesafe) (model `~typesafe/jev-latest`) or
 TypeSafe's own API. The key is stored only on this device. It is off by
 default; when on, the excerpts of the top 20 local hits are sent for judgment
 and nothing else leaves the machine.

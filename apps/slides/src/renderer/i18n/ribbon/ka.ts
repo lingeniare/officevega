@@ -36,6 +36,7 @@ export const ka = {
   ribbonFileExportImages: 'სურათებად ექსპორტი…',
   ribbonUnsavedSuffix: ' — შენახული არ არის',
   ribbonSaveTip: 'შენახვა (⌘S)',
+  ribbonSaveAsTip: 'შენახვა როგორც (⇧⌘S)',
   ribbonAutoSave: 'ავტომატური შენახვა',
   ribbonAutoSaveTip: 'ჩართვისას, ფაილი ინახება ყოველ 30 წამში',
   ribbonUndo: 'გაუქმება',

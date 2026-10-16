@@ -195,6 +195,7 @@ export const tk = {
   appAutoSave: 'Awtoýatda saklama',
   appAutoSaveTip: 'Awtoýatda saklama (her 30 sekuntdan we penjire fokusyny ýitirende)',
   appSaveShortcutTip: 'Ýatda sakla (⌘S)',
+  appSaveAsTip: 'Başga at bilen ýatda sakla (⇧⌘S)',
   appUndo: 'Yza al',
   appRedo: 'Gaýtala',
   appStartOpening: 'Açylýar…',

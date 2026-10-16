@@ -199,6 +199,7 @@ export const ka = {
   appAutoSave: 'ავტომატური შენახვა',
   appAutoSaveTip: 'ავტომატური შენახვა (ყოველ 30 წამში და ფანჯრის ფოკუსის დაკარგვისას)',
   appSaveShortcutTip: 'შენახვა (⌘S)',
+  appSaveAsTip: 'შენახვა როგორც (⇧⌘S)',
   appUndo: 'გაუქმება',
   appRedo: 'გამეორება',
   appStartOpening: 'იხსნება…',

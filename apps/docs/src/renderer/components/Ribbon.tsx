@@ -3177,6 +3177,7 @@ function RibbonInner({
                   className="rb-big ai-entry"
                   disabled={docEmpty}
                   data-tip={t('aiMindMapBtn')}
+                  data-tip-detail={t('aiMindMapPrompt')}
                   onClick={() => onAiPreset(t('aiMindMapPrompt'))}
                 >
                   <span className="rb-big-icon">

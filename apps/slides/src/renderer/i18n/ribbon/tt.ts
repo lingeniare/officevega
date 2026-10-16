@@ -36,6 +36,7 @@ export const tt = {
   ribbonFileExportImages: 'Рәсемнәр итеп экспортлау…',
   ribbonUnsavedSuffix: ' — Сакланмаган',
   ribbonSaveTip: 'Саклау (⌘S)',
+  ribbonSaveAsTip: 'Башкача сакларга (⇧⌘S)',
   ribbonAutoSave: 'Автоматик саклау',
   ribbonAutoSaveTip: 'Кушылганда, файлга һәр 30 секунд саен саклый',
   ribbonUndo: 'Гамәлне кире кайтару',

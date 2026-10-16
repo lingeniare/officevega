@@ -54,6 +54,7 @@ import {
   IconRedo,
   IconRehearse,
   IconSave,
+  IconSaveAs,
   IconSetupShow,
   IconSparkle,
   IconUndo,
@@ -1814,6 +1815,15 @@ export function Ribbon({
           onClick={onSave}
         >
           <IconSave size={16} />
+        </button>
+        <button
+          className="qa-btn"
+          data-tip={t('ribbonSaveAsTip')}
+          aria-label={t('ribbonSaveAsTip')}
+          disabled={!hasDoc}
+          onClick={onSaveAs}
+        >
+          <IconSaveAs size={16} />
         </button>
         {/* onMouseDown+preventDefault like the format buttons: keep contentEditable focus so undo/redo reaches
             the active text edit. onClick with detail===0 covers keyboard activation (Enter/Space emit only click). */}

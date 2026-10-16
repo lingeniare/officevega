@@ -49,12 +49,12 @@ const KEV_URL = 'http://127.0.0.1:8009/v1/systemone'
 const RIZZO_URL = 'http://127.0.0.1:8017/v1/systemone'
 
 const ENDPOINTS: Record<Exclude<DecisionEndpoint, 'custom'>, EndpointSpec> = {
-  // api.vega.chat proxies OpenRouter — the decisions alpha rides the same path;
-  // the `jev-router` alias row was dropped server-side (answers 400), so the
-  // pinned versioned id is sent like on the OpenRouter endpoint — the gateway
-  // resolves it to the dated snapshot
-  vega: { url: 'https://api.vega.chat/api/alpha/decisions', model: 'typesafe/jev-1.13' },
-  openrouter: { url: 'https://openrouter.ai/api/alpha/decisions', model: 'typesafe/jev-1.13' },
+  // api.vega.chat proxies OpenRouter — the decisions alpha rides the same path.
+  // `~typesafe/jev-latest` tracks the newest Jev release; the tilde is part of
+  // the id (bare `typesafe/jev-latest` 404s) and the gateway echoes the
+  // resolved dated snapshot back
+  vega: { url: 'https://api.vega.chat/api/alpha/decisions', model: '~typesafe/jev-latest' },
+  openrouter: { url: 'https://openrouter.ai/api/alpha/decisions', model: '~typesafe/jev-latest' },
   direct: { url: 'https://api.typesafe.ai/v1/systemone', model: 'jev-1.13.0' },
   perplexity: { url: 'https://api.perplexity.ai/v1/decisions', model: 'pplx-decider-v1-27b' },
   liquid: { url: 'https://api.liquid.ai/decisions/v1/systemone', model: 'd1' },
@@ -128,10 +128,8 @@ const MAX_RESPONSE_BYTES = 1024 * 1024
 const TIMEOUT_MS = 4000
 /** rounding slack on the returned distribution, not a semantic tolerance */
 const PROB_TOLERANCE = 0.02
-/** OpenRouter may resolve to a dated snapshot of the pinned version */
-const OPENROUTER_MODEL_PATTERN = /^typesafe\/jev-1\.13(?:-\d{8})?$/
-// VEGA echoes the router row or the resolved snapshot — accept either form
-const VEGA_MODEL_PATTERN = /^~?typesafe\/jev-[\w.-]+$/
+/** both routes echo the -latest alias or the dated snapshot it resolved to */
+const JEV_MODEL_PATTERN = /^~?typesafe\/jev-[\w.-]+$/
 
 export interface JevDocument {
   title: string
@@ -234,13 +232,13 @@ function unwrap(raw: unknown, endpoint: DecisionEndpoint): unknown {
 
 export function validate(raw: unknown, count: number, endpoint: DecisionEndpoint): JevJudgement {
   const r = obj(unwrap(raw, endpoint))
-  // only the two hosted Jev routes echo a model we can pin; self-hosted and
+  // only the two hosted Jev routes echo a model we recognize; self-hosted and
   // third-party servers name their models freely
   if (endpoint === 'direct') {
     if (r.model !== ENDPOINTS.direct.model) throw new Error('model-mismatch')
   } else if (endpoint === 'openrouter' || endpoint === 'vega') {
-    const pattern = endpoint === 'vega' ? VEGA_MODEL_PATTERN : OPENROUTER_MODEL_PATTERN
-    if (typeof r.model !== 'string' || !pattern.test(r.model)) throw new Error('model-mismatch')
+    if (typeof r.model !== 'string' || !JEV_MODEL_PATTERN.test(r.model))
+      throw new Error('model-mismatch')
     if (Array.isArray(r.warnings) && r.warnings.length) throw new Error('provider-warning')
   }
   const answers = obj(r.answers)

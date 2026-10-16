@@ -195,6 +195,7 @@ export const tt = {
   appAutoSave: 'Автоматик саклау',
   appAutoSaveTip: 'Автоматик саклау (һәр 30 секунд саен һәм тәрәзә фокусын югалтканда)',
   appSaveShortcutTip: 'Саклау (⌘S)',
+  appSaveAsTip: 'Башкача сакларга (⇧⌘S)',
   appUndo: 'Гамәлне кире кайтару',
   appRedo: 'Кабатлау',
   appStartOpening: 'Ачыла…',

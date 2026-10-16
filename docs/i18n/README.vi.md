@@ -376,7 +376,7 @@ Flash cho phân tích ảnh.
 **TypeSafe Jev** xếp lại thứ hạng tìm kiếm tệp trên màn hình chính. Dưới
 **AI Media & Search → Local file search**, bật Jev search reranking và chọn
 điểm cuối: [OpenRouter](https://openrouter.ai/typesafe) (mô hình
-`typesafe/jev-1.13`) hoặc API của chính TypeSafe. Khoá chỉ được lưu trên
+`~typesafe/jev-latest`) hoặc API của chính TypeSafe. Khoá chỉ được lưu trên
 chính thiết bị này. Mặc định tính năng tắt; khi bật, đoạn trích của 20 kết
 quả cục bộ hàng đầu được gửi đi để phán đoán và không gì khác rời khỏi máy.
 

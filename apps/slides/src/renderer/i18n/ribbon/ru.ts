@@ -38,6 +38,7 @@ export const ru = {
   ribbonFileExportImages: 'Экспорт в изображения…',
   ribbonUnsavedSuffix: ' — Не сохранено',
   ribbonSaveTip: 'Сохранить (⌘S)',
+  ribbonSaveAsTip: 'Сохранить как (⇧⌘S)',
   ribbonAutoSave: 'Автосохранение',
   ribbonAutoSaveTip: 'Сохраняет в файл каждые 30 секунд',
   ribbonUndo: 'Отменить',

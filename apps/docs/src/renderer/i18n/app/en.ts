@@ -213,6 +213,7 @@ export const en = {
   appAutoSave: 'AutoSave',
   appAutoSaveTip: 'AutoSave (every 30 seconds and when the window loses focus)',
   appSaveShortcutTip: 'Save (⌘S)',
+  appSaveAsTip: 'Save As (⇧⌘S)',
   appUndo: 'Undo',
   appRedo: 'Redo',
   appStartOpening: 'Opening…',

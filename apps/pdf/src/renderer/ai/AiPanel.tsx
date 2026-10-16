@@ -38,9 +38,6 @@ import {
   chatTranscriptToMarkdown,
   suggestChatExportName,
 } from '@genoffice/ui'
-import sendEnterOn from '../assets/send-enter-on.png'
-import sendEnterOff from '../assets/send-enter-off.png'
-import sendStop from '../assets/send-stop.png'
 import { createPdfSkill } from './pdf-skill'
 import { createElectronTransport } from './transport'
 import { PDF_NAV_SCHEME, parsePdfNavHref } from './pdf-nav'
@@ -1086,11 +1083,6 @@ export function AiPanel({
               className={`ai-msg ai-msg-assistant${entry.isError ? ' ai-msg-error' : ''}`}
             >
               {hasTools && <ToolChipList tools={entry.tools!} />}
-              {entry.usage && (
-                <div className="ai-message-usage">
-                  <AiUsageChip usage={entry.usage} lang={lang} />
-                </div>
-              )}
               {entry.text && (
                 <div dir="auto">
                   <Markdown text={entry.text} navs={[pdfNav, fileNav]} />
@@ -1221,9 +1213,6 @@ export function AiPanel({
               {sessionUsage && <AiUsageChip usage={sessionUsage} session lang={lang} />}
             </>
           }
-          sendIconEnabled={<img src={sendEnterOn} alt="" aria-hidden />}
-          sendIconDisabled={<img src={sendEnterOff} alt="" aria-hidden />}
-          stopIcon={<img src={sendStop} alt="" aria-hidden />}
           onChange={setPrompt}
           onSend={() => send(prompt)}
           onStop={stop}
@@ -1289,9 +1278,9 @@ function StepIcon({ status }: { status: 'running' | 'done' | 'error' }) {
   )
 }
 
-/** Tool activity group: a single quiet summary row
- *  that auto-opens while tools run, auto-collapses into "Worked · N steps" when they finish,
- *  and a manual toggle that always wins. Rows inside are step rows with 1px connectors. */
+/** Tool activity group: a summary row ("Worked · N steps") over the step list,
+ *  expanded by default; a manual toggle always wins.
+ *  Rows inside are step rows with 1px connectors. */
 function ToolChipList({ tools }: { tools: ToolActivity[] }) {
   const { t: tr } = useI18n()
   const [expanded, setExpanded] = useState<Set<number>>(new Set())
@@ -1306,7 +1295,7 @@ function ToolChipList({ tools }: { tools: ToolActivity[] }) {
     })
   }
 
-  const open = userOpen ?? false
+  const open = userOpen ?? true
   const label = tr('aiWorkedSteps', { n: tools.length })
 
   return (

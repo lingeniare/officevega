@@ -198,6 +198,7 @@ export const uz = {
   appAutoSave: 'Avtomatik saqlash',
   appAutoSaveTip: 'Avtomatik saqlash (har 30 soniyada va oyna fokusni yo‘qotganda)',
   appSaveShortcutTip: 'Saqlash (⌘S)',
+  appSaveAsTip: 'Boshqa nom bilan saqlash (⇧⌘S)',
   appUndo: 'Bekor qilish',
   appRedo: 'Qaytarish',
   appStartOpening: 'Ochish…',

@@ -79,17 +79,14 @@ aside.copilot {
   height: 28px;
   padding: 0;
   border: none;
-  border-radius: 50%;
+  border-radius: var(--radius-8);
   background: none;
   color: var(--color-text-secondary);
   cursor: pointer;
-  transition:
-    background-color var(--transition-fast),
-    color var(--transition-fast);
+  transition: color var(--transition-fast);
 }
 
 .ai-header-btn:hover {
-  background: var(--accent-soft);
   color: var(--accent);
 }
 
@@ -374,7 +371,7 @@ aside.copilot {
 
 /* ---------- work group: one quiet row, timeline steps inside ---------- */
 .ai-work-group {
-  margin: 6px 0 2px;
+  margin: 0px 0 2px;
 }
 
 .ai-work-group-summary {
@@ -551,13 +548,10 @@ button.ai-step-title.clickable:hover {
   background: transparent;
   color: var(--color-text-tertiary);
   cursor: pointer;
-  transition:
-    background-color var(--transition-fast),
-    color var(--transition-fast);
+  transition: color var(--transition-fast);
 }
 
 .ai-msg-tool-btn:hover:not(:disabled) {
-  background: var(--accent-soft);
   color: var(--accent);
 }
 
@@ -587,7 +581,6 @@ button.ai-step-title.clickable:hover {
 }
 
 .ai-rollback-btn:hover:not(:disabled) {
-  background: var(--accent-soft);
   color: var(--accent);
 }
 
@@ -752,7 +745,20 @@ button.ai-step-title.clickable:hover {
   margin-left: 0;
 }
 
-/* attach: quiet 16px glyph; hover paints the same accent disc as .ai-header-btn */
+/* docs' track-changes toggle docks with the right cluster, flush left of the
+   shield badge: it takes over the auto margin that pushes the cluster right */
+.ai-input-footer .ai-track-btn {
+  order: 1;
+  margin-left: auto;
+}
+
+.ai-input-footer:has(.ai-track-btn) .ai-shield-badge,
+.ai-input-footer:has(.ai-track-btn) .ai-attach-btn,
+.ai-input-footer:has(.ai-track-btn) .ai-send-btn {
+  margin-left: 0;
+}
+
+/* attach: quiet 16px glyph; hover only tints the glyph, like .ai-header-btn */
 .ai-attach-btn {
   order: 2;
   margin-left: auto;
@@ -764,13 +770,12 @@ button.ai-step-title.clickable:hover {
   flex-shrink: 0;
   padding: 0;
   border: none;
-  border-radius: 50%;
+  border-radius: var(--radius-8);
   background: transparent;
   color: var(--color-text-tertiary);
   opacity: 0.7;
   cursor: pointer;
   transition:
-    background-color var(--transition-fast),
     color var(--transition-fast),
     opacity var(--transition-fast);
 }
@@ -784,7 +789,6 @@ button.ai-step-title.clickable:hover {
 
 .ai-attach-btn:hover {
   opacity: 1;
-  background: var(--accent-soft);
   color: var(--accent);
 }
 
@@ -801,13 +805,12 @@ button.ai-step-title.clickable:hover {
   flex-shrink: 0;
   padding: 0;
   border: none;
-  border-radius: 50%;
+  border-radius: var(--radius-8);
   background: transparent;
   color: var(--color-text-tertiary);
   opacity: 0.7;
   cursor: pointer;
   transition:
-    background-color var(--transition-fast),
     color var(--transition-fast),
     opacity var(--transition-fast);
 }
@@ -820,7 +823,6 @@ button.ai-step-title.clickable:hover {
 
 .ai-track-btn:hover {
   opacity: 1;
-  background: var(--accent-soft);
   color: var(--accent);
 }
 
@@ -830,7 +832,7 @@ button.ai-step-title.clickable:hover {
   color: var(--accent);
 }
 
-/* send: the one memorable detail — 32px accent circle, arrow glyph */
+/* send: the one memorable detail — 32px accent rounded square, arrow glyph */
 .ai-send-btn {
   order: 3;
   margin-left: auto;
@@ -842,7 +844,7 @@ button.ai-step-title.clickable:hover {
   height: 32px;
   padding: 0;
   border: none;
-  border-radius: 50%;
+  border-radius: var(--radius-8);
   background: var(--accent);
   color: #fff;
   cursor: pointer;
@@ -1040,17 +1042,14 @@ button.ai-step-title.clickable:hover {
   height: 28px;
   padding: 0;
   border: none;
-  border-radius: 50%;
+  border-radius: var(--radius-8);
   background: transparent;
   color: var(--color-text-tertiary);
   cursor: pointer;
-  transition:
-    background-color var(--transition-fast),
-    color var(--transition-fast);
+  transition: color var(--transition-fast);
 }
 
 .ai-ask-pop-close:hover {
-  background: var(--accent-soft);
   color: var(--accent);
 }
 

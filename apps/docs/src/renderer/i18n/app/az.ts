@@ -196,6 +196,7 @@ export const az = {
   appAutoSave: 'Avtomatik yadda saxlama',
   appAutoSaveTip: 'Avtomatik yadda saxlama (hər 30 saniyədən bir və pəncərə fokusunu itirdikdə)',
   appSaveShortcutTip: 'Yadda saxla (⌘S)',
+  appSaveAsTip: 'Başqa adla saxla (⇧⌘S)',
   appUndo: 'Geri al',
   appRedo: 'Təkrarla',
   appStartOpening: 'Açılır…',

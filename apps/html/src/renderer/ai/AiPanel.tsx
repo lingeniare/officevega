@@ -1677,11 +1677,6 @@ export function AiPanel({
                 )
               )}
               {hasTools && <ToolChipList tools={entry.tools!} />}
-              {entry.usage && (
-                <div className="ai-message-usage">
-                  <AiUsageChip usage={entry.usage} lang={lang} />
-                </div>
-              )}
               {showToolbar && (
                 <div className="ai-msg-toolbar">
                   <button
@@ -2013,8 +2008,8 @@ function StepIcon({ status }: { status: 'running' | 'done' | 'error' }) {
   )
 }
 
-/** Tool activity group (docs parity): auto-opens while tools run, auto-collapses into
- *  "Worked · N steps" when they finish; a manual toggle always wins */
+/** Tool activity group (docs parity): summary row over the step list,
+ *  expanded by default; a manual toggle always wins */
 function ToolChipList({ tools }: { tools: ToolActivity[] }) {
   const { t: tr } = useI18n()
   const [expanded, setExpanded] = useState<Set<number>>(new Set())
@@ -2030,7 +2025,7 @@ function ToolChipList({ tools }: { tools: ToolActivity[] }) {
   }
 
   const anyRunning = tools.some((tool) => tool.running)
-  const open = userOpen ?? anyRunning
+  const open = userOpen ?? true
   const label = anyRunning ? tr('aiGroupWorking') : tr('aiWorkedSteps', { n: tools.length })
 
   return (

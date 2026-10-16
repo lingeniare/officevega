@@ -45,9 +45,6 @@ import {
   type AiTokenUsageView,
 } from '@genoffice/ui'
 import type { Editor } from '@tiptap/core'
-import sendEnterOn from '../assets/send-enter-on.png'
-import sendEnterOff from '../assets/send-enter-off.png'
-import sendStop from '../assets/send-stop.png'
 import { aiLangDirective, t as tGlobal, useI18n } from '../i18n/locale'
 import { htmlDir } from '@genoffice/i18n'
 import { localizedToolSummary, toolLabel } from './tool-labels'
@@ -1311,11 +1308,6 @@ export function AiPanel({
                   }}
                 />
               )}
-              {entry.usage && (
-                <div className="ai-message-usage">
-                  <AiUsageChip usage={entry.usage} lang={lang} />
-                </div>
-              )}
               {showToolbar && (
                 <div className="ai-msg-toolbar">
                   <button
@@ -1510,9 +1502,6 @@ export function AiPanel({
               {sessionUsage && <AiUsageChip usage={sessionUsage} session lang={lang} />}
             </>
           }
-          sendIconEnabled={<img src={sendEnterOn} alt="" aria-hidden />}
-          sendIconDisabled={<img src={sendEnterOff} alt="" aria-hidden />}
-          stopIcon={<img src={sendStop} alt="" aria-hidden />}
           textareaRef={inputRef}
           onChange={setPrompt}
           onSend={() => send(prompt)}
@@ -1578,8 +1567,8 @@ function StepIcon({ status }: { status: 'running' | 'done' | 'error' }) {
   )
 }
 
-/** Tool activity group (docs parity): auto-opens while tools run, auto-collapses into
- *  "Worked · N steps" when they finish; a manual toggle always wins */
+/** Tool activity group (docs parity): summary row over the step list,
+ *  expanded by default; a manual toggle always wins */
 function ToolChipList({ tools }: { tools: ToolActivity[] }) {
   const { t: tr } = useI18n()
   const [expanded, setExpanded] = useState<Set<number>>(new Set())
@@ -1595,7 +1584,7 @@ function ToolChipList({ tools }: { tools: ToolActivity[] }) {
   }
 
   const anyRunning = tools.some((tool) => tool.running)
-  const open = userOpen ?? anyRunning
+  const open = userOpen ?? true
   const label = anyRunning ? tr('aiGroupWorking') : tr('aiWorkedSteps', { n: tools.length })
 
   return (

@@ -196,6 +196,7 @@ export const ky = {
   appAutoSave: 'Автоматтык сактоо',
   appAutoSaveTip: 'Автоматтык сактоо (ар 30 секунд сайын жана терезе фокусун жоготкондо)',
   appSaveShortcutTip: 'Сактоо (⌘S)',
+  appSaveAsTip: 'Башкача сактоо (⇧⌘S)',
   appUndo: 'Артка кайтаруу',
   appRedo: 'Кайталоо',
   appStartOpening: 'Ачылууда…',

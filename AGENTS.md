@@ -1,5 +1,21 @@
 # AGENTS.md
 
+## npm audit: known residual
+
+- `node-forge` (GHSA-86w9-cpqp-85rv, no patched release): the vulnerable
+  RSA PKCS#1 v1.5 **verification** path is not exercised — `apps/pdf` verifies
+  signatures/certificates via `node:crypto` `X509Certificate.verify`
+  (OpenSSL). forge is used only for ASN.1 parsing (PKCS#7), PKCS#12 key-store
+  loading and PKCS#7 signature *creation*. If a fix ships, bump the dep in
+  `apps/pdf/package.json` and drop this note.
+- Solved via `overrides` in root `package.json`: `vite-plugin-static-copy` →
+  `chokidar@^4` (kills `braces`), `app-builder-lib` → `@electron/get@^5`
+  (kills the whole `got`/`global-agent`/`roarr`/`sprintf-js`/
+  `http-cache-semantics` chain; `@electron/get` is also a direct devDep
+  because the electron postinstall `require()`s it), `http-cache-semantics`
+  `^4.3.0` belt-and-suspenders. `@electron/get`@5 is ESM-only — safe because
+  Node >=22.12 supports `require(esm)` and engines already requires it.
+
 ## Running tests and typecheck
 
 `pnpm test` / `pnpm typecheck` inside a package triggers pnpm's dependency-status

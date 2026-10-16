@@ -15,6 +15,7 @@
   /* lift for the active segment in gray-track tab pills */
   --shadow-pill: 0 1px 2px rgb(0 0 0 / 8%);
   /* lift for the kb-ask composer box */
+  --shadow-composer: 0 6px 30px rgb(0 0 0 / 8%);
 }
 
 /* ── Dark mode overrides ─────────────────────────────────── */
@@ -2008,9 +2009,11 @@ html[dir='rtl'] .quick-title-row {
   flex: 1;
   min-height: 0;
   padding: 0 24px 16px;
-  max-width: 860px;
+  max-width: 602px;
   margin: 0 auto;
   width: 100%;
+  /* bundled Google Sans (covers Cyrillic), system tail for the rest */
+  font-family: var(--gs-font-sans);
 }
 
 .kb-ask-headbar {
@@ -2022,11 +2025,11 @@ html[dir='rtl'] .quick-title-row {
   margin-bottom: 12px;
 }
 .kb-ask-headbar b {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 500;
 }
 .kb-ask-headbar span {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-tertiary);
 }
 .kb-ask-export {
@@ -2081,12 +2084,12 @@ html[dir='rtl'] .quick-title-row {
 }
 .kb-ask-hero h3 {
   margin: 0 0 6px;
-  font-size: 19px;
+  font-size: 20px;
   font-weight: 500;
 }
 .kb-ask-hero > p {
   margin: 0;
-  font-size: 13.5px;
+  font-size: 14.5px;
   color: var(--text-secondary);
   max-width: 46ch;
   line-height: 1.6;
@@ -2114,7 +2117,7 @@ html[dir='rtl'] .quick-title-row {
   border-radius: 99px;
   background: var(--accent-soft);
   color: var(--accent);
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 500;
   display: flex;
   align-items: center;
@@ -2123,12 +2126,12 @@ html[dir='rtl'] .quick-title-row {
 }
 .kb-ask-step b {
   display: block;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
   margin: 1px 0 3px;
 }
 .kb-ask-step span {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-secondary);
   line-height: 1.5;
   display: block;
@@ -2137,7 +2140,7 @@ html[dir='rtl'] .quick-title-row {
   appearance: none;
   border: none;
   font: inherit;
-  font-size: 13.5px;
+  font-size: 14.5px;
   font-weight: 500;
   display: inline-flex;
   align-items: center;
@@ -2157,17 +2160,17 @@ html[dir='rtl'] .quick-title-row {
 .kb-ask-hint {
   margin: auto 0;
   text-align: center;
-  font-size: 12.5px;
+  font-size: 14px;
   opacity: 0.65;
 }
 .kb-ask-login {
   margin: 0 2px 8px;
-  font-size: 12.5px;
+  font-size: 13.5px;
   color: var(--text-secondary);
 }
 .kb-ask-nosave {
   margin: 0 2px 8px;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--text-tertiary);
   display: flex;
   align-items: center;
@@ -2178,7 +2181,7 @@ html[dir='rtl'] .quick-title-row {
 }
 
 .kb-ask-msg {
-  font-size: 13.5px;
+  font-size: 15px;
   line-height: 1.55;
   max-width: 92%;
   white-space: normal;
@@ -2219,13 +2222,16 @@ html[dir='rtl'] .quick-title-row {
   background: none;
   padding: 0 14px;
   margin: 12px 0 4px;
-  font-size: 16px;
+  font-size: 15px;
   font-family: inherit;
-  line-height: 24px;
+  line-height: 22px;
   outline: none;
   color: var(--color-text-primary);
-  min-height: 48px;
-  max-height: 168px;
+  /* one line at rest — the composer is a text row over the footer row;
+     the JS auto-grow overrides this fixed height once typing starts */
+  height: 24px;
+  min-height: 24px;
+  max-height: 120px;
   overflow-y: auto;
 }
 .kb-ask .ai-input-box textarea::placeholder {
@@ -2236,13 +2242,19 @@ html[dir='rtl'] .quick-title-row {
   align-items: center;
   padding: 4px 8px 8px 10px;
 }
+/* the usage chip docks to the send cluster on the right, not the far left */
+.kb-ask .ai-usage-chip {
+  margin-left: auto;
+  padding-right: 2px;
+  font-size: 12px;
+}
 .kb-ask .ai-send-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-left: auto;
-  width: 36px;
-  height: 36px;
+  margin-left: 8px;
+  width: 29px;
+  height: 29px;
   padding: 0;
   border: none;
   border-radius: 35%;
@@ -2265,11 +2277,16 @@ html[dir='rtl'] .quick-title-row {
 .kb-ask .ai-send-btn:disabled {
   cursor: default;
 }
+/* no chip yet (nothing billed this session): the send button keeps the
+   right-dock margin the chip's own auto margin provides when it exists */
+.kb-ask .ai-input-footer:not(:has(.ai-usage-chip)) .ai-send-btn {
+  margin-left: auto;
+}
 .kb-ask-tool-note {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 11.5px;
+  font-size: 12.5px;
   color: var(--text-secondary);
   padding: 3px 9px;
   border-radius: 99px;
@@ -2293,7 +2310,7 @@ html[dir='rtl'] .quick-title-row {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 11.5px;
+  font-size: 12.5px;
   color: var(--text-secondary);
   padding: 3px 9px;
   border-radius: 99px;
@@ -2322,7 +2339,7 @@ html[dir='rtl'] .quick-title-row {
   color: var(--accent);
 }
 .kb-ask-action-error {
-  font-size: 11.5px;
+  font-size: 12.5px;
   color: var(--danger);
 }
 /* citation links inside answers (filenav): a soft pill, click opens the file */
@@ -2332,7 +2349,7 @@ html[dir='rtl'] .quick-title-row {
   gap: 4px;
   color: var(--accent);
   text-decoration: none;
-  font-size: 12.5px;
+  font-size: 13.5px;
   background: var(--accent-soft);
   border-radius: 5px;
   padding: 1px 7px;

@@ -619,6 +619,7 @@
   text-align: center;
   letter-spacing: 0.08em;
   cursor: text;
+}
 
 /* multi-line variant for header / model-declaration blobs; same chrome as .set-input */
 .set-input-multiline {

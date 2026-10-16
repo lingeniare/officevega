@@ -331,6 +331,7 @@ import {
   IconUndo,
   IconRedo,
   IconSave,
+  IconSaveAs,
   IconLayerUp,
   IconLayerDown,
   IconTrash,
@@ -7427,6 +7428,15 @@ export default function App() {
             onClick={() => void save()}
           >
             <IconSave />
+          </button>
+          <button
+            className="qa-btn"
+            data-tip={t('fileSaveAsTip')}
+            aria-label={t('fileSaveAsTip')}
+            disabled={!doc || !filePath}
+            onClick={() => window.pdfApi.requestSaveAsDialog()}
+          >
+            <IconSaveAs />
           </button>
           <button
             className="qa-btn"

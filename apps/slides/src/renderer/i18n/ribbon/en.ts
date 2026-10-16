@@ -36,6 +36,7 @@ export const en = {
   ribbonFileExportImages: 'Export as Images…',
   ribbonUnsavedSuffix: ' — Unsaved',
   ribbonSaveTip: 'Save (⌘S)',
+  ribbonSaveAsTip: 'Save As (⇧⌘S)',
   ribbonAutoSave: 'AutoSave',
   ribbonAutoSaveTip: 'When on, saves to the file every 30 seconds',
   ribbonUndo: 'Undo',

@@ -36,6 +36,7 @@ export const az = {
   ribbonFileExportImages: 'Şəkillər kimi ixrac et…',
   ribbonUnsavedSuffix: ' — Yadda saxlanılmayıb',
   ribbonSaveTip: 'Yadda saxla (⌘S)',
+  ribbonSaveAsTip: 'Başqa adla saxla (⇧⌘S)',
   ribbonAutoSave: 'Avtomatik yadda saxlama',
   ribbonAutoSaveTip: 'Aktiv olduqda, faylı hər 30 saniyədən bir yadda saxlayır',
   ribbonUndo: 'Geri al',

@@ -26,6 +26,7 @@ export {
   IconRotateLeft,
   IconRotateRight,
   IconSave,
+  IconSaveAs,
   IconSearch,
   IconSparkle,
   IconTable,

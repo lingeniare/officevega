@@ -36,6 +36,7 @@ export const kk = {
   ribbonFileExportImages: 'Суреттер ретінде экспорттау…',
   ribbonUnsavedSuffix: ' — Сақталмаған',
   ribbonSaveTip: 'Сақтау (⌘S)',
+  ribbonSaveAsTip: 'Басқаша сақтау (⇧⌘S)',
   ribbonAutoSave: 'Автоматты сақтау',
   ribbonAutoSaveTip: 'Қосулы кезде, файл әр 30 секунд сайын сақталады',
   ribbonUndo: 'Болдырмау',

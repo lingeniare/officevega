@@ -1,4 +1,4 @@
-/* Token-usage chip under assistant replies and beside the composer footer.
+/* Token-usage chip in the composer footer (session total).
    Neutral by design: it reports what the provider billed, it must not look like
    an action button or an error. */
 
@@ -13,12 +13,4 @@
   user-select: none;
   white-space: nowrap;
   flex-shrink: 0;
-}
-
-/* sits on its own quiet line under the reply text */
-.ai-message-usage {
-  display: flex;
-  justify-content: flex-start;
-  padding: 0 2px;
-  margin-top: -2px;
 }

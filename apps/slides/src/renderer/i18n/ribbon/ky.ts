@@ -36,6 +36,7 @@ export const ky = {
   ribbonFileExportImages: 'Сүрөттөр катары экспорттоо…',
   ribbonUnsavedSuffix: ' — Сакталган эмес',
   ribbonSaveTip: 'Сактоо (⌘S)',
+  ribbonSaveAsTip: 'Башкача сактоо (⇧⌘S)',
   ribbonAutoSave: 'Автоматтык сактоо',
   ribbonAutoSaveTip: 'Иштетилгенде, файл ар 30 секунд сайын сакталат',
   ribbonUndo: 'Артка кайтаруу',

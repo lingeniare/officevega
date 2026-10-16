@@ -42,7 +42,7 @@ const opts = (over: Partial<DecisionCallOptions> = {}): DecisionCallOptions => (
 })
 
 /** a well-formed OpenRouter answer with the given 0–2 scores */
-function answer(scores: number[], model = 'typesafe/jev-1.13'): string {
+function answer(scores: number[], model = 'typesafe/jev-1.14-20261014'): string {
   const answers = Object.fromEntries(
     scores.map((s, i) => {
       const p2 = s / 2
@@ -65,7 +65,7 @@ describe('prepare', () => {
     const { body, count } = prepare('q', [{ ...docs[0]!, text: 'x'.repeat(5000) }], opts())
     const parsed = JSON.parse(body)
     expect(count).toBe(1)
-    expect(parsed.model).toBe('typesafe/jev-1.13')
+    expect(parsed.model).toBe('~typesafe/jev-latest')
     expect(parsed.provider).toEqual({
       only: ['typesafe'],
       allow_fallbacks: false,
@@ -76,10 +76,10 @@ describe('prepare', () => {
     expect(parsed.questions.d0.type).toBe('score')
   })
 
-  it('sends the pinned Jev model and keeps the TypeSafe route pin on the VEGA endpoint', () => {
+  it('sends the latest-tracking Jev alias and keeps the TypeSafe route pin on the VEGA endpoint', () => {
     const { body } = prepare('q', docs, opts({ endpoint: 'vega' }))
     const parsed = JSON.parse(body)
-    expect(parsed.model).toBe('typesafe/jev-1.13')
+    expect(parsed.model).toBe('~typesafe/jev-latest')
     expect(parsed.provider).toEqual({
       only: ['typesafe'],
       allow_fallbacks: false,
@@ -205,7 +205,7 @@ describe('endpointUrl', () => {
 })
 
 describe('validate', () => {
-  it('accepts a dated snapshot of the pinned model and returns scores in order', () => {
+  it('accepts a dated snapshot of an older Jev release and returns scores in order', () => {
     const r = validate(
       JSON.parse(answer([2, 0.5, 0], 'typesafe/jev-1.13-20260917')),
       3,

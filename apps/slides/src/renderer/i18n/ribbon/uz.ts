@@ -36,6 +36,7 @@ export const uz = {
   ribbonFileExportImages: 'Rasmlar sifatida eksport qilish…',
   ribbonUnsavedSuffix: ' — Saqlanmagan',
   ribbonSaveTip: 'Saqlash (⌘S)',
+  ribbonSaveAsTip: 'Boshqa nom bilan saqlash (⇧⌘S)',
   ribbonAutoSave: 'Avtomatik saqlash',
   ribbonAutoSaveTip: 'Yoqilganda, fayl har 30 soniyada saqlanadi',
   ribbonUndo: 'Bekor qilish',

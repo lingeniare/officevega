@@ -23,6 +23,7 @@ import {
 } from '@genoffice/ui'
 import type { AiSettings } from '@genoffice/ai-provider'
 import { useI18n } from './locale'
+import { createAppManualSkill, preloadAskManual } from './ask-manual'
 import sendEnterOn from './assets/send-enter-on.png'
 import sendEnterOff from './assets/send-enter-off.png'
 import sendStop from './assets/send-stop.png'
@@ -42,6 +43,12 @@ import sendStop from './assets/send-stop.png'
  * going to Recents and starring files, so the panel says so and offers the
  * jump as a button.
  */
+
+/** preamble of the composed system prompt: the chat's two sources of truth */
+const ASK_INTRO = `You are the VEGA Office assistant on the app's Home screen.
+Answer briefly and in the user's language. Two sources are available: the
+user's starred files (the knowledge base tools) and the VEGA Office user
+guide in this prompt — use the guide for questions about the app itself.`
 
 /** one tool a turn used, badge-shaped; the icon follows the call name */
 interface ToolNote {
@@ -84,6 +91,8 @@ export function KbAskPanel({
   const runUsageRef = useRef<AiTokenUsageView | undefined>(undefined)
   /** tokens billed across the panel's session (the composer chip) */
   const [sessionUsage, setSessionUsage] = useState<AiTokenUsageView | undefined>(undefined)
+  /** the user guide + author card, stitched and cached by ask-manual */
+  const manualRef = useRef('')
 
   const refreshSettings = (): void => {
     void window.aiOffice
@@ -110,6 +119,11 @@ export function KbAskPanel({
       })
       .catch(() => setCorpusCount(0))
     refreshSettings()
+    void preloadAskManual()
+      .then((md) => {
+        manualRef.current = md
+      })
+      .catch(() => undefined)
     void window.aiOffice
       .aiGskStatus()
       .then((status) => setGskEmail(status.loggedIn ? (status.email ?? '') : null))
@@ -125,7 +139,7 @@ export function KbAskPanel({
         getSettings: () => settingsRef.current as AiSettings,
         unknownErrorText: () => t('askUnknownError'),
       }),
-      skill: composeSkills('home-ask', '', [
+      skill: composeSkills('home-ask', ASK_INTRO, [
         createKnowledgeBaseSkill({
           listFiles: () => corpusRef.current,
           search: (query, limit) => window.aiOffice.kbSearch({ q: query, limit }),
@@ -133,6 +147,9 @@ export function KbAskPanel({
           alsoCitable: () => docSkill.createdPaths(),
         }),
         docSkill,
+        // last: its systemPrompt tail carries the whole user guide, so it
+        // reads as the reference appendix after the tool rules
+        createAppManualSkill(() => manualRef.current),
       ]),
       events: {
         onText: (text) => patchLast({ text }),
@@ -206,15 +223,14 @@ export function KbAskPanel({
       // keep the mount snapshot
     }
     if (askSeqRef.current !== seq) return
-    if (corpusRef.current.length === 0) {
-      setMessages((prev) => [
-        ...prev,
-        { role: 'user', text: instruction, toolNotes: [] },
-        { role: 'assistant', text: t('askEmptyCorpus'), toolNotes: [] },
-      ])
-      setBusy(false)
-      return
+    // an empty corpus no longer blocks asking: the user guide in the prompt
+    // still answers questions about the app itself
+    try {
+      manualRef.current = await preloadAskManual()
+    } catch {
+      // a failed lazy chunk leaves the previous manual (or none) in place
     }
+    if (askSeqRef.current !== seq) return
     setMessages((prev) => [
       ...prev,
       { role: 'user', text: instruction, toolNotes: [] },
@@ -351,11 +367,6 @@ export function KbAskPanel({
             ) : m.streaming ? (
               <AiTypingIndicator label={t('askHintBusy')} />
             ) : null}
-            {m.role === 'assistant' && m.usage && (
-              <div className="ai-message-usage">
-                <AiUsageChip usage={m.usage} lang={lang} />
-              </div>
-            )}
             {m.role === 'assistant' && m.text && !m.streaming && !m.isError && (
               <div className="kb-ask-actions">
                 {m.saved && typeof m.saved === 'object' && 'path' in m.saved ? (

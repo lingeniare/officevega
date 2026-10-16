@@ -245,7 +245,6 @@ html[data-design='retro'] .ai-track-btn {
 }
 
 html[data-design='retro'] .ai-track-btn:hover {
-  background: var(--color-bg-subtle);
   color: var(--color-text-primary);
 }
 

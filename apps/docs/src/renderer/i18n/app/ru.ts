@@ -223,6 +223,7 @@ export const ru = {
   appAutoSave: 'Автосохранение',
   appAutoSaveTip: 'Автосохранение (каждые 30 секунд и при потере фокуса окном)',
   appSaveShortcutTip: 'Сохранить (⌘S)',
+  appSaveAsTip: 'Сохранить как (⇧⌘S)',
   appUndo: 'Отменить',
   appRedo: 'Вернуть',
   appStartOpening: 'Открытие…',

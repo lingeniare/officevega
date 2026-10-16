@@ -36,6 +36,7 @@ export const tk = {
   ribbonFileExportImages: 'Suratlar hökmünde eksport et…',
   ribbonUnsavedSuffix: ' — Ýatda saklanmadyk',
   ribbonSaveTip: 'Ýatda sakla (⌘S)',
+  ribbonSaveAsTip: 'Başga at bilen ýatda sakla (⇧⌘S)',
   ribbonAutoSave: 'Awtoýatda saklama',
   ribbonAutoSaveTip: 'Açyk wagty faýly her 30 sekuntdan bir gezek ýatda saklaýar',
   ribbonUndo: 'Yza al',

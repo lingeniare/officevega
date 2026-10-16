@@ -286,6 +286,7 @@ import {
   IconReadMode,
   IconRedo,
   IconSave,
+  IconSaveAs,
   IconUndo,
   IconWebLayout,
 } from './components/icons'
@@ -6950,6 +6951,15 @@ export function App() {
           onClick={() => void save(false)}
         >
           <IconSave size={16} />
+        </button>
+        <button
+          className="qa-btn"
+          data-tip={t('appSaveAsTip')}
+          aria-label={t('appSaveAsTip')}
+          disabled={!hasDoc}
+          onClick={() => void save(true)}
+        >
+          <IconSaveAs size={16} />
         </button>
         <button
           className="qa-btn"
