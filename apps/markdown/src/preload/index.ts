@@ -163,6 +163,7 @@ const api: MarkdownApi = {
   openAiModelSettings: () => ipcRenderer.invoke(AI_CHANNELS.openModelSettings),
   getProviderModels: (input) => ipcRenderer.invoke(AI_CHANNELS.providerModels, input),
   aiGskStatus: (withEmail?: boolean) => ipcRenderer.invoke(AI_CHANNELS.gskStatus, withEmail),
+  aiGskLogin: () => ipcRenderer.invoke(AI_CHANNELS.gskLogin),
   onAiAuthChanged: (handler: (status: { loggedIn: boolean }) => void) => {
     const listener = (_e: Electron.IpcRendererEvent, status: { loggedIn: boolean }) =>
       handler(status)

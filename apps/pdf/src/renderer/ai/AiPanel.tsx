@@ -1,7 +1,13 @@
 import { aiPanelWidthAtPointer, AiModelPicker, type AiModelPickerBridge } from '@genoffice/ui'
 import { useEffect, useRef, useState } from 'react'
 import type { PointerEvent as ReactPointerEvent, ReactElement } from 'react'
-import { AgentLoop, fallbackChatTitle, generateChatTitle, generateSuggestedQuestions, withPiiTokenGuard } from '@genoffice/agent-core'
+import {
+  AgentLoop,
+  fallbackChatTitle,
+  generateChatTitle,
+  generateSuggestedQuestions,
+  withPiiTokenGuard,
+} from '@genoffice/agent-core'
 import {
   imageGenerationAvailable,
   piiShieldMayApply,
@@ -11,6 +17,7 @@ import {
 } from '@genoffice/ai-provider/browser'
 import {
   AiComposer,
+  AiConnectPrompt,
   AiHistoryButton,
   AiHistoryMenu,
   AiQueueStrip,
@@ -22,6 +29,8 @@ import {
   IconDownload,
   IconPlus,
   addTokenUsage,
+  aiErrorText,
+  useAiDisconnected,
   useChatRunQueue,
   useSuggestedQuestions,
   useVegaDeposit,
@@ -107,6 +116,7 @@ const MODEL_BRIDGE: AiModelPickerBridge = {
   getSettings: () => window.pdfApi.getAiSettings(),
   setSettings: (settings) => window.pdfApi.setAiSettings(settings),
   onSettingsChanged: (handler) => window.pdfApi.onAiSettingsChanged(handler),
+  onAuthChanged: (handler) => window.pdfApi.onAiAuthChanged(handler),
   gskLoggedIn: () => window.pdfApi.gskStatus().then((s) => !!s?.loggedIn),
   openModelSettings: () => window.pdfApi.openAiModelSettings().catch(() => {}),
   getProviderModels: (input) => window.pdfApi.getProviderModels(input),
@@ -124,8 +134,8 @@ export function AiPanel({
   /** Absolute path of the open PDF (chat history is keyed to it) */
   filePath?: string
   onCollapse: () => void
-  /** Ribbon AI buttons push a one-shot prompt; a new nonce triggers an auto-run */
-  preset?: { text: string; nonce: number } | null
+  /** AI buttons push a one-shot prompt; a new nonce triggers one handling — autoRun sends, otherwise it stages in the composer */
+  preset?: { text: string; nonce: number; autoRun?: boolean } | null
   /** Fired when a run that mutated the document finishes (drives the untitled-blank auto-save) */
   onRunDone?: () => void
   /** The × on the scope chip: drop the cached selection so runs target the whole document */
@@ -135,9 +145,12 @@ export function AiPanel({
   const [chat, setChat] = useState<ChatEntry[]>([])
   const [prompt, setPrompt] = useState('')
   const [busy, setBusy] = useState(false)
+  /** signed out of VEGA with no usable BYOK provider: starters + composer go muted */
+  const aiDisconnected = useAiDisconnected(MODEL_BRIDGE)
   /** messages queued while a reply runs; the pump re-runs them through send on settle */
   const msgQueue = useChatRunQueue<void>({
     busy,
+    gate: aiDisconnected,
     submit: (text) => {
       const loop = loopRef.current
       if (!loop || loop.busy) return false
@@ -197,11 +210,7 @@ export function AiPanel({
             projectId: string
             chatId: string
           }>
-          listChatSessions(args: {
-            projectId?: string
-            query?: string
-            limit?: number
-          }): Promise<
+          listChatSessions(args: { projectId?: string; query?: string; limit?: number }): Promise<
             Array<{
               projectId: string
               chatId: string
@@ -846,12 +855,16 @@ export function AiPanel({
     inputRef.current?.focus()
   }
 
-  // One-click AI actions from the ribbon / Ask popover; while a run is active the
-  // preset lands in the composer instead of being dropped silently (markdown parity)
+  // One-click AI actions stage in the composer (docs parity); explicit send-now
+  // entries (Ask popover) pass autoRun, and a run in flight lands them in the composer
   useEffect(() => {
     if (!preset) return
-    if (loopRef.current?.busy) setPrompt(preset.text)
-    else send(preset.text)
+    if (preset.autoRun && !loopRef.current?.busy) {
+      send(preset.text)
+    } else {
+      setPrompt(preset.text)
+      inputRef.current?.focus()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- run once per nonce
   }, [preset?.nonce])
 
@@ -955,7 +968,7 @@ export function AiPanel({
   return (
     <aside
       ref={asideRef}
-      className={`copilot${resizing ? ' ai-panel-resizing' : ''}`}
+      className={`copilot${resizing ? ' ai-panel-resizing' : ''}${aiDisconnected ? ' ai-disconnected' : ''}`}
       style={{ width: '100%' }}
       dir={htmlDir(lang) === 'rtl' ? 'rtl' : undefined}
     >
@@ -969,6 +982,16 @@ export function AiPanel({
       <header className="ai-panel-header">
         <span className="ai-panel-title">{lang === 'ru' ? 'ВЕГА' : 'VEGA'}</span>
         <div className="ai-panel-header-actions">
+          {chat.length > 0 && (
+            <button
+              className="ai-header-btn"
+              onClick={newChat}
+              data-tip={t('aiNewChat')}
+              aria-label={t('aiNewChat')}
+            >
+              <IconPlus size={15} />
+            </button>
+          )}
           <AiHistoryMenu
             open={historyOpen}
             onClose={() => setHistoryOpen(false)}
@@ -1001,16 +1024,6 @@ export function AiPanel({
               <IconDownload size={15} />
             </button>
           )}
-          {chat.length > 0 && (
-            <button
-              className="ai-header-btn"
-              onClick={newChat}
-              data-tip={t('aiNewChat')}
-              aria-label={t('aiNewChat')}
-            >
-              <IconPlus size={15} />
-            </button>
-          )}
           <button
             className="ai-header-btn ai-panel-collapse"
             onClick={onCollapse}
@@ -1030,6 +1043,7 @@ export function AiPanel({
             <div className="ai-quick-actions">
               <button
                 className="ai-quick-btn"
+                disabled={aiDisconnected}
                 onClick={() => {
                   setPrompt(
                     t(hasScopeSelection ? 'aiQuickSummarySelPrompt' : 'aiQuickSummaryPrompt'),
@@ -1041,6 +1055,7 @@ export function AiPanel({
               </button>
               <button
                 className="ai-quick-btn"
+                disabled={aiDisconnected}
                 onClick={() => {
                   setPrompt(
                     t(hasScopeSelection ? 'aiQuickKeyPointsSelPrompt' : 'aiQuickKeyPointsPrompt'),
@@ -1051,6 +1066,14 @@ export function AiPanel({
                 <span className="ai-starter-text">{t('aiQuickKeyPoints')}</span>
               </button>
             </div>
+            {aiDisconnected && (
+              <AiConnectPrompt
+                text={t('aiConnectPrompt')}
+                label={t('aiConnectBtn')}
+                tip={t('aiConnectTip')}
+                onConnect={() => void window.pdfApi.gskLogin()}
+              />
+            )}
           </div>
         )}
         {chat.map((entry, i) => {
@@ -1085,7 +1108,10 @@ export function AiPanel({
               {hasTools && <ToolChipList tools={entry.tools!} />}
               {entry.text && (
                 <div dir="auto">
-                  <Markdown text={entry.text} navs={[pdfNav, fileNav]} />
+                  <Markdown
+                    text={entry.isError ? aiErrorText(entry.text, t) : entry.text}
+                    navs={[pdfNav, fileNav]}
+                  />
                 </div>
               )}
             </div>
@@ -1131,6 +1157,17 @@ export function AiPanel({
         />
       )}
 
+      {/* a muted panel with history still needs a way back — the same Connect
+          call-to-action the empty state shows, docked above the composer */}
+      {aiDisconnected && chat.length > 0 && (
+        <AiConnectPrompt
+          text={t('aiConnectPrompt')}
+          label={t('aiConnectBtn')}
+          tip={t('aiConnectTip')}
+          onConnect={() => void window.pdfApi.gskLogin()}
+        />
+      )}
+
       <div className="ai-composer">
         <AiComposer
           queueStrip={
@@ -1149,6 +1186,7 @@ export function AiPanel({
           queuePlaceholder={AI_QUEUE_LABELS[lang].queuePlaceholder}
           value={prompt}
           busy={busy}
+          disabled={aiDisconnected}
           header={
             hasScopeSelection && (
               <div className="ai-scope-row">

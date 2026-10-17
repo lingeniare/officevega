@@ -1043,6 +1043,7 @@ export default function App() {
       text: buildSelectionInstruction(askTarget, instruction),
       displayText: instruction,
       nonce: Date.now(),
+      autoRun: true,
       scope,
     })
   }
@@ -1606,6 +1607,7 @@ export default function App() {
         onInsert={(kind, opts) => void insertElement(kind, opts)}
         onInsertSkeleton={insertSkeleton}
         canInsertSkeleton={canvasMode === 'edit' && isDocEmpty(textRef.current)}
+        docEmpty={isDocEmpty(text)}
         onAiPreset={(text) => {
           flushPending()
           setAiOpen(true)

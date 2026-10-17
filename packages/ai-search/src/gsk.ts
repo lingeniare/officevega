@@ -119,6 +119,18 @@ export type GskRecoveryOutcome =
 const rejectedKeys = new Set<string>()
 
 /**
+ * Single-slot observer registered by the app's AI IPC setup to push an
+ * auth-state refresh to renderers when a key is rejected — the chat panel's
+ * disconnected state must not wait for a window refocus to notice. Same
+ * one-registrar-per-process contract as setOfficeVegaAuthListener.
+ */
+let keyRejectedListener: (() => void) | null = null
+
+export function setGskKeyRejectedListener(fn: (() => void) | null): void {
+  keyRejectedListener = fn
+}
+
+/**
  * Recovery after a gsk-key call answered 401: the shared gsk CLI config may
  * already carry a rotated key (another GenOffice-family app re-logged in), in
  * which case the next call just works. OfficeVega owns no re-mint path for
@@ -155,7 +167,14 @@ export function noteGskKeyRejected(
   options: { allowLogin?: boolean } = {},
 ): Promise<GskRecoveryOutcome> {
   void options
-  if (key) rejectedKeys.add(key)
+  if (key && !rejectedKeys.has(key)) {
+    rejectedKeys.add(key)
+    try {
+      keyRejectedListener?.()
+    } catch {
+      /* a broken listener must not fail the rejection that just ran */
+    }
+  }
   return recoverFromRejectedGskKey(key)
 }
 

@@ -629,8 +629,12 @@ export function App({
   const [sheetHasContent, setSheetHasContent] = useState(false)
   const recomputeSheetContent = useCallback(() => {
     setSheetHasContent(() => {
-      // A file opened from disk always counts as having content.
-      if (lazyWorkbookRef.current) return true
+      // A file opened from disk keeps most cells out of the grid until they
+      // stream in, so the sidecar's value counts answer "has content" up
+      // front; a book reporting none (New, empty file) falls through to the
+      // snapshot scan so cells typed since open still count.
+      const state = lazyWorkbookRef.current
+      if (state && workbookCellCounts(state.file.sheets).valueCells > 0) return true
       const workbook = univerRef.current?.univerAPI.getActiveWorkbook()
       if (!workbook) return false
       const snapshot = workbook.getSnapshot()

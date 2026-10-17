@@ -892,6 +892,8 @@ export const AI_CHANNELS = {
   settingsChanged: 'ai:settings-changed',
   openModelSettings: 'ai:open-model-settings',
   gskStatus: 'ai:gsk-status',
+  gskLogin: 'ai:gsk-login',
+  authChanged: 'ai:auth-changed',
   stream: 'ai:stream',
   streamChunk: 'ai:stream-chunk',
   streamCancel: 'ai:stream-cancel',
@@ -1062,6 +1064,10 @@ export interface PdfApi {
   openAiModelSettings(): Promise<void>
   /** AI account status (VEGA sign-in key, gsk CLI fallback); gates the cloud-only generate_image tool. withEmail also returns email + VEGA deposit (balance/balanceRub/currency) */
   gskStatus(withEmail?: boolean): Promise<GenSparkAccountStatus>
+  /** opens the VEGA sign-in page (shared ai:gsk-login handler) */
+  gskLogin(): Promise<void>
+  /** pushed by main on every VEGA sign-in/out — drop the cached login gate without a reload */
+  onAiAuthChanged(handler: (status: { loggedIn: boolean }) => void): () => void
   aiStream(request: AiStreamRequest): Promise<void>
   aiStreamCancel(requestId: string): Promise<void>
   onAiStream(handler: (chunk: AiStreamChunk) => void): () => void

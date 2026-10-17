@@ -88,8 +88,10 @@ interface Props {
   onInsertSkeleton: () => void
   /** false once the page has content: a skeleton would only duplicate the document */
   canInsertSkeleton: boolean
-  /** page-wide AI actions: send this instruction to the assistant right away */
+  /** page-wide AI actions: stage this instruction in the assistant composer for review */
   onAiPreset: (text: string) => void
+  /** true on a blank page: the one-click AI actions have nothing to work on */
+  docEmpty?: boolean
   canvasMode: CanvasMode
   onPresent: (kind: PresentKind) => void
 }
@@ -215,6 +217,7 @@ export function Ribbon(p: Props) {
 
   const off = p.disabled
   const insertOff = off || !p.canInsert
+  const aiOff = off || p.docEmpty === true
 
   return (
     <div className={`ribbon ${collapse.rootClass}`} ref={collapse.rootRef}>
@@ -399,7 +402,7 @@ export function Ribbon(p: Props) {
               className="rb-big ai-entry"
               data-tip={t('aiRestyleBtn')}
               data-tip-detail={t('aiRestylePrompt')}
-              disabled={off}
+              disabled={aiOff}
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => p.onAiPreset(t('aiRestylePrompt'))}
             >
@@ -435,7 +438,7 @@ export function Ribbon(p: Props) {
                 data-tip-detail={t('aiThemeTip')}
                 aria-haspopup="menu"
                 aria-expanded={themeOpen}
-                disabled={off}
+                disabled={aiOff}
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => setThemeOpen((v) => !v)}
               >
@@ -484,7 +487,7 @@ export function Ribbon(p: Props) {
               className="rb-big ai-entry"
               data-tip={t('aiSummarizeBtn')}
               data-tip-detail={t('aiSummarizePrompt')}
-              disabled={off}
+              disabled={aiOff}
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => p.onAiPreset(t('aiSummarizePrompt'))}
             >

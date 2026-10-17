@@ -571,8 +571,14 @@ const homeApi: HomeApi = {
   async openVegaChat() {
     await ipcRenderer.invoke(HOME_CHANNELS.openVegaChat)
   },
+  async openVegaCodes() {
+    await ipcRenderer.invoke(HOME_CHANNELS.openVegaCodes)
+  },
   async openFeedback() {
     await ipcRenderer.invoke(HOME_CHANNELS.openFeedback)
+  },
+  async openDeveloperSite() {
+    await ipcRenderer.invoke(HOME_CHANNELS.openDeveloperSite)
   },
   async starPromptShouldShow() {
     const result: unknown = await ipcRenderer.invoke(HOME_CHANNELS.starPromptShouldShow)

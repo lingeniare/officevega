@@ -121,11 +121,13 @@ export type {
 export { sanitizeAiSettings, sanitizeCliPath, validCliPath } from './ai-settings-guard'
 export { chatForProvider } from './chat'
 export {
+  openRouterSafeHeaders,
   setAiUserAgent,
   setPiiShieldEnabled,
   setRescueFetch,
   vegaPiiHeaders,
   warmAiConnections,
+  withUserAgent,
 } from './fetch'
 export { isAiNetworkError } from './network-error'
 export { isAiOverloadedError } from './overload-error'

@@ -488,7 +488,11 @@ export default function App() {
     rememberAiPanelOpen('officevega-pdf-show-ai', !aiCollapsed)
   }, [aiCollapsed])
   /** One-shot prompt pushed by the ribbon AI buttons; the panel auto-runs it (docs preset pattern) */
-  const [aiPreset, setAiPreset] = useState<{ text: string; nonce: number } | null>(null)
+  const [aiPreset, setAiPreset] = useState<{
+    text: string
+    nonce: number
+    autoRun?: boolean
+  } | null>(null)
   const [ribbonTab, setRibbonTab] = useState<RibbonTab>('home')
   const [spread, setSpread] = useState<1 | 2>(1)
   const [nightMode, setNightMode] = useState(false)
@@ -7005,10 +7009,11 @@ export default function App() {
   const menuInGap = thumbMenu != null && thumbMenu.origIdx === null
   const menuInsertAfter = menuInGap ? (thumbMenu.afterOrigIdx ?? -1) : menuOrig
 
-  /** Ribbon AI buttons: expand the dock and auto-run the prompt in the assistant */
-  const runAiPreset = (text: string): void => {
+  /** Ribbon AI buttons: expand the dock and stage the prompt in the composer;
+      explicit send-now entries (Ask popover) pass autoRun (docs parity) */
+  const runAiPreset = (text: string, autoRun = false): void => {
     setAiCollapsed(false)
-    setAiPreset({ text, nonce: Date.now() })
+    setAiPreset({ text, nonce: Date.now(), ...(autoRun ? { autoRun } : {}) })
   }
 
   /** Converter dropdown → the shell's local conversion flows (save dialog, password prompt) */
@@ -7536,6 +7541,7 @@ export default function App() {
                   </button>
                   <button
                     className="rb-big ai-entry"
+                    disabled={pageCount === 0}
                     data-tip={t('aiSummarizeBtn')}
                     data-tip-detail={t(
                       aiSelection ? 'aiQuickSummarySelPrompt' : 'aiQuickSummaryPrompt',
@@ -7569,6 +7575,7 @@ export default function App() {
                   </button>
                   <button
                     className="rb-big ai-entry"
+                    disabled={pageCount === 0}
                     data-tip={t('aiKeyPointsBtn')}
                     data-tip-detail={t(
                       aiSelection ? 'aiQuickKeyPointsSelPrompt' : 'aiQuickKeyPointsPrompt',
@@ -7695,6 +7702,7 @@ export default function App() {
                 <div className="ribbon-group-items">
                   <button
                     className="rb-big ai-entry"
+                    disabled={pageCount === 0}
                     data-tip={t('aiReviewSummaryBtn')}
                     data-tip-detail={t('aiReviewSummaryPrompt')}
                     onClick={() => runAiPreset(t('aiReviewSummaryPrompt'))}
@@ -7722,7 +7730,7 @@ export default function App() {
                   </button>
                   <button
                     className="rb-big ai-entry"
-                    disabled={readOnly}
+                    disabled={readOnly || pageCount === 0}
                     data-tip={t('aiProcessNotesBtn')}
                     data-tip-detail={t('aiProcessNotesPrompt')}
                     onClick={() => runAiPreset(t('aiProcessNotesPrompt'))}
@@ -7948,7 +7956,7 @@ export default function App() {
                   {aiEnabled && (
                   <button
                     className="rb-big ai-entry"
-                    disabled={readOnly}
+                    disabled={readOnly || pageCount === 0}
                     data-tip={t('aiFillFormBtn')}
                     data-tip-detail={t('aiFillFormPrompt')}
                     onClick={() => runAiPreset(t('aiFillFormPrompt'))}
@@ -10066,7 +10074,7 @@ export default function App() {
                 readOnly={readOnly}
                 onSend={(text) => {
                   setAskPop(null)
-                  runAiPreset(text)
+                  runAiPreset(text, true)
                 }}
                 onClose={() => setAskPop(null)}
               />

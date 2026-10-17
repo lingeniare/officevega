@@ -4,6 +4,14 @@ export const en = {
   aiEmptyBuildTitle: 'Let AI build this workbook for you',
   aiEmptyBuildBody: 'Describe the table, data, or chart you need — AI creates it in place.',
   aiGskLoginBtn: 'Sign in to VEGA',
+  aiConnectPrompt: 'Connect VEGA AI or your own AI provider to use the AI chat.',
+  aiConnectBtn: 'Connect AI',
+  aiConnectTip: 'Sign in with VEGA',
+  aiErrorAuth: 'Your session has expired — sign in to VEGA again.',
+  aiErrorCredits: 'Out of credits — top up the balance at api.vega.chat.',
+  aiErrorRate: 'Too many requests — wait a moment and try again.',
+  aiErrorNetwork: 'No connection to the AI service — check your internet and try again.',
+  aiErrorServer: 'The AI service is temporarily unavailable — please try again later.',
   aiUndelivered: 'Not sent',
   aiRetry: 'Retry',
   aiOpenAssistant: 'Open AI assistant',
@@ -26,7 +34,8 @@ export const en = {
   aiHistoryEmpty: 'No chats yet',
   aiHistoryLoading: 'Loading…',
   aiHistoryCurrent: 'current',
-  aiHistoryVegaOnly: 'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
+  aiHistoryVegaOnly:
+    'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiEmptyTitle: 'Ask AI about this workbook',
   aiEmptyBodyLine1: 'Describe a change or ask about the data.',
   aiThinkingAria: 'Thinking',
@@ -121,9 +130,12 @@ export const en = {
   aiGensparkAccount: 'Genspark account',
   aiLoginGenspark: 'Sign in to Genspark',
   aiStarterBudget: 'Budget tracker',
-  aiStarterBudgetPrompt: 'Create a monthly budget tracker: category, planned amount, actual amount and difference columns, a totals row and a few sample rows',
+  aiStarterBudgetPrompt:
+    'Create a monthly budget tracker: category, planned amount, actual amount and difference columns, a totals row and a few sample rows',
   aiStarterSales: 'Sales report',
-  aiStarterSalesPrompt: 'Create a quarterly sales report: product, region, units, price and revenue columns, sample rows and a totals row',
+  aiStarterSalesPrompt:
+    'Create a quarterly sales report: product, region, units, price and revenue columns, sample rows and a totals row',
   aiStarterTasks: 'Project task plan',
-  aiStarterTasksPrompt: 'Create a project task plan: task, owner, start date, due date and status columns with a dozen sample tasks',
+  aiStarterTasksPrompt:
+    'Create a project task plan: task, owner, start date, due date and status columns with a dozen sample tasks',
 }

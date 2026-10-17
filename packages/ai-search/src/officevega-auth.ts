@@ -321,6 +321,26 @@ function clearAuth(): void {
   emitAuthChanged(null)
 }
 
+/**
+ * For callers that sent an API key to a VEGA endpoint and may have gotten a
+ * 401 back: when the failing key IS the stored sign-in key (expired/revoked),
+ * drop the stored auth — clearAuth fires the auth-change listener, so
+ * renderers flip to signed-out instead of reporting a dead session forever.
+ * A key that isn't the sign-in key (a BYOK vega pick, a custom endpoint)
+ * belongs to the user and is left alone. Returns whether the auth was dropped.
+ */
+export function noteVegaCallFailure(key: string, error: unknown): boolean {
+  if (!key || key !== officeVegaApiKey()) return false
+  const text = error instanceof Error ? error.message : String(error ?? '')
+  // the unambiguous auth-failure shapes (aiErrorKey's auth branch, minus bare
+  // "authentication" — a 407 "Proxy Authentication Required" must not drop a
+  // valid session). Anything the UI reports as "session expired" lands here.
+  if (!/\bHTTP 401\b|\b401\b|unauthori[sz]ed|invalid or expired token|invalid_api_key/i.test(text))
+    return false
+  clearAuth()
+  return true
+}
+
 // ── HTTP helpers ─────────────────────────────────────────────────────
 
 class LoginFlowError extends Error {

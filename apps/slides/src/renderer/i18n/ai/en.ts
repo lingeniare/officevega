@@ -17,6 +17,14 @@ export const en = {
   aiQcStopped: 'Layout check stopped',
   aiQcCapped: '{count} more page(s) not checked (per-run cap)',
   aiGskLoginBtn: 'Sign in to VEGA',
+  aiConnectPrompt: 'Connect VEGA AI or your own AI provider to use the AI chat.',
+  aiConnectBtn: 'Connect AI',
+  aiConnectTip: 'Sign in with VEGA',
+  aiErrorAuth: 'Your session has expired — sign in to VEGA again.',
+  aiErrorCredits: 'Out of credits — top up the balance at api.vega.chat.',
+  aiErrorRate: 'Too many requests — wait a moment and try again.',
+  aiErrorNetwork: 'No connection to the AI service — check your internet and try again.',
+  aiErrorServer: 'The AI service is temporarily unavailable — please try again later.',
   aiPanelTitle: 'VEGA',
   aiOpenAssistant: 'Open AI assistant',
   aiFactCheckBtn: 'AI Fact Check',
@@ -37,7 +45,8 @@ export const en = {
   aiHistoryEmpty: 'No chats yet',
   aiHistoryLoading: 'Loading…',
   aiHistoryCurrent: 'current',
-  aiHistoryVegaOnly: 'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
+  aiHistoryVegaOnly:
+    'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiEmptyTitle: 'Let AI polish your slides',
   aiEmptyBody1: 'Give instructions or just ask questions;',
   aiEmptyBody2: 'with elements selected, rewrite commands target the selection.',
@@ -250,12 +259,14 @@ export const en = {
   aiOutlineSubmit: 'Generate draft',
   aiOutlineRevise: 'Re-plan',
   aiUpgradeTitle: 'Draft is ready',
-  aiUpgradeSub: 'Next: generate images and infographics, then apply the design — or keep editing the text first.',
+  aiUpgradeSub:
+    'Next: generate images and infographics, then apply the design — or keep editing the text first.',
   aiUpgradeVisuals: 'Generate images & infographics',
   aiUpgradeStyle: 'Apply unified design',
   aiUpgradeFull: 'Do both',
   aiUpgradeLater: 'Later — edit the draft first',
-  aiUpgradeAskVisuals: 'Fill the visual placeholders on the slides: generate images and infographics',
+  aiUpgradeAskVisuals:
+    'Fill the visual placeholders on the slides: generate images and infographics',
   aiUpgradeAskStyle: 'Apply a unified design style to the whole deck',
   aiUpgradeAskFull: 'Fill the visual placeholders and apply the unified design style',
   aiOutlineBriefPh: 'What this page says — edit freely',
@@ -266,9 +277,12 @@ export const en = {
   aiStylePresetDark: 'Dark',
   aiStylePresetMinimal: 'Minimal',
   aiUpgradeAskStyleHint: 'Style direction: {hint}',
-  aiStylePresetEditorialHint: 'editorial magazine look — serif display titles, warm paper tones, generous whitespace',
-  aiStylePresetSwissHint: 'Swiss international style — strict grid, one anchor accent color, strong title/body size contrast, hairline rules, no rounded cards or shadows',
-  aiStylePresetDarkHint: 'dark atmospheric — deep charcoal or navy background, one luminous accent, oversized typography, cinematic imagery',
-  aiStylePresetMinimalHint: 'minimal light — airy whitespace, near-monochrome palette with one restrained accent, quiet precise typography',
-
+  aiStylePresetEditorialHint:
+    'editorial magazine look — serif display titles, warm paper tones, generous whitespace',
+  aiStylePresetSwissHint:
+    'Swiss international style — strict grid, one anchor accent color, strong title/body size contrast, hairline rules, no rounded cards or shadows',
+  aiStylePresetDarkHint:
+    'dark atmospheric — deep charcoal or navy background, one luminous accent, oversized typography, cinematic imagery',
+  aiStylePresetMinimalHint:
+    'minimal light — airy whitespace, near-monochrome palette with one restrained accent, quiet precise typography',
 }

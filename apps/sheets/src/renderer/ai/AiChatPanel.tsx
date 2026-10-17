@@ -1,4 +1,11 @@
-import { aiPanelWidthAtPointer, AiModelPicker, type AiModelPickerBridge } from '@genoffice/ui'
+import {
+  aiPanelWidthAtPointer,
+  AiConnectPrompt,
+  aiErrorText,
+  AiModelPicker,
+  useAiDisconnected,
+  type AiModelPickerBridge,
+} from '@genoffice/ui'
 import React, { useEffect, useRef, useState } from 'react'
 import {
   AiComposer,
@@ -248,6 +255,7 @@ const MODEL_BRIDGE: AiModelPickerBridge = {
   getSettings: () => window.desktopApi.getAiSettings(),
   setSettings: (settings) => window.desktopApi.setAiSettings(settings),
   onSettingsChanged: (handler) => window.desktopApi.onAiSettingsChanged(handler),
+  onAuthChanged: (handler) => window.desktopApi.onAiAuthChanged(handler),
   gskLoggedIn: () => window.desktopApi.aiGskStatus().then((s) => !!s?.loggedIn),
   openModelSettings: () => window.desktopApi.openAiModelSettings().catch(() => {}),
   getProviderModels: (input) => window.desktopApi.getProviderModels(input),
@@ -376,9 +384,12 @@ export function AiChatPanel({
   readonly onCollapse: () => void
 }): React.JSX.Element {
   const { t, lang } = useI18n()
+  /** signed out of VEGA with no usable BYOK provider: starters + composer go muted */
+  const aiDisconnected = useAiDisconnected(MODEL_BRIDGE)
   /** messages queued while a reply runs; the pump re-sends them through onSend on settle */
   const msgQueue = useChatRunQueue<readonly AttachmentMeta[]>({
     busy: aiBusy,
+    gate: aiDisconnected,
     submit: (text, atts) => onSendQueued?.(text, atts) ?? false,
   })
   // Panel chrome follows the UI language; message text follows its own content (dir=auto below)
@@ -633,7 +644,7 @@ export function AiChatPanel({
   return (
     <aside
       ref={asideRef}
-      className={`copilot${dragOver ? ' ai-panel-dragover' : ''}${resizing ? ' ai-panel-resizing' : ''}`}
+      className={`copilot${dragOver ? ' ai-panel-dragover' : ''}${resizing ? ' ai-panel-resizing' : ''}${aiDisconnected ? ' ai-disconnected' : ''}`}
       dir={isRtl ? 'rtl' : undefined}
       onDragOver={(e) => {
         if (e.dataTransfer.types.includes('Files')) {
@@ -657,6 +668,19 @@ export function AiChatPanel({
       <header className="ai-panel-header">
         <span className="ai-panel-title">{lang === 'ru' ? 'ВЕГА' : 'VEGA'}</span>
         <div className="ai-panel-header-actions">
+          {(chat.length > 0 || historicChat.length > 0) && (
+            <button
+              className="ai-header-btn"
+              onClick={() => {
+                msgQueue.clear()
+                onNewChat()
+              }}
+              data-tip={t('aiNewChat')}
+              aria-label={t('aiNewChat')}
+            >
+              <IconPlus size={15} />
+            </button>
+          )}
           <AiHistoryMenu
             open={historyOpen}
             onClose={onHistoryClose}
@@ -687,19 +711,6 @@ export function AiChatPanel({
               aria-label={t('aiExportChat')}
             >
               <IconDownload size={15} />
-            </button>
-          )}
-          {(chat.length > 0 || historicChat.length > 0) && (
-            <button
-              className="ai-header-btn"
-              onClick={() => {
-                msgQueue.clear()
-                onNewChat()
-              }}
-              data-tip={t('aiNewChat')}
-              aria-label={t('aiNewChat')}
-            >
-              <IconPlus size={15} />
             </button>
           )}
           <button
@@ -747,6 +758,7 @@ export function AiChatPanel({
                 <button
                   key={label}
                   className="ai-starter"
+                  disabled={aiDisconnected}
                   onClick={() => {
                     onPromptChange(t(promptKey))
                     inputRef.current?.focus()
@@ -756,6 +768,14 @@ export function AiChatPanel({
                 </button>
               ))}
             </div>
+            {aiDisconnected && (
+              <AiConnectPrompt
+                text={t('aiConnectPrompt')}
+                label={t('aiConnectBtn')}
+                tip={t('aiConnectTip')}
+                onConnect={() => void window.desktopApi.aiGskLogin()}
+              />
+            )}
           </div>
         )}
         {chat.map((entry, index) => (
@@ -789,7 +809,10 @@ export function AiChatPanel({
                 {entry.tools.length > 0 && <ToolChipList tools={entry.tools} />}
                 {entry.text ? (
                   <div dir="auto">
-                    <Markdown text={entry.text} navs={[citationNav, fileNav]} />
+                    <Markdown
+                      text={entry.isError ? aiErrorText(entry.text, t) : entry.text}
+                      navs={[citationNav, fileNav]}
+                    />
                   </div>
                 ) : (
                   entry.streaming && (
@@ -883,6 +906,17 @@ export function AiChatPanel({
 
       {!aiBusy && onSuggestionPick && (
         <AiSuggestedQuestions questions={suggestedQuestions} onPick={onSuggestionPick} />
+      )}
+
+      {/* a muted panel with history still needs a way back — the same Connect
+          call-to-action the empty state shows, docked above the composer */}
+      {aiDisconnected && (chat.length > 0 || historicChat.length > 0) && (
+        <AiConnectPrompt
+          text={t('aiConnectPrompt')}
+          label={t('aiConnectBtn')}
+          tip={t('aiConnectTip')}
+          onConnect={() => void window.desktopApi.aiGskLogin()}
+        />
       )}
 
       <div className="ai-composer">
@@ -1007,6 +1041,7 @@ export function AiChatPanel({
           }
           value={prompt}
           busy={aiBusy}
+          disabled={aiDisconnected}
           placeholder={t(hasContent ? 'aiComposerPlaceholder' : 'aiComposerPlaceholderBuild')}
           hintIdle={t('aiHintIdle')}
           hintBusy={t('aiHintBusy')}

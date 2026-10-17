@@ -235,23 +235,78 @@ aside.copilot {
     margin-inline-start var(--transition-fast);
 }
 
-.ai-starter:hover,
-.ai-quick-btn:hover {
+.ai-starter:hover:not(:disabled),
+.ai-quick-btn:hover:not(:disabled) {
   border-color: var(--accent);
   background: var(--accent-soft);
   color: var(--color-text-primary);
 }
 
-.ai-starter:hover::after,
-.ai-quick-btn:hover::after {
+.ai-starter:hover:not(:disabled)::after,
+.ai-quick-btn:hover:not(:disabled)::after {
   max-width: 1em;
   margin-inline-start: 6px;
   opacity: 1;
 }
 
-.ai-starter:active,
-.ai-quick-btn:active {
+.ai-starter:active:not(:disabled),
+.ai-quick-btn:active:not(:disabled) {
   color: var(--accent-dark);
+}
+
+.ai-starter:disabled,
+.ai-quick-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* ---------- signed out: the panel dims to a single accent action ----------
+   Starters go inert via :disabled above; the composer pill and suggestion rows
+   are muted wholesale (textarea gets the disabled attribute too, so keyboard
+   input is blocked — the wash here is purely visual). */
+.ai-disconnected .ai-composer,
+.ai-disconnected .ai-suggest {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+/* message-level actions that would just start a doomed run */
+.ai-disconnected .ai-retry-btn,
+.ai-disconnected .ai-continue-btn {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* the model picker stays clickable while the composer is muted: its Manage
+   row is the BYOK recovery path for a signed-out user (still dimmed by the
+   composer wash) */
+.ai-disconnected .ai-model-picker {
+  pointer-events: auto;
+}
+
+.ai-input-box.is-disabled textarea {
+  color: var(--color-text-tertiary);
+  cursor: default;
+}
+
+/* connect call-to-action under the starter list */
+.ai-connect {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.ai-connect-text {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--color-text-tertiary);
+  text-wrap: pretty;
+}
+
+.ai-connect .ai-login-btn {
+  margin-top: 0;
 }
 
 /* ---------- follow-ups: quiet centered rows under the last reply ---------- */

@@ -18,6 +18,14 @@ export const ky = {
   aiQcStopped: 'Жайгашууну текшерүү токтотулду',
   aiQcCapped: 'Дагы {count} барак текшерилген жок (бир иштетүүгө коюлган чектен улам)',
   aiGskLoginBtn: "VEGA'га кирүү",
+  aiConnectPrompt: 'AI чатты колдонуу үчүн VEGA AI же өз AI провайдериңизди туташтырыңыз.',
+  aiConnectBtn: 'AI туташтыруу',
+  aiConnectTip: 'VEGA менен кирүү',
+  aiErrorAuth: 'Сессия аяқтады — VEGA-га кайра кирингиз.',
+  aiErrorCredits: 'Каражат бүттү — api.vega.chat сайтында балансты толтуруңуз.',
+  aiErrorRate: 'Өтө көп сурам — бир аз күтүп, кайра аракет кылыңыз.',
+  aiErrorNetwork: 'AI кызматы менен байланыш жок — интернетти текшеріп, кайра аракет кылыңыз.',
+  aiErrorServer: 'AI кызматы убакыттуу жеткиликсиз — кийинчерээк аракет кылыңыз.',
   aiPanelTitle: 'VEGA',
   aiOpenAssistant: 'AI жардамчысын ачуу',
   aiFactCheckBtn: 'AI фактыларды текшерүү',
@@ -38,7 +46,8 @@ export const ky = {
   aiHistoryEmpty: 'No chats yet',
   aiHistoryLoading: 'Loading…',
   aiHistoryCurrent: 'current',
-  aiHistoryVegaOnly: 'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
+  aiHistoryVegaOnly:
+    'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiEmptyTitle: 'Слайддарыңызды AI менен жакшыртыңыз',
   aiEmptyBody1: 'Нускамаларды бериңиз же жөн гана суроо бериңиз;',
   aiEmptyBody2: 'элементтер тандалганда, кайра жазуу буйруктары тандоого колдонулат.',
@@ -250,7 +259,8 @@ export const ky = {
   aiOutlineSubmit: 'Долбоорду түзүү',
   aiOutlineRevise: 'Кайра пландоо',
   aiUpgradeTitle: 'Долбоор даяр',
-  aiUpgradeSub: 'Кийинки кадамдар: адегенде сүрөттөр жана инфографика, анан бирдиктүү дизайн — же адегенде текстти түзөтүңүз.',
+  aiUpgradeSub:
+    'Кийинки кадамдар: адегенде сүрөттөр жана инфографика, анан бирдиктүү дизайн — же адегенде текстти түзөтүңүз.',
   aiUpgradeVisuals: 'Сүрөттөрдү жана инфографиканы түзүү',
   aiUpgradeStyle: 'Бирдиктүү дизайнды колдонуу',
   aiUpgradeFull: 'Экөөнү тең аткаруу',
@@ -266,10 +276,14 @@ export const ky = {
   aiStylePresetDark: 'Караңгы',
   aiStylePresetMinimal: 'Минималдуу',
   aiUpgradeAskStyleHint: 'Стиль багыты: {hint}',
-  aiStylePresetEditorialHint: 'журналдык стиль — чоң серифтипти аталыштар, жылуу кагаз тондери, кенен бош орундар',
-  aiStylePresetSwissHint: 'швейцариялык эл аралык стиль — катуу тор, бир негизги акцент түсү, күчтүү шрифт контрасты, ичке сызыктар, тегерек карталар же көлөкөлөр жок',
-  aiStylePresetDarkHint: 'караңгы атмосфера — терең көмүр же кочкул көк фон, бир жаркыраган акцент, чоң типография, кинематографиялык сүрөттөр',
-  aiStylePresetMinimalHint: 'жарык минимализм — кенен бош орундар, бир тыйым акценти бар дээрлик монохром палитра, тынч так типография',
+  aiStylePresetEditorialHint:
+    'журналдык стиль — чоң серифтипти аталыштар, жылуу кагаз тондери, кенен бош орундар',
+  aiStylePresetSwissHint:
+    'швейцариялык эл аралык стиль — катуу тор, бир негизги акцент түсү, күчтүү шрифт контрасты, ичке сызыктар, тегерек карталар же көлөкөлөр жок',
+  aiStylePresetDarkHint:
+    'караңгы атмосфера — терең көмүр же кочкул көк фон, бир жаркыраган акцент, чоң типография, кинематографиялык сүрөттөр',
+  aiStylePresetMinimalHint:
+    'жарык минимализм — кенен бош орундар, бир тыйым акценти бар дээрлик монохром палитра, тынч так типография',
 
   aiClarifyPrev: 'Мурунку',
   aiPageCloudToLocal: 'cloud unavailable — generated locally',

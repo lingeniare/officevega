@@ -12,7 +12,7 @@
  * OpenRouter hosts Jev behind a routing envelope with provider pinning.
  */
 
-import { vegaPiiHeaders } from '@genoffice/ai-provider'
+import { vegaPiiHeaders, withUserAgent } from '@genoffice/ai-provider'
 
 export type DecisionEndpoint =
   | 'vega'
@@ -277,12 +277,20 @@ export const fetchTransport: JevTransport = async (url, body, key, signal) => {
   // the VEGA gateway's PII shield keys its token dictionary by session; one request = one session
   if (new URL(url).hostname === 'api.vega.chat') headers['X-Vega-Session'] = crypto.randomUUID()
   Object.assign(headers, vegaPiiHeaders(url))
-  const res = await fetch(url, {
-    method: 'POST',
-    headers,
-    body,
-    signal,
-  })
+  // withUserAgent: openrouter.ai edge-blocks any User-Agent containing "vega" —
+  // the fetch stack's default UA would carry the app name and get a 403 block page
+  const res = await fetch(
+    url,
+    withUserAgent(
+      {
+        method: 'POST',
+        headers,
+        body,
+        signal,
+      },
+      url,
+    ),
+  )
   return {
     status: res.status,
     retryAfter: res.headers.get('retry-after') ?? undefined,

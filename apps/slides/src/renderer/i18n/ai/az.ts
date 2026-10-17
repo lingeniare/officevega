@@ -18,6 +18,14 @@ export const az = {
   aiQcStopped: 'Düzülüş yoxlaması dayandırıldı',
   aiQcCapped: 'Daha {count} səhifə yoxlanılmadı (bir icra üçün limit)',
   aiGskLoginBtn: 'VEGA-ya daxil olun',
+  aiConnectPrompt: 'AI söhbətindən istifadə etmək üçün VEGA AI və ya öz AI provayderinizi qoşun.',
+  aiConnectBtn: 'AI qoşun',
+  aiConnectTip: 'VEGA ilə daxil ol',
+  aiErrorAuth: 'Sessiya bitdi — VEGA-ya yenidən daxil olun.',
+  aiErrorCredits: 'Kredit bitdi — api.vega.chat saytında balansı artırın.',
+  aiErrorRate: 'Həddindən artıq sorğu — bir az gözləyin və yenidən cəhd edin.',
+  aiErrorNetwork: 'AI xidməti ilə əlaqə yoxdur — interneti yoxlayıb yenidən cəhd edin.',
+  aiErrorServer: 'AI xidməti müvəqqəti əlçatan deyil — sonra yenidən cəhd edin.',
   aiPanelTitle: 'VEGA',
   aiOpenAssistant: 'AI köməkçisini açın',
   aiFactCheckBtn: 'AI fakt yoxlaması',
@@ -37,7 +45,8 @@ export const az = {
   aiHistoryEmpty: 'No chats yet',
   aiHistoryLoading: 'Loading…',
   aiHistoryCurrent: 'current',
-  aiHistoryVegaOnly: 'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
+  aiHistoryVegaOnly:
+    'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiEmptyTitle: 'Slaydlarınızı AI-a təkmilləşdirtdirin',
   aiEmptyBody1: 'Təlimat verin və ya sadəcə sual verin;',
   aiEmptyBody2: 'elementlər seçildikdə, yenidən yazma əmrləri seçimə tətbiq olunur.',
@@ -244,12 +253,14 @@ export const az = {
   aiOutlinePages: '{n} səhifə',
   aiOutlineKeep: 'Bu səhifəni saxla',
   aiOutlineVisuals: '{n} vizual slot',
-  aiOutlineFeedbackPh: 'Nəyi dəyişmək lazımdır? (istəyə bağlı, məs.: 3 və 4-cü səhifələri birləşdir)',
+  aiOutlineFeedbackPh:
+    'Nəyi dəyişmək lazımdır? (istəyə bağlı, məs.: 3 və 4-cü səhifələri birləşdir)',
   aiOutlineCancel: 'Ləğv et',
   aiOutlineSubmit: 'Qaralama yarat',
   aiOutlineRevise: 'Yenidən planla',
   aiUpgradeTitle: 'Qaralama hazırdır',
-  aiUpgradeSub: 'Növbəti addımlar: əvvəlcə şəkillər və infoqrafika, sonra vahid dizayn — ya da əvvəlcə mətni düzəldin.',
+  aiUpgradeSub:
+    'Növbəti addımlar: əvvəlcə şəkillər və infoqrafika, sonra vahid dizayn — ya da əvvəlcə mətni düzəldin.',
   aiUpgradeVisuals: 'Şəkil və infoqrafika yarat',
   aiUpgradeStyle: 'Vahid dizaynı tətbiq et',
   aiUpgradeFull: 'Hər ikisini et',
@@ -265,10 +276,14 @@ export const az = {
   aiStylePresetDark: 'Tünd',
   aiStylePresetMinimal: 'Minimal',
   aiUpgradeAskStyleHint: 'Üslub istiqaməti: {hint}',
-  aiStylePresetEditorialHint: 'jurnal redaksiya üslubu — böyük serifli başlıqlar, isti kağız tonları, geniş boş sahələr',
-  aiStylePresetSwissHint: 'İsveçrə beynəlxalq üslubu — ciddi tor, bir anker vurğu rəngi, güclü şrift kontrastı, incə xətlər, yumru kartlar və kölgələr olmadan',
-  aiStylePresetDarkHint: 'tünd atmosfera — dərin kömür və ya tünd mavi fon, bir işıqlı vurğu, nəhəng tipoqrafiya, kinematik görüntülər',
-  aiStylePresetMinimalHint: 'işıqlı minimal — geniş boş sahələr, bir təmkinli vurğu ilə demək olar ki, monoxrom palitra, sakit dəqiq tipoqrafiya',
+  aiStylePresetEditorialHint:
+    'jurnal redaksiya üslubu — böyük serifli başlıqlar, isti kağız tonları, geniş boş sahələr',
+  aiStylePresetSwissHint:
+    'İsveçrə beynəlxalq üslubu — ciddi tor, bir anker vurğu rəngi, güclü şrift kontrastı, incə xətlər, yumru kartlar və kölgələr olmadan',
+  aiStylePresetDarkHint:
+    'tünd atmosfera — dərin kömür və ya tünd mavi fon, bir işıqlı vurğu, nəhəng tipoqrafiya, kinematik görüntülər',
+  aiStylePresetMinimalHint:
+    'işıqlı minimal — geniş boş sahələr, bir təmkinli vurğu ilə demək olar ki, monoxrom palitra, sakit dəqiq tipoqrafiya',
 
   aiClarifyPrev: 'Əvvəlki',
   aiPageCloudToLocal: 'cloud unavailable — generated locally',

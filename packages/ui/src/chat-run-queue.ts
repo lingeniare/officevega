@@ -48,6 +48,11 @@ export interface ChatRunQueue<M> {
 export function useChatRunQueue<M>(args: {
   busy: boolean
   /**
+   * external hold (e.g. the panel's signed-out state): queued messages wait
+   * without touching the user's own pause; lifting the gate pumps immediately
+   */
+  gate?: boolean
+  /**
    * start a run for the dequeued message; return false to keep it queued when
    * the panel is momentarily busy some other way (e.g. a post-run QC pass) —
    * the pump retries while the queue is non-empty and the panel is idle
@@ -55,7 +60,7 @@ export function useChatRunQueue<M>(args: {
   submit: (text: string, meta: M) => boolean
   resetKey?: string | number
 }): ChatRunQueue<M> {
-  const { busy, submit, resetKey } = args
+  const { busy, gate, submit, resetKey } = args
   const [queued, setQueued] = useState<QueuedChatMessage<M>[]>([])
   const [paused, setPausedState] = useState(false)
   // the pump reads the queue synchronously (clear and pump can land in one commit)
@@ -63,6 +68,7 @@ export function useChatRunQueue<M>(args: {
   const busyRef = useRef(busy)
   const submitRef = useRef(submit)
   const pausedRef = useRef(paused)
+  const gatedRef = useRef(!!gate)
   const nextIdRef = useRef(0)
 
   const setAll = (next: QueuedChatMessage<M>[]) => {
@@ -71,7 +77,7 @@ export function useChatRunQueue<M>(args: {
   }
 
   const tryPump = () => {
-    if (busyRef.current || pausedRef.current) return
+    if (busyRef.current || pausedRef.current || gatedRef.current) return
     const next = queuedRef.current[0]
     if (!next) return
     if (submitRef.current(next.text, next.meta)) setAll(queuedRef.current.slice(1))
@@ -90,6 +96,13 @@ export function useChatRunQueue<M>(args: {
   }, [submit])
 
   useEffect(() => {
+    const was = gatedRef.current
+    gatedRef.current = !!gate
+    // lifting the gate pumps straight away; a user's own hold is left alone
+    if (was && !gate) tryPumpRef.current()
+  }, [gate])
+
+  useEffect(() => {
     const was = busyRef.current
     busyRef.current = busy
     // a settle: whatever ended the run (finish, error, stop), the queue continues
@@ -99,11 +112,11 @@ export function useChatRunQueue<M>(args: {
   useEffect(() => {
     // only when a queued message is waiting and the panel is idle: covers
     // panels whose run start was refused (a QC pass, a stale guard) and will
-    // not see another busy transition on its own. A paused queue needs no timer.
-    if (busy || paused || queued.length === 0) return
+    // not see another busy transition on its own. A paused/gated queue needs no timer.
+    if (busy || paused || gate || queued.length === 0) return
     const timer = window.setInterval(() => tryPumpRef.current(), 400)
     return () => window.clearInterval(timer)
-  }, [busy, paused, queued.length])
+  }, [busy, paused, gate, queued.length])
 
   useEffect(() => {
     if (resetKey === undefined) return

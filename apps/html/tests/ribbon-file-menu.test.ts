@@ -42,6 +42,8 @@ function renderRibbon() {
     onView: vi.fn(),
     canInsert: true,
     onInsert: vi.fn(),
+    onInsertSkeleton: vi.fn(),
+    canInsertSkeleton: false,
     canvasMode: 'edit' as const,
     onPresent: vi.fn(),
   }
@@ -71,14 +73,14 @@ describe('File menu in the quick-access row', () => {
     act(() => fileButton(container)!.click())
     const menu = container.querySelector('.file-menu')
     expect(menu).not.toBeNull()
-    const items = [...menu!.querySelectorAll('button')]
+    const items = [...menu!.querySelectorAll<HTMLButtonElement>('button')]
     expect(items[0]!.textContent).toContain('Open')
     act(() => items[0]!.click())
     expect(onOpen).toHaveBeenCalledOnce()
     expect(container.querySelector('.file-menu')).toBeNull()
 
     act(() => fileButton(container)!.click())
-    const pdfItem = [...container.querySelectorAll('.file-menu button')].find((b) =>
+    const pdfItem = [...container.querySelectorAll<HTMLButtonElement>('.file-menu button')].find((b) =>
       b.textContent!.includes('PDF'),
     )!
     act(() => pdfItem.click())

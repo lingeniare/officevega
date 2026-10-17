@@ -7,6 +7,14 @@ export const az = {
   aiEmptyBuildBody:
     'Lazım olan cədvəli, məlumatları və ya diaqramı təsvir edin — AI onu yerində yaradacaq.',
   aiGskLoginBtn: 'VEGA-ya daxil olun',
+  aiConnectPrompt: 'AI söhbətindən istifadə etmək üçün VEGA AI və ya öz AI provayderinizi qoşun.',
+  aiConnectBtn: 'AI qoşun',
+  aiConnectTip: 'VEGA ilə daxil ol',
+  aiErrorAuth: 'Sessiya bitdi — VEGA-ya yenidən daxil olun.',
+  aiErrorCredits: 'Kredit bitdi — api.vega.chat saytında balansı artırın.',
+  aiErrorRate: 'Həddindən artıq sorğu — bir az gözləyin və yenidən cəhd edin.',
+  aiErrorNetwork: 'AI xidməti ilə əlaqə yoxdur — interneti yoxlayıb yenidən cəhd edin.',
+  aiErrorServer: 'AI xidməti müvəqqəti əlçatan deyil — sonra yenidən cəhd edin.',
   aiUndelivered: 'Göndərilmədi',
   aiRetry: 'Yenidən sına',
   aiOpenAssistant: 'AI köməkçisini açın',
@@ -29,7 +37,8 @@ export const az = {
   aiHistoryEmpty: 'No chats yet',
   aiHistoryLoading: 'Loading…',
   aiHistoryCurrent: 'current',
-  aiHistoryVegaOnly: 'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
+  aiHistoryVegaOnly:
+    'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiEmptyTitle: 'Bu iş kitabı barədə AI-dan soruşun',
   aiEmptyBodyLine1: 'Dəyişikliyi təsvir edin və ya məlumatlar barədə sual verin.',
   aiThinkingAria: 'Düşünür',
@@ -124,9 +133,12 @@ export const az = {
   aiGensparkAccount: 'Genspark account',
   aiLoginGenspark: 'Sign in to Genspark',
   aiStarterBudget: 'Büdcə izləyicisi',
-  aiStarterBudgetPrompt: 'Aylıq büdcə izləyicisi yaradın: kateqoriya, planlaşdırılan, faktiki və fərq sütunları, bir cəm sətri və bir neçə nümunə sətir',
+  aiStarterBudgetPrompt:
+    'Aylıq büdcə izləyicisi yaradın: kateqoriya, planlaşdırılan, faktiki və fərq sütunları, bir cəm sətri və bir neçə nümunə sətir',
   aiStarterSales: 'Satış hesabatı',
-  aiStarterSalesPrompt: 'Rüblük satış hesabatı yaradın: məhsul, region, vahid, qiymət və gəlir sütunları ilə nümunə sətirlər və cəm sətri',
+  aiStarterSalesPrompt:
+    'Rüblük satış hesabatı yaradın: məhsul, region, vahid, qiymət və gəlir sütunları ilə nümunə sətirlər və cəm sətri',
   aiStarterTasks: 'Layihə tapşırıq planı',
-  aiStarterTasksPrompt: 'Layihə tapşırıq planı yaradın: tapşırıq, məsul, başlama tarixi, son tarix və status sütunları ilə bir düzünə nümunə tapşırıq',
+  aiStarterTasksPrompt:
+    'Layihə tapşırıq planı yaradın: tapşırıq, məsul, başlama tarixi, son tarix və status sütunları ilə bir düzünə nümunə tapşırıq',
 } satisfies Record<keyof typeof en, string>

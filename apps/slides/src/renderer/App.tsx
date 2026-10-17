@@ -3296,7 +3296,7 @@ export function App() {
         aiOpen={aiOpen}
         aiEnabled={aiEnabled}
         onToggleAi={toggleAi}
-        onAiPreset={(text, opts) => pushAiPreset(text, true, undefined, undefined, opts?.slideShot)}
+        onAiPreset={(text, opts) => pushAiPreset(text, false, undefined, undefined, opts?.slideShot)}
         onPickShape={pickShape}
         onInsertImage={() => void insertImage()}
         onFormatBackground={openBgFormat}
@@ -4010,7 +4010,7 @@ export function App() {
                                   onClick={() =>
                                     pushAiPreset(
                                       t('aiBeautifyPrompt'),
-                                      true,
+                                      false,
                                       undefined,
                                       undefined,
                                       true,
@@ -4024,7 +4024,7 @@ export function App() {
                                   className="stage-ai-btn"
                                   data-tip={t('aiFactCheckBtn')}
                                   data-tip-detail={t('aiFactCheckPrompt')}
-                                  onClick={() => pushAiPreset(t('aiFactCheckPrompt'))}
+                                  onClick={() => pushAiPreset(t('aiFactCheckPrompt'), false)}
                                 >
                                   <IconAiFactCheck size={14} />
                                   <span>{t('aiFactCheckBtn')}</span>
@@ -4033,7 +4033,7 @@ export function App() {
                                   className="stage-ai-btn"
                                   data-tip={t('aiImageBtn')}
                                   data-tip-detail={t('aiImagePrompt')}
-                                  onClick={() => pushAiPreset(t('aiImagePrompt'))}
+                                  onClick={() => pushAiPreset(t('aiImagePrompt'), false)}
                                 >
                                   <IconAiImage size={14} />
                                   <span>{t('aiImageBtn')}</span>

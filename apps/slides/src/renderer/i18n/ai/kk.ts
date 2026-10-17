@@ -18,6 +18,14 @@ export const kk = {
   aiQcStopped: 'Орналасуды тексеру тоқтатылды',
   aiQcCapped: 'Тағы {count} бет тексерілмеді (бір іске қосуға арналған шектеу)',
   aiGskLoginBtn: 'VEGA жүйесіне кіру',
+  aiConnectPrompt: 'AI чатты пайдалану үшін VEGA AI немесе өз AI провайдеріңізді қосыңыз.',
+  aiConnectBtn: 'AI қосу',
+  aiConnectTip: 'VEGA арқылы кіру',
+  aiErrorAuth: 'Сессия аяқталды — VEGA-ға қайта кіріңіз.',
+  aiErrorCredits: 'Қаражат бітті — api.vega.chat сайтында балансты толтырыңыз.',
+  aiErrorRate: 'Тым көп сұрау — сәл күтіп, қайта көріңіз.',
+  aiErrorNetwork: 'AI қызметімен байланыс жоқ — интернетті тексеріп, қайта көріңіз.',
+  aiErrorServer: 'AI қызметі уақытша жұмыс істемейді — кейінірек қайталап көріңіз.',
   aiPanelTitle: 'VEGA',
   aiOpenAssistant: 'AI көмекшісін ашу',
   aiFactCheckBtn: 'AI арқылы фактчекинг',
@@ -38,7 +46,8 @@ export const kk = {
   aiHistoryEmpty: 'No chats yet',
   aiHistoryLoading: 'Loading…',
   aiHistoryCurrent: 'current',
-  aiHistoryVegaOnly: 'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
+  aiHistoryVegaOnly:
+    'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiEmptyTitle: 'Слайдтарыңызды AI өңдесін',
   aiEmptyBody1: 'Нұсқаулар беріңіз немесе жай ғана сұрақ қойыңыз;',
   aiEmptyBody2:
@@ -250,7 +259,8 @@ export const kk = {
   aiOutlineSubmit: 'Жоба жасау',
   aiOutlineRevise: 'Қайта жоспарлау',
   aiUpgradeTitle: 'Жоба дайын',
-  aiUpgradeSub: 'Келесі қадамдар: алдымен суреттер мен инфографика, содан кейін бірыңғай дизайн — немесе алдымен мәтінді түзетіңіз.',
+  aiUpgradeSub:
+    'Келесі қадамдар: алдымен суреттер мен инфографика, содан кейін бірыңғай дизайн — немесе алдымен мәтінді түзетіңіз.',
   aiUpgradeVisuals: 'Суреттер мен инфографика жасау',
   aiUpgradeStyle: 'Бірыңғай дизайнды қолдану',
   aiUpgradeFull: 'Екеуін де орындау',
@@ -266,10 +276,14 @@ export const kk = {
   aiStylePresetDark: 'Қараңғы',
   aiStylePresetMinimal: 'Минималды',
   aiUpgradeAskStyleHint: 'Стиль бағыты: {hint}',
-  aiStylePresetEditorialHint: 'журналды-редакциялық стиль — ірі засечкалы тақырыптар, жылы қағаз реңктері, мол бос кеңістік',
-  aiStylePresetSwissHint: 'швейцариялық халықаралық стиль — қатаң тор, бір акцент түс, күшті қаріп өлшемі контрасты, жұқа сызықтар, доғал карталар мен көлеңкелерсіз',
-  aiStylePresetDarkHint: 'қараңғы атмосфера — терең көмір не зәңгәр фон, бір жарқыраған акцент, үлкен типографика, кинематографиялық бейнелер',
-  aiStylePresetMinimalHint: 'жарық минимализм — ауадай бос кеңістік, бір ұстамды акценті бар дерлік монохром палитра, тыныш дәл типографика',
+  aiStylePresetEditorialHint:
+    'журналды-редакциялық стиль — ірі засечкалы тақырыптар, жылы қағаз реңктері, мол бос кеңістік',
+  aiStylePresetSwissHint:
+    'швейцариялық халықаралық стиль — қатаң тор, бір акцент түс, күшті қаріп өлшемі контрасты, жұқа сызықтар, доғал карталар мен көлеңкелерсіз',
+  aiStylePresetDarkHint:
+    'қараңғы атмосфера — терең көмір не зәңгәр фон, бір жарқыраған акцент, үлкен типографика, кинематографиялық бейнелер',
+  aiStylePresetMinimalHint:
+    'жарық минимализм — ауадай бос кеңістік, бір ұстамды акценті бар дерлік монохром палитра, тыныш дәл типографика',
 
   aiClarifyPrev: 'Алдыңғы',
   aiPageCloudToLocal: 'cloud unavailable — generated locally',

@@ -1,6 +1,6 @@
 import { aiPanelWidthAtPointer, AiModelPicker, type AiModelPickerBridge } from '@genoffice/ui'
 import { useEffect, useRef, useState } from 'react'
-import type { PointerEvent as ReactPointerEvent, ReactElement, ReactNode } from 'react'
+import type { PointerEvent as ReactPointerEvent, ReactElement } from 'react'
 import {
   AgentLoop,
   composeSkills,
@@ -22,6 +22,7 @@ import {
 } from '@genoffice/ai-provider/browser'
 import {
   AiComposer,
+  AiConnectPrompt,
   AiHistoryButton,
   AiHistoryMenu,
   AiQueueStrip,
@@ -36,7 +37,9 @@ import {
   addTokenUsage,
   chatTranscriptToMarkdown,
   createFileNav,
+  aiErrorText,
   suggestChatExportName,
+  useAiDisconnected,
   useChatRunQueue,
   useSuggestedQuestions,
   useVegaDeposit,
@@ -156,10 +159,12 @@ interface Snapshot {
   doc: DocSnapshot
 }
 
-/** Ribbon preset instruction; a new nonce triggers one auto-send */
+/** Preset instruction; a new nonce triggers one handling — autoRun sends, otherwise it stages in the composer */
 export interface AiPreset {
   text: string
   nonce: number
+  /** explicit send-now entries (Ask popover) send immediately; unset = stage in the composer */
+  autoRun?: boolean
 }
 
 export interface MarkdownAiDeps {
@@ -180,6 +185,7 @@ const MODEL_BRIDGE: AiModelPickerBridge = {
   getSettings: () => window.markdownApi.getAiSettings(),
   setSettings: (settings) => window.markdownApi.setAiSettings(settings),
   onSettingsChanged: (handler) => window.markdownApi.onAiSettingsChanged(handler),
+  onAuthChanged: (handler) => window.markdownApi.onAiAuthChanged(handler),
   gskLoggedIn: () => window.markdownApi.aiGskStatus().then((s) => !!s?.loggedIn),
   openModelSettings: () => window.markdownApi.openAiModelSettings().catch(() => {}),
   getProviderModels: (input) => window.markdownApi.getProviderModels(input),
@@ -218,9 +224,12 @@ export function AiPanel({
   const writerEpochRef = useRef(0)
   const [prompt, setPrompt] = useState('')
   const [busy, setBusy] = useState(false)
+  /** signed out of VEGA with no usable BYOK provider: starters + composer go muted */
+  const aiDisconnected = useAiDisconnected(MODEL_BRIDGE)
   /** messages queued while a reply runs; the pump re-runs them through send on settle */
   const msgQueue = useChatRunQueue<void>({
     busy,
+    gate: aiDisconnected,
     submit: (text) => {
       const loop = loopRef.current
       if (!loop || loop.busy) return false
@@ -390,9 +399,7 @@ export function AiPanel({
   }
 
   // ── Chat-history menu ─────────────────────────────────────────────────
-  type StoredChatMessages = Awaited<
-    ReturnType<NonNullable<Window['projectApi']>['loadChat']>
-  >
+  type StoredChatMessages = Awaited<ReturnType<NonNullable<Window['projectApi']>['loadChat']>>
 
   /** stored JSONL messages → panel entries (same mapping as the initial load) */
   const toChatEntries = (msgs: StoredChatMessages): ChatEntry[] =>
@@ -1075,13 +1082,17 @@ export function AiPanel({
     send(instruction, display)
   }
 
-  // ribbon presets auto-send; while a run is active they land in the composer instead
+  // ribbon presets stage in the composer (docs parity); explicit send-now callers pass autoRun
   const presetNonceRef = useRef(0)
   useEffect(() => {
     if (!preset || preset.nonce === presetNonceRef.current) return
     presetNonceRef.current = preset.nonce
-    if (loopRef.current?.busy) setPrompt(preset.text)
-    else send(preset.text)
+    if (preset.autoRun && !loopRef.current?.busy) {
+      send(preset.text)
+    } else {
+      setPrompt(preset.text)
+      inputRef.current?.focus()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [preset])
 
@@ -1145,7 +1156,7 @@ export function AiPanel({
   return (
     <aside
       ref={asideRef}
-      className={`copilot${resizing ? ' ai-panel-resizing' : ''}`}
+      className={`copilot${resizing ? ' ai-panel-resizing' : ''}${aiDisconnected ? ' ai-disconnected' : ''}`}
       style={{ width: '100%' }}
       dir={htmlDir(lang) === 'rtl' ? 'rtl' : undefined}
     >
@@ -1159,6 +1170,16 @@ export function AiPanel({
       <header className="ai-panel-header">
         <span className="ai-panel-title">{lang === 'ru' ? 'ВЕГА' : 'VEGA'}</span>
         <div className="ai-panel-header-actions">
+          {chat.length > 0 && (
+            <button
+              className="ai-header-btn"
+              onClick={newChat}
+              data-tip={t('aiNewChat')}
+              aria-label={t('aiNewChat')}
+            >
+              <IconPlus size={15} />
+            </button>
+          )}
           <AiHistoryMenu
             open={historyOpen}
             onClose={() => setHistoryOpen(false)}
@@ -1191,16 +1212,6 @@ export function AiPanel({
               <IconDownload size={15} />
             </button>
           )}
-          {chat.length > 0 && (
-            <button
-              className="ai-header-btn"
-              onClick={newChat}
-              data-tip={t('aiNewChat')}
-              aria-label={t('aiNewChat')}
-            >
-              <IconPlus size={15} />
-            </button>
-          )}
           <button
             className="ai-header-btn ai-panel-collapse"
             onClick={onCollapse}
@@ -1220,6 +1231,7 @@ export function AiPanel({
             <div className="ai-starter-list">
               <button
                 className="ai-starter"
+                disabled={aiDisconnected}
                 onClick={() => {
                   setPrompt(t('aiQuickDraftPrompt'))
                   inputRef.current?.focus()
@@ -1229,6 +1241,7 @@ export function AiPanel({
               </button>
               <button
                 className="ai-starter"
+                disabled={aiDisconnected}
                 onClick={() => {
                   setPrompt(t('aiQuickPolishPrompt'))
                   inputRef.current?.focus()
@@ -1238,6 +1251,7 @@ export function AiPanel({
               </button>
               <button
                 className="ai-starter"
+                disabled={aiDisconnected}
                 onClick={() => {
                   setPrompt(t('aiQuickMindMapPrompt'))
                   inputRef.current?.focus()
@@ -1246,6 +1260,14 @@ export function AiPanel({
                 {t('aiQuickMindMap')}
               </button>
             </div>
+            {aiDisconnected && (
+              <AiConnectPrompt
+                text={t('aiConnectPrompt')}
+                label={t('aiConnectBtn')}
+                tip={t('aiConnectTip')}
+                onConnect={() => void window.markdownApi.aiGskLogin()}
+              />
+            )}
           </div>
         )}
         {chat.map((entry, i) => {
@@ -1290,7 +1312,10 @@ export function AiPanel({
               ) : (
                 entry.text && (
                   <div dir="auto">
-                    <Markdown text={entry.text} navs={[docNav, fileNav]} />
+                    <Markdown
+                      text={entry.isError ? aiErrorText(entry.text, t) : entry.text}
+                      navs={[docNav, fileNav]}
+                    />
                   </div>
                 )
               )}
@@ -1398,6 +1423,17 @@ export function AiPanel({
         />
       )}
 
+      {/* a muted panel with history still needs a way back — the same Connect
+          call-to-action the empty state shows, docked above the composer */}
+      {aiDisconnected && chat.length > 0 && (
+        <AiConnectPrompt
+          text={t('aiConnectPrompt')}
+          label={t('aiConnectBtn')}
+          tip={t('aiConnectTip')}
+          onConnect={() => void window.markdownApi.aiGskLogin()}
+        />
+      )}
+
       <div className="ai-composer">
         {activePartial && (
           <div className="ai-queue ai-partial-card" role="group" aria-label={t('aiPartialTitle')}>
@@ -1450,6 +1486,7 @@ export function AiPanel({
           queuePlaceholder={AI_QUEUE_LABELS[lang].queuePlaceholder}
           value={prompt}
           busy={busy}
+          disabled={aiDisconnected}
           header={
             hasScopeSelection && (
               <div className="ai-scope-row">

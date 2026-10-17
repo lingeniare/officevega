@@ -55,7 +55,9 @@ import {
   imageSearchTool,
   ensureOfficeVegaLogin,
   noteGskCallFailure,
+  noteVegaCallFailure,
   officeVegaApiKey,
+  setGskKeyRejectedListener,
   setOfficeVegaAuthListener,
   gskApiKey,
   generateImageTool,
@@ -133,6 +135,14 @@ export function registerAiIpc(): void {
   // settings): every open view re-reads settings/status off this push
   setOfficeVegaAuthListener((auth) => {
     const payload = { loggedIn: auth !== null }
+    for (const wc of webContents.getAllWebContents()) {
+      if (!wc.isDestroyed()) wc.send('ai:auth-changed', payload)
+    }
+  })
+  // a gsk key the server answered 401 for stops being offered at once — push
+  // the recomputed status so chat panels mute without waiting for a refocus
+  setGskKeyRejectedListener(() => {
+    const payload = { loggedIn: !!officeVegaApiKey() || hasGskAuth() }
     for (const wc of webContents.getAllWebContents()) {
       if (!wc.isDestroyed()) wc.send('ai:auth-changed', payload)
     }
@@ -360,6 +370,7 @@ export function registerAiIpc(): void {
       } else {
         // an expired/revoked key drops to signed-out so the inline sign-in button shows
         noteGskCallFailure(gskKey, err)
+        noteVegaCallFailure(config.apiKey, err)
         const msg = err instanceof Error ? err.message : String(err)
         console.error(`[ai-stream] ${requestId} (${provider}/${config.model}) failed:`, msg)
         send({

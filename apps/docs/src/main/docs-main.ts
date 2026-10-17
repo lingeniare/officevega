@@ -129,6 +129,8 @@ import { listCustomModelsForIpc } from '@genoffice/ai-provider/custom-models'
 import {
   ensureOfficeVegaLogin,
   noteGskCallFailure,
+  noteVegaCallFailure,
+  setGskKeyRejectedListener,
   officeVegaApiKey,
   setOfficeVegaAuthListener,
   gskApiKey,
@@ -2393,6 +2395,14 @@ export function registerAiIpc(): void {
       if (!wc.isDestroyed()) wc.send('ai:auth-changed', payload)
     }
   })
+  // a gsk key the server answered 401 for stops being offered at once — push
+  // the recomputed status so chat panels mute without waiting for a refocus
+  setGskKeyRejectedListener(() => {
+    const payload = { loggedIn: !!officeVegaApiKey() || hasGskAuth() }
+    for (const wc of webContents.getAllWebContents()) {
+      if (!wc.isDestroyed()) wc.send('ai:auth-changed', payload)
+    }
+  })
   ipcMain.handle('ai:get-settings', async (): Promise<AiSettings> => {
     const stored = readJson<Partial<AiSettings> & LegacyAiSettings>(SETTINGS_PATH(), {})
     // pre-lock legacy file: genspark selected with cloud tools opted out. The
@@ -2620,6 +2630,7 @@ export function registerAiIpc(): void {
         console.error(`[ai-stream] ${requestId} (${provider}/${config.model}) failed:`, msg)
         // an expired/revoked key drops to signed-out so the inline sign-in button shows
         noteGskCallFailure(gskKey, err)
+        noteVegaCallFailure(config.apiKey, err)
         send({
           requestId,
           type: 'error',
@@ -2802,10 +2813,14 @@ export function registerAiIpc(): void {
       if (!result.ok && isAiOverloadedError(result.error)) {
         return { ok: false, error: tm('errAiBusy') }
       }
-      if (!result.ok) noteGskCallFailure(gskKey, result.error)
+      if (!result.ok) {
+        noteGskCallFailure(gskKey, result.error)
+        noteVegaCallFailure(config.apiKey, result.error)
+      }
       return result
     } catch (err) {
       noteGskCallFailure(gskKey, err)
+      noteVegaCallFailure(config.apiKey, err)
       return { ok: false, error: isAiOverloadedError(err) ? tm('errAiBusy') : String(err) }
     }
   })

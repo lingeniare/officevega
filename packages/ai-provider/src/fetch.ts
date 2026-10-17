@@ -31,6 +31,69 @@ export function setAiUserAgent(ua: string): void {
 }
 
 /**
+ * openrouter.ai's edge answers any User-Agent containing "vega" (any case)
+ * with a 403 HTML block page — verified 2026-10-17: `node`, `curl`,
+ * `GenOffice` and `Mozilla` pass; `OfficeVega`, `Vega`, `x-officevega` all
+ * 403 on /models and /chat/completions alike. On that host the product UA
+ * is pinned to a plain `node` instead — merely dropping the header is not
+ * enough, because a fetch stack that derives its default UA from the app
+ * name (Electron's net fetch) would put the blocked token right back. The
+ * app is named through OpenRouter's documented attribution headers instead —
+ * HTTP-Referer / X-Title trip no rule and are how the gateway asks clients
+ * to identify themselves. Without this, every OpenRouter call — catalog,
+ * chat, media — dies at the edge and the model picker silently falls back
+ * to the provider's static ids.
+ */
+const OPENROUTER_ATTRIBUTION = {
+  'HTTP-Referer': 'https://officevega.com',
+  'X-Title': 'OfficeVega',
+} as const
+
+export function isOpenRouterUrl(url: string | undefined): boolean {
+  if (!url) return false
+  try {
+    const host = new URL(url).hostname
+    return host === 'openrouter.ai' || host.endsWith('.openrouter.ai')
+  } catch {
+    return false
+  }
+}
+
+function applyOpenRouterHeaders(headers: Record<string, string>): Record<string, string> {
+  for (const name of Object.keys(headers)) {
+    if (name.toLowerCase() === 'user-agent' && /vega/i.test(headers[name]!)) {
+      delete headers[name]
+    }
+  }
+  // pin a UA the edge accepts rather than none at all: stacks that inject a
+  // default (Electron's net fetch re-derives one from the app name, which
+  // itself carries "vega") would otherwise put the blocked token back
+  if (!Object.keys(headers).some((name) => name.toLowerCase() === 'user-agent')) {
+    headers['User-Agent'] = 'node'
+  }
+  for (const [name, value] of Object.entries(OPENROUTER_ATTRIBUTION)) {
+    if (!Object.keys(headers).some((n) => n.toLowerCase() === name.toLowerCase())) {
+      headers[name] = value
+    }
+  }
+  return headers
+}
+
+/**
+ * Wire-level variant of the OpenRouter header fix, for the session's
+ * webRequest hook: request stacks that cannot set User-Agent themselves —
+ * a renderer's fetch drops it as a forbidden header name, net.fetch
+ * re-derives one from the session — get their outgoing headers rewritten
+ * here instead. Non-OpenRouter URLs pass through untouched.
+ */
+export function openRouterSafeHeaders(
+  url: string,
+  headers: Record<string, string>,
+): Record<string, string> {
+  return isOpenRouterUrl(url) ? applyOpenRouterHeaders({ ...headers }) : headers
+}
+
+/**
  * Sber's endpoints (api.giga.chat, ngw.devices.sberbank.ru) terminate TLS
  * under the Russian national root CA (Минцифры), which is in neither Node's
  * bundled root list nor Chromium's store — every GigaChat SDK ships
@@ -108,12 +171,13 @@ function withVegaSession(url: string, init: RequestInit): RequestInit {
 }
 
 /** protocols pass plain header records; keep that shape so callers can read the request back */
-export function withUserAgent(init: RequestInit): RequestInit {
+export function withUserAgent(init: RequestInit, url?: string): RequestInit {
   const given = init.headers
   const headers: Record<string, string> = {}
   if (given instanceof Headers) given.forEach((value, name) => (headers[name] = value))
   else if (Array.isArray(given)) for (const [name, value] of given) headers[name] = value
   else Object.assign(headers, given)
+  if (isOpenRouterUrl(url)) return { ...init, headers: applyOpenRouterHeaders(headers) }
   if (!Object.keys(headers).some((name) => name.toLowerCase() === 'user-agent')) {
     headers['User-Agent'] = userAgent
   }
@@ -147,7 +211,7 @@ export function warmAiConnections(): void {
 }
 
 export async function aiFetch(url: string, rawInit: RequestInit): Promise<Response> {
-  const init = withVegaSession(url, withUserAgent(rawInit))
+  const init = withVegaSession(url, withUserAgent(rawInit, url))
   try {
     if (RU_CERT_HOSTS.test(new URL(url).hostname)) {
       const dispatcher = await ruCertDispatcher()

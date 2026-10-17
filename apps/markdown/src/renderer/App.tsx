@@ -1084,7 +1084,7 @@ export default function App() {
   }, [])
   const askSendNow = useCallback((text: string): void => {
     setAiOpen(true)
-    setAiPreset((prev) => ({ text, nonce: (prev?.nonce ?? 0) + 1 }))
+    setAiPreset((prev) => ({ text, nonce: (prev?.nonce ?? 0) + 1, autoRun: true }))
   }, [])
 
   const aiDeps: MarkdownAiDeps = {

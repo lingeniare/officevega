@@ -211,7 +211,10 @@ export const AI_PROVIDERS: AiProviderMeta[] = [
     id: 'openrouter',
     label: 'OpenRouter',
     // vendor-prefixed slugs exactly as openrouter.ai/api/v1/models lists them —
-    // there is no `openai/gpt-5.6` alias there, only the per-tier ids
+    // there is no `openai/gpt-5.6` alias there, only the per-tier ids.
+    // Note: openrouter.ai's edge 403s any User-Agent containing "vega", so
+    // aiFetch drops the product UA on this host and identifies via the
+    // documented HTTP-Referer / X-Title attribution headers (see fetch.ts).
     models: [
       'openrouter/auto',
       'anthropic/claude-opus-5.5',

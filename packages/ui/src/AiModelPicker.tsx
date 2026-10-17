@@ -40,6 +40,9 @@ export interface AiModelPickerBridge {
   readonly gskLoggedIn?: (() => Promise<boolean>) | undefined
   /** shell: switch to Home and open Settings › AI Model */
   readonly openModelSettings?: (() => Promise<void> | void) | undefined
+  /** pushed by main on every VEGA sign-in/out — refreshes groups without waiting for a focus event */
+  readonly onAuthChanged?:
+    ((handler: (status: { loggedIn: boolean }) => void) => () => void) | undefined
   /**
    * live {base}/models catalog for liveCatalog providers (VEGA, OpenRouter) —
    * feeds display names while the row value stays the model id; absent = ids only
@@ -93,14 +96,18 @@ export function AiModelPicker({
     refresh()
     window.addEventListener('focus', refresh)
     let off: (() => void) | undefined
+    let offAuth: (() => void) | undefined
     try {
       off = bridge.onSettingsChanged?.(refresh)
+      offAuth = bridge.onAuthChanged?.(refresh)
     } catch {
       off = undefined
+      offAuth = undefined
     }
     return () => {
       window.removeEventListener('focus', refresh)
       off?.()
+      offAuth?.()
     }
   }, [bridge, refresh])
 
@@ -218,9 +225,7 @@ export function AiModelPicker({
   /** live list when fetched (stored/default ids pinned on top, like the settings pane), else the static list */
   const modelsOf = (g: (typeof groups)[number]) => {
     const live = g.liveCatalog || g.endpoint ? liveIds[`${g.id}:${g.endpoint ?? ''}`] : undefined
-    return live?.length
-      ? [...(g.pinned ?? []).filter((p) => !live.includes(p)), ...live]
-      : g.models
+    return live?.length ? [...(g.pinned ?? []).filter((p) => !live.includes(p)), ...live] : g.models
   }
 
   if (!settings) return null

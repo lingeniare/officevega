@@ -166,7 +166,7 @@ test.describe('markdown editor', () => {
     }
   })
 
-  test('ribbon AI preset button opens the panel and sends the instruction', async () => {
+  test('ribbon AI preset button opens the panel and stages the instruction', async () => {
     const dir = await mkdtemp(join(tmpdir(), 'officevega-md-'))
     const mdPath = join(dir, 'summary.md')
     await writeFile(mdPath, '# Topic\n\nSome content worth summarizing.\n')
@@ -188,8 +188,9 @@ test.describe('markdown editor', () => {
       await summarizeBtn.click()
 
       await expect(editorPage.locator('.copilot')).toBeVisible()
-      // the preset lands as a sent user message (the model reply itself needs credentials)
-      await expect(editorPage.locator('.ai-msg-user')).toContainText(/Summarize/)
+      // the preset stages in the composer for review — nothing is sent yet (docs parity)
+      await expect(editorPage.locator('.copilot textarea')).toHaveValue(/Summarize/)
+      await expect(editorPage.locator('.ai-msg-user')).toHaveCount(0)
       await editorPage.screenshot({ path: screenshotPath('markdown-ai-preset') })
     } finally {
       await closeAndSaveVideo(launched, 'markdown-ai-preset')

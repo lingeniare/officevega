@@ -1,4 +1,11 @@
-import { aiPanelWidthAtPointer, AiModelPicker, type AiModelPickerBridge } from '@genoffice/ui'
+import {
+  aiPanelWidthAtPointer,
+  AiConnectPrompt,
+  aiErrorText,
+  AiModelPicker,
+  useAiDisconnected,
+  type AiModelPickerBridge,
+} from '@genoffice/ui'
 import React, { useEffect, useRef, useState, useCallback } from 'react'
 import {
   AgentLoop,
@@ -394,6 +401,7 @@ const MODEL_BRIDGE: AiModelPickerBridge = {
   getSettings: () => window.slidesApi.getAiSettings(),
   setSettings: (settings) => window.slidesApi.setAiSettings(settings),
   onSettingsChanged: (handler) => window.slidesApi.onAiSettingsChanged(handler),
+  onAuthChanged: (handler) => window.slidesApi.onAiAuthChanged(handler),
   gskLoggedIn: () => window.slidesApi.aiGskStatus().then((s) => !!s?.loggedIn),
   openModelSettings: () => window.slidesApi.openAiModelSettings().catch(() => {}),
   getProviderModels: (input) => window.slidesApi.getProviderModels(input),
@@ -433,18 +441,27 @@ export function AiPanel({
   // must honor it like the shared AiComposer does.
   const { spellcheck } = useAiPanelPrefs()
   const [busy, setBusy] = useState(false)
+  /** signed out of VEGA with no usable BYOK provider: starters + composer go muted */
+  const aiDisconnected = useAiDisconnected(MODEL_BRIDGE)
   /** messages queued while a reply runs; the pump re-runs them through runWith on settle */
   const msgQueue = useChatRunQueue<{
     attachments: AttachmentMeta[]
     scope: AiScopeQuoteData | undefined
+    /** staged preset's render-the-slide flag — survives the busy queue like scope does */
+    slideShot?: boolean
   }>({
     busy,
+    gate: aiDisconnected,
     submit: (text, meta) => {
       // the QC pass edits the deck with busy=false: refuse and let the pump retry
       if (qcRunningRef.current || runStartingRef.current) return false
       const loop = loopRef.current
       if (!loop || loop.busy) return false
-      runWith(text, text, { attachments: meta.attachments, scope: meta.scope })
+      runWith(text, text, {
+        attachments: meta.attachments,
+        scope: meta.scope,
+        slideShot: meta.slideShot,
+      })
       return true
     },
   })
@@ -630,6 +647,7 @@ export function AiPanel({
     () => window.slidesApi?.aiGskStatus?.(true) ?? Promise.resolve(null),
     busy,
   )
+
   const imagesRef = useRef(images)
   imagesRef.current = images
   const attachmentsRef = useRef(attachments)
@@ -2038,6 +2056,15 @@ export function AiPanel({
         ...(preset.scope ? { scope: preset.scope } : {}),
       })
     else {
+      // staged presets keep their run options (AI Beautify's slide shot) so the
+      // user's manual send still applies them
+      pendingPresetOptsRef.current =
+        preset.slideShot || preset.scope
+          ? {
+              slideShot: preset.slideShot ?? false,
+              ...(preset.scope ? { scope: preset.scope } : {}),
+            }
+          : undefined
       setInput(preset.text)
       inputRef.current?.focus()
     }
@@ -2073,12 +2100,25 @@ export function AiPanel({
     // `open` dep: re-measure after expand restores a draft
   }, [input, open])
 
-  const run = () => runWith(input.trim())
+  /** Run options a staged preset carried; the next manual send consumes them */
+  const pendingPresetOptsRef = useRef<
+    { slideShot?: boolean; scope?: AiScopeQuoteData } | undefined
+  >(undefined)
+
+  const run = () => {
+    const opts = pendingPresetOptsRef.current
+    pendingPresetOptsRef.current = undefined
+    runWith(input.trim(), undefined, opts)
+  }
 
   /** Enter while a reply runs: the draft joins the queue above the composer */
   const enqueueDraft = () => {
     const text = input.trim()
     if (!text) return
+    // the queue cannot reach pendingPresetOptsRef at drain time, so a staged
+    // preset's options ride along in the meta instead of leaking into a later send
+    const pending = pendingPresetOptsRef.current
+    pendingPresetOptsRef.current = undefined
     // snapshot + consume the composer attachments exactly like a send does
     const attachments = attachmentsRef.current
     if (attachments.length > 0) {
@@ -2091,12 +2131,13 @@ export function AiPanel({
       attachmentsRef.current = []
     }
     const scope =
-      selectedRef.current.length > 0
+      pending?.scope ??
+      (selectedRef.current.length > 0
         ? {
             label: `${t('aiScopeSlide', { n: current + 1 })} · ${t('aiScopeSelection', { count: selectedRef.current.length })}`,
           }
-        : undefined
-    msgQueue.enqueue(text, { attachments, scope })
+        : undefined)
+    msgQueue.enqueue(text, { attachments, scope, slideShot: pending?.slideShot })
     setInput('')
   }
 
@@ -2642,7 +2683,7 @@ export function AiPanel({
     <aside
       ref={asideRef}
       style={{ width: '100%' }}
-      className={`ai-panel${dragOver ? ' ai-panel-dragover' : ''}${resizing ? ' ai-panel-resizing' : ''}`}
+      className={`ai-panel${dragOver ? ' ai-panel-dragover' : ''}${resizing ? ' ai-panel-resizing' : ''}${aiDisconnected ? ' ai-disconnected' : ''}`}
       dir={isRtl ? 'rtl' : undefined}
       onDragOver={(e) => {
         if (e.dataTransfer.types.includes('Files')) {
@@ -2666,6 +2707,16 @@ export function AiPanel({
       <div className="ai-panel-header">
         <span className="ai-panel-title">{t('aiPanelTitle')}</span>
         <div className="ai-panel-header-actions">
+          {(chat.length > 0 || historicChat.length > 0) && (
+            <button
+              className="ai-header-btn"
+              onClick={newChat}
+              data-tip={t('aiNewChat')}
+              aria-label={t('aiNewChat')}
+            >
+              <IconPlus size={15} />
+            </button>
+          )}
           <AiHistoryMenu
             open={historyOpen}
             onClose={() => setHistoryOpen(false)}
@@ -2696,16 +2747,6 @@ export function AiPanel({
               aria-label={t('aiExportChat')}
             >
               <IconDownload size={15} />
-            </button>
-          )}
-          {(chat.length > 0 || historicChat.length > 0) && (
-            <button
-              className="ai-header-btn"
-              onClick={newChat}
-              data-tip={t('aiNewChat')}
-              aria-label={t('aiNewChat')}
-            >
-              <IconPlus size={15} />
             </button>
           )}
           {onCollapse && (
@@ -2756,6 +2797,7 @@ export function AiPanel({
                 <button
                   key={p}
                   className="ai-starter"
+                  disabled={aiDisconnected}
                   onClick={() => {
                     setInput(p)
                     inputRef.current?.focus()
@@ -2765,6 +2807,14 @@ export function AiPanel({
                 </button>
               ))}
             </div>
+            {aiDisconnected && (
+              <AiConnectPrompt
+                text={t('aiConnectPrompt')}
+                label={t('aiConnectBtn')}
+                tip={t('aiConnectTip')}
+                onConnect={() => void window.slidesApi.aiGskLogin()}
+              />
+            )}
           </div>
         )}
         {chat.map((entry, i) => {
@@ -2812,7 +2862,7 @@ export function AiPanel({
               )}
               {entry.tools && entry.tools.length > 0 && <ToolChipList tools={entry.tools} />}
               {entry.error && (
-                <div className="ai-msg-error">{t('aiMsgError', { error: entry.error })}</div>
+                <div className="ai-msg-error">{aiErrorText(entry.error, t, 'aiMsgError')}</div>
               )}
               {entry.loginRequired && (
                 <button className="ai-login-btn" onClick={() => void window.slidesApi.aiGskLogin()}>
@@ -2955,6 +3005,17 @@ export function AiPanel({
         />
       )}
 
+      {/* a muted panel with history still needs a way back — the same Connect
+          call-to-action the empty state shows, docked above the composer */}
+      {aiDisconnected && (chat.length > 0 || historicChat.length > 0) && (
+        <AiConnectPrompt
+          text={t('aiConnectPrompt')}
+          label={t('aiConnectBtn')}
+          tip={t('aiConnectTip')}
+          onConnect={() => void window.slidesApi.aiGskLogin()}
+        />
+      )}
+
       {activeOutline ? (
         /* Docked in the composer slot — the run waits for the outline verdict */
         <div className="ai-composer">
@@ -3010,7 +3071,7 @@ export function AiPanel({
             />
           )}
           {attachNotice && <div className="ai-attach-notice">{attachNotice}</div>}
-          <div className="ai-input-box">
+          <div className={`ai-input-box${aiDisconnected ? ' is-disabled' : ''}`}>
             <AiQueueStrip
               items={msgQueue.queued}
               labels={AI_QUEUE_LABELS[lang]}
@@ -3083,6 +3144,7 @@ export function AiPanel({
             <textarea
               ref={inputRef}
               value={input}
+              disabled={aiDisconnected}
               dir="auto"
               spellCheck={spellcheck}
               data-slides-ai-input="true"
@@ -3131,6 +3193,7 @@ export function AiPanel({
               <button
                 className="ai-attach-btn"
                 onClick={pickAttachments}
+                disabled={aiDisconnected}
                 data-tip={t('aiAttachTitle')}
                 aria-label={t('aiAttachTitle')}
               >
@@ -3149,7 +3212,7 @@ export function AiPanel({
                 <button
                   className="ai-send-btn"
                   onClick={run}
-                  disabled={!input.trim()}
+                  disabled={!input.trim() || aiDisconnected}
                   data-tip={t('aiSend')}
                   aria-label={t('aiSend')}
                 >

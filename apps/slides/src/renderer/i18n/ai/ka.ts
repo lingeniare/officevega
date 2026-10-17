@@ -19,6 +19,14 @@ export const ka = {
   aiQcStopped: 'განლაგების შემოწმება შეჩერდა',
   aiQcCapped: 'კიდევ {count} გვერდი არ შემოწმებულა (ერთი გაშვების ლიმიტის გამო)',
   aiGskLoginBtn: 'შედით VEGA-ში',
+  aiConnectPrompt: 'AI ჩატის გამოსაყენებლად დააკავშირეთ VEGA AI ან საკუთარი AI პროვაიდერი.',
+  aiConnectBtn: 'AI დაკავშირება',
+  aiConnectTip: 'VEGA-თი შესვლა',
+  aiErrorAuth: 'სესია ამოიწურა — შედით VEGA-ში ხელახლა.',
+  aiErrorCredits: 'კრედიტი ამოიწურა — შეავსეთ ბალანსი api.vega.chat-ზე.',
+  aiErrorRate: 'ზედმეტად ბევრი მოთხოვნა — მოითმინეთ და სცადეთ ხელახლა.',
+  aiErrorNetwork: 'AI სერვისთან კავშირი არ არის — შეამოწმეთ ინტერნეტი და სცადეთ ხელახლა.',
+  aiErrorServer: 'AI სერვისი დროებით მიუწვდომელია — სცადეთ მოგვიანებით.',
   aiPanelTitle: 'VEGA',
   aiOpenAssistant: 'გახსენით AI ასისტენტი',
   aiFactCheckBtn: 'AI-ის მიერ ფაქტების შემოწმება',
@@ -39,7 +47,8 @@ export const ka = {
   aiHistoryEmpty: 'No chats yet',
   aiHistoryLoading: 'Loading…',
   aiHistoryCurrent: 'current',
-  aiHistoryVegaOnly: 'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
+  aiHistoryVegaOnly:
+    'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiEmptyTitle: 'მიეცი AI-ს შენი სლაიდების დახვეწის საშუალება',
   aiEmptyBody1: 'მიუთითე ინსტრუქციები ან უბრალოდ დასვი კითხვები;',
   aiEmptyBody2: 'მონიშნული ელემენტების შემთხვევაში, გადაწერის ბრძანებები მონიშნულზე ვრცელდება.',
@@ -252,7 +261,8 @@ export const ka = {
   aiOutlineSubmit: 'მონახაზის შექმნა',
   aiOutlineRevise: 'ხელახლა დაგეგმვა',
   aiUpgradeTitle: 'მონახაზი მზადაა',
-  aiUpgradeSub: 'შემდეგი ნაბიჯები: ჯერ სურათები და ინფოგრაფიკა, შემდეგ ერთიანი დიზაინი — ან ჯერ ტექსტის შესწორება.',
+  aiUpgradeSub:
+    'შემდეგი ნაბიჯები: ჯერ სურათები და ინფოგრაფიკა, შემდეგ ერთიანი დიზაინი — ან ჯერ ტექსტის შესწორება.',
   aiUpgradeVisuals: 'სურათებისა და ინფოგრაფიკის გენერაცია',
   aiUpgradeStyle: 'ერთიანი დიზაინის გამოყენება',
   aiUpgradeFull: 'ორივეს შესრულება',
@@ -268,10 +278,14 @@ export const ka = {
   aiStylePresetDark: 'მუქი',
   aiStylePresetMinimal: 'მინიმალური',
   aiUpgradeAskStyleHint: 'სტილის მიმართულება: {hint}',
-  aiStylePresetEditorialHint: 'სარედაქციო ჟურნალის სტილი — დიდი serif სათაურები, თბილი ქაღალდის ტონები, ფართო თეთრი სივრცე',
-  aiStylePresetSwissHint: 'შვეიცარიული საერთაშორისო სტილი — მკაცრი ბადე, ერთი აქცენტის ფერი, ძლიერი ტიპოგრაფიული კონტრასტი, თხელი ხაზები, მრგვალი ბარათებისა და ჩრდილების გარეშე',
-  aiStylePresetDarkHint: 'მუქი ატმოსფერო — ღრმა ნახშირბადის ან საზღვაო ფონი, ერთი ნათელი აქცენტი, გიგანტური ტიპოგრაფია, კინემატოგრაფიული გამოსახულებები',
-  aiStylePresetMinimalHint: 'ღია მინიმალიზმი — ჰაეროვანი თეთრი სივრცეები, თითქმის მონოქრომული პალიტრა ერთი თავშეკავებული აქცენტით, მშვიდი ზუსტი ტიპოგრაფია',
+  aiStylePresetEditorialHint:
+    'სარედაქციო ჟურნალის სტილი — დიდი serif სათაურები, თბილი ქაღალდის ტონები, ფართო თეთრი სივრცე',
+  aiStylePresetSwissHint:
+    'შვეიცარიული საერთაშორისო სტილი — მკაცრი ბადე, ერთი აქცენტის ფერი, ძლიერი ტიპოგრაფიული კონტრასტი, თხელი ხაზები, მრგვალი ბარათებისა და ჩრდილების გარეშე',
+  aiStylePresetDarkHint:
+    'მუქი ატმოსფერო — ღრმა ნახშირბადის ან საზღვაო ფონი, ერთი ნათელი აქცენტი, გიგანტური ტიპოგრაფია, კინემატოგრაფიული გამოსახულებები',
+  aiStylePresetMinimalHint:
+    'ღია მინიმალიზმი — ჰაეროვანი თეთრი სივრცეები, თითქმის მონოქრომული პალიტრა ერთი თავშეკავებული აქცენტით, მშვიდი ზუსტი ტიპოგრაფია',
 
   aiClarifyPrev: 'წინა',
   aiPageCloudToLocal: 'cloud unavailable — generated locally',

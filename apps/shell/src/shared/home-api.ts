@@ -411,8 +411,12 @@ export interface HomeApi {
   openAiModels(): Promise<void>
   /** open the VEGA chat web app in the default browser; ru locale lands on ru.vega.chat */
   openVegaChat(): Promise<void>
+  /** open vega.codes in the default browser (Settings → About "Other AI services") */
+  openVegaCodes(): Promise<void>
   /** open officevega.com/feedback in the default browser (Settings → About) */
   openFeedback(): Promise<void>
+  /** open getmyai.io in the default browser (Settings → About) */
+  openDeveloperSite(): Promise<void>
   /** whether the one-time "star us" prompt should show now (show:true also counts as shown);
    * docOpens personalizes the card copy ("you've opened N documents") */
   starPromptShouldShow(): Promise<StarPromptShow>
@@ -672,7 +676,9 @@ export const HOME_CHANNELS = {
   openAiProvider: 'home:open-ai-provider',
   openAiModels: 'home:open-ai-models',
   openVegaChat: 'home:open-vega-chat',
+  openVegaCodes: 'home:open-vega-codes',
   openFeedback: 'home:open-feedback',
+  openDeveloperSite: 'home:open-developer-site',
   starPromptShouldShow: 'home:star-prompt-should-show',
   starPromptAction: 'home:star-prompt-action',
   licenseStatus: 'license:status',

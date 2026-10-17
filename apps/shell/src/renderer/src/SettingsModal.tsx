@@ -2721,6 +2721,18 @@ export function SettingsModal({
                     </button>
                   }
                 />
+                <Field
+                  label={t('setDeveloperSite')}
+                  value="getmyai.io"
+                  action={
+                    <button
+                      className="set-btn"
+                      onClick={() => void window.aiOffice.openDeveloperSite?.()}
+                    >
+                      {t('setOpen')}
+                    </button>
+                  }
+                />
                 <h3 className="set-pane-title set-lic-title">{t('setOtherAiTitle')}</h3>
                 <Field
                   label={t('setAiChatLabel')}
@@ -2729,6 +2741,30 @@ export function SettingsModal({
                     <button
                       className="set-btn"
                       onClick={() => void window.aiOffice.openVegaChat?.()}
+                    >
+                      {t('setOpen')}
+                    </button>
+                  }
+                />
+                <Field
+                  label={t('setAiAgentLabel')}
+                  value="vega.codes"
+                  action={
+                    <button
+                      className="set-btn"
+                      onClick={() => void window.aiOffice.openVegaCodes?.()}
+                    >
+                      {t('setOpen')}
+                    </button>
+                  }
+                />
+                <Field
+                  label={t('setAiCodeEditorLabel')}
+                  value="vega.codes"
+                  action={
+                    <button
+                      className="set-btn"
+                      onClick={() => void window.aiOffice.openVegaCodes?.()}
                     >
                       {t('setOpen')}
                     </button>

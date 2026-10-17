@@ -18,6 +18,14 @@ export const tt = {
   aiQcStopped: 'Макетны тикшерү туктатылды',
   aiQcCapped: 'Тагын {count} бит тикшерелмәде (бер эшләтүгә чикләү)',
   aiGskLoginBtn: 'VEGA системасына керү',
+  aiConnectPrompt: 'AI чатны куллану өчен VEGA AI яки үз AI провайдерыгызны тоташтырыгыз.',
+  aiConnectBtn: 'AI тоташтыру',
+  aiConnectTip: 'VEGA аша керү',
+  aiErrorAuth: 'Сессия тәмамланды — VEGA-га яңадан керегез.',
+  aiErrorCredits: 'Каражат бетте — api.vega.chat сайтында балансны тулыландырыгыз.',
+  aiErrorRate: 'Бигрәк күп сорау — бераз көтеп, янәдән өлеп карагыз.',
+  aiErrorNetwork: 'AI хезмәте белән бәйләнеш юк — интернетны тикшереп, янәдән өлеп карагыз.',
+  aiErrorServer: 'AI хезмәте вакытлыча эшлеми — соңрак янәдән өлеп карагыз.',
   aiPanelTitle: 'VEGA',
   aiOpenAssistant: 'AI ярдәмчесен ачу',
   aiFactCheckBtn: 'ЯИ ярдәмендә фактларны тикшерү',
@@ -38,7 +46,8 @@ export const tt = {
   aiHistoryEmpty: 'No chats yet',
   aiHistoryLoading: 'Loading…',
   aiHistoryCurrent: 'current',
-  aiHistoryVegaOnly: 'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
+  aiHistoryVegaOnly:
+    'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiEmptyTitle: 'Слайдларыгызны ЯИ ярдәмендә камилләштерегез',
   aiEmptyBody1: 'Күрсәтмәләр бирегез яки сораулар гына бирегез;',
   aiEmptyBody2: 'элементлар сайланганда, үзгәртү командалары сайланганнарга карата кулланыла.',
@@ -251,7 +260,8 @@ export const tt = {
   aiOutlineSubmit: 'Каралама ясау',
   aiOutlineRevise: 'Яңадан планлау',
   aiUpgradeTitle: 'Каралма әзер',
-  aiUpgradeSub: 'Киләсе адымнар: башта рәсемнәр һәм инфографика, аннан бертөрле дизайн — яки башта текстны төзәтегез.',
+  aiUpgradeSub:
+    'Киләсе адымнар: башта рәсемнәр һәм инфографика, аннан бертөрле дизайн — яки башта текстны төзәтегез.',
   aiUpgradeVisuals: 'Рәсемнәр һәм инфографика ясарга',
   aiUpgradeStyle: 'Бертөрле дизайн кулланырга',
   aiUpgradeFull: 'Икесен дә эшләргә',
@@ -267,10 +277,14 @@ export const tt = {
   aiStylePresetDark: 'Караңгы',
   aiStylePresetMinimal: 'Минимал',
   aiUpgradeAskStyleHint: 'Стиль юнәлеше: {hint}',
-  aiStylePresetEditorialHint: 'журнал-редколлегия стиле — зур серифлы башламалар, җылы кәгазь тоннары, киң буш урыннар',
-  aiStylePresetSwissHint: 'швейцария халыкара стиле — каты селтәр, бер акцент төсе, көчле шрифт контрасты, нечкә сызыклар, түгәрәк карталар һәм күләгәләрсез',
-  aiStylePresetDarkHint: 'караңгы атмосфера — тирән күмер яки кочкыл зәңгәр фон, бер якты акцент, зур типография, кинематографик сурәтләр',
-  aiStylePresetMinimalHint: 'якты минимализм — киң буш урыннар, бер тыйнак акцентлы диярлек монохром палитра, тынч төгәл типография',
+  aiStylePresetEditorialHint:
+    'журнал-редколлегия стиле — зур серифлы башламалар, җылы кәгазь тоннары, киң буш урыннар',
+  aiStylePresetSwissHint:
+    'швейцария халыкара стиле — каты селтәр, бер акцент төсе, көчле шрифт контрасты, нечкә сызыклар, түгәрәк карталар һәм күләгәләрсез',
+  aiStylePresetDarkHint:
+    'караңгы атмосфера — тирән күмер яки кочкыл зәңгәр фон, бер якты акцент, зур типография, кинематографик сурәтләр',
+  aiStylePresetMinimalHint:
+    'якты минимализм — киң буш урыннар, бер тыйнак акцентлы диярлек монохром палитра, тынч төгәл типография',
 
   aiClarifyPrev: 'Алдагы',
   aiPageCloudToLocal: 'cloud unavailable — generated locally',

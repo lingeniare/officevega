@@ -6,6 +6,14 @@ export const tk = {
   aiEmptyBuildBody:
     'Gerek bolan tablisany, maglumatlary ýa-da diagrammany beýan ediň — AI ony şu ýerde döreder.',
   aiGskLoginBtn: 'VEGA-a giriň',
+  aiConnectPrompt: 'AI çaty ulanmak üçin VEGA AI ýa-da öz AI üpjün edijiňizi biriktiriň.',
+  aiConnectBtn: 'AI biriktir',
+  aiConnectTip: 'VEGA bilen giriş',
+  aiErrorAuth: 'Sessiýa gutardy — VEGA-a täzeden giriň.',
+  aiErrorCredits: 'Hasap boş — api.vega.chat saýtynda balansy dolduryň.',
+  aiErrorRate: 'Gaty köp sorag — biraz garaşyň we gaýtadan synanyşyň.',
+  aiErrorNetwork: 'AI hyzmaty bilen baglanyşyk ýok — interneti barlaň we gaýtadan synanyşyň.',
+  aiErrorServer: 'AI hyzmaty wagtlaýyn elýeterli däl — soňrak gaýtadan synanyşyň.',
   aiUndelivered: 'Iberilmedi',
   aiRetry: 'Gaýtadan syna',
   aiOpenAssistant: 'AI kömekçisini aç',
@@ -28,7 +36,8 @@ export const tk = {
   aiHistoryEmpty: 'No chats yet',
   aiHistoryLoading: 'Loading…',
   aiHistoryCurrent: 'current',
-  aiHistoryVegaOnly: 'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
+  aiHistoryVegaOnly:
+    'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiEmptyTitle: 'Bu iş kitaby barada AI-den sora',
   aiEmptyBodyLine1: 'Üýtgeşmäni beýan ediň ýa-da maglumatlar barada soraň.',
   aiThinkingAria: 'Pikirlenýär',
@@ -123,9 +132,12 @@ export const tk = {
   aiGensparkAccount: 'Genspark account',
   aiLoginGenspark: 'Sign in to Genspark',
   aiStarterBudget: 'Büjet yzarlaýjy',
-  aiStarterBudgetPrompt: 'Aýlyk büjet yzarlaýjy döret: kategoriýa, meýilnamalaýyn, hakyky we tapawut sütünleri, jemi hatary we birnäçe mysal hatary',
+  aiStarterBudgetPrompt:
+    'Aýlyk büjet yzarlaýjy döret: kategoriýa, meýilnamalaýyn, hakyky we tapawut sütünleri, jemi hatary we birnäçe mysal hatary',
   aiStarterSales: 'Satuw hasabaty',
-  aiStarterSalesPrompt: 'Çärýeklik satuw hasabatyny döret: önüm, sebit, birlik, baha we girdeji sütünleri bilen mysal hatary we jemi hatary',
+  aiStarterSalesPrompt:
+    'Çärýeklik satuw hasabatyny döret: önüm, sebit, birlik, baha we girdeji sütünleri bilen mysal hatary we jemi hatary',
   aiStarterTasks: 'Taslama wezipe meýilnamasy',
-  aiStarterTasksPrompt: 'Taslamanyň wezipe meýilnamasyny döret: wezipe, jogapkär, başlanýan senesi, möhleti we ýagdaýy sütünleri bilen bir düzine mysal wezipeler',
+  aiStarterTasksPrompt:
+    'Taslamanyň wezipe meýilnamasyny döret: wezipe, jogapkär, başlanýan senesi, möhleti we ýagdaýy sütünleri bilen bir düzine mysal wezipeler',
 } satisfies Record<keyof typeof en, string>

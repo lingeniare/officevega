@@ -140,6 +140,13 @@ const api: PdfApi = {
   openAiModelSettings: () => ipcRenderer.invoke(AI_CHANNELS.openModelSettings),
   getProviderModels: (input) => ipcRenderer.invoke(AI_CHANNELS.providerModels, input),
   gskStatus: (withEmail?: boolean) => ipcRenderer.invoke(AI_CHANNELS.gskStatus, withEmail),
+  gskLogin: () => ipcRenderer.invoke(AI_CHANNELS.gskLogin),
+  onAiAuthChanged: (handler: (status: { loggedIn: boolean }) => void) => {
+    const listener = (_e: Electron.IpcRendererEvent, status: { loggedIn: boolean }) =>
+      handler(status)
+    ipcRenderer.on(AI_CHANNELS.authChanged, listener)
+    return () => ipcRenderer.removeListener(AI_CHANNELS.authChanged, listener)
+  },
   aiStream: (request) => ipcRenderer.invoke(AI_CHANNELS.stream, request),
   aiStreamCancel: (requestId) => ipcRenderer.invoke(AI_CHANNELS.streamCancel, requestId),
   onAiStream: (handler) => {

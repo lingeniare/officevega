@@ -135,6 +135,19 @@ launches (`npm run shell`, `npm start -w @officevega/shell`) from such terminals
 - Never pass image base64 through tool arguments — only URLs; the main
   process downloads.
 
+## AI provider network quirks
+
+- openrouter.ai's edge (Cloudflare) 403s any `User-Agent` containing "vega"
+  (any case; /models and /chat/completions alike — verified 2026-10-17).
+  `withUserAgent(init, url)` in `packages/ai-provider/src/fetch.ts` drops the
+  product UA on that host and names the app via OpenRouter's documented
+  `HTTP-Referer` / `X-Title` attribution headers. Without it the live model
+  catalog fails silently and pickers show only the static fallback ids.
+  A session `webRequest` hook in `apps/shell/src/main/index.ts` rewrites the
+  same headers at the wire level (`openRouterSafeHeaders`) for stacks that
+  cannot set User-Agent at all — renderer fetch (forbidden header name) and
+  `net.fetch` (re-derives the app-name UA).
+
 ## License (client)
 
 - Client lives in `apps/shell/src/main/license/` (`token.ts` Ed25519 verify, `client.ts`

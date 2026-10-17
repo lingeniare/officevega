@@ -5,6 +5,14 @@ export const ka = {
   aiEmptyBuildTitle: 'დაე, AI-მ შექმნას ეს სამუშაო წიგნი თქვენთვის',
   aiEmptyBuildBody: 'აღწერეთ საჭირო ცხრილი, მონაცემები ან დიაგრამა — AI მას ადგილზე შექმნის.',
   aiGskLoginBtn: 'შედით VEGA-ში',
+  aiConnectPrompt: 'AI ჩატის გამოსაყენებლად დააკავშირეთ VEGA AI ან საკუთარი AI პროვაიდერი.',
+  aiConnectBtn: 'AI დაკავშირება',
+  aiConnectTip: 'VEGA-თი შესვლა',
+  aiErrorAuth: 'სესია ამოიწურა — შედით VEGA-ში ხელახლა.',
+  aiErrorCredits: 'კრედიტი ამოიწურა — შეავსეთ ბალანსი api.vega.chat-ზე.',
+  aiErrorRate: 'ზედმეტად ბევრი მოთხოვნა — მოითმინეთ და სცადეთ ხელახლა.',
+  aiErrorNetwork: 'AI სერვისთან კავშირი არ არის — შეამოწმეთ ინტერნეტი და სცადეთ ხელახლა.',
+  aiErrorServer: 'AI სერვისი დროებით მიუწვდომელია — სცადეთ მოგვიანებით.',
   aiUndelivered: 'არ გაიგზავნა',
   aiRetry: 'ხელახლა ცდა',
   aiOpenAssistant: 'გახსენით AI ასისტენტი',
@@ -27,7 +35,8 @@ export const ka = {
   aiHistoryEmpty: 'No chats yet',
   aiHistoryLoading: 'Loading…',
   aiHistoryCurrent: 'current',
-  aiHistoryVegaOnly: 'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
+  aiHistoryVegaOnly:
+    'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiEmptyTitle: 'ჰკითხეთ AI-ს ამ სამუშაო წიგნის შესახებ',
   aiEmptyBodyLine1: 'აღწერეთ ცვლილება ან დასვით კითხვა მონაცემების შესახებ.',
   aiThinkingAria: 'ფიქრი',
@@ -122,9 +131,12 @@ export const ka = {
   aiGensparkAccount: 'Genspark account',
   aiLoginGenspark: 'Sign in to Genspark',
   aiStarterBudget: 'ბიუჯეტის ტრეკერი',
-  aiStarterBudgetPrompt: 'შექმენი ყოველთვიური ბიუჯეტის ტრეკერი: სვეტები კატეგორია, დაგეგმილი, ფაქტიური და სხვაობა, ჯამის სტრიქონი და რამდენიმე მაგალითი სტრიქონი',
+  aiStarterBudgetPrompt:
+    'შექმენი ყოველთვიური ბიუჯეტის ტრეკერი: სვეტები კატეგორია, დაგეგმილი, ფაქტიური და სხვაობა, ჯამის სტრიქონი და რამდენიმე მაგალითი სტრიქონი',
   aiStarterSales: 'გაყიდვების ანგარიში',
-  aiStarterSalesPrompt: 'შექმენი კვარტალური გაყიდვების ანგარიში: სვეტები პროდუქტი, რეგიონი, ერთეული, ფასი და შემოსავალი მაგალითებით და ჯამის სტრიქონით',
+  aiStarterSalesPrompt:
+    'შექმენი კვარტალური გაყიდვების ანგარიში: სვეტები პროდუქტი, რეგიონი, ერთეული, ფასი და შემოსავალი მაგალითებით და ჯამის სტრიქონით',
   aiStarterTasks: 'პროექტის ამოცანების გეგმა',
-  aiStarterTasksPrompt: 'შექმენი პროექტის ამოცანების გეგმა: სვეტები ამოცანა, პასუხისმგებელი, დაწყების თარიღი, ვადა და სტატუსი თორმეტი მაგალითი ამოცანით',
+  aiStarterTasksPrompt:
+    'შექმენი პროექტის ამოცანების გეგმა: სვეტები ამოცანა, პასუხისმგებელი, დაწყების თარიღი, ვადა და სტატუსი თორმეტი მაგალითი ამოცანით',
 } satisfies Record<keyof typeof en, string>

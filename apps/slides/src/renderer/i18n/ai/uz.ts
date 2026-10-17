@@ -18,6 +18,14 @@ export const uz = {
   aiQcStopped: 'Maket tekshiruvi to‘xtatildi',
   aiQcCapped: 'Yana {count} ta sahifa tekshirilmagan (bir ishga tushirish limiti)',
   aiGskLoginBtn: 'VEGA hisobiga kiring',
+  aiConnectPrompt: 'AI chatdan foydalanish uchun VEGA AI yoki o’z AI provayderingizni ulang.',
+  aiConnectBtn: 'AI ulash',
+  aiConnectTip: 'VEGA orqali kirish',
+  aiErrorAuth: 'Sessiya tugadi — VEGA-ga qayta kiring.',
+  aiErrorCredits: 'Mablag‘ tugadi — api.vega.chat saytida balansni to‘ldiring.',
+  aiErrorRate: 'Juda ko‘p so‘rov — biroz kutib qayta urinib ko‘ring.',
+  aiErrorNetwork: 'AI xizmati bilan aloqa yo‘q — internetni tekshirib qayta urinib ko‘ring.',
+  aiErrorServer: 'AI xizmati vaqtincha ishlamayapti — keyinroq urinib ko‘ring.',
   aiPanelTitle: 'VEGA',
   aiOpenAssistant: 'AI yordamchisini ochish',
   aiFactCheckBtn: 'AI faktlarni tekshirish',
@@ -37,7 +45,8 @@ export const uz = {
   aiHistoryEmpty: 'No chats yet',
   aiHistoryLoading: 'Loading…',
   aiHistoryCurrent: 'current',
-  aiHistoryVegaOnly: 'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
+  aiHistoryVegaOnly:
+    'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiEmptyTitle: 'AI yordamida slaydlaringizni sayqallang',
   aiEmptyBody1: 'Ko‘rsatmalar bering yoki shunchaki savollar bering;',
   aiEmptyBody2: 'elementlar tanlanganda, qayta yozish buyruqlari tanlovga qo‘llanadi.',
@@ -247,12 +256,14 @@ export const uz = {
   aiOutlinePages: '{n} sahifa',
   aiOutlineKeep: 'Bu sahifani saqlash',
   aiOutlineVisuals: '{n} ta vizual slot',
-  aiOutlineFeedbackPh: 'Nimani o‘zgartirish kerak? (ixtiyoriy, masalan: 3- va 4-sahifalarni birlashtirish)',
+  aiOutlineFeedbackPh:
+    'Nimani o‘zgartirish kerak? (ixtiyoriy, masalan: 3- va 4-sahifalarni birlashtirish)',
   aiOutlineCancel: 'Bekor qilish',
   aiOutlineSubmit: 'Qoralama yaratish',
   aiOutlineRevise: 'Qayta rejalash',
   aiUpgradeTitle: 'Qoralama tayyor',
-  aiUpgradeSub: 'Keyingi qadamlar: avval rasmlar va infografika, keyin yagona dizayn — yoki avval matnni tahrirlang.',
+  aiUpgradeSub:
+    'Keyingi qadamlar: avval rasmlar va infografika, keyin yagona dizayn — yoki avval matnni tahrirlang.',
   aiUpgradeVisuals: 'Rasmlar va infografikani yaratish',
   aiUpgradeStyle: 'Yagona dizaynni qo‘llash',
   aiUpgradeFull: 'Ikkalasini ham bajarish',
@@ -268,10 +279,14 @@ export const uz = {
   aiStylePresetDark: 'Qorong‘u',
   aiStylePresetMinimal: 'Minimal',
   aiUpgradeAskStyleHint: 'Uslub yo‘nalishi: {hint}',
-  aiStylePresetEditorialHint: 'jurnal-uslubiy ko‘rinish — katta serserif sarlavhalar, iliq qog‘oz tonlari, keng bo‘sh joylar',
-  aiStylePresetSwissHint: 'Shveytsariya xalqaro uslubi — qat‘iy panjara, bitta asosiy urg‘u rangi, kuchli shrift kontrasti, ingichka chiziqlar, yumaloq kartalar yoki soyalarsiz',
-  aiStylePresetDarkHint: 'qorong‘u muhit — chuqur ko‘mir yoki to‘q ko‘k fon, bitta yorug‘ urg‘u, ulkan tipografiya, kinematografik tasvirlar',
-  aiStylePresetMinimalHint: 'yengil minimal — keng bo‘sh joylar, bitta tortinchoq urg‘u bilan deyarli monoxrom palitra, sokin aniq tipografiya',
+  aiStylePresetEditorialHint:
+    'jurnal-uslubiy ko‘rinish — katta serserif sarlavhalar, iliq qog‘oz tonlari, keng bo‘sh joylar',
+  aiStylePresetSwissHint:
+    'Shveytsariya xalqaro uslubi — qat‘iy panjara, bitta asosiy urg‘u rangi, kuchli shrift kontrasti, ingichka chiziqlar, yumaloq kartalar yoki soyalarsiz',
+  aiStylePresetDarkHint:
+    'qorong‘u muhit — chuqur ko‘mir yoki to‘q ko‘k fon, bitta yorug‘ urg‘u, ulkan tipografiya, kinematografik tasvirlar',
+  aiStylePresetMinimalHint:
+    'yengil minimal — keng bo‘sh joylar, bitta tortinchoq urg‘u bilan deyarli monoxrom palitra, sokin aniq tipografiya',
 
   aiClarifyPrev: 'Oldingi',
   aiPageCloudToLocal: 'cloud unavailable — generated locally',

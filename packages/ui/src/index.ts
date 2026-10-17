@@ -2,11 +2,7 @@ export { AiPanelSideButton } from './AiPanelSideButton'
 export { AiComposer } from './AiComposer'
 export { AiShieldBadge } from './AiShieldBadge'
 export { AiDepositBadge } from './AiDepositBadge'
-export {
-  formatVegaDeposit,
-  useVegaDeposit,
-  type VegaDepositBadgeData,
-} from './vega-deposit'
+export { formatVegaDeposit, useVegaDeposit, type VegaDepositBadgeData } from './vega-deposit'
 export { AiSuggestedQuestions, useSuggestedQuestions } from './ai-suggested-questions'
 export { AiQueueStrip } from './AiQueueStrip'
 export { useChatRunQueue, type ChatRunQueue, type QueuedChatMessage } from './chat-run-queue'
@@ -169,6 +165,9 @@ export {
   type ZoomWheelIntent,
 } from './wheel-zoom'
 export { AiModelPicker, type AiModelPickerBridge } from './AiModelPicker'
+export { AiConnectPrompt } from './AiConnectPrompt'
+export { useAiDisconnected, type AiConnectionBridge } from './ai-connection'
+export { aiErrorKey, aiErrorText, type AiErrorKey } from './ai-error'
 export {
   aiModelPickerGroups,
   aiModelPickerSelection,

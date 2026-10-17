@@ -6,6 +6,14 @@ export const kk = {
   aiEmptyBuildBody:
     'Қажетті кестені, деректерді немесе диаграмманы сипаттаңыз — AI оны осы жерге жасайды.',
   aiGskLoginBtn: 'VEGA жүйесіне кіру',
+  aiConnectPrompt: 'AI чатты пайдалану үшін VEGA AI немесе өз AI провайдеріңізді қосыңыз.',
+  aiConnectBtn: 'AI қосу',
+  aiConnectTip: 'VEGA арқылы кіру',
+  aiErrorAuth: 'Сессия аяқталды — VEGA-ға қайта кіріңіз.',
+  aiErrorCredits: 'Қаражат бітті — api.vega.chat сайтында балансты толтырыңыз.',
+  aiErrorRate: 'Тым көп сұрау — сәл күтіп, қайта көріңіз.',
+  aiErrorNetwork: 'AI қызметімен байланыс жоқ — интернетті тексеріп, қайта көріңіз.',
+  aiErrorServer: 'AI қызметі уақытша жұмыс істемейді — кейінірек қайталап көріңіз.',
   aiUndelivered: 'Жіберілмеді',
   aiRetry: 'Қайталау',
   aiOpenAssistant: 'AI көмекшісін ашу',
@@ -28,7 +36,8 @@ export const kk = {
   aiHistoryEmpty: 'No chats yet',
   aiHistoryLoading: 'Loading…',
   aiHistoryCurrent: 'current',
-  aiHistoryVegaOnly: 'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
+  aiHistoryVegaOnly:
+    'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiEmptyTitle: 'Осы жұмыс кітабы туралы AI-дан сұрау',
   aiEmptyBodyLine1: 'Өзгерісті сипаттаңыз немесе деректер туралы сұрақ қойыңыз.',
   aiThinkingAria: 'Ойлануда',
@@ -123,9 +132,12 @@ export const kk = {
   aiGensparkAccount: 'Genspark account',
   aiLoginGenspark: 'Sign in to Genspark',
   aiStarterBudget: 'Бюджет трекері',
-  aiStarterBudgetPrompt: 'Айлық бюджет трекерін жаса: санат, жоспарланған, нақты және айырма бағандары, қорытынды жол және бірнеше мысал жолдар',
+  aiStarterBudgetPrompt:
+    'Айлық бюджет трекерін жаса: санат, жоспарланған, нақты және айырма бағандары, қорытынды жол және бірнеше мысал жолдар',
   aiStarterSales: 'Сату есебі',
-  aiStarterSalesPrompt: 'Тоқсандық сату есебін жаса: өнім, аймақ, дана, баға және түсім бағандары, мысал жолдар және қорытынды жол',
+  aiStarterSalesPrompt:
+    'Тоқсандық сату есебін жаса: өнім, аймақ, дана, баға және түсім бағандары, мысал жолдар және қорытынды жол',
   aiStarterTasks: 'Жоба тапсырмалар жоспары',
-  aiStarterTasksPrompt: 'Жоба тапсырмалар жоспарын жаса: тапсырма, жауапты, басталу күні, мерзімі және мәртебе бағандары, оншама мысал тапсырмалармен',
+  aiStarterTasksPrompt:
+    'Жоба тапсырмалар жоспарын жаса: тапсырма, жауапты, басталу күні, мерзімі және мәртебе бағандары, оншама мысал тапсырмалармен',
 } satisfies Record<keyof typeof en, string>

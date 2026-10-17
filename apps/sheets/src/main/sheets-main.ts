@@ -67,7 +67,6 @@ import {
   appTitle,
   createI18n,
   getUiLang,
-  type Lang,
   normalizeLang,
   setUiLang,
 } from '@genoffice/i18n'
@@ -107,8 +106,10 @@ import {
 import {
   ensureOfficeVegaLogin,
   noteGskCallFailure,
+  noteVegaCallFailure,
   officeVegaApiKey,
   setOfficeVegaAuthListener,
+  setGskKeyRejectedListener,
   gskApiKey,
   gskLoginInfo,
   hasGskAuth,
@@ -3059,6 +3060,14 @@ export function registerSheetsAiIpc(): void {
       if (!wc.isDestroyed()) wc.send(IPC_CHANNELS.aiAuthChanged, payload)
     }
   })
+  // a gsk key the server answered 401 for stops being offered at once — push
+  // the recomputed status so chat panels mute without waiting for a refocus
+  setGskKeyRejectedListener(() => {
+    const payload = { loggedIn: !!officeVegaApiKey() || hasGskAuth() }
+    for (const wc of webContents.getAllWebContents()) {
+      if (!wc.isDestroyed()) wc.send(IPC_CHANNELS.aiAuthChanged, payload)
+    }
+  })
 
   // Node fetch (undici) direct connections get reset under VPN/tun setups; retry over Chromium's stack
   setRescueFetch((url, init) => net.fetch(url, init))
@@ -3200,10 +3209,14 @@ export function registerSheetsAiIpc(): void {
       if (!result.ok && isAiOverloadedError(result.error)) {
         return { ok: false, error: tm('errAiBusy') }
       }
-      if (!result.ok) noteGskCallFailure(gskKey, result.error)
+      if (!result.ok) {
+        noteGskCallFailure(gskKey, result.error)
+        noteVegaCallFailure(config.apiKey, result.error)
+      }
       return result
     } catch (err) {
       noteGskCallFailure(gskKey, err)
+      noteVegaCallFailure(config.apiKey, err)
       return { ok: false, error: isAiOverloadedError(err) ? tm('errAiBusy') : String(err) }
     }
   })
@@ -3292,6 +3305,7 @@ export function registerSheetsAiIpc(): void {
         console.error(`[ai-stream] ${requestId} (${provider}/${config.model}) failed:`, msg)
         // an expired/revoked key drops to signed-out so the inline sign-in button shows
         noteGskCallFailure(gskKey, err)
+        noteVegaCallFailure(config.apiKey, err)
         send({
           requestId,
           type: 'error',
@@ -3998,7 +4012,7 @@ async function openEmptyXlsx(path: string): Promise<{
 }
 
 /** which legacy charset an Excel CSV most likely uses, judged by the UI language */
-function legacyCsvCharset(): string | undefined {
+function _legacyCsvCharset(): string | undefined {
   // officevega: Lang no longer covers zh/ja/ko — keep the map but on plain
   // strings; entries for unshipped UI languages are simply unreachable
   const byLang: Record<string, string> = {

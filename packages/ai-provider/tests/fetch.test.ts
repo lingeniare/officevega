@@ -1,5 +1,11 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { AI_DEFAULT_USER_AGENT, aiFetch, setAiUserAgent, setRescueFetch } from '../src/fetch'
+import {
+  AI_DEFAULT_USER_AGENT,
+  aiFetch,
+  openRouterSafeHeaders,
+  setAiUserAgent,
+  setRescueFetch,
+} from '../src/fetch'
 
 afterEach(() => {
   vi.unstubAllGlobals()
@@ -40,6 +46,81 @@ describe('aiFetch', () => {
     setRescueFetch(rescue)
     await aiFetch('https://x/', {})
     expect(sentHeaders(rescue).get('user-agent')).toBe('OfficeVega')
+  })
+
+  it('keeps a vega-bearing user agent off openrouter.ai and identifies via attribution headers', async () => {
+    // openrouter.ai's edge 403s any User-Agent containing "vega" (any case):
+    // the product UA must stay home on this host or every OpenRouter request —
+    // catalog, chat, media — dies at the edge before the key is even read
+    const fetchMock = vi.fn().mockResolvedValue(new Response('ok'))
+    vi.stubGlobal('fetch', fetchMock)
+    setAiUserAgent('OfficeVega/1.2.3')
+    await aiFetch('https://openrouter.ai/api/v1/models', {})
+    let headers = sentHeaders(fetchMock)
+    // pinned neutral UA — not absent: a stack that re-derives a default UA
+    // from the app name would put the blocked token right back
+    expect(headers.get('user-agent')).toBe('node')
+    expect(headers.get('http-referer')).toBe('https://officevega.com')
+    expect(headers.get('x-title')).toBe('OfficeVega')
+
+    fetchMock.mockClear()
+    await aiFetch('https://openrouter.ai/api/v1/models', {
+      headers: { 'User-Agent': 'custom/9' },
+    })
+    headers = sentHeaders(fetchMock)
+    expect(headers.get('user-agent')).toBe('custom/9')
+    expect(headers.get('x-title')).toBe('OfficeVega')
+
+    fetchMock.mockClear()
+    await aiFetch('https://openrouter.ai/api/v1/models', {
+      headers: { 'User-Agent': 'x-officevega/9', 'HTTP-Referer': 'https://other.example' },
+    })
+    headers = sentHeaders(fetchMock)
+    expect(headers.get('user-agent')).toBe('node')
+    expect(headers.get('http-referer')).toBe('https://other.example')
+
+    // subdomains ride the same edge; every other host keeps the product UA
+    fetchMock.mockClear()
+    await aiFetch('https://staging.openrouter.ai/api/v1/models', {})
+    expect(sentHeaders(fetchMock).get('user-agent')).toBe('node')
+
+    fetchMock.mockClear()
+    await aiFetch('https://api.openai.com/v1/models', {})
+    expect(sentHeaders(fetchMock).get('user-agent')).toBe('OfficeVega/1.2.3')
+  })
+
+  it('sanitizes wire headers for stacks that cannot set User-Agent themselves', () => {
+    // the session webRequest hook feeds Chromium's requestHeaders record
+    // through openRouterSafeHeaders: a renderer fetch cannot carry
+    // User-Agent (forbidden name), net.fetch re-derives the app UA — the
+    // vega token must not reach the wire through either
+    expect(
+      openRouterSafeHeaders('https://openrouter.ai/api/alpha/decisions', {
+        'User-Agent': 'OfficeVega/1.2.3 Chrome/130.0.0.0 Electron/43.0.0',
+        Authorization: 'Bearer k',
+      }),
+    ).toEqual({
+      'User-Agent': 'node',
+      Authorization: 'Bearer k',
+      'HTTP-Referer': 'https://officevega.com',
+      'X-Title': 'OfficeVega',
+    })
+
+    // a foreign UA survives; attribution is filled in but never clobbered
+    expect(
+      openRouterSafeHeaders('https://api.openrouter.ai/v1/models', {
+        'user-agent': 'my-client/2',
+        'x-title': 'My App',
+      }),
+    ).toEqual({
+      'user-agent': 'my-client/2',
+      'x-title': 'My App',
+      'HTTP-Referer': 'https://officevega.com',
+    })
+
+    // every other host keeps its headers byte-for-byte
+    const headers = { 'User-Agent': 'OfficeVega/1.2.3', Authorization: 'Bearer k' }
+    expect(openRouterSafeHeaders('https://api.vega.chat/api/v1/chat', headers)).toEqual(headers)
   })
 
   it('returns the primary response without touching the rescue path', async () => {

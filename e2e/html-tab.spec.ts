@@ -245,8 +245,8 @@ test.describe('html editor', () => {
       await toggle.click()
       await expect(editorPage.locator('.ai-msg-user')).toContainText('Rename the heading')
 
-      // page-wide AI entries: Theme opens a direction menu, a pick sends the instruction
-      // (or parks it in the composer while a run is still busy); Summarize sends right away
+      // page-wide AI entries stage their prompt in the composer (docs parity):
+      // Theme opens a direction menu, a pick lands the instruction for review
       await editorPage
         .locator('.ribbon')
         .getByRole('button', { name: /^Theme$/ })

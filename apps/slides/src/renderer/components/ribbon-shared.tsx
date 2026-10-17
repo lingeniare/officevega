@@ -306,7 +306,7 @@ export interface Props {
   /** Suite-wide AI switch (#1947): false hides the AI ribbon group */
   aiEnabled?: boolean
   onToggleAi: () => void
-  /** Push a preset instruction to the AI panel and expand it (autoRun executes immediately) */
+  /** Push a preset instruction to the AI panel and expand it — staged in the composer for the user to send */
   /** slideShot: attach the current slide's rendering so the model sees the page (AI Beautify) */
   onAiPreset: (text: string, opts?: { slideShot?: boolean }) => void
   /** Shape gallery / Text Box pick: enter canvas draw mode (crosshair; click = default size, drag = custom, Esc cancels) */

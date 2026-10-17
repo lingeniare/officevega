@@ -17,6 +17,7 @@ const MAX_TEXTAREA_HEIGHT = 132
 export function AiComposer({
   value,
   busy,
+  disabled = false,
   placeholder,
   hintIdle,
   hintBusy,
@@ -45,6 +46,8 @@ export function AiComposer({
 }: {
   readonly value: string
   readonly busy: boolean
+  /** signed-out/no-provider state: the whole pill is inert (textarea, footer, send) */
+  readonly disabled?: boolean | undefined
   readonly placeholder: string
   readonly hintIdle: string
   readonly hintBusy: string
@@ -87,7 +90,7 @@ export function AiComposer({
 }): React.JSX.Element {
   const innerRef = useRef<HTMLTextAreaElement | null>(null)
   const ref = textareaRef ?? innerRef
-  const canSend = value.trim().length > 0 && !busy
+  const canSend = value.trim().length > 0 && !busy && !disabled
   const { spellcheck } = useAiPanelPrefs()
 
   // auto-grow from 3 rows up to 6; empty clears the inline height outright
@@ -104,12 +107,13 @@ export function AiComposer({
   }, [value, ref])
 
   return (
-    <div className="ai-input-box">
+    <div className={`ai-input-box${disabled ? ' is-disabled' : ''}`}>
       {queueStrip}
       {header}
       <textarea
         ref={ref}
         value={value}
+        disabled={disabled}
         placeholder={busy && onQueue && queuePlaceholder ? queuePlaceholder : placeholder}
         aria-label={ariaLabel}
         rows={3}

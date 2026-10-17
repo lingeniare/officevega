@@ -6,6 +6,14 @@ export const tt = {
   aiEmptyBuildBody:
     'Кирәкле таблицаны, мәгълүматны яки диаграмманы тасвирлагыз — AI аны шунда ук төзи.',
   aiGskLoginBtn: 'VEGA системасына керү',
+  aiConnectPrompt: 'AI чатны куллану өчен VEGA AI яки үз AI провайдерыгызны тоташтырыгыз.',
+  aiConnectBtn: 'AI тоташтыру',
+  aiConnectTip: 'VEGA аша керү',
+  aiErrorAuth: 'Сессия тәмамланды — VEGA-га яңадан керегез.',
+  aiErrorCredits: 'Каражат бетте — api.vega.chat сайтында балансны тулыландырыгыз.',
+  aiErrorRate: 'Бигрәк күп сорау — бераз көтеп, янәдән өлеп карагыз.',
+  aiErrorNetwork: 'AI хезмәте белән бәйләнеш юк — интернетны тикшереп, янәдән өлеп карагыз.',
+  aiErrorServer: 'AI хезмәте вакытлыча эшлеми — соңрак янәдән өлеп карагыз.',
   aiUndelivered: 'Җибәрелмәде',
   aiRetry: 'Кабатлап карау',
   aiOpenAssistant: 'AI ярдәмчесен ачу',
@@ -28,7 +36,8 @@ export const tt = {
   aiHistoryEmpty: 'No chats yet',
   aiHistoryLoading: 'Loading…',
   aiHistoryCurrent: 'current',
-  aiHistoryVegaOnly: 'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
+  aiHistoryVegaOnly:
+    'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiEmptyTitle: 'AIдан бу эш китабы турында сорау',
   aiEmptyBodyLine1: 'Үзгәрешне тасвирлагыз яки мәгълүмат турында сорагыз.',
   aiThinkingAria: 'Уйлый',
@@ -123,9 +132,12 @@ export const tt = {
   aiGensparkAccount: 'Genspark account',
   aiLoginGenspark: 'Sign in to Genspark',
   aiStarterBudget: 'Бюджет трекеры',
-  aiStarterBudgetPrompt: 'Айлык бюджет трекерын төзе: төркем, планлаштырылган, чын һәм аерма баганалары, җәмгы юл һәм берничә үрнәк юл',
+  aiStarterBudgetPrompt:
+    'Айлык бюджет трекерын төзе: төркем, планлаштырылган, чын һәм аерма баганалары, җәмгы юл һәм берничә үрнәк юл',
   aiStarterSales: 'Сату хисабы',
-  aiStarterSalesPrompt: 'Кварталь сату хисабын төзе: продукт, төбәк, берәмлек, бәя һәм керем баганалары, үрнәк юллар һәм җәмгы юл',
+  aiStarterSalesPrompt:
+    'Кварталь сату хисабын төзе: продукт, төбәк, берәмлек, бәя һәм керем баганалары, үрнәк юллар һәм җәмгы юл',
   aiStarterTasks: 'Проект биремнәр планы',
-  aiStarterTasksPrompt: 'Проект биремнәр планын төзе: бирем, җаваплы, башлану көне, тәмамлану көне һәм халәт баганалары белән унлап үрнәк биремнәр',
+  aiStarterTasksPrompt:
+    'Проект биремнәр планын төзе: бирем, җаваплы, башлану көне, тәмамлану көне һәм халәт баганалары белән унлап үрнәк биремнәр',
 } satisfies Record<keyof typeof en, string>

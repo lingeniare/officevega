@@ -7,6 +7,14 @@ export const ky = {
   aiEmptyBuildBody:
     'Керектүү таблицаны, дайындарды же диаграмманы сүрөттөп бериңиз — AI аны ушул жерге түзөт.',
   aiGskLoginBtn: "VEGA'га кирүү",
+  aiConnectPrompt: 'AI чатты колдонуу үчүн VEGA AI же өз AI провайдериңизди туташтырыңыз.',
+  aiConnectBtn: 'AI туташтыруу',
+  aiConnectTip: 'VEGA менен кирүү',
+  aiErrorAuth: 'Сессия аяқтады — VEGA-га кайра кирингиз.',
+  aiErrorCredits: 'Каражат бүттү — api.vega.chat сайтында балансты толтуруңуз.',
+  aiErrorRate: 'Өтө көп сурам — бир аз күтүп, кайра аракет кылыңыз.',
+  aiErrorNetwork: 'AI кызматы менен байланыш жок — интернетти текшеріп, кайра аракет кылыңыз.',
+  aiErrorServer: 'AI кызматы убакыттуу жеткиликсиз — кийинчерээк аракет кылыңыз.',
   aiUndelivered: 'Жөнөтүлгөн жок',
   aiRetry: 'Кайра аракет кылуу',
   aiOpenAssistant: 'AI жардамчысын ачуу',
@@ -29,7 +37,8 @@ export const ky = {
   aiHistoryEmpty: 'No chats yet',
   aiHistoryLoading: 'Loading…',
   aiHistoryCurrent: 'current',
-  aiHistoryVegaOnly: 'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
+  aiHistoryVegaOnly:
+    'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiEmptyTitle: 'Бул иш китеби тууралуу AIден сураңыз',
   aiEmptyBodyLine1: 'Өзгөртүүнү сүрөттөп бериңиз же дайындар тууралуу сураңыз.',
   aiThinkingAria: 'Ойлонууда',
@@ -124,9 +133,12 @@ export const ky = {
   aiGensparkAccount: 'Genspark account',
   aiLoginGenspark: 'Sign in to Genspark',
   aiStarterBudget: 'Бюджет трекери',
-  aiStarterBudgetPrompt: 'Айлык бюджет трекерин түз: категория, пландаштырылган, чыныгы жана айырма мамылары, жыйынтык сабы жана бир нече үлгү саптары',
+  aiStarterBudgetPrompt:
+    'Айлык бюджет трекерин түз: категория, пландаштырылган, чыныгы жана айырма мамылары, жыйынтык сабы жана бир нече үлгү саптары',
   aiStarterSales: 'Сатуу отчету',
-  aiStarterSalesPrompt: 'Чейрек жылдык сатуу отчетун түз: продукт, аймак, саны, баасы жана киреше мамылары, үлгү саптары жана жыйынтык сабы менен',
+  aiStarterSalesPrompt:
+    'Чейрек жылдык сатуу отчетун түз: продукт, аймак, саны, баасы жана киреше мамылары, үлгү саптары жана жыйынтык сабы менен',
   aiStarterTasks: 'Долбоор тапшырма планы',
-  aiStarterTasksPrompt: 'Долбоордун тапшырма планын түз: тапшырма, жоопкер, башталуу күнү, мөөнөтү жана абалы мамылары менен ондан ашык үлгү тапшырмалары',
+  aiStarterTasksPrompt:
+    'Долбоордун тапшырма планын түз: тапшырма, жоопкер, башталуу күнү, мөөнөтү жана абалы мамылары менен ондан ашык үлгү тапшырмалары',
 } satisfies Record<keyof typeof en, string>

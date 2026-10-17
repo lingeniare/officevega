@@ -41,6 +41,8 @@ function renderRibbon(disabled = false) {
     onView: vi.fn(),
     canInsert: true,
     onInsert: vi.fn(),
+    onInsertSkeleton: vi.fn(),
+    canInsertSkeleton: false,
     canvasMode: 'edit' as const,
     onPresent: vi.fn(),
   }
@@ -64,7 +66,7 @@ describe('Save As quick-access button', () => {
   it('can save a copy of an unchanged document without triggering normal save', () => {
     const { container, onSave, onSaveAs } = renderRibbon()
     const button = saveAsButton(container)
-    expect(button.textContent).toBe('Save As\u2026')
+    expect(button.getAttribute('aria-label')).toBe('Save As\u2026')
     expect(button.disabled).toBe(false)
     act(() => button.click())
     expect(onSaveAs).toHaveBeenCalledOnce()

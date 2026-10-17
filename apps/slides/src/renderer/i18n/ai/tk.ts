@@ -18,6 +18,14 @@ export const tk = {
   aiQcStopped: 'Ýerleşiş barlagy togtadyldy',
   aiQcCapped: 'Ýene {count} sahypa barlanmady (bir iş üçin çäk)',
   aiGskLoginBtn: 'VEGA-a giriň',
+  aiConnectPrompt: 'AI çaty ulanmak üçin VEGA AI ýa-da öz AI üpjün edijiňizi biriktiriň.',
+  aiConnectBtn: 'AI biriktir',
+  aiConnectTip: 'VEGA bilen giriş',
+  aiErrorAuth: 'Sessiýa gutardy — VEGA-a täzeden giriň.',
+  aiErrorCredits: 'Hasap boş — api.vega.chat saýtynda balansy dolduryň.',
+  aiErrorRate: 'Gaty köp sorag — biraz garaşyň we gaýtadan synanyşyň.',
+  aiErrorNetwork: 'AI hyzmaty bilen baglanyşyk ýok — interneti barlaň we gaýtadan synanyşyň.',
+  aiErrorServer: 'AI hyzmaty wagtlaýyn elýeterli däl — soňrak gaýtadan synanyşyň.',
   aiPanelTitle: 'VEGA',
   aiOpenAssistant: 'AI kömekçisini aç',
   aiFactCheckBtn: 'AI fakt barlagy',
@@ -38,7 +46,8 @@ export const tk = {
   aiHistoryEmpty: 'No chats yet',
   aiHistoryLoading: 'Loading…',
   aiHistoryCurrent: 'current',
-  aiHistoryVegaOnly: 'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
+  aiHistoryVegaOnly:
+    'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiEmptyTitle: 'AI-a slaýdlaryňyzy kämilleşdirdiriň',
   aiEmptyBody1: 'Görkezmeler beriň ýa-da diňe sorag soraň;',
   aiEmptyBody2:
@@ -250,7 +259,8 @@ export const tk = {
   aiOutlineSubmit: 'Garalama döret',
   aiOutlineRevise: 'Täzeden meýlet',
   aiUpgradeTitle: 'Taslama taýýar',
-  aiUpgradeSub: 'Indiki ädimler: ilki suratlar we infografika, soňra ýeke-täk dizaýn — ýa-da ilki teksti düzediň.',
+  aiUpgradeSub:
+    'Indiki ädimler: ilki suratlar we infografika, soňra ýeke-täk dizaýn — ýa-da ilki teksti düzediň.',
   aiUpgradeVisuals: 'Suratlary we infografikany döret',
   aiUpgradeStyle: 'Ýeke-täk dizaýny ulan',
   aiUpgradeFull: 'Ikisini hem et',
@@ -266,10 +276,14 @@ export const tk = {
   aiStylePresetDark: 'Garaňky',
   aiStylePresetMinimal: 'Minimal',
   aiUpgradeAskStyleHint: 'Stil ugry: {hint}',
-  aiStylePresetEditorialHint: 'žurnal redaksiýa stili — uly serifli sözbaşylar, yly kagyç tonlary, giň boş ýerler',
-  aiStylePresetSwissHint: 'Şweýsariýa halkara stili — berk tor, bir anker aýratyn reňk, güýçli şrift kontrasty, inçe çyzyklar, tegelik kartlar we kölgeler ýok',
-  aiStylePresetDarkHint: 'garaňky atmosfera — çuň kömür ýa-da gök fon, bir ýalply akýsent, uly tipografiýa, kinematografik suratlar',
-  aiStylePresetMinimalHint: 'ýagty minimal — giň boş ýerler, bir çäklendiriji akýsentli ýakyn monoxrom palitra, ýumşak takyk tipografiýa',
+  aiStylePresetEditorialHint:
+    'žurnal redaksiýa stili — uly serifli sözbaşylar, yly kagyç tonlary, giň boş ýerler',
+  aiStylePresetSwissHint:
+    'Şweýsariýa halkara stili — berk tor, bir anker aýratyn reňk, güýçli şrift kontrasty, inçe çyzyklar, tegelik kartlar we kölgeler ýok',
+  aiStylePresetDarkHint:
+    'garaňky atmosfera — çuň kömür ýa-da gök fon, bir ýalply akýsent, uly tipografiýa, kinematografik suratlar',
+  aiStylePresetMinimalHint:
+    'ýagty minimal — giň boş ýerler, bir çäklendiriji akýsentli ýakyn monoxrom palitra, ýumşak takyk tipografiýa',
 
   aiClarifyPrev: 'Öňki',
   aiPageCloudToLocal: 'cloud unavailable — generated locally',

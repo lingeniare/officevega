@@ -6,6 +6,14 @@ export const uz = {
   aiEmptyBuildBody:
     'Kerakli jadval, ma’lumotlar yoki diagrammani tavsiflang — AI uni shu joyda yaratadi.',
   aiGskLoginBtn: 'VEGA hisobiga kiring',
+  aiConnectPrompt: 'AI chatdan foydalanish uchun VEGA AI yoki o’z AI provayderingizni ulang.',
+  aiConnectBtn: 'AI ulash',
+  aiConnectTip: 'VEGA orqali kirish',
+  aiErrorAuth: 'Sessiya tugadi — VEGA-ga qayta kiring.',
+  aiErrorCredits: 'Mablag‘ tugadi — api.vega.chat saytida balansni to‘ldiring.',
+  aiErrorRate: 'Juda ko‘p so‘rov — biroz kutib qayta urinib ko‘ring.',
+  aiErrorNetwork: 'AI xizmati bilan aloqa yo‘q — internetni tekshirib qayta urinib ko‘ring.',
+  aiErrorServer: 'AI xizmati vaqtincha ishlamayapti — keyinroq urinib ko‘ring.',
   aiUndelivered: 'Yuborilmadi',
   aiRetry: 'Qayta urinish',
   aiOpenAssistant: 'AI yordamchisini ochish',
@@ -28,7 +36,8 @@ export const uz = {
   aiHistoryEmpty: 'No chats yet',
   aiHistoryLoading: 'Loading…',
   aiHistoryCurrent: 'current',
-  aiHistoryVegaOnly: 'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
+  aiHistoryVegaOnly:
+    'History is saved only while the VEGA provider is selected. Older chats stay visible below.',
   aiEmptyTitle: 'AI’dan ushbu ish kitobi haqida so‘rash',
   aiEmptyBodyLine1: 'O‘zgarishni tavsiflang yoki ma’lumotlar haqida so‘rang.',
   aiThinkingAria: 'O‘ylanmoqda',
@@ -123,9 +132,12 @@ export const uz = {
   aiGensparkAccount: 'Genspark account',
   aiLoginGenspark: 'Sign in to Genspark',
   aiStarterBudget: 'Byudjet trekkeri',
-  aiStarterBudgetPrompt: 'Oylik byudjet trekkerini yarating: toifa, rejalashtirilgan, haqiqiy va farq ustunlari, jami qatori va bir nechta namunaviy qatorlar',
+  aiStarterBudgetPrompt:
+    'Oylik byudjet trekkerini yarating: toifa, rejalashtirilgan, haqiqiy va farq ustunlari, jami qatori va bir nechta namunaviy qatorlar',
   aiStarterSales: 'Sotuv hisoboti',
-  aiStarterSalesPrompt: 'Choraklik sotuv hisobotini yarating: mahsulot, hudud, birlik, narx va tushum ustunlari, namunaviy qatorlar va jami qatori bilan',
+  aiStarterSalesPrompt:
+    'Choraklik sotuv hisobotini yarating: mahsulot, hudud, birlik, narx va tushum ustunlari, namunaviy qatorlar va jami qatori bilan',
   aiStarterTasks: 'Loyiha vazifalar rejasi',
-  aiStarterTasksPrompt: 'Loyiha vazifalar rejasini yarating: vazifa, mas’ul, boshlanish sanasi, muddat va holat ustunlari bilan o‘nta namunaviy vazifalar',
+  aiStarterTasksPrompt:
+    'Loyiha vazifalar rejasini yarating: vazifa, mas’ul, boshlanish sanasi, muddat va holat ustunlari bilan o‘nta namunaviy vazifalar',
 } satisfies Record<keyof typeof en, string>

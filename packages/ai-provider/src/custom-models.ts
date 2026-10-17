@@ -155,10 +155,13 @@ export async function listCustomModels(
       const probe = probeSpec(api ?? 'openai-compatible', base, key)
       const response = await fetch(
         probe.url,
-        withUserAgent({
-          headers: { Accept: 'application/json', ...vegaPiiHeaders(base), ...probe.headers },
-          signal: watchdog.signal,
-        }),
+        withUserAgent(
+          {
+            headers: { Accept: 'application/json', ...vegaPiiHeaders(base), ...probe.headers },
+            signal: watchdog.signal,
+          },
+          probe.url,
+        ),
       )
       if (!response.ok) return emptyCatalog()
       const text = await readCappedResponseText(response, { maxBytes: MAX_BODY_BYTES })

@@ -1,6 +1,7 @@
 import {
   aiPanelWidthAtPointer,
-  AiPanelSideButton,
+  AiConnectPrompt,
+  aiErrorText,
   AiModelPicker,
   type AiModelPickerBridge,
   AiQueueStrip,
@@ -8,6 +9,7 @@ import {
   AiUsageChip,
   addTokenUsage,
   type AiTokenUsageView,
+  useAiDisconnected,
   useChatRunQueue,
 } from '@genoffice/ui'
 import { useEffect, useRef, useState } from 'react'
@@ -384,6 +386,7 @@ const MODEL_BRIDGE: AiModelPickerBridge = {
   getSettings: () => window.desktop.getAiSettings(),
   setSettings: (settings) => window.desktop.setAiSettings(settings),
   onSettingsChanged: (handler) => window.desktop.onAiSettingsChanged(handler),
+  onAuthChanged: (handler) => window.desktop.onAiAuthChanged(handler),
   gskLoggedIn: () => window.desktop.aiGskStatus().then((s) => !!s?.loggedIn),
   openModelSettings: () => window.desktop.openAiModelSettings().catch(() => {}),
   getProviderModels: (input) => window.desktop.getProviderModels(input),
@@ -419,12 +422,16 @@ export function AiPanel({
   const isRtl = isRtlLang(lang)
   const [input, setInput] = useState('')
   const [busy, setBusy] = useState(false)
+  /** signed out of VEGA with no usable BYOK provider: starters + composer go muted,
+      the empty state gains a Connect call-to-action instead */
+  const aiDisconnected = useAiDisconnected(MODEL_BRIDGE)
   /** messages queued while a reply runs; the pump re-runs them through runWith on settle */
   const msgQueue = useChatRunQueue<{
     attachments: AttachmentMeta[]
     scope: AiScopeQuoteData | null
   }>({
     busy,
+    gate: aiDisconnected,
     submit: (text, meta) => {
       const loop = loopRef.current
       if (!loop || loop.busy || pendingSendRef.current) return false
@@ -1541,11 +1548,7 @@ export function AiPanel({
       userLabel: t('aiExportRoleYou'),
       assistantLabel: 'VEGA',
     })
-    void window.desktop.exportAiChat?.(
-      md,
-      suggestChatExportName(docName),
-      t('aiExportChat'),
-    )
+    void window.desktop.exportAiChat?.(md, suggestChatExportName(docName), t('aiExportChat'))
   }
 
   const mergeAttachments = (result: AttachmentAddResult | null) => {
@@ -1677,7 +1680,7 @@ export function AiPanel({
       ref={asideRef}
       style={{ width: '100%' }}
       dir={isRtl ? 'rtl' : undefined}
-      className={`ai-panel${dragOver ? ' ai-panel-dragover' : ''}${resizing ? ' ai-panel-resizing' : ''}`}
+      className={`ai-panel${dragOver ? ' ai-panel-dragover' : ''}${resizing ? ' ai-panel-resizing' : ''}${aiDisconnected ? ' ai-disconnected' : ''}`}
       onDragOver={(e) => {
         if (e.dataTransfer.types.includes('Files')) {
           e.preventDefault()
@@ -1700,6 +1703,16 @@ export function AiPanel({
       <div className="ai-panel-header">
         <span className="ai-panel-title">{t('aiPanelTitle')}</span>
         <div className="ai-panel-header-actions">
+          {(chat.length > 0 || historicChat.length > 0) && (
+            <button
+              className="ai-header-btn"
+              onClick={newChat}
+              data-tip={t('aiNewChatTitle')}
+              aria-label={t('aiNewChatTitle')}
+            >
+              <IconPlus size={16} />
+            </button>
+          )}
           <AiHistoryMenu
             open={historyOpen}
             onClose={() => setHistoryOpen(false)}
@@ -1730,16 +1743,6 @@ export function AiPanel({
               aria-label={t('aiExportChat')}
             >
               <IconDownload size={16} />
-            </button>
-          )}
-          {(chat.length > 0 || historicChat.length > 0) && (
-            <button
-              className="ai-header-btn"
-              onClick={newChat}
-              data-tip={t('aiNewChatTitle')}
-              aria-label={t('aiNewChatTitle')}
-            >
-              <IconPlus size={16} />
             </button>
           )}
           {onCollapse && (
@@ -1790,6 +1793,7 @@ export function AiPanel({
                 <button
                   key={p}
                   className="ai-starter"
+                  disabled={aiDisconnected}
                   onClick={() => {
                     setInput(t(p))
                     inputRef.current?.focus()
@@ -1799,6 +1803,14 @@ export function AiPanel({
                 </button>
               ))}
             </div>
+            {aiDisconnected && (
+              <AiConnectPrompt
+                text={t('aiConnectPrompt')}
+                label={t('aiConnectBtn')}
+                tip={t('aiConnectTip')}
+                onConnect={() => void window.desktop.aiGskLogin()}
+              />
+            )}
           </div>
         )}
         {chat.map((entry, i) => {
@@ -1856,7 +1868,7 @@ export function AiPanel({
                 />
               )}
               {entry.error && (
-                <div className="ai-msg-error">{t('aiErrorPrefix', { error: entry.error })}</div>
+                <div className="ai-msg-error">{aiErrorText(entry.error, t, 'aiErrorPrefix')}</div>
               )}
               {entry.loginRequired && (
                 <button className="ai-login-btn" onClick={() => void window.desktop.aiGskLogin()}>
@@ -1951,6 +1963,17 @@ export function AiPanel({
             suggested.clear()
             runWith(q)
           }}
+        />
+      )}
+
+      {/* a muted panel with history still needs a way back — the same Connect
+          call-to-action the empty state shows, docked above the composer */}
+      {aiDisconnected && (chat.length > 0 || historicChat.length > 0) && (
+        <AiConnectPrompt
+          text={t('aiConnectPrompt')}
+          label={t('aiConnectBtn')}
+          tip={t('aiConnectTip')}
+          onConnect={() => void window.desktop.aiGskLogin()}
         />
       )}
 
@@ -2108,6 +2131,7 @@ export function AiPanel({
           }
           value={input}
           busy={busy}
+          disabled={aiDisconnected}
           placeholder={t('aiInputPlaceholder')}
           hintIdle={t('aiHintIdle')}
           hintBusy={t('aiHintBusy')}

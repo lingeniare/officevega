@@ -122,6 +122,7 @@ import {
 } from './star-prompt'
 import { handleDroppedFiles } from './dropped-files'
 import { collectLaunchPaths } from './launch-paths'
+import { openRouterSafeHeaders } from '@genoffice/ai-provider'
 import {
   officeVegaLogout,
   loadOfficeVegaAuth,
@@ -717,7 +718,11 @@ const VEGA_MODELS_URL = 'https://api.vega.chat/aimodels'
 // Settings → Account "Other AI services" row; the ru locale gets its own host.
 const VEGA_CHAT_URL = 'https://vega.chat'
 const VEGA_CHAT_RU_URL = 'https://ru.vega.chat'
+// Settings → About "Other AI services" agent/editor rows share the VEGA Codes host.
+const VEGA_CODES_URL = 'https://vega.codes'
 const FEEDBACK_URL = 'https://officevega.com/feedback'
+// Settings → About developer row.
+const DEVELOPER_SITE_URL = 'https://getmyai.io'
 
 // ---- "star us on GitHub" prompt (see star-prompt.ts for the rules) ----
 
@@ -3797,8 +3802,20 @@ function registerHomeIpc(): void {
     })
   })
 
+  ipcMain.handle(HOME_CHANNELS.openVegaCodes, () => {
+    shell.openExternal(VEGA_CODES_URL).catch(() => {
+      // no browser handler available; nothing actionable for the user here
+    })
+  })
+
   ipcMain.handle(HOME_CHANNELS.openFeedback, () => {
     shell.openExternal(FEEDBACK_URL).catch(() => {
+      // no browser handler available; nothing actionable for the user here
+    })
+  })
+
+  ipcMain.handle(HOME_CHANNELS.openDeveloperSite, () => {
+    shell.openExternal(DEVELOPER_SITE_URL).catch(() => {
       // no browser handler available; nothing actionable for the user here
     })
   })
@@ -5280,6 +5297,17 @@ async function runHeadlessExportEntry(
 }
 
 app.whenReady().then(async () => {
+  // openrouter.ai's edge 403s any User-Agent containing "vega". Request sites
+  // pin a neutral UA via withUserAgent, but some stacks cannot set it: a
+  // renderer's fetch drops the forbidden header name and the session UA goes
+  // out instead, net.fetch re-derives one from the app name. The session hook
+  // is the wire-level catch-all so no stack can leak the blocked token.
+  session.defaultSession.webRequest.onBeforeSendHeaders(
+    { urls: ['*://*.openrouter.ai/*'] },
+    (details, callback) => {
+      callback({ requestHeaders: openRouterSafeHeaders(details.url, details.requestHeaders) })
+    },
+  )
   // interface zoom (genoffice#1913): every visible webContents — shell windows,
   // editor WebContentsView tabs, dialogs — boots at the persisted UI scale.
   // Print/export is unaffected: printToPDF ignores the page zoom factor.
@@ -5342,6 +5370,10 @@ app.whenReady().then(async () => {
     if (!key) return
     for (const w of BrowserWindow.getAllWindows())
       w.webContents.send(HOME_CHANNELS.accountLoginEvent, { phase: 'success' })
+    // panel WebContentsViews are not BrowserWindows — a cross-app re-login must
+    // reach them too or their muted composer waits for a refocus to unmute
+    for (const wc of webContents.getAllWebContents())
+      if (!wc.isDestroyed()) wc.send('ai:auth-changed', { loggedIn: true })
   })
   // a registry left by a crashed instance must not block officevega writes
   ownsOpenDocumentsRegistry = true
