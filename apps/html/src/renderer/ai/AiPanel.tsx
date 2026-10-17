@@ -740,7 +740,6 @@ export function AiPanel({
     loadHistory(historyQuery)
     const timer = window.setTimeout(() => loadHistory(historyQuery), 300)
     return () => window.clearTimeout(timer)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [historyOpen, historyQuery])
 
   const openHistory = () => {
@@ -1126,6 +1125,7 @@ export function AiPanel({
       .catch(() => {
         /* history load failures are silent */
       })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   /** after an untitled document's first save, bind the unsaved-* history to the real path */

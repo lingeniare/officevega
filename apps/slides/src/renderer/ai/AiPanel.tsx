@@ -745,7 +745,6 @@ export function AiPanel({
     loadHistory(historyQuery)
     const timer = window.setTimeout(() => loadHistory(historyQuery), 300)
     return () => window.clearTimeout(timer)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [historyOpen, historyQuery])
 
   const openHistory = () => {
