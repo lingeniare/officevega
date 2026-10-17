@@ -186,7 +186,7 @@ const MODEL_BRIDGE: AiModelPickerBridge = {
   setSettings: (settings) => window.markdownApi.setAiSettings(settings),
   onSettingsChanged: (handler) => window.markdownApi.onAiSettingsChanged(handler),
   onAuthChanged: (handler) => window.markdownApi.onAiAuthChanged(handler),
-  gskLoggedIn: () => window.markdownApi.aiGskStatus().then((s) => !!s?.loggedIn),
+  accountStatus: () => window.markdownApi.aiGskStatus(),
   openModelSettings: () => window.markdownApi.openAiModelSettings().catch(() => {}),
   getProviderModels: (input) => window.markdownApi.getProviderModels(input),
 }

@@ -3096,14 +3096,17 @@ export function registerSheetsAiIpc(): void {
     IPC_CHANNELS.aiGskStatus,
     async (_event, withEmail?: unknown): Promise<GenSparkAccountStatus> => {
       const vegaKey = officeVegaApiKey()
-      if (!vegaKey && !hasGskAuth()) return { loggedIn: false }
-      if (!withEmail) return { loggedIn: true }
+      const gskUsable = hasGskAuth()
+      const flags = { accountLoggedIn: !!vegaKey, gskUsable }
+      if (!vegaKey && !gskUsable) return { loggedIn: false, ...flags }
+      if (!withEmail) return { loggedIn: true, ...flags }
       if (vegaKey) {
         // the account query also carries the deposit — the chat composer's
         // VEGA balance badge reads it from the same response
         const info = await vegaAccountInfo()
         return {
           loggedIn: true,
+          ...flags,
           ...(info?.email !== undefined ? { email: info.email } : {}),
           ...(info?.balance !== undefined ? { balance: info.balance } : {}),
           ...(info?.balanceRub !== undefined ? { balanceRub: info.balanceRub } : {}),
@@ -3111,7 +3114,7 @@ export function registerSheetsAiIpc(): void {
         }
       }
       const email = (await gskLoginInfo())?.email
-      return email ? { loggedIn: true, email } : { loggedIn: true }
+      return email ? { loggedIn: true, ...flags, email } : { loggedIn: true, ...flags }
     },
   )
 

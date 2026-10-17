@@ -175,6 +175,7 @@ export {
   withAiModelSelection,
   type AiModelPickerGroup,
   type AiModelPickerSelection,
+  type AiPickerAuth,
 } from './ai-model-picker-options'
 export { ProviderLogo } from './provider-logos'
 export {

@@ -402,7 +402,7 @@ const MODEL_BRIDGE: AiModelPickerBridge = {
   setSettings: (settings) => window.slidesApi.setAiSettings(settings),
   onSettingsChanged: (handler) => window.slidesApi.onAiSettingsChanged(handler),
   onAuthChanged: (handler) => window.slidesApi.onAiAuthChanged(handler),
-  gskLoggedIn: () => window.slidesApi.aiGskStatus().then((s) => !!s?.loggedIn),
+  accountStatus: () => window.slidesApi.aiGskStatus(),
   openModelSettings: () => window.slidesApi.openAiModelSettings().catch(() => {}),
   getProviderModels: (input) => window.slidesApi.getProviderModels(input),
 }

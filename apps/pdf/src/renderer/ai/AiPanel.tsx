@@ -117,7 +117,7 @@ const MODEL_BRIDGE: AiModelPickerBridge = {
   setSettings: (settings) => window.pdfApi.setAiSettings(settings),
   onSettingsChanged: (handler) => window.pdfApi.onAiSettingsChanged(handler),
   onAuthChanged: (handler) => window.pdfApi.onAiAuthChanged(handler),
-  gskLoggedIn: () => window.pdfApi.gskStatus().then((s) => !!s?.loggedIn),
+  accountStatus: () => window.pdfApi.gskStatus(),
   openModelSettings: () => window.pdfApi.openAiModelSettings().catch(() => {}),
   getProviderModels: (input) => window.pdfApi.getProviderModels(input),
 }

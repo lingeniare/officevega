@@ -12,6 +12,7 @@ import type {
   AiStreamChunk,
   AiStreamRequest,
   CodexModelCatalog,
+  GenSparkAccountStatus,
   ProviderModelCatalog,
 } from '@genoffice/ai-provider'
 import type { UpdateChannel, UpdateUiState } from './update-api'
@@ -232,8 +233,8 @@ export interface HomeApi {
   aiStreamCancel(requestId: string): Promise<void>
   /** subscribe to stream chunks; returns unsubscribe */
   onAiStream(handler: (chunk: AiStreamChunk) => void): () => void
-  /** Genspark login state (the default provider's auth source) */
-  aiGskStatus(): Promise<{ loggedIn: boolean; email?: string }>
+  /** Account state: loggedIn = any usable credential, accountLoggedIn = a VEGA sign-in key exists, gskUsable = the shared gsk CLI login */
+  aiGskStatus(): Promise<GenSparkAccountStatus>
   /** open an existing file, routing to the right module by extension */
   openHelp(): Promise<void>
   openPath(path: string): Promise<void>

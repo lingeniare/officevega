@@ -18,7 +18,12 @@ export type AiProviderId =
 
 /** Cloud account status: the VEGA sign-in (issued sk-apivega key) is primary, the shared gsk CLI login a fallback */
 export interface GenSparkAccountStatus {
+  /** any usable account credential exists (VEGA issued key or the shared gsk CLI login) — feature gating */
   loggedIn: boolean
+  /** the app's own account is signed in: an issued VEGA key exists — drives the picker's account group */
+  accountLoggedIn?: boolean
+  /** a shared gsk CLI credential exists and can serve the legacy genspark pool */
+  gskUsable?: boolean
   email?: string
   /** VEGA deposit in `currency` (USD); only when the account query ran (withEmail) and the key is the issued VEGA one */
   balance?: number

@@ -36,6 +36,24 @@ describe('aiModelPickerGroups', () => {
     expect(g?.names?.['claude-opus-5-5']).toBe('Claude Opus 5.5')
   })
 
+  it('hides the Genspark pool for a stray shared gsk login with no VEGA sign-in', () => {
+    // a leftover ~/.genspark-tool-cli/config.json must not surface an
+    // "AI models" group to a user who never signed into the account
+    const gskOnly = { loggedIn: true, accountLoggedIn: false, gskUsable: true }
+    expect(aiModelPickerGroups(signedOutSettings(), gskOnly)).toEqual([])
+  })
+
+  it('hides the Genspark pool when the account cannot serve it', () => {
+    // signed into VEGA but no gsk credential: the pool would 401 on pick
+    const accountOnly = { loggedIn: true, accountLoggedIn: true, gskUsable: false }
+    expect(aiModelPickerGroups(signedOutSettings(), accountOnly)).toEqual([])
+  })
+
+  it('lists Genspark only when the account is signed in and gsk can serve it', () => {
+    const both = { loggedIn: true, accountLoggedIn: true, gskUsable: true }
+    expect(aiModelPickerGroups(signedOutSettings(), both).map((g) => g.id)).toEqual(['genspark'])
+  })
+
   it('adds a vendor once its key is set and puts an off-catalog model first', () => {
     const settings = signedOutSettings()
     settings.providers.anthropic = { apiKey: 'k', model: 'claude-next' }

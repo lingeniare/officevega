@@ -31,12 +31,45 @@ export interface AiModelPickerSelection {
 }
 
 /**
- * Providers the composer chip may switch to: Genspark while signed in, every
- * other vendor once its settings pass the same usability test the chat path
- * applies (`activeProvider`), so picking a row never lands on a 401. A model
- * typed into the settings page that is not in the catalog is listed first.
+ * Credential state the picker gates account groups on (carries the same
+ * fields ai:gsk-status reports):
+ * - `accountLoggedIn` — the app's own account is signed in (an issued VEGA
+ *   key exists); the account slot exists only while this is true
+ * - `gskUsable` — a shared gsk CLI credential can serve the legacy genspark
+ *   pool; without it that pool is a dead list
+ * A bare boolean keeps old call sites working: true = both flags on.
  */
-export function aiModelPickerGroups(input: AiSettings, gskLoggedIn: boolean): AiModelPickerGroup[] {
+export interface AiPickerAuth {
+  readonly accountLoggedIn?: boolean | undefined
+  readonly gskUsable?: boolean | undefined
+  /** any-credential bit from ai:gsk-status — the fallback when the finer flags are absent */
+  readonly loggedIn?: boolean | undefined
+}
+
+function normalizePickerAuth(auth: boolean | AiPickerAuth | null | undefined): {
+  accountLoggedIn: boolean
+  gskUsable: boolean
+} {
+  if (typeof auth === 'boolean') return { accountLoggedIn: auth, gskUsable: auth }
+  return {
+    accountLoggedIn: auth?.accountLoggedIn ?? auth?.loggedIn ?? false,
+    gskUsable: auth?.gskUsable ?? auth?.loggedIn ?? false,
+  }
+}
+
+/**
+ * Providers the composer chip may switch to: the account slot while signed
+ * into VEGA (the legacy genspark pool only when its shared gsk credential can
+ * actually serve it), every other vendor once its settings pass the same
+ * usability test the chat path applies (`activeProvider`), so picking a row
+ * never lands on a 401. A model typed into the settings page that is not in
+ * the catalog is listed first.
+ */
+export function aiModelPickerGroups(
+  input: AiSettings,
+  auth: boolean | AiPickerAuth | null | undefined,
+): AiModelPickerGroup[] {
+  const { accountLoggedIn, gskUsable } = normalizePickerAuth(auth)
   const settings = resolveCustomEndpoints(input)
   const groups: AiModelPickerGroup[] = []
   for (const meta of AI_PROVIDERS) {
@@ -72,12 +105,16 @@ export function aiModelPickerGroups(input: AiSettings, gskLoggedIn: boolean): Ai
     // static ids are not on the api.vega.chat catalog), and the vega group
     // stands in as the account slot.
     const accountIsVega =
-      gskLoggedIn && settings.provider === 'vega' && !settings.providers?.vega?.apiKey?.trim()
+      accountLoggedIn && settings.provider === 'vega' && !settings.providers?.vega?.apiKey?.trim()
     // CLI vendors pass activeProvider unconfigured (the binary auto-discovers);
     // list them only once the settings page holds a model or a path
     const usable =
       meta.id === 'genspark'
-        ? gskLoggedIn && !accountIsVega
+        ? // the genspark pool is a leftover shared-CLI credential, not the
+          // app's account — show it only while signed into VEGA (a signed-out
+          // user must not see a "Модели ИИ" group they never configured) and
+          // only when the gsk key can actually serve it
+          accountLoggedIn && gskUsable && !accountIsVega
         : meta.needsCliPath
           ? Boolean(stored || config?.cliPath?.trim())
           : // `settings.provider` is already main-resolved: it proves a

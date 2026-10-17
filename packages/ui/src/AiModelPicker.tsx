@@ -3,6 +3,7 @@ import type { Lang } from '@genoffice/i18n'
 import type {
   AiProviderId,
   AiSettings,
+  GenSparkAccountStatus,
   ModelFilter,
   ProviderModelCatalog,
 } from '@genoffice/ai-provider/browser'
@@ -12,6 +13,7 @@ import {
   healVegaModelSelection,
   withAiModelSelection,
   type AiModelPickerSelection,
+  type AiPickerAuth,
 } from './ai-model-picker-options'
 import { ProviderLogo } from './provider-logos'
 import { useDismissablePopover } from './popover-dismiss'
@@ -37,6 +39,15 @@ export interface AiModelPickerBridge {
   readonly setSettings: (settings: AiSettings) => Promise<void>
   /** fires after any renderer (this one, another tab, the shell settings page) saved ai-settings.json */
   readonly onSettingsChanged?: ((handler: () => void) => () => void) | undefined
+  /**
+   * account credential state (ai:gsk-status): accountLoggedIn gates the
+   * account slot, gskUsable gates the legacy genspark pool — a stray shared
+   * gsk CLI login must not surface "AI models" to a signed-out user
+   */
+  readonly accountStatus?:
+    | (() => Promise<GenSparkAccountStatus | null | undefined>)
+    | undefined
+  /** deprecated: any-credential boolean — used only when accountStatus is absent */
   readonly gskLoggedIn?: (() => Promise<boolean>) | undefined
   /** shell: switch to Home and open Settings › AI Model */
   readonly openModelSettings?: (() => Promise<void> | void) | undefined
@@ -76,7 +87,7 @@ export function AiModelPicker({
 }): React.JSX.Element | null {
   const strings = AI_MODEL_PICKER_STRINGS[lang] ?? AI_MODEL_PICKER_STRINGS.en
   const [settings, setSettings] = useState<AiSettings | null>(null)
-  const [loggedIn, setLoggedIn] = useState(false)
+  const [auth, setAuth] = useState<AiPickerAuth>({ loggedIn: false })
   const [open, setOpen] = useState(false)
   const [popStyle, setPopStyle] = useState<React.CSSProperties>({})
   const chipRef = useRef<HTMLButtonElement | null>(null)
@@ -88,8 +99,13 @@ export function AiModelPicker({
       .then(() => bridge.getSettings())
       .then(setSettings, () => {})
     Promise.resolve()
-      .then(() => bridge.gskLoggedIn?.() ?? false)
-      .then(setLoggedIn, () => {})
+      .then(async (): Promise<AiPickerAuth> => {
+        const status = await bridge.accountStatus?.()
+        if (status) return status
+        const loggedIn = await bridge.gskLoggedIn?.()
+        return { loggedIn: loggedIn ?? false }
+      })
+      .then(setAuth, () => {})
   }, [bridge])
 
   useEffect(() => {
@@ -117,8 +133,8 @@ export function AiModelPicker({
   })
 
   const groups = useMemo(
-    () => (settings ? aiModelPickerGroups(settings, loggedIn) : []),
-    [settings, loggedIn],
+    () => (settings ? aiModelPickerGroups(settings, auth) : []),
+    [settings, auth],
   )
   const current = settings ? aiModelPickerSelection(settings) : null
   const sameGroup = (g: { id: string; endpoint?: string | undefined }) =>

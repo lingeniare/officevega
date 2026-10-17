@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import type { AiSettings } from '@genoffice/ai-provider/browser'
+import type { AiSettings, GenSparkAccountStatus } from '@genoffice/ai-provider/browser'
 import { aiModelPickerGroups } from './ai-model-picker-options'
 
 /**
@@ -8,6 +8,11 @@ import { aiModelPickerGroups } from './ai-model-picker-options'
  */
 export interface AiConnectionBridge {
   readonly getSettings: () => Promise<AiSettings>
+  /** ai:gsk-status split bits (accountLoggedIn / gskUsable) — same contract as the model picker's bridge */
+  readonly accountStatus?:
+    | (() => Promise<GenSparkAccountStatus | null | undefined>)
+    | undefined
+  /** deprecated: any-credential boolean — used only when accountStatus is absent */
   readonly gskLoggedIn?: (() => Promise<boolean>) | undefined
   readonly onSettingsChanged?: ((handler: () => void) => () => void) | undefined
   /** pushed by main on every VEGA sign-in/out; refresh without waiting for focus */
@@ -29,10 +34,15 @@ export function useAiDisconnected(bridge: AiConnectionBridge): boolean {
     Promise.resolve()
       .then(() => bridge.getSettings())
       .then(async (settings) => {
-        const loggedIn = await Promise.resolve()
-          .then(() => bridge.gskLoggedIn?.() ?? false)
-          .catch(() => false)
-        return aiModelPickerGroups(settings, loggedIn).length === 0
+        const auth = await Promise.resolve()
+          .then(async () => {
+            const status = await bridge.accountStatus?.()
+            if (status) return status
+            const loggedIn = await bridge.gskLoggedIn?.()
+            return { loggedIn: loggedIn ?? false }
+          })
+          .catch(() => ({ loggedIn: false }))
+        return aiModelPickerGroups(settings, auth).length === 0
       })
       .then(setDisconnected, () => {})
   }, [bridge])

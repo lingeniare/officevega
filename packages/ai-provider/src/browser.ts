@@ -10,6 +10,7 @@ export type {
   AiProviderMeta,
   AiSettings,
   CodexModelCatalog,
+  GenSparkAccountStatus,
 } from './types'
 export {
   AI_PROVIDERS,
