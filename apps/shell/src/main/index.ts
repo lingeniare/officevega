@@ -37,6 +37,7 @@ import {
   applyUiScaleToAll,
   changeUiScale,
   onUiScaleChanged,
+  readUiScale,
   setUiScale,
 } from './ui-scale'
 import menuDocxIcon1x from './assets/menu-docx.png?asset'
@@ -629,23 +630,12 @@ let cachedUiScale: number | null = null
 /**
  * Interface zoom factor (genoffice#1913): applied via webContents.setZoomFactor
  * so every chrome element scales; the editors divide their document zoom by it.
- * Defaults to the primary display's scale factor when above 100% (the issue's
- * "match system scale"); explicit user choice persists in app-settings.json.
+ * Defaults to 100% — the Windows display scale is not inherited (a 125% desktop
+ * made every first launch oversized); explicit user choice persists in
+ * app-settings.json.
  */
 function currentUiScale(): number {
-  if (cachedUiScale != null) return cachedUiScale
-  const saved = readAppSettings(APP_SETTINGS_PATH()).uiScale
-  if (typeof saved === 'number' && Number.isFinite(saved) && saved >= 0.5 && saved <= 3) {
-    cachedUiScale = saved
-  } else {
-    let f = 1
-    try {
-      f = screen.getPrimaryDisplay().scaleFactor
-    } catch {
-      /* no display yet */
-    }
-    cachedUiScale = f > 1 ? f : 1
-  }
+  if (cachedUiScale == null) cachedUiScale = readUiScale(APP_SETTINGS_PATH())
   return cachedUiScale
 }
 

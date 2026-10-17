@@ -343,7 +343,7 @@ export interface HomeApi {
   getDocumentTheme(): Promise<DocTheme>
   /** switch + persist the document page theme; broadcasts 'app:document-theme-changed' to all web contents */
   setDocumentTheme(theme: DocTheme): Promise<void>
-  /** interface zoom factor (#1913, persisted in userData/app-settings.json; default = display scaleFactor) */
+  /** interface zoom factor (#1913, persisted in userData/app-settings.json; default = 1) */
   getUiScale(): Promise<number>
   /** switch + persist the interface zoom; applies it to all web contents and broadcasts 'app:ui-scale-changed' */
   setUiScale(factor: number): Promise<void>
