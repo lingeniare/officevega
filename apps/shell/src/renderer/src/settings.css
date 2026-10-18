@@ -437,6 +437,34 @@
   font-size: 13px;
 }
 
+/* language picker rows: flag chip + native name (render content lives inside
+   the flex .gs-dd-item / .gs-dd-value) */
+.set-lang-opt {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.set-lang-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.set-lang-flag {
+  width: 18px;
+  height: 12px;
+  flex-shrink: 0;
+  border-radius: 2.5px;
+  overflow: hidden;
+}
+
+.set-lang-flag-edge {
+  stroke: var(--border-strong);
+  stroke-width: 1;
+}
+
 /* brand mark in the AI provider dropdown (trigger value + option rows are
    flex containers from gs-dd); monochrome marks follow the text color */
 .set-provider-logo {

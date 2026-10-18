@@ -288,9 +288,17 @@ function ensureThirdPartyNotices() {
 // The NSIS license pages (EULA + the customPageAfterChangeDir privacy screen)
 // decode these files by BOM: a BOM-less UTF-8 file is read as ANSI and
 // Cyrillic renders as mojibake on the license screen (installer.nsh documents
-// the same requirement). Both also ship in resources/ as UTF-8 text.
+// the same requirement). All four also ship in resources/ as UTF-8 text.
+// English UI/installer languages get the *-EN.txt variants, every other
+// language the *-RU.txt ones (see OfficeVegaLegalLangStrings in installer.nsh
+// and legalDocFile in packages/electron-utils/src/app-menu.ts).
 function assertLicenseFilesHaveBom() {
-  for (const rel of ['build/EULA.txt', 'build/PRIVACY-POLICY.txt']) {
+  for (const rel of [
+    'build/EULA-RU.txt',
+    'build/EULA-EN.txt',
+    'build/PRIVACY-POLICY-RU.txt',
+    'build/PRIVACY-POLICY-EN.txt',
+  ]) {
     const head = readFileSync(join(__dirname, rel)).subarray(0, 3)
     if (!head.equals(Buffer.from([0xef, 0xbb, 0xbf]))) {
       throw new Error(`${rel} lost its UTF-8 BOM — the NSIS license page would show mojibake`)
@@ -473,12 +481,20 @@ const config = {
       to: 'THIRD-PARTY-NOTICES.txt',
     },
     {
-      from: 'build/EULA.txt',
-      to: 'EULA.txt',
+      from: 'build/EULA-RU.txt',
+      to: 'EULA-RU.txt',
     },
     {
-      from: 'build/PRIVACY-POLICY.txt',
-      to: 'PRIVACY-POLICY.txt',
+      from: 'build/EULA-EN.txt',
+      to: 'EULA-EN.txt',
+    },
+    {
+      from: 'build/PRIVACY-POLICY-RU.txt',
+      to: 'PRIVACY-POLICY-RU.txt',
+    },
+    {
+      from: 'build/PRIVACY-POLICY-EN.txt',
+      to: 'PRIVACY-POLICY-EN.txt',
     },
     {
       from: '../../node_modules/electron/dist/LICENSES.chromium.html',

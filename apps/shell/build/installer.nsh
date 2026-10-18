@@ -37,14 +37,92 @@
   ${EndIf}
 !macroend
 
+; Per-language legal texts. electron-builder auto-emits its own licensePage
+; only when build/ holds license.*/eula.* or localized license_*/eula_*
+; files; our EULA-RU/EULA-EN/PRIVACY-POLICY-* names match neither detector,
+; so no built-in license page exists and customWelcomePage installs the EULA
+; screen in the same slot (first page, before the install-mode choice).
+; LicenseLangString/LangString are per-language: English (LCID 1033) reads
+; the *-EN.txt file / gets the English header, every other bundled installer
+; language reads the Russian text. The LCID list is electron-builder's
+; bundledLanguages (app-builder-lib/out/util/langs.js) — keep it in sync if
+; nsis.installerLanguages ever changes; an LCID without a string falls back
+; to the English value. All legal txt files must stay UTF-8 WITH BOM or
+; Cyrillic breaks in the Unicode installer.
+!macro OfficeVegaLegalLangStrings LSTRING ENFILE RUFILE
+  LicenseLangString ${LSTRING} 1033 "${BUILD_RESOURCES_DIR}\${ENFILE}"
+  LicenseLangString ${LSTRING} 1031 "${BUILD_RESOURCES_DIR}\${RUFILE}"
+  LicenseLangString ${LSTRING} 1036 "${BUILD_RESOURCES_DIR}\${RUFILE}"
+  LicenseLangString ${LSTRING} 3082 "${BUILD_RESOURCES_DIR}\${RUFILE}"
+  LicenseLangString ${LSTRING} 2052 "${BUILD_RESOURCES_DIR}\${RUFILE}"
+  LicenseLangString ${LSTRING} 1028 "${BUILD_RESOURCES_DIR}\${RUFILE}"
+  LicenseLangString ${LSTRING} 1041 "${BUILD_RESOURCES_DIR}\${RUFILE}"
+  LicenseLangString ${LSTRING} 1042 "${BUILD_RESOURCES_DIR}\${RUFILE}"
+  LicenseLangString ${LSTRING} 1040 "${BUILD_RESOURCES_DIR}\${RUFILE}"
+  LicenseLangString ${LSTRING} 1043 "${BUILD_RESOURCES_DIR}\${RUFILE}"
+  LicenseLangString ${LSTRING} 1030 "${BUILD_RESOURCES_DIR}\${RUFILE}"
+  LicenseLangString ${LSTRING} 1053 "${BUILD_RESOURCES_DIR}\${RUFILE}"
+  LicenseLangString ${LSTRING} 1044 "${BUILD_RESOURCES_DIR}\${RUFILE}"
+  LicenseLangString ${LSTRING} 1035 "${BUILD_RESOURCES_DIR}\${RUFILE}"
+  LicenseLangString ${LSTRING} 1049 "${BUILD_RESOURCES_DIR}\${RUFILE}"
+  LicenseLangString ${LSTRING} 2070 "${BUILD_RESOURCES_DIR}\${RUFILE}"
+  LicenseLangString ${LSTRING} 1046 "${BUILD_RESOURCES_DIR}\${RUFILE}"
+  LicenseLangString ${LSTRING} 1045 "${BUILD_RESOURCES_DIR}\${RUFILE}"
+  LicenseLangString ${LSTRING} 1058 "${BUILD_RESOURCES_DIR}\${RUFILE}"
+  LicenseLangString ${LSTRING} 1029 "${BUILD_RESOURCES_DIR}\${RUFILE}"
+  LicenseLangString ${LSTRING} 1051 "${BUILD_RESOURCES_DIR}\${RUFILE}"
+  LicenseLangString ${LSTRING} 1038 "${BUILD_RESOURCES_DIR}\${RUFILE}"
+  LicenseLangString ${LSTRING} 1025 "${BUILD_RESOURCES_DIR}\${RUFILE}"
+  LicenseLangString ${LSTRING} 1055 "${BUILD_RESOURCES_DIR}\${RUFILE}"
+  LicenseLangString ${LSTRING} 1054 "${BUILD_RESOURCES_DIR}\${RUFILE}"
+  LicenseLangString ${LSTRING} 1066 "${BUILD_RESOURCES_DIR}\${RUFILE}"
+!macroend
+
+!macro OfficeVegaLangStrings LSTRING ENTEXT RUTEXT
+  LangString ${LSTRING} 1033 "${ENTEXT}"
+  LangString ${LSTRING} 1031 "${RUTEXT}"
+  LangString ${LSTRING} 1036 "${RUTEXT}"
+  LangString ${LSTRING} 3082 "${RUTEXT}"
+  LangString ${LSTRING} 2052 "${RUTEXT}"
+  LangString ${LSTRING} 1028 "${RUTEXT}"
+  LangString ${LSTRING} 1041 "${RUTEXT}"
+  LangString ${LSTRING} 1042 "${RUTEXT}"
+  LangString ${LSTRING} 1040 "${RUTEXT}"
+  LangString ${LSTRING} 1043 "${RUTEXT}"
+  LangString ${LSTRING} 1030 "${RUTEXT}"
+  LangString ${LSTRING} 1053 "${RUTEXT}"
+  LangString ${LSTRING} 1044 "${RUTEXT}"
+  LangString ${LSTRING} 1035 "${RUTEXT}"
+  LangString ${LSTRING} 1049 "${RUTEXT}"
+  LangString ${LSTRING} 2070 "${RUTEXT}"
+  LangString ${LSTRING} 1046 "${RUTEXT}"
+  LangString ${LSTRING} 1045 "${RUTEXT}"
+  LangString ${LSTRING} 1058 "${RUTEXT}"
+  LangString ${LSTRING} 1029 "${RUTEXT}"
+  LangString ${LSTRING} 1051 "${RUTEXT}"
+  LangString ${LSTRING} 1038 "${RUTEXT}"
+  LangString ${LSTRING} 1025 "${RUTEXT}"
+  LangString ${LSTRING} 1055 "${RUTEXT}"
+  LangString ${LSTRING} 1054 "${RUTEXT}"
+  LangString ${LSTRING} 1066 "${RUTEXT}"
+!macroend
+
+; First legal screen: the EULA license page (the slot electron-builder's
+; own licensePage would occupy). skipPageIfUpdated mirrors the neighboring
+; pages: updates don't re-ask. The page keeps the stock MUI license header
+; (already localized per language by the language files), so no
+; MUI_PAGE_HEADER_* overrides here.
+!macro customWelcomePage
+  !insertmacro skipPageIfUpdated
+  !insertmacro OfficeVegaLegalLangStrings OfficeVegaEula EULA-EN.txt EULA-RU.txt
+  !insertmacro MUI_PAGE_LICENSE "$(OfficeVegaEula)"
+!macroend
+
 ; Second legal screen: "Privacy Policy" right after the folder choice, before
-; any file is copied. The first screen (EULA) is shown automatically by
-; electron-builder (build/EULA.txt is auto-detected as the NSIS license).
-; NSIS license pages require acceptance to continue, so both documents are
-; accepted before installation. Shipped text lives in
-; build/PRIVACY-POLICY.txt (must stay UTF-8 WITH BOM, like the converted
-; EULA, or Cyrillic breaks in the Unicode installer) and is also packaged
-; into resources/ for Help > Privacy Policy.
+; any file is copied. NSIS license pages require acceptance to continue, so
+; both documents are accepted before installation. The shipped texts live in
+; build/PRIVACY-POLICY-RU.txt and build/PRIVACY-POLICY-EN.txt and are also
+; packaged into resources/ for Help > Privacy Policy.
 ; skipPageIfUpdated mirrors the neighboring pages: updates don't re-ask.
 ; NOTE: the template arms MUI_PAGE_CUSTOMFUNCTION_PRE=instFilesPre for the
 ; page right after the directory page, so our own skipPageIfUpdated would
@@ -55,18 +133,19 @@
     !undef MUI_PAGE_CUSTOMFUNCTION_PRE
   !endif
   !insertmacro skipPageIfUpdated
+  !insertmacro OfficeVegaLegalLangStrings OfficeVegaPrivacy PRIVACY-POLICY-EN.txt PRIVACY-POLICY-RU.txt
+  !insertmacro OfficeVegaLangStrings OfficeVegaPrivacyHdr "Personal Data Processing Policy" "Политика обработки ПДн"
+  ; product name spelled out: $(^NameDA) would not expand inside a LangString value
+  !insertmacro OfficeVegaLangStrings OfficeVegaPrivacySub "Please review the personal data processing policy before installing OfficeVega." "Перед установкой OfficeVega ознакомьтесь с политикой обработки персональных данных."
   ; MUI_PAGE_HEADER_* apply to the next inserted page only: MUI_HEADER_TEXT_PAGE
   ; (in the license page's PRE function) consumes and unsets them, so the EULA
-  ; screen keeps the stock "Лицензионное соглашение" title. The values must be
-  ; single quoted tokens — makensis strips the quotes when ${} expands them
-  ; into the page's STR: header text; an unquoted multi-word value fails
-  ; "!define" parsing. PRIVACY-POLICY.txt is Russian-only, so the header stays
-  ; Russian for every installer language.
-  !define MUI_PAGE_HEADER_TEXT "Политика обработки ПДн"
-  !define MUI_PAGE_HEADER_SUBTEXT "Перед установкой $(^NameDA) ознакомьтесь с политикой обработки персональных данных."
-  ; BUILD_RESOURCES_DIR (not ${__FILEDIR__}: the macro expands inside the
-  ; template, so __FILEDIR__ would point at electron-builder's nsis dir).
-  !insertmacro MUI_PAGE_LICENSE "${BUILD_RESOURCES_DIR}\PRIVACY-POLICY.txt"
+  ; screen keeps its stock localized title. The values must be quoted tokens —
+  ; makensis strips the quotes when ${} expands them into the page's STR:
+  ; header text; an unquoted multi-word value fails "!define" parsing.
+  ; $(...) references resolve to the per-language LangStrings defined above.
+  !define MUI_PAGE_HEADER_TEXT "$(OfficeVegaPrivacyHdr)"
+  !define MUI_PAGE_HEADER_SUBTEXT "$(OfficeVegaPrivacySub)"
+  !insertmacro MUI_PAGE_LICENSE "$(OfficeVegaPrivacy)"
   !ifdef allowToChangeInstallationDirectory
     !define MUI_PAGE_CUSTOMFUNCTION_PRE instFilesPre
   !endif

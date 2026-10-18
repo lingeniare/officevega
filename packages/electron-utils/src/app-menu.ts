@@ -434,19 +434,33 @@ async function openBundledText(fileName: string): Promise<void> {
   if (target) void shell.openPath(target)
 }
 
+/** The bundled legal texts ship in two variants: the English UI reads the
+ * *-EN.txt file, every other UI language the *-RU.txt one (the installer
+ * pages apply the same split — see OfficeVegaLegalLangStrings in
+ * apps/shell/build/installer.nsh). */
+function legalDocFile(base: 'EULA' | 'PRIVACY-POLICY', lang: string | undefined): string {
+  return `${base}-${baseLang(lang ?? '') === 'en' ? 'EN' : 'RU'}.txt`
+}
+
 /** Help > License: opens the bundled EULA. */
-export function licenseMenuItem(labels: AppMenuLabels): MenuItemConstructorOptions {
+export function licenseMenuItem(
+  labels: AppMenuLabels,
+  lang?: string,
+): MenuItemConstructorOptions {
   return {
     label: labels.license,
-    click: () => openBundledText('EULA.txt'),
+    click: () => openBundledText(legalDocFile('EULA', lang)),
   }
 }
 
 /** Help > Privacy Policy: opens the bundled personal-data policy. */
-export function privacyMenuItem(labels: AppMenuLabels): MenuItemConstructorOptions {
+export function privacyMenuItem(
+  labels: AppMenuLabels,
+  lang?: string,
+): MenuItemConstructorOptions {
   return {
     label: labels.privacy,
-    click: () => openBundledText('PRIVACY-POLICY.txt'),
+    click: () => openBundledText(legalDocFile('PRIVACY-POLICY', lang)),
   }
 }
 
@@ -457,6 +471,7 @@ export function helpMenuTemplate(
   labels: AppMenuLabels,
   extraItems: MenuItemConstructorOptions[] = [],
   productName = 'OfficeVega',
+  lang?: string,
 ): MenuItemConstructorOptions {
   return {
     role: 'help',
@@ -467,8 +482,8 @@ export function helpMenuTemplate(
       checkUpdatesMenuItem(labels),
       aboutMenuItem(labels, productName),
       { type: 'separator' },
-      licenseMenuItem(labels),
-      privacyMenuItem(labels),
+      licenseMenuItem(labels, lang),
+      privacyMenuItem(labels, lang),
     ],
   }
 }

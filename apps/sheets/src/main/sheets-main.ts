@@ -4281,7 +4281,7 @@ function installApplicationMenu(): void {
       // accelerators would swallow them on macOS.
       viewMenuTemplate(labels, { devItems: !app.isPackaged, pageZoom: false }),
       windowMenuTemplate(process.platform, labels),
-      helpMenuTemplate(labels, [], appTitle(getUiLang())),
+      helpMenuTemplate(labels, [], appTitle(getUiLang()), getUiLang()),
       ...extraAppMenuItems,
     ]),
   )

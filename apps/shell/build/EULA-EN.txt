@@ -1,0 +1,932 @@
+﻿END USER LICENSE AGREEMENT
+for the "Office VEGA" software product
+
+Revision: version 1.2 of October 4, 2026
+
+This End User License Agreement is a contract of adhesion and sets out
+the terms of use of the "Office VEGA" software product.
+The primary document is the public offer published at officevega.com/oferta.
+In case of any conflict between this Agreement and the public offer,
+the public offer prevails.
+
+Before installing, registering, obtaining access to, launching or using
+the Software, please read the terms of this Agreement carefully.
+
+Installing, launching, registering, signing in, obtaining a license key,
+paying for a license, using any functionality of the Software, or taking
+any other action demonstrating the start of use of the Software means
+the User's full and unconditional acceptance of the terms of this
+Agreement.
+
+If the User does not agree with the terms of this Agreement in full or
+in part, the User may not use the Software and must stop using it.
+
+
+1. TERMS AND DEFINITIONS
+
+In this Agreement the following terms have the meanings given below:
+
+Licensor — individual entrepreneur Dmitry Semenovich Filippov,
+OGRNIP 324595800091282, INN 590310081811, the rightholder of the
+Software.
+
+Software / Office VEGA — the "Office VEGA" computer program, including
+all of its components, modules, interface, design, documentation,
+updates, fixes, add-ons, program code, databases, integrations and
+other related materials, unless expressly stated otherwise for
+individual components. The Software is designed for Windows. A macOS
+version will be released once it has been digitally signed; this will
+be announced at officevega.com.
+The license dashboard is located at officevega.com/dashboard. The
+dashboard of the VEGA AI provider service is governed by that service's
+separate offer.
+
+User / Licensee — an individual, individual entrepreneur, legal
+entity, institution or organization that has accepted the terms of
+this Agreement and uses the Software lawfully.
+
+License — the right to use the Software granted to the User within the
+scope and on the terms set out in this Agreement.
+
+Simple non-exclusive license — a license under which the Licensor
+retains the right to use the Software itself and to grant the right to
+use it to other persons.
+
+Free License — a License granted without a license fee to the
+categories of Users listed in section 3 of this Agreement.
+
+Corporate License — a paid License granted to the User in accordance
+with the selected plan, invoice, order, license description on the
+Licensor's website or a separate contract (referred to as a Paid
+License in the public offer).
+
+Account — the set of the User's data required to identify,
+authenticate and use the Software.
+
+License Key — a unique code, file, token, credentials or other
+technical means confirming the User's right to use the Software to a
+particular extent.
+
+Device — a computer, server, mobile device, virtual machine or other
+technical means on which the Software is installed, launched or used.
+
+AI Provider — a third-party organization, service, software or
+computing infrastructure that provides access to artificial
+intelligence models and technologies.
+
+Local AI System — software or a software-hardware artificial
+intelligence complex deployed in the User's infrastructure or in the
+infrastructure of a provider chosen by the User. Such systems include,
+in particular, Ollama, LM Studio and other solutions supporting
+compatible interfaces.
+
+OpenAI API-compatible system — an AI system exposing a programming
+interface fully or partially technically compatible with the OpenAI
+API format.
+
+API VEGA (the VEGA AI Provider) — a separate service with its own
+offer and its own per-token billing. The License fee does not include
+payment for VEGA tokens. The Software itself works without
+registration; registration is required only for the VEGA service and
+for the license dashboard. Without registration, the VEGA AI provider
+features are unavailable. When signing in to the VEGA service, the
+User separately accepts its offer and its personal data processing
+policy.
+
+User Content — documents, files, texts, spreadsheets, requests,
+images, information, personal data, API keys and other materials that
+the User uploads, enters, creates, processes or transfers while using
+the Software.
+
+
+2. SUBJECT OF THE AGREEMENT AND EXCLUSIVE RIGHTS
+
+2.1. Grant of License
+
+The Licensor grants the User a simple, non-exclusive, non-transferable
+License, without the right to sublicense, to use the "Office VEGA"
+Software within its intended functionality, the selected License type
+and the terms of this Agreement.
+
+2.2. Exclusive rights
+
+The exclusive rights to the "Office VEGA" Software, including its
+source code, object code, architecture, interface, design,
+documentation, name, logos, graphics, databases and other protected
+results of intellectual activity, belong to the Licensor:
+
+    Individual entrepreneur Dmitry Semenovich Filippov
+    INN: 590310081811
+
+The Licensor's exclusive rights do not extend to third-party
+components included in the Software and distributed under their own
+licenses (see clause 2.5).
+
+All rights not expressly granted to the User under this Agreement are
+reserved by the Licensor.
+
+2.3. No assignment of exclusive rights
+
+This Agreement is not a contract for the assignment (alienation) of
+exclusive rights. The User does not acquire the exclusive right to the
+Software, its parts, updates, documentation, means of
+individualization or other objects of the Licensor's intellectual
+property.
+
+2.4. Ways of using the Software
+
+Within the granted License the User may:
+
+- install the Software on the number of Devices permitted by the
+  selected plan or License Key;
+- launch and use the Software for its intended purpose;
+- create, edit, view, process and export the User's own documents and
+  other materials;
+- receive Software updates in the cases and to the extent determined
+  by the Licensor and the terms of the selected License;
+- use AI system integration features to the extent provided by the
+  type of License acquired.
+
+2.5. Open-source components
+
+The Software contains components developed by third parties and
+distributed under free and open-source software licenses. In
+particular, the Software is based on the source code of the GenOffice
+project (© Mainfunc, Inc.), distributed under the Apache License,
+Version 2.0, and includes other components under the Apache-2.0, MIT,
+BSD and other open-source licenses.
+
+Rights to such components are granted to the User directly by the
+terms of the corresponding open-source licenses. This Agreement does
+not limit or revoke the rights granted to the User by those licenses
+with respect to the corresponding components.
+
+The list of third-party components and the texts of their licenses are
+provided in the THIRD-PARTY-NOTICES.txt file shipped with the Software
+(Help menu → Third-Party Notices). The text of the Apache License 2.0
+and the copyright notices are included in the Software distribution.
+
+
+3. LICENSE TYPES
+
+3.1. Free License
+
+The Free License is granted without a license fee to the following
+categories of Users (as in the offer on the website):
+
+1) individuals — for personal, non-commercial use only, not related to
+entrepreneurial activity or generating income;
+2) non-profit organizations (NPOs) — animal-welfare (animal
+protection, shelters, help for homeless animals and the like),
+scientific (research and educational-scientific activity), medical and
+humanitarian.
+
+3.2. Terms of the Free License
+
+The Free License includes the Software's features without functional
+limitations. The capabilities additionally unlocked by the Corporate
+License are listed in clause 3.5 and in section 6 of the offer. The
+Software itself works without registration and contains no
+advertising or tracking (analytics on the officevega.com website is
+voluntary, only with the visitor's consent, and does not apply to the
+Software).
+
+The Free License does not include the VEGA AI provider service: it is
+paid separately per token under its own offer (see section 5).
+Without registration, the VEGA AI provider features are unavailable.
+
+It is strictly prohibited to use the Free License:
+
+- by legal entities, individual entrepreneurs and self-employed
+  persons within their business activity;
+- by commercial organizations of any form;
+- by employees and contractors of commercial organizations for work
+  purposes, even on a personal Device;
+- for any purposes aimed at generating income.
+
+A business must purchase a Corporate License for each Device on which
+the Software is used. If the Licensee's status changes (for example,
+an individual starts a business activity), they must purchase a
+Corporate License before starting commercial use.
+
+If the Licensor discovers use of the Free License in violation of this
+clause, the Licensor may:
+
+- demand that the use of the Software be stopped;
+- demand payment for a Corporate License for the entire period of
+  actual use, but not less than for 1 (one) year for each Device;
+- block the license or access to the AI features;
+- seek protection of its infringed rights, including a claim for
+  compensation under Article 1301 of the Civil Code of the Russian
+  Federation.
+
+3.3. Confirmation of the right to the Free License
+
+The Licensor may request from the User documents or information
+confirming that the User belongs to the category of Users entitled to
+the Free License. For NPOs: registration in the manner prescribed by
+law, charter activity in the stated areas, and on request — an extract
+from the Unified State Register of Legal Entities (EGRUL), the
+charter, other documents or links to public sources.
+
+Such information may include:
+
+- the full name and contact details of the individual;
+- the name of the organization;
+- the OGRN, INN or other identifying details;
+- information about the NPO status (animal-welfare, scientific,
+  medical, humanitarian);
+- other documents reasonably required to confirm the status.
+
+If the confirming information is not provided, if inaccurate data is
+submitted, or if the grounds for the Free License are lost, the
+Licensor may suspend or terminate it and offer the User to purchase a
+Corporate License.
+
+3.4. Corporate License
+
+The Corporate License is granted for a license fee to the following
+Users:
+
+- commercial organizations;
+- individual entrepreneurs;
+- persons applying the special "Professional Income Tax" regime, when
+  using the Software in their professional activity;
+- organizations and persons using the Software in entrepreneurial
+  activity;
+- Users who need features not included in the Free License.
+
+3.5. Corporate License capabilities
+
+Depending on the selected plan, the Corporate License may grant the
+right to:
+
+- use the Software in commercial and entrepreneurial activity;
+- connect external AI providers other than the VEGA AI provider (the
+  VEGA service is a separate per-token service, see section 5);
+- use the User's own AI provider API keys;
+- connect local AI systems;
+- connect Ollama, LM Studio and other OpenAI API-compatible systems;
+- use AI models deployed on the User's servers, workstations or other
+  computing resources;
+- receive priority technical support;
+- receive legal documents for business (invoice, acceptance act and
+  the like);
+- use the corporate dashboard at officevega.com/dashboard;
+- use additional features protecting trade secrets and personal
+  information in documents as they are released;
+- use other features expressly provided by the corresponding plan,
+  invoice, order or separate contract.
+
+3.6. Terms of the Corporate License
+
+The price of the Corporate License, its term, the permitted number of
+Devices, Users, accounts, the set of available features, limits and
+the payment procedure are determined:
+
+- on the Licensor's official website (officevega.com);
+- in the Software interface;
+- in the description of the corresponding plan;
+- in the issued invoice;
+- in the order;
+- in a separate contract between the Licensor and the User.
+
+The Corporate License is valid for 1 (one) year from the moment of
+payment (the date the funds are received under clause 11.2). The
+moment of key activation does not affect the term: a key activated
+later remains valid until the same date. Additional features may be
+released later; their absence at the time of purchase is not grounds
+for a refund.
+
+One license entitles the User to use the Software on one Device
+(1 license = 1 Device). A single key may be activated on only one
+Device at a time. Transferring a license to another Device is done in
+the license dashboard (officevega.com/dashboard) — by deactivating the
+Device or reissuing the key, in which case the previous key stops
+working. The number of reissues is unlimited; the technical interval
+is no more than once per 5 (five) minutes.
+
+If the terms of a separate contract differ from this Agreement, the
+separate contract applies to the parties' relationship in respect of
+those differences.
+
+
+4. CONCLUSION OF THE AGREEMENT AND GRANT OF THE LICENSE
+
+4.1. Acceptance of the Agreement
+
+This Agreement is deemed concluded from the moment the User performs
+one or more of the following actions:
+
+- installing the Software;
+- downloading the Software distribution;
+- registering in the license dashboard or the VEGA service (for those
+  services only);
+- clicking a button confirming consent to the terms of the Agreement;
+- obtaining, entering or activating a License Key;
+- paying for a Corporate License;
+- actually using the Software or any of its features.
+
+4.2. Authority of the representative
+
+A person accepting the Agreement on behalf of a legal entity,
+institution or organization confirms that they have sufficient
+authority to conclude the Agreement on behalf of that User.
+
+The risk of absence or insufficiency of authority is borne by the
+person who performed the acceptance, and by the represented
+organization in the cases provided for by the legislation of the
+Russian Federation.
+
+4.3. Start of the License
+
+The Corporate License is deemed granted from the moment of payment
+(the date the funds are received under clause 11.2). Activating the
+key later does not extend the term. The Free License is valid from the
+start of lawful use of the Software while the User meets the terms of
+section 3 and the offer.
+
+4.4. License term
+
+The Corporate License is valid for 1 (one) year from the moment of
+payment. The Free License is valid while the User meets the terms of
+section 3.
+
+For a fixed-term Corporate License, once the paid period expires the
+Licensor may restrict access to features that require a valid
+Corporate License, including creating and editing documents, using AI
+integrations and priority support. Technically the Software may
+continue to launch, but using it in business after the term without
+renewal is unlawful: the business must stop using it or renew the
+license.
+
+
+5. USE OF AI PROVIDERS AND LOCAL AI SYSTEMS
+
+5.1. General rules
+
+The Software may contain features allowing the User to send requests
+to AI providers, connect the User's own AI systems or use locally
+deployed models.
+
+The right to connect third-party AI providers (other than the VEGA AI
+provider), the User's own API keys and local AI systems is granted
+under the Corporate License. The VEGA AI provider is not included in
+the License (clause 5.6): it is a separate per-token service.
+Additional features may also appear in the Software later; their
+release dates are not guaranteed.
+
+5.2. Third-party AI providers
+
+When connecting a third-party AI provider, the User independently:
+
+- concludes an agreement with that AI provider where necessary;
+- registers an account with the AI provider;
+- obtains and keeps API keys secure;
+- pays for the AI provider's services;
+- reviews the terms of use, privacy policy and data processing rules
+  of that AI provider;
+- determines what data is transferred to the AI provider;
+- ensures the lawfulness of transferring such data.
+
+The Licensor is not a representative, agent, partner or party to the
+agreement between the User and the third-party AI provider, unless
+otherwise fixed by a separate written agreement.
+
+5.3. Local AI systems
+
+The User may connect local AI systems if they hold the corresponding
+Corporate License.
+
+The User is independently responsible for:
+
+- the lawfulness of using the chosen local AI system;
+- holding the rights to the AI models used;
+- deploying, administering and updating the local AI system;
+- configuring network access;
+- infrastructure security;
+- creating backups;
+- the compliance of the system used with the Software's technical
+  requirements.
+
+5.4. No warranties for external systems
+
+The Licensor does not guarantee the Software's compatibility with
+every specific AI provider, API version, local AI system, model,
+hardware or the User's software.
+
+The Licensor is not responsible for changes to, termination of,
+restricted access to, or changes to the tariffs, rules, APIs,
+functionality or results of third-party AI providers and local AI
+systems.
+
+5.5. AI-generated results
+
+Results produced using AI may contain errors, inaccuracies, incomplete
+information, outdated information, materials similar to materials of
+third parties, or may not meet the User's goals.
+
+The User must independently verify AI results before using,
+publishing, transferring them to third parties or making decisions
+based on them.
+
+The Software, AI providers and the results they generate are not a
+substitute for professional legal, medical, financial, investment,
+accounting, HR, technical or other specialized advice.
+
+5.6. The VEGA AI provider service — separate from the License
+
+The VEGA AI provider (per-token billing, including test funds on the
+account) is a separate service with separate terms. Payments for
+tokens are not included in the license fee under section 11 and are
+not governed by this Agreement, except for the rules on handling
+documents when using the AI features (clauses 5.1–5.5, 5.7, section
+8). The Software itself works without registration; registration is
+required only for the VEGA service and for the license dashboard
+(officevega.com/dashboard).
+
+5.7. Restrictions for confidential information
+
+It is prohibited to send to an AI chat via any API providers,
+including the VEGA service, information constituting a state secret,
+as well as other restricted-access data whose disclosure is prohibited
+by the legislation of the Russian Federation.
+
+Files and information containing trade secrets or other restricted
+commercial information should not be processed through an AI chat via
+API providers. For such data, use your own API keys (Custom API) or
+local or corporate AI systems deployed in the User's infrastructure.
+
+
+6. USER RIGHTS AND OBLIGATIONS
+
+6.1. The User may
+
+The User may:
+
+- use the Software within the granted License;
+- access the Software features included in the selected plan;
+- contact technical support in the manner provided by the selected
+  License;
+- use their own Content provided they hold the necessary rights;
+- stop using the Software at any time.
+
+6.2. The User must
+
+The User must:
+
+- comply with this Agreement and the legislation of the Russian
+  Federation;
+- use the Software only within the granted License;
+- not provide access to the Account, License Key, API keys and other
+  means of access to unauthorized third parties;
+- keep the information provided to the Licensor accurate;
+- independently ensure the protection of Devices, the Account,
+  passwords, License Keys and API keys;
+- promptly notify the Licensor of any detected unauthorized access to
+  the Account or the License Key;
+- independently create backups of important documents and data;
+- verify the results produced by the Software and AI systems before
+  putting them to practical use;
+- ensure that legal grounds exist for processing and transferring User
+  Content;
+- obtain the consent of personal data subjects where such consent is
+  required by the legislation of the Russian Federation.
+
+
+7. RESTRICTIONS ON USE
+
+7.1. General restrictions
+
+Without the Licensor's prior written permission, the User may not:
+
+- transfer, sell, rent out, lend, alienate or otherwise transfer
+  rights to use the Software to third parties;
+- grant sublicenses;
+- distribute the Software, its copies, distributions, License Keys or
+  access to the Account;
+- use the Software in a way that exceeds the granted License;
+- use the Free License for features expressly assigned to the
+  Corporate License;
+- bypass or attempt to bypass technical restrictions, protection
+  mechanisms, License Key restrictions, plan limits or other access
+  control means;
+- remove, hide, modify or make inconspicuous copyright notices, the
+  Software name, the Licensor's rights, trademarks and other means of
+  individualization;
+- use the "Office VEGA" name, designation, logo or design without the
+  Licensor's written consent, except for fair references to the
+  Software as the software product in use;
+- create conditions for access to the Software by persons who do not
+  hold the corresponding License, except in cases expressly provided
+  by the plan or a separate contract;
+- disrupt the normal operation of the Software, its infrastructure,
+  authentication, protection and update mechanisms;
+- use the Software to violate the rights of third parties, distribute
+  malware, gain unlawful access to information or engage in other
+  illegal activity.
+
+7.2. Restrictions concerning program code
+
+The User may not modify, adapt, alter, decompile, disassemble, decrypt
+or otherwise attempt to obtain the Software's source code, except in
+the cases and to the extent expressly permitted by the legislation of
+the Russian Federation, and except for components covered by
+open-source licenses that expressly grant such rights (see clause
+2.5).
+
+7.3. Restrictions concerning Software components
+
+The User may not copy the interface, structure, graphics,
+documentation, functional solutions or other protected elements of
+the Software to create competing software or another product that
+infringes the Licensor's exclusive rights.
+
+
+8. USER CONTENT, PERSONAL DATA AND CONFIDENTIALITY
+
+8.1. Rights to User Content
+
+The User retains the rights to the User Content owned by them that is
+created, uploaded, edited or processed using the Software.
+
+The User warrants that they hold all the rights and legal grounds
+required to use the User Content in the Software.
+
+8.2. Permission to process Content
+
+For the purpose of providing the Software's functionality, the User
+grants the Licensor a limited right to use the User Content solely to
+the extent necessary for:
+
+- processing the User's requests;
+- displaying, storing and transferring data in accordance with the
+  User's settings;
+- providing technical support;
+- ensuring information security;
+- fixing errors and failures;
+- performing duties established by the legislation of the Russian
+  Federation.
+
+8.3. Personal data
+
+If the use of the Software involves the processing of personal data,
+such processing is carried out in accordance with the personal data
+legislation of the Russian Federation and the Licensor's personal data
+processing policy, where published on the Licensor's website or in the
+Software interface.
+
+A User acting as a personal data operator is independently responsible
+for compliance with the law, including:
+
+- having a legal basis for processing personal data;
+- obtaining the necessary consents;
+- complying with the requirements for entrusting personal data
+  processing;
+- ensuring the confidentiality and security of personal data;
+- complying with the requirements for cross-border transfer of
+  personal data, where such transfer takes place.
+
+8.4. Transfer of data to AI providers
+
+When the User connects a third-party AI provider, User Content may be
+transferred to that provider in accordance with the User's settings
+and requests.
+
+The decision to transfer data to a third-party AI provider is made by
+the User independently. The User is responsible for the composition of
+the transferred data and the lawfulness of the transfer.
+
+8.5. No telemetry in the Software and local data processing
+
+The Software contains no telemetry features and keeps no logs of the
+User's actions or events. Documents and User Content are processed
+locally on the User's Device and are not transferred to the Licensor.
+This commitment applies to the Software and does not extend to the
+officevega.com website, where voluntary analytics is used only with
+the visitor's consent.
+
+To conclude and perform the contract, the Licensor processes personal
+data (name, e-mail, contact details — phone or telegram, if stated in
+the invoice request, payment details, organization data) under
+Federal Law No. 152-FZ and the personal data processing policy on the
+website. By accepting the offer, an individual consents to such
+processing. The personal data operator is the Licensor.
+
+Authorization is required only for the VEGA AI provider service and
+for the license dashboard; the Software itself works without
+registration.
+
+8.6. Anonymization when using the VEGA AI provider
+
+When the built-in VEGA AI provider is used, the document context and
+the prompt (the User's request text) are automatically anonymized
+before being sent to the model: personal data (full names, phone
+numbers and the like) is masked in the transferred fragments.
+
+Anonymization removes the risks of transferring personal data;
+however, data that is not personal enters the model unchanged. The
+composition of such data is the User's area of responsibility:
+anonymization does not release the User from the restrictions of
+clause 5.7 or from responsibility for the content of documents and
+prompts and for the decision to send them to the AI.
+
+
+9. UPDATES AND TECHNICAL SUPPORT
+
+9.1. Updates
+
+The Licensor may release updates, new versions, fixes, add-ons and
+changes to the Software.
+
+The User agrees that updates may be installed automatically where
+provided for by the Software's technical architecture or the User's
+settings.
+
+9.2. Changes to functionality
+
+The Licensor may change, add, restrict or discontinue support for
+individual features of the Software, integrations, file formats and
+AI providers.
+
+The Licensor undertakes to reasonably take into account the interests
+of Users who have paid for a fixed-term Corporate License when
+changing essential functionality during the paid period.
+
+9.3. Priority support
+
+Priority technical support is provided to Corporate License Users to
+the extent set by the selected plan or a separate contract.
+
+Priority support may include a shorter initial response time,
+dedicated communication channels, consultations on using the Software
+and other services expressly stated in the plan description.
+
+9.4. What technical support does not include
+
+Unless agreed separately, technical support does not include:
+
+- development of custom modifications;
+- installation and configuration of the User's hardware;
+- administration of the User's local network;
+- administration of local AI systems;
+- configuration and payment of third-party AI provider services;
+- recovery of data lost by the User;
+- training the User's staff;
+- fixing problems caused by the User's actions, third parties,
+  malware, incompatible hardware or third-party services.
+
+
+10. WARRANTIES AND LIMITATION OF LIABILITY
+
+10.1. Terms of provision of the Software
+
+The Software is provided on an "as is" and "as available" basis.
+
+The Licensor takes reasonable measures to keep the Software working,
+but does not guarantee that it will meet the User's individual
+expectations, run continuously, without errors, failures or delays, or
+be compatible with any hardware and software of the User, or that
+complex file formatting (.docx, .xlsx, .pptx) will match the original
+100 %. The User verifies the resulting files independently.
+
+10.2. The Software is not fault-tolerant
+
+The Software is not intended for use in systems on which human life
+and health, the safety of facilities, transport control, defense,
+high-risk industrial processes or other mission-critical systems
+depend, unless such use has been expressly agreed with the Licensor in
+writing.
+
+10.3. No liability for external circumstances
+
+The Licensor is not liable for:
+
+- the operation of Devices, operating systems, communication networks,
+  the Internet, servers and the User's software;
+- the operation of third-party AI providers, payment services, cloud
+  platforms, telecom operators and other third parties;
+- the unavailability of third-party APIs, changes to their
+  functionality and terms of use;
+- the User's loss of passwords, License Keys, API keys or User
+  Content;
+- the consequences of the User's use of results created with AI;
+- the User's violation of third-party rights or of the legislation of
+  the Russian Federation;
+- indirect losses, lost profit, loss of income, business reputation,
+  expected savings, data or business opportunities.
+
+10.4. Amount of the Licensor's liability
+
+When the Corporate License is used, the Licensor's liability for
+claims related to the use of the Software is limited to the amount of
+the license fee actually paid by the User for the 12 months preceding
+the event giving rise to the claim.
+
+When the Free License is used, the User has paid nothing, so the
+Licensor's liability is excluded to the extent permitted by the
+legislation of the Russian Federation.
+
+The limitations of liability set out in this section apply to the
+extent permitted by the legislation of the Russian Federation and do
+not limit consumer rights that cannot be limited by law.
+
+
+11. PAYMENT FOR THE CORPORATE LICENSE
+
+11.1. License fee
+
+The base price of the Corporate License under the public offer is
+5,000 (five thousand) Russian rubles for 1 (one) year of use on 1
+(one) Device. For use on several Devices the price is calculated by
+the formula S = N × 5,000 RUB, where S is the total amount and N is
+the number of Devices (licenses). No VAT is charged because the
+Licensor applies the simplified taxation system.
+
+A different fee amount, license period, feature set and payment
+procedure may be stated in the selected plan, invoice, order or
+separate contract.
+
+11.2. Payment procedure and moment of payment
+
+Payment is made in Russian rubles by bank card or via the Robokassa
+payment service on the Licensor's website, or by invoice to the
+Licensor's settlement account (for legal entities and individual
+entrepreneurs — on request via the website).
+
+The User's payment obligation is deemed fulfilled from the moment the
+funds are credited to the Licensor's settlement account or the payment
+service confirms successful payment.
+
+After payment, within 1 (one) business day the Licensor sends the User
+a License Key or grants access to the license at the stated e-mail
+address or in the license dashboard. For legal entities and individual
+entrepreneurs, an invoice, acceptance act and other closing documents
+are issued on request.
+
+11.3. Price changes
+
+The Licensor may change the price of Corporate Licenses for future
+periods of use. A price change does not affect the already paid period
+of a Corporate License unless otherwise agreed by the parties.
+
+11.4. Refunds
+
+The License is a digital product. A refund is possible if:
+
+- the License Key has not been activated and no more than 7 (seven)
+  calendar days have passed since payment;
+- the Software cannot be used due to the Licensor's fault and the
+  problem could not be resolved within a reasonable time after
+  contacting support.
+
+Once the key has been activated and use of the Software has begun,
+payment is generally not refunded, except in the stated cases and in
+cases provided by law. For a refund, send a request to mail@vega.chat
+stating the order details; the refund is made by the same method used
+for payment within 10 (ten) business days.
+
+The rights of consumers (individuals acquiring a license for personal
+needs) provided by consumer protection legislation are not limited by
+this Agreement.
+
+
+12. SUSPENSION AND TERMINATION OF THE LICENSE
+
+12.1. Suspension of access
+
+The Licensor may temporarily restrict access to the Software in full
+or in part if:
+
+- the User violates this Agreement;
+- there are signs of unauthorized access, fraud, bypass of technical
+  restrictions or other security violations;
+- use of the Software threatens its operability, security, the rights
+  of the Licensor, other Users or third parties;
+- preventive, technical, emergency or scheduled maintenance is
+  required;
+- the restriction is required by law, a court act or a demand of an
+  authorized state body.
+
+12.2. Unilateral refusal by the Licensor
+
+The Licensor may refuse to perform the Agreement out of court and
+terminate the License in the event of a material or repeated violation
+of the Agreement terms by the User.
+
+Material violations include, in particular:
+
+- unlawful distribution of the Software;
+- transfer of the License Key or Account to third parties;
+- bypassing technical restrictions;
+- infringement of the Licensor's exclusive rights;
+- use of the Free License in violation of the terms of its grant;
+- use of the Software for illegal purposes.
+
+12.3. Consequences of License termination
+
+After the License ends, the User must:
+
+- stop using the Software;
+- delete local copies of the Software where applicable;
+- stop using the License Keys;
+- delete or disable integrations where technically required;
+- take no actions aimed at bypassing the termination of access.
+
+Termination of the License does not release the User from liability
+for violations committed during its validity.
+
+
+13. CHANGES TO THE AGREEMENT
+
+13.1. Right to change
+
+The Licensor may unilaterally change this Agreement.
+
+13.2. Entry into force of changes
+
+A new revision of the Agreement comes into force on the date it is
+published on the Licensor's official website, in the Software
+interface or at another address specified by the Licensor, unless the
+new revision sets a different effective date.
+
+13.3. Consent to a new revision
+
+Continued use of the Software after a new revision of the Agreement
+comes into force means the User's consent to its terms.
+
+If the User does not agree with the changes, the User must stop using
+the Software.
+
+
+14. GOVERNING LAW AND DISPUTE RESOLUTION
+
+14.1. Governing law
+
+This Agreement is governed by the legislation of the Russian
+Federation.
+
+14.2. Pre-trial procedure
+
+Before going to court, the party considering its rights violated sends
+the other party a written claim by e-mail, through the Software
+interface or by other means that allow confirming it was sent.
+
+The response time for a claim is 30 calendar days from the date of
+receipt, unless a different period is set by the legislation of the
+Russian Federation.
+
+14.3. Judicial dispute resolution
+
+If a dispute cannot be settled in the pre-trial procedure, it is
+subject to consideration by a court in accordance with the rules of
+jurisdiction established by the legislation of the Russian Federation.
+
+Disputes between legal entities and individual entrepreneurs are
+considered by the Arbitration Court of Perm Krai at the Licensor's
+location.
+
+Disputes involving consumers are considered taking into account the
+guarantees and jurisdiction rules provided by the consumer protection
+legislation of the Russian Federation.
+
+
+15. FINAL PROVISIONS
+
+15.1. Invalidity of individual provisions
+
+If any provision of the Agreement is found to be invalid, unlawful or
+unenforceable, this does not affect the validity of the remaining
+provisions.
+
+15.2. No waiver of rights
+
+The Licensor's failure to exercise any right does not mean a waiver of
+that right in the future.
+
+15.3. Notifications
+
+The Licensor may send the User notifications to the e-mail address
+stated during registration or payment, through the Account, the
+Software interface, the official website or by other means that allow
+confirming the notification was sent.
+
+15.4. Priority of separate contracts and the offer
+
+If a separate written contract has been concluded between the Licensor
+and the User, its terms take priority over the terms of this Agreement
+in respect of contradictions. In all other cases, in the event of a
+conflict between this Agreement and the public offer at
+officevega.com/oferta, the offer applies as the primary document.
+
+
+16. LICENSOR'S DETAILS
+
+Licensor:
+Individual entrepreneur Dmitry Semenovich Filippov
+OGRNIP: 324595800091282
+INN: 590310081811
+
+E-mail address: mail@vega.chat
+Official website: officevega.com
+License dashboard: officevega.com/dashboard

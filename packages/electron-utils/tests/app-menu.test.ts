@@ -242,16 +242,25 @@ describe('licenseMenuItem + privacyMenuItem / bundled legal docs', () => {
   })
 
   it.each([
-    ['license', licenseMenuItem, 'EULA.txt'],
-    ['privacy', privacyMenuItem, 'PRIVACY-POLICY.txt'],
-  ] as const)('%s item opens the bundled %s via the OS viewer', async (key, make, file) => {
-    const item = make(en) as { label: string; click: () => Promise<void> }
-    expect(item.label).toBe(en[key])
+    ['license', licenseMenuItem, 'en', 'EULA-EN.txt'],
+    ['privacy', privacyMenuItem, 'en', 'PRIVACY-POLICY-EN.txt'],
+    ['license', licenseMenuItem, 'ru', 'EULA-RU.txt'],
+    ['privacy', privacyMenuItem, 'ru', 'PRIVACY-POLICY-RU.txt'],
+    ['license', licenseMenuItem, 'uz', 'EULA-RU.txt'],
+    ['privacy', privacyMenuItem, 'kk', 'PRIVACY-POLICY-RU.txt'],
+    ['license', licenseMenuItem, undefined, 'EULA-RU.txt'],
+    ['privacy', privacyMenuItem, undefined, 'PRIVACY-POLICY-RU.txt'],
+  ] as const)(
+    '%s item opens the bundled %s for lang %s',
+    async (key, make, lang, file) => {
+      const item = make(en, lang) as { label: string; click: () => Promise<void> }
+      expect(item.label).toBe(en[key])
 
-    await item.click()
-    expect(electronMock.openPath).toHaveBeenCalledOnce()
-    expect(electronMock.openPath.mock.calls[0]![0]).toMatch(
-      new RegExp(`${file.replace('.', '\\.')}$`),
-    )
-  })
+      await item.click()
+      expect(electronMock.openPath).toHaveBeenCalledOnce()
+      expect(electronMock.openPath.mock.calls[0]![0]).toMatch(
+        new RegExp(`${file.replace('.', '\\.')}$`),
+      )
+    },
+  )
 })

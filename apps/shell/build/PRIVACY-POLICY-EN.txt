@@ -1,0 +1,200 @@
+﻿PERSONAL DATA PROCESSING AND PRIVACY POLICY
+for the "Office VEGA" software product
+
+Revision: version 1.2 of October 4, 2026
+Effective date: October 4, 2026
+
+The primary document is the public offer published at
+officevega.com/oferta. In case of any conflict between this Policy and
+the public offer, the public offer prevails.
+
+
+1. GENERAL PROVISIONS
+
+This Personal Data Processing and Privacy Policy (the "Policy") sets
+out the procedure for processing and protecting the personal data of
+users of the "Office VEGA" software product (the "Software").
+
+The Policy has been prepared in accordance with Federal Law No. 152-FZ
+"On Personal Data" dated July 27, 2006, and other applicable
+regulatory acts of the Russian Federation.
+
+The personal data operator is:
+
+    Individual entrepreneur Dmitry Semenovich Filippov
+    OGRNIP: 324595800091282
+    INN: 590310081811
+    (the "Operator")
+
+Contact address for questions, requests and exercising the rights of
+personal data subjects: mail@vega.chat.
+
+Official website: officevega.com.
+
+The Policy applies to users of the Software installed and used on
+devices running Windows. A macOS version will be released once it has
+been digitally signed; this will be announced at officevega.com.
+
+
+2. TERMS
+
+Personal data — any information relating directly or indirectly to an
+identified or identifiable individual.
+
+User — an individual, individual entrepreneur, legal entity,
+institution or organization using the Software lawfully.
+
+Operator — individual entrepreneur Dmitry Semenovich Filippov, who
+organizes and carries out the processing of personal data.
+
+API VEGA (the VEGA AI Provider) — a separate service with its own
+offer and per-token billing. The personal data processing policy that
+applies when using the VEGA service is determined by that service's
+agreement and is accepted by the User separately at the registration
+stage in the api.vega.chat service (see section 6 of this Policy).
+
+
+3. THE SOFTWARE DOES NOT COLLECT DATA AUTOMATICALLY
+
+The office applications part of the Software runs locally on the
+User's device.
+
+The Operator does not automatically collect, transfer, store or
+analyze:
+
+- data about the User's computer or other device;
+- the IP address;
+- operating system information;
+- unique device identifiers;
+- information about installed programs;
+- the history of work in the Software;
+- data on the use of Software features;
+- the contents of documents created or opened by the User;
+- technical logs, error and crash reports;
+- diagnostic information;
+- analytics and telemetry data.
+
+The Software contains no tracking, advertising, advertising
+identifiers, hidden statistics collection or other mechanisms designed
+to gather information about the User or their device.
+
+Documents and work results saved by the User on their device are
+stored on the User's device or in the storage chosen by the User. The
+Operator does not access them unless the User sends them to the
+support service on their own initiative.
+
+
+4. WHAT DATA IS PROCESSED AND WHY
+
+4.1. The User's e-mail address is used and required to confirm the
+license: for registration in the license dashboard
+(officevega.com/dashboard), issuing and verifying the license key,
+sending service messages necessary for the license to work
+(confirmation, access recovery, notifications of material changes),
+and for handling the User's requests.
+
+4.2. When an invoice for a Corporate License is requested, the
+following may additionally be processed: name, phone number or
+telegram, payment details and data about the User's organization.
+
+4.3. E-mail addresses and the stated information are not used for
+advertising mailings without the User's separate consent.
+
+4.4. Legal grounds for processing: the User's consent; the necessity
+to perform the agreement with the User (granting the license); the
+necessity to perform obligations established by the legislation of the
+Russian Federation; the Operator's legitimate interests provided that
+such processing does not violate the User's rights and freedoms.
+
+
+5. STORAGE AND TRANSFER OF DATA
+
+5.1. Data is stored on a server located on the territory of the
+Russian Federation.
+
+5.2. Data is not transferred to third parties, is not sold and is not
+provided for advertising purposes — except in cases expressly provided
+for by the legislation of the Russian Federation or required to comply
+with the demands of authorized state bodies in the manner prescribed
+by law.
+
+5.3. The Operator takes the necessary legal, organizational and
+technical measures to protect personal data: access restriction,
+protected server infrastructure on the territory of the Russian
+Federation, protected communication channels, access control,
+granting access only to authorized persons.
+
+
+6. THE VEGA AI PROVIDER SERVICE — A SEPARATE AGREEMENT
+
+6.1. The VEGA AI provider service (api.vega.chat) is a separate
+service with its own offer. The personal data processing policy
+applying to its use is determined by that service's agreement.
+
+6.2. The User accepts the VEGA service's offer and personal data
+processing policy independently at the registration stage in the
+api.vega.chat service. Without registration, the VEGA service
+features are unavailable.
+
+6.3. The Software itself works without registration; registration is
+required only for the VEGA service and for the license dashboard.
+
+6.4. Personal data anonymization. When the built-in VEGA AI provider
+is used, the document context and the prompt (the User's request
+text) are automatically anonymized before being sent to the model:
+personal data (full names, phone numbers and the like) is masked in
+the transferred fragments. Both document and file fragments and the
+User's prompts are subject to anonymization.
+
+Anonymization removes the risks of transferring personal data;
+however, data that is not personal enters the model unchanged. The
+User independently determines the composition of the transferred data
+and must not send restricted-access information (state secrets, trade
+secrets in violation of their protection regime, and the like) to the
+AI features — see section 8 of the public offer.
+
+When third-party AI providers are connected (corporate, local,
+foreign), the VEGA service's anonymization is not applied, and data is
+processed under the rules of the corresponding provider.
+
+
+7. RETENTION PERIODS AND USER RIGHTS
+
+7.1. Data is processed for the duration of the license or until the
+User withdraws consent, unless further processing is required under
+the legislation of the Russian Federation. Once the purposes of
+processing have been achieved, the data is subject to destruction or
+depersonalization within the time limits established by law.
+
+7.2. The User has the right to: receive information about the
+processing of their data; request the rectification, blocking or
+destruction of data; withdraw consent; appeal the Operator's actions
+to the authorized body or to a court; send a request to the Operator
+at mail@vega.chat.
+
+7.3. Withdrawal of consent may make further use of the license
+impossible if data processing is required to confirm it. Withdrawal
+of consent does not affect the lawfulness of processing carried out
+before the withdrawal.
+
+
+8. CHANGES TO THE POLICY
+
+The Operator may change this Policy in the event of changes to the
+Software's functionality, the data processing procedure, legal
+requirements or the protection measures applied. The current version
+is published at officevega.com. A new revision comes into force upon
+publication unless the revision itself states a different effective
+date.
+
+
+9. OPERATOR'S CONTACT DETAILS
+
+Operator:
+Individual entrepreneur Dmitry Semenovich Filippov
+OGRNIP: 324595800091282
+INN: 590310081811
+
+Address for personal data requests: mail@vega.chat
+Official website and Policy publication address: officevega.com
+License dashboard: officevega.com/dashboard

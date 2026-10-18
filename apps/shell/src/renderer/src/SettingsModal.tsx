@@ -53,6 +53,7 @@ import type {
   UiTheme,
 } from '../../shared/home-api'
 import { LicenseBlock } from './LicenseBlock'
+import { LangFlag } from './lang-flags'
 import { ProviderLogo } from './provider-logos'
 import { IntegrationsPane, skillUpdateDue } from './IntegrationsPane'
 import { SHOW_FAST_MODEL } from './featureFlags'
@@ -2428,7 +2429,16 @@ export function SettingsModal({
                     className="set-dd"
                     value={lang}
                     ariaLabel={t('language')}
-                    options={LANG_OPTIONS.map((opt) => ({ value: opt.value, label: opt.label }))}
+                    options={LANG_OPTIONS.map((opt) => ({
+                      value: opt.value,
+                      label: opt.label,
+                      render: (
+                        <span className="set-lang-opt">
+                          <LangFlag lang={opt.value} />
+                          <span className="set-lang-name">{opt.label}</span>
+                        </span>
+                      ),
+                    }))}
                     onPick={(v) => setLang(v as typeof lang)}
                   />
                 </div>

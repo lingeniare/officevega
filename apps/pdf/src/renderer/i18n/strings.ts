@@ -114,6 +114,131 @@ const fillFormStrings = {
 }
 
 const localizedFillFormStrings = {
+  ru: {
+    ribbonTabFillForm: 'Заполнение формы',
+    formPreviousField: 'Предыдущее поле',
+    formNextField: 'Следующее поле',
+    formFieldProgress: '{current} / {total}',
+    insertText: 'Вставить текст',
+    insertTextHint: 'Вставить в PDF текст, по которому можно искать',
+    insertTextTitle: 'Вставка текста',
+    editInsertedText: 'Изменить вставленный текст',
+    deleteInsertedText: 'Удалить вставленный текст',
+    insertedTextDeleted: 'Вставленный текст удалён',
+    textInsertSkipped: 'Не удалось сохранить вставленный текст на страницах: {pages}',
+    textInsertNoFont:
+      'Ни один установленный шрифт не может отобразить этот текст в PDF (эмодзи и специальные символы не поддерживаются)',
+    formComplete: 'Завершить заполнение',
+    formMissingRequired: 'Незаполненных обязательных полей: {count}',
+    formCompleteDone: 'Проверка заполнения формы пройдена',
+    formSignField: 'Нажмите, чтобы подписать',
+    formAddText: 'Добавить текст',
+    formAddTextHint: 'Введите текст, затем щёлкните страницу, чтобы разместить его',
+    formAddTextTitle: 'Добавить текст в PDF',
+    formEditText: 'Изменить текст',
+    formAddTextPlaceholder: 'Введите текст для размещения',
+    formTextSize: 'Размер шрифта',
+    formTextColor: 'Цвет',
+    formTextAlign: 'Выравнивание',
+    formAlignLeft: 'Слева',
+    formAlignCenter: 'По центру',
+    formAlignRight: 'Справа',
+    formAddCheck: 'Галочка',
+    formAddCheckHint: 'Щёлкните страницу, чтобы поставить галочку',
+    formAddCross: 'Крестик',
+    formAddCrossHint: 'Щёлкните страницу, чтобы поставить крестик',
+    formPlaceStaticHint:
+      'Щёлкните для размещения; выделите результат, чтобы переместить или изменить размер',
+    formXfaWarning:
+      'Этот PDF содержит XFA. Поддерживается только AcroForm; при сохранении данные XFA могут не сохраниться.',
+    redact: 'Скрыть область',
+    redactHint: 'Выделите содержимое, которое будет удалено безвозвратно',
+    redactClear: 'Снять метки',
+    redactApply: 'Применить скрытие',
+    redactConfirm:
+      'Содержимое отмеченных областей будет удалено безвозвратно. Первое применение создаёт и открывает копию; последующие применения обновляют эту копию. Продолжить?',
+    redactSaveAsHint:
+      'Скрытие не применено. Нажмите «Применить скрытие», чтобы применить метки к рабочей копии; обычное сохранение эти метки не применяет.',
+    redactSaveFirst: 'Сохраните другие ожидающие изменения перед применением скрытия.',
+    redactStructureBlocked:
+      'Примените или снимите ожидающие метки скрытия перед изменением структуры страниц.',
+    ribbonTabFormDesign: 'Конструктор форм',
+    formDesignText: 'Текстовое поле',
+    formDesignTextHint:
+      'Щёлкните или протяните на странице, чтобы добавить заполняемое текстовое поле',
+    formDesignCheckbox: 'Флажок',
+    formDesignCheckboxHint: 'Щёлкните или протяните на странице, чтобы добавить флажок',
+    formDesignSignature: 'Поле подписи',
+    formDesignSignatureHint: 'Щёлкните или протяните на странице, чтобы добавить поле подписи',
+    formDesignDelete: 'Удалить поле',
+    formDesignDeleted: 'Поле удалено',
+    formDesignPending: 'Новых полей: {count} — будут записаны в PDF при сохранении',
+    formDesignEmptyHint: 'Выберите тип поля, затем щёлкните или протяните на странице',
+    formDesignRequired: 'Обязательное',
+    formDesignMultiLine: 'Многострочное',
+    formDesignDefaultValue: 'Значение по умолчанию',
+    formDesignDefaultChecked: 'Отмечено по умолчанию',
+    formDesignNameInvalid:
+      'Имена полей должны быть уникальными и не должны содержать ".", "/" или "\\"',
+    formDesignExportValueTaken:
+      'У каждой кнопки в группе переключателей должно быть своё непустое значение варианта',
+    formDesignOptionsEmpty: 'В выпадающем списке должен быть хотя бы один вариант',
+    formDesignRadio: 'Переключатель',
+    formDesignRadioHint:
+      'Щёлкните или протяните, чтобы добавить переключатель; идущие подряд кнопки объединяются в одну группу (одно имя)',
+    formDesignChoice: 'Выпадающий список',
+    formDesignChoiceHint: 'Щёлкните или протяните на странице, чтобы добавить выпадающий список',
+    formDesignDate: 'Поле даты',
+    formDesignDateHint:
+      'Щёлкните или протяните на странице, чтобы добавить поле даты с проверкой формата',
+    formDesignExportValue: 'Значение варианта',
+    formDesignRadioGroupHint: 'Кнопки с одинаковым именем поля образуют одну группу',
+    formDesignOptions: 'Варианты (по одному в строке)',
+    formDesignDateFormat: 'Формат даты',
+    formDesignDetect: 'Автоопределение',
+    formDesignDetecting: 'Определение…',
+    formDesignDetectHint:
+      'Находит на каждой странице пустые места, клетки и пропуски после «Метка:» и добавляет там поля; проверьте и удалите лишние',
+    formDesignDetected:
+      'Обнаружено и добавлено полей: {count}; при необходимости измените или удалите их',
+    formDesignDetectedNone:
+      'Не найдено пустых мест или клеток, которые можно превратить в поля',
+    formDesignArrange: 'Упорядочить',
+    formDesignArrangeHint:
+      'Выровнять, распределить или уравнять размер выбранных полей (выберите несколько через Shift или протягиванием)',
+    formDesignAlignLeft: 'По левому краю',
+    formDesignAlignCenterH: 'По центру по горизонтали',
+    formDesignAlignRight: 'По правому краю',
+    formDesignAlignTop: 'По верхнему краю',
+    formDesignAlignCenterV: 'По центру по вертикали',
+    formDesignAlignBottom: 'По нижнему краю',
+    formDesignDistributeH: 'Распределить по горизонтали',
+    formDesignDistributeV: 'Распределить по вертикали',
+    formDesignSameWidth: 'Одинаковая ширина',
+    formDesignSameHeight: 'Одинаковая высота',
+    formDesignSameSize: 'Одинаковый размер',
+    formDesignProperties: 'Свойства',
+    formDesignCopy: 'Копировать',
+    formDesignPaste: 'Вставить',
+    formDesignDuplicate: 'Дублировать',
+    formDesignKeepTool: 'Добавлять дальше',
+    formDesignKeepToolHint:
+      'Оставлять инструмент поля активным после каждого размещения (или удерживайте Ctrl/⌘)',
+    formDesignPreview: 'Предпросмотр',
+    formDesignPreviewHint:
+      'Попробуйте заполнить форму как читатель; переключите ещё раз, чтобы продолжить редактирование',
+    formDesignPreviewOn:
+      'Предпросмотр: заполните поля, чтобы проверить их, затем выключите предпросмотр для редактирования',
+    formDesignPlaceHint: 'Щёлкните или протяните на странице, чтобы разместить поле; Esc отменяет',
+    formDesignDone: 'Готово',
+    formDateInvalid: 'Введите дату в формате {format}',
+    formDatePick: 'Выбрать дату',
+    formDesignCancel: 'Отмена',
+    formDesignExistingHint:
+      'Сохранённое поле: переместите, измените размер, сделайте обязательным или удалите',
+    formDesignSignedLocked:
+      'Это поле подписано; сначала удалите подпись, затем перемещайте или удаляйте поле',
+  },
   uz: {
     ribbonTabFillForm: 'Formani to‘ldirish',
     formPreviousField: 'Oldingi maydon',
@@ -163,6 +288,84 @@ const localizedFillFormStrings = {
       'Maxfiylashtirishni qo‘llashdan oldin kutilayotgan boshqa o‘zgarishlarni saqlang.',
     redactStructureBlocked:
       'Sahifa tuzilishini o‘zgartirishdan oldin kutilayotgan maxfiylashtirishlarni qo‘llang yoki tozalang.',
+    ribbonTabFormDesign: 'Forma dizayni',
+    formDesignText: 'Matn maydoni',
+    formDesignTextHint:
+      'To‘ldiriladigan matn maydonini qo‘shish uchun sahifani bosing yoki sudrang',
+    formDesignCheckbox: 'Belgilash katakchasi',
+    formDesignCheckboxHint:
+      'Belgilash katakchasini qo‘shish uchun sahifani bosing yoki sudrang',
+    formDesignSignature: 'Imzo maydoni',
+    formDesignSignatureHint: 'Imzo maydonini qo‘shish uchun sahifani bosing yoki sudrang',
+    formDesignDelete: 'Maydonni o‘chirish',
+    formDesignDeleted: 'Maydon o‘chirildi',
+    formDesignPending: '{count} ta yangi maydon — saqlaganda PDF’ga yoziladi',
+    formDesignEmptyHint: 'Maydon turini tanlang, so‘ng sahifani bosing yoki sudrang',
+    formDesignRequired: 'Majburiy',
+    formDesignMultiLine: 'Ko‘p qatorli',
+    formDesignDefaultValue: 'Sukut qiymati',
+    formDesignDefaultChecked: 'Sukut bo‘yicha belgilangan',
+    formDesignNameInvalid:
+      'Maydon nomlari noyob bo‘lishi va ".", "/" yoki "\\" belgilarini o‘z ichiga olmasligi kerak',
+    formDesignExportValueTaken:
+      'Radio guruhidagi har bir tugmaning o‘ziga xos, bo‘sh bo‘lmagan variant qiymati bo‘lishi kerak',
+    formDesignOptionsEmpty: 'Ochiladigan ro‘yxatda kamida bitta variant bo‘lishi kerak',
+    formDesignRadio: 'Radio tugma',
+    formDesignRadioHint:
+      'Radio tugma qo‘shish uchun bosing yoki sudrang; ketma-ket tugmalar bitta guruhga (bir xil nom) kiradi',
+    formDesignChoice: 'Ochiladigan ro‘yxat',
+    formDesignChoiceHint: 'Ochiladigan ro‘yxat qo‘shish uchun sahifani bosing yoki sudrang',
+    formDesignDate: 'Sana maydoni',
+    formDesignDateHint:
+      'Format tekshiruvli sana maydonini qo‘shish uchun sahifani bosing yoki sudrang',
+    formDesignExportValue: 'Variant qiymati',
+    formDesignRadioGroupHint: 'Bir xil maydon nomli tugmalar bitta guruhni tashkil qiladi',
+    formDesignOptions: 'Variantlar (har qatorda bittadan)',
+    formDesignDateFormat: 'Sana formati',
+    formDesignDetect: 'Avtoaniqlash',
+    formDesignDetecting: 'Aniqlanmoqda…',
+    formDesignDetectHint:
+      'Har bir sahifadagi bo‘shliqlarni, kataklarni va “Yorliq:” dan keyingi bo‘sh joylarni topib, u yerga maydonlar qo‘shadi; keraksizlarini tekshirib o‘chiring',
+    formDesignDetected:
+      '{count} ta maydon aniqlandi va qo‘shildi; kerak bo‘lsa ularni o‘zgartiring yoki o‘chiring',
+    formDesignDetectedNone:
+      'Maydonga aylantiriladigan bo‘shliqlar yoki kataklar topilmadi',
+    formDesignArrange: 'Joylashtirish',
+    formDesignArrangeHint:
+      'Tanlangan maydonlarni tekislang, taqsimlang yoki bir xil o‘lchamga keltiring (bir nechtasini Shift bilan yoki sudrab tanlang)',
+    formDesignAlignLeft: 'Chapga tekislash',
+    formDesignAlignCenterH: 'Gorizontal markazga tekislash',
+    formDesignAlignRight: 'O‘ngga tekislash',
+    formDesignAlignTop: 'Yuqoriga tekislash',
+    formDesignAlignCenterV: 'Vertikal markazga tekislash',
+    formDesignAlignBottom: 'Pastga tekislash',
+    formDesignDistributeH: 'Gorizontal taqsimlash',
+    formDesignDistributeV: 'Vertikal taqsimlash',
+    formDesignSameWidth: 'Bir xil kenglik',
+    formDesignSameHeight: 'Bir xil balandlik',
+    formDesignSameSize: 'Bir xil o‘lcham',
+    formDesignProperties: 'Xususiyatlar',
+    formDesignCopy: 'Nusxalash',
+    formDesignPaste: 'Qo‘yish',
+    formDesignDuplicate: 'Nusxasini olish',
+    formDesignKeepTool: 'Qo‘shishda davom etish',
+    formDesignKeepToolHint:
+      'Har bir joylashtirishdan keyin maydon vositasini faol saqlang (yoki Ctrl/⌘ tugmasini ushlab turing)',
+    formDesignPreview: 'Ko‘rib chiqish',
+    formDesignPreviewHint:
+      'Formani o‘quvchi kabi to‘ldirib ko‘ring; tahrirlashni davom ettirish uchun yana almashtiring',
+    formDesignPreviewOn:
+      'Ko‘rib chiqish: sinash uchun maydonlarni to‘ldiring, tahrirlash uchun Ko‘rib chiqishni o‘chiring',
+    formDesignPlaceHint:
+      'Maydonni joylashtirish uchun sahifani bosing yoki sudrang; Esc bekor qiladi',
+    formDesignDone: 'Tayyor',
+    formDateInvalid: 'Sanani {format} ko‘rinishida kiriting',
+    formDatePick: 'Sanani tanlash',
+    formDesignCancel: 'Bekor qilish',
+    formDesignExistingHint:
+      'Saqlangan maydon: ko‘chiring, o‘lchamini o‘zgartiring, majburiy qiling yoki o‘chiring',
+    formDesignSignedLocked:
+      'Bu maydon imzolangan; ko‘chirish yoki o‘chirishdan oldin imzoni tozalang',
   },
   kk: {
     ribbonTabFillForm: 'Пішінді толтыру',
@@ -212,6 +415,81 @@ const localizedFillFormStrings = {
     redactSaveFirst: 'Жасырын мазмұнды қолданбас бұрын басқа күтілетін өзгерістерді сақтаңыз.',
     redactStructureBlocked:
       'Бет құрылымын өзгертпес бұрын күтілетін жасырын мазмұнды қолданыңыз немесе тазалаңыз.',
+    ribbonTabFormDesign: 'Пішін дизайны',
+    formDesignText: 'Мәтін өрісі',
+    formDesignTextHint: 'Толтырылатын мәтін өрісін қосу үшін бетті басыңыз немесе сүйреңіз',
+    formDesignCheckbox: 'Құсбелгі ұяшығы',
+    formDesignCheckboxHint: 'Құсбелгі ұяшығын қосу үшін бетті басыңыз немесе сүйреңіз',
+    formDesignSignature: 'Қолтаңба өрісі',
+    formDesignSignatureHint: 'Қолтаңба өрісін қосу үшін бетті басыңыз немесе сүйреңіз',
+    formDesignDelete: 'Өрісті жою',
+    formDesignDeleted: 'Өріс жойылды',
+    formDesignPending: '{count} жаңа өріс — сақтағанда PDF файлға жазылады',
+    formDesignEmptyHint: 'Өріс түрін таңдап, бетті басыңыз немесе сүйреңіз',
+    formDesignRequired: 'Міндетті',
+    formDesignMultiLine: 'Көп жолды',
+    formDesignDefaultValue: 'Әдепкі мән',
+    formDesignDefaultChecked: 'Әдепкі бойынша белгіленген',
+    formDesignNameInvalid:
+      'Өріс атаулары бірегей болуы және ".", "/" немесе "\\" таңбаларын қамтымауы тиіс',
+    formDesignExportValueTaken:
+      'Радио тобындағы әр түйменің жеке, бос емес нұсқа мәні болуы керек',
+    formDesignOptionsEmpty: 'Ашылмалы тізімде кемінде бір нұсқа болуы керек',
+    formDesignRadio: 'Радио түйме',
+    formDesignRadioHint:
+      'Радио түйме қосу үшін басыңыз немесе сүйреңіз; қатар орналасқан түймелер бір топқа (бір атау) қосылады',
+    formDesignChoice: 'Ашылмалы тізім',
+    formDesignChoiceHint: 'Ашылмалы тізім қосу үшін бетті басыңыз немесе сүйреңіз',
+    formDesignDate: 'Күн өрісі',
+    formDesignDateHint:
+      'Пішін тексерісі бар күн өрісін қосу үшін бетті басыңыз немесе сүйреңіз',
+    formDesignExportValue: 'Нұсқа мәні',
+    formDesignRadioGroupHint: 'Бірдей өріс атауы бар түймелер бір топты құрайды',
+    formDesignOptions: 'Нұсқалар (әр жолда бірден)',
+    formDesignDateFormat: 'Күн пішімі',
+    formDesignDetect: 'Автоанықтау',
+    formDesignDetecting: 'Анықталуда…',
+    formDesignDetectHint:
+      'Әр беттегі бос орындарды, ұяшықтарды және «Белгі:» үзілістерін тауып, сол жерге өрістер қосады; керек еместерін қарап шығып, жойып жіберіңіз',
+    formDesignDetected:
+      '{count} өріс анықталды да қосылды; қажет болса оларды түзетіңіз немесе жойыңыз',
+    formDesignDetectedNone: 'Өріске айналдыратын бос орындар немесе ұяшықтар табылмады',
+    formDesignArrange: 'Реттеу',
+    formDesignArrangeHint:
+      'Таңдалған өрістерді туралаңыз, үлестіріңіз немесе бір өлшемге келтіріңіз (бірнешеуін Shift немесе сүйреу арқылы таңдаңыз)',
+    formDesignAlignLeft: 'Солға туралау',
+    formDesignAlignCenterH: 'Көлденең ортаға туралау',
+    formDesignAlignRight: 'Оңға туралау',
+    formDesignAlignTop: 'Жоғарыға туралау',
+    formDesignAlignCenterV: 'Тік ортаға туралау',
+    formDesignAlignBottom: 'Төменге туралау',
+    formDesignDistributeH: 'Көлденең үлестіру',
+    formDesignDistributeV: 'Тік үлестіру',
+    formDesignSameWidth: 'Бірдей ен',
+    formDesignSameHeight: 'Бірдей биіктік',
+    formDesignSameSize: 'Бірдей өлшем',
+    formDesignProperties: 'Қасиеттері',
+    formDesignCopy: 'Көшіру',
+    formDesignPaste: 'Қою',
+    formDesignDuplicate: 'Көшірме жасау',
+    formDesignKeepTool: 'Қосуды жалғастыру',
+    formDesignKeepToolHint:
+      'Әр орналастырғаннан кейін өріс құралын белсенді қалдыру (немесе Ctrl/⌘ басып тұрыңыз)',
+    formDesignPreview: 'Алдын ала қарау',
+    formDesignPreviewHint:
+      'Пішінді оқырмандай толтырып көріңіз; өңдеуді жалғастыру үшін қайта ауыстырыңыз',
+    formDesignPreviewOn:
+      'Алдын ала қарау: сынау үшін өрістерді толтырыңыз, өңдеу үшін алдын ала қарауды өшіріңіз',
+    formDesignPlaceHint:
+      'Өрісті орналастыру үшін бетті басыңыз немесе сүйреңіз; Esc болдырмайды',
+    formDesignDone: 'Дайын',
+    formDateInvalid: 'Күнді {format} пішімінде енгізіңіз',
+    formDatePick: 'Күнді таңдау',
+    formDesignCancel: 'Болдырмау',
+    formDesignExistingHint:
+      'Сақталған өріс: жылжытыңыз, өлшемін өзгертіңіз, міндетті етіңіз немесе жойыңыз',
+    formDesignSignedLocked:
+      'Бұл өріске қол қойылған; жылжыту немесе жою алдында қолтаңбаны тазалаңыз',
   },
   az: {
     ribbonTabFillForm: 'Formanı doldur',
@@ -262,6 +540,81 @@ const localizedFillFormStrings = {
       'Məxfiləşdirmələri tətbiq etməzdən əvvəl gözləyən digər dəyişiklikləri yadda saxlayın.',
     redactStructureBlocked:
       'Səhifə strukturunu dəyişməzdən əvvəl gözləyən məxfiləşdirmələri tətbiq edin və ya təmizləyin.',
+    ribbonTabFormDesign: 'Forma dizaynı',
+    formDesignText: 'Mətn sahəsi',
+    formDesignTextHint:
+      'Doldurulan mətn sahəsi əlavə etmək üçün səhifəyə klikləyin və ya sürükləyin',
+    formDesignCheckbox: 'Seçim qutusu',
+    formDesignCheckboxHint: 'Seçim qutusu əlavə etmək üçün səhifəyə klikləyin və ya sürükləyin',
+    formDesignSignature: 'İmza sahəsi',
+    formDesignSignatureHint: 'İmza sahəsi əlavə etmək üçün səhifəyə klikləyin və ya sürükləyin',
+    formDesignDelete: 'Sahəni sil',
+    formDesignDeleted: 'Sahə silindi',
+    formDesignPending: '{count} yeni sahə — saxlananda PDF-ə yazılacaq',
+    formDesignEmptyHint: 'Sahə növünü seçin, sonra səhifəyə klikləyin və ya sürükləyin',
+    formDesignRequired: 'Məcburi',
+    formDesignMultiLine: 'Çoxsətirli',
+    formDesignDefaultValue: 'Susmaya görə dəyər',
+    formDesignDefaultChecked: 'Susmaya görə işarələnmiş',
+    formDesignNameInvalid:
+      'Sahə adları unikal olmalı və ".", "/" və ya "\\" simvollarını ehtiva etməməlidir',
+    formDesignExportValueTaken:
+      'Radio qrupundakı hər düymənin öz, boş olmayan variant dəyəri olmalıdır',
+    formDesignOptionsEmpty: 'Açılan siyahıda ən azı bir variant olmalıdır',
+    formDesignRadio: 'Radio düyməsi',
+    formDesignRadioHint:
+      'Radio düyməsi əlavə etmək üçün klikləyin və ya sürükləyin; ardıcıl düymələr bir qrupa (eyni ad) qoşulur',
+    formDesignChoice: 'Açılan siyahı',
+    formDesignChoiceHint: 'Açılan siyahı əlavə etmək üçün səhifəyə klikləyin və ya sürükləyin',
+    formDesignDate: 'Tarix sahəsi',
+    formDesignDateHint:
+      'Format yoxlamalı tarix sahəsi əlavə etmək üçün səhifəyə klikləyin və ya sürükləyin',
+    formDesignExportValue: 'Variant dəyəri',
+    formDesignRadioGroupHint: 'Eyni sahə adına malik düymələr bir qrup əmələ gətirir',
+    formDesignOptions: 'Variantlar (hər sətirdə bir ədəd)',
+    formDesignDateFormat: 'Tarix formatı',
+    formDesignDetect: 'Avtoaşkarlama',
+    formDesignDetecting: 'Aşkarlanır…',
+    formDesignDetectHint:
+      'Hər səhifədəki boş yerləri, qutuları və “Etiket:” boşluqlarını tapıb oraya sahələr əlavə edir; istəmədiklərinizi nəzərdən keçirib silin',
+    formDesignDetected:
+      '{count} sahə aşkarlanıb əlavə edildi; lazım gələrsə onları düzəldin və ya silin',
+    formDesignDetectedNone: 'Sahəyə çevriləcək boş yerlər və ya qutular tapılmadı',
+    formDesignArrange: 'Düzülüş',
+    formDesignArrangeHint:
+      'Seçilmiş sahələri hizalayın, paylayın və ya eyni ölçüyə gətirin (bir neçəsini Shift və ya sürükləmə ilə seçin)',
+    formDesignAlignLeft: 'Sola hizala',
+    formDesignAlignCenterH: 'Üfüqi mərkəzə hizala',
+    formDesignAlignRight: 'Sağa hizala',
+    formDesignAlignTop: 'Yuxarıya hizala',
+    formDesignAlignCenterV: 'Şaquli mərkəzə hizala',
+    formDesignAlignBottom: 'Aşağıya hizala',
+    formDesignDistributeH: 'Üfüqi payla',
+    formDesignDistributeV: 'Şaquli payla',
+    formDesignSameWidth: 'Eyni en',
+    formDesignSameHeight: 'Eyni hündürlük',
+    formDesignSameSize: 'Eyni ölçü',
+    formDesignProperties: 'Xüsusiyyətlər',
+    formDesignCopy: 'Kopyala',
+    formDesignPaste: 'Yerləşdir',
+    formDesignDuplicate: 'Dublikat yarat',
+    formDesignKeepTool: 'Əlavə etməyə davam et',
+    formDesignKeepToolHint:
+      'Hər yerləşdirmədən sonra sahə alətini aktiv saxlayın (və ya Ctrl/⌘ basılı saxlayın)',
+    formDesignPreview: 'Önizləmə',
+    formDesignPreviewHint:
+      'Formanı oxucu kimi doldurub yoxlayın; redaktəni davam etdirmək üçün yenidən dəyişin',
+    formDesignPreviewOn:
+      'Önizləmə: yoxlamaq üçün sahələri doldurun, redaktə üçün Önizləməni söndürün',
+    formDesignPlaceHint:
+      'Sahəni yerləşdirmək üçün səhifəyə klikləyin və ya sürükləyin; Esc ləğv edir',
+    formDesignDone: 'Hazır',
+    formDateInvalid: 'Tarixi {format} formatında daxil edin',
+    formDatePick: 'Tarix seçin',
+    formDesignCancel: 'Ləğv et',
+    formDesignExistingHint: 'Saxlanmış sahə: daşıyın, ölçüsünü dəyişin, məcburi edin və ya silin',
+    formDesignSignedLocked:
+      'Bu sahə imzalanıb; daşımazdan və ya silməzdən əvvəl imzanı təmizləyin',
   },
   tk: {
     ribbonTabFillForm: 'Formany doldur',
@@ -312,6 +665,82 @@ const localizedFillFormStrings = {
       'Gizlinleşdirmeleri ulanmazdan ozal garaşylýan beýleki üýtgeşmeleri ýatda saklaň.',
     redactStructureBlocked:
       'Sahypa gurluşyny üýtgetmezden ozal garaşylýan gizlinleşdirmeleri ulanyň ýa-da aýyryň.',
+    ribbonTabFormDesign: 'Forma dizaýny',
+    formDesignText: 'Tekst meýdany',
+    formDesignTextHint:
+      'Doldurylýan tekst meýdanyny goşmak üçin sahypa basyň ýa-da çekiň',
+    formDesignCheckbox: 'Bellik gutusy',
+    formDesignCheckboxHint: 'Bellik gutusyny goşmak üçin sahypa basyň ýa-da çekiň',
+    formDesignSignature: 'Gol meýdany',
+    formDesignSignatureHint: 'Gol meýdanyny goşmak üçin sahypa basyň ýa-da çekiň',
+    formDesignDelete: 'Meýdany poz',
+    formDesignDeleted: 'Meýdan pozuldy',
+    formDesignPending: '{count} täze meýdan — ýatda saklanylanda PDF-e ýazylar',
+    formDesignEmptyHint: 'Meýdanyň görnüşini saýlaň, soňra sahypa basyň ýa-da çekiň',
+    formDesignRequired: 'Hökmany',
+    formDesignMultiLine: 'Köp setirli',
+    formDesignDefaultValue: 'Deslapky baha',
+    formDesignDefaultChecked: 'Deslapky bellenilen',
+    formDesignNameInvalid:
+      'Meýdan atlary özboluşly bolmaly we ".", "/" ýa-da "\\" nyşanlaryny öz içine almaly däl',
+    formDesignExportValueTaken:
+      'Radio toparyndaky her düwmede öz, boş däl wariant bahasy bolmaly',
+    formDesignOptionsEmpty: 'Açylýan sanawda azyndan bir wariant bolmaly',
+    formDesignRadio: 'Radio düwmesi',
+    formDesignRadioHint:
+      'Radio düwmesini goşmak üçin basyň ýa-da çekiň; yzygiderli düwmeler bir topara (şol at) goşulýar',
+    formDesignChoice: 'Açylýan sanaw',
+    formDesignChoiceHint: 'Açylýan sanaw goşmak üçin sahypa basyň ýa-da çekiň',
+    formDesignDate: 'Sene meýdany',
+    formDesignDateHint:
+      'Format barlagly sene meýdanyny goşmak üçin sahypa basyň ýa-da çekiň',
+    formDesignExportValue: 'Wariant bahasy',
+    formDesignRadioGroupHint: 'Şol meýdan atly düwmeler bir topary emele getirýär',
+    formDesignOptions: 'Wariantlar (her setirde bir)',
+    formDesignDateFormat: 'Sene formaty',
+    formDesignDetect: 'Awtomat anyklama',
+    formDesignDetecting: 'Anyklanýar…',
+    formDesignDetectHint:
+      'Her sahypadaky boş ýerleri, gutulary we “Bellik:” aralyklaryny tapyp, ol ýere meýdanlar goşýar; gerek bolmadyklaryny gözden geçirip pozuň',
+    formDesignDetected:
+      '{count} meýdan anyklandy we goşuldy; gerek bolsa olary üýtgediň ýa-da pozuň',
+    formDesignDetectedNone: 'Meýdana öwrüp boljak boş ýerler ýa-da gutular tapylmady',
+    formDesignArrange: 'Yerleşdiriş',
+    formDesignArrangeHint:
+      'Saýlanan meýdanlary deňläň, paýlaň ýa-da bir ölçäge getiriň (birnäçesini Shift bilen ýa-da çekip saýlaň)',
+    formDesignAlignLeft: 'Çepe deňle',
+    formDesignAlignCenterH: 'Gorizontal merkeze deňle',
+    formDesignAlignRight: 'Saga deňle',
+    formDesignAlignTop: 'Ýokara deňle',
+    formDesignAlignCenterV: 'Wertikal merkeze deňle',
+    formDesignAlignBottom: 'Aşaka deňle',
+    formDesignDistributeH: 'Gorizontal paýla',
+    formDesignDistributeV: 'Wertikal paýla',
+    formDesignSameWidth: 'Şol ini',
+    formDesignSameHeight: 'Şol beýikligi',
+    formDesignSameSize: 'Şol ölçeg',
+    formDesignProperties: 'Aýratynlyklar',
+    formDesignCopy: 'Göçür',
+    formDesignPaste: 'Goý',
+    formDesignDuplicate: 'Nusgasyny al',
+    formDesignKeepTool: 'Goşmakda dowam et',
+    formDesignKeepToolHint:
+      'Her ýerleşdirişden soň meýdan guralyny işjeň sakla (ýa-da Ctrl/⌘ basyp dur)',
+    formDesignPreview: 'Öňünden görme',
+    formDesignPreviewHint:
+      'Formany okyjy ýaly dolduryp görüň; redaktirlemegi dowam etdirmek üçin ýene çalyşyň',
+    formDesignPreviewOn:
+      'Öňünden görme: synag üçin meýdanlary dolduryň, redaktirlemek üçin Öňünden görmäni öçüriň',
+    formDesignPlaceHint:
+      'Meýdany ýerleşdirmek üçin sahypa basyň ýa-da çekiň; Esc ýatyrýar',
+    formDesignDone: 'Taýýar',
+    formDateInvalid: 'Seneni {format} görnüşinde giriziň',
+    formDatePick: 'Sene saýla',
+    formDesignCancel: 'Ýatyr',
+    formDesignExistingHint:
+      'Ýatda saklanan meýdan: süýşüriň, ölçegini üýtgediň, hökmany ediň ýa-da pozuň',
+    formDesignSignedLocked:
+      'Bu meýdana gol çekilen; süýşürmek ýa-da pozmakdan ozal goly aýyryň',
   },
   ky: {
     ribbonTabFillForm: 'Форманы толтуруу',
@@ -361,6 +790,82 @@ const localizedFillFormStrings = {
     redactSaveFirst: 'Жашырууларды колдонуудан мурун күтүлүп жаткан башка өзгөртүүлөрдү сактаңыз.',
     redactStructureBlocked:
       'Бет түзүмүн өзгөртүүдөн мурун күтүлүп жаткан жашырууларды колдонуңуз же тазалаңыз.',
+    ribbonTabFormDesign: 'Форма дизайны',
+    formDesignText: 'Текст талаасы',
+    formDesignTextHint:
+      'Толтурала турган текст талаасын кошуу үчүн бетти басыңыз же сүйрөңүз',
+    formDesignCheckbox: 'Белги кутучасы',
+    formDesignCheckboxHint: 'Белги кутучасын кошуу үчүн бетти басыңыз же сүйрөңүз',
+    formDesignSignature: 'Кол тамга талаасы',
+    formDesignSignatureHint: 'Кол тамга талаасын кошуу үчүн бетти басыңыз же сүйрөңүз',
+    formDesignDelete: 'Талааны өчүрүү',
+    formDesignDeleted: 'Талаа өчүрүлдү',
+    formDesignPending: '{count} жаңы талаа — сактоодо PDF файлына жазылат',
+    formDesignEmptyHint: 'Талаанын түрүн тандап, бетти басыңыз же сүйрөңүз',
+    formDesignRequired: 'Милдеттүү',
+    formDesignMultiLine: 'Көп саптуу',
+    formDesignDefaultValue: 'Демейки маани',
+    formDesignDefaultChecked: 'Демейки боюнча белгиленген',
+    formDesignNameInvalid:
+      'Талаа аттары уникалдуу болушу жана ".", "/" же "\\" белгилерин камтыбашы керек',
+    formDesignExportValueTaken:
+      'Радио тобундагы ар бир баскычтын өзүнө таандык, бош эмес вариант мааниси болушу керек',
+    formDesignOptionsEmpty: 'Ачылма тизмеде жок дегенде бир вариант болушу керек',
+    formDesignRadio: 'Радио баскыч',
+    formDesignRadioHint:
+      'Радио баскыч кошуу үчүн басыңыз же сүйрөңүз; катар жайгашкан баскычтар бир топко (бир ат) кошулат',
+    formDesignChoice: 'Ачылма тизме',
+    formDesignChoiceHint: 'Ачылма тизме кошуу үчүн бетти басыңыз же сүйрөңүз',
+    formDesignDate: 'Дата талаасы',
+    formDesignDateHint:
+      'Формат текшерүүсү бар дата талаасын кошуу үчүн бетти басыңыз же сүйрөңүз',
+    formDesignExportValue: 'Вариант мааниси',
+    formDesignRadioGroupHint: 'Бирдей талаа аттуу баскычтар бир топту түзөт',
+    formDesignOptions: 'Варианттар (ар сапта бирден)',
+    formDesignDateFormat: 'Дата форматы',
+    formDesignDetect: 'Автоаныктоо',
+    formDesignDetecting: 'Аныкталууда…',
+    formDesignDetectHint:
+      'Ар бир беттеги бош орундарды, клеткаларды жана «Белги:» үзүнтүлөрүн таап, ошол жерге талааларды кошот; керек эместерин карап чыгып, өчүрүңүз',
+    formDesignDetected:
+      '{count} талаа аныкталып, кошулду; керек болсо аларды өзгөртүңүз же өчүрүңүз',
+    formDesignDetectedNone: 'Талаага айландыра турган бош орундар же клеткалар табылган жок',
+    formDesignArrange: 'Иреттөө',
+    formDesignArrangeHint:
+      'Тандалган талааларды тегиздеңиз, бөлүштүрүңүз же бирдей өлчөмгө келтириңиз (бир нечесин Shift же сүйрөө менен тандаңыз)',
+    formDesignAlignLeft: 'Солго тегиздөө',
+    formDesignAlignCenterH: 'Горизонталдуу борборго тегиздөө',
+    formDesignAlignRight: 'Оңго тегиздөө',
+    formDesignAlignTop: 'Жогору тегиздөө',
+    formDesignAlignCenterV: 'Тик борборго тегиздөө',
+    formDesignAlignBottom: 'Төмөн тегиздөө',
+    formDesignDistributeH: 'Горизонталдуу бөлүштүрүү',
+    formDesignDistributeV: 'Тик бөлүштүрүү',
+    formDesignSameWidth: 'Бирдей туура',
+    formDesignSameHeight: 'Бирдей бийиктик',
+    formDesignSameSize: 'Бирдей өлчөм',
+    formDesignProperties: 'Касиеттери',
+    formDesignCopy: 'Көчүрүү',
+    formDesignPaste: 'Чаптоо',
+    formDesignDuplicate: 'Көчүрмөсүн алуу',
+    formDesignKeepTool: 'Кошууну улантуу',
+    formDesignKeepToolHint:
+      'Ар бир жайгаштыруудан кийин талаа куралын иштеп турган абалда калтырыңыз (же Ctrl/⌘ басып туруңуз)',
+    formDesignPreview: 'Алдын ала көрүү',
+    formDesignPreviewHint:
+      'Форманын окурмандай толтуруп көрүңүз; түзөтүүнү улантуу үчүн кайра которуңуз',
+    formDesignPreviewOn:
+      'Алдын ала көрүү: сынап көрүү үчүн талааларды толтуруңуз, түзөтүү үчүн Алдын ала көрүүнү өчүрүңүз',
+    formDesignPlaceHint:
+      'Талааны жайгаштыруу үчүн бетти басыңыз же сүйрөңүз; Esc жокко чыгарат',
+    formDesignDone: 'Даяр',
+    formDateInvalid: 'Датаны {format} форматында киргизиңиз',
+    formDatePick: 'Дата тандоо',
+    formDesignCancel: 'Жокко чыгаруу',
+    formDesignExistingHint:
+      'Сакталган талаа: жылдырыңыз, өлчөмүн өзгөртүңүз, милдеттүү кылыңыз же өчүрүңүз',
+    formDesignSignedLocked:
+      'Бул талаага кол койулган; жылдыруудан же өчүрүүдөн мурун кол тамганы тазалаңыз',
   },
   tt: {
     ribbonTabFillForm: 'Форманы тутыру',
@@ -410,6 +915,82 @@ const localizedFillFormStrings = {
     redactSaveFirst: 'Каплауларны кулланганчы башка көтелгән үзгәрешләрне саклагыз.',
     redactStructureBlocked:
       'Бит структурасын үзгәрткәнче көтелгән каплауларны кулланыгыз яки чистартыгыз.',
+    ribbonTabFormDesign: 'Форма дизайны',
+    formDesignText: 'Текст кыры',
+    formDesignTextHint:
+      'Тутырыла торган текст кырын өстәү өчен биткә чирттерегез яки өстерәгез',
+    formDesignCheckbox: 'Тамга кәрәзе',
+    formDesignCheckboxHint: 'Тамга кәрәзен өстәү өчен биткә чирттерегез яки өстерәгез',
+    formDesignSignature: 'Имза кыры',
+    formDesignSignatureHint: 'Имза кырын өстәү өчен биткә чирттерегез яки өстерәгез',
+    formDesignDelete: 'Кырны бетерү',
+    formDesignDeleted: 'Кыр бетерелде',
+    formDesignPending: '{count} яңа кыр — саклаганда PDF-ка язылачак',
+    formDesignEmptyHint: 'Кыр тибын сайлагыз, аннары биткә чирттерегез яки өстерәгез',
+    formDesignRequired: 'Мәҗбүри',
+    formDesignMultiLine: 'Күп юллы',
+    formDesignDefaultValue: 'Килешү кыйммәте',
+    formDesignDefaultChecked: 'Килешү буенча билгеләнгән',
+    formDesignNameInvalid:
+      'Кыр исемнәре уникаль булырга һәм ".", "/" яки "\\" символларын үз эченә алмаска тиеш',
+    formDesignExportValueTaken:
+      'Радио төркемендәге һәр төймәгә үз, буш булмаган вариант кыйммәте кирәк',
+    formDesignOptionsEmpty: 'Ачылма исемлектә кимендә бер вариант булырга тиеш',
+    formDesignRadio: 'Радио төймә',
+    formDesignRadioHint:
+      'Радио төймә өстәү өчен чирттерегез яки өстерәгез; янәшә төймәләр бер төркемгә (шул исем) кушыла',
+    formDesignChoice: 'Ачылма исемлек',
+    formDesignChoiceHint: 'Ачылма исемлек өстәү өчен биткә чирттерегез яки өстерәгез',
+    formDesignDate: 'Дата кыры',
+    formDesignDateHint:
+      'Формат тикшерүе булган дата кырын өстәү өчен биткә чирттерегез яки өстерәгез',
+    formDesignExportValue: 'Вариант кыйммәте',
+    formDesignRadioGroupHint: 'Бер үк кыр исемле төймәләр бер төркемне тәшкил итә',
+    formDesignOptions: 'Вариантлар (һәр юлда берсеннән)',
+    formDesignDateFormat: 'Дата форматы',
+    formDesignDetect: 'Автотабу',
+    formDesignDetecting: 'Эзләнә…',
+    formDesignDetectHint:
+      'Һәр биттәге буш урыннарны, кәрәзләрне һәм «Билге:» араларын табып, аларга кырлар өсти; кирәкмәгәннәрен карап бетерегез',
+    formDesignDetected:
+      '{count} кыр табылды һәм өстәлде; кирәк булса аларны үзгәртегез яки бетерегез',
+    formDesignDetectedNone: 'Кырга әйләндерергә мөмкин буш урыннар яки кәрәзләр табылмады',
+    formDesignArrange: 'Тәртипкә китерү',
+    formDesignArrangeHint:
+      'Сайланган кырларны тигезләгез, тигез араларда урнаштырыгыз яки бер үлчәмгә китерегез (берничәсен Shift яки өстерәү белән сайлагыз)',
+    formDesignAlignLeft: 'Сулга тигезләү',
+    formDesignAlignCenterH: 'Горизонталь үзәккә тигезләү',
+    formDesignAlignRight: 'Уңга тигезләү',
+    formDesignAlignTop: 'Өскә тигезләү',
+    formDesignAlignCenterV: 'Вертикаль үзәккә тигезләү',
+    formDesignAlignBottom: 'Аска тигезләү',
+    formDesignDistributeH: 'Горизонталь буйлап бүлү',
+    formDesignDistributeV: 'Вертикаль буйлап бүлү',
+    formDesignSameWidth: 'Бер үк киңлек',
+    formDesignSameHeight: 'Бер үк биеклек',
+    formDesignSameSize: 'Бер үк үлчәм',
+    formDesignProperties: 'Үзлекләр',
+    formDesignCopy: 'Күчерү',
+    formDesignPaste: 'Кую',
+    formDesignDuplicate: 'Күчермә ясау',
+    formDesignKeepTool: 'Өстәүне дәвам итү',
+    formDesignKeepToolHint:
+      'Һәр урнаштырудан соң кыр коралын эшлекле калдырыгыз (яки Ctrl/⌘ басып торыгыз)',
+    formDesignPreview: 'Алдан карау',
+    formDesignPreviewHint:
+      'Форманы укучы кебек тутырып карагыз; үзгәртүне дәвам итү өчен янә алыштырыгыз',
+    formDesignPreviewOn:
+      'Алдан карау: сынау өчен кырларны тутырыгыз, үзгәртү өчен Алдан карауны сүндерегез',
+    formDesignPlaceHint:
+      'Кырны урнаштыру өчен биткә чирттерегез яки өстерәгез; Esc баш тарта',
+    formDesignDone: 'Әзер',
+    formDateInvalid: 'Датаны {format} форматында кертегез',
+    formDatePick: 'Дата сайлау',
+    formDesignCancel: 'Баш тарту',
+    formDesignExistingHint:
+      'Сакланган кыр: күчерегез, зурлыгын үзгәртегез, мәҗбүри итегез яки бетерегез',
+    formDesignSignedLocked:
+      'Бу кыр имзаланган; күчерү яки бетерү алдыннан имзаны чистартыгыз',
   },
   ka: {
     ribbonTabFillForm: 'ფორმის შევსება',
@@ -459,6 +1040,83 @@ const localizedFillFormStrings = {
     redactSaveFirst: 'დაფარვების გამოყენებამდე შეინახეთ სხვა მომლოდინე ცვლილებები.',
     redactStructureBlocked:
       'გვერდის სტრუქტურის შეცვლამდე გამოიყენეთ ან გაასუფთავეთ მომლოდინე დაფარვები.',
+    ribbonTabFormDesign: 'ფორმის დიზაინი',
+    formDesignText: 'ტექსტური ველი',
+    formDesignTextHint:
+      'დააწკაპუნეთ ან გადაათრიეთ გვერდზე შესავსები ტექსტური ველის დასამატებლად',
+    formDesignCheckbox: 'მონიშვნის უჯრა',
+    formDesignCheckboxHint: 'დააწკაპუნეთ ან გადაათრიეთ გვერდზე მონიშვნის უჯრის დასამატებლად',
+    formDesignSignature: 'ხელმოწერის ველი',
+    formDesignSignatureHint:
+      'დააწკაპუნეთ ან გადაათრიეთ გვერდზე ხელმოწერის ველის დასამატებლად',
+    formDesignDelete: 'ველის წაშლა',
+    formDesignDeleted: 'ველი წაიშალა',
+    formDesignPending: '{count} ახალი ველი — შენახვისას PDF-ში ჩაიწერება',
+    formDesignEmptyHint: 'აირჩიეთ ველის ტიპი, შემდეგ დააწკაპუნეთ ან გადაათრიეთ გვერდზე',
+    formDesignRequired: 'აუცილებელი',
+    formDesignMultiLine: 'მრავალსტრიქონიანი',
+    formDesignDefaultValue: 'ნაგულისხმევი მნიშვნელობა',
+    formDesignDefaultChecked: 'ნაგულისხმევად მონიშნული',
+    formDesignNameInvalid:
+      'ველის სახელები უნდა იყოს უნიკალური და არ შეიცავდეს ".", "/" ან "\\" სიმბოლოებს',
+    formDesignExportValueTaken:
+      'რადიო ჯგუფში ყოველ ღილაკს უნდა ჰქონდეს საკუთარი, არაცარიელი ვარიანტის მნიშვნელობა',
+    formDesignOptionsEmpty: 'ჩამოსაშლელ სიაში მინიმუმ ერთი ვარიანტი უნდა იყოს',
+    formDesignRadio: 'რადიო ღილაკი',
+    formDesignRadioHint:
+      'დააწკაპუნეთ ან გადაათრიეთ რადიო ღილაკის დასამატებლად; ზედიზედ ღილაკები ერთ ჯგუფს (ერთი სახელით) ქმნიან',
+    formDesignChoice: 'ჩამოსაშლელი სია',
+    formDesignChoiceHint: 'დააწკაპუნეთ ან გადაათრიეთ გვერდზე ჩამოსაშლელი სიის დასამატებლად',
+    formDesignDate: 'თარიღის ველი',
+    formDesignDateHint:
+      'დააწკაპუნეთ ან გადაათრიეთ გვერდზე ფორმატის შემმოწმებელი თარიღის ველის დასამატებლად',
+    formDesignExportValue: 'ვარიანტის მნიშვნელობა',
+    formDesignRadioGroupHint: 'ერთი და იგივე ველის სახელის მქონე ღილაკები ერთ ჯგუფს ქმნიან',
+    formDesignOptions: 'ვარიანტები (თითო თითო ხაზზე)',
+    formDesignDateFormat: 'თარიღის ფორმატი',
+    formDesignDetect: 'ავტოაღმოჩენა',
+    formDesignDetecting: 'მიმდინარეობს აღმოჩენა…',
+    formDesignDetectHint:
+      'ყველა გვერდზე პოულობს ცარიელ ადგილებს, უჯრებს და „იარლიყი:“ ხარვეზებს და იქ ამატებს ველებს; გადახედეთ და წაშალეთ არასასურველები',
+    formDesignDetected:
+      'აღმოჩენილი და დამატებულია {count} ველი; საჭიროების შემთხვევაში შეცვალეთ ან წაშალეთ',
+    formDesignDetectedNone: 'ველებად გადასაქცევი ცარიელი ადგილები ან უჯრები ვერ მოიძებნა',
+    formDesignArrange: 'დალაგება',
+    formDesignArrangeHint:
+      'გაასწორეთ, გადაანაწილეთ ან ერთი ზომის გახადეთ მონიშნული ველები (რამდენიმეს მოსანიშნად გამოიყენეთ Shift ან გადათრევა)',
+    formDesignAlignLeft: 'მარცხნივ გასწორება',
+    formDesignAlignCenterH: 'ჰორიზონტალურად ცენტრში გასწორება',
+    formDesignAlignRight: 'მარჯვნივ გასწორება',
+    formDesignAlignTop: 'ზემოთ გასწორება',
+    formDesignAlignCenterV: 'ვერტიკალურად ცენტრში გასწორება',
+    formDesignAlignBottom: 'ქვემოთ გასწორება',
+    formDesignDistributeH: 'ჰორიზონტალურად გადანაწილება',
+    formDesignDistributeV: 'ვერტიკალურად გადანაწილება',
+    formDesignSameWidth: 'ერთნაირი სიგანე',
+    formDesignSameHeight: 'ერთნაირი სიმაღლე',
+    formDesignSameSize: 'ერთნაირი ზომა',
+    formDesignProperties: 'თვისებები',
+    formDesignCopy: 'კოპირება',
+    formDesignPaste: 'ჩასმა',
+    formDesignDuplicate: 'დუბლირება',
+    formDesignKeepTool: 'დამატების გაგრძელება',
+    formDesignKeepToolHint:
+      'ყოველი განთავსების შემდეგ ველის ხელსაწყო აქტიურად დატოვეთ (ან დააჭირეთ Ctrl/⌘)',
+    formDesignPreview: 'გადახედვა',
+    formDesignPreviewHint:
+      'სცადეთ ფორმის შევსება მკითხველივით; რედაქტირების გასაგრძელებლად კვლავ გადართეთ',
+    formDesignPreviewOn:
+      'გადახედვა: შეავსეთ ველები საცდელად, შემდეგ გამორთეთ გადახედვა რედაქტირებისთვის',
+    formDesignPlaceHint:
+      'დააწკაპუნეთ ან გადაათრიეთ გვერდზე ველის განსათავსებლად; Esc აუქმებს',
+    formDesignDone: 'მზადაა',
+    formDateInvalid: 'შეიყვანეთ თარიღი ფორმატით {format}',
+    formDatePick: 'თარიღის არჩევა',
+    formDesignCancel: 'გაუქმება',
+    formDesignExistingHint:
+      'შენახული ველი: გადააადგილეთ, შეცვალეთ ზომა, მონიშნეთ აუცილებლად ან წაშალეთ',
+    formDesignSignedLocked:
+      'ეს ველი ხელმოწერილია; გადაადგილებამდე ან წაშლამდე გაასუფთავეთ ხელმოწერა',
   },
 } as const
 

@@ -16,7 +16,9 @@ This spec defines the technical licensing scheme. Approved direction:
 (air-gapped deployments are out of scope; a grace period comes from the
 token's own TTL).
 
-The legal layer already exists: `apps/shell/build/EULA.txt` and the
+The legal layer already exists: `apps/shell/build/EULA-RU.txt` /
+`EULA-EN.txt` (the English UI/installer language reads the `*-EN.txt`
+variants, every other language the `*-RU.txt` ones) and the
 `ee/` directory reserved for enterprise modules under the proprietary
 OfficeVega Enterprise License (open-core boundary, CODEOWNERS-enforced).
 

@@ -5260,7 +5260,7 @@ export function buildSlidesMenu(): Menu {
         toggleDevToolsItem(labels),
       ],
     },
-    helpMenuTemplate(labels, [], appTitle(getUiLang())),
+    helpMenuTemplate(labels, [], appTitle(getUiLang()), getUiLang()),
     ...extraAppMenuItems,
   ]
   return Menu.buildFromTemplate(template)
