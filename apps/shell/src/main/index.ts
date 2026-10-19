@@ -93,6 +93,7 @@ import {
   privacyMenuItem,
   setUpdateCheckInvoker,
   installRendererProtocol,
+  installFetchProxy,
   themedSurfaceColor,
   forwardRendererConsole,
 } from '@genoffice/electron-utils'
@@ -711,8 +712,9 @@ const VEGA_CHAT_RU_URL = 'https://ru.vega.chat'
 // Settings → About "Other AI services" agent/editor rows share the VEGA Codes host.
 const VEGA_CODES_URL = 'https://vega.codes'
 const FEEDBACK_URL = 'https://officevega.com/feedback'
-// Settings → About developer row.
+// Settings → About developer rows.
 const DEVELOPER_SITE_URL = 'https://getmyai.io'
+const DEVELOPER_CHANNEL_URL = 'https://t.me/getmyai'
 
 // ---- "star us on GitHub" prompt (see star-prompt.ts for the rules) ----
 
@@ -3810,6 +3812,12 @@ function registerHomeIpc(): void {
     })
   })
 
+  ipcMain.handle(HOME_CHANNELS.openDeveloperChannel, () => {
+    shell.openExternal(DEVELOPER_CHANNEL_URL).catch(() => {
+      // no browser handler available; nothing actionable for the user here
+    })
+  })
+
   // returning true also counts as "shown": the renderer displays it
   // unconditionally, so no separate mark-shown round-trip is needed
   ipcMain.handle(HOME_CHANNELS.starPromptShouldShow, (): StarPromptShow => {
@@ -5144,12 +5152,12 @@ async function installMainProcessProxy(): Promise<void> {
   // the dispatcher below — forward the proxy to them via env
   setGskProxyUrl(proxyUrl)
   try {
-    const { ProxyAgent, setGlobalDispatcher } = await import('undici')
-    setGlobalDispatcher(new ProxyAgent(proxyUrl))
+    // NO_PROXY and loopback bypass the proxy — a local endpoint must not leave the machine
+    await installFetchProxy(proxyUrl)
     // strip user:pass credentials before logging
     console.log('[proxy] main-process fetch via', proxyUrl.replace(/\/\/[^@/]*@/, '//***@'))
   } catch (e) {
-    console.warn('[proxy] failed to set ProxyAgent:', e)
+    console.warn('[proxy] failed to set proxy dispatcher:', e)
   }
 }
 

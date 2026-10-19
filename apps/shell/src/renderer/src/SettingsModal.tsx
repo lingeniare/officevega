@@ -2743,6 +2743,18 @@ export function SettingsModal({
                     </button>
                   }
                 />
+                <Field
+                  label={t('setDeveloperChannel')}
+                  value="t.me/getmyai"
+                  action={
+                    <button
+                      className="set-btn"
+                      onClick={() => void window.aiOffice.openDeveloperChannel?.()}
+                    >
+                      {t('setOpen')}
+                    </button>
+                  }
+                />
                 <h3 className="set-pane-title set-lic-title">{t('setOtherAiTitle')}</h3>
                 <Field
                   label={t('setAiChatLabel')}

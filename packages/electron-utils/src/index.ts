@@ -109,6 +109,7 @@ export {
 } from './renderer-scheme'
 export { installRendererProtocol, registerRendererScheme } from './renderer-protocol'
 export { atomicWriteFile, writeJsonAtomic } from './atomic-write'
+export { installFetchProxy, noProxyListWithLoopback } from './proxy-dispatcher'
 export {
   PRINT_READY_SCRIPT,
   printHtmlDocument,

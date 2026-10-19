@@ -580,6 +580,9 @@ const homeApi: HomeApi = {
   async openDeveloperSite() {
     await ipcRenderer.invoke(HOME_CHANNELS.openDeveloperSite)
   },
+  async openDeveloperChannel() {
+    await ipcRenderer.invoke(HOME_CHANNELS.openDeveloperChannel)
+  },
   async starPromptShouldShow() {
     const result: unknown = await ipcRenderer.invoke(HOME_CHANNELS.starPromptShouldShow)
     const raw = (result ?? {}) as { show?: unknown; docOpens?: unknown }

@@ -9,7 +9,7 @@ import {
 import { EditorState } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
 import { redo, redoDepth, undo, undoDepth } from '@codemirror/commands'
-import { External, buildExtensions } from './cm-setup'
+import { External, buildExtensions, safeViewUpdate } from './cm-setup'
 import { addAiRanges, clearAiRanges } from './cm-highlight'
 import { cmFindTarget } from './find-target'
 import { useI18n } from '../i18n/locale'
@@ -108,7 +108,7 @@ export const SourceEditor = forwardRef<SourceEditorHandle, Props>(function Sourc
         }),
       }),
       dispatchTransactions: (trs, v) => {
-        v.update(trs)
+        safeViewUpdate(v, trs)
         if (trs.some((tr) => tr.docChanged && !tr.annotation(External))) {
           onChangeRef.current(v.state.doc.toString())
         }

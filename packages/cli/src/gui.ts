@@ -26,16 +26,24 @@ export function legacyUserDataDir(env: NodeJS.ProcessEnv): string {
 }
 
 /**
- * userData dirs to probe, newest first: the packaged dir, a checkout's
- * "<name> Dev" twin, then the same pair for the pre-rename "VegaOffice"
- * install whose files the app has not migrated yet.
+ * userData dirs to probe, newest first: the packaged dir, then the dev
+ * profiles, then the same triple for the pre-rename "VegaOffice" install
+ * whose files the app has not migrated yet.
+ *
+ * The dev profile has been spelled two ways. It was "<name> Dev" until the
+ * shell moved to "<name>-Dev" — a space breaks XDG config entries, which are
+ * meant to be one token (genoffice#1817) — and the shell renames the old
+ * directory on first run after that (apps/shell/src/main/index.ts). Both
+ * spellings are scanned here, new first, because a profile that was never
+ * migrated still has to be reachable: a shell that has not run since the
+ * rename, or a migration that could not move a busy directory.
  */
 export function userDataDirCandidates(env: NodeJS.ProcessEnv): string[] {
   const override = env.OFFICEVEGA_USER_DATA || env.VEGAOFFICE_USER_DATA
   if (override) return [override]
   const dir = officeVegaUserDataDir(env)
   const legacy = legacyUserDataDir(env)
-  return [dir, `${dir} Dev`, legacy, `${legacy} Dev`]
+  return [dir, `${dir}-Dev`, `${dir} Dev`, legacy, `${legacy}-Dev`, `${legacy} Dev`]
 }
 
 export interface GuiOpenDocuments {

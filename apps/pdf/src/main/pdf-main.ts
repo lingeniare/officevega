@@ -71,6 +71,8 @@ import type {
   ValidateTextEditsRequest,
 } from '../shared/ipc'
 import type {
+  CertificateErrorCode,
+  CertificateInfo,
   InspectCertificateResult,
   ListSystemCertificatesResult,
   PdfSignatureInfo,
@@ -103,14 +105,15 @@ import {
 } from './signature-store'
 import { uniqueGeneratedPdfPath } from './generated-output'
 import { validateRedactionRegions } from './redaction'
-import { SignError, inspectCertificate, openCertificate, signPdf } from './pdf-sign'
+import { SignError, openCertificate, openExternalCertificate, signPdf } from './pdf-sign'
+import type { ExternalSigner, SignPdfOptions } from './pdf-sign'
 import { readPdfSignatures } from './pdf-signatures'
 import {
   SystemStoreError,
-  exportSystemCertificate,
   listSystemCertificates,
+  openSystemSigner,
 } from './system-certificates'
-import type { ExportedIdentity, SystemCertificateRef } from './system-certificates'
+import type { SystemCertificateRef, SystemIdentity } from './system-certificates'
 
 const tDlg = createI18n({
   en: {
@@ -490,7 +493,7 @@ export function setPdfRedactionSavedHook(hook: (wc: WebContents, path: string) =
 /** Certificate files the user picked in this view, by opaque id; the renderer never learns the path */
 type CertEntry =
   | { kind: 'file'; path: string }
-  | { kind: 'system'; ref: SystemCertificateRef; identity?: ExportedIdentity }
+  | { kind: 'system'; ref: SystemCertificateRef; identity?: SystemIdentity }
 const certEntriesByWc = new Map<number, Map<string, CertEntry>>()
 
 const certEntryOf = (wcId: number, id: unknown): CertEntry | undefined =>
@@ -509,15 +512,49 @@ function releaseCertEntry(entry: CertEntry | undefined): void {
   if (entry?.kind === 'system') delete entry.identity
 }
 
-/** PKCS#12 bytes and the password to open them; for a system identity both come from the store export */
+/** PKCS#12 bytes and the password to open them; a Windows system identity instead hands over a signer */
+type CertMaterial =
+  | { kind: 'p12'; p12: Uint8Array; password: string }
+  | { kind: 'in-place'; signer: ExternalSigner }
+
 async function certMaterial(
   entry: CertEntry,
   password: string,
   storePassword?: string,
-): Promise<{ p12: Uint8Array; password: string }> {
-  if (entry.kind === 'file') return { p12: await readCertificateFile(entry.path), password }
-  entry.identity ??= await exportSystemCertificate(entry.ref, storePassword)
+): Promise<CertMaterial> {
+  if (entry.kind === 'file') {
+    return { kind: 'p12', p12: await readCertificateFile(entry.path), password }
+  }
+  entry.identity ??= await openSystemSigner(entry.ref, storePassword)
   return entry.identity
+}
+
+/** Decrypt a PKCS#12 once, or read the chain an OS store reports; the key itself is never read for the latter */
+function openMaterial(material: CertMaterial):
+  | { ok: false; error: CertificateErrorCode }
+  | {
+      ok: true
+      info: CertificateInfo[]
+      sign: Pick<SignPdfOptions, 'loaded' | 'p12' | 'password' | 'external'>
+    } {
+  if (material.kind === 'in-place') {
+    const opened = openExternalCertificate(material.signer)
+    return opened.ok
+      ? {
+          ok: true,
+          info: opened.info,
+          sign: { external: { signer: material.signer, loaded: opened.loaded } },
+        }
+      : opened
+  }
+  const opened = openCertificate(material.p12, material.password)
+  return opened.ok
+    ? {
+        ok: true,
+        info: opened.info,
+        sign: { loaded: opened.loaded, p12: material.p12, password: material.password },
+      }
+    : opened
 }
 
 const MAX_CERTIFICATE_FILE_BYTES = 4 * 1024 * 1024
@@ -1622,7 +1659,10 @@ function registerPdfIpc(): void {
           password,
           typeof storePassword === 'string' && storePassword ? storePassword : undefined,
         )
-        return inspectCertificate(material.p12, material.password)
+        const opened = openMaterial(material)
+        return opened.ok
+          ? { ok: true, signer: opened.info[0]!, chain: opened.info }
+          : { ok: false, error: opened.error }
       } catch (err) {
         return { ok: false, error: err instanceof SystemStoreError ? err.code : 'cert-invalid' }
       }
@@ -1664,7 +1704,7 @@ function registerPdfIpc(): void {
             : undefined,
         )
         // Fail on a wrong password before asking where to save
-        const opened = openCertificate(material.p12, material.password)
+        const opened = openMaterial(material)
         if (!opened.ok) return { ok: false, error: opened.error }
 
         const parent = BrowserWindow.fromWebContents(e.sender)
@@ -1683,9 +1723,7 @@ function registerPdfIpc(): void {
         if (isSameRedactionCopyPath(path, target)) return { ok: false, cancelled: true }
 
         const signed = await signPdf(new Uint8Array(await readFile(path)), {
-          loaded: opened.loaded,
-          p12: material.p12,
-          password: material.password,
+          ...opened.sign,
           ...options,
         })
         await writePdfAtomically(target, signed)

@@ -418,6 +418,8 @@ export interface HomeApi {
   openFeedback(): Promise<void>
   /** open getmyai.io in the default browser (Settings → About) */
   openDeveloperSite(): Promise<void>
+  /** open t.me/getmyai in the default browser (Settings → About) */
+  openDeveloperChannel(): Promise<void>
   /** whether the one-time "star us" prompt should show now (show:true also counts as shown);
    * docOpens personalizes the card copy ("you've opened N documents") */
   starPromptShouldShow(): Promise<StarPromptShow>
@@ -680,6 +682,7 @@ export const HOME_CHANNELS = {
   openVegaCodes: 'home:open-vega-codes',
   openFeedback: 'home:open-feedback',
   openDeveloperSite: 'home:open-developer-site',
+  openDeveloperChannel: 'home:open-developer-channel',
   starPromptShouldShow: 'home:star-prompt-should-show',
   starPromptAction: 'home:star-prompt-action',
   licenseStatus: 'license:status',
