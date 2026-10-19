@@ -226,6 +226,15 @@ body.vib .home {
   color: var(--accent);
 }
 
+/* center the cap-height band, not the full line box — flex centering alone
+   leaves every letter ~1px low and descender glyphs (Д Ц Щ У) ~2.4px low;
+   AvatarInitial then nudges the leftover descender gap via glyph metrics */
+.account-initial {
+  display: block;
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
+}
+
 .account-badge {
   position: absolute;
   top: -1px;
@@ -2113,14 +2122,10 @@ html[dir='rtl'] .quick-title-row {
 .kb-ask-step-num {
   flex-shrink: 0;
   width: 21px;
-  height: 21px;
-  border-radius: 99px;
-  background: var(--accent-soft);
   color: var(--accent);
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 600;
   display: flex;
-  align-items: center;
   justify-content: center;
   margin-top: 1px;
 }

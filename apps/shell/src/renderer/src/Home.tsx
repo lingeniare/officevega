@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { DragEvent as ReactDragEvent, ReactElement } from 'react'
 import { KbAskPanel } from './KbAskPanel'
 import iconDocx from './assets/file-docx.svg'
@@ -788,6 +788,37 @@ const LOGIN_POLL_MS = 2500
 /** fallback deadline when the CLI does not report expires_in (device codes live ~300s) */
 const LOGIN_MAX_WAIT_MS = 300_000
 
+/* A circle centers the letter's line box, not its ink: glyphs that dip below
+   the baseline (Д, Ц, Щ, У…) hang visibly low and even plain capitals drift
+   ~1px. .account-initial's text-box-trim centers the cap-height band; the
+   residual below shifts the leftover descender gap by real glyph metrics, so
+   it adapts to whatever UI font the platform resolves to. */
+let initialCtx: CanvasRenderingContext2D | null | undefined
+
+function AvatarInitial({ letter }: { letter: string }): ReactElement {
+  const ref = useRef<HTMLSpanElement>(null)
+  useLayoutEffect(() => {
+    const el = ref.current
+    if (!el) return
+    if (initialCtx === undefined) {
+      try {
+        initialCtx = document.createElement('canvas').getContext('2d')
+      } catch {
+        initialCtx = null
+      }
+    }
+    const ctx = initialCtx
+    if (!ctx) return
+    const cs = getComputedStyle(el)
+    ctx.font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`
+    const m = ctx.measureText(letter)
+    const capH = ctx.measureText('H').actualBoundingBoxAscent
+    const dy = (m.actualBoundingBoxAscent - m.actualBoundingBoxDescent - capH) / 2
+    el.style.transform = dy ? `translateY(${dy.toFixed(2)}px)` : ''
+  }, [letter])
+  return <span ref={ref} className="account-initial">{letter}</span>
+}
+
 function AccountEntry({
   onStatusChange,
   onFileSearchSettingsChange,
@@ -1118,7 +1149,7 @@ function AccountEntry({
               />
             </svg>
           ) : (
-            initial
+            <AvatarInitial letter={initial} />
           )}
           {skillUpdate && (
             <span className="account-badge" role="img" aria-label={t('intgUpdateDue')} />
