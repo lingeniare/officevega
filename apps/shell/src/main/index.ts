@@ -30,6 +30,7 @@ import {
 } from 'electron'
 import type { MenuItemConstructorOptions, NativeImage, WebContents } from 'electron'
 import { atomicCopyFile, atomicWriteFile } from './atomic-write'
+import { resolveSpellcheckLanguages } from './spellcheck-languages'
 import { registerLicenseIpc } from './license/service'
 import { tabStripOverlay } from './title-bar-overlay'
 import {
@@ -596,7 +597,32 @@ function persistLang(lang: Lang): void {
   writeAppSettingThen(APP_SETTINGS_PATH(), 'language', lang, (persisted) => {
     uiLang = persisted
     setUiLang(persisted)
+    applySpellcheckLanguages()
   })
+}
+
+/**
+ * Point the native spellchecker at the UI language + the OS languages.
+ *
+ * Chromium only enables the OS languages by default, so an app language the
+ * OS doesn't share (Russian UI on an English Windows) left every document
+ * unchecked. Called once at startup and again on every language switch —
+ * setSpellCheckerLanguages persists the list and downloads any missing
+ * Hunspell dictionary in the background.
+ */
+function applySpellcheckLanguages(): void {
+  try {
+    const ses = session.defaultSession
+    const langs = resolveSpellcheckLanguages(
+      currentLang(),
+      app.getPreferredSystemLanguages(),
+      ses.availableSpellCheckerLanguages,
+    )
+    // an empty list would DISABLE the checker — keep Electron's own default then
+    if (langs.length) ses.setSpellCheckerLanguages(langs)
+  } catch {
+    // spellcheck setup must never break startup or a language switch
+  }
 }
 
 let cachedUpdateChannel: UpdateChannel | null = null
@@ -5391,6 +5417,7 @@ app.whenReady().then(async () => {
   // mutable lang, whose 'en' default otherwise wins the race for whichever
   // tab loads first (e.g. sheets booting in English while docs shows Russian).
   currentLang()
+  applySpellcheckLanguages()
   // native menus/dialogs/scrollbars follow the persisted theme from first paint
   nativeTheme.themeSource = currentTheme()
   // stamp the star-prompt install-age clock on the first launch carrying the feature,
