@@ -33,6 +33,7 @@ import { atomicCopyFile, atomicWriteFile } from './atomic-write'
 import { resolveSpellcheckLanguages } from './spellcheck-languages'
 import { registerLicenseIpc } from './license/service'
 import { tabStripOverlay } from './title-bar-overlay'
+import { shellWindowBackground } from './window-background'
 import {
   applyUiScaleTo,
   applyUiScaleToAll,
@@ -73,6 +74,7 @@ import {
   OPEN_FILE_DIALOG_CHANNEL,
   GITHUB_REPO_URL,
   appMenuLabels,
+  appMenuTemplate,
   contextMenuLabels,
   editMenuTemplate,
   installContextMenu,
@@ -92,24 +94,40 @@ import {
   checkUpdatesMenuItem,
   licenseMenuItem,
   privacyMenuItem,
+  setSettingsInvoker,
   setUpdateCheckInvoker,
+  settingsMenuItem as sharedSettingsMenuItem,
   installRendererProtocol,
-  installFetchProxy,
   themedSurfaceColor,
   forwardRendererConsole,
+  AUTHOR_NAME_KEY,
+  readAuthorNameSetting,
+  sanitizeAuthorName,
+  systemAuthorName,
 } from '@genoffice/electron-utils'
+import { createMainProcessProxyDispatcher } from '@genoffice/electron-utils/main-proxy'
 import {
   readAppSettings,
   writeAppSetting,
   writeAppSettings,
   writeAppSettingThen,
 } from './app-settings'
+import {
+  ANALYTICS_ENABLED_KEY,
+  analyticsEnabledFrom,
+  createAnalytics,
+  ensureAnalyticsClientState,
+  extractPackagedAnalyticsKeys,
+  markAnalyticsFirstLaunchSent,
+} from './analytics'
+import type { Analytics, AnalyticsKeys } from './analytics'
 import { OPEN_DOCUMENTS_FILE, clearOpenDocuments, publishOpenDocuments } from './open-documents'
 import { startControlServer, type ControlServer } from './control-server'
 import { controlHandler } from './control-handlers'
 import { installCliLinkBestEffort } from './cli-link'
 import { createDefaultAppService, execFileRunner } from './default-app'
 import { registerIntegrationsIpc } from './integrations-ipc'
+import { makeUserCliRunner, registerUserSkillsIpc } from './user-cli'
 import {
   LAST_RUN_VERSION_KEY,
   STAR_PROMPT_ENABLED,
@@ -279,6 +297,7 @@ import {
 import type {
   AccountLoginEvent,
   AutoSaveDefault,
+  AuthorNameSetting,
   FolderListing,
   FolderRoot,
   MoveConflictPolicy,
@@ -356,6 +375,7 @@ import {
   searchKnowledgeBase,
 } from './knowledge-base'
 import { createFileViaCli } from './mcp/headless-cli'
+import { homeCliContext, runHomeCli, type HomeCliDeps } from './home-cli'
 import { sanitizeFileBase } from './mcp/tools/document-tools'
 import { runHeadlessExport, type HeadlessExporters } from './headless-export'
 import { TabManager } from './tab-manager'
@@ -363,11 +383,20 @@ import { tabMenuTemplate, type TabMenuActions, isProgramFile } from './tab-menu'
 import { runTabDocumentAction, type TabDocumentAction } from './tab-document-actions'
 import { duplicateDocumentFile } from './tab-duplicate'
 import { closeTabsInOrder, createRecentlyClosedTracker } from './tab-lifecycle'
+import {
+  installShellWindowBoundsPersistence,
+  readShellWindowState,
+  SHELL_WINDOW_DEFAULT_HEIGHT,
+  SHELL_WINDOW_DEFAULT_WIDTH,
+  SHELL_WINDOW_MIN_HEIGHT,
+  SHELL_WINDOW_MIN_WIDTH,
+} from './window-bounds'
 import { installShellCloseGuard } from './window-close-guard'
 import {
   activateDetached,
   closeDetachedWithoutPrompt,
   createDetachedEditorWindow,
+  detachedFileForWebContents,
   detachedFilePaths,
   detachedOpenDocuments,
   detachedRenameFile,
@@ -499,6 +528,8 @@ function bundledCliRunner(): ReturnType<typeof createCliRunner> {
     entry: app.isPackaged
       ? join(process.resourcesPath, 'cli', 'officevega.cjs')
       : join(APPS_ROOT, '..', 'packages', 'cli', 'dist', 'officevega.cjs'),
+    // the sheets engine the app itself runs; the CLI's own lookup only knows the packaged layout and a checkout
+    env: existsSync(SIDECAR_BIN) ? { XLSX_SIDECAR_PATH: SIDECAR_BIN } : {},
   })
   return cliRunner
 }
@@ -710,6 +741,13 @@ function currentMcpSettings(): McpSettings {
   }
 }
 
+let cachedTabSleepEnabled: boolean | null = null
+
+function tabSleepEnabled(): boolean {
+  cachedTabSleepEnabled ??= readAppSettings(APP_SETTINGS_PATH()).tabSleepEnabled !== false
+  return cachedTabSleepEnabled
+}
+
 let cachedAiPanelPrefs: AiPanelPrefs | null = null
 function currentAiPanelPrefs(): AiPanelPrefs {
   if (cachedAiPanelPrefs) return cachedAiPanelPrefs
@@ -725,6 +763,80 @@ function currentAiPanelPrefs(): AiPanelPrefs {
   return cachedAiPanelPrefs
 }
 
+// ---- anonymous usage analytics (see src/main/analytics.ts) ----
+// Stays a no-op until initAnalytics() runs at startup; keyless builds
+// (source/forks) keep the no-op forever, so every track() call is safe.
+
+let analytics: Analytics = { active: false, track: () => {} }
+
+let cachedAnalyticsEnabled: boolean | null = null
+
+function analyticsEnabled(): boolean {
+  cachedAnalyticsEnabled ??= analyticsEnabledFrom(readAppSettings(APP_SETTINGS_PATH()))
+  return cachedAnalyticsEnabled
+}
+
+function resolveAnalyticsKeys(): AnalyticsKeys | null {
+  // Only packaged extraMetadata is authoritative. Source/dev runs never read
+  // runtime credentials and therefore remain a strict no-op.
+  if (!app.isPackaged) return null
+  try {
+    return extractPackagedAnalyticsKeys(
+      JSON.parse(readFileSync(join(app.getAppPath(), 'package.json'), 'utf8')),
+      app.isPackaged,
+    )
+  } catch {
+    return null
+  }
+}
+
+function persistAnalyticsPreference(enabled: boolean): boolean {
+  const previous = cachedAnalyticsEnabled
+  // Change the in-memory gate before touching disk. The synchronous atomic
+  // write prevents another event from being handled in between.
+  cachedAnalyticsEnabled = enabled
+  try {
+    writeAppSettings(APP_SETTINGS_PATH(), { [ANALYTICS_ENABLED_KEY]: enabled })
+    return true
+  } catch (error) {
+    cachedAnalyticsEnabled = previous
+    throw error
+  }
+}
+
+function initAnalytics(): void {
+  try {
+    let clientState: ReturnType<typeof ensureAnalyticsClientState> | null = null
+    const getClientState = () => (clientState ??= ensureAnalyticsClientState(APP_SETTINGS_PATH()))
+    analytics = createAnalytics({
+      keys: resolveAnalyticsKeys(),
+      getClientId: () => getClientState().clientId,
+      isEnabled: analyticsEnabled,
+      shouldTrackFirstLaunch: () => getClientState().firstLaunchPending,
+      onFirstLaunchSent: () => markAnalyticsFirstLaunchSent(APP_SETTINGS_PATH()),
+      // Country-only approximation from OS regional settings. This avoids an
+      // IP lookup while populating GA4's built-in Country dimension.
+      getCountryCode: () => app.getLocaleCountryCode(),
+      // evaluated per event: ui_lang follows live language switches
+      baseParams: () => ({
+        app_version: app.getVersion(),
+        platform: process.platform,
+        os_version: process.getSystemVersion(),
+        ui_lang: currentLang(),
+      }),
+    })
+  } catch {
+    // analytics must never block startup
+  }
+}
+
+// ---- first-run onboarding ----
+// The GenTeam community page opened from the onboarding's second slide.
+// Stable short link served by the officevega.com site; it 302s to the tokened
+// invite link, which stays out of this repo and rotates server-side.
+const GENTEAM_URL = 'https://officevega.com/join'
+
+// Genspark credit-usage page opened from the account menu's credits row.
 // VEGA keys/deposit dashboard opened from the account menu's deposit row.
 // Kept main-side so the renderer never supplies the URL.
 const CREDIT_USAGE_URL = 'https://api.vega.chat/dashboard'
@@ -787,12 +899,15 @@ const tMain = createI18n({
     menuTabCloseRight: 'Close tabs to the right',
     menuTabCloseAll: 'Close all tabs',
     menuTabReopen: 'Reopen closed tab',
+    menuTabPin: 'Pin tab (keep loaded)',
+    menuTabUnpin: 'Unpin tab',
     dlgAddFolderRoot: 'Add Folder to Home',
     watchdogTitle: 'Document is using too many resources',
     watchdogBody:
       '"{title}" has been using a lot of memory or CPU for several minutes ({memory} MB, {cpu}% CPU). You can keep waiting, or close the document (you will be asked to save unsaved changes first). Diagnostics have been recorded.',
     watchdogWait: 'Keep Waiting',
     watchdogClose: 'Close Document',
+    watchdogIgnore: "Don't Remind Again",
     errFolderRootUnusable: 'The selected folder cannot be read',
     menuFile: 'File',
     menuSectionNew: 'New',
@@ -917,12 +1032,15 @@ const tMain = createI18n({
     menuTabCloseRight: 'Закрыть вкладки справа',
     menuTabCloseAll: 'Закрыть все вкладки',
     menuTabReopen: 'Открыть закрытую вкладку',
+    menuTabPin: 'Закрепить вкладку (не усыплять)',
+    menuTabUnpin: 'Открепить вкладку',
     dlgAddFolderRoot: 'Добавить папку на главную',
     watchdogTitle: 'Документ потребляет слишком много ресурсов',
     watchdogBody:
       '«{title}» уже несколько минут использует много памяти или процессора ({memory} МБ, {cpu}% CPU). Можно подождать ещё или закрыть документ (при несохранённых изменениях сначала будет предложено сохранить). Диагностика записана.',
     watchdogWait: 'Подождать',
     watchdogClose: 'Закрыть документ',
+    watchdogIgnore: 'Больше не напоминать',
     errFolderRootUnusable: 'Не удалось прочитать выбранную папку',
     menuFile: 'Файл',
     menuSectionNew: 'Создать',
@@ -1133,6 +1251,7 @@ const tMain = createI18n({
       '"{title}" bir necha daqiqa davomida koʻp xotira yoki CPU ishlatmoqda ({memory} MB, {cpu}% CPU). Kutilishda davom etish yoki hujjatni yopish mumkin (saqlanmagan oʻzgarishlarni saqlash taklif etiladi). Diagnostika yozib olindi.',
     watchdogWait: 'Kutishda davom etish',
     watchdogClose: 'Hujjatni yopish',
+    watchdogIgnore: 'Bir daha eslatma',
     errDuplicateFailed: 'Fayl nusxasi yaratilmadi',
     menuTabSave: 'Save',
     menuTabSaveAs: 'Save As…',
@@ -1150,6 +1269,8 @@ const tMain = createI18n({
     menuTabCloseRight: 'Close tabs to the right',
     menuTabCloseAll: 'Close all tabs',
     menuTabReopen: 'Reopen closed tab',
+    menuTabPin: 'Pin tab (keep loaded)',
+    menuTabUnpin: 'Unpin tab',
     menuView: 'View',
     menuUiZoomIn: 'Interface Zoom In',
     menuUiZoomOut: 'Interface Zoom Out',
@@ -1263,6 +1384,7 @@ const tMain = createI18n({
       '«{title}» бірнеше минут бойы жад немесе CPU-ды көп пайдаланып келеді ({memory} МБ, {cpu}% CPU). Күте беруге немесе құжатты жабуға болады (сақталмаған өзгерістерді сақтау ұсынылады). Диагностика жазылды.',
     watchdogWait: 'Күте беру',
     watchdogClose: 'Құжатты жабу',
+    watchdogIgnore: 'Бұдан былай еске салма',
     errDuplicateFailed: 'Файлдың көшірмесін жасау мүмкін болмады',
     menuTabSave: 'Save',
     menuTabSaveAs: 'Save As…',
@@ -1280,6 +1402,8 @@ const tMain = createI18n({
     menuTabCloseRight: 'Close tabs to the right',
     menuTabCloseAll: 'Close all tabs',
     menuTabReopen: 'Reopen closed tab',
+    menuTabPin: 'Pin tab (keep loaded)',
+    menuTabUnpin: 'Unpin tab',
     menuView: 'View',
     menuUiZoomIn: 'Interface Zoom In',
     menuUiZoomOut: 'Interface Zoom Out',
@@ -1392,6 +1516,7 @@ const tMain = createI18n({
       '«{title}» bir neçə dəqiqədir çoxlu yaddaş və ya CPU istifadə edir ({memory} MB, {cpu}% CPU). Gözləməyə davam edə və ya sənədi bağlaya bilərsiniz (əvvəlcə saxlanılmamış dəyişiklikləri saxlamaq təklif olunacaq). Diaqnostika qeydə alındı.',
     watchdogWait: 'Gözləməyə davam et',
     watchdogClose: 'Sənədi bağla',
+    watchdogIgnore: 'Birdə xatırlatma',
     errDuplicateFailed: 'Faylın dublikatını yaratmaq alınmadı',
     menuTabSave: 'Save',
     menuTabSaveAs: 'Save As…',
@@ -1409,6 +1534,8 @@ const tMain = createI18n({
     menuTabCloseRight: 'Close tabs to the right',
     menuTabCloseAll: 'Close all tabs',
     menuTabReopen: 'Reopen closed tab',
+    menuTabPin: 'Pin tab (keep loaded)',
+    menuTabUnpin: 'Unpin tab',
     menuView: 'View',
     menuUiZoomIn: 'Interface Zoom In',
     menuUiZoomOut: 'Interface Zoom Out',
@@ -1521,6 +1648,7 @@ const tMain = createI18n({
       '«{title}» birnäçe minutlap köp ýat ýa-da CPU ulanyp dur ({memory} MB, {cpu}% CPU). Garaşyp bilersiňiz ýa-da resminamany ýapyp bilersiňiz (saklanylmadyk üýtgeşmeleri saklamak teklip ediler). Diagnostika ýazyldy.',
     watchdogWait: 'Garaşyp durmak',
     watchdogClose: 'Resminamany ýap',
+    watchdogIgnore: 'Has-da ýatlatma',
     errDuplicateFailed: 'Faýly göçürip bolmady',
     menuTabSave: 'Save',
     menuTabSaveAs: 'Save As…',
@@ -1538,6 +1666,8 @@ const tMain = createI18n({
     menuTabCloseRight: 'Close tabs to the right',
     menuTabCloseAll: 'Close all tabs',
     menuTabReopen: 'Reopen closed tab',
+    menuTabPin: 'Pin tab (keep loaded)',
+    menuTabUnpin: 'Unpin tab',
     menuView: 'View',
     menuUiZoomIn: 'Interface Zoom In',
     menuUiZoomOut: 'Interface Zoom Out',
@@ -1650,6 +1780,7 @@ const tMain = createI18n({
       '«{title}» бир нече мүнөттөн бери эс тутумду же CPU-ду көп колдонуп келет ({memory} МБ, {cpu}% CPU). Күтө берсеңиз же документти жапсаңыз болот (сакталбаган өзгөртүүлөрдү сактоо сунушталат). Диагностика жазылды.',
     watchdogWait: 'Күтө берүү',
     watchdogClose: 'Документти жабуу',
+    watchdogIgnore: 'Дагы эскертпе',
     errDuplicateFailed: 'Файлдын көчүрмөсүн түзүү мүмкүн болбоду',
     menuTabSave: 'Save',
     menuTabSaveAs: 'Save As…',
@@ -1667,6 +1798,8 @@ const tMain = createI18n({
     menuTabCloseRight: 'Close tabs to the right',
     menuTabCloseAll: 'Close all tabs',
     menuTabReopen: 'Reopen closed tab',
+    menuTabPin: 'Pin tab (keep loaded)',
+    menuTabUnpin: 'Unpin tab',
     menuView: 'View',
     menuUiZoomIn: 'Interface Zoom In',
     menuUiZoomOut: 'Interface Zoom Out',
@@ -1780,6 +1913,7 @@ const tMain = createI18n({
       '«{title}» берничә минут дәвамында күп хәтер яки CPU куллана ({memory} МБ, {cpu}% CPU). Көтәргә дәвам итә яисә документны япарга була (сакланмаган үзгәрешләрне саклау тәкъдим ителер). Диагностика язып куелды.',
     watchdogWait: 'Көтүдә дәвам итү',
     watchdogClose: 'Документны ябу',
+    watchdogIgnore: 'Кабат искә алма',
     errDuplicateFailed: 'Файлның күчермәсен ясап булмады',
     menuTabSave: 'Save',
     menuTabSaveAs: 'Save As…',
@@ -1797,6 +1931,8 @@ const tMain = createI18n({
     menuTabCloseRight: 'Close tabs to the right',
     menuTabCloseAll: 'Close all tabs',
     menuTabReopen: 'Reopen closed tab',
+    menuTabPin: 'Pin tab (keep loaded)',
+    menuTabUnpin: 'Unpin tab',
     menuView: 'View',
     menuUiZoomIn: 'Interface Zoom In',
     menuUiZoomOut: 'Interface Zoom Out',
@@ -1910,6 +2046,7 @@ const tMain = createI18n({
       '«{title}» რამდენიმე წუთის განმავლობაში ბევრ მეხსიერებას ან CPU-ს იყენებს ({memory} MB, {cpu}% CPU). შეგიძლიათ გააგრძელოთ ლოდინი ან დახუროთ დოკუმენტი (შეუნახავი ცვლილებების შენახვა შემოგთავაზდებათ). დიაგნოსტიკა ჩაიწერა.',
     watchdogWait: 'ლოდინის გაგრძელება',
     watchdogClose: 'დოკუმენტის დახურვა',
+    watchdogIgnore: 'აღარ შეახსენო',
     errDuplicateFailed: 'ფაილის დუბლირება ვერ მოხერხდა',
     menuTabSave: 'Save',
     menuTabSaveAs: 'Save As…',
@@ -1927,6 +2064,8 @@ const tMain = createI18n({
     menuTabCloseRight: 'Close tabs to the right',
     menuTabCloseAll: 'Close all tabs',
     menuTabReopen: 'Reopen closed tab',
+    menuTabPin: 'Pin tab (keep loaded)',
+    menuTabUnpin: 'Unpin tab',
     menuView: 'View',
     menuUiZoomIn: 'Interface Zoom In',
     menuUiZoomOut: 'Interface Zoom Out',
@@ -2329,15 +2468,29 @@ function refreshTitleBarOverlay(): void {
 }
 
 function createShellWindow(): void {
+  // Last session's geometry, when a display can still show it (issue #2049).
+  // A saved position on an unplugged monitor falls back to the default
+  // placement rather than opening where it cannot be grabbed.
+  const restored = readShellWindowState(
+    APP_SETTINGS_PATH(),
+    screen.getAllDisplays().map((display) => display.workArea),
+  )
   const win = new BrowserWindow({
-    width: 1360,
-    height: 900,
-    minWidth: 720,
-    minHeight: 550,
+    width: restored?.width ?? SHELL_WINDOW_DEFAULT_WIDTH,
+    height: restored?.height ?? SHELL_WINDOW_DEFAULT_HEIGHT,
+    // x/y only when a saved position survived validation; omitting them keeps
+    // Electron's default placement on a first run
+    ...(restored ? { x: restored.x, y: restored.y } : {}),
+    minWidth: SHELL_WINDOW_MIN_WIDTH,
+    minHeight: SHELL_WINDOW_MIN_HEIGHT,
     title: appTitle(currentLang()),
-    // painted until the home renderer's first frame; matches --surface so a
-    // cold start under the dark theme doesn't flash white
-    backgroundColor: themedSurfaceColor(),
+    // Paint the theme's surface before the renderer's first frame so the window
+    // does not flash white in dark mode. nativeTheme.themeSource is already set
+    // from the saved theme in app.whenReady, before this window is created.
+    // macOS uses vibrancy below, which must stay transparent.
+    ...(process.platform === 'darwin'
+      ? {}
+      : { backgroundColor: shellWindowBackground(nativeTheme.shouldUseDarkColors) }),
     // vibrancy: editor modules punch translucent regions (e.g. the slides
     // thumbnail pane) through to the desktop
     ...(process.platform === 'darwin'
@@ -2357,6 +2510,9 @@ function createShellWindow(): void {
       sandbox: true,
     },
   })
+  // the stored rectangle is the normal-state one, so a maximized session
+  // reopens maximized instead of as a screen-sized ordinary window
+  if (restored?.maximized) win.maximize()
   shellWindow = win
   forwardRendererConsole(win.webContents, 'shell')
   nativeTheme.on('updated', refreshTitleBarOverlay)
@@ -2364,6 +2520,8 @@ function createShellWindow(): void {
   // dragging the window by the tab strip's blank (draggable) area produces no
   // DOM event anywhere — will-move is the only signal to dismiss popovers
   win.on('will-move', () => broadcastChromePressed())
+  // remember the window's position and size for the next launch (issue #2049)
+  installShellWindowBoundsPersistence(APP_SETTINGS_PATH(), win)
   // A detached editor window claims the process-global menu/active-editor targets
   // while focused; take them back when the shell window regains focus. Keyboard
   // focus must land back on the active tab's view too — regaining window focus
@@ -2399,6 +2557,8 @@ function createShellWindow(): void {
   )
   tabManager = manager
   manager.setClosedListener((closed) => recentlyClosed.push(closed))
+  const stopSleepSweeper = manager.startSleepSweeper(tabSleepEnabled)
+  win.once('closed', stopSleepSweeper)
 
   // Docking: a detached window dragged over this window's tab strip hands its
   // document back. The strip reports the insertion slot for each preview
@@ -3155,6 +3315,32 @@ function registerHomeIpc(): void {
     )
   })
 
+  // Ask AI building files: the bundled CLI, confined to the conversation's
+  // work directory, the save folder and the starred files' folders (home-cli.ts)
+  const homeCliDeps: HomeCliDeps = {
+    runner: bundledCliRunner,
+    workRoot: () => join(app.getPath('userData'), 'ask-ai-work'),
+    outDir: defaultSaveDir,
+    sourcePaths: readStarredFiles,
+    recordRecent: recordRecentFile,
+  }
+  ipcMain.handle('kb:cli-context', (_event, sessionId: unknown): unknown =>
+    homeCliContext(homeCliDeps, typeof sessionId === 'string' ? sessionId : ''),
+  )
+  ipcMain.handle('kb:run-cli', async (_event, raw: unknown): Promise<unknown> => {
+    const req = (raw && typeof raw === 'object' ? raw : {}) as {
+      sessionId?: unknown
+      args?: unknown
+      files?: unknown
+      sources?: unknown
+    }
+    return runHomeCli(homeCliDeps, typeof req.sessionId === 'string' ? req.sessionId : '', {
+      args: Array.isArray(req.args) ? (req.args as string[]) : [],
+      files: Array.isArray(req.files) ? (req.files as { name: string; content: string }[]) : [],
+      sources: Array.isArray(req.sources) ? (req.sources as string[]) : [],
+    })
+  })
+
   ipcMain.handle(
     HOME_CHANNELS.rerankSearch,
     async (_event, raw: unknown): Promise<FileSearchRerank | null> => {
@@ -3466,6 +3652,28 @@ function registerHomeIpc(): void {
     for (const wc of webContents.getAllWebContents()) wc.send('app:document-theme-changed', theme)
   })
 
+  // comment / tracked-change author (Word: Options → General → User name);
+  // the editor mains resolve the same key via configuredAuthorName
+  const authorNameSetting = (): AuthorNameSetting => ({
+    value: readAuthorNameSetting(APP_SETTINGS_PATH()),
+    fallback: systemAuthorName(),
+  })
+  ipcMain.handle(HOME_CHANNELS.getAuthorName, (): AuthorNameSetting => authorNameSetting())
+  ipcMain.handle('app:get-author-name', (): string => {
+    const { value, fallback } = authorNameSetting()
+    return value || fallback
+  })
+  ipcMain.handle(HOME_CHANNELS.setAuthorName, (_event, raw: unknown): AuthorNameSetting => {
+    const value = sanitizeAuthorName(raw)
+    if (value !== readAuthorNameSetting(APP_SETTINGS_PATH())) {
+      writeAppSetting(APP_SETTINGS_PATH(), AUTHOR_NAME_KEY, value)
+      const effective = value || systemAuthorName()
+      for (const wc of webContents.getAllWebContents())
+        wc.send('app:author-name-changed', effective)
+    }
+    return authorNameSetting()
+  })
+
   ipcMain.handle(HOME_CHANNELS.getAutoSaveDefault, (): AutoSaveDefault => currentAutoSaveDefault())
   ipcMain.handle('app:get-auto-save-default', (): AutoSaveDefault => currentAutoSaveDefault())
 
@@ -3503,6 +3711,12 @@ function registerHomeIpc(): void {
     cachedUiScale = next
     setUiScale(APP_SETTINGS_PATH(), next)
     for (const wc of webContents.getAllWebContents()) wc.send('app:ui-scale-changed', next)
+  })
+  ipcMain.handle(HOME_CHANNELS.getTabSleepEnabled, () => tabSleepEnabled())
+  ipcMain.handle(HOME_CHANNELS.setTabSleepEnabled, (_event, on: unknown) => {
+    if (typeof on !== 'boolean') return
+    cachedTabSleepEnabled = on
+    writeAppSettings(APP_SETTINGS_PATH(), { tabSleepEnabled: on })
   })
 
   ipcMain.handle(HOME_CHANNELS.getMcpStatus, () => mcpStatus())
@@ -4054,6 +4268,7 @@ function tabMenuActions(): TabMenuActions {
     saveAs: (id) => documentAction(id, 'saveAs'),
     print: (id) => documentAction(id, 'print'),
     openInNewWindow: (id) => detachTabToWindow(id),
+    pin: (id, pinned) => tabManager?.setPinned(id, pinned),
     // two windows side by side, each on its own half of the screen the tab is on
     splitBeside: (id) => {
       if (!tabManager || !shellWindow) return
@@ -4063,8 +4278,18 @@ function tabMenuActions(): TabMenuActions {
       const area = screen.getDisplayMatching(shellWindow.getBounds()).workArea
       const half = Math.floor(area.width / 2)
       if (shellWindow.isMaximized()) shellWindow.unmaximize()
-      if (shellWindow.isFullScreen()) shellWindow.setFullScreen(false)
-      shellWindow.setBounds({ x: area.x, y: area.y, width: half, height: area.height })
+      const tile = () => {
+        if (!shellWindow || shellWindow.isDestroyed()) return
+        shellWindow.setBounds({ x: area.x, y: area.y, width: half, height: area.height })
+      }
+      // leaving fullscreen is asynchronous (macOS animates it) and restores the
+      // pre-fullscreen bounds on completion, which would undo an immediate tile
+      if (shellWindow.isFullScreen()) {
+        shellWindow.once('leave-full-screen', tile)
+        shellWindow.setFullScreen(false)
+      } else {
+        tile()
+      }
       win.setBounds({ x: area.x + half, y: area.y, width: area.width - half, height: area.height })
       win.focus()
     },
@@ -4231,27 +4456,13 @@ function registerTabsIpc(): void {
 
 // ---- home menu ----
 
-/** Menu → Settings…: the modal lives in the home renderer, so the home tab
- * must be active before the push lands (a just-created window queues the
- * send on did-finish-load) */
-function openHomeSettings(): void {
-  revealShellWindow()
-  tabManager?.openHomeTab()
-  const wc = shellWindow?.webContents
-  if (!wc) return
-  if (wc.isLoadingMainFrame()) {
-    wc.once('did-finish-load', () => wc.send(HOME_CHANNELS.openSettings))
-  } else {
-    wc.send(HOME_CHANNELS.openSettings)
-  }
-}
 
 /** top-level Settings… entry appended after Help in every shell-built menu:
  * the tab strip's menu button pops the application menu, so a top-level item
  * is directly clickable there (and on the macOS menu bar). No accelerator —
  * CmdOrCtrl+, is the docs editor's subscript chord. */
 function settingsMenuItem(): MenuItemConstructorOptions {
-  return { label: tm('menuSettings'), click: openHomeSettings }
+  return { label: tm('menuSettings'), click: () => openSettingsView() }
 }
 
 async function openFileViaDialog(): Promise<void> {
@@ -4265,9 +4476,15 @@ async function openFileViaDialog(): Promise<void> {
 }
 
 function buildHomeMenu(): void {
-  const isMac = process.platform === 'darwin'
+  const labels = appMenuLabels(currentLang())
+  // macOS only: the application menu is spelled out so it can carry a
+  // Settings entry of our own (role:'appMenu' is a fixed template)
+  const appMenu = appMenuTemplate(process.platform, labels, {
+    appLabel: app.name,
+    extra: [sharedSettingsMenuItem(labels)],
+  })
   const template: MenuItemConstructorOptions[] = [
-    ...(isMac ? [{ role: 'appMenu' as const }] : []),
+    ...(appMenu ? [appMenu] : []),
     {
       label: tm('menuFile'),
       submenu: [
@@ -4317,6 +4534,8 @@ function buildHomeMenu(): void {
         },
         { type: 'separator' },
         { role: 'close', label: tm('menuClose') },
+        { type: 'separator' },
+        sharedSettingsMenuItem(labels),
       ],
     },
     viewMenuTemplate(),
@@ -4346,9 +4565,15 @@ function buildHomeMenu(): void {
 // ---- pdf menu (pdf-main has no menu of its own; the shell owns pdf tabs, so it builds one) ----
 
 function buildPdfMenu(): void {
-  const isMac = process.platform === 'darwin'
+  const labels = appMenuLabels(currentLang())
+  // macOS only: the application menu is spelled out so it can carry a
+  // Settings entry of our own (role:'appMenu' is a fixed template)
+  const appMenu = appMenuTemplate(process.platform, labels, {
+    appLabel: app.name,
+    extra: [sharedSettingsMenuItem(labels)],
+  })
   const template: MenuItemConstructorOptions[] = [
-    ...(isMac ? [{ role: 'appMenu' as const }] : []),
+    ...(appMenu ? [appMenu] : []),
     {
       label: tm('menuFile'),
       submenu: [
@@ -4408,6 +4633,8 @@ function buildPdfMenu(): void {
           accelerator: 'CmdOrCtrl+W',
           click: () => closeFocusedEditor(),
         },
+        { type: 'separator' },
+        sharedSettingsMenuItem(labels),
       ],
     },
     editMenuTemplate(process.platform, appMenuLabels(currentLang())),
@@ -4433,9 +4660,15 @@ function buildPdfMenu(): void {
 // ---- markdown menu (markdown-main has no menu of its own; the shell owns markdown tabs) ----
 
 function buildMarkdownMenu(): void {
-  const isMac = process.platform === 'darwin'
+  const labels = appMenuLabels(currentLang())
+  // macOS only: the application menu is spelled out so it can carry a
+  // Settings entry of our own (role:'appMenu' is a fixed template)
+  const appMenu = appMenuTemplate(process.platform, labels, {
+    appLabel: app.name,
+    extra: [sharedSettingsMenuItem(labels)],
+  })
   const template: MenuItemConstructorOptions[] = [
-    ...(isMac ? [{ role: 'appMenu' as const }] : []),
+    ...(appMenu ? [appMenu] : []),
     {
       label: tm('menuFile'),
       submenu: [
@@ -4511,6 +4744,8 @@ function buildMarkdownMenu(): void {
           accelerator: 'CmdOrCtrl+W',
           click: () => closeFocusedEditor(),
         },
+        { type: 'separator' },
+        sharedSettingsMenuItem(labels),
       ],
     },
     editMenuTemplate(process.platform, appMenuLabels(currentLang())),
@@ -4536,9 +4771,15 @@ function buildMarkdownMenu(): void {
 // ---- html menu (html-main has no menu of its own; the shell owns html tabs) ----
 
 function buildHtmlMenu(): void {
-  const isMac = process.platform === 'darwin'
+  const labels = appMenuLabels(currentLang())
+  // macOS only: the application menu is spelled out so it can carry a
+  // Settings entry of our own (role:'appMenu' is a fixed template)
+  const appMenu = appMenuTemplate(process.platform, labels, {
+    appLabel: app.name,
+    extra: [sharedSettingsMenuItem(labels)],
+  })
   const template: MenuItemConstructorOptions[] = [
-    ...(isMac ? [{ role: 'appMenu' as const }] : []),
+    ...(appMenu ? [appMenu] : []),
     {
       label: tm('menuFile'),
       submenu: [
@@ -4607,6 +4848,8 @@ function buildHtmlMenu(): void {
           accelerator: 'CmdOrCtrl+W',
           click: () => closeFocusedEditor(),
         },
+        { type: 'separator' },
+        sharedSettingsMenuItem(labels),
       ],
     },
     editMenuTemplate(process.platform, appMenuLabels(currentLang())),
@@ -4851,7 +5094,7 @@ async function exportDocxBytesHeadless(
   format: 'md' | 'html',
   sourceName: string,
 ): Promise<void> {
-  const dir = await mkdtemp(join(tmpdir(), 'genoffice-pdf-convert-'))
+  const dir = await mkdtemp(join(tmpdir(), 'officevega-pdf-convert-'))
   try {
     const docxPath = join(dir, sourceName.replace(/\.pdf$/i, '') + '.docx')
     await atomicWriteFile(docxPath, docx)
@@ -5125,6 +5368,20 @@ function installBackToHomeItems(): void {
   setSlidesExtraAppMenuItems([settings])
 }
 
+/** The Settings view lives in the Home tab, so every app's menu points here:
+ *  ⌘, lands on it from anywhere in the suite. The window comes back first if
+ *  it was hidden or minimized, and asking again re-opens the same panel —
+ *  the renderer keeps one. */
+function openSettingsView(): void {
+  const win = shellWindow ?? BrowserWindow.getFocusedWindow()
+  if (!win || win.isDestroyed()) return
+  if (win.isMinimized()) win.restore()
+  win.show()
+  win.focus()
+  tabManager?.openHomeTab()
+  win.webContents.send(HOME_CHANNELS.openSettings, { section: 'general' })
+}
+
 function installDockMenu(): void {
   if (process.platform !== 'darwin') return
   app.dock?.setMenu(
@@ -5178,8 +5435,10 @@ async function installMainProcessProxy(): Promise<void> {
   // the dispatcher below — forward the proxy to them via env
   setGskProxyUrl(proxyUrl)
   try {
-    // NO_PROXY and loopback bypass the proxy — a local endpoint must not leave the machine
-    await installFetchProxy(proxyUrl)
+    const { setGlobalDispatcher } = await import('undici')
+    // loopback stays direct: a Custom provider on 127.0.0.1 must not ride
+    // the proxy as an absolute-form request (genoffice#2084)
+    setGlobalDispatcher(await createMainProcessProxyDispatcher(proxyUrl))
     // strip user:pass credentials before logging
     console.log('[proxy] main-process fetch via', proxyUrl.replace(/\/\/[^@/]*@/, '//***@'))
   } catch (e) {
@@ -5246,7 +5505,7 @@ function showWelcomeOnboarding(): void {
   else send()
 }
 
-ipcMain.handle('ai:open-model-settings', () => {
+const openHomeSettings = (section: 'aiModel' | 'skills'): void => {
   const win = shellWindow
   if (!win || win.isDestroyed()) return
   // the request may come from a detached window or while the shell is minimized
@@ -5254,8 +5513,10 @@ ipcMain.handle('ai:open-model-settings', () => {
   win.show()
   win.focus()
   tabManager?.openHomeTab()
-  win.webContents.send(HOME_CHANNELS.openSettings, { section: 'aiModel' })
-})
+  win.webContents.send(HOME_CHANNELS.openSettings, { section })
+}
+ipcMain.handle('ai:open-model-settings', () => openHomeSettings('aiModel'))
+ipcMain.handle('ai:open-skills-settings', () => openHomeSettings('skills'))
 registerProjectIpc()
 registerDocsIpc()
 registerHomeIpc()
@@ -5271,9 +5532,18 @@ registerIntegrationsIpc({
   cliPackageJson: app.isPackaged
     ? join(process.resourcesPath, 'cli', 'package.json')
     : join(APPS_ROOT, '..', 'packages', 'cli', 'package.json'),
+  recommendedSkillsDir: app.isPackaged
+    ? join(process.resourcesPath, 'cli', 'skills', 'recommended')
+    : join(APPS_ROOT, '..', 'skills', 'recommended'),
 })
 registerTabsIpc()
 registerDroppedFilesIpc()
+registerUserSkillsIpc({
+  cliRunner: makeUserCliRunner,
+  folderRoots: folderRootPaths,
+  senderFile: (wcId) =>
+    tabManager?.describeWebContents(wcId)?.filePath ?? detachedFileForWebContents(wcId),
+})
 
 // sheets' project:resolveChat goes through the handler registered by docs-main; the sessionId reverse lookup hooks in here
 setSessionPathResolver(resolveSheetsSessionPath)
@@ -5539,6 +5809,8 @@ app.whenReady().then(async () => {
   installBackToHomeItems()
   installDockMenu()
   setUpdateCheckInvoker(() => void checkForUpdatesNow())
+  // every app's Settings entry (⌘, / Ctrl+,) lands on the shell's Settings view
+  setSettingsInvoker(() => openSettingsView())
   initAutoUpdater(() => shellWindow, currentUpdateChannel())
   // resource watchdog: a renderer that stays hot for minutes gets diagnostics
   // recorded and the user an offer to close the document (headless exports

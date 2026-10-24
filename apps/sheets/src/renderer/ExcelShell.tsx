@@ -250,6 +250,8 @@ interface ExcelShellProps {
   /// Chat attachments (chips + 📎 button + drag-and-drop), same structure as the
   /// docs/slides AI panels.
   readonly attachments: readonly AttachmentMeta[]
+  readonly attachedSkills: readonly string[]
+  readonly onToggleSkill: (name: string) => void
   readonly attachNotice: string | null
   readonly onPickAttachments: () => void
   readonly onAddAttachmentPaths: (paths: readonly string[]) => void
@@ -486,6 +488,8 @@ export function ExcelShell({
   historicChat,
   docName,
   attachments,
+  attachedSkills,
+  onToggleSkill,
   attachNotice,
   onPickAttachments,
   onAddAttachmentPaths,
@@ -890,7 +894,9 @@ export function ExcelShell({
 
   return (
     <main
-      className={`app-shell ${isCopilotOpen ? '' : 'copilot-collapsed'}`}
+      className={`app-shell ${isCopilotOpen ? '' : 'copilot-collapsed'}${
+        !isCopilotOpen && !aiSidebarEnabled ? ' copilot-off' : ''
+      }`}
       inert={openingWorkbook}
       aria-busy={openingWorkbook}
     >
@@ -1097,6 +1103,8 @@ export function ExcelShell({
           {...(historicChat !== undefined ? { historicChat } : {})}
           {...(docName !== undefined ? { docName } : {})}
           attachments={attachments}
+          attachedSkills={attachedSkills}
+          onToggleSkill={onToggleSkill}
           attachNotice={attachNotice}
           onPickAttachments={onPickAttachments}
           onAddAttachmentPaths={onAddAttachmentPaths}
@@ -3304,7 +3312,7 @@ function Ribbon({
           />
         </RibbonGroup>
         <RibbonGroup label={t('appGroupShow')}>
-          <div className="check-column">
+          <div className="check-column check-column-view">
             <button
               className="check-item"
               data-tip={t('appGridlines')}
@@ -3469,6 +3477,7 @@ function Ribbon({
             { value: 'note-show-toggle', label: t('appShowHideNote') },
             { value: 'note-show-all', label: t('appShowAllNotes') },
             { value: 'notes-convert', label: t('appConvertToNotes') },
+            { value: 'note-pictures-pane-toggle', label: t('appNotePicturesToggle') },
           ])}
         </RibbonGroup>
         <RibbonGroup label={t('appGroupProtection')}>

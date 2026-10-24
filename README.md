@@ -24,6 +24,7 @@ Word, Excel, PowerPoint and PDF files, edited by you and your AI, saved back in 
 
 <p align="center">
   <a href="#download"><b>Download</b></a> ·
+  <a href="#skills"><b>Skills</b></a> ·
   <a href="#command-line-and-agent-skill"><b>CLI</b></a> ·
   <a href="#mcp-server"><b>MCP</b></a> ·
   <a href="https://github.com/lingeniare/getoffice/"><b>Website</b></a> ·
@@ -55,6 +56,13 @@ file, makes the change, and shows you exactly what it touched.
 - **Your keys or none.** Sign in with VEGA and skip keys, or bring your own
   key for Claude, OpenAI, Gemini, Grok, OpenRouter, Atlas Cloud, OpenCode
   Zen/Go, or any OpenAI-compatible endpoint, local servers included.
+- **Ask your files, with sources.** Star a set of documents and **Ask AI** on
+  the home screen answers questions across them, citing the file behind every
+  claim so you can open it and check.
+- **Your keys or none.** Sign in with Genspark and skip keys, or bring your own
+  key for Claude, OpenAI, Gemini, DeepSeek, Kimi, GLM, Qwen, Doubao, MiniMax,
+  Grok, Mistral, OpenRouter, Requesty, Opper, Cheaper Inference, Atlas Cloud, or any OpenAI-compatible endpoint, local
+  servers included.
 - **Scriptable and agent-ready.** The app ships a `officevega` command line and
   a skill for Claude Code, Codex, Cursor, Gemini CLI, GitHub Copilot, OpenCode
   and Windsurf, so a coding agent can create, convert, read and edit real
@@ -195,6 +203,20 @@ that score; if the call fails or times out, the local order stays.
 
 ### 8 · CLI — your coding agent drives OfficeVega, on your machine
 
+Star the files you work with and the home screen's **Ask AI** treats them as
+a knowledge base. Ask a question in plain language; the agent searches the
+starred files, reads the ones it needs and answers with a citation after
+every claim. Click a citation and the file opens in the right app.
+
+<img src="docs/assets/readme/home-ask-ai-motion.webp" alt="Screen recording of OfficeVega Ask AI: the question quick summary, what drove our Q3 growth and how did Asia-Pacific perform, is typed on the home screen; the agent reads two starred files and answers with the Aurora X1 launch and the Asia-Pacific expansion, each claim followed by a citation chip naming the quarterly report or the regional sales workbook; a click on the workbook chip opens it in Sheets with the Asia-Pacific row highlighted" width="100%">
+
+Ask AI searches the same on-device full-text index as
+[Search](#7--search--find-the-file-that-answers-the-question-with-typesafe-jev)
+and reads files in pages, so the model only sees the hits and the passages it
+asked for, through the provider you chose.
+
+### 9 · CLI — your coding agent drives OfficeVega, on your machine
+
 OfficeVega ships a `officevega` command line and an agent skill. Install the
 skill and Claude Code, Codex, Cursor, Gemini CLI, GitHub Copilot, OpenCode or
 Windsurf can create, convert, read and edit real Office files through the
@@ -253,6 +275,10 @@ document in a visible editor tab while you watch.
 - **Search that finds the answer, not the keyword.** Full-text search over
   every document in your folders, indexed on-device, with optional reranking
   by TypeSafe Jev, the System One judgment model.
+- **Ask AI across your files.** Star the files that matter and ask questions
+  in plain language; every answer cites the file it came from, one click away.
+- **Skills.** Ready-made skills, or your own `SKILL.md`, attached from
+  the **+** menu of any AI panel.
 - **Scriptable.** A `officevega` command line, an agent skill and an MCP server
   put every engine at the service of Claude Code, Claude Desktop, Codex, Cursor
   and other agents, still on-device.
@@ -289,6 +315,19 @@ The whole suite ships light, dark and system themes. Themes only change what
 is on screen: exports, prints and saved files always keep the document's own
 colors.
 
+## Skills
+
+A skill is a `SKILL.md` that tells the AI how to do one job well: a weekly
+report, an NDA, a lesson plan. OfficeVega ships a set of them and takes your own,
+in the same format coding agents use.
+
+- **Settings → Skills.** **Install** a recommended skill, or **Import** a
+  folder, a zip or a single `SKILL.md`. Nothing runs on import.
+- **In a chat.** Open the **+** menu next to the composer of any AI panel,
+  pick **Skills**, tick one, send. The skill goes along with that message only.
+
+---
+
 ## Command line and agent skill
 
 Everything the apps can do to a file, the `officevega` command line can do from
@@ -320,7 +359,7 @@ check its own work.
 ```bash
 officevega --version
 officevega info report.docx --json                  # headings and blocks; or sheets, slides, pages
-officevega convert report.md --to pdf               # md/html/docx/xlsx/pptx → pdf, pdf → docx/xlsx/pptx, …
+officevega convert report.md --to pdf               # md/html/docx/xlsx/pptx → pdf, pdf → docx/xlsx/pptx/md/html, …
 officevega create --type docx --from notes.md --out notes.docx
 officevega create --type xlsx --from table.json --out sales.xlsx   # "=SUM(B2:B9)" cells stay live formulas
 officevega docs read report.docx --range 0-9 --json # then `docs apply --ops edits.json` edits in place

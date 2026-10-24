@@ -25,7 +25,7 @@ function makeP12(commonName: string): Uint8Array {
       value: forge.util.encodeUtf8(commonName),
       valueTagClass: forge.asn1.Type.UTF8 as unknown as forge.asn1.Class,
     },
-    { name: 'organizationName', value: 'GenOffice' },
+    { name: 'organizationName', value: 'OfficeVega' },
   ]
   cert.setSubject(attrs)
   cert.setIssuer(attrs)
@@ -264,12 +264,12 @@ describe('visible signatures', () => {
       const xobject = context.lookupMaybe(resources.get(PDFName.of('XObject')), PDFDict)
       return (xobject?.entries() ?? []).map(([name, ref]) => [
         name.decodeText(),
-        context.lookup(ref) as PDFObject,
+        context.lookup(ref),
       ])
     }
     const subtype = (object: PDFObject) =>
       (object as PDFRawStream).dict.get(PDFName.of('Subtype'))?.toString()
-    let level: PDFObject[] = [context.lookup(ap.get(PDFName.of('N'))) as PDFObject]
+    let level: PDFObject[] = [context.lookup(ap.get(PDFName.of('N')))]
     const seen: string[] = []
     while (level.length > 0) {
       const next: PDFObject[] = []

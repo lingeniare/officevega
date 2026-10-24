@@ -131,6 +131,7 @@ export {
 } from './fetch'
 export { isAiNetworkError } from './network-error'
 export { isAiOverloadedError } from './overload-error'
+export { isAiRegionBlockedError } from './region-error'
 export { isOutputCapRejection, parseOutputCapRejection } from './output-cap'
 export { AiCreditsError, sseLines, streamForProvider } from './stream'
 export type { StreamCallbacks } from './stream'

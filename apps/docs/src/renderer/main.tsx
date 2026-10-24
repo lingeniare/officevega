@@ -1,6 +1,7 @@
 import { createRoot } from 'react-dom/client'
 import { htmlDir, htmlLang, type Lang } from '@genoffice/i18n'
 import { App } from './App'
+import { setAuthorName } from './author-name'
 import { LocaleProvider, setModuleLang } from './i18n/locale'
 import type { DocTheme, UiDesign, UiTheme } from '../shared/ipc'
 import '@genoffice/ui/tokens.css'
@@ -8,6 +9,7 @@ import '@genoffice/ui/screentip.css'
 import '@genoffice/ui/ai-model-picker.css'
 import '@genoffice/ui/ai-queue-strip.css'
 import '@genoffice/ui/ai-usage.css'
+import '@genoffice/ui/ai-skills.css'
 import '@genoffice/ui/color-picker.css'
 import '@genoffice/ui/dropdown.css'
 import '@genoffice/ui/ribbon-collapse.css'
@@ -82,6 +84,11 @@ async function bootstrap(): Promise<void> {
     .then(applyUiScale)
     .catch(() => {})
   window.desktop?.onUiScaleChanged?.(applyUiScale)
+  await window.desktop
+    ?.getAuthorName?.()
+    .then(setAuthorName)
+    .catch(() => {})
+  window.desktop?.onAuthorNameChanged?.(setAuthorName)
   createRoot(document.getElementById('root')!).render(
     <LocaleProvider initial={lang}>
       <App />

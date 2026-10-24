@@ -1,5 +1,6 @@
 import { scriptFontHtml } from './editor/script-fonts'
-import { DOC_CSS_COMMITTED_EVENT } from './editor/cjk-punct-shrink'
+import { carryDocSeen } from './ai/tools'
+import { DOC_CSS_COMMITTED_EVENT, WRAP_WIDTHS_COMMITTED_EVENT } from './editor/cjk-punct-shrink'
 import { justifyShrinkPluginKey } from './editor/justify-shrink'
 import {
   useCallback,
@@ -74,8 +75,10 @@ import {
   type NumberingDef,
   type DocProtection,
   type WriteProtection,
+  mergeFieldName,
   nextNoteId,
   PAGE_MARK,
+  placeholderText,
   type HeaderFooter,
   type HfImage,
   type NoteInfo,
@@ -94,8 +97,19 @@ import {
   type PictureWatermarkSpec,
   type WatermarkSpec,
 } from '@genoffice/docx-engine'
-import type { AiDocContent, AiSettings, MenuCommand, OpenDocxResult } from '../shared/ipc'
+import type {
+  AiDocContent,
+  AiSettings,
+  MenuCommand,
+  MergeDataSource,
+  OpenDocxResult,
+} from '../shared/ipc'
 import { AI_PROVIDERS } from '../shared/ipc'
+import {
+  buildMailMergeFiles,
+  type MailMergeRequest,
+  type MailMergeResponse,
+} from './mail-merge/output'
 import { ZoteroDocumentController } from './zotero/controller'
 import { AiPanel, AI_REVISION_AUTHOR } from './ai/AiPanel'
 import type { AiCommentsAccess, AiDocExtras, AiHeaderFooterAccess } from './ai/tools'
@@ -107,6 +121,7 @@ import { applyHfText, hfEditText } from './editor/hf-text'
 import {
   insertHfField,
   insertHfInstrField,
+  insertHfPicture,
   mountHfEditor,
   type HfEditorHandle,
 } from './editor/hf-editor'
@@ -131,7 +146,7 @@ import { HeaderFooterArea } from './components/HeaderFooterArea'
 import { PageFootnotes, PageEndnotes } from './components/PageNoteAreas'
 import { noteMarkText, type NoteKind } from './note-format'
 import { PaginationPreview } from './components/PaginationPreview'
-import { paraPaginationMeta, tableWidowOff } from './editor/para-flags'
+import { imageParaPaginationMeta, paraPaginationMeta, tableWidowOff } from './editor/para-flags'
 import { PrintDialog } from './components/PrintDialog'
 import {
   appendEndnotesBlock,
@@ -175,6 +190,7 @@ import {
   sectionGridPitchSpecs,
   docCharSpacePt,
   sectionCharSpaceSpecs,
+  singleByteCharSpacePt,
   type ColumnBlockPlacement,
   sectionBidi,
   sectionColGeom,
@@ -197,12 +213,14 @@ import {
   GAP_BAND,
   alignGapHfStrips,
   alignTableGapFills,
+  leadDropsSpaceBefore,
   clearFloatShifts,
   floatFlowChangedMeta,
   insideFloatTable,
   setFloatVShifts,
   setOversizeClips,
   setPageGaps,
+  canvasZoomOf,
   rowFillsSig,
   setRowFills,
   syncAnchorBands,
@@ -264,7 +282,7 @@ import { useShallowStable, useStableCallbacks } from './use-stable'
 import { FindPanel } from './components/FindPanel'
 import { ZoomDialog } from './components/ZoomDialog'
 import type { PageLayout } from './editor/goto'
-import { Ribbon } from './components/Ribbon'
+import { Ribbon, type ConvertFormat } from './components/Ribbon'
 import {
   AdjustListIndentsDialog,
   DefineBulletDialog,
@@ -292,6 +310,7 @@ import {
 } from './components/icons'
 import { ToastHost } from './components/toast'
 import {
+  imageSizeOf,
   AI_REWRITE_ACK_KEY,
   LinkInsertModal,
   TableInsertModal,
@@ -351,7 +370,7 @@ import {
 import { installSelectionBar } from './editor/selection-bar'
 import type { CompareEntry } from './editor/compare'
 import { collectHeadings } from './editor/headings'
-import { applyTocPageDisplays } from './editor/toc-refresh'
+import { applyTocPageDisplays, backfillTocPageDom } from './editor/toc-refresh'
 import { setSelectionAlign } from './editor/direction'
 
 import {
@@ -412,6 +431,7 @@ import {
   singleInlineEditIndex,
   type FastPassBlock,
 } from './editor/pagination-fast-path'
+import { FollowUpChain } from './pagination-loop'
 
 /** min gap between whole-document pagination passes while a phased open streams its tail */
 const STREAMING_PASS_GAP_MS = 1500
@@ -426,7 +446,6 @@ const EDIT_PASS_DEBOUNCE_MAX_MS = 2000
 const FOLLOW_UP_PASS_DELAY_MS = 100
 const WORD_COUNT_THROTTLE_MS = 400
 /** consecutive follow-up passes a pass may schedule for itself */
-const MAX_FOLLOW_UP_PASSES = 6
 import { runHeadlessDocumentExport } from './headless-export'
 import { installMcpBridge } from './mcp-bridge'
 import {
@@ -474,6 +493,7 @@ import {
   type NotePrompt,
   type ReviewContext,
 } from './review-actions'
+import { authorName, onAuthorNameChanged } from './author-name'
 
 const IS_MAC = navigator.platform.toLowerCase().includes('mac')
 
@@ -1888,6 +1908,10 @@ export function App() {
     if (!editor) return
     const storage = editor.storage.trackChanges as TrackChangesStorage
     storage.enabled = trackChanges
+    storage.author = authorName()
+    return onAuthorNameChanged(() => {
+      storage.author = authorName()
+    })
   }, [editor, trackChanges])
 
   // forms protection locks the body but the form's own checkboxes stay
@@ -2042,6 +2066,7 @@ export function App() {
     setHfVariantsDirty,
     sectionHfEdits,
     setSectionHfEdits,
+    pageCount: pageInfo.total,
     hfLinks,
     setHfLinks,
     titlePg,
@@ -2324,6 +2349,55 @@ export function App() {
     [],
   )
 
+  // ---- Mailings: the data source and the merge ----
+
+  /** the recipient list the user picked; null until they pick one */
+  const [mergeSource, setMergeSource] = useState<MergeDataSource | null>(null)
+
+  /** open the file dialog and read the recipient list the user chose */
+  const pickMergeDataSource = useCallback(async () => {
+    const result = await window.desktop.pickMergeDataSource()
+    if (!result) return
+    if (!result.ok) {
+      setStatus(result.error)
+      return
+    }
+    setMergeSource(result.source)
+    setStatus(
+      t('appMergeSourceLoaded', {
+        name: result.source.name,
+        n: result.source.records.length,
+      }),
+    )
+  }, [])
+
+  /** build the merged documents and write them where the user says */
+  const mergeMailings = useCallback(
+    async (request: MailMergeRequest): Promise<MailMergeResponse> => {
+      try {
+        const files = await buildMailMergeFiles(fileCtxRef.current, request)
+        if (files.length === 0) return { ok: false, error: t('appMergeNothingToWrite') }
+        const written = await window.desktop.writeMergeOutput({
+          mode: request.mode,
+          files: files.map((file) => ({
+            name: file.name,
+            data: file.bytes.buffer.slice(
+              file.bytes.byteOffset,
+              file.bytes.byteOffset + file.bytes.byteLength,
+            ) as ArrayBuffer,
+          })),
+        })
+        if (written.ok) {
+          setStatus(t('appMergeWritten', { n: written.count ?? files.length }))
+        }
+        return written
+      } catch (err) {
+        return { ok: false, error: err instanceof Error ? err.message : String(err) }
+      }
+    },
+    [],
+  )
+
   // inserting a section break needs one save for the new section to take effect; the
   // flag is consumed in the render after state commit, guaranteeing the save closure
   // sees the latest sectionsDirty/trailingStartType
@@ -2590,6 +2664,11 @@ export function App() {
           return String(pageInfo.current)
         case 'FILENAME':
           return doc?.fileName ?? ''
+        case 'MERGEFIELD': {
+          // a merge field shows its name in guillemets until the merge fills it
+          const name = mergeFieldName(instr)
+          return name ? placeholderText(name) : ''
+        }
         default:
           return ''
       }
@@ -2702,7 +2781,11 @@ export function App() {
         const numId = idOf[kind]
         if (numId) tr = tr.setNodeMarkup(item.pos, undefined, { ...item.attrs, numId })
       }
-      if (tr.docChanged) editor.view.dispatch(tr)
+      if (tr.docChanged) {
+        const before = editor.state.doc
+        editor.view.dispatch(tr)
+        carryDocSeen(editor, before)
+      }
     }
     editor.on('update', fill)
     return () => {
@@ -3243,6 +3326,8 @@ export function App() {
   // w:docGrid charSpace character grid: uniform per-character letter-spacing
   // delta (pt); mixed docs deliver it per block via sectionCharSpaceSpecs
   const charSpacePt = useMemo(() => docCharSpacePt(sections), [sections])
+  // balanceSingleByteDoubleByteWidth: single-byte characters get half the delta
+  const balancedGrid = doc?.parsed.balanceDbcsSpacing === true
 
   // page color: Word lays out one extra blank Normal paragraph under section 1's header
   const hfPhantom = useMemo(
@@ -3283,7 +3368,11 @@ export function App() {
   const effBottomSingle = section ? effectiveBottomPx(section, singleHfPx.footerPx) : 0
   const canvasSection = sections[0]?.settings ?? section
   const canvasBox = canvasSection ? sectionPageBox(canvasSection) : null
-  const canvasTop = section ? canvasContentTopPx(sections, section, singleHfPx.headerPx) : 0
+  // the canvas's first page draws the titlePg first-page header: its body
+  // starts under that strip, as the preview slicer already assumes
+  const canvasTop = section
+    ? canvasContentTopPx(sections, section, singleHfPx.firstHeaderPx ?? singleHfPx.headerPx)
+    : 0
   const canvasBottom = canvasSection ? effectiveBottomPx(canvasSection, singleHfPx.footerPx) : 0
 
   // titlePg: the document's first page renders the first-page header/footer
@@ -3395,9 +3484,11 @@ export function App() {
           ...(fnExtra > 0 ? { footnoteExtraPx: fnExtra, footnoteBands: fnBands } : {}),
         }
       }
-      const styleDisplay = (b.styleId ? doc?.parsed.styles.get(b.styleId) : defaultParaStyle)
-        ?.display
-      const flags = paraPaginationMeta(b.format, styleDisplay, doc?.parsed.docDefaults)
+      const styleOf = (id: string | undefined) =>
+        (id ? doc?.parsed.styles.get(id) : defaultParaStyle)?.display
+      const flags = b.format
+        ? paraPaginationMeta(b.format)
+        : imageParaPaginationMeta(b.originalXml, styleOf, doc?.parsed.docDefaults)
       const fnBands = footnoteBandsOf(b)
       const fnExtra = fnBands.reduce((s, band) => s + band.heightPx, 0)
       if (!flags && fnExtra === 0) return undefined
@@ -3573,7 +3664,7 @@ export function App() {
         assignSections(blocks, live)
         s = sliceWithLineSplit(
           blocks,
-          colGeomsFor(sectionGeoms(live, hfHeightsOf(live))),
+          colGeomsFor(sectionGeoms(live, hfHeightsOf(live), evenOddHf)),
           totalHeight,
           factor,
           blockMetaOf,
@@ -3625,6 +3716,7 @@ export function App() {
     hfHeightsOf,
     measureSingleFlow,
     colGeomsFor,
+    evenOddHf,
   ])
 
   // status-bar page number: real page slicing (same algorithm as the pagination preview). Edits remeasure with debounce; scrolling only relocates
@@ -3652,20 +3744,22 @@ export function App() {
     const contentH = twipsToPx(section.pageHeight) - effTopSingle - effBottomSingle
     let slices: PageSlice[] = []
     let timer: number | null = null
-    let suppressSig = ''
     let rowFillSig = ''
     // passes a pass schedules for itself (widths / suppression applied late);
     // a document whose column widths never settle must not paginate forever
-    let followUps = 0
+    const chain = new FollowUpChain()
     let selfScheduled = false
+    // set by the cleanup: document.fonts.ready and other promise callbacks of
+    // this run can still fire after the effect was re-created (zoom change)
+    // and would schedule a pass of this stale closure next to the live one
+    let disposed = false
     let retrigger: string[] = []
-    // several reasons in one pass debounce into one follow-up: count passes, not reasons
-    // decoration-only re-decisions (justify shrink, float flow) arrive after a
-    // pass and re-run it from the changed block: they count against the same
-    // cap, or a flip-flopping decision paginates forever
+    // several reasons in one pass debounce into one follow-up; decoration-only
+    // re-decisions (justify shrink, float flow) arrive after a pass and re-run
+    // it from the changed block, through the same chain
     const followUpAt = (why: string, dirtyIndex: number | null) => {
       retrigger.push(why)
-      if (followUps >= MAX_FOLLOW_UP_PASSES) return
+      if (chain.request(why, dirtyIndex) !== 'run') return
       selfScheduled = true
       onUpdate(null, dirtyIndex, true)
     }
@@ -3742,6 +3836,7 @@ export function App() {
     let fastEdits: Set<number> | null = new Set()
     let fastPasses = 0
     let fastReject = ''
+    let gapBoundaryMismatch = 0
     const sameBox = (a: BlockBox, b: BlockBox) =>
       a.el === b.el &&
       Math.abs(a.top - b.top) < 0.01 &&
@@ -3865,6 +3960,7 @@ export function App() {
       return blocksKeepSlicing(items, slices, factor) || reject('geometry')
     }
     const remeasure = () => {
+      if (disposed) return
       timer = null
       lastPassAt = performance.now()
       const edited = fastEdits
@@ -3873,7 +3969,11 @@ export function App() {
       dirtyFrom = Infinity
       try {
         const zoomEl = scroller.querySelector<HTMLElement>('.doc-zoom')
-        const swapZoom = zoomEl !== null && Math.abs(zoom - 100) > 0.01
+        // the canvas zoom as applied, not this closure's: a pass reaching the
+        // DOM through a late async callback must never read a zoomed canvas at
+        // factor 1 (split-row fills then land in zoomed px and rows overlap)
+        const liveZoom = canvasZoomOf(zoomEl, zoom / 100)
+        const swapZoom = zoomEl !== null && Math.abs(liveZoom - 1) > 0.0001
         const scrollTop = scroller.scrollTop
         const scrollLeft = scroller.scrollLeft
         if (swapZoom) {
@@ -3890,8 +3990,8 @@ export function App() {
           }
         } finally {
           if (swapZoom) {
-            zoomEl.style.zoom = String(zoom / 100)
-            factor = zoom / 100
+            zoomEl.style.zoom = String(liveZoom)
+            factor = liveZoom
             scroller.scrollTop = scrollTop
             scroller.scrollLeft = scrollLeft
           }
@@ -3912,7 +4012,8 @@ export function App() {
     const remeasurePass = (dirty: number | null) => {
       const pm = pmEl()
       if (!pm) return
-      followUps = selfScheduled ? followUps + 1 : 0
+      if (selfScheduled) chain.beginPass()
+      else chain.reset()
       selfScheduled = false
       retrigger = []
       const tStart = performance.now()
@@ -3924,7 +4025,7 @@ export function App() {
       // measurement (layout-affecting, idempotent)
       syncAnchorBands(pm, factor, (doc?.parsed.compatibilityMode ?? 0) >= 15)
       // later blocks were read before this pass's writes landed: one more
-      // pass settles the chain (bounded by MAX_FOLLOW_UP_PASSES)
+      // pass settles the chain (FollowUpChain refuses a repeating cause)
       const obstaclesChanged = syncWrapObstacles(pm, factor, editor.view)
       // natural-flow measuring state: in-paragraph gap widgets force a line break
       // at the PREVIOUS pass's cut, so measuring with them in layout re-confirms
@@ -3995,7 +4096,7 @@ export function App() {
         const s = secList
           ? sliceWithLineSplit(
               blocks,
-              colGeomsFor(sectionGeoms(secList, hfHs!)),
+              colGeomsFor(sectionGeoms(secList, hfHs!, evenOddHf)),
               flowH,
               factor,
               blockMetaOf,
@@ -4090,7 +4191,10 @@ export function App() {
         const tr = editor.state.tr
         if (applyTocPageDisplays(editor.state.doc, tr, headings, displays)) {
           tr.setMeta('addToHistory', false)
+          const before = editor.state.doc
           editor.view.dispatch(tr)
+          // a field refresh is not a user edit: keep the AI freshness baseline
+          carryDocSeen(editor, before)
         }
       }
       // M4 always-on pagination in the canvas: render page gaps before page-leading blocks
@@ -4457,7 +4561,9 @@ export function App() {
                     ? { ...notesMetrics, marginBottom: notesMetrics.marginBottom + pad }
                     : notesMetrics,
                 ...(pullUp > 0.5 ? { pullUp } : {}),
-                ...(blocks[i].breakBefore || (i > 0 && blocks[i - 1].breakAfter)
+                ...(blocks[i].breakBefore ||
+                (i > 0 && blocks[i - 1].breakAfter) ||
+                leadDropsSpaceBefore(blocks, i)
                   ? { suppressLeadMt: true }
                   : {}),
                 ...(notes ? { notes, notesKey } : {}),
@@ -4502,15 +4608,19 @@ export function App() {
               const elTop = b.el.getBoundingClientRect().top
               let matched = false
               let cutRow: Element | null = null
+              // the previous pass's gap rows sit exactly at their cut: matching one
+              // resolves to the table, not a row, and the boundary is silently lost
               for (const tr of Array.from(b.el.querySelectorAll('tr')).filter(
                 (r) =>
-                  !r.closest('.doc-nested-table') && !r.classList.contains('page-repeat-header'),
+                  !r.closest('.doc-nested-table') &&
+                  !r.classList.contains('page-repeat-header') &&
+                  !r.classList.contains('page-gap'),
               )) {
                 const trTop = tr.getBoundingClientRect().top
                 const gapsAbove = gapRects.reduce((s, g) => (g.top <= trTop ? s + g.height : s), 0)
                 const off = (trTop - elTop - gapsAbove) / factor
                 // last real row starting at/above the cut = the row the cut falls inside
-                if (!tr.classList.contains('page-gap') && off <= cutOff + 0.5) cutRow = tr
+                if (off <= cutOff + 0.5) cutRow = tr
                 if (Math.abs(off - cutOff) < 1.5) {
                   matched = true
                   try {
@@ -4677,16 +4787,16 @@ export function App() {
           }
           // silently dropped boundaries merge two pages into one giant page — surface them
           const boundaries = slices.slice(1).filter((s, k) => s.start !== slices[k].start).length
-          if (gaps.length + overlayCutAnchors.length !== boundaries)
+          if (gaps.length + overlayCutAnchors.length !== boundaries) {
+            gapBoundaryMismatch++
             console.warn(
               `[pagination] ${gaps.length + overlayCutAnchors.length} page gaps built for ${boundaries} boundaries`,
             )
-          // TOC page numbers: the file's cached PAGEREF results are stale (generators
-          // write them against a layout that never matches; Word silently refreshes on
-          // open, we never write back). Backfill the display from the live layout —
-          // DOM-only, inside contenteditable=false subtrees the save path never reads.
+          }
+          // DOM-only (contenteditable=false subtrees the save path never reads);
+          // a pristine open keeps the file's cached results like the refresh above
           const tocLines = pm.querySelectorAll<HTMLElement>('.doc-toc-line[data-toc-anchor]')
-          if (tocLines.length > 0) {
+          if (tocLines.length > 0 && slices.length > 0) {
             const anchorIdx = new Map<string, number>()
             for (const b of parsed.blocks) {
               if (b.docxIndex == null) continue
@@ -4696,15 +4806,19 @@ export function App() {
             for (const b of blocks) {
               if (b.docxIndex != null) topByIdx.set(b.docxIndex, b.top)
             }
-            for (const el of tocLines) {
-              const idx = anchorIdx.get(el.getAttribute('data-toc-anchor') ?? '')
-              const top = idx === undefined ? undefined : topByIdx.get(idx)
-              if (top === undefined) continue
-              const pageEl = el.querySelector('.doc-toc-page')
-              // pageAt is 1-based; pageNoTextOf indexes nums/slices 0-based
-              const pageIdx = Math.max(0, Math.min(pageAt(slices, top + 1) - 1, slices.length - 1))
-              if (pageEl && slices.length > 0) pageEl.textContent = pageNoTextOf(pageIdx)
-            }
+            backfillTocPageDom(
+              tocLines,
+              (anchor) => {
+                const idx = anchorIdx.get(anchor)
+                const top = idx === undefined ? undefined : topByIdx.get(idx)
+                if (top === undefined) return undefined
+                // pageAt is 1-based; pageNoTextOf indexes nums/slices 0-based
+                return pageNoTextOf(
+                  Math.max(0, Math.min(pageAt(slices, top + 1) - 1, slices.length - 1)),
+                )
+              },
+              dirtyRef.current,
+            )
           }
         }
         tGapsBuild = performance.now() - tGaps0
@@ -4831,7 +4945,9 @@ export function App() {
           viewMode === 'print' && !readMode && secList ? sectionGridPitchSpecs(blocks, secList) : []
         // sections disagreeing on the docGrid charSpace delta: per-block letter-spacing vars
         const charSpecs =
-          viewMode === 'print' && !readMode && secList ? sectionCharSpaceSpecs(blocks, secList) : []
+          viewMode === 'print' && !readMode && secList
+            ? sectionCharSpaceSpecs(blocks, secList, doc.parsed.balanceDbcsSpacing === true)
+            : []
         // sections disagreeing on the top margin: per-block --doc-margin-top for page-relative anchors
         const topSpecs =
           viewMode === 'print' && !readMode && secList ? sectionTopMarginSpecs(blocks, secList) : []
@@ -4939,12 +5055,6 @@ export function App() {
         )
         stage('sheets+annotations')
         tSetGaps = performance.now() - tSet0
-        // suppression collapses the DOM after this pass sliced; one follow-up remeasure re-syncs (sig goes stable, no loop)
-        const sig = gaps.reduce((s, g, n) => (g.suppressLeadMt ? `${s},${n}` : s), '')
-        if (sig !== suppressSig) {
-          suppressSig = sig
-          followUp('suppress')
-        }
         if (obstaclesChanged) followUp('obstacles')
         // a fill just applied to a split row changed the table height under the slices
         const fSig = rowFillsSig(rowFills)
@@ -4957,11 +5067,16 @@ export function App() {
         const wSig = [...secWSpecs, ...colSpecs, ...vertSpecs]
           .map((s) => `${Math.round(s.widthPx ?? -1)}:${Math.round(s.contentWPx ?? -1)}`)
           .join(',')
+        let wrapWidthsChanged = false
         if (wSig !== secWidthSig) {
           secWidthSig = wSig
+          wrapWidthsChanged = true
           followUp('width')
         }
-        if (colGranted) followUp('columns')
+        if (colGranted) {
+          wrapWidthsChanged = true
+          followUp('columns')
+        }
         // freshly applied per-block letter-spacing changes line breaks the same way
         const cSig =
           charSpecs.length === 0
@@ -4969,8 +5084,12 @@ export function App() {
             : `${charSpecs.length}:${[...new Set(charSpecs.map((s) => s.charSpacePt))].join(',')}`
         if (cSig !== charSpaceSig) {
           charSpaceSig = cSig
+          wrapWidthsChanged = true
           followUp('charSpace')
         }
+        // the shrink loops measured line breaks the new widths just moved;
+        // their re-decision rides the follow-up pass already scheduled
+        if (wrapWidthsChanged) document.dispatchEvent(new Event(WRAP_WIDTHS_COMMITTED_EVENT))
         // the last page paints as a full sheet like the ones above it:
         // extend the canvas to that page's paper bottom, measured from the last gap
         const gapEls = pm.querySelectorAll('.page-gap:not(.page-gap-carry)')
@@ -5010,6 +5129,7 @@ export function App() {
           slices,
           fastPasses,
           fastReject,
+          gapBoundaryMismatch,
           carriedSamples,
           resumePasses,
           resumeReject,
@@ -5017,7 +5137,12 @@ export function App() {
           resumeDiag,
           colMode,
           retrigger,
-          followUps,
+          retriggerLog: chain.log,
+          followUps: chain.passes,
+          // live: a refusal after the last pass must be visible too
+          get loopStops() {
+            return chain.stops
+          },
           colSpecs: colSpecs.map((s) => ({
             w: s.widthPx === undefined ? null : Math.round(s.widthPx),
             dx: Math.round(s.dx),
@@ -5081,6 +5206,7 @@ export function App() {
       dirtyIndex: number | null = fastIndex,
       isFollowUp = false,
     ) => {
+      if (disposed) return
       if (fastIndex === null) fastEdits = null
       else fastEdits?.add(fastIndex)
       dirtyFrom = dirtyIndex === null || dirtyFrom === null ? null : Math.min(dirtyFrom, dirtyIndex)
@@ -5182,6 +5308,7 @@ export function App() {
     }
     editor?.on('transaction', onShrinkTr)
     return () => {
+      disposed = true
       if (timer) window.clearTimeout(timer)
       if (hfTimer) window.clearTimeout(hfTimer)
       document.fonts.removeEventListener('loadingdone', onLoadingDone)
@@ -6211,6 +6338,17 @@ export function App() {
       case 'field':
         if (sub) insertHfInstrField(sub, action.instr, fieldValue(action.instr))
         break
+      case 'picture':
+        if (sub) {
+          void (async () => {
+            const picked = await window.desktop.pickImage()
+            if (!picked || !hfEditorRef.current) return
+            const dataUrl = `data:${picked.mime};base64,${picked.base64}`
+            const natural = await imageSizeOf(dataUrl)
+            insertHfPicture(sub, { dataUrl, widthPx: natural.width, heightPx: natural.height })
+          })()
+        }
+        break
       case 'linkToPrevious':
         if (cur) setHfLink(cur.section, cur.kind, cur.variant, action.on)
         if (!action.on) refocus()
@@ -6274,6 +6412,7 @@ export function App() {
       exportPdfTo: (path: string) => exportPdf(path),
       exportHtmlTo: (path: string) => exportHtml(path),
       exportMarkdownTo: (path: string) => exportMarkdown(path),
+      subEditor: () => getActiveSubEditor(),
     }
   }, [editor, openRecent, save, status, exportPdf, exportHtml, exportMarkdown])
 
@@ -6776,6 +6915,12 @@ export function App() {
     onExportHtml: () => void exportHtml(),
     onExportImages: () => void exportImages(),
     onPrint: () => void printDoc(),
+    onConvert: (format: ConvertFormat) => {
+      if (format === 'pdf') void exportPdf()
+      else if (format === 'html') void exportHtml()
+      else if (format === 'md') void exportMarkdown()
+      else exportImages()
+    },
     onToggleAi: () => setShowAi((v) => !v),
     onSection: (next: SectionSettings) => {
       // layout applies to the cursor's section; the final section's sectPr goes through SaveOptions.section (also drives canvas geometry)
@@ -6858,6 +7003,8 @@ export function App() {
     onHeader: (next: HeaderFooter) => commitHfAt(0, 'header', headerAreaView, next),
     onPageNumFormat: openPgNumModal,
     onInsertField: insertField,
+    onPickMergeDataSource: () => void pickMergeDataSource(),
+    onMergeMailings: mergeMailings,
     onFooter: (next: HeaderFooter) => commitHfAt(lastSectionIdx, 'footer', footerAreaView, next),
     onHfAction: (action: HfAction) => onHfAction(action),
     onHfEdit: (kind: 'header' | 'footer') => openHfEditor(kind),
@@ -7343,7 +7490,16 @@ export function App() {
       )}
       {doc && charSpacePt != null && (
         // w:docGrid charSpace: every character advances natural width + this delta
-        <style>{`.doc-page { --doc-char-space:${Math.round(charSpacePt * 10000) / 10000}pt }`}</style>
+        <style>{`.doc-page { --doc-char-space:${Math.round(charSpacePt * 10000) / 10000}pt${
+          balancedGrid
+            ? `; --doc-char-space-sb:${Math.round(singleByteCharSpacePt(charSpacePt, true) * 10000) / 10000}pt`
+            : ''
+        } }`}</style>
+      )}
+      {doc && balancedGrid && (
+        // full-width spans take the whole delta back (halfwidth kana stay single-byte);
+        // an inline run letter-spacing still wins
+        <style>{`.doc-page .doc-east-asian-font:not(.doc-east-asian-halfwidth, [style*='letter-spacing'] .doc-east-asian-font, .page-gap-hf *) { letter-spacing: var(--doc-char-space, normal) }`}</style>
       )}
       {doc && section && (
         // over-wide tables may spill into the margins (Word/LO), capped at the paper edge
@@ -7367,6 +7523,7 @@ export function App() {
       <Ribbon
         actionsRef={ribbonActionsRef}
         quickActions={quickActions}
+        mergeSource={mergeSource}
         editor={editor}
         formatState={formatState}
         hasDoc={!!doc}

@@ -1,6 +1,20 @@
 import type { en } from './en'
 
 export const ru = {
+  // ── Withholding cells from the model ──
+  redactMenuLabel: 'Скрыть выделение от ИИ',
+  redactDialogDesc:
+    'Выбранное остается в документе и в файле, а модель видит только метку. Дайте ей имя, чтобы было понятно, что она обозначает.',
+  redactDialogScope:
+    'Это касается только ИИ в этом приложении. CLI, инструменты MCP и экспорт без интерфейса читают файл напрямую и по-прежнему видят эти слова.',
+  redactDialogPlaceholder: 'Имя метки, напр. телефон клиента',
+  redactCancel: 'Отмена',
+  redactInsert: 'Скрыть',
+  redactEnable: 'Правый клик по выделению скрывает его от модели.',
+  redactNeedsSavedRow: 'Этой строки ещё нет в файле. Сначала сохраните, затем скройте ячейку.',
+  redactRecoveredFromNames:
+    'Другая программа переписала этот файл и потеряла запись о том, что скрыто. Скрытые ячейки восстановлены по именам в книге; сохранение возвращает полную запись.',
+
   appMergeWorkbooks: 'Объединить книги',
   appMergeWorkbooksTip: 'Добавить листы из других файлов Excel в эту книгу',
   appMergeWorkbooksPicking: 'Выберите файлы для объединения…',
@@ -1244,6 +1258,10 @@ export const ru = {
   appFontSizeTip: 'Размер шрифта',
   appZoomIn: 'Увеличить',
   appZoomOut: 'Уменьшить',
+  appImgActualSize: 'Реальный размер',
+  appImgFitWindow: 'По размеру окна',
+  appImgSaveAs: 'Сохранить изображение как…',
+  appImgClose: 'Закрыть (Esc)',
   appZoomSheetTitle: 'Масштабировать лист',
   appResetZoom: 'Сбросить масштаб',
   appZoomToSelection: 'Масштаб по выделенному',
@@ -1487,6 +1505,11 @@ export const ru = {
   appTableFileUnnamed: 'У этой таблицы нет имени в файле, и ее нельзя изменить здесь.',
   appTableRowsNotLoaded: 'Строки таблицы еще загружаются — повторите попытку через мгновение.',
   appTableTotalLabel: 'Итог',
+  appNotePicturesPaneTitle: 'Изображения заметок',
+  appNotePicturesClose: 'Закрыть',
+  appNotePicturesNone: 'Ни одна заметка в этой книге не содержит изображения.',
+  appNotePictureUnavailable: 'Это изображение не может быть показано.',
+  appNotePicturesToggle: 'Изображения заметок',
   appCommentsPaneTitle: 'Примечания',
   appThreadReply: 'Ответить',
   appThreadReplyPlaceholder: 'Ответить…',
@@ -1529,6 +1552,8 @@ export const ru = {
   appVisualSendBackward: 'Переместить назад',
   appVisualSizeProperties: 'Размер и свойства…',
   appVisualHyperlink: 'Гиперссылка…',
+  appVisualEmbedInCell: 'Встроить изображение в ячейку',
+  appVisualEmbedFailed: 'Не удалось встроить это изображение в ячейку.',
   appVisualDelete: 'Удалить',
   appVisualArranged: 'Объект обновлён — сохраните через ⌘S.',
   appVisualCopied: 'Объект скопирован.',

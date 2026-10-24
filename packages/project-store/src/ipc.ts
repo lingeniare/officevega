@@ -92,4 +92,8 @@ export interface ProjectApi {
     preview?: string
     provider?: string
   }): Promise<void>
+  /** Every conversation in a project, so a host can list what it kept. */
+  listChats(args: { projectId: string }): Promise<ChatMeta[]>
+  /** Removes one conversation's transcript. */
+  deleteChat(args: { projectId: string; chatId: string }): Promise<void>
 }

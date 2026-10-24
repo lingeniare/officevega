@@ -15,6 +15,7 @@ import {
 } from '@genoffice/ui'
 import type { AiFontSize, AiPanelPrefs, AiPanelSide } from '@genoffice/ui'
 import type { DecisionEndpoint, DefaultAppStatus, FileSearchSettings } from '../../shared/home-api'
+import { AUTHOR_NAME_MAX, isCloudflareEndpoint } from '../../shared/home-api'
 import type { UpdateUiState } from '../../shared/update-api'
 import {
   DEFAULT_MAX_OUTPUT_TOKENS,
@@ -48,6 +49,7 @@ import type { StringKey, TFunc } from './locale'
 import type {
   AccountStatus,
   AiCatalogEntry,
+  AuthorNameSetting,
   DocTheme,
   UiDesign,
   UiTheme,
@@ -56,7 +58,9 @@ import { LicenseBlock } from './LicenseBlock'
 import { LangFlag } from './lang-flags'
 import { ProviderLogo } from './provider-logos'
 import { IntegrationsPane, skillUpdateDue } from './IntegrationsPane'
+import { FoundSkills } from './FoundSkills'
 import { SHOW_FAST_MODEL } from './featureFlags'
+
 import './settings.css'
 
 // ── Settings modal (opened from the account menu) ─────────
@@ -163,7 +167,8 @@ function CustomFontSizeInput({
   )
 }
 
-export type SectionId = 'account' | 'aiModel' | 'aiMedia' | 'general' | 'integrations' | 'about'
+export type SectionId =
+  'account' | 'aiModel' | 'aiMedia' | 'general' | 'integrations' | 'skills' | 'about'
 
 const SECTIONS: readonly { id: SectionId; labelKey: StringKey }[] = [
   { id: 'account', labelKey: 'setSecAccount' },
@@ -171,6 +176,7 @@ const SECTIONS: readonly { id: SectionId; labelKey: StringKey }[] = [
   { id: 'aiMedia', labelKey: 'setSecAiMedia' },
   { id: 'general', labelKey: 'setSecGeneral' },
   { id: 'integrations', labelKey: 'setSecIntegrations' },
+  { id: 'skills', labelKey: 'setSecSkills' },
   { id: 'about', labelKey: 'setSecAbout' },
 ]
 
@@ -218,6 +224,20 @@ function SectionIcon({ id }: { id: SectionId }) {
           strokeWidth="1.3"
           strokeLinecap="round"
         />
+      </svg>
+    )
+  }
+  if (id === 'skills') {
+    return (
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path
+          d="M3 3.5h6.5l3.5 3.5v5.5a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-8a1 1 0 0 1 1-1Z"
+          stroke="currentColor"
+          strokeWidth="1.3"
+          strokeLinejoin="round"
+        />
+        <path d="M9.5 3.5V7H13" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" />
+        <path d="M5 10.5h6" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
       </svg>
     )
   }
@@ -563,12 +583,19 @@ function AiModelPane({
   // endpoint itself. Keyed on the catalog's `needsBaseUrl` flag rather than on
   // the literal 'custom' id, so it follows the slot rather than the name, and
   // stays a no-op while any other provider is selected — a local server saved
-  // months ago is never contacted while Genspark is in use.
-  const endpointProvider = catalog.find(
-    (entry) => entry.id === settings?.provider && entry.needsBaseUrl,
-  )?.id
+  // months ago is never contacted while Genspark is in use. Aggregators flagged
+  // `liveModels` (OpenRouter) join in at their default address, their shipped
+  // list standing in until the catalog answers.
+  const liveEntry = catalog.find(
+    (entry) => entry.id === settings?.provider && (entry.needsBaseUrl || entry.liveModels),
+  )
+  const endpointProvider = liveEntry?.id
   const endpointConfig = settings ? settings.providers[settings.provider] : undefined
-  const endpointBaseUrl = (endpointConfig?.baseUrl ?? '').trim()
+  const endpointBaseUrl =
+    (endpointConfig?.baseUrl ?? '').trim() ||
+    (liveEntry?.liveModels ? liveEntry.defaultBaseUrl : '')
+  /** the lists as shipped, restored when a live list is withdrawn */
+  const shippedModelsRef = useRef(new Map(catalog.map((entry) => [entry.id, entry.models])))
   const endpointApiKey = endpointConfig?.apiKey ?? ''
   // The probe speaks the endpoint's declared protocol: an Anthropic- or
   // Gemini-shaped gateway answers a different route, and the list it returns
@@ -598,7 +625,7 @@ function AiModelPane({
     if (listedForRef.current && listedForRef.current !== endpointBaseUrl) {
       listedForRef.current = ''
       probedProfilesRef.current = undefined
-      setCatalog(foldModels(endpointProvider, []))
+      setCatalog(foldModels(endpointProvider, shippedModelsRef.current.get(endpointProvider) ?? []))
     }
     if (!endpointBaseUrl || !window.aiOffice.getCustomModels) return
     let cancelled = false
@@ -934,8 +961,12 @@ function AiModelPane({
             className="set-dd"
             value={config.model || meta.defaultModel}
             ariaLabel={t('setAiModelId')}
-            options={meta.models.map((m) => ({ value: m, label: m }))}
+            options={meta.models.map((m) => ({
+              value: m,
+              label: m,
+            }))}
             onPick={(m) => updateConfig({ model: m })}
+            searchPlaceholder={meta.models.length > 12 ? t('setAiModelSearch') : undefined}
           />
         ) : (
           <input
@@ -2006,15 +2037,17 @@ function AiMediaPane({
                   )}
                 </>
               )}
+              {licensed &&
+                isCloudflareEndpoint(fileSearch.endpoint) &&
+                textRow(
+                  'set-search-jev-account',
+                  'setSearchRerankAccount',
+                  fileSearch.cloudflareAccountId,
+                  '',
+                  (v) => setFileSearch({ ...fileSearch, cloudflareAccountId: v }),
+                )}
               {licensed && fileSearch.endpoint === 'cloudflare' && (
                 <>
-                  {textRow(
-                    'set-search-jev-account',
-                    'setSearchRerankAccount',
-                    fileSearch.cloudflareAccountId,
-                    '',
-                    (v) => setFileSearch({ ...fileSearch, cloudflareAccountId: v }),
-                  )}
                   {textRow(
                     'set-search-jev-cf-model',
                     'setSearchRerankCustomModel',
@@ -2133,10 +2166,12 @@ export function SettingsModal({
   const [uiScale, setUiScale] = useState(1)
   const [saveDir, setSaveDir] = useState('')
   const [autoSaveOn, setAutoSaveOn] = useState(false)
+  const [tabSleepOn, setTabSleepOn] = useState(true)
   const [defaultApp, setDefaultApp] = useState<DefaultAppStatus | null>(null)
   const [defaultAppBusy, setDefaultAppBusy] = useState(false)
   const [defaultAppFailed, setDefaultAppFailed] = useState(false)
   const [aiPrefs, setAiPrefs] = useState<AiPanelPrefs>(DEFAULT_AI_PANEL_PREFS)
+  const [authorName, setAuthorName] = useState<AuthorNameSetting>({ value: '', fallback: '' })
   const [channel, setChannel] = useState<'stable' | 'beta'>('stable')
   const [appVersion, setAppVersion] = useState('')
   const [updateState, setUpdateState] = useState<UpdateUiState | null>(null)
@@ -2167,11 +2202,17 @@ export function SettingsModal({
     void window.aiOffice.getAutoSaveDefault?.().then((v) => {
       if (alive) setAutoSaveOn(v.on)
     })
+    void window.aiOffice.getTabSleepEnabled?.().then((on) => {
+      if (alive) setTabSleepOn(on)
+    })
     void window.aiOffice.getDefaultAppStatus?.().then((st) => {
       if (alive) setDefaultApp(st)
     })
     void window.aiOffice.getAiPanelPrefs?.().then((prefs) => {
       if (alive) setAiPrefs(prefs)
+    })
+    void window.aiOffice.getAuthorName?.().then((v) => {
+      if (alive) setAuthorName(v)
     })
     void window.aiOffice.getUpdateChannel?.().then((ch) => {
       if (alive) setChannel(ch)
@@ -2235,6 +2276,9 @@ export function SettingsModal({
   const applyUiScaleSetting = (next: number) => {
     setUiScale(next)
     void window.aiOffice.setUiScale(next)
+  }
+  const commitAuthorName = () => {
+    void window.aiOffice.setAuthorName?.(authorName.value).then(setAuthorName)
   }
 
   const updateAiPrefs = (patch: Partial<AiPanelPrefs>) => {
@@ -2572,6 +2616,31 @@ export function SettingsModal({
                 <div className="set-field">
                   <div className="set-field-text">
                     <div className="set-field-stack">
+                      <label className="set-field-label" htmlFor="set-author-name">
+                        {t('setAuthorName')}
+                      </label>
+                      <div className="set-field-desc">{t('setAuthorNameDesc')}</div>
+                    </div>
+                  </div>
+                  <input
+                    id="set-author-name"
+                    className="set-input"
+                    type="text"
+                    value={authorName.value}
+                    placeholder={authorName.fallback}
+                    maxLength={AUTHOR_NAME_MAX}
+                    spellCheck={false}
+                    autoComplete="off"
+                    onChange={(e) => setAuthorName((prev) => ({ ...prev, value: e.target.value }))}
+                    onBlur={commitAuthorName}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') e.currentTarget.blur()
+                    }}
+                  />
+                </div>
+                <div className="set-field">
+                  <div className="set-field-text">
+                    <div className="set-field-stack">
                       <div className="set-field-label">{t('setAiSpellcheck')}</div>
                       <div className="set-field-desc">{t('setAiSpellcheckDesc')}</div>
                     </div>
@@ -2652,6 +2721,7 @@ export function SettingsModal({
             {section === 'integrations' && (
               <IntegrationsPane t={t} onStatus={(st) => onSkillUpdateDue?.(skillUpdateDue(st))} />
             )}
+            {section === 'skills' && <FoundSkills t={t} />}
             {section === 'about' && (
               <>
                 <h3 className="set-pane-title">{t('setSecAbout')}</h3>

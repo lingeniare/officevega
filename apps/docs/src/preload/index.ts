@@ -17,6 +17,7 @@ import type {
   DocTheme,
   UiTheme,
   ZoteroRendererRequest,
+  MergeOutputRequest,
 } from '../shared/ipc'
 import type { ProjectApi } from '@genoffice/project-store'
 import { installDropOpenBridge } from '@genoffice/electron-utils/drop-open'
@@ -70,6 +71,14 @@ const api: DesktopApi = {
     const listener = (_event: IpcRendererEvent, value: AutoSaveDefault) => handler(value)
     ipcRenderer.on('app:auto-save-default-changed', listener)
     return () => ipcRenderer.removeListener('app:auto-save-default-changed', listener)
+  },
+  getAuthorName: () => ipcRenderer.invoke('app:get-author-name'),
+  onAuthorNameChanged: (handler) => {
+    const listener = (_event: IpcRendererEvent, name: unknown) => {
+      if (typeof name === 'string') handler(name)
+    }
+    ipcRenderer.on('app:author-name-changed', listener)
+    return () => ipcRenderer.removeListener('app:author-name-changed', listener)
   },
   getAiPanelPrefs: () => ipcRenderer.invoke('app:get-ai-panel-prefs'),
   setAiPanelPrefs: (patch) => ipcRenderer.invoke('app:set-ai-panel-prefs', patch),
@@ -166,6 +175,9 @@ const api: DesktopApi = {
   signalMcpReady: () => ipcRenderer.send('docs:mcp-ready'),
   getRecentFiles: () => ipcRenderer.invoke('docs:recent'),
   pickImage: () => ipcRenderer.invoke('docs:pick-image'),
+  pickMergeDataSource: () => ipcRenderer.invoke('docs:merge-data-source'),
+  writeMergeOutput: (request: MergeOutputRequest) =>
+    ipcRenderer.invoke('docs:merge-output', request),
   fontMetrics: (family: string) => ipcRenderer.invoke('docs:font-metrics', family),
   print: (scale?: number, job?: PrintJobOptions) => ipcRenderer.invoke('docs:print', scale, job),
   listPrinters: () => ipcRenderer.invoke('docs:printers'),
@@ -223,8 +235,12 @@ const api: DesktopApi = {
     return () => ipcRenderer.removeListener('ai:settings-changed', listener)
   },
   openAiModelSettings: () => ipcRenderer.invoke('ai:open-model-settings'),
+  openSkillsSettings: () => ipcRenderer.invoke('ai:open-skills-settings'),
   aiChat: (request: AiChatRequest) => ipcRenderer.invoke('ai:chat', request),
   aiStream: (request: AiStreamRequest) => ipcRenderer.invoke('ai:stream', request),
+  skillsList: () => ipcRenderer.invoke('ai:skills-list'),
+  skillText: (name: string) => ipcRenderer.invoke('ai:skill-text', name),
+  runCli: (args: string[]) => ipcRenderer.invoke('ai:run-cli', args),
   aiStreamCancel: (requestId: string) => ipcRenderer.invoke('ai:stream-cancel', requestId),
   aiGskStatus: (withEmail?: boolean) => ipcRenderer.invoke('ai:gsk-status', withEmail),
   aiGskLogin: () => ipcRenderer.invoke('ai:gsk-login'),
@@ -302,6 +318,8 @@ const projectApi: ProjectApi = {
   beginNewChatSession: (args) => ipcRenderer.invoke('project:beginNewChatSession', args),
   listChatSessions: (args) => ipcRenderer.invoke('project:listChatSessions', args),
   setChatTitle: (args) => ipcRenderer.invoke('project:setChatTitle', args),
+  listChats: (args) => ipcRenderer.invoke('project:listChats', args),
+  deleteChat: (args) => ipcRenderer.invoke('project:deleteChat', args),
 }
 
 contextBridge.exposeInMainWorld('desktop', api)

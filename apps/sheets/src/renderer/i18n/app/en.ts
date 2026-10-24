@@ -1,5 +1,19 @@
 /** app strings, en: defines the key set every other locale shard must match. */
 export const en = {
+  // ── Withholding cells from the model ──
+  redactMenuLabel: 'Hide the selection from AI',
+  redactDialogDesc:
+    'The selection stays in the document and in the file; the model sees the placeholder below instead. Name it so the model knows what it stands for.',
+  redactDialogScope:
+    "Hiding covers this app's AI. The CLI, MCP tools and headless export read the file directly, and they still see these words.",
+  redactDialogPlaceholder: 'Placeholder name, e.g. client phone',
+  redactCancel: 'Cancel',
+  redactInsert: 'Hide',
+  redactEnable: 'Right-click a selection to hide it from the model.',
+  redactNeedsSavedRow: 'This row is not in the file yet. Save first, then hide a cell in it.',
+  redactRecoveredFromNames:
+    'Another app rewrote this file and dropped the record of what is hidden. The hidden cells were recovered from the names in the workbook; saving restores the full record.',
+
   appMergeWorkbooks: 'Merge Workbooks',
   appMergeWorkbooksTip: 'Append sheets from other Excel files into this workbook',
   appMergeWorkbooksPicking: 'Choose files to merge…',
@@ -1203,6 +1217,10 @@ export const en = {
   appFontSizeTip: 'Font size',
   appZoomIn: 'Zoom in',
   appZoomOut: 'Zoom out',
+  appImgActualSize: 'Actual Size',
+  appImgFitWindow: 'Fit to Window',
+  appImgSaveAs: 'Save Picture As…',
+  appImgClose: 'Close (Esc)',
   appZoomSheetTitle: 'Zoom the sheet',
   appResetZoom: 'Reset zoom',
   appZoomToSelection: 'Zoom to Selection',
@@ -1447,6 +1465,11 @@ export const en = {
   appTableFileUnnamed: 'This table has no name in the file and cannot be changed here.',
   appTableRowsNotLoaded: 'The table rows are still loading — try again in a moment.',
   appTableTotalLabel: 'Total',
+  appNotePicturesPaneTitle: 'Note pictures',
+  appNotePicturesClose: 'Close',
+  appNotePicturesNone: 'No note on this workbook is showing a picture.',
+  appNotePictureUnavailable: 'This picture cannot be shown.',
+  appNotePicturesToggle: 'Note pictures',
   appCommentsPaneTitle: 'Comments',
   appThreadReply: 'Reply',
   appThreadReplyPlaceholder: 'Reply…',
@@ -1489,6 +1512,8 @@ export const en = {
   appVisualSendBackward: 'Send Backward',
   appVisualSizeProperties: 'Size and Properties…',
   appVisualHyperlink: 'Hyperlink…',
+  appVisualEmbedInCell: 'Embed Image in Cell',
+  appVisualEmbedFailed: "Couldn't embed this picture in the cell.",
   appVisualDelete: 'Delete',
   appVisualArranged: 'Object updated — save with ⌘S.',
   appVisualCopied: 'Object copied.',

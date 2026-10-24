@@ -544,4 +544,7 @@ export const en = {
   appLineTriple: '3 lines',
   appGensparkAccount: 'Genspark account',
   appLoginGenspark: 'Sign in to Genspark',
+  appMergeSourceLoaded: 'Loaded {name} ({n} records)',
+  appMergeWritten: '{n} documents written',
+  appMergeNothingToWrite: 'There is nothing to write',
 }

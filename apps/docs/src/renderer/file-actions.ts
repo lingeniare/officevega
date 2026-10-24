@@ -65,6 +65,7 @@ import { setNoteNumFmts } from './note-format'
 import type { CompareEntry } from './editor/compare'
 import { blocksToPmDoc, pmDocOptions, pmDocToSavePlan, type PmNode } from './editor/convert'
 import { TABLE_TRAILING_SKIP, setLazyMediaHashes } from './editor/extensions'
+import { setStaticAsciiResolver } from './editor/protected-render'
 import { FORMAT_MARKS, serializeMarks } from './editor/caret-marks'
 import { TRACK_IGNORE } from './editor/revisions'
 import {
@@ -88,8 +89,15 @@ import { pruneUnreferencedNumbering } from './numbering-actions'
 import { applySectPrRewrites, type SectPrRewrite } from './sectpr-rewrite'
 import { createSaveSerializer } from './save-until-persisted'
 import { checkMissingFonts, collectDocFonts } from './font-check'
-import { hangulSpaceWideningFor, setDocFontTable, setHangulSpaceWidening } from './line-metrics'
+import {
+  hangulSpaceWideningFor,
+  loadBundledStandIns,
+  setAdditiveParagraphSpacing,
+  setDocFontTable,
+  setHangulSpaceWidening,
+} from './line-metrics'
 import { adoptEmbeddedFonts } from './embedded-fonts'
+import { prefetchFaces } from './font-resolve'
 import { defaultEastAsiaFontFor } from './font-list'
 import { clearPrintZoom, setPrintZoom } from './print-zoom'
 import { collectPdfInternalLinks } from './pdf-internal-links'
@@ -160,6 +168,8 @@ export interface FileActionContext {
   setHfVariantsDirty: (value: HfVariantKey[]) => void
   sectionHfEdits: Record<string, HeaderFooter>
   setSectionHfEdits: (value: Record<string, HeaderFooter>) => void
+  /** laid-out page total, written as the cached NUMPAGES result */
+  pageCount?: number
   /** Link to Previous switched on per `${sectionIdx}:${kind}` */
   hfLinks: Record<string, true>
   setHfLinks: (value: Record<string, true>) => void
@@ -311,7 +321,10 @@ function resetEditorHistory(editor: Editor): void {
 function caretMarksSnapshot(editor: Editor): string | null {
   const { state } = editor
   const { $from } = state.selection
-  return serializeMarks(state.storedMarks ?? $from.marks())
+  // an explicit empty list is "user cleared the formatting" and must survive
+  // as such, or the caret inherits the surrounding text again after the rewrite
+  if (state.storedMarks) return serializeMarks(state.storedMarks) ?? '[]'
+  return serializeMarks($from.marks())
 }
 
 /**
@@ -333,7 +346,7 @@ export function restoreMarksAfterDocRewrite(editor: Editor, snapshot: string | n
     const type = editor.schema.marks[entry.type]
     return type && FORMAT_MARKS.has(entry.type) ? [type.create(entry.attrs)] : []
   })
-  if (marks.length === 0) return false
+  if (marks.length === 0 && entries.length > 0) return false
   editor.view.dispatch(editor.state.tr.setStoredMarks(marks))
   return true
 }
@@ -350,11 +363,13 @@ function applyDocLayoutSettings(editor: Editor, parsed: ParsedDocFull): void {
   // Word stretches a justified line that ends in a line break (w:br / w:cr)
   // unless the document opts out with doNotExpandShiftReturn
   editor.storage.justifyShrink.expandBreakLines = parsed.doNotExpandShiftReturn !== true
+  setAdditiveParagraphSpacing(parsed.doNotUseHTMLParagraphAutoSpacing === true)
   editor.storage.cjkPunctShrink.enabled = parsed.compressPunctuation === true
   editor.storage.cjkPunctShrink.hangPunct = parsed.compressPunctuation !== true
   editor.storage.cjkPunctShrink.legacyLayout = (parsed.compatibilityMode ?? 0) < 15
   editor.storage.cjkPunctShrink.docEastAsiaLang = parsed.docDefaults?.eastAsiaLang ?? null
   setHangulSpaceWidening(hangulSpaceWideningFor(parsed))
+  setStaticAsciiResolver(() => editor.storage.listNumbering)
   // Chromium only hyphenates under an explicit lang (the app shell is zh-CN);
   // scoped to autoHyphenation docs so CJK font fallback is untouched elsewhere
   const lang = parsed.autoHyphenation ? parsed.docDefaults?.lang : undefined
@@ -477,6 +492,9 @@ export async function loadFile(
     const adopted = await adoptEmbeddedFonts(parsed.embeddedFonts)
     if (!adopted || generation !== openGeneration) return 'superseded'
     setDocFontTable(parsed.fontTable)
+    await prefetchFaces(collectDocFonts(parsed))
+    await loadBundledStandIns(collectDocFonts(parsed))
+    if (generation !== openGeneration) return 'superseded'
     ctx.editor.storage.listNumbering.styles = parsed.styles
     ctx.editor.storage.listNumbering.docDefaults = parsed.docDefaults
     ctx.editor.storage.listNumbering.defs = parsed.numbering
@@ -626,6 +644,9 @@ export async function newFile(ctx: FileActionContext): Promise<boolean | undefin
     const adopted = await adoptEmbeddedFonts(parsed.embeddedFonts)
     if (!adopted || generation !== openGeneration) return
     setDocFontTable(parsed.fontTable)
+    await prefetchFaces(collectDocFonts(parsed))
+    await loadBundledStandIns(collectDocFonts(parsed))
+    if (generation !== openGeneration) return
     ctx.editor.storage.listNumbering.styles = parsed.styles
     ctx.editor.storage.listNumbering.docDefaults = parsed.docDefaults
     ctx.editor.storage.listNumbering.defs = parsed.numbering
@@ -744,14 +765,22 @@ function deriveAutoFileName(editor: Editor): string | null {
  * Serialize the current editor/document state to .docx bytes — the shared
  * serialization half of save(); no dialogs, no state changes. Also used for
  * crash-recovery copies.
+ *
+ * `pmOverride` serializes a document of the caller's making instead of the
+ * live one: the mail merge writes the template with one record's values in it,
+ * and the rest of the save (the sections, the headers, the pictures) is the
+ * save the document would get anyway.
  */
-export async function buildDocBytes(ctx: FileActionContext): Promise<Uint8Array | null> {
+export async function buildDocBytes(
+  ctx: FileActionContext,
+  pmOverride?: PmNode,
+): Promise<Uint8Array | null> {
   const generation = docGeneration
   if (ctx.settleFontSettings) ctx = await ctx.settleFontSettings()
   if (docGeneration !== generation) return null
   const { doc, editor } = ctx
   if (!doc || !editor) return null
-  const pmJson = editor.getJSON() as PmNode
+  const pmJson = pmOverride ?? (editor.getJSON() as PmNode)
   const plan = pmDocToSavePlan(pmJson, doc.parsed.blocks)
   // chart data edits patch the chart's own zip part, not the body XML
   const partXml: Record<string, string> = {}
@@ -821,6 +850,8 @@ export async function buildDocBytes(ctx: FileActionContext): Promise<Uint8Array 
     links: ctx.hfLinks,
   })
   const bytes = await saveDocx(doc.parsed, saveBlocks, {
+    pageCount: ctx.pageCount,
+    newPictures: Object.keys(plan.newPictures).length > 0 ? plan.newPictures : undefined,
     section: ctx.sectionDirty && ctx.section ? ctx.section : undefined,
     sectionStartType: ctx.trailingStartType ?? undefined,
     pgNumType: ctx.pgNumEdit ?? undefined,
@@ -1048,12 +1079,6 @@ async function saveOnce(
     // identity snapshot: detects edits that arrive while the save is in flight
     const fontSettingsVersion = ctx.fontSettingsVersionRef?.current
     const docSnapshot = editor.state.doc
-    const selectionPos = editor.state.selection.from
-    // The caret's marks — the ribbon's font/size live here as storedMarks and
-    // apply to whatever is typed next. The reparse below replaces the doc, so
-    // they have to travel with the selection or an autosave silently drops the
-    // font the user just picked (#2004).
-    const caretMarks = caretMarksSnapshot(editor)
     const bytes = await buildDocBytes(ctx)
     if (!bytes) return false
     const buffer = bytes.buffer.slice(
@@ -1163,6 +1188,14 @@ async function saveOnce(
     }
     // Equal doc: skip the rewrite so undo history, caret and scroll survive.
     if (!unchanged) {
+      // The caret's marks — the ribbon's font/size live here as storedMarks and
+      // apply to whatever is typed next. setContent replaces the doc, so they
+      // have to travel with the selection or an autosave silently drops the
+      // font the user just picked (genoffice#2004). Both are read live, not
+      // before the await: a font chosen or a caret moved during the save must
+      // win, and the marks must belong to the position they are restored at.
+      const selectionPos = editor.state.selection.from
+      const caretMarks = caretMarksSnapshot(editor)
       editor.commands.setContent(rebasedPm as never)
       resetEditorHistory(editor)
       const chain = editor

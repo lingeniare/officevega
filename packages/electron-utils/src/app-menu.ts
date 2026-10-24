@@ -26,6 +26,7 @@ export interface AppMenuLabels extends ContextMenuLabels {
   version: string
   license: string
   privacy: string
+  settings: string
 }
 
 type Labels = Omit<AppMenuLabels, keyof ContextMenuLabels>
@@ -52,12 +53,12 @@ const EN: Labels = {
   version: 'Version',
   license: 'License',
   privacy: 'Privacy Policy',
+  settings: 'Settings…',
 }
 
 // Shared table, same rationale as context-menu.ts: one copy instead of
 // 15 keys × 20 languages per app dictionary.
 const LABELS: Record<string, Labels> = {
-  en: EN,
   ru: {
     window: 'Окно',
     minimize: 'Свернуть',
@@ -80,6 +81,7 @@ const LABELS: Record<string, Labels> = {
     version: 'Версия',
     license: 'Лицензия',
     privacy: 'Политика конфиденциальности',
+    settings: 'Настройки…',
   },
   
   
@@ -110,6 +112,7 @@ const LABELS: Record<string, Labels> = {
     version: 'Versiya',
     license: 'Litsenziya',
     privacy: 'Maxfiylik siyosati',
+    settings: 'Sozlamalar…',
   },
   kk: {
     window: 'Терезе',
@@ -133,6 +136,7 @@ const LABELS: Record<string, Labels> = {
     version: 'Нұсқа',
     license: 'Лицензия',
     privacy: 'Құпиялылық саясаты',
+    settings: 'Баптаулар…',
   },
   az: {
     window: 'Pəncərə',
@@ -156,6 +160,7 @@ const LABELS: Record<string, Labels> = {
     version: 'Versiya',
     license: 'Lisenziya',
     privacy: 'Məxfilik siyasəti',
+    settings: 'Parametrlər…',
   },
   tk: {
     window: 'Penjire',
@@ -179,6 +184,7 @@ const LABELS: Record<string, Labels> = {
     version: 'Wersiýa',
     license: 'Ygtyýarnama',
     privacy: 'Gizlinlik syýasaty',
+    settings: 'Sazlamalar…',
   },
   ky: {
     window: 'Терезе',
@@ -202,6 +208,7 @@ const LABELS: Record<string, Labels> = {
     version: 'Версия',
     license: 'Лицензия',
     privacy: 'Купуялык саясаты',
+    settings: 'Орнотуулар…',
   },
   tt: {
     window: 'Тәрәзә',
@@ -225,6 +232,7 @@ const LABELS: Record<string, Labels> = {
     version: 'Версия',
     license: 'Лицензия',
     privacy: 'Хосусыйлык сәясәте',
+    settings: 'Көйләүләр…',
   },
   ka: {
     window: 'ფანჯარა',
@@ -248,6 +256,7 @@ const LABELS: Record<string, Labels> = {
     version: 'ვერსია',
     license: 'ლიცენზია',
     privacy: 'კონფიდენციალურობის პოლიტიკა',
+    settings: 'პარამეტრები…',
   },
 }
 
@@ -467,6 +476,60 @@ export function privacyMenuItem(
 /** Help menu with Check for Updates… + About + legal docs; extra app-specific
  * items go before the separator. productName localizes the About dialog (see
  * aboutMenuItem). */
+/** The Settings entry, shared by every app: one label, one accelerator
+ * (⌘, on macOS and Ctrl+, elsewhere), one action. The shell owns the
+ * Settings view, so it registers the action; an app running on its own
+ * falls back to its own preferences entry. */
+let settingsInvoker: (() => void) | null = null
+
+export function setSettingsInvoker(invoke: (() => void) | null): void {
+  settingsInvoker = invoke
+}
+
+export function settingsMenuItem(
+  labels: AppMenuLabels,
+  fallback?: () => void,
+): MenuItemConstructorOptions {
+  return {
+    label: labels.settings,
+    accelerator: 'CmdOrCtrl+,',
+    click: () => (settingsInvoker ?? fallback)?.(),
+  }
+}
+
+/** macOS application menu — the one under the app name. Electron's
+ * role:'appMenu' is a fixed template, so an entry of our own means spelling
+ * the menu out; the native roles keep the standard order and labels. Only
+ * macOS has this menu, so every other platform gets undefined. */
+export function appMenuTemplate(
+  platform: NodeJS.Platform,
+  labels: AppMenuLabels,
+  {
+    extra = [],
+    appLabel = 'OfficeVega',
+  }: { extra?: MenuItemConstructorOptions[]; appLabel?: string } = {},
+): MenuItemConstructorOptions | undefined {
+  if (platform !== 'darwin') return undefined
+  return {
+    // Electron rejects a menu item that has neither label, role nor type
+    label: appLabel,
+    submenu: [
+      { role: 'about', label: labels.about },
+      ...extra,
+      { type: 'separator' },
+      { role: 'services' },
+      { type: 'separator' },
+      { role: 'hide' },
+      { role: 'hideOthers' },
+      { role: 'unhide' },
+      { type: 'separator' },
+      { role: 'quit' },
+    ],
+  }
+}
+
+/** Help menu with Check for Updates… + About; extra app-specific items go
+ * before the separator. */
 export function helpMenuTemplate(
   labels: AppMenuLabels,
   extraItems: MenuItemConstructorOptions[] = [],

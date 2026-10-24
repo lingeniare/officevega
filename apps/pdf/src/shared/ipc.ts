@@ -9,6 +9,8 @@ import type {
   ModelFilter,
   ProviderModelCatalog,
 } from '@genoffice/ai-provider'
+import type { PrintDuplex, PrintJobOptions, PrinterInfo } from '@genoffice/electron-utils/print-job'
+export type { PrintDuplex, PrintJobOptions, PrinterInfo }
 
 export const PDF_CHANNELS = {
   consumePending: 'pdf:consume-pending',
@@ -60,6 +62,8 @@ export const PDF_CHANNELS = {
   printRequest: 'pdf:print-request',
   /** Saves the AI chat transcript as a .md file picked through a native dialog */
   exportAiChat: 'pdf:export-ai-chat',
+  print: 'pdf:print',
+  printers: 'pdf:printers',
   fileRenamed: 'pdf:file-renamed',
   getLanguage: 'app:get-language',
   languageChanged: 'app:language-changed',
@@ -886,11 +890,20 @@ export type ExportImagesResult =
   | { ok: false; error: string }
 
 /** AI channels are app-wide shared ipcMain handlers (shell registers via docs-main registerAiIpc); pass-through only */
+export interface UserSkillEntry {
+  name: string
+  description: string
+  relevant: boolean
+}
+
 export const AI_CHANNELS = {
   getSettings: 'ai:get-settings',
   setSettings: 'ai:set-settings',
   settingsChanged: 'ai:settings-changed',
   openModelSettings: 'ai:open-model-settings',
+  openSkillsSettings: 'ai:open-skills-settings',
+  skillsList: 'ai:skills-list',
+  skillText: 'ai:skill-text',
   gskStatus: 'ai:gsk-status',
   gskLogin: 'ai:gsk-login',
   authChanged: 'ai:auth-changed',
@@ -1032,6 +1045,11 @@ export interface PdfApi {
   requestOpenDialog(): void
   /** Shell menu Print → renderer runs its print flow (save, rasterize, system dialog) */
   onPrintRequest(handler: () => void): () => void
+  /** print this window's print stylesheet output on a named printer ('' = OS default)
+   *  without the system dialog; ok=false without error = canceled */
+  print(job: PrintJobOptions): Promise<{ ok: boolean; error?: string }>
+  /** installed printers for the in-app print dialog */
+  listPrinters(): Promise<PrinterInfo[]>
   /** The file was renamed or moved from the shell (home Folders / Files pane); the viewer follows the new path */
   onFileRenamed(handler: (newPath: string) => void): () => void
   getLanguage(): Promise<Lang>
@@ -1068,6 +1086,12 @@ export interface PdfApi {
   gskLogin(): Promise<void>
   /** pushed by main on every VEGA sign-in/out — drop the cached login gate without a reload */
   onAiAuthChanged(handler: (status: { loggedIn: boolean }) => void): () => void
+  /** shell only: switch to Home and open Settings › Integrations (the skills list) */
+  openSkillsSettings(): Promise<void>
+  /** the skills the user installed into OfficeVega */
+  skillsList(): Promise<UserSkillEntry[]>
+  /** one installed skill's body, by name */
+  skillText(name: string): Promise<string>
   aiStream(request: AiStreamRequest): Promise<void>
   aiStreamCancel(requestId: string): Promise<void>
   onAiStream(handler: (chunk: AiStreamChunk) => void): () => void

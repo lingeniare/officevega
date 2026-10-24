@@ -244,13 +244,13 @@ describe.skipIf(!hasNss || process.platform !== 'linux')('against a real NSS dat
     const before = new Set(
       (await import('node:fs'))
         .readdirSync(tmpdir())
-        .filter((n) => n.startsWith('genoffice-cert-')),
+        .filter((n) => n.startsWith('officevega-cert-')),
     )
     const listing = await listSystemCertificates(undefined, env())
     await openSystemSigner(listing.certs[0]!.ref, undefined, env())
     const after = (await import('node:fs'))
       .readdirSync(tmpdir())
-      .filter((n) => n.startsWith('genoffice-cert-') && !before.has(n))
+      .filter((n) => n.startsWith('officevega-cert-') && !before.has(n))
     expect(after).toEqual([])
   }, 60_000)
 })

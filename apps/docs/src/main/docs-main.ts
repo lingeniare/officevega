@@ -43,6 +43,7 @@ import {
 import {
   abortOnDestroyed,
   appMenuLabels,
+  appMenuTemplate,
   buildPrintableHtml,
   configuredDefaultSaveDir,
   contextMenuLabels,
@@ -63,6 +64,7 @@ import {
   licenseMenuItem,
   privacyMenuItem,
   toggleDevToolsItem,
+  settingsMenuItem,
   windowMenuTemplate,
   type HeadlessExportFormat,
   type HeadlessExportTarget,
@@ -96,6 +98,7 @@ import {
   AiTimeoutError,
   isAiNetworkError,
   isAiOverloadedError,
+  isAiRegionBlockedError,
   chatForProvider,
   defaultAiSettings,
   activeProvider,
@@ -156,10 +159,13 @@ import type {
   DecryptOpenResult,
   DocsTabInfo,
   MenuCommand,
+  MergeOutputRequest,
   OpenDocxResult,
   SpellLanguages,
 } from '../shared/ipc'
 import { ATTACHMENT_IMAGE_EXTS, MARKDOWN_MEDIA_DIR_TOKEN, type MarkdownImage } from '../shared/ipc'
+import { MERGE_DATA_SOURCE_EXTENSIONS, readMergeDataSource } from './merge-data-source'
+import { mergeOutputFileName, mergeOutputPath } from './merge-output'
 import { ClickClaims } from '../shared/context-menu-claims'
 import {
   OPENABLE_DOC_EXTENSIONS,
@@ -254,6 +260,8 @@ const tMain = createI18n({
     btnOverwrite: 'Overwrite',
     dlgInsertImage: 'Insert Image',
     filterImages: 'Images',
+    dlgMergeDataSource: 'Select Recipient List',
+    filterMergeDataSource: 'Excel or CSV',
     dlgAddAttachment: 'Add Attachments',
     filterSupported: 'Supported Files',
     filterAll: 'All Files',
@@ -272,6 +280,8 @@ const tMain = createI18n({
     errNotImage: 'not a supported image type',
     errGskNotLoggedIn: 'Not signed in to VEGA: click “Sign in to VEGA” below, sign in, then retry',
     errNoApiKey: 'No API key configured for {provider}',
+    errAiRegion:
+      "This model's provider does not serve your current region — pick another model or change your network",
     errAiBusy: 'The AI service is busy right now — please try again in a moment',
     errNoModel: 'No model name configured',
     menuFile: 'File',
@@ -395,6 +405,8 @@ const tMain = createI18n({
     btnOverwrite: 'Перезаписать',
     dlgInsertImage: 'Вставить рисунок',
     filterImages: 'Изображения',
+    dlgMergeDataSource: 'Выбрать список получателей',
+    filterMergeDataSource: 'Excel или CSV',
     dlgAddAttachment: 'Добавить вложения',
     filterSupported: 'Поддерживаемые файлы',
     filterAll: 'Все файлы',
@@ -415,6 +427,8 @@ const tMain = createI18n({
     errGskNotLoggedIn:
       'Вы не вошли в ВЕГА: нажмите «Подключить ИИ» ниже, войдите и повторите попытку',
     errNoApiKey: 'API-ключ для {provider} не настроен',
+    errAiRegion:
+      'Поставщик этой модели не обслуживает ваш текущий регион — выберите другую модель или смените сеть',
     errAiBusy: 'Сервис ИИ сейчас перегружен — повторите попытку чуть позже',
     errNoModel: 'Не указано имя модели',
     menuFile: 'Файл',
@@ -515,6 +529,8 @@ const tMain = createI18n({
     dlgOpenDoc: 'Hujjatni ochish',
     filterWord: 'Word hujjatlari',
     dlgSaveAs: 'Boshqa nom bilan saqlash',
+    dlgMergeDataSource: "Qabul qiluvchilarning ro'yxatini tanlang",
+    filterMergeDataSource: 'Excel yoki CSV',
     closeUnsavedMsg: 'Bu hujjatda saqlanmagan o‘zgarishlar mavjud.',
     closeUnsavedDetail: 'Yopishdan oldin ularni saqlamoqchimisiz?',
     closeNoReplyMsg: 'Hujjat javob bermayapti va saqlanmagan o‘zgarishlar bo‘lishi mumkin.',
@@ -552,6 +568,8 @@ const tMain = createI18n({
     errGskNotLoggedIn:
       'VEGA’ga kirilmagan: quyida “VEGA’ga kirish” tugmasini bosing, kiring va qayta urinib ko‘ring',
     errNoApiKey: '{provider} uchun API kaliti sozlanmagan',
+    errAiRegion:
+      "Ushbu model provayderi joriy hududingizga xizmat ko'rsatmaydi — boshqa model tanlang yoki tarmoqni o'zgartiring",
     errAiBusy: 'AI xizmati hozir band — birozdan so‘ng qayta urinib ko‘ring',
     errNoModel: 'Model nomi sozlanmagan',
     menuFile: 'Fayl',
@@ -658,6 +676,8 @@ const tMain = createI18n({
     dlgOpenDoc: 'Құжатты ашу',
     filterWord: 'Word құжаттары',
     dlgSaveAs: 'Басқаша сақтау',
+    dlgMergeDataSource: 'Алушылар тізімін таңдау',
+    filterMergeDataSource: 'Excel немесе CSV',
     closeUnsavedMsg: 'Бұл құжатта сақталмаған өзгерістер бар.',
     closeUnsavedDetail: 'Жабудан бұрын оларды сақтау керек пе?',
     closeNoReplyMsg: 'Құжат жауап бермей тұр және сақталмаған өзгерістер болуы мүмкін.',
@@ -694,6 +714,8 @@ const tMain = createI18n({
     errGskNotLoggedIn:
       'VEGA жүйесіне кірмегенсіз: төмендегі “VEGA жүйесіне кіру” түймесін басып, кіріңіз де, әрекетті қайталаңыз',
     errNoApiKey: '{provider} үшін API кілті конфигурацияланбаған',
+    errAiRegion:
+      'Бұл модель провайдері сіздің өңіріңізге қызмет көрсетпейді — басқа модель таңдаңыз немесе желіні өзгертіңіз',
     errAiBusy: 'AI қызметі қазір бос емес — біраздан соң қайталап көріңіз',
     errNoModel: 'Үлгі атауы конфигурацияланбаған',
     menuFile: 'Файл',
@@ -800,6 +822,8 @@ const tMain = createI18n({
     dlgOpenDoc: 'Sənədi aç',
     filterWord: 'Word sənədləri',
     dlgSaveAs: 'Fərqli saxla',
+    dlgMergeDataSource: 'Alıcı siyahısını seçin',
+    filterMergeDataSource: 'Excel və ya CSV',
     closeUnsavedMsg: 'Bu sənəddə yadda saxlanmamış dəyişikliklər var.',
     closeUnsavedDetail: 'Bağlamazdan əvvəl onları yadda saxlamaq istəyirsiniz?',
     closeNoReplyMsg: 'Sənəd cavab vermir və yadda saxlanmamış dəyişikliklər ola bilər.',
@@ -837,6 +861,8 @@ const tMain = createI18n({
     errGskNotLoggedIn:
       'VEGA-ya daxil olunmayıb: aşağıda “VEGA-ya daxil ol” düyməsinə klikləyin, daxil olun və sonra yenidən cəhd edin',
     errNoApiKey: '{provider} üçün API açarı konfiqurasiya edilməyib',
+    errAiRegion:
+      'Bu modelin provayderi hazırkı bölgənizdə xidmət göstərmir — başqa model seçin və ya şəbəkəni dəyişin',
     errAiBusy: 'AI xidməti hazırda məşğuldur — bir qədər sonra yenidən cəhd edin',
     errNoModel: 'Model adı konfiqurasiya edilməyib',
     menuFile: 'Fayl',
@@ -943,6 +969,8 @@ const tMain = createI18n({
     dlgOpenDoc: 'Resminamany aç',
     filterWord: 'Word resminamalary',
     dlgSaveAs: 'Başga at bilen ýatda sakla',
+    dlgMergeDataSource: 'Alyjylar sanawyny saýlaň',
+    filterMergeDataSource: 'Excel ýa-da CSV',
     closeUnsavedMsg: 'Bu resminamada saklanmadyk üýtgeşmeler bar.',
     closeUnsavedDetail: 'Ýapmazdan öň olary saklamak isleýärsiňizmi?',
     closeNoReplyMsg: 'Resminama jogap bermeýär we saklanmadyk üýtgeşmeler bolmagy mümkin.',
@@ -980,6 +1008,8 @@ const tMain = createI18n({
     errGskNotLoggedIn:
       'VEGA-da giriş edilmedi: aşakdaky “VEGA-a giriş” düwmesine basyň, giriş ediň we soňra täzeden synanyşyň',
     errNoApiKey: '{provider} üçin API açary düzülmedi',
+    errAiRegion:
+      'Bu modeliň üpjün edijisi häzirki sebitiňizde hyzmat etmeýär — başga model saýlaň ýa-da tori üýtgediň',
     errAiBusy: 'AI hyzmaty häzir meşgul — birazdan täzeden synanyşyň',
     errNoModel: 'Modeliň ady düzülmedi',
     menuFile: 'Faýl',
@@ -1086,6 +1116,8 @@ const tMain = createI18n({
     dlgOpenDoc: 'Документти ачуу',
     filterWord: 'Word документтери',
     dlgSaveAs: 'Башкача сактоо',
+    dlgMergeDataSource: 'Алуучулардын тизмесин тандаңыз',
+    filterMergeDataSource: 'Excel же CSV',
     closeUnsavedMsg: 'Бул документте сакталбаган өзгөртүүлөр бар.',
     closeUnsavedDetail: 'Жабуудан мурун аларды сактагыңыз келеби?',
     closeNoReplyMsg: 'Документ жооп бербей жатат жана анда сакталбаган өзгөртүүлөр болушу мүмкүн.',
@@ -1123,6 +1155,8 @@ const tMain = createI18n({
     errGskNotLoggedIn:
       "VEGA'га кирген жоксуз: төмөндөгү “VEGA'га кирүү” баскычын басып, кириңиз да, кайра аракет кылыңыз",
     errNoApiKey: '{provider} үчүн API ачкычы конфигурацияланган эмес',
+    errAiRegion:
+      'Бул моделдин провайдери сиздин өңүрүңүздү тейлей албайт — башка модель тандаңыз же тармагыңызды өзгөртүңүз',
     errAiBusy: 'AI кызматы азыр бош эмес — бир аздан кийин кайра аракет кылыңыз',
     errNoModel: 'Модель аты конфигурацияланган эмес',
     menuFile: 'Файл',
@@ -1229,6 +1263,8 @@ const tMain = createI18n({
     dlgOpenDoc: 'Документны ачу',
     filterWord: 'Word документлары',
     dlgSaveAs: 'Башкача саклау',
+    dlgMergeDataSource: 'Алучылар исемлеген сайлагыз',
+    filterMergeDataSource: 'Excel яиса CSV',
     closeUnsavedMsg: 'Бу документта сакланмаган үзгәрешләр бар.',
     closeUnsavedDetail: 'Ябар алдыннан аларны сакларга телисезме?',
     closeNoReplyMsg: 'Документ җавап бирми һәм сакланмаган үзгәрешләре булырга мөмкин.',
@@ -1265,6 +1301,8 @@ const tMain = createI18n({
     errGskNotLoggedIn:
       "VEGA'га керелмәгән: түбәндәге “VEGA'га керү” төймәсенә басыгыз, керегез һәм яңадан эшләп карагыз",
     errNoApiKey: '{provider} өчен API ачкычы көйләнмәгән',
+    errAiRegion:
+      'Бу модель провайдеры сезнең төбәгеңездә хезмәт күрсәтми — башка модель сайлагыз яиса челтәрне үзгәртегез',
     errAiBusy: 'AI хезмәте хәзер мәшгуль — бераздан яңадан башлагыз',
     errNoModel: 'Модель исеме көйләнмәгән',
     menuFile: 'Файл',
@@ -1371,6 +1409,8 @@ const tMain = createI18n({
     dlgOpenDoc: 'დოკუმენტის გახსნა',
     filterWord: 'Word-ის დოკუმენტები',
     dlgSaveAs: 'შენახვა როგორც',
+    dlgMergeDataSource: 'აირჩიეთ მიმღებთა სია',
+    filterMergeDataSource: 'Excel ან CSV',
     closeUnsavedMsg: 'ამ დოკუმენტში შენახული ცვლილებებია.',
     closeUnsavedDetail: 'დახურვამდე გსურთ მათი შენახვა?',
     closeNoReplyMsg: 'დოკუმენტი არ პასუხობს და შესაძლოა, მასში შენახული ცვლილებები იყოს.',
@@ -1408,6 +1448,8 @@ const tMain = createI18n({
     errGskNotLoggedIn:
       'VEGA-ში შესული არ ხართ: დააწკაპუნეთ ქვემოთ „Sign in to VEGA“-ზე, შედით სისტემაში და ხელახლა სცადეთ',
     errNoApiKey: '{provider}-ისთვის API key კონფიგურირებული არ არის',
+    errAiRegion:
+      'ამ მოდელის პროვაიდერი თქვენს მიმდინარე რეგიონს არ ემსახურება — აირჩიეთ სხვა მოდელი ან შეცვალეთ ქსელი',
     errAiBusy: 'AI სერვისი ამჟამად დატვირთულია — გთხოვთ, ცოტა ხანში სცადოთ ხელახლა',
     errNoModel: 'მოდელის სახელი კონფიგურირებული არ არის',
     menuFile: 'ფაილი',
@@ -1865,7 +1907,7 @@ function rememberOpenDoc(wcId: number, filePath: string): void {
 }
 
 function docsMediaRoots(wcId: number): string[] {
-  return documentMediaRoots(openDocByWc.get(wcId), join(app.getPath('temp'), 'genoffice-pasted'))
+  return documentMediaRoots(openDocByWc.get(wcId), join(app.getPath('temp'), 'officevega-pasted'))
 }
 
 function allowDocWrite(wcId: number, filePath: string): void {
@@ -2646,7 +2688,9 @@ export function registerAiIpc(): void {
                 ? { errorCode: 'network' as const }
                 : isAiOverloadedError(err)
                   ? { errorCode: 'overloaded' as const }
-                  : {}),
+                  : isAiRegionBlockedError(err)
+                    ? { errorCode: 'region' as const }
+                    : {}),
         })
       }
     } finally {
@@ -2816,6 +2860,9 @@ export function registerAiIpc(): void {
       if (!result.ok && isAiOverloadedError(result.error)) {
         return { ok: false, error: tm('errAiBusy') }
       }
+      if (!result.ok && isAiRegionBlockedError(result.error)) {
+        return { ok: false, error: tm('errAiRegion') }
+      }
       if (!result.ok) {
         noteGskCallFailure(gskKey, result.error)
         noteVegaCallFailure(config.apiKey, result.error)
@@ -2824,7 +2871,14 @@ export function registerAiIpc(): void {
     } catch (err) {
       noteGskCallFailure(gskKey, err)
       noteVegaCallFailure(config.apiKey, err)
-      return { ok: false, error: isAiOverloadedError(err) ? tm('errAiBusy') : String(err) }
+      return {
+        ok: false,
+        error: isAiOverloadedError(err)
+          ? tm('errAiBusy')
+          : isAiRegionBlockedError(err)
+            ? tm('errAiRegion')
+            : String(err),
+      }
     }
   })
 }
@@ -2988,6 +3042,18 @@ export function registerProjectIpc(): void {
       return store.loadChat(args.projectId, args.chatId, args.limit ?? 200)
     },
   )
+
+  /** Lists the conversations in a project, newest first. */
+  ipcMain.handle('project:listChats', (_event, args: { projectId: string }) => {
+    const store = getProjectStore()
+    return store.listChats(args.projectId)
+  })
+
+  /** Deletes one conversation. A file-less chat is the home screen's ask panel. */
+  ipcMain.handle('project:deleteChat', (_event, args: { projectId: string; chatId: string }) => {
+    const store = getProjectStore()
+    store.deleteChat(args.projectId, args.chatId)
+  })
 
   /** rebind chat (called after a file first hits disk): newFilePath/sessionId take priority; the main process computes chatId and records fileMap */
   ipcMain.handle(
@@ -3710,6 +3776,68 @@ export function registerDocsIpc(): void {
     }
   })
 
+  // Mailings tab: pick a local recipient list and read it as a data source.
+  // The file is read here, in the main process, where the file system is.
+  ipcMain.handle('docs:merge-data-source', async (event) => {
+    const result = await openDialog(event, {
+      title: tm('dlgMergeDataSource'),
+      filters: [
+        {
+          name: tm('filterMergeDataSource'),
+          extensions: [...MERGE_DATA_SOURCE_EXTENSIONS],
+        },
+      ],
+      properties: ['openFile'],
+    })
+    if (result.canceled || result.filePaths.length === 0) return null
+    try {
+      return { ok: true, source: await readMergeDataSource(result.filePaths[0]) }
+    } catch (err) {
+      return { ok: false, error: err instanceof Error ? err.message : String(err) }
+    }
+  })
+
+  // Mailings tab: write the merged documents. One file for the whole merge
+  // goes where the user says; one file per record goes into a folder they
+  // pick, every name kept unique so two records of the same name do not
+  // overwrite each other. The bytes carry the document's lazily served
+  // pictures, so they are materialized first — the merged file is a document
+  // of its own, not a view of the open one.
+  ipcMain.handle('docs:merge-output', async (event, request: MergeOutputRequest) => {
+    const files = Array.isArray(request?.files) ? request.files : []
+    if (files.length === 0) return { ok: false, error: 'nothing to write' }
+    const write = async (path: string, data: ArrayBuffer): Promise<void> => {
+      const { bytes } = await materializeLazyDocx(Buffer.from(data))
+      await writeFile(path, bytes)
+    }
+    try {
+      if (request.mode === 'single') {
+        const file = files[0]!
+        const name = mergeOutputFileName(file.name)
+        const result = await saveDialog(event, {
+          title: tm('dlgSaveAs'),
+          defaultPath: name,
+          filters: [{ name: tm('filterWord'), extensions: ['docx'] }],
+        })
+        if (result.canceled || !result.filePath) return { ok: false, canceled: true }
+        await write(result.filePath, file.data)
+        return { ok: true, path: result.filePath, count: 1 }
+      }
+      const result = await openDialog(event, {
+        title: tm('dlgPickExportDir'),
+        properties: ['openDirectory', 'createDirectory'],
+      })
+      if (result.canceled || result.filePaths.length === 0) return { ok: false, canceled: true }
+      const folder = result.filePaths[0]!
+      for (const file of files) {
+        await write(mergeOutputPath(folder, file.name), file.data)
+      }
+      return { ok: true, folder, count: files.length }
+    } catch (err) {
+      return { ok: false, error: err instanceof Error ? err.message : String(err) }
+    }
+  })
+
   ipcMain.handle('files:pick', async (event): Promise<AttachmentAddResult | null> => {
     const result = await openDialog(event, {
       title: tm('dlgAddAttachment'),
@@ -4397,27 +4525,13 @@ export function buildDocsMenu(): void {
         }))
       : [{ label: tm('menuNoRecent'), enabled: false }]
 
+  const labels = appMenuLabels(getUiLang())
+  const appMenu = appMenuTemplate(process.platform, labels, {
+    appLabel: app.name,
+    extra: [settingsMenuItem(labels, () => sendCommand('preferences'))],
+  })
   const template: MenuItemConstructorOptions[] = [
-    ...(isMac
-      ? [
-          {
-            label: app.name,
-            submenu: [
-              { role: 'about' as const },
-              { type: 'separator' as const },
-              { label: tm('menuPreferences'), click: () => sendCommand('preferences') },
-              { type: 'separator' as const },
-              { role: 'services' as const },
-              { type: 'separator' as const },
-              { role: 'hide' as const },
-              { role: 'hideOthers' as const },
-              { role: 'unhide' as const },
-              { type: 'separator' as const },
-              { role: 'quit' as const },
-            ],
-          },
-        ]
-      : []),
+    ...(appMenu ? [appMenu] : []),
     {
       label: tm('menuFile'),
       submenu: [
@@ -4714,10 +4828,8 @@ export function buildDocsMenu(): void {
       submenu: [
         { label: tm('menuWordCount'), click: () => sendCommand('word-count') },
         { label: tm('menuAutoCorrect'), click: () => sendCommand('autocorrect-options') },
-        // Word for Mac keeps Preferences in the application menu
-        ...(isMac
-          ? []
-          : [{ label: tm('menuPreferences'), click: () => sendCommand('preferences') }]),
+        // Word for Mac keeps Settings in the application menu
+        ...(isMac ? [] : [settingsMenuItem(labels, () => sendCommand('preferences'))]),
         { type: 'separator' },
         // Runs the same AI proofread as Review > Editor (renderer shows the one-time ack)
         { label: tm('menuAiProofread'), click: () => sendCommand('ai-proofread') },

@@ -226,9 +226,7 @@ describe('certificate signing handlers', () => {
       const s = await setup()
       vi.mocked(listSystemCertificates).mockResolvedValue({ certs: [listed], issues: [] })
       const { certs } = await s.call(PDF_CHANNELS.listSystemCertificates)
-      vi.mocked(openSystemSigner).mockRejectedValue(
-        new SystemStoreError('cert-not-exportable'),
-      )
+      vi.mocked(openSystemSigner).mockRejectedValue(new SystemStoreError('cert-not-exportable'))
       expect(await s.call(PDF_CHANNELS.inspectCertificate, certs[0].certId, '')).toEqual({
         ok: false,
         error: 'cert-not-exportable',

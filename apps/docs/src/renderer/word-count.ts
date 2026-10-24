@@ -7,9 +7,8 @@
  * Asian-character figure.
  */
 
-import type { Node as PmNode } from '@tiptap/pm/model'
-import type { Selection } from '@tiptap/pm/state'
 import type { Node as ProseMirrorNode } from '@tiptap/pm/model'
+import type { Selection } from '@tiptap/pm/state'
 
 // Han (incl. radicals/compat/ext-B+), kana, hangul, bopomofo, CJK symbols
 // and punctuation (U+3001 up: the ideographic space stays whitespace),
@@ -45,7 +44,7 @@ export function countWords(text: string): number {
 /**
  * Words inside the current selection, for the status bar's "selected/total"
  * figure. Word shows that pair while a selection exists and the plain total
- * once the caret collapses; GenOffice reported only the total, so the selected
+ * once the caret collapses; OfficeVega reported only the total, so the selected
  * figure was reachable from the AI panel alone.
  *
  * Every no-selection case falls out of the counting rule itself: a collapsed
@@ -53,7 +52,7 @@ export function countWords(text: string): number {
  * a text range) both yield no text, and `countWords('')` is 0 — no separate
  * guard needed.
  */
-export function selectedWordCount(doc: PmNode, selection: Selection): number {
+export function selectedWordCount(doc: ProseMirrorNode, selection: Selection): number {
   // the same leaf reader as the total: an inline formula's text counts in both
   return countWords(doc.textBetween(selection.from, selection.to, ' ', leafTextForWordCount))
 }

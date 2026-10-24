@@ -7,6 +7,8 @@ export { AiSuggestedQuestions, useSuggestedQuestions } from './ai-suggested-ques
 export { AiQueueStrip } from './AiQueueStrip'
 export { useChatRunQueue, type ChatRunQueue, type QueuedChatMessage } from './chat-run-queue'
 export { AI_QUEUE_LABELS, type AiQueueStripLabels } from './strings-ai-queue'
+export { AI_SKILLS_LABELS, type AiSkillsLabels } from './strings-ai-skills'
+export { AiSkillsMenu, AiSkillChips, type AiSkillsMenuEntry } from './AiSkillsMenu'
 export { AiUsageChip, addTokenUsage, formatTokenCount, type AiTokenUsageView } from './AiUsageChip'
 export {
   chatTranscriptToMarkdown,

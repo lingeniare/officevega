@@ -78,6 +78,8 @@ const api: PdfApi = {
   exportAiChat: (markdown: string, suggestedName: string, dialogTitle: string) =>
     ipcRenderer.invoke(PDF_CHANNELS.exportAiChat, markdown, suggestedName, dialogTitle),
   requestOpenDialog: () => ipcRenderer.send(OPEN_FILE_DIALOG_CHANNEL),
+  print: (job) => ipcRenderer.invoke(PDF_CHANNELS.print, job),
+  listPrinters: () => ipcRenderer.invoke(PDF_CHANNELS.printers),
   onPrintRequest: (handler) => {
     const listener = () => handler()
     ipcRenderer.on(PDF_CHANNELS.printRequest, listener)
@@ -147,6 +149,9 @@ const api: PdfApi = {
     ipcRenderer.on(AI_CHANNELS.authChanged, listener)
     return () => ipcRenderer.removeListener(AI_CHANNELS.authChanged, listener)
   },
+  openSkillsSettings: () => ipcRenderer.invoke(AI_CHANNELS.openSkillsSettings),
+  skillsList: () => ipcRenderer.invoke(AI_CHANNELS.skillsList),
+  skillText: (name: string) => ipcRenderer.invoke(AI_CHANNELS.skillText, name),
   aiStream: (request) => ipcRenderer.invoke(AI_CHANNELS.stream, request),
   aiStreamCancel: (requestId) => ipcRenderer.invoke(AI_CHANNELS.streamCancel, requestId),
   onAiStream: (handler) => {

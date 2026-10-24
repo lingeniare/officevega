@@ -50,7 +50,11 @@ import {
   openAdvancedFilterDialog,
   type DataToolsContext,
 } from './data-tools-actions'
-import { handleTableDesignCommand, type TableDesignContext } from './table-design-actions'
+import {
+  handleTableDesignCommand,
+  selectedTableEcho,
+  type TableDesignContext,
+} from './table-design-actions'
 import { outlineSummarySettings, setOutlineSummary } from './outline-actions'
 import { handleVisualCommand, type VisualArrangeContext } from './visual-arrange-actions'
 import { dedupeRows } from './dedupe'
@@ -104,6 +108,7 @@ import {
   type LazyWorkbookState,
   type UniverRuntime,
 } from './univer-state'
+import { stepSelectionDecimals } from './decimal-step'
 import {
   handleInsertChart,
   handleInsertPicture,
@@ -601,13 +606,10 @@ export function handleRibbonCommand(ctx: RibbonCommandContext, command: string):
       return
     case 'decimal-inc':
     case 'decimal-dec':
-      // Univer's decimal commands read the displayed value's decimals for
-      // General; SetNumfmt mutations journal like any format edit.
-      void runtime.univerAPI.executeCommand(
-        command === 'decimal-inc'
-          ? 'sheet.command.numfmt.add.decimal.command'
-          : 'sheet.command.numfmt.subtract.decimal.command',
-      )
+      // Not Univer's add/subtract-decimal commands: those read an explicit
+      // "General" record as 9 decimals, so one click exploded to 10 places.
+      // SetNumfmt mutations journal like any format edit either way.
+      stepSelectionDecimals(runtime, command === 'decimal-inc' ? 1 : -1)
       return
     case 'filter-toggle':
       void runtime.univerAPI.executeCommand('sheet.command.smart-toggle-filter')
@@ -748,6 +750,7 @@ export function handleRibbonCommand(ctx: RibbonCommandContext, command: string):
     case 'comment-prev':
     case 'comment-next':
     case 'comments-pane-toggle':
+    case 'note-pictures-pane-toggle':
     case 'note-show-all':
     case 'notes-convert':
       handleThreadedCommentCommand(ctx, command, (fallback) => handleRibbonCommand(ctx, fallback))
@@ -1220,7 +1223,13 @@ export function handleRibbonCommand(ctx: RibbonCommandContext, command: string):
       break
   }
   if (command.startsWith('format-as-table:')) {
-    handleFormatAsTable(ctx.dataToolsContext(), command.slice('format-as-table:'.length))
+    const style = command.slice('format-as-table:'.length)
+    const tableContext = ctx.tableDesignContext()
+    if (selectedTableEcho(tableContext)) {
+      handleTableDesignCommand(tableContext, `table-style:${style}`)
+    } else {
+      handleFormatAsTable(ctx.dataToolsContext(), style)
+    }
     return
   }
   if (command.startsWith('use-in-formula:')) {

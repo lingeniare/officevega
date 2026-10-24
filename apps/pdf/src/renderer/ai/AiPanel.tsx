@@ -6,6 +6,7 @@ import {
   fallbackChatTitle,
   generateChatTitle,
   generateSuggestedQuestions,
+  withAttachedSkills,
   withPiiTokenGuard,
 } from '@genoffice/agent-core'
 import {
@@ -24,6 +25,8 @@ import {
   AI_QUEUE_LABELS,
   AiScopeQuote,
   AiSuggestedQuestions,
+  AiSkillChips,
+  AiSkillsMenu,
   AiTypingIndicator,
   AiUsageChip,
   IconDownload,
@@ -98,6 +101,8 @@ interface ChatEntry {
   tools?: ToolActivity[]
   /** the passage this user message targeted, frozen at send */
   scope?: AiScopeQuoteData
+  /** skills the user attached to this message from the composer menu */
+  skills?: string[]
   /** tokens the provider billed for this reply, summed across its turns (absent when unreported) */
   usage?: AiTokenUsageView
 }
@@ -144,6 +149,9 @@ export function AiPanel({
   const { lang, t } = useI18n()
   const [chat, setChat] = useState<ChatEntry[]>([])
   const [prompt, setPrompt] = useState('')
+  const [attachedSkills, setAttachedSkills] = useState<string[]>([])
+  const attachedSkillsRef = useRef(attachedSkills)
+  attachedSkillsRef.current = attachedSkills
   const [busy, setBusy] = useState(false)
   /** signed out of VEGA with no usable BYOK provider: starters + composer go muted */
   const aiDisconnected = useAiDisconnected(MODEL_BRIDGE)
@@ -492,6 +500,7 @@ export function AiPanel({
     suggested.clear()
     setBusy(false)
     setChat([])
+    setAttachedSkills([])
     setHistoryOpen(false)
     chatIdsRef.current = { projectId: item.projectId, chatId: item.chatId }
     titledChatsRef.current.add(`${item.projectId}:${item.chatId}`)
@@ -770,7 +779,12 @@ export function AiPanel({
   }
 
   /** retryScope: null = a retry that had no scope; undefined = capture the live selection */
-  const send = (text: string, retryScope?: AiScopeQuoteData | null): void => {
+  const send = (
+    text: string,
+    retryScope?: AiScopeQuoteData | null,
+    /** only the composer's own send takes the attached skills along */
+    attachSkills = false,
+  ): void => {
     const instruction = text.trim()
     const loop = loopRef.current
     if (!instruction || !loop || loop.busy) return
@@ -783,9 +797,17 @@ export function AiPanel({
     runTextsRef.current = []
     runToolsRef.current = []
     runUsageRef.current = undefined
+    // skills ride with this one message only: the chips clear like a draft does
+    const sentSkills = attachSkills ? attachedSkillsRef.current : []
+    if (sentSkills.length > 0) setAttachedSkills([])
     setChat((prev) => [
       ...prev,
-      { role: 'user', text: instruction, ...(scope ? { scope } : {}) },
+      {
+        role: 'user',
+        text: instruction,
+        ...(sentSkills.length > 0 ? { skills: sentSkills } : {}),
+        ...(scope ? { scope } : {}),
+      },
       { role: 'assistant', text: '', streaming: true },
     ])
     setPrompt('')
@@ -797,7 +819,7 @@ export function AiPanel({
         settingsRef.current = await window.pdfApi.getAiSettings()
         setAiProvider(settingsRef.current.provider)
         setPiiOn(settingsRef.current.piiShieldEnabled !== false)
-        await loop.run(instruction)
+        await loop.run(await withSkillBodies(instruction, sentSkills))
       } catch (err) {
         patchLast({
           streaming: false,
@@ -813,6 +835,31 @@ export function AiPanel({
     msgQueue.hold()
     loopRef.current?.cancel()
   }
+
+  /** the attached skills' full text in front of the request; a skill that vanished is skipped */
+  const withSkillBodies = async (instruction: string, names: readonly string[]) => {
+    if (names.length === 0) return instruction
+    const bodies = await Promise.all(
+      names.map(async (name) => {
+        try {
+          return { name, body: await window.pdfApi.skillText(name) }
+        } catch {
+          return null
+        }
+      }),
+    )
+    return withAttachedSkills(
+      instruction,
+      bodies.filter((b): b is { name: string; body: string } => b !== null),
+    )
+  }
+
+  const listSkillsForMenu = async () =>
+    (await window.pdfApi.skillsList()).map(({ name, description }) => ({ name, description }))
+  const toggleSkill = (name: string) =>
+    setAttachedSkills((prev) =>
+      prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name],
+    )
 
   /** Enter while a reply runs: the draft joins the queue above the composer */
   const enqueueDraft = () => {
@@ -1081,6 +1128,7 @@ export function AiPanel({
             return (
               <div key={i} className="ai-msg ai-msg-user">
                 {entry.scope && <AiScopeQuote scope={entry.scope} />}
+                {entry.skills && <AiSkillChips lang={lang} names={entry.skills} />}
                 <span dir="auto">{entry.text}</span>
                 {entry.undelivered && (
                   <div className="ai-msg-undelivered">
@@ -1188,51 +1236,56 @@ export function AiPanel({
           busy={busy}
           disabled={aiDisconnected}
           header={
-            hasScopeSelection && (
-              <div className="ai-scope-row">
-                <span className="ai-scope-hint">
-                  <button
-                    className="ai-scope-label"
-                    onClick={() => setScopePreviewOpen((v) => !v)}
-                    aria-expanded={scopePreviewOpen}
-                    data-tip={t('aiScopeSelectionTip')}
-                  >
-                    {t('aiScopeSelection', {
-                      page:
-                        scopeSel!.lastPage > scopeSel!.page
-                          ? `${scopeSel!.page}-${scopeSel!.lastPage}`
-                          : scopeSel!.page,
-                      words: countWords(scopeSel!.text),
-                    })}
-                  </button>
-                  <button
-                    className="ai-scope-clear"
-                    onClick={() => {
-                      setScopePreviewOpen(false)
-                      onClearSelection?.()
-                    }}
-                    data-tip={t('aiScopeClearTitle')}
-                    aria-label={t('aiScopeClearTitle')}
-                  >
-                    <svg width="10" height="10" viewBox="0 0 16 16" aria-hidden>
-                      <path
-                        d="M4 4l8 8M12 4l-8 8"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.8"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                  </button>
-                </span>
-                {scopePreviewOpen && (
-                  <div className="ai-scope-preview">
-                    {scopeSel!.text.length > 400
-                      ? `${scopeSel!.text.slice(0, 400)}…`
-                      : scopeSel!.text}
+            (hasScopeSelection || attachedSkills.length > 0) && (
+              <>
+                <AiSkillChips lang={lang} names={attachedSkills} onRemove={toggleSkill} />
+                {hasScopeSelection && (
+                  <div className="ai-scope-row">
+                    <span className="ai-scope-hint">
+                      <button
+                        className="ai-scope-label"
+                        onClick={() => setScopePreviewOpen((v) => !v)}
+                        aria-expanded={scopePreviewOpen}
+                        data-tip={t('aiScopeSelectionTip')}
+                      >
+                        {t('aiScopeSelection', {
+                          page:
+                            scopeSel!.lastPage > scopeSel!.page
+                              ? `${scopeSel!.page}-${scopeSel!.lastPage}`
+                              : scopeSel!.page,
+                          words: countWords(scopeSel!.text),
+                        })}
+                      </button>
+                      <button
+                        className="ai-scope-clear"
+                        onClick={() => {
+                          setScopePreviewOpen(false)
+                          onClearSelection?.()
+                        }}
+                        data-tip={t('aiScopeClearTitle')}
+                        aria-label={t('aiScopeClearTitle')}
+                      >
+                        <svg width="10" height="10" viewBox="0 0 16 16" aria-hidden>
+                          <path
+                            d="M4 4l8 8M12 4l-8 8"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="1.8"
+                            strokeLinecap="round"
+                          />
+                        </svg>
+                      </button>
+                    </span>
+                    {scopePreviewOpen && (
+                      <div className="ai-scope-preview">
+                        {scopeSel!.text.length > 400
+                          ? `${scopeSel!.text.slice(0, 400)}…`
+                          : scopeSel!.text}
+                      </div>
+                    )}
                   </div>
                 )}
-              </div>
+              </>
             )
           }
           placeholder={t('aiComposerPlaceholder')}
@@ -1249,10 +1302,17 @@ export function AiPanel({
             <>
               <AiModelPicker bridge={MODEL_BRIDGE} lang={lang} deposit={deposit} />
               {sessionUsage && <AiUsageChip usage={sessionUsage} session lang={lang} />}
+              <AiSkillsMenu
+                lang={lang}
+                listSkills={listSkillsForMenu}
+                selected={attachedSkills}
+                onToggle={toggleSkill}
+                onManage={() => void window.pdfApi.openSkillsSettings?.().catch(() => {})}
+              />
             </>
           }
           onChange={setPrompt}
-          onSend={() => send(prompt)}
+          onSend={() => send(prompt, undefined, true)}
           onStop={stop}
         />
       </div>

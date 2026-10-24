@@ -25,6 +25,7 @@ import {
   type ImageSearchResult,
   type WebSearchResult,
 } from './shared'
+import { officeVegaApiKey, officeVegaAuthPath } from './officevega-auth'
 // deep import: the package root re-exports Electron-bound modules, and this file also runs in the officevega CLI
 import { readBodyCapped } from '@genoffice/electron-utils/remote-image'
 import { createStreamWatchdog } from '@genoffice/ai-provider'
@@ -90,6 +91,8 @@ function electronCompatArgs(): string[] {
 export function gskApiKey(): string {
   const env = process.env.GSK_API_KEY
   if (env && !rejectedKeys.has(env)) return env
+  const own = officeVegaApiKey()
+  if (own && !rejectedKeys.has(own)) return own
   try {
     const configPath = join(homedir(), '.genspark-tool-cli', 'config.json')
     if (!existsSync(configPath)) return ''
@@ -231,7 +234,7 @@ export function watchGskApiKey(onChange: (key: string) => void, intervalMs = 200
     last = key
     onChange(key)
   }
-  const files = [join(homedir(), '.genspark-tool-cli', 'config.json')]
+  const files = [officeVegaAuthPath(), join(homedir(), '.genspark-tool-cli', 'config.json')]
   for (const f of files) watchFile(f, { persistent: false, interval: intervalMs }, check)
   return () => {
     for (const f of files) unwatchFile(f, check)
@@ -615,8 +618,6 @@ export async function gskResolveDownloadUrl(url: string): Promise<string> {
     return url
   }
 }
-
-// ── Cloud single-slide generation (Genspark slide_generate) ─────────
 
 /**
  * Calls the tool_cli HTTP endpoint directly so structured params

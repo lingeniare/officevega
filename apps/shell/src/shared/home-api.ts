@@ -17,8 +17,38 @@ import type {
 } from '@genoffice/ai-provider'
 import type { UpdateChannel, UpdateUiState } from './update-api'
 import type { LicenseActionResult, LicenseStatus } from './license-api'
-import type { KbFileInfo, KbReadPage, KbSearchHit } from '@genoffice/agent-core'
+import type {
+  AttachmentInfo,
+  CliContext,
+  CliRunRequest,
+  CliRunResult,
+  KbFileInfo,
+  KbReadPage,
+  KbSearchHit,
+} from '@genoffice/agent-core'
 import type { AiPanelPrefs } from '@genoffice/ui/ai-panel-prefs'
+
+export interface AttachmentAddResult {
+  accepted: AttachmentInfo[]
+  /** per-file rejection messages, already localized by the main process */
+  rejected: string[]
+}
+
+export interface AttachmentReadResult {
+  ok: boolean
+  error?: string
+  totalChars?: number
+  text?: string
+  offset?: number
+}
+
+export interface AttachmentImageResult {
+  ok: boolean
+  /** raw base64 (no data: URL prefix) */
+  base64?: string
+  mime?: string
+  error?: string
+}
 
 /** UI language; kept self-contained here (mirrors Lang in @genoffice/i18n) */
 
@@ -47,6 +77,16 @@ export type UiDesign = 'standard' | 'retro' | 'digital'
 export type DocTheme = 'follow' | 'light' | 'dark' | 'eyecare'
 
 /** shell-wide AutoSave default for every editor; updatedAt is 0 until first set */
+/** mirrors AUTHOR_NAME_MAX in @genoffice/electron-utils (the renderer cannot import it) */
+export const AUTHOR_NAME_MAX = 120
+
+export interface AuthorNameSetting {
+  /** stored override; '' means "use fallback" */
+  value: string
+  /** the OS account name */
+  fallback: string
+}
+
 export interface AutoSaveDefault {
   on: boolean
   updatedAt: number
@@ -131,15 +171,28 @@ export interface FileSearchHit extends RecentEntry {
 }
 
 /**
- * Endpoints the search reranker can judge against. The hosted Jev routes are
- * OpenRouter and TypeSafe's own API; Perplexity, Cloudflare and Liquid AI host
- * their own decision models; Kev and Rizzo Flow are local /v1/systemone
- * servers; `custom` points at any other /v1/systemone-compatible server.
+ * The decision-model routes the app can call. Several vendors publish more
+ * than one size or generation behind the same URL, and the difference is only
+ * the `model` in the body — but they are listed separately rather than folded
+ * into one option with a model picker, because picking the wrong one costs
+ * real money per call and a dropdown that names them is the safer surface.
  * `vega` is the api.vega.chat proxy of the OpenRouter route — it rides the
  * sign-in key.
  */
 export type DecisionEndpoint =
-  'vega' | 'openrouter' | 'direct' | 'perplexity' | 'liquid' | 'cloudflare' | 'kev' | 'rizzo' | 'custom'
+  | 'vega'
+  | 'openrouter'
+  | 'direct'
+  | 'perplexity'
+  | 'liquid'
+  | 'cloudflare'
+  | 'kev'
+  | 'rizzo'
+  | 'custom'
+
+export function isCloudflareEndpoint(endpoint: DecisionEndpoint): boolean {
+  return endpoint === 'cloudflare'
+}
 
 /** home search options persisted in app-settings.json under `fileSearch` */
 export interface FileSearchSettings {
@@ -152,9 +205,9 @@ export interface FileSearchSettings {
   customBaseUrl: string
   /** `custom` endpoint only: model id the server expects */
   customModel: string
-  /** `cloudflare` endpoint only: Workers AI account id */
+  /** `cloudflare` only: Workers AI account id */
   cloudflareAccountId: string
-  /** `cloudflare` endpoint only: Workers AI model path, e.g. @cf/cloudflare/clef or @cf/cloudflare/clef-omni */
+  /** `cloudflare` only: Workers AI model path, e.g. @cf/cloudflare/clef */
   cloudflareModel: string
 }
 
@@ -186,6 +239,12 @@ export interface DefaultAppStatus {
   manualOnly: boolean
 }
 
+export interface UserSkillEntry {
+  name: string
+  description: string
+  relevant: boolean
+}
+
 export interface HomeApi {
   /** unified recents across document types, newest first (paged) */
   recents(query?: RecentQuery): Promise<RecentPage>
@@ -210,6 +269,12 @@ export interface HomeApi {
   // ---- knowledge-base ask panel: the reader's starred corpus, askable ----
   /** the starred corpus as the AI's knowledge base */
   kbList(): Promise<KbFileInfo[]>
+  /** the skills the user installed into OfficeVega */
+  skillsList(): Promise<UserSkillEntry[]>
+  /** one installed skill's body, by name */
+  skillText(name: string): Promise<string>
+  /** open Settings › Integrations (the skills list) */
+  openSkillsSettings(): Promise<void>
   /** full-text search over the corpus */
   kbSearch(query: { q: string; limit?: number }): Promise<KbSearchHit[]>
   /** one page of a corpus file's parsed text (path must be in kbList) */
@@ -226,6 +291,20 @@ export interface HomeApi {
     format: 'md' | 'docx'
     content: string
   }): Promise<{ path: string }>
+  /** the work and output directories the Ask AI CLI tools use for one conversation */
+  kbCliContext(sessionId: string): Promise<CliContext>
+  /** run the bundled officevega CLI for one conversation (confined; see main/home-cli.ts);
+   *  `sources` are the attached files whose folders the CLI may read */
+  kbRunCli(
+    sessionId: string,
+    request: CliRunRequest & { sources?: string[] },
+  ): Promise<CliRunResult>
+  /** chat attachments: the files:* handlers Docs registers in the shell main process */
+  pickAttachments(): Promise<AttachmentAddResult | null>
+  addAttachmentPaths(paths: string[]): Promise<AttachmentAddResult>
+  addPastedImage(data: ArrayBuffer, ext: string): Promise<AttachmentAddResult>
+  readAttachment(path: string, offset: number, maxChars: number): Promise<AttachmentReadResult>
+  readAttachmentImage(path: string): Promise<AttachmentImageResult>
   /** the user's AI provider settings (shared with every app's panel) */
   aiGetSettings(): Promise<AiSettings>
   /** one streamed model turn over the shared ai:stream handler */
@@ -353,6 +432,9 @@ export interface HomeApi {
   getAutoSaveDefault(): Promise<AutoSaveDefault>
   /** persist the AutoSave default; broadcasts 'app:auto-save-default-changed' to all web contents */
   setAutoSaveDefault(on: boolean): Promise<void>
+  /** whether long-idle background tabs release their renderer once many are open (default on) */
+  getTabSleepEnabled(): Promise<boolean>
+  setTabSleepEnabled(on: boolean): Promise<void>
   /** current local MCP server state (running/enabled/port/url) */
   getMcpStatus(): Promise<McpStatus>
   /** enable/disable the MCP server and/or change its port/background/logging; applies and persists, returns the new state */
@@ -368,6 +450,14 @@ export interface HomeApi {
   clearMcpLogs(): Promise<void>
   /** reveal the MCP log file in the file manager (created empty when missing) */
   openMcpLogFile(): Promise<void>
+  /** whether anonymous usage statistics are enabled (default true in official builds) */
+  getAnalyticsEnabled(): Promise<boolean>
+  /** persist an explicit analytics opt-in or opt-out */
+  setAnalyticsEnabled(enabled: boolean): Promise<boolean>
+  /** name on comments and tracked changes; `value` is the stored override ('' = use `fallback`, the OS account) */
+  getAuthorName(): Promise<AuthorNameSetting>
+  /** persist; broadcasts 'app:author-name-changed' (the effective name) to all web contents */
+  setAuthorName(value: string): Promise<AuthorNameSetting>
   /** AI panel text size + chat-input spellcheck (persisted in userData/app-settings.json) */
   getAiPanelPrefs(): Promise<AiPanelPrefs>
   /** merge + persist; broadcasts 'app:ai-panel-prefs-changed' to all web contents */
@@ -662,11 +752,17 @@ export const HOME_CHANNELS = {
   setUiScale: 'home:set-ui-scale',
   getAutoSaveDefault: 'home:get-auto-save-default',
   setAutoSaveDefault: 'home:set-auto-save-default',
+  getTabSleepEnabled: 'home:get-tab-sleep-enabled',
+  setTabSleepEnabled: 'home:set-tab-sleep-enabled',
   getMcpStatus: 'home:get-mcp-status',
   setMcpSettings: 'home:set-mcp-settings',
   getMcpLogs: 'home:get-mcp-logs',
   clearMcpLogs: 'home:clear-mcp-logs',
   openMcpLogFile: 'home:open-mcp-log-file',
+  getAnalyticsEnabled: 'home:get-analytics-enabled',
+  setAnalyticsEnabled: 'home:set-analytics-enabled',
+  getAuthorName: 'home:get-author-name',
+  setAuthorName: 'home:set-author-name',
   getAiPanelPrefs: 'home:get-ai-panel-prefs',
   setAiPanelPrefs: 'home:set-ai-panel-prefs',
   getDefaultSaveDir: 'home:get-default-save-dir',

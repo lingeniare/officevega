@@ -17,9 +17,11 @@ interface CliLinkRecord {
  * Every launch: record where the officevega launcher lives so agents can find it
  * without a PATH (the `officevega` skill reads `~/.officevega/launcher`), then
  * try to expose it on the PATH. The dmg has no installer step to do that, so
- * macOS retries on each start until a writable directory turns up; Windows
- * gets its PATH entry from the installer and only re-checks once per version
- * (the check spawns PowerShell). Silent and best effort.
+ * macOS retries on each start until a writable directory turns up. Windows
+ * gets its PATH entry from the NSIS installer on every install and update, so
+ * nothing runs here: the PATH probe spawns PowerShell, and with Windows
+ * Terminal as the default console host a hidden child still flashes a window
+ * on the first launch of each version (genoffice#2011). Silent and best effort.
  */
 export function installCliLinkBestEffort(settingsPath: string): void {
   if (!app.isPackaged) return

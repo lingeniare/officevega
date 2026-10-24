@@ -76,6 +76,7 @@ import {
   addTokenUsage,
   stepUiScale,
   type AiHistoryItem,
+  ImageViewer,
   type AiTokenUsageView,
   type AiScopeQuoteData,
 } from '@genoffice/ui'
@@ -148,6 +149,7 @@ import {
   generateChatTitle,
   generateSuggestedQuestions,
   withPiiTokenGuard,
+  withAttachedSkills,
   type AgentImage,
 } from '@genoffice/agent-core'
 import {
@@ -173,6 +175,8 @@ import {
 } from '@genoffice/xlsx-gateway/domain/chart-visual'
 import { InMemoryWorkbookAdapter } from '@genoffice/xlsx-gateway/domain/in-memory-workbook'
 import { cfRuleUnsaveableReason, iconSetSaveable } from '@genoffice/xlsx-gateway/gateway/xlsx-cf'
+import type { SheetRedactionState } from '@genoffice/xlsx-gateway/gateway/xlsx-redaction'
+import { statesOnScreen } from './redact-marks-shift'
 import { installLazyFindBridge } from './lazy-find'
 import { startFullLoad } from './full-load'
 import { opensInFormulaMode, workbookCellCounts } from './load-budget'
@@ -286,6 +290,20 @@ import {
   readSheetFeatures as readSheetFeaturesImpl,
   type WorkbookReadContext,
 } from './ai/workbook-readers'
+import { NO_REDACTIONS, sanitizeLabel, type RedactionIndex } from './ai/redact'
+import { redactionSessionFor } from './ai/redact-load'
+import { RedactDialog } from './components/RedactDialog'
+import { installRedactMenu, type SelectionRequest } from './redact-menu'
+import { buildMark, restoreCellFill } from './redact-tint'
+import {
+  addMark,
+  clearMark,
+  hasPendingRedactionChange,
+  indexFor,
+  redactIntentFor,
+  type MarkKey,
+  type RedactDialogState,
+} from './redact-actions'
 import {
   getSourceRange as getSourceRangeImpl,
   handleCreatePivot as handleCreatePivotImpl,
@@ -366,6 +384,7 @@ import { sharedFormulaResolverFor } from './shared-formula-journal'
 import { installCellClipAnchorFix } from './cell-clip-anchor-fix'
 import { installBorderOverflowExclusionFix } from './border-overflow-exclusion'
 import { installCfEmptySheetFastPath } from './cf-empty-fast-path'
+import { installOtherFormulaAnchor } from './other-formula-anchor'
 import { installMergeBorderFix } from './merge-border-fix'
 import { installThickBorderFix } from './thick-border-fix'
 import { installCenterContinuousRender } from './center-continuous'
@@ -410,13 +429,19 @@ import {
   type StatusBarFunc,
   type StatusBarStatsFilter,
 } from './status-bar-stats'
-import { applyUniverLocale, insertRowsBelowLocale, numberAsTextAlertLocale } from './univer-locales'
+import {
+  applyUniverLocale,
+  hideFromAiLocale,
+  insertRowsBelowLocale,
+  numberAsTextAlertLocale,
+} from './univer-locales'
 import { installRuleDetail } from './univer-rule-detail'
 import { installActiveCellDataValidationChrome } from './data-validation-dropdown'
 import { installInvalidDataMarkerSuppression } from './data-validation-marker'
 import { installThreadedCommentAffordances, type ThreadHover } from './threaded-comment-marker'
 import { threadPane, threadStore } from './threaded-comments'
 import { ThreadHoverCard, ThreadedCommentsPane } from './ThreadedCommentsPane'
+import { NotePicturesPane } from './NotePicturesPane'
 import { installFormulaNullResultFix } from './formula-null-result'
 import { installNumberFormatFix } from './numfmt-fix'
 import { installIfsEmptySetFix } from './ifs-empty-set'
@@ -458,6 +483,7 @@ import {
 import { VisualDialog, type SizeDialogResult } from './VisualDialogs'
 
 import {
+  cellImageAddAt,
   createEditJournal,
   isSheetRemoved,
   hyperlinkEditAt,
@@ -469,6 +495,7 @@ import {
   recordNoteChange,
   recordProtectedRangesChange,
   recordFilterChange,
+  recordRemoveNumfmt,
   recordSetNumfmt,
   recordSetRangeValues,
   recordSheetHidden,
@@ -496,6 +523,7 @@ import { EquationDialog } from './EquationDialog'
 import { IconsDialog } from './IconsDialog'
 import { RecommendedChartsDialog } from './RecommendedChartsDialog'
 import { installPictureTransfer } from './picture-paste'
+import { installCellImagePreview } from './cell-image-preview'
 import { installWheelZoomSteps } from './wheel-zoom'
 import {
   ensureSheetUiZoom,
@@ -523,6 +551,7 @@ import { SlicerFieldPicker, SlicerPanels, type SlicerUiState } from './SlicerPan
 import { WatchWindowPanel, watchKey, type WatchCell, type WatchRowValue } from './WatchWindowPanel'
 import { TimelineFieldPicker, TimelinePanels, type TimelineUiState } from './TimelinePanel'
 import type { DefinedNameAction, DefinedNameRow } from './NameManagerDialog'
+import { workbookMediaDataUrl } from './workbook-media'
 import {
   clearVisualSelection,
   convertibleType,
@@ -584,6 +613,44 @@ export function App({
   const adapterRef = useRef(new InMemoryWorkbookAdapter(initialSnapshot))
   const univerRef = useRef<UniverRuntime | null>(null)
   const lazyWorkbookRef = useRef<LazyWorkbookState | null>(null)
+  /**
+   * The cells the reader withheld from the model, read once per open (see the
+   * `readWorkbookRedactions` call in openLazyWorkbook). A ref rather than
+   * state: the readers ask about it per cell and nothing renders from it, and
+   * the marks the user adds later replace it through the same ref.
+   */
+  const redactionIndexRef = useRef<RedactionIndex | null>(null)
+  /**
+   * The same marks, in the shape the save takes (keyed by sheet name, as the
+   * package part is). Held here so a save can carry them even when nothing
+   * else in the journal is dirty — a workbook whose only pending change is a
+   * newly withheld cell is still a workbook that must be saved.
+   */
+  const redactionStatesRef = useRef<readonly SheetRedactionState[]>([])
+  /**
+   * What the part held when this workbook was opened. A mark added or cleared
+   * since then is a pending change the edit journal never sees, and the save
+   * ticks below decide whether there is anything to write from that journal
+   * alone — so without this a workbook whose only edit is a withheld cell
+   * would never autosave, and closing the tab would drop the mark silently.
+   */
+  const loadedRedactionStatesRef = useRef<readonly SheetRedactionState[]>([])
+  /**
+   * The pending "what does this stand for?" question, or null when no dialog
+   * is open. State, not a ref: the dialog renders from it.
+   */
+  const [redactDialog, setRedactDialog] = useState<RedactDialogState | null>(null)
+  /**
+   * True when the reader's marks differ from what the file was opened with.
+   *
+   * Compares the two shapes as text: the marks are a handful of rectangles, and
+   * a stable serialization is both simpler and stricter than a field-by-field
+   * walk — a mark that moved by one row is a change, and both sides serialize
+   * in the same order, so the comparison is exact.
+   */
+  function redactionsPendingSave(): boolean {
+    return hasPendingRedactionChange(redactionStatesRef.current, loadedRedactionStatesRef.current)
+  }
   /// Univer undo/redo stack occupancy (subscribed at mount): drives the QAT button gray states
   const [univerHist, setUniverHist] = useState({ canUndo: false, canRedo: false })
   /// Set once Univer boots; mounts the app's Excel-style Find & Replace panel.
@@ -683,6 +750,7 @@ export function App({
           saveInFlight: saveGateRef.current.busy,
           hasWorkbook: true,
           journalEmpty: journalSize(state.editJournal) === 0,
+          redactionsPendingSave: redactionsPendingSave(),
           editingCell: editingCellRef.current,
           needsSaveAsNotUnsavedNew: Boolean(state.file.needsSaveAs) && !state.file.unsavedNew,
           isCsv: state.file.csvPath !== undefined,
@@ -718,6 +786,7 @@ export function App({
           saveInFlight: saveGateRef.current.busy,
           hasWorkbook: true,
           journalEmpty: journalSize(state.editJournal) === 0,
+          redactionsPendingSave: redactionsPendingSave(),
           editingCell: editingCellRef.current,
           needsSaveAsNotUnsavedNew: Boolean(state.file.needsSaveAs) && !state.file.unsavedNew,
           isCsv: state.file.csvPath !== undefined,
@@ -814,6 +883,8 @@ export function App({
     kind: VisualDialogKind
     visualId: string
   } | null>(null)
+  /// Data URL of the cell picture opened in the full-size viewer, if any.
+  const [viewImage, setViewImage] = useState<string | null>(null)
   const visualCommandRef = useRef<(command: string, visualId: string) => void>(() => undefined)
   const [selectedTable, setSelectedTable] = useState<SelectedTableRibbon | null>(null)
   const [tableCreatedSeq, setTableCreatedSeq] = useState(0)
@@ -1036,6 +1107,7 @@ export function App({
       openLazyWorkbook,
       setPendingEdits,
       readCells: (addresses, sheetId) => readCellsImpl(readContext(), addresses, sheetId),
+      redactionStates: () => redactionStatesRef.current,
       stashViewRestore: (view) => {
         viewRestoreRef.current = view
       },
@@ -1064,6 +1136,17 @@ export function App({
       setPendingEdits,
       openDialog: (kind, visualId) => setVisualDialog({ kind, visualId }),
       resyncChart: (state, editKey) => queueChartRefResync(visualSyncContext(), state, editKey),
+      refreshCellImages: () => {
+        const runtime = univerRef.current
+        if (runtime) {
+          queueSparklineInstall(
+            runtime,
+            lazyWorkbookRef,
+            sparklineDisposablesRef,
+            sparklineTimerRef,
+          )
+        }
+      },
     }
   }
   visualCommandRef.current = (command, visualId) =>
@@ -1137,6 +1220,13 @@ export function App({
   const [attachNotice, setAttachNotice] = useState<string | null>(null)
   const attachmentsRef = useRef(attachments)
   attachmentsRef.current = attachments
+  const [attachedSkills, setAttachedSkills] = useState<readonly string[]>([])
+  const attachedSkillsRef = useRef(attachedSkills)
+  attachedSkillsRef.current = attachedSkills
+  const toggleSkill = (name: string) =>
+    setAttachedSkills((prev) =>
+      prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name],
+    )
   /** Attachments consumed by earlier sends this session: sending clears the composer, but the
       files skill must keep reading them mid-run and in follow-up turns. Deduped by path. */
   const sentAttachmentsRef = useRef<readonly AttachmentMeta[]>([])
@@ -1713,7 +1803,29 @@ export function App({
     return images
   }
 
-  function runAgent(instruction: string, sentAttachments: readonly AttachmentMeta[]): void {
+  /** the attached skills' full text in front of the request; a skill that vanished is skipped */
+  const withSkillBodies = async (instruction: string, names: readonly string[]) => {
+    if (names.length === 0) return instruction
+    const bodies = await Promise.all(
+      names.map(async (name) => {
+        try {
+          return { name, body: await window.desktopApi.skillText(name) }
+        } catch {
+          return null
+        }
+      }),
+    )
+    return withAttachedSkills(
+      instruction,
+      bodies.filter((b): b is { name: string; body: string } => b !== null),
+    )
+  }
+
+  function runAgent(
+    instruction: string,
+    sentAttachments: readonly AttachmentMeta[],
+    sentSkills: readonly string[] = [],
+  ): void {
     const loop = agentLoopRef.current
     if (!instruction.trim() || !loop || loop.busy || runStartingRef.current) return
     runStartingRef.current = true
@@ -1729,13 +1841,18 @@ export function App({
     setMessage(t('appAiThinking'))
     appendChat({ role: 'assistant', text: '', tools: [], streaming: true })
     void collectImageAttachments(sentAttachments)
-      .then((images) => {
+      .then(async (images) => {
+        const modelInstruction = await withSkillBodies(instruction, sentSkills)
         runStartingRef.current = false
-        loop.run(instruction, images)
+        loop.run(modelInstruction, images)
       })
-      .catch(() => {
+      .catch(async () => {
+        // an unreadable image must not strand the run, nor drop the skills the user attached
+        const modelInstruction = await withSkillBodies(instruction, sentSkills).catch(
+          () => instruction,
+        )
         runStartingRef.current = false
-        loop.run(instruction)
+        loop.run(modelInstruction)
       })
   }
 
@@ -1931,6 +2048,7 @@ export function App({
     // file context (availableAttachments merges sent + live) — same as docs
     // (#224) and slides. The typed draft itself is kept.
     setAttachments([])
+    setAttachedSkills([])
     setAttachNotice(null)
     sentAttachmentsRef.current = []
     setPreview(null)
@@ -1942,11 +2060,207 @@ export function App({
    * preview-then-apply path handlePlan/handleLazyPlan already exercise. */
   /** App-scope refs bundle for the extracted workbook readers (ai/workbook-readers.ts). */
   function readContext(): WorkbookReadContext {
-    return { univerRef, lazyWorkbookRef, adapterRef }
+    return { univerRef, lazyWorkbookRef, adapterRef, redactionIndexRef }
+  }
+
+  /**
+   * The index the grid, the tint and the model all read.
+   *
+   * `redactionStatesRef` holds the marks in file coordinates — where the
+   * reader put them, and where a save writes them. The grid is somewhere else
+   * after this session's row and column edits, so the index is derived by
+   * replaying the journal's structural ops rather than by moving the marks and
+   * trying to move them back on undo. The journal is already how a streamed
+   * viewport survives the same shift, and it cancels an insert/remove pair on
+   * undo, so a mark follows the grid for free and returns with ⌘Z.
+   */
+  function rebuildRedactionIndex(): void {
+    const journal = lazyWorkbookRef.current?.editJournal
+    if (!journal) return
+    const sheets = getActiveSheetInfo().sheets
+    const idByName = new Map(sheets.map((sheet) => [sheet.name, sheet.id]))
+    const onScreen = statesOnScreen(redactionStatesRef.current, (name) => {
+      const id = idByName.get(name)
+      return id === undefined ? [] : (journal.structuralOps.get(id) ?? [])
+    })
+    redactionIndexRef.current = indexFor(onScreen, sheets)
   }
 
   function getActiveSheetInfo(): ActiveSheetInfo {
     return getActiveSheetInfoImpl(readContext(), aiRunScopeRef.current)
+  }
+
+  /**
+   * Re-derive the index whenever the grid's structure changes.
+   *
+   * A row inserted above a mark leaves it covering whatever shifted down into
+   * its place, and the app looks right the whole time — the tint is drawn from
+   * the mark — so the leak only appears in the saved file, on the next open, on
+   * someone else's machine. The AI's own inserts are refused while a mark would
+   * move (`ai/redact-guard.ts`); a person inserting a row from the grid is the
+   * case no guard sees.
+   */
+  const watchStructuralEditsForMarks = (): void => {
+    const api = univerRef.current?.univerAPI
+    if (!api) return
+    api.onCommandExecuted((command: { id?: string }) => {
+      if (!command?.id || !STRUCTURAL_EDIT_COMMAND_PATTERN.test(command.id)) return
+      rebuildRedactionIndex()
+    })
+  }
+
+  /** Turn a grid right-click into either a dialog or an immediate clear. */
+  function onRedactSelection(request: SelectionRequest) {
+    const state = lazyWorkbookRef.current
+    if (!state) return
+    const workbook = univerRef.current?.univerAPI.getActiveWorkbook()
+    const sheetName = workbook?.getSheetBySheetId(request.sheetId)?.getSheetName()
+    const intent = redactIntentFor(request, redactionIndexRef.current ?? NO_REDACTIONS, (id) =>
+      workbook?.getSheetBySheetId(id)?.getSheetName(),
+    )
+    if (intent.kind === 'ignore') return
+    if (intent.kind === 'clear') {
+      // The tint was clicked on the grid, so what arrives is in screen
+      // coordinates; the store keeps file coordinates. Same translation the
+      // create path makes, so the two actually meet.
+      const clearOps = lazyWorkbookRef.current?.editJournal.structuralOps.get(request.sheetId) ?? []
+      const clearRow = screenToFile(clearOps, 'row', intent.mark.startRow)
+      const clearEndRow = screenToFile(clearOps, 'row', intent.mark.endRow)
+      const clearCol = screenToFile(clearOps, 'column', intent.mark.startColumn)
+      const clearEndCol = screenToFile(clearOps, 'column', intent.mark.endColumn)
+      // The same gesture that withheld it stops withholding it — one item, and
+      // no second string in a locale set that must not grow.
+      const marked =
+        clearRow === null || clearEndRow === null || clearCol === null || clearEndCol === null
+          ? undefined
+          : redactionStatesRef.current
+              .find((entry) => entry.sheetName === intent.sheetName)
+              ?.marks.find(
+                (mark) =>
+                  mark.startRow === clearRow &&
+                  mark.endRow === clearEndRow &&
+                  mark.startColumn === clearCol &&
+                  mark.endColumn === clearEndCol,
+              )
+      const next =
+        clearRow === null || clearEndRow === null || clearCol === null || clearEndCol === null
+          ? redactionStatesRef.current
+          : clearMark(redactionStatesRef.current, intent.sheetName, {
+              ...intent.mark,
+              startRow: clearRow,
+              endRow: clearEndRow,
+              startColumn: clearCol,
+              endColumn: clearEndCol,
+            })
+      redactionStatesRef.current = next
+      rebuildRedactionIndex()
+      // The tint is the only thing the mark ever did to the reader's own
+      // formatting, so clearing has to take it back off.
+      if (marked && workbook) {
+        try {
+          restoreCellFill(
+            univerRef.current!,
+            intent.sheetName,
+            workbook.getSheetBySheetId(request.sheetId)!.getRange(a1Of(intent.mark)) as never,
+            marked.previousFill,
+            workbook.getId(),
+          )
+        } catch {
+          // A cell the grid will not hand out (filtered out, never loaded) is
+          // not a reason to keep the mark; the mark is already gone.
+        }
+      }
+      return
+    }
+    // A single cell offers its own text as the label, so the common case is
+    // one word of typing; a range has no text and starts empty.
+    let seed = ''
+    if (request.isSingleCell) {
+      try {
+        seed =
+          (
+            workbook
+              ?.getSheetBySheetId(request.sheetId)
+              ?.getRange(`${columnLabel(request.startColumn)}${request.startRow + 1}`)
+              .getValue() as string | undefined
+          )?.slice(0, 24) ?? ''
+      } catch {
+        // An unreadable cell just means no seed offered.
+      }
+    }
+    setRedactDialog({ ...intent.dialog, seed })
+    if (sheetName === undefined) setRedactDialog(null)
+  }
+
+  /** Commit the label the reader typed. */
+  function onRedactConfirm(label: string) {
+    const pending = redactDialog
+    setRedactDialog(null)
+    if (!pending) return
+    const clean = sanitizeLabel(label)
+    if (!clean) return
+    const workbook = univerRef.current?.univerAPI.getActiveWorkbook()
+    const worksheet = workbook?.getSheetBySheetId(pending.sheetId)
+    // A mark is written into the package part, so it has to name the cell the
+    // FILE has, not the one the grid is showing: this session may have
+    // inserted rows above it that the file has never seen. `screenToFile`
+    // answers null for a row inserted this session — it has no file coordinate
+    // to write down — so the reader is told to save rather than handed a mark
+    // the save would later shift a second time.
+    const ops = lazyWorkbookRef.current?.editJournal.structuralOps.get(pending.sheetId) ?? []
+    const startRow = screenToFile(ops, 'row', pending.startRow)
+    const endRow = screenToFile(ops, 'row', pending.endRow)
+    const startColumn = screenToFile(ops, 'column', pending.startColumn)
+    const endColumn = screenToFile(ops, 'column', pending.endColumn)
+    if (startRow === null || endRow === null || startColumn === null || endColumn === null) {
+      showToast(t('redactNeedsSavedRow'), 'error')
+      return
+    }
+    const inFile = { startRow, endRow, startColumn, endColumn }
+    // buildMark reads the fill, paints the tint and returns both, so the mark
+    // cannot be assembled without the value that has to be restored later. The
+    // tint is drawn on the grid, so it takes the screen bounds.
+    let mark: MarkKey & { label: string; previousFill: string | null } = {
+      ...inFile,
+      label: clean,
+      previousFill: null,
+    }
+    try {
+      if (worksheet) {
+        mark = buildMark(worksheet, a1Of(pending), clean, {
+          startRow: pending.startRow,
+          endRow: pending.endRow,
+          startColumn: pending.startColumn,
+          endColumn: pending.endColumn,
+        })
+        // buildMark echoes the bounds it was handed; the stored copy is the
+        // file-coord one, the painted one is the screen one.
+        mark = { ...mark, ...inFile }
+      }
+    } catch {
+      // A range the grid will not hand out still gets its mark; it just goes
+      // unmarked on screen, which is the same state the reader is in anyway
+      // for a sheet that has not finished streaming.
+    }
+    const next = addMark(redactionStatesRef.current, pending.sheetName, mark)
+    redactionStatesRef.current = next
+    // Not `indexFor(next, …)`: the states are in file coordinates now, and the
+    // index the grid reads has to be the screen ones. The same replay the
+    // loaded marks go through covers this one.
+    rebuildRedactionIndex()
+  }
+
+  /** `A1:B2` for a mark's rectangle, for the range the tint is painted on. */
+  function a1Of(area: {
+    startRow: number
+    endRow: number
+    startColumn: number
+    endColumn: number
+  }): string {
+    return (
+      `${columnLabel(area.startColumn)}${area.startRow + 1}:` +
+      `${columnLabel(area.endColumn)}${area.endRow + 1}`
+    )
   }
 
   function sheetsSkillDeps(): SheetsSkillDeps {
@@ -1981,6 +2295,7 @@ export function App({
         traceWorkbookPrecedents(readContext(), sheetId, address),
       traceDependents: (sheetId, address) =>
         traceWorkbookDependents(readContext(), sheetId, address),
+      redactions: () => redactionIndexRef.current ?? NO_REDACTIONS,
       proposeOperations,
       createDocument: (request) => createAiDocument({ univerRef, lazyWorkbookRef }, request),
     }
@@ -2034,7 +2349,10 @@ export function App({
           numberAsTextAlertLocale(UniverPresetSheetsCoreEnUS),
           // last wins per namespace: feed the alert-patched pack through so
           // both sheets-ui patches survive the shallow merge
-          insertRowsBelowLocale(numberAsTextAlertLocale(UniverPresetSheetsCoreEnUS)),
+          hideFromAiLocale(
+            insertRowsBelowLocale(numberAsTextAlertLocale(UniverPresetSheetsCoreEnUS)),
+            'en',
+          ),
         ),
       },
       presets: [
@@ -2126,6 +2444,7 @@ export function App({
     installLoadAutoHeightGate()
     installBorderOverflowExclusionFix()
     installCfEmptySheetFastPath()
+    installOtherFormulaAnchor()
     installCellClipAnchorFix()
     // Borders stored on a merged range's main cell must render their edge
     // segments like Excel; stock Univer drops them entirely.
@@ -2250,6 +2569,10 @@ export function App({
       },
     })
     const ctrlDragFillDisposable = installCtrlDragFill(runtime)
+    // The grid's right-click item that withholds the selected cells from the
+    // AI. Contributed to Univer's own menu rather than replacing it, so every
+    // built-in item keeps working.
+    const redactMenuDisposable = installRedactMenu(runtime, onRedactSelection)
     // A context-menu submenu re-hovered within Univer's close delay stays
     // invisible; re-trigger its positioning (genoffice#337).
     const contextSubmenuReopenDisposable = installContextSubmenuReopenFix()
@@ -2330,6 +2653,9 @@ export function App({
       setPendingEdits(journalSize(state.editJournal))
     }
     void window.desktopApi.getUserDisplayName?.().then((name) => threadStore.setAuthor(name))
+    const offAuthorChanged = window.desktopApi.onUserDisplayNameChanged?.((name) =>
+      threadStore.setAuthor(name),
+    )
     // Univer's own UI (rule-management panels, dialogs) follows the app
     // language instead of hard-coded English.
     void applyUniverLocale(runtime, getLang())
@@ -2557,6 +2883,7 @@ export function App({
         if (
           event.id !== SET_RANGE_VALUES_MUTATION &&
           event.id !== SET_NUMFMT_MUTATION &&
+          event.id !== REMOVE_NUMFMT_MUTATION &&
           !rowColumn &&
           !merge &&
           !axisAttr &&
@@ -3077,12 +3404,14 @@ export function App({
         const recorded =
           event.id === SET_NUMFMT_MUTATION
             ? recordSetNumfmt(state.editJournal, params.subUnitId, params)
-            : recordSetRangeValues(
-                state.editJournal,
-                params.subUnitId,
-                params.cellValue,
-                sharedFormulaResolverFor(runtime, params.subUnitId),
-              )
+            : event.id === REMOVE_NUMFMT_MUTATION
+              ? recordRemoveNumfmt(state.editJournal, params.subUnitId, params)
+              : recordSetRangeValues(
+                  state.editJournal,
+                  params.subUnitId,
+                  params.cellValue,
+                  sharedFormulaResolverFor(runtime, params.subUnitId),
+                )
         if (recorded.length === 0) return
         setPendingEdits(journalSize(state.editJournal))
         const contentEdited = recorded.some(
@@ -3447,6 +3776,39 @@ export function App({
           insert: (file, anchor) => handleInsertPictureFile(visualContext(), file, anchor),
         })
       : () => undefined
+    // Double-click on a cell picture opens the viewer instead of the editor.
+    const openCellImagePreview = (row: number, column: number): boolean => {
+      const state = lazyWorkbookRef.current
+      const worksheet = runtime.univerAPI.getActiveWorkbook()?.getActiveSheet()
+      if (!state || !worksheet) return false
+      const sheetId = worksheet.getSheetId()
+      const session = cellImageAddAt(state.editJournal, sheetId, row, column)
+      if (session) {
+        setViewImage(session.dataUrl)
+        return true
+      }
+      const fileImage = state.file.sheets
+        .find((sheet) => sheet.id === sheetId)
+        ?.cellImages?.find((image) => image.row === row && image.column === column)
+      if (!fileImage) return false
+      void window.desktopApi
+        .readWorkbookMedia({ sessionId: state.file.sessionId, visualId: fileImage.id })
+        .then(async (media) => {
+          const next = await workbookMediaDataUrl(media)
+          if (next) setViewImage(next)
+        })
+        .catch((reason: unknown) => {
+          console.warn(`cell picture preview unavailable (${fileImage.id})`, reason)
+        })
+      return true
+    }
+    const disposeCellImagePreview = gridHost
+      ? installCellImagePreview(gridHost, {
+          isCellEditing: () => editingCellRef.current,
+          cellAtPoint: (x, y) => cellAtClientPoint(runtime, x, y),
+          openPreview: openCellImagePreview,
+        })
+      : () => undefined
     const disposeWheelZoom = gridHost
       ? installWheelZoomSteps(gridHost, {
           isCellEditing: () => editingCellRef.current,
@@ -3608,6 +3970,7 @@ export function App({
       unsubscribeCloseSave()
       offThemeChanged?.()
       offDocThemeChanged?.()
+      offAuthorChanged?.()
       undoRedoSub.unsubscribe()
       findRevealDispose()
       gridGrowthDispose()
@@ -3635,6 +3998,7 @@ export function App({
       arrowCollapseDisposable.dispose()
       sheetProtectionDisposable.dispose()
       ctrlDragFillDisposable.dispose()
+      redactMenuDisposable.dispose()
       contextSubmenuReopenDisposable.dispose()
       multiRowAutofitDisposable.dispose()
       cellContextMenuDisposable.dispose()
@@ -3674,6 +4038,7 @@ export function App({
       if (contentTimer) clearTimeout(contentTimer)
       contentDisposable.dispose()
       disposePictureTransfer()
+      disposeCellImagePreview()
       disposeWheelZoom()
       gridHost?.removeEventListener('pointerdown', onSelectionPointerDown, true)
       window.removeEventListener('pointermove', onSelectionPointerMove, true)
@@ -3718,6 +4083,9 @@ export function App({
     // bubble, images multimodal, files via the files skill) and the composer clears.
     // Retry passes the failed message's original set instead.
     const sentAtts = overrideAttachments ?? attachmentsRef.current
+    // skills ride with this one message only: the chips clear like attachments do
+    const sentSkills = overrideInstruction ? [] : attachedSkillsRef.current
+    if (sentSkills.length > 0) setAttachedSkills([])
     const agentConfigured = isAgentConfigured()
     // Retry re-sends in place: drop the failed bubble and its error reply instead
     // of stacking a "Not sent" duplicate above the resent copy.
@@ -3743,6 +4111,7 @@ export function App({
       tools: [],
       persisted,
       ...(sentAtts.length > 0 ? { attachments: sentAtts } : {}),
+      ...(sentSkills.length > 0 ? { skills: sentSkills } : {}),
       ...(scope ? { scope } : {}),
     })
     if (!overrideInstruction) setPrompt('')
@@ -3763,7 +4132,7 @@ export function App({
       // "rename sheet to X") answers instantly through the same plan/apply
       // path — no LLM round-trips for the most basic edits, which on a slow
       // model each cost minutes. Anything else falls through to the agent.
-      if (sentAtts.length === 0) {
+      if (sentAtts.length === 0 && sentSkills.length === 0) {
         try {
           planPrompt(instruction, { revision: 0, sheetId: '' })
           const outcome = runDeterministicPlan(instruction)
@@ -3776,7 +4145,7 @@ export function App({
           // agent takes it below
         }
       }
-      runAgent(instruction, sentAtts)
+      runAgent(instruction, sentAtts, sentSkills)
       return
     }
     const outcome = runDeterministicPlan(instruction)
@@ -4350,6 +4719,29 @@ export function App({
     )
   }
 
+  /// A clicked ribbon button keeps DOM focus, so arrow-key cell navigation
+  /// dies until the user clicks the grid — Excel hands the keyboard straight
+  /// back. Only the button that issued the command is sent back: text fields
+  /// commit on blur (focus is already moving on, e.g. Tab to the next box) and
+  /// the More Colors native input applies live while its picker stays open.
+  /// Two frames let a dialog or panel the command opened claim focus first.
+  function handleRibbonCommandFromRibbon(command: string): void {
+    const source = document.activeElement
+    handleRibbonCommand(command)
+    if (!(source instanceof HTMLElement) || !source.closest('[data-ribbon-body]')) return
+    if (source.matches('input, select, textarea, [contenteditable="true"]')) return
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => {
+        const active = document.activeElement
+        // a palette swatch unmounts when the popover closes, dropping focus to body
+        const dropped = !source.isConnected && (active === null || active === document.body)
+        if (active !== source && !dropped) return
+        source.blur()
+        focusSheetGrid()
+      }),
+    )
+  }
+
   function handleRibbonCommand(command: string): void {
     if (command === 'watch-window') {
       setWatchOpen((open) => !open)
@@ -4649,6 +5041,7 @@ export function App({
         engineOverBudget: recalcOverBudgetAtOpen(selected.fileBytes, cellCounts.gridCells),
         formulaCells: new Map(),
         overlay: new Map(),
+        incompleteRuns: new Set(),
         follow: new Map(),
         running: false,
         lastRunAt: 0,
@@ -4670,6 +5063,43 @@ export function App({
     }
     lazyWorkbookRef.current = state
     void loadRowOutlines(state, lazyWorkbookRef)
+    // The cells the reader withheld, read once per open: every read tool asks
+    // about cells, so a lazy read would either cost an archive read per call or
+    // leave a window in which the model sees the real values. The next workbook
+    // starts from nothing until its own read lands, and a part that exists but
+    // cannot be read withholds everything rather than nothing — see
+    // ai/redact-load.ts.
+    redactionIndexRef.current = null
+    redactionStatesRef.current = []
+    // Reset to the same empty value the current marks hold, so the previous
+    // workbook's pending marks cannot make this one look unsaved on arrival.
+    loadedRedactionStatesRef.current = []
+    void window.desktopApi
+      .readWorkbookRedactions({ sessionId: selected.sessionId })
+      .then((result) => {
+        // A superseded session's answer must not install its marks.
+        if (lazyWorkbookRef.current !== state) return
+        const session = redactionSessionFor(result, getActiveSheetInfo().sheets, t)
+        redactionIndexRef.current = session.index
+        redactionStatesRef.current = result.status === 'ok' ? result.states : []
+        watchStructuralEditsForMarks()
+        // What the file holds is the baseline a later edit is measured against.
+        loadedRedactionStatesRef.current = redactionStatesRef.current
+        const redactionMessage = session.error ?? session.notice
+        if (redactionMessage !== null) setMessage(redactionMessage)
+      })
+      .catch((error: unknown) => {
+        if (lazyWorkbookRef.current !== state) return
+        // The read itself failed, so the marks are unknown — the same state a
+        // damaged part produces, and the same answer: withhold, and say so.
+        const reason = error instanceof Error ? error.message : String(error)
+        redactionIndexRef.current = redactionSessionFor(
+          { status: 'unreadable', error: reason },
+          [],
+          t,
+        ).index
+        setMessage(reason)
+      })
     // Pivot definitions load eagerly so refresh (a synchronous apply step)
     // never waits on IPC. Best effort: a failed parse just disables refresh.
     for (const sheet of selected.sheets) {
@@ -5372,6 +5802,21 @@ export function App({
           onClose={() => setVisualDialog(null)}
         />
       )}
+      {viewImage && (
+        <ImageViewer
+          src={viewImage}
+          lang={getLang()}
+          labels={{
+            zoomIn: t('appZoomIn'),
+            zoomOut: t('appZoomOut'),
+            actualSize: t('appImgActualSize'),
+            fitToWindow: t('appImgFitWindow'),
+            save: t('appImgSaveAs'),
+            close: t('appImgClose'),
+          }}
+          onClose={() => setViewImage(null)}
+        />
+      )}
       {chartDialog && chartDialogTarget && chartDialog.kind === 'format' && (
         <ChartFormatPane
           chart={chartDialogTarget.chart}
@@ -5424,6 +5869,8 @@ export function App({
         historicChat={historicChat}
         {...(workbookFile?.name !== undefined ? { docName: workbookFile.name } : {})}
         attachments={attachments}
+        attachedSkills={attachedSkills}
+        onToggleSkill={toggleSkill}
         attachNotice={attachNotice}
         onPickAttachments={() => void handlePickAttachments()}
         onAddAttachmentPaths={(paths) => void handleAddAttachmentPaths(paths)}
@@ -5463,7 +5910,7 @@ export function App({
         onAiCitation={handleAiCitation}
         canUndo={univerHist.canUndo || (!lazyWorkbookRef.current && adapterRef.current.canUndo)}
         canRedo={univerHist.canRedo}
-        onCommand={handleRibbonCommand}
+        onCommand={handleRibbonCommandFromRibbon}
         onIsCellEditing={isCellEditing}
         zoomPercent={zoomPercent}
         statusBarFuncs={statusBarFuncs}
@@ -5534,7 +5981,16 @@ export function App({
         </div>
       )}
       <ThreadedCommentsPane getRuntime={getRuntime} />
+      <NotePicturesPane file={workbookFile} getRuntime={getRuntime} />
       <ThreadHoverCard hover={threadHover} />
+      {redactDialog && (
+        <RedactDialog
+          seed={redactDialog.seed}
+          rangeLabel={redactDialog.rangeLabel}
+          onSubmit={onRedactConfirm}
+          onCancel={() => setRedactDialog(null)}
+        />
+      )}
       {findReplaceService && (
         <FindReplacePanel
           service={findReplaceService}

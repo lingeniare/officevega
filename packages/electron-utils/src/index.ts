@@ -19,12 +19,15 @@ export { saveTextFileWithDialog, type SaveTextResult } from './save-text'
 export {
   aboutMenuItem,
   appMenuLabels,
+  appMenuTemplate,
   checkUpdatesMenuItem,
   editMenuTemplate,
   helpMenuTemplate,
   licenseMenuItem,
   privacyMenuItem,
+  setSettingsInvoker,
   setUpdateCheckInvoker,
+  settingsMenuItem,
   toggleDevToolsItem,
   viewMenuTemplate,
   windowMenuTemplate,
@@ -32,6 +35,15 @@ export {
   type ViewMenuOptions,
 } from './app-menu'
 export { GITHUB_REPO_URL } from './github-menu'
+export {
+  AUTHOR_NAME_KEY,
+  AUTHOR_NAME_MAX,
+  configuredAuthorName,
+  readAuthorNameSetting,
+  resolveAuthorName,
+  sanitizeAuthorName,
+  systemAuthorName,
+} from './author-name'
 export {
   saveAsSuggestion,
   showOpenDialogWithMemory,
@@ -41,6 +53,7 @@ export {
   DEFAULT_SAVE_DIR_KEY,
   configuredDefaultSaveDir,
   isUsableSaveDir,
+  mkdirDirs,
   readDefaultSaveDirSetting,
   resolveDefaultSaveDir,
   type PathProvider,

@@ -227,7 +227,7 @@ html.officevega-popover-open .ribbon-tabs {
 }
 
 .qa-btn:disabled {
-  color: var(--text-muted);
+  color: var(--text-tertiary);
   cursor: default;
 }
 
@@ -529,6 +529,33 @@ html.officevega-popover-open .ribbon-tabs {
   flex-direction: column;
   min-width: 0;
   min-height: 0;
+}
+
+.disk-notice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px;
+  font-size: 13px;
+  color: var(--text);
+  background: var(--accent-soft);
+  border-bottom: 1px solid var(--border);
+}
+.disk-notice span {
+  flex: 1;
+  min-width: 0;
+}
+.disk-notice button {
+  padding: 3px 10px;
+  font-size: 12px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.disk-notice button:hover {
+  background: var(--hover);
 }
 
 /* ---- AI change highlight in the source pane ---- */
@@ -1089,7 +1116,7 @@ html.officevega-popover-open .ribbon-tabs {
   position: relative;
   margin: 0;
   font-size: 14px;
-  line-height: 1.55;
+  line-height: 1.6;
   white-space: pre-wrap;
   overflow-wrap: break-word;
 }

@@ -199,7 +199,7 @@ describe('exa and firecrawl providers', () => {
           parallel: { apiKey: '' },
           exa: { apiKey: id === 'exa' ? apiKey : '' },
           firecrawl: { apiKey: id === 'firecrawl' ? apiKey : '' },
-        },
+          },
       },
     })
     expect(activeSearchProvider(mk('exa', ''))).toBe('genspark')

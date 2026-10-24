@@ -21,6 +21,7 @@ import type {
   FolderListing,
   FolderRoot,
   MoveResult,
+  AuthorNameSetting,
   HomeApi,
   RecentEntry,
   RecentPage,
@@ -30,6 +31,7 @@ import type {
   FileSearchRerank,
   FileSearchSettings,
 } from '../shared/home-api'
+import type { ProjectApi } from '@genoffice/project-store'
 import { HOME_CHANNELS } from '../shared/home-api'
 import type { LicenseActionResult, LicenseStatus } from '../shared/license-api'
 import { INTEGRATIONS_CHANNELS } from '../shared/integrations-api'
@@ -38,6 +40,7 @@ import type {
   IntegrationsStatus,
   SkillInstallState,
 } from '../shared/integrations-api'
+import type { FoundSkill, RecommendedSkill } from '../shared/found-skill'
 import type { TabsApi, TabSummary } from '../shared/tabs-api'
 import { TABS_CHANNELS } from '../shared/tabs-api'
 
@@ -88,6 +91,20 @@ function normalizeDefaultAppStatus(result: unknown): DefaultAppStatus {
     manualOnly: r.manualOnly === true,
   }
 }
+
+function normalizeAuthorNameSetting(result: unknown): AuthorNameSetting {
+  const r = (result ?? {}) as Partial<AuthorNameSetting>
+  return {
+    value: typeof r.value === 'string' ? r.value : '',
+    fallback: typeof r.fallback === 'string' ? r.fallback : '',
+  }
+}
+
+// a Settings request (menu click, Cmd+,) can land before Home has subscribed
+const pendingOpenSettings: Array<{ section: string }> = []
+ipcRenderer.on(HOME_CHANNELS.openSettings, (_event, target: { section: string }) => {
+  if (ipcRenderer.listenerCount(HOME_CHANNELS.openSettings) === 1) pendingOpenSettings.push(target)
+})
 
 const homeApi: HomeApi = {
   async recents(query) {
@@ -146,6 +163,15 @@ const homeApi: HomeApi = {
   async kbList() {
     return ipcRenderer.invoke('kb:list')
   },
+  async skillsList() {
+    return ipcRenderer.invoke('ai:skills-list')
+  },
+  async skillText(name) {
+    return ipcRenderer.invoke('ai:skill-text', name)
+  },
+  async openSkillsSettings() {
+    await ipcRenderer.invoke('ai:open-skills-settings')
+  },
   async kbSearch(query) {
     return ipcRenderer.invoke('kb:search', query)
   },
@@ -157,6 +183,27 @@ const homeApi: HomeApi = {
   },
   async kbCreateDocument(request) {
     return ipcRenderer.invoke('kb:create-document', request)
+  },
+  async kbCliContext(sessionId) {
+    return ipcRenderer.invoke('kb:cli-context', sessionId)
+  },
+  async kbRunCli(sessionId, request) {
+    return ipcRenderer.invoke('kb:run-cli', { sessionId, ...request })
+  },
+  async pickAttachments() {
+    return ipcRenderer.invoke('files:pick')
+  },
+  async addAttachmentPaths(paths) {
+    return ipcRenderer.invoke('files:add', paths)
+  },
+  async addPastedImage(data, ext) {
+    return ipcRenderer.invoke('files:add-pasted-image', data, ext)
+  },
+  async readAttachment(path, offset, maxChars) {
+    return ipcRenderer.invoke('files:read', path, offset, maxChars)
+  },
+  async readAttachmentImage(path) {
+    return ipcRenderer.invoke('files:read-image', path)
   },
   async aiGetSettings() {
     return ipcRenderer.invoke('ai:get-settings')
@@ -313,6 +360,7 @@ const homeApi: HomeApi = {
   onOpenSettings(handler) {
     const listener = (_event: IpcRendererEvent, target: { section: string }) => handler(target)
     ipcRenderer.on(HOME_CHANNELS.openSettings, listener)
+    for (const target of pendingOpenSettings.splice(0)) handler(target)
     return () => ipcRenderer.removeListener(HOME_CHANNELS.openSettings, listener)
   },
   async openModelSettings() {
@@ -399,6 +447,14 @@ const homeApi: HomeApi = {
       updatedAt: typeof r?.updatedAt === 'number' ? r.updatedAt : 0,
     }
   },
+  async getTabSleepEnabled() {
+    const result: unknown = await ipcRenderer.invoke(HOME_CHANNELS.getTabSleepEnabled)
+    return result !== false
+  },
+  async setTabSleepEnabled(on) {
+    if (typeof on !== 'boolean') throw new Error('Invalid tab sleep setting.')
+    await ipcRenderer.invoke(HOME_CHANNELS.setTabSleepEnabled, on)
+  },
   async setAutoSaveDefault(on) {
     if (typeof on !== 'boolean') throw new Error('Invalid AutoSave default.')
     await ipcRenderer.invoke(HOME_CHANNELS.setAutoSaveDefault, on)
@@ -467,6 +523,21 @@ const homeApi: HomeApi = {
   },
   async openMcpLogFile() {
     await ipcRenderer.invoke(HOME_CHANNELS.openMcpLogFile)
+  },
+  async getAnalyticsEnabled() {
+    const result: unknown = await ipcRenderer.invoke(HOME_CHANNELS.getAnalyticsEnabled)
+    return result !== false
+  },
+  async setAnalyticsEnabled(enabled) {
+    if (typeof enabled !== 'boolean') throw new Error('Invalid analytics consent.')
+    const result: unknown = await ipcRenderer.invoke(HOME_CHANNELS.setAnalyticsEnabled, enabled)
+    return result === true
+  },
+  async getAuthorName() {
+    return normalizeAuthorNameSetting(await ipcRenderer.invoke(HOME_CHANNELS.getAuthorName))
+  },
+  async setAuthorName(value) {
+    return normalizeAuthorNameSetting(await ipcRenderer.invoke(HOME_CHANNELS.setAuthorName, value))
   },
   async getAiPanelPrefs() {
     return normalizeAiPanelPrefs(await ipcRenderer.invoke(HOME_CHANNELS.getAiPanelPrefs))
@@ -673,6 +744,23 @@ const homeApi: HomeApi = {
 
 contextBridge.exposeInMainWorld('aiOffice', homeApi)
 
+// The same project:* channels the editor preloads use; the home screen's
+// knowledge-base ask panel keeps its thread through them. The handlers are
+// registered once by the docs main process in shell mode (registerProjectIpc).
+const projectApi: ProjectApi = {
+  resolveChat: (args) => ipcRenderer.invoke('project:resolveChat', args),
+  appendChat: (args) => ipcRenderer.invoke('project:appendChat', args),
+  loadChat: (args) => ipcRenderer.invoke('project:loadChat', args),
+  rebindChat: (args) => ipcRenderer.invoke('project:rebindChat', args),
+  listChats: (args) => ipcRenderer.invoke('project:listChats', args),
+  deleteChat: (args) => ipcRenderer.invoke('project:deleteChat', args),
+  beginNewChatSession: (args) => ipcRenderer.invoke('project:beginNewChatSession', args),
+  listChatSessions: (args) => ipcRenderer.invoke('project:listChatSessions', args),
+  setChatTitle: (args) => ipcRenderer.invoke('project:setChatTitle', args),
+}
+
+contextBridge.exposeInMainWorld('projectApi', projectApi)
+
 const integrationsApi: IntegrationsApi = {
   async status() {
     return (await ipcRenderer.invoke(INTEGRATIONS_CHANNELS.status)) as IntegrationsStatus
@@ -699,6 +787,34 @@ const integrationsApi: IntegrationsApi = {
   },
   async copyText(text) {
     await ipcRenderer.invoke(INTEGRATIONS_CHANNELS.copyText, text)
+  },
+  async listSkills() {
+    return (await ipcRenderer.invoke(INTEGRATIONS_CHANNELS.listSkills)) as FoundSkill[]
+  },
+  async skillBody(path) {
+    return (await ipcRenderer.invoke(INTEGRATIONS_CHANNELS.skillBody, path)) as string
+  },
+  async importSkillFolder(title) {
+    const r: unknown = await ipcRenderer.invoke(INTEGRATIONS_CHANNELS.importSkillFolder, title)
+    return (r as FoundSkill | null) ?? null
+  },
+  async importSkillZip(title) {
+    const r: unknown = await ipcRenderer.invoke(INTEGRATIONS_CHANNELS.importSkillZip, title)
+    return (r as FoundSkill | null) ?? null
+  },
+  async listRecommendedSkills() {
+    return (await ipcRenderer.invoke(
+      INTEGRATIONS_CHANNELS.listRecommendedSkills,
+    )) as RecommendedSkill[]
+  },
+  async removeSkill(name) {
+    await ipcRenderer.invoke(INTEGRATIONS_CHANNELS.removeSkill, name)
+  },
+  async installRecommendedSkill(name) {
+    return (await ipcRenderer.invoke(
+      INTEGRATIONS_CHANNELS.installRecommendedSkill,
+      name,
+    )) as FoundSkill
   },
 }
 contextBridge.exposeInMainWorld('aiOfficeIntegrations', integrationsApi)

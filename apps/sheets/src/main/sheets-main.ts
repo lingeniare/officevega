@@ -12,7 +12,6 @@ import {
 import { copyFile, mkdir, readFile, rm, stat, writeFile } from 'node:fs/promises'
 import { refreshCsvDigest } from './csv-digest'
 import { createServer } from 'node:http'
-import { userInfo } from 'node:os'
 import { basename, dirname, isAbsolute, join } from 'node:path'
 
 import {
@@ -41,6 +40,7 @@ import { z } from 'zod'
 import {
   abortOnDestroyed,
   appMenuLabels,
+  appMenuTemplate,
   buildPrintableHtml,
   configuredDefaultSaveDir,
   contextMenuLabels,
@@ -55,6 +55,7 @@ import {
   helpMenuTemplate,
   viewMenuTemplate,
   windowMenuTemplate,
+  settingsMenuItem,
   installRendererProtocol,
   registerRendererScheme,
   rendererUrl,
@@ -62,8 +63,9 @@ import {
   writeJsonAtomic,
   recoveryCopyDiskNewer,
   saveTextFileWithDialog,
-  installFetchProxy,
+  configuredAuthorName,
 } from '@genoffice/electron-utils'
+import { createMainProcessProxyDispatcher } from '@genoffice/electron-utils/main-proxy'
 import {
   appTitle,
   createI18n,
@@ -78,6 +80,7 @@ import {
   AiTimeoutError,
   isAiNetworkError,
   isAiOverloadedError,
+  isAiRegionBlockedError,
   chatForProvider,
   defaultAiSettings,
   activeProvider,
@@ -129,6 +132,7 @@ import {
 } from '@genoffice/xlsx-gateway/gateway/xlsx-package-io'
 import { parsePivotDefinition } from '@genoffice/xlsx-gateway/gateway/xlsx-pivot'
 import type { SheetEditPlan } from '@genoffice/xlsx-gateway/gateway/xlsx-sheets'
+import { readWorkbookRedactionPart } from './workbook-redactions'
 import type {
   AttachmentAddResult,
   AttachmentImageResult,
@@ -152,6 +156,8 @@ import {
   workbookMediaRequestSchema,
   workbookMediaResultSchema,
   workbookPivotRequestSchema,
+  workbookRedactionsRequestSchema,
+  workbookRedactionsResultSchema,
   localImageRequestSchema,
   localImageResultSchema,
   screenCaptureRequestSchema,
@@ -221,6 +227,8 @@ const tMain = createI18n({
     errNotImage: 'not a supported image type',
     errGskNotLoggedIn: 'Not signed in to VEGA: click “Sign in to VEGA” below, sign in, then retry',
     errNoApiKey: 'No API key configured for {provider}',
+    errAiRegion:
+      "This model's provider does not serve your current region — pick another model or change your network",
     errAiBusy: 'The AI service is busy right now — please try again in a moment',
     errNoModel: 'No model name configured',
     errImgAbsPath: 'Image path must be absolute.',
@@ -289,6 +297,8 @@ const tMain = createI18n({
     errGskNotLoggedIn:
       'Вы не вошли в ВЕГА: нажмите «Подключить ИИ» ниже, войдите и повторите попытку',
     errNoApiKey: 'API-ключ для {provider} не настроен',
+    errAiRegion:
+      'Поставщик этой модели не обслуживает ваш текущий регион — выберите другую модель или смените сеть',
     errAiBusy: 'Сервис ИИ сейчас перегружен — повторите попытку чуть позже',
     errNoModel: 'Имя модели не настроено',
     errImgAbsPath: 'Путь к изображению должен быть абсолютным.',
@@ -354,6 +364,8 @@ const tMain = createI18n({
     errGskNotLoggedIn:
       'VEGA’ga kirilmagan: quyida “VEGA’ga kirish” tugmasini bosing, kiring va qayta urinib ko‘ring',
     errNoApiKey: '{provider} uchun API kaliti sozlanmagan',
+    errAiRegion:
+      "Ushbu model provayderi joriy hududingizga xizmat ko'rsatmaydi — boshqa model tanlang yoki tarmoqni o'zgartiring",
     errAiBusy: 'AI xizmati hozir band — birozdan so‘ng qayta urinib ko‘ring',
     errNoModel: 'Model nomi sozlanmagan',
     errImgAbsPath: 'Rasm yo‘li mutlaq bo‘lishi kerak.',
@@ -423,6 +435,8 @@ const tMain = createI18n({
     errGskNotLoggedIn:
       'VEGA жүйесіне кірмегенсіз: төмендегі “VEGA жүйесіне кіру” түймесін басып, кіріңіз де, әрекетті қайталаңыз',
     errNoApiKey: '{provider} үшін API кілті конфигурацияланбаған',
+    errAiRegion:
+      'Бұл модель провайдері сіздің өңіріңізге қызмет көрсетпейді — басқа модель таңдаңыз немесе желіні өзгертіңіз',
     errAiBusy: 'AI қызметі қазір бос емес — біраздан соң қайталап көріңіз',
     errNoModel: 'Үлгі атауы конфигурацияланбаған',
     errImgAbsPath: 'Сурет жолы абсолютті болуы керек.',
@@ -493,6 +507,8 @@ const tMain = createI18n({
     errGskNotLoggedIn:
       'VEGA-ya daxil olunmayıb: aşağıda “VEGA-ya daxil ol” düyməsinə klikləyin, daxil olun və sonra yenidən cəhd edin',
     errNoApiKey: '{provider} üçün API açarı konfiqurasiya edilməyib',
+    errAiRegion:
+      'Bu modelin provayderi hazırkı bölgənizdə xidmət göstərmir — başqa model seçin və ya şəbəkəni dəyişin',
     errAiBusy: 'AI xidməti hazırda məşğuldur — bir qədər sonra yenidən cəhd edin',
     errNoModel: 'Model adı konfiqurasiya edilməyib',
     errImgAbsPath: 'Şəkil yolu mütləq olmalıdır.',
@@ -563,6 +579,8 @@ const tMain = createI18n({
     errGskNotLoggedIn:
       'VEGA-da giriş edilmedi: aşakdaky “VEGA-a giriş” düwmesine basyň, giriş ediň we soňra täzeden synanyşyň',
     errNoApiKey: '{provider} üçin API açary düzülmedi',
+    errAiRegion:
+      'Bu modeliň üpjün edijisi häzirki sebitiňizde hyzmat etmeýär — başga model saýlaň ýa-da tori üýtgediň',
     errAiBusy: 'AI hyzmaty häzir meşgul — birazdan täzeden synanyşyň',
     errNoModel: 'Modeliň ady düzülmedi',
     errImgAbsPath: 'Suratyň ýoly absolýut bolmaly.',
@@ -633,6 +651,8 @@ const tMain = createI18n({
     errGskNotLoggedIn:
       "VEGA'га кирген жоксуз: төмөндөгү “VEGA'га кирүү” баскычын басып, кириңиз да, кайра аракет кылыңыз",
     errNoApiKey: '{provider} үчүн API ачкычы конфигурацияланган эмес',
+    errAiRegion:
+      'Бул моделдин провайдери сиздин өңүрүңүздү тейлей албайт — башка модель тандаңыз же тармагыңызды өзгөртүңүз',
     errAiBusy: 'AI кызматы азыр бош эмес — бир аздан кийин кайра аракет кылыңыз',
     errNoModel: 'Модель аты конфигурацияланган эмес',
     errImgAbsPath: 'Сүрөттүн жолу абсолюттук болушу керек.',
@@ -702,6 +722,8 @@ const tMain = createI18n({
     errGskNotLoggedIn:
       "VEGA'га керелмәгән: түбәндәге “VEGA'га керү” төймәсенә басыгыз, керегез һәм яңадан эшләп карагыз",
     errNoApiKey: '{provider} өчен API ачкычы көйләнмәгән',
+    errAiRegion:
+      'Бу модель провайдеры сезнең төбәгеңездә хезмәт күрсәтми — башка модель сайлагыз яиса челтәрне үзгәртегез',
     errAiBusy: 'AI хезмәте хәзер мәшгуль — бераздан яңадан башлагыз',
     errNoModel: 'Модель исеме көйләнмәгән',
     errImgAbsPath: 'Рәсем юлы абсолют булырга тиеш.',
@@ -772,6 +794,8 @@ const tMain = createI18n({
     errGskNotLoggedIn:
       'VEGA-ში შესული არ ხართ: დააწკაპუნეთ ქვემოთ „Sign in to VEGA“-ზე, შედით სისტემაში და ხელახლა სცადეთ',
     errNoApiKey: '{provider}-ისთვის API key კონფიგურირებული არ არის',
+    errAiRegion:
+      'ამ მოდელის პროვაიდერი თქვენს მიმდინარე რეგიონს არ ემსახურება — აირჩიეთ სხვა მოდელი ან შეცვალეთ ქსელი',
     errAiBusy: 'AI სერვისი ამჟამად დატვირთულია — გთხოვთ, ცოტა ხანში სცადოთ ხელახლა',
     errNoModel: 'მოდელის სახელი კონფიგურირებული არ არის',
     errImgAbsPath: 'სურათის გზა აბსოლუტური უნდა იყოს.',
@@ -1049,7 +1073,7 @@ function sessionFor(event: IpcMainInvokeEvent): SheetsTabSession {
 function sheetsMediaRoots(wcId: number): string[] {
   const tab = sheetsTabs.get(wcId)
   const workbookDirs = tab ? [...tab.sessions.values()].map((s) => dirname(s.path)) : []
-  return localMediaRoots(...workbookDirs, join(app.getPath('temp'), 'genoffice-pasted'))
+  return localMediaRoots(...workbookDirs, join(app.getPath('temp'), 'officevega-pasted'))
 }
 
 /// A save request referencing a chunked edit transfer gets the accumulated
@@ -1962,11 +1986,7 @@ export function registerSheetsIpc(): void {
 
   ipcMain.handle(IPC_CHANNELS.userDisplayName, (event): string => {
     sessionFor(event)
-    try {
-      return userInfo().username
-    } catch {
-      return ''
-    }
+    return configuredAuthorName(app)
   })
 
   // Registered here (not in registerSheetsAiIpc, skipped in shell mode):
@@ -2457,6 +2477,18 @@ export function registerSheetsIpc(): void {
       readArchiveEntryText(entry.client, session.snapshotPath, request.cachePath),
     ])
     return workbookPivotDefinitionSchema.parse(parsePivotDefinition(pivotXml, cacheXml))
+  })
+
+  ipcMain.handle(IPC_CHANNELS.readWorkbookRedactions, async (event, input: unknown) => {
+    const entry = sessionFor(event)
+    const request = workbookRedactionsRequestSchema.parse(input)
+    const session = entry.sessions.get(request.sessionId)
+    if (!session) throw new Error('Unknown workbook session.')
+    // A damaged part answers `unreadable` rather than an empty list: reporting
+    // "nothing is withheld" would hand the model the values it holds.
+    return workbookRedactionsResultSchema.parse(
+      await readWorkbookRedactionPart(entry.client, session.snapshotPath),
+    )
   })
 
   ipcMain.handle(IPC_CHANNELS.exportPdf, async (event, input: unknown) => {
@@ -3213,6 +3245,9 @@ export function registerSheetsAiIpc(): void {
       if (!result.ok && isAiOverloadedError(result.error)) {
         return { ok: false, error: tm('errAiBusy') }
       }
+      if (!result.ok && isAiRegionBlockedError(result.error)) {
+        return { ok: false, error: tm('errAiRegion') }
+      }
       if (!result.ok) {
         noteGskCallFailure(gskKey, result.error)
         noteVegaCallFailure(config.apiKey, result.error)
@@ -3221,7 +3256,14 @@ export function registerSheetsAiIpc(): void {
     } catch (err) {
       noteGskCallFailure(gskKey, err)
       noteVegaCallFailure(config.apiKey, err)
-      return { ok: false, error: isAiOverloadedError(err) ? tm('errAiBusy') : String(err) }
+      return {
+        ok: false,
+        error: isAiOverloadedError(err)
+          ? tm('errAiBusy')
+          : isAiRegionBlockedError(err)
+            ? tm('errAiRegion')
+            : String(err),
+      }
     }
   })
 
@@ -3322,7 +3364,9 @@ export function registerSheetsAiIpc(): void {
                 ? { errorCode: 'network' as const }
                 : isAiOverloadedError(err)
                   ? { errorCode: 'overloaded' as const }
-                  : {}),
+                  : isAiRegionBlockedError(err)
+                    ? { errorCode: 'region' as const }
+                    : {}),
         })
       }
     } finally {
@@ -3758,6 +3802,10 @@ async function writeWorkbookTo(
     shape: addition.shape,
     image: addition.image,
   }))
+  const cellImageAdditions = (request.cellImageAdditions ?? []).map(({ sheetId, ...addition }) => ({
+    sheetName: resolveSheetName(sheetId),
+    ...addition,
+  }))
   const tableAdditions = request.tableAdditions.map((table) => ({
     sheetName: resolveSheetName(table.sheetId),
     area: table.area,
@@ -3823,6 +3871,26 @@ async function writeWorkbookTo(
     sheetName,
     cells,
   }))
+  // The redaction part is keyed by sheet NAME, so there is nothing to resolve
+  // here: the marks arrive under the names the session loaded, which is what
+  // the gateway's re-keying against this save's renames and removals expects.
+  const redactionStates = request.redactionStates.map((state) => ({
+    sheetName: state.sheetName,
+    marks: state.marks.map((mark) => ({
+      startRow: mark.startRow,
+      endRow: mark.endRow,
+      startColumn: mark.startColumn,
+      endColumn: mark.endColumn,
+      label: mark.label,
+      // Carried through, not rebuilt from the known fields: this mapping is
+      // the third place a mark passes through (the zod schema, the preload's
+      // hand-rolled check, and here), and only the zod one refuses an unknown
+      // key. The other two drop it silently, which is how a field added to the
+      // mark can vanish between the renderer and the file with nothing failing.
+      // Omitted when absent so an older part's bytes stay identical.
+      ...('previousFill' in mark ? { previousFill: mark.previousFill ?? null } : {}),
+    })),
+  }))
   const mutation = await saveWorkbookViaSidecar({
     client,
     // The snapshot, not the live path: the save base must be the bytes this
@@ -3848,6 +3916,7 @@ async function writeWorkbookTo(
     workbookProtectionState: request.workbookProtectionState,
     protectedRangeStates,
     visualAdditions,
+    cellImageAdditions,
     pageSetupStates,
     noteStates,
     tableAdditions,
@@ -3871,6 +3940,9 @@ async function writeWorkbookTo(
             }))(update.relayout),
           }),
     })),
+    // The marks ride in a package part of their own; the gateway re-keys them
+    // for the renames and removals `sheetPlan` carries.
+    redactionStates,
   })
   return mutation
 }
@@ -4203,9 +4275,13 @@ export function setSheetsCloseTabHook(fn: (() => void) | null): void {
 function installApplicationMenu(): void {
   const sendMenuAction = sendSheetsMenuAction
   const labels = appMenuLabels(getUiLang())
+  const appMenu = appMenuTemplate(process.platform, labels, {
+    appLabel: app.name,
+    extra: [settingsMenuItem(labels)],
+  })
   Menu.setApplicationMenu(
     Menu.buildFromTemplate([
-      ...(process.platform === 'darwin' ? [{ role: 'appMenu' as const }] : []),
+      ...(appMenu ? [appMenu] : []),
       {
         label: tm('menuFile'),
         submenu: [
@@ -4253,6 +4329,8 @@ function installApplicationMenu(): void {
             : process.platform === 'darwin'
               ? { role: 'close' as const, label: tm('menuClose') }
               : { role: 'quit' as const, label: tm('menuQuit') },
+          { type: 'separator' },
+          settingsMenuItem(labels),
         ],
       },
       {
@@ -4313,8 +4391,9 @@ async function applyMainProcessProxy(): Promise<void> {
     // dispatcher below — forward the proxy to them via env
     setGskProxyUrl(proxyUrl)
     try {
+      const { setGlobalDispatcher } = await import('undici')
       // NO_PROXY and loopback bypass the proxy — a local endpoint must not leave the machine
-      await installFetchProxy(proxyUrl)
+      setGlobalDispatcher(await createMainProcessProxyDispatcher(proxyUrl))
       // strip user:pass credentials before logging
       console.log('[proxy] main-process fetch via', proxyUrl.replace(/\/\/[^@/]*@/, '//***@'))
     } catch (e) {

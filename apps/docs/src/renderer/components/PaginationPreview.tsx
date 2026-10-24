@@ -30,6 +30,7 @@ import {
   anchorBoxLift,
   applyLeadSpills,
   applyLiftTops,
+  pageRelHang,
   anchorShiftPx,
   sectionBidi,
   sectionColGeom,
@@ -725,6 +726,38 @@ export function leadLeakCss(blocks: BlockBox[], slices: PageSlice[]): string {
       )
       leadRows++
     }
+    // a page-anchored table lifted into the next page's top margin starts
+    // inside this page's window (a negative margin pulls a float over the
+    // flow before it); it belongs to the page whose window opens for it
+    for (const b of blocks) {
+      const hang = pageRelHang(b)
+      if (hang >= 0 || b.top < slice.end - 0.5 || b.top + hang >= slice.end - 0.5) continue
+      const next = slices[i + 1]
+      if (b.top >= next.end - 0.5 && next.end > next.start) continue
+      const idx = b.el?.dataset.idx
+      if (idx === undefined) continue
+      rules.push(
+        `.pv-page[data-pv-page="${i}"] .pv-content > [data-idx="${idx}"]{visibility:hidden;}`,
+      )
+    }
+  })
+  // a window opened into the top margin for a hanging table also shows the
+  // previous page's blocks ending in that band: hide them (floats included);
+  // only lifted tables hang there by design and pinned carriers are owned by
+  // the pin rules
+  slices.forEach((slice, i) => {
+    if (i === 0 || !slice.liftTop || slice.regions) return
+    for (const b of blocks) {
+      if (b.top + b.height > slice.start + 0.5 || b.top + b.height <= slice.start - slice.liftTop)
+        continue
+      if (b.liftPx) continue
+      const idx = b.el?.dataset.idx
+      if (idx === undefined || b.el!.matches(pinCarrier) || b.el!.querySelector(pinCarrier))
+        continue
+      rules.push(
+        `.pv-page[data-pv-page="${i}"] .pv-content > [data-idx="${idx}"]{visibility:hidden;}`,
+      )
+    }
   })
   return rules.join('\n')
 }
@@ -816,6 +849,19 @@ export function pageRelXPictureHtml(img: HTMLElement): string {
   copy.style.top = '0px'
   delete copy.dataset.pvOverlaid
   return copy.outerHTML
+}
+
+/** hoisted boxes show in the body window owning their anchor only (data-pin-win
+ *  stamped at hoist time, data-pv-win on each body clone of a regioned page) */
+export function hoistWindowCss(wins: ReadonlyMap<number, ReadonlySet<string>>): string {
+  const rules: string[] = []
+  for (const [pg, keys] of wins) {
+    for (const key of keys) {
+      const w = `.pv-page[data-pv-page="${pg}"] .pv-content[data-pv-win]:not([data-pv-win="${key}"]) [data-pv-hoist='1'][data-pin-win="${key}"]`
+      rules.push(`${w} > .doc-textbox,${w} > .doc-img-wrap{visibility:hidden;}`)
+    }
+  }
+  return rules.join('\n')
 }
 
 export function pinnedCloneCss(pageCount: number): string {
@@ -983,6 +1029,7 @@ export function PaginationPreview({
   const { t } = useI18n()
   const [slices, setSlices] = useState<PageSlice[]>([])
   const [splitCss, setSplitCss] = useState('')
+  const [hoistWinCss, setHoistWinCss] = useState('')
   const [vertCss, setVertCss] = useState('')
   const [leakCss, setLeakCss] = useState('')
   const [pageNotes, setPageNotes] = useState<PageNoteItem[][]>([])
@@ -1138,7 +1185,7 @@ export function PaginationPreview({
               : {}),
           }
         })
-        const geoms = sectionGeoms(live, hfHs)
+        const geoms = sectionGeoms(live, hfHs, hf.evenOddHf)
         liveGeoms = geoms
         liveHfHs = hfHs
         // when the canvas column layout is inactive, measure as full-width single flow; the geometry drops column flow to match
@@ -1295,8 +1342,10 @@ export function PaginationPreview({
         delete el.dataset.pvHoist
         delete el.dataset.pvHoistSlot
         delete el.dataset.pinPage
+        delete el.dataset.pinWin
         el.style.removeProperty('--pv-hoist-dy')
       }
+      const hoistWins = new Map<number, Set<string>>()
       // the hoist translate uses each page's own top margin (a titlePg first page
       // renders the first-variant header), so the paper clamp must too
       const hoistFirsts = sectionFirstPages(computed)
@@ -1363,6 +1412,12 @@ export function PaginationPreview({
         wrap.dataset.pvHoist = '1'
         wrap.dataset.pvHoistSlot = slot
         wrap.dataset.pinPage = String(pg)
+        // a regioned page clones the flow once per column window; the escaped
+        // boxes would paint once per window, each copy over the earlier
+        // windows' text, so only the anchor's own window keeps them
+        const winKey = win.start.toFixed(1)
+        wrap.dataset.pinWin = winKey
+        ;(hoistWins.get(pg) ?? hoistWins.set(pg, new Set()).get(pg)!).add(winKey)
         if (mixed) wrap.dataset.pvPagerel = '1'
         const dy = hoistPaperClamp(
           win.dy,
@@ -1374,6 +1429,7 @@ export function PaginationPreview({
       applyLiftTops(computed, blocks)
       applyLeadSpills(computed, blocks, liveGeoms)
       setSplitCss(rowSplitCss(splitOut.rowSplits ?? [], blocks, computed))
+      setHoistWinCss(hoistWindowCss(hoistWins))
       setVertCss(
         liveGeoms.some((g) => g.vertical) ? verticalPageCss(blocks, computed, live, liveGeoms) : '',
       )
@@ -1541,6 +1597,7 @@ export function PaginationPreview({
       </div>
       <style>{pinnedCloneCss(slices.length)}</style>
       {splitCss && <style>{splitCss}</style>}
+      {hoistWinCss && <style>{hoistWinCss}</style>}
       {vertCss && <style>{vertCss}</style>}
       {leakCss && <style>{leakCss}</style>}
       {/* aria-hidden: the cloned page stack is a visual print preview; exposing
@@ -1914,6 +1971,7 @@ export function PaginationPreview({
                                   <div
                                     className="doc-page pv-content"
                                     data-pv-body=""
+                                    data-pv-win={col.start.toFixed(1)}
                                     dangerouslySetInnerHTML={{
                                       __html: cloneKids
                                         ? prunedCloneHtml(
@@ -1966,6 +2024,7 @@ export function PaginationPreview({
                       <div
                         className="doc-page pv-content"
                         data-pv-body=""
+                        data-pv-win={slice.start.toFixed(1)}
                         dangerouslySetInnerHTML={{
                           __html: cloneKids
                             ? prunedCloneHtml(

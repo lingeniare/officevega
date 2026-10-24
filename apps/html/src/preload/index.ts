@@ -54,6 +54,12 @@ const api: HtmlApi = {
     ipcRenderer.on(HTML_CHANNELS.fileRenamed, listener)
     return () => ipcRenderer.removeListener(HTML_CHANNELS.fileRenamed, listener)
   },
+  onFileChangedOnDisk: (handler) => {
+    const listener = (_e: Electron.IpcRendererEvent, path: string) => handler(path)
+    ipcRenderer.on(HTML_CHANNELS.fileChangedOnDisk, listener)
+    return () => ipcRenderer.removeListener(HTML_CHANNELS.fileChangedOnDisk, listener)
+  },
+  ackFileChangedOnDisk: () => ipcRenderer.send(HTML_CHANNELS.ackFileChangedOnDisk),
   setProvisionalTitle: (title) => ipcRenderer.send(HTML_CHANNELS.provisionalTitle, title),
   pickImage: () => ipcRenderer.invoke(HTML_CHANNELS.pickImage),
   saveImage: (data) => ipcRenderer.invoke(HTML_CHANNELS.saveImage, data),
@@ -146,6 +152,9 @@ const api: HtmlApi = {
     ipcRenderer.on(AI_CHANNELS.authChanged, listener)
     return () => ipcRenderer.removeListener(AI_CHANNELS.authChanged, listener)
   },
+  openSkillsSettings: () => ipcRenderer.invoke('ai:open-skills-settings'),
+  skillsList: () => ipcRenderer.invoke('ai:skills-list'),
+  skillText: (name: string) => ipcRenderer.invoke('ai:skill-text', name),
   aiStream: (request) => ipcRenderer.invoke(AI_CHANNELS.stream, request),
   aiStreamCancel: (requestId) => ipcRenderer.invoke(AI_CHANNELS.streamCancel, requestId),
   onAiStream: (handler) => {

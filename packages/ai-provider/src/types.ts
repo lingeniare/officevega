@@ -169,6 +169,8 @@ export interface AiProviderMeta {
   liveCatalog?: boolean
   /** display names for curated static `models` (composer/settings pickers); absent = show the bare id */
   modelNames?: Record<string, string>
+  /** the settings page refreshes `models` from the vendor's own /models route; the shipped list is the offline fallback */
+  liveModels?: boolean
 }
 
 /** Image generation / media analysis backends (separate from the chat provider) */
@@ -352,8 +354,8 @@ export interface AiStreamChunk {
   /** complete parsed tool call (emitted once its arguments finish streaming) */
   toolCall?: AgentToolCall
   error?: string
-  /** machine-readable error cause ('timeout', exhausted 'credits', 'network' connectivity failure, 'overloaded' capacity/rate limit); lets the renderer localize the message */
-  errorCode?: 'timeout' | 'credits' | 'network' | 'overloaded'
+  /** machine-readable error cause ('timeout', exhausted 'credits', 'network' connectivity failure, 'overloaded' capacity/rate limit, 'region' vendor refuses the request origin); lets the renderer localize the message */
+  errorCode?: 'timeout' | 'credits' | 'network' | 'overloaded' | 'region'
   /** normalized stop reason carried on 'done' ('max_tokens' = output cut off by the token limit) */
   stopReason?: string
   /** tokens the provider billed for this turn, carried on 'usage' (always sent before 'done') */

@@ -556,4 +556,7 @@ export const ru = {
   appLineTriple: '3 строки',
   appGensparkAccount: 'Учетная запись Genspark',
   appLoginGenspark: 'Войти в Genspark',
+  appMergeSourceLoaded: 'Загружено {name} (записей: {n})',
+  appMergeWritten: 'Записано документов: {n}',
+  appMergeNothingToWrite: 'Нечего записывать',
 } satisfies Record<keyof typeof en, string>

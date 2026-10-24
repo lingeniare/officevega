@@ -13,6 +13,13 @@
  * the publish config is omitted: electron-builder then bakes no
  * app-update.yml into the app and in-app auto-update stays disabled.
  *
+ * OFFICEVEGA_GA4_MEASUREMENT_ID / OFFICEVEGA_GA4_API_SECRET — GA4 Measurement
+ * Protocol credentials for anonymous usage analytics, injected the same way
+ * (CI secrets, or apps/shell/electron-builder.env locally). They are written
+ * into the packaged app's package.json via extraMetadata and read back by
+ * src/main/analytics.ts. When either is unset — every source/fork build —
+ * nothing is injected and the app runs with analytics fully disabled.
+ *
  * OFFICEVEGA_FONT_CDN_URL — base URL for the curated downloadable-font catalog.
  * Official release jobs inject it through extraMetadata so the endpoint stays
  * out of source. Without it, font download prompts/catalog entries are hidden;
@@ -37,6 +44,8 @@ function normalizeHttpsBaseUrl(name, value) {
 }
 
 const updateUrl = process.env.OFFICEVEGA_UPDATE_URL
+const ga4MeasurementId = process.env.OFFICEVEGA_GA4_MEASUREMENT_ID
+const ga4ApiSecret = process.env.OFFICEVEGA_GA4_API_SECRET
 const fontCdnUrl = normalizeHttpsBaseUrl(
   'OFFICEVEGA_FONT_CDN_URL',
   process.env.OFFICEVEGA_FONT_CDN_URL,
@@ -66,7 +75,21 @@ if (winArm64 && !process.env.ELECTRON_BUILDER_7Z_FILTER) {
 }
 const winArch = winArm64 ? 'arm64' : 'x64'
 const winSidecarTarget = winArm64 ? 'aarch64-pc-windows-msvc' : 'x86_64-pc-windows-gnu'
-const WIN_SIDECAR = `../sheets/native/xlsx-engine/target/${winSidecarTarget}/release/xlsx-sidecar.exe`
+// Where the release pipeline puts the sidecar: an explicit cross-compilation
+// triple (CI builds it that way). A Windows contributor's plain
+// `npm run build:all` instead leaves it in cargo's host-native target/release
+// (MSVC, statically linked per native/xlsx-engine/.cargo/config.toml), so that
+// output is accepted too — but only when the host arch really matches the
+// packaged one: an x64 host build must never be shipped inside an arm64
+// installer, which has to come from a cross build.
+const winSidecarCandidates = [
+  `../sheets/native/xlsx-engine/target/${winSidecarTarget}/release/xlsx-sidecar.exe`,
+  ...(process.platform === 'win32' && (process.arch === 'arm64') === winArm64
+    ? ['../sheets/native/xlsx-engine/target/release/xlsx-sidecar.exe']
+    : []),
+]
+const WIN_SIDECAR =
+  winSidecarCandidates.find((rel) => existsSync(join(__dirname, rel))) ?? winSidecarCandidates[0]
 
 function assertExtraResourceSources() {
   for (const rel of [
@@ -367,7 +390,7 @@ const FILE_ASSOCIATIONS = [
     mimeType: 'text/tab-separated-values',
   },
   {
-    // import-only: opens as a converted .xlsx copy, GenOffice never writes ODF
+    // import-only: opens as a converted .xlsx copy, OfficeVega never writes ODF
     ext: 'ods',
     name: 'OpenDocument Spreadsheet',
     role: 'Editor',
@@ -382,7 +405,7 @@ const FILE_ASSOCIATIONS = [
     mimeType: 'application/vnd.oasis.opendocument.spreadsheet-template',
   },
   {
-    // import-only: opens as a converted .docx copy, GenOffice never writes ODF
+    // import-only: opens as a converted .docx copy, OfficeVega never writes ODF
     ext: 'odt',
     name: 'OpenDocument Text',
     role: 'Editor',
@@ -397,7 +420,7 @@ const FILE_ASSOCIATIONS = [
     mimeType: 'application/vnd.oasis.opendocument.text-template',
   },
   {
-    // import-only: opens as a converted .pptx copy, GenOffice never writes ODF
+    // import-only: opens as a converted .pptx copy, OfficeVega never writes ODF
     ext: 'odp',
     name: 'OpenDocument Presentation',
     role: 'Editor',
@@ -575,6 +598,10 @@ const config = {
       from: '../../skills/officevega/SKILL.md',
       to: 'cli/skills/officevega/SKILL.md',
     },
+    {
+      from: '../../skills/recommended',
+      to: 'cli/skills/recommended',
+    },
     // runtime deps the officevega bundle leaves external (jsdom for the Word/Markdown
     // paths); collected by packages/cli/collect-deps.mjs during its build
     {
@@ -620,6 +647,12 @@ const config = {
     gatekeeperAssess: false,
     entitlements: 'build/entitlements.mac.plist',
     entitlementsInherit: 'build/entitlements.mac.plist',
+    // Slides' Slide Show > Record: the hardened runtime refuses the microphone without the
+    // audio-input entitlement, and macOS asks for it with this text
+    extendInfo: {
+      NSMicrophoneUsageDescription:
+        'OfficeVega records your narration when you record a slide show.',
+    },
     notarize: true,
     extraResources: [
       {
@@ -774,7 +807,8 @@ const config = {
     }
     if (context.electronPlatformName === 'win32' && !existsSync(join(__dirname, WIN_SIDECAR))) {
       throw new Error(
-        `win extraResources source missing: ${WIN_SIDECAR} (cargo build --target ${winSidecarTarget} first)`,
+        `win extraResources source missing: ${winSidecarCandidates.join(' or ')} ` +
+          `(run "npm run native:build -w @genoffice/sheets", or cargo build --target ${winSidecarTarget})`,
       )
     }
   },
@@ -830,6 +864,12 @@ if (updateUrl) {
 // CI's "-c.extraMetadata.version=..." CLI override deep-merges with this block,
 // so the version and all injected feature settings survive together.
 const extraMetadata = {}
+if (ga4MeasurementId && ga4ApiSecret) {
+  extraMetadata.officevegaAnalytics = {
+    measurementId: ga4MeasurementId,
+    apiSecret: ga4ApiSecret,
+  }
+}
 if (fontCdnUrl) extraMetadata.officeVegaFontCdn = { baseUrl: fontCdnUrl }
 if (Object.keys(extraMetadata).length) config.extraMetadata = extraMetadata
 

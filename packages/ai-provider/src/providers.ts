@@ -29,7 +29,7 @@ export const GENSPARK_LLM_BASE_URLS = {
  * Genspark proxy — never to direct vendor APIs. The value is registered
  * server-side as "genoffice" — a billing wire name, not the product name.
  */
-export const GENSPARK_AGENT_TYPE = 'genoffice'
+export const GENSPARK_AGENT_TYPE = 'officevega'
 
 export function gensparkAttributionHeaders(baseUrl?: string): Record<string, string> {
   return baseUrl?.startsWith('https://www.genspark.ai')
@@ -84,7 +84,11 @@ export function piiShieldMayApply(
   return provider === 'vega' || isVegaGatewayUrl(config?.baseUrl)
 }
 
-/** DeepSeek V4.1 Flash under the Genspark pool's hyphenated spelling */
+/**
+ * DeepSeek V4.1 Flash under the Genspark pool spelling. Only the proxy serves
+ * this id; api.deepseek.com knows the model as `deepseek-flash`, so the direct
+ * provider lists the vendor spelling and keeps this one as an accepted alias.
+ */
 export const DEEPSEEK_V41_FLASH = 'deep-seek-v4.1-flash'
 
 export const AI_PROVIDERS: AiProviderMeta[] = [
@@ -236,7 +240,7 @@ export const AI_PROVIDERS: AiProviderMeta[] = [
     // (2026-10-08, public endpoint, no key needed); the rest of the 117-model
     // catalog works as-is when typed in. Chat, temperature and — for the
     // multimodal ids — data-URI image input are live-verified. The text-only
-    // ids (deepseek-v4-*, glm-5.3, both MiniMax) are listed in
+    // ids (deepseek-v4-*, glm-5.3, MiniMax M3) are listed in
     // modelLacksVision(); Atlas Cloud serves MiniMax M3 text-only even though
     // MiniMax's own API takes images.
     models: [

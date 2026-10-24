@@ -37,6 +37,7 @@ import { createI18n, getUiLang } from '@genoffice/i18n'
 import { ProjectStore } from '@genoffice/project-store'
 import { generateImageTool, documentMediaRoots } from '@genoffice/ai-search'
 import { PDF_CHANNELS } from '../shared/ipc'
+import { printJobOptions } from '@genoffice/electron-utils/print-job'
 import { buildExportImagePaths, hasValidExportPageNumbers } from './export-images'
 import type {
   ExportImagesRequest,
@@ -108,11 +109,7 @@ import { validateRedactionRegions } from './redaction'
 import { SignError, openCertificate, openExternalCertificate, signPdf } from './pdf-sign'
 import type { ExternalSigner, SignPdfOptions } from './pdf-sign'
 import { readPdfSignatures } from './pdf-signatures'
-import {
-  SystemStoreError,
-  listSystemCertificates,
-  openSystemSigner,
-} from './system-certificates'
+import { SystemStoreError, openSystemSigner, listSystemCertificates } from './system-certificates'
 import type { SystemCertificateRef, SystemIdentity } from './system-certificates'
 
 const tDlg = createI18n({
@@ -512,19 +509,17 @@ function releaseCertEntry(entry: CertEntry | undefined): void {
   if (entry?.kind === 'system') delete entry.identity
 }
 
-/** PKCS#12 bytes and the password to open them; a Windows system identity instead hands over a signer */
+/** What signs: PKCS#12 bytes with their password, or an OS store that signs in place */
 type CertMaterial =
-  | { kind: 'p12'; p12: Uint8Array; password: string }
-  | { kind: 'in-place'; signer: ExternalSigner }
+  { kind: 'p12'; p12: Uint8Array; password: string } | { kind: 'in-place'; signer: ExternalSigner }
 
 async function certMaterial(
   entry: CertEntry,
   password: string,
   storePassword?: string,
 ): Promise<CertMaterial> {
-  if (entry.kind === 'file') {
+  if (entry.kind === 'file')
     return { kind: 'p12', p12: await readCertificateFile(entry.path), password }
-  }
   entry.identity ??= await openSystemSigner(entry.ref, storePassword)
   return entry.identity
 }
@@ -957,6 +952,24 @@ function registerPdfIpc(): void {
     } catch {
       return ''
     }
+  })
+
+  ipcMain.handle(PDF_CHANNELS.printers, async (e) => {
+    const printers = await e.sender.getPrintersAsync()
+    return printers.map((p) => ({ name: p.name, displayName: p.displayName || p.name }))
+  })
+
+  ipcMain.handle(PDF_CHANNELS.print, (e, job: unknown) => {
+    const opts = printJobOptions(job)
+    // the renderer's print stylesheet already lays one rasterized page per sheet
+    return new Promise<{ ok: boolean; error?: string }>((resolve) => {
+      e.sender.print({ margins: { marginType: 'none' }, ...opts }, (success, failureReason) => {
+        resolve({
+          ok: success,
+          ...(failureReason && !/cancel/i.test(failureReason) ? { error: failureReason } : {}),
+        })
+      })
+    })
   })
 
   ipcMain.handle(PDF_CHANNELS.readFile, async (e, path: unknown) => {
@@ -1577,7 +1590,7 @@ function registerPdfIpc(): void {
         // pdf keeps its media (exported/edited images) beside the open file
         mediaRoots: documentMediaRoots(
           openPathByWc.get(e.sender.id),
-          join(app.getPath('temp'), 'genoffice-pasted'),
+          join(app.getPath('temp'), 'officevega-pasted'),
         ),
       },
     ),

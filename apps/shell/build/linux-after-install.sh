@@ -1,8 +1,18 @@
 #!/bin/sh
 # deb/rpm post-install: expose the officevega command line shipped inside the app.
 # Only an absent name, a dead link or a link into our own install dir is taken
-# over; anything else at /usr/bin/officevega belongs to another program (officevega#893).
+# over; anything else at /usr/bin/officevega belongs to another program (genoffice#893).
 set -e
+# electron-builder stamps every MIME type it registers with
+# <icon name="x-office-document"/>, which overrides the system's per-type
+# icons (spreadsheet, presentation, text, pdf...) for all 21 types we claim
+# (genoffice#2126). Dropping the line lets each type fall back to its
+# freedesktop generic-icon; the glob/MimeType associations are untouched.
+mime="/usr/share/mime/packages/officevega.xml"
+if [ -f "$mime" ] && grep -q '<icon name="x-office-document"' "$mime"; then
+  sed -i '/<icon name="x-office-document"/d' "$mime"
+  command -v update-mime-database >/dev/null 2>&1 && update-mime-database /usr/share/mime >/dev/null 2>&1 || true
+fi
 launcher="/opt/OfficeVega/resources/cli/officevega"
 link="/usr/bin/officevega"
 [ -x "$launcher" ] || exit 0

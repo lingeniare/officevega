@@ -1,7 +1,12 @@
 import { basename, dirname } from 'node:path'
 import { isLicensed } from '@genoffice/ai-provider'
 import { officeVegaApiKey } from '@genoffice/ai-search'
-import type { DecisionEndpoint, FileSearchRerank, FileSearchSettings } from '../../shared/home-api'
+import {
+  isCloudflareEndpoint,
+  type DecisionEndpoint,
+  type FileSearchRerank,
+  type FileSearchSettings,
+} from '../../shared/home-api'
 import {
   evaluate,
   isLocalEndpoint,
@@ -129,7 +134,7 @@ export class SearchReranker {
     // local servers (Kev, Rizzo Flow, a custom URL) run without credentials
     if (!settings.rerank || (!isLocalEndpoint(endpoint) && !opts.key)) return null
     if (endpoint === 'custom' && !settings.customBaseUrl.trim()) return null
-    if (endpoint === 'cloudflare' && !settings.cloudflareAccountId.trim()) return null
+    if (isCloudflareEndpoint(endpoint) && !settings.cloudflareAccountId.trim()) return null
     const hits = this.store.excerptsFor(paths.slice(0, MAX_DOCS), q, EXCERPT_CHARS)
     if (hits.length < 2) return null
     const cacheKey = [
