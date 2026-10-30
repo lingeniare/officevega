@@ -347,26 +347,35 @@ export function applyShapeWrapAt(
   } else if (!hasAnchor) {
     next = applyImageWrap(drawing, wrap, undefined, undefined, zOrder)
   } else {
-    const behind = wrap === 'behind' ? '1' : '0'
-    const wrapElement =
-      wrap === 'front' || wrap === 'behind'
-        ? '<wp:wrapNone/>'
-        : wrap === 'topBottom'
-          ? '<wp:wrapTopAndBottom/>'
-          : '<wp:wrapSquare wrapText="bothSides"/>'
-    next = drawing
-      .replace(WRAP_ELEMENT_RE, '')
-      .replace(/<wp:anchor[^>]*>/, (tag) =>
-        tag.includes('behindDoc=')
-          ? tag.replace(/behindDoc="[^"]*"/, `behindDoc="${behind}"`)
-          : tag.replace(/<wp:anchor/, `<wp:anchor behindDoc="${behind}"`),
-      )
-    if (zOrder !== undefined) next = setAnchorRank(next, zOrder)
-    next = /<wp:docPr/.test(next)
-      ? next.replace(/<wp:docPr/, `${wrapElement}<wp:docPr`)
-      : next.replace(/<a:graphic[\s>]/, (m) => `${wrapElement}${m}`)
+    next = swapAnchorWrap(drawing, wrap, zOrder)
   }
   return paragraphXml.slice(0, seg.start) + next + paragraphXml.slice(seg.end)
+}
+
+/**
+ * Switch the wrap mode of an existing wp:anchor drawing in place: only the
+ * wrap element, behindDoc and (when given) relativeHeight change, so the
+ * positionH/V bytes keep the object where it was.
+ */
+export function swapAnchorWrap(drawingXml: string, wrap: ImageWrap, zOrder?: number): string {
+  const behind = wrap === 'behind' ? '1' : '0'
+  const wrapElement =
+    wrap === 'front' || wrap === 'behind'
+      ? '<wp:wrapNone/>'
+      : wrap === 'topBottom'
+        ? '<wp:wrapTopAndBottom/>'
+        : '<wp:wrapSquare wrapText="bothSides"/>'
+  let next = drawingXml
+    .replace(WRAP_ELEMENT_RE, '')
+    .replace(/<wp:anchor[^>]*>/, (tag) =>
+      tag.includes('behindDoc=')
+        ? tag.replace(/behindDoc="[^"]*"/, `behindDoc="${behind}"`)
+        : tag.replace(/<wp:anchor/, `<wp:anchor behindDoc="${behind}"`),
+    )
+  if (zOrder !== undefined) next = setAnchorRank(next, zOrder)
+  return /<wp:docPr/.test(next)
+    ? next.replace(/<wp:docPr/, `${wrapElement}<wp:docPr`)
+    : next.replace(/<a:graphic[\s>]/, (m) => `${wrapElement}${m}`)
 }
 
 // ---- protected field / formula token patching ----
@@ -798,6 +807,11 @@ function patchNestedInCell(
 export interface TextboxParaPatch {
   runs: Run[]
   align?: 'left' | 'center' | 'right' | 'justify' | 'distribute' | null
+  /** list membership write-back: sets or clears the paragraph's w:numPr.
+   * Always explicit (null clears) so leaving a list lands in the file. */
+  numPr?: { numId: string; ilvl: number } | null
+  /** left indent in twips; null clears w:ind/@w:left, undefined keeps the original */
+  indentLeft?: number | null
 }
 
 /** plain text of one w:p fragment (w:t + tabs/breaks), for change detection */
@@ -821,7 +835,46 @@ function paraPlainText(pXml: string): string {
   return out
 }
 
-/** set or remove w:jc inside a pPr fragment (creating pPr when needed) */
+/** Set or clear w:numPr in a paragraph's pPr. CT_PPr order places numPr after
+ * pStyle and the keep-together flags, before pBdr, shd, tabs, spacing, ind and
+ * jc — so it is inserted after pStyle when present (the common textbox shape)
+ * and otherwise directly after the pPr opening tag. */
+function pPrWithNumPr(pPr: string, numPr: TextboxParaPatch['numPr']): string {
+  const out = pPr.replace(/<w:pPr([^>]*)\/>/, '<w:pPr$1></w:pPr>')
+  const stripped = out.replace(/<w:numPr>[\s\S]*?<\/w:numPr>/, '').replace(/<w:numPr\/>/, '')
+  if (!numPr) return stripped === '<w:pPr></w:pPr>' ? '' : stripped
+  const num = `<w:numPr><w:ilvl w:val="${numPr.ilvl}"/><w:numId w:val="${numPr.numId}"/></w:numPr>`
+  const styleEnd = stripped.indexOf('<w:pStyle ')
+  const afterStyle = styleEnd === -1 ? -1 : stripped.indexOf('/>', styleEnd)
+  const pPrOpen = stripped.indexOf('>')
+  const insertAt = afterStyle !== -1 ? afterStyle + 2 : pPrOpen !== -1 ? pPrOpen + 1 : -1
+  if (insertAt === -1) return `<w:pPr>${num}</w:pPr>`
+  return stripped.slice(0, insertAt) + num + stripped.slice(insertAt)
+}
+
+/** Set or clear the left indent on the paragraph's w:ind (other w:ind
+ * attributes survive). Word prefers a character-unit left indent, own or from
+ * the style chain, over the twips twin, so a twips write also pins
+ * w:leftChars="0" the way Word itself writes pt indents. CT_PPr places ind
+ * before jc and the paragraph-mark rPr. */
+function pPrWithIndLeft(pPr: string, left: number | null): string {
+  let out = pPr.replace(/<w:pPr([^>]*)\/>/, '<w:pPr$1></w:pPr>')
+  const value = left == null ? '' : ` w:left="${left}" w:leftChars="0"`
+  const ind = /<w:ind\b([^>]*)\/>/.exec(out)
+  if (ind) {
+    const attrs = ind[1].replace(/\s+w:(left|start|leftChars|startChars)="[^"]*"/g, '')
+    const next = `${attrs}${value}`
+    out = out.replace(ind[0], next.trim() ? `<w:ind${next}/>` : '')
+  } else if (left != null) {
+    const tag = `<w:ind${value}/>`
+    if (!out) return `<w:pPr>${tag}</w:pPr>`
+    const at = [out.indexOf('<w:jc '), out.indexOf('<w:rPr')].filter((i) => i !== -1)
+    const insertAt = at.length ? Math.min(...at) : out.lastIndexOf('</w:pPr>')
+    out = out.slice(0, insertAt) + tag + out.slice(insertAt)
+  }
+  return out === '<w:pPr></w:pPr>' ? '' : out
+}
+
 function pPrWithJc(pPr: string, align: TextboxParaPatch['align']): string {
   const out = pPr.replace(/<w:pPr([^>]*)\/>/, '<w:pPr$1></w:pPr>').replace(/<w:jc [^>]*\/>/, '')
   const jcVal = align === 'justify' ? 'both' : align
@@ -859,6 +912,8 @@ function patchTxbxContent(
     }
     const template = originals[Math.min(i, originals.length - 1)]
     let pPr = /<w:pPr[\s\S]*?<\/w:pPr>|<w:pPr[^>]*\/>/.exec(template)?.[0] ?? ''
+    if (patch.numPr !== undefined) pPr = pPrWithNumPr(pPr, patch.numPr)
+    if (patch.indentLeft !== undefined) pPr = pPrWithIndLeft(pPr, patch.indentLeft)
     if (patch.align !== undefined) pPr = pPrWithJc(pPr, patch.align)
     // no rel allocation inside textboxes: only links that already have an rId
     // survive re-generation, new links degrade to plain text
@@ -945,7 +1000,10 @@ function injectShapeText(
         shapeXml.slice(content.end)
     } else {
       const body = entry.paras
-        .map((p) => `<w:p>${pPrWithJc('', p.align)}${runsXml(p.runs, null)}</w:p>`)
+        .map(
+          (p) =>
+            `<w:p>${pPrWithJc(pPrWithIndLeft('', p.indentLeft ?? null), p.align)}${runsXml(p.runs, null)}</w:p>`,
+        )
         .join('')
       const txbx = `<wps:txbx><w:txbxContent>${body}</w:txbxContent></wps:txbx>`
       const bodyPrAt = shapeXml.search(/<wps:bodyPr[\s/>]/)
@@ -1127,6 +1185,54 @@ export interface ShapeStylePatch {
   fillHex?: string | null
   /** outline color hex without '#'; null = no outline; undefined = keep */
   borderHex?: string | null
+  /** rotation in degrees clockwise; null or 0 clears a:xfrm@rot; undefined = keep */
+  rotDeg?: number | null
+  /** outline width in CSS px (a:ln@w = px * 9525 EMU); null clears the attribute; undefined = keep */
+  borderWidthPx?: number | null
+}
+
+/**
+ * Write a:xfrm@rot (60000ths of a degree clockwise) on a wps:spPr slice.
+ * null / 0 removes the attribute so Word saves a clean shape; a slice with no
+ * xfrm gets a bare one inserted in its schema position (xfrm comes first).
+ */
+function patchShapeRotation(spPr: string, rotDeg: number | null): string {
+  const norm = rotDeg == null ? 0 : ((rotDeg % 360) + 360) % 360
+  // 360deg wraps to 0: never write a full turn
+  const emu = Math.round(norm * 60000) % 21600000
+  const xfrm = /<a:xfrm\b[^>]*>/.exec(spPr)
+  if (!xfrm) {
+    if (emu === 0) return spPr
+    return spPr.replace(/^(<wps:spPr\b[^>]*>)/, `$1<a:xfrm rot="${emu}"/>`)
+  }
+  const tag =
+    emu === 0
+      ? xfrm[0].replace(/\s+rot="[^"]*"/, '')
+      : /\brot="/.test(xfrm[0])
+        ? xfrm[0].replace(/\brot="[^"]*"/, `rot="${emu}"`)
+        : xfrm[0].replace(/^<a:xfrm\b/, `<a:xfrm rot="${emu}"`)
+  return spPr.replace(xfrm[0], tag)
+}
+
+/**
+ * Write a:ln@w (EMU) on a wps:spPr slice. null removes the attribute (Word's
+ * own default hairline) and a slice with no a:ln gets one appended in its
+ * schema position, after the fill and before any effects.
+ */
+function patchShapeLineWidth(spPr: string, borderWidthPx: number | null): string {
+  const emu = borderWidthPx == null ? null : Math.max(1, Math.round(borderWidthPx * EMU_PER_PX))
+  const ln = /<a:ln\b[^>]*>/.exec(spPr)
+  if (!ln) {
+    if (emu === null) return spPr
+    return spPr.replace('</wps:spPr>', `<a:ln w="${emu}"/></wps:spPr>`)
+  }
+  const tag =
+    emu === null
+      ? ln[0].replace(/\s+w="[^"]*"/, '')
+      : /\bw="/.test(ln[0])
+        ? ln[0].replace(/\bw="[^"]*"/, `w="${emu}"`)
+        : ln[0].replace(/^<a:ln\b/, `<a:ln w="${emu}"`)
+  return spPr.replace(ln[0], tag)
 }
 
 /** Replace the first fill slot (a:solidFill/a:noFill) inside an XML slice. */
@@ -1144,7 +1250,16 @@ export function patchShapeStyles(
   paragraphXml: string,
   styles: ReadonlyArray<ShapeStylePatch | null | undefined>,
 ): string {
-  if (styles.every((s) => s == null || (s.fillHex === undefined && s.borderHex === undefined)))
+  if (
+    styles.every(
+      (s) =>
+        s == null ||
+        (s.fillHex === undefined &&
+          s.borderHex === undefined &&
+          s.rotDeg === undefined &&
+          s.borderWidthPx === undefined),
+    )
+  )
     return paragraphXml
   const drawings = xmlSegments(paragraphXml, 'w:drawing', 0, paragraphXml.length)
   let out = ''
@@ -1155,7 +1270,14 @@ export function patchShapeStyles(
     if (!isBoxDrawing(drawingXml)) continue
     boxIndex++
     const style = styles[boxIndex]
-    if (!style || (style.fillHex === undefined && style.borderHex === undefined)) continue
+    if (
+      !style ||
+      (style.fillHex === undefined &&
+        style.borderHex === undefined &&
+        style.rotDeg === undefined &&
+        style.borderWidthPx === undefined)
+    )
+      continue
     const spPrMatch = /<wps:spPr>[\s\S]*?<\/wps:spPr>/.exec(drawingXml)
     if (spPrMatch) {
       let spPr = spPrMatch[0]
@@ -1177,6 +1299,8 @@ export function patchShapeStyles(
           )
         }
       }
+      if (style.rotDeg !== undefined) spPr = patchShapeRotation(spPr, style.rotDeg)
+      if (style.borderWidthPx !== undefined) spPr = patchShapeLineWidth(spPr, style.borderWidthPx)
       drawingXml = drawingXml.replace(spPrMatch[0], spPr)
     }
     out += paragraphXml.slice(cursor, drawing.start) + drawingXml
@@ -1995,6 +2119,39 @@ export function stripParaMarkRevision(rawPPr: string, kind: 'del' | 'ins'): stri
   return stripped + tail
 }
 
+/**
+ * Resolve the paragraph mark's tracked formatting change (pPr/rPr/rPrChange):
+ * accept drops the record, reject puts the recorded old rPr back (the mark's
+ * own ins/del/move markers stay).
+ */
+export function resolveParaMarkRPrChange(rawPPr: string, mode: 'accept' | 'reject'): string {
+  const changeStart = rawPPr.indexOf('<w:pPrChange')
+  const live = changeStart === -1 ? rawPPr : rawPPr.slice(0, changeStart)
+  const tail = changeStart === -1 ? '' : rawPPr.slice(changeStart)
+  const open = live.indexOf('<w:rPr>')
+  const recordAt = live.indexOf('<w:rPrChange', open)
+  if (open === -1 || recordAt === -1) return rawPPr
+  // the record nests its own <w:rPr>, so the mark's rPr closes after the record does
+  const selfClosing = /^<w:rPrChange\b[^>]*\/>/.exec(live.slice(recordAt))
+  const closeTag = live.indexOf('</w:rPrChange>', recordAt)
+  if (!selfClosing && closeTag === -1) return rawPPr
+  const recordEnd = selfClosing
+    ? recordAt + selfClosing[0].length
+    : closeTag + '</w:rPrChange>'.length
+  const close = live.indexOf('</w:rPr>', recordEnd)
+  if (close === -1) return rawPPr
+  const record = live.slice(recordAt, recordEnd)
+  const rest = live.slice(open + '<w:rPr>'.length, recordAt) + live.slice(recordEnd, close)
+  let next = rest
+  if (mode === 'reject') {
+    const markers = rest.match(/<w:(?:ins|del|moveFrom|moveTo)\b[^>]*\/>/g)?.join('') ?? ''
+    const old = /<w:rPr>([\s\S]*?)<\/w:rPr>/.exec(record)?.[1] ?? ''
+    next = markers + old
+  }
+  const rPr = next.trim() ? `<w:rPr>${next}</w:rPr>` : ''
+  return live.slice(0, open) + rPr + live.slice(close + '</w:rPr>'.length) + tail
+}
+
 export function stripPPrChange(rawPPr: string): string {
   // pPrChange nests a <w:pPr> inside it, so we need depth-aware removal.
   // Pattern: <w:pPrChange ...> ... </w:pPrChange>
@@ -2621,7 +2778,20 @@ export interface InlinePictureXmlOptions {
  *  a:ext follow (effectExtent is left alone). Unchanged when the extent already
  *  reads these sizes, so an untouched picture saves byte-identical. */
 export function resizeInlinePictureXml(xml: string, widthPx: number, heightPx: number): string {
-  if (!(widthPx > 0) || !(heightPx > 0) || !/<wp:inline[\s>]/.test(xml)) return xml
+  if (!/<wp:inline[\s>]/.test(xml)) return xml
+  return resizeDrawingExtents(xml, widthPx, heightPx)
+}
+
+/** resizeInlinePictureXml for a floating (wp:anchor) run picture; only a lone
+ *  picture: a group's extent does not follow its first picture */
+export function resizeAnchoredPictureXml(xml: string, widthPx: number, heightPx: number): string {
+  if (!/<wp:anchor[\s>]/.test(xml) || /<wpg:/.test(xml)) return xml
+  if ((xml.match(/<pic:pic[\s>]/g) ?? []).length !== 1) return xml
+  return resizeDrawingExtents(xml, widthPx, heightPx)
+}
+
+function resizeDrawingExtents(xml: string, widthPx: number, heightPx: number): string {
+  if (!(widthPx > 0) || !(heightPx > 0)) return xml
   const cx = Math.max(1, Math.round(widthPx * EMU_PER_PX))
   const cy = Math.max(1, Math.round(heightPx * EMU_PER_PX))
   const extent = /<wp:extent\b[^>]*\bcx="(\d+)"[^>]*\bcy="(\d+)"/.exec(xml)

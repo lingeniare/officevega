@@ -275,4 +275,7 @@ export const tt = {
   appStatusRecordSaved: 'Narration saved on {count} slides (PowerPoint plays it too)',
   appStatusRecordFailed: 'The recording could not be saved',
   appStatusNarrationCleared: 'Narration cleared',
+  // ── upstream merge: new keys, English fallback pending translation ──
+  appMasterInsertTextBox: 'Text Box',
+  appMasterInsertShape: 'Shapes',
 } satisfies Record<keyof typeof en, string>

@@ -294,11 +294,15 @@ export interface Props {
   onUndo: () => void
   onRedo: () => void
   onSaveAs: () => void
+  /** Ask the model for a name, then open Save As with it prefilled */
+  onNameWithAi: () => void
   /** Export as PDF (hidden slides skipped) */
   onExportPdf: () => void
   onPrint: () => void
   /** Export as images (one PNG per page, hidden slides skipped) */
   onExportImages: () => void
+  /** Export as images (one JPG per page, hidden slides skipped) */
+  onExportImagesJpg: () => void
   onFormat: (cmd: FormatCmd) => void
   zoom: number
   onZoom: (z: number | ((current: number) => number)) => void
@@ -380,9 +384,11 @@ export interface Props {
   /** Switch the current page's layout / reset layout (placeholders back in position) */
   onSetLayout: (layoutPath: string) => void
   onResetLayout: () => void
-  /** Slide size (EMU) and the current size tag ('16:9'|'4:3'|null for display) */
+  /** Slide size (EMU); the menu reads the current size when it opens, to mark the preset and orientation */
   onSlideSize: (cx: number, cy: number) => void
-  slideSizeKey: '16:9' | '4:3' | null
+  getSlideSize: () => Promise<{ cx: number; cy: number } | null>
+  /** Slide Size › Custom Size… */
+  onCustomSlideSize: () => void
   /** Element-level paragraph format (bullets/numbering/line spacing) */
   onParagraphFormat: (patch: {
     bullet?: 'char' | 'number' | 'blip' | 'none'

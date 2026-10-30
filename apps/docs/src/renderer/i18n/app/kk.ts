@@ -553,4 +553,6 @@ export const kk = {
   appMergeSourceLoaded: 'Loaded {name} ({n} records)',
   appMergeWritten: '{n} documents written',
   appMergeNothingToWrite: 'There is nothing to write',
+  // ── upstream merge: new keys, English fallback pending translation ──
+  appLangTurkish: 'Turkish',
 } satisfies Record<keyof typeof en, string>

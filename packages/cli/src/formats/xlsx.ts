@@ -1250,6 +1250,8 @@ export async function writeWorkbook(
  */
 /** The engine knows the syntax but not the function: Excel computes it on open. */
 const UNKNOWN_FUNCTION_RESULT = '#NAME?'
+/** The engine cannot place a dynamic-array result: Excel computes it on open. */
+const SPILL_RESULT = '#SPILL!'
 /** The engine could not parse the formula at all — a reference it cannot read, not a missing function. */
 const UNPARSED_RESULT = '#ERROR!'
 const list = (cells: readonly string[]) =>
@@ -1277,7 +1279,7 @@ async function evaluateFormulas(
           // Both leave the cell without a cached value — the file is correct
           // and Excel recomputes on open — but they have different causes and
           // the caller reports them apart.
-          if (cell.formatted === UNKNOWN_FUNCTION_RESULT) {
+          if (cell.formatted === UNKNOWN_FUNCTION_RESULT || cell.formatted === SPILL_RESULT) {
             uncached.push(`${sheet}!${toA1Address(cell.row, cell.column)}`)
             return { row: cell.row, column: cell.column, value: null }
           }

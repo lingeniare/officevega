@@ -342,6 +342,7 @@ describe('modelLacksVision', () => {
     expect(modelLacksVision('deepseek-ai/deepseek-v4-flash')).toBe(true)
     expect(modelLacksVision('zai-org/glm-5.3-flash')).toBe(false)
     expect(modelLacksVision('moonshotai/kimi-k3')).toBe(false)
+    expect(modelLacksVision('moonshotai/kimi-k3.1-pro')).toBe(false)
     expect(modelLacksVision('moonshotai/kimi-k2.6')).toBe(false)
     expect(modelLacksVision('qwen/qwen3.8-max')).toBe(false)
     expect(modelLacksVision('qwen/qwen3.5-flash')).toBe(false)
@@ -350,6 +351,24 @@ describe('modelLacksVision', () => {
   it('leaves the direct GLM and MiniMax providers untouched by the Atlas Cloud rule', () => {
     expect(modelLacksVision('glm-5.3')).toBe(false)
     expect(modelLacksVision('MiniMax-M3')).toBe(false)
+  })
+
+  it('holds back the text-only lab-namespaced ids but not their multimodal siblings', () => {
+    expect(modelLacksVision('zai-org/GLM-5.3')).toBe(true)
+    expect(modelLacksVision('Qwen/Qwen3.8-Flash')).toBe(true)
+    expect(modelLacksVision('openai/gpt-oss-120b')).toBe(true)
+    expect(modelLacksVision('deepseek-ai/DeepSeek-V4.1-Flash')).toBe(false)
+    expect(modelLacksVision('deepseek-ai/DeepSeek-V4.1-Flash-1017')).toBe(false)
+    expect(modelLacksVision('zai-org/GLM-5.3-Flash')).toBe(false)
+    expect(modelLacksVision('moonshotai/Kimi-K2.6')).toBe(false)
+  })
+
+  it('records the existing vision heuristics for the bare lab ids', () => {
+    expect(modelLacksVision('deepseek-v4.1-flash')).toBe(false)
+    expect(modelLacksVision('deepseek-v4-pro')).toBe(true)
+    expect(modelLacksVision('glm-5.3-flash')).toBe(false)
+    expect(modelLacksVision('kimi-k2.6')).toBe(false)
+    expect(modelLacksVision('minimax-m3')).toBe(false)
   })
 
   it('matches case-insensitively like its sibling matchers', () => {

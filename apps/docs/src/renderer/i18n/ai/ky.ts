@@ -220,4 +220,7 @@ export const ky = {
   aiSumSkillsList: 'Listed installed skills',
   aiSumSkillRead: 'Read skill {name}',
   aiSumRunCli: 'Ran {args}',
+  // ── upstream merge: new keys, English fallback pending translation ──
+  aiMindMapExportSvg: 'Export SVG',
+  aiMindMapInsert: 'Insert into document',
 } satisfies Record<keyof typeof en, string>

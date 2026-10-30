@@ -614,6 +614,19 @@ export const strings = {
     onbJoinGitHub: 'Star on GitHub',
     timelineCount: '{n} items',
     timelineCountOne: '{n} item',
+    // upstream merge: English fallback pending translation
+    setAutoUpdateCheck: 'Check for updates automatically',
+    setAutoUpdateCheckDesc:
+    'When off, GenOffice no longer checks for new versions at launch or in the background. You can still check from Help › Check for Updates.',
+    setRestoreSession: 'Reopen documents from last time',
+    setRestoreSessionDesc:
+    'Documents open when GenOffice closes reopen automatically the next time it starts.',
+    intgLegacyTitle: 'Older skill copies',
+    intgLegacyDesc:
+    'GenOffice used to write a copy into the folder of each tool. {n} of them are still there: the tool keeps reading them, so they never get the current skill.',
+    intgLegacyClean: 'Remove old copies',
+    intgLegacyCleaned: 'Removed {n} old copies, {k} edited by hand left in place.',
+    intgLegacyFailed: 'Could not remove the old copies: {msg}',
   },
   ru: {
     addFolderRoot: 'Добавить папку…',
@@ -1243,6 +1256,19 @@ export const strings = {
     setAuthorName: 'Имя пользователя',
     setAuthorNameDesc:
       'Показывается как автор комментариев и исправок в Docs, Sheets и Slides. Пусто — имя учётной записи компьютера.',
+    // upstream merge: English fallback pending translation
+    setAutoUpdateCheck: 'Автоматически проверять обновления',
+    setAutoUpdateCheckDesc:
+    'Если выключено, GenOffice не проверяет новые версии при запуске и в фоне. Проверить вручную можно через Справка › Проверить обновления.',
+    setRestoreSession: 'Открывать документы прошлого сеанса',
+    setRestoreSessionDesc:
+    'Документы, открытые при закрытии GenOffice, автоматически откроются при следующем запуске.',
+    intgLegacyTitle: 'Старые копии skill',
+    intgLegacyDesc:
+    'Раньше GenOffice записывал копию в папку каждого инструмента. Их ещё осталось {n}: инструмент продолжает их читать, поэтому они никогда не получают текущий skill.',
+    intgLegacyClean: 'Удалить старые копии',
+    intgLegacyCleaned: 'Удалено старых копий: {n}; отредактированных вручную оставлено: {k}.',
+    intgLegacyFailed: 'Не удалось удалить старые копии: {msg}',
   },
   uz: {
     addFolderRoot: 'Add folder…',
@@ -1868,6 +1894,19 @@ export const strings = {
     intgSkillsInstall: 'Install',
     intgSkillsUpdate: 'Update',
     intgSkillsInstalledTag: 'Installed',
+    // upstream merge: English fallback pending translation
+    setAutoUpdateCheck: 'Check for updates automatically',
+    setAutoUpdateCheckDesc:
+    'When off, GenOffice no longer checks for new versions at launch or in the background. You can still check from Help › Check for Updates.',
+    setRestoreSession: 'Reopen documents from last time',
+    setRestoreSessionDesc:
+    'Documents open when GenOffice closes reopen automatically the next time it starts.',
+    intgLegacyTitle: 'Older skill copies',
+    intgLegacyDesc:
+    'GenOffice used to write a copy into the folder of each tool. {n} of them are still there: the tool keeps reading them, so they never get the current skill.',
+    intgLegacyClean: 'Remove old copies',
+    intgLegacyCleaned: 'Removed {n} old copies, {k} edited by hand left in place.',
+    intgLegacyFailed: 'Could not remove the old copies: {msg}',
   },
   kk: {
     addFolderRoot: 'Add folder…',
@@ -2490,6 +2529,19 @@ export const strings = {
     intgSkillsInstall: 'Install',
     intgSkillsUpdate: 'Update',
     intgSkillsInstalledTag: 'Installed',
+    // upstream merge: English fallback pending translation
+    setAutoUpdateCheck: 'Check for updates automatically',
+    setAutoUpdateCheckDesc:
+    'When off, GenOffice no longer checks for new versions at launch or in the background. You can still check from Help › Check for Updates.',
+    setRestoreSession: 'Reopen documents from last time',
+    setRestoreSessionDesc:
+    'Documents open when GenOffice closes reopen automatically the next time it starts.',
+    intgLegacyTitle: 'Older skill copies',
+    intgLegacyDesc:
+    'GenOffice used to write a copy into the folder of each tool. {n} of them are still there: the tool keeps reading them, so they never get the current skill.',
+    intgLegacyClean: 'Remove old copies',
+    intgLegacyCleaned: 'Removed {n} old copies, {k} edited by hand left in place.',
+    intgLegacyFailed: 'Could not remove the old copies: {msg}',
   },
   az: {
     addFolderRoot: 'Add folder…',
@@ -3111,6 +3163,19 @@ export const strings = {
     intgSkillsInstall: 'Install',
     intgSkillsUpdate: 'Update',
     intgSkillsInstalledTag: 'Installed',
+    // upstream merge: English fallback pending translation
+    setAutoUpdateCheck: 'Check for updates automatically',
+    setAutoUpdateCheckDesc:
+    'When off, GenOffice no longer checks for new versions at launch or in the background. You can still check from Help › Check for Updates.',
+    setRestoreSession: 'Reopen documents from last time',
+    setRestoreSessionDesc:
+    'Documents open when GenOffice closes reopen automatically the next time it starts.',
+    intgLegacyTitle: 'Older skill copies',
+    intgLegacyDesc:
+    'GenOffice used to write a copy into the folder of each tool. {n} of them are still there: the tool keeps reading them, so they never get the current skill.',
+    intgLegacyClean: 'Remove old copies',
+    intgLegacyCleaned: 'Removed {n} old copies, {k} edited by hand left in place.',
+    intgLegacyFailed: 'Could not remove the old copies: {msg}',
   },
   tk: {
     addFolderRoot: 'Add folder…',
@@ -3734,6 +3799,19 @@ export const strings = {
     intgSkillsInstall: 'Install',
     intgSkillsUpdate: 'Update',
     intgSkillsInstalledTag: 'Installed',
+    // upstream merge: English fallback pending translation
+    setAutoUpdateCheck: 'Check for updates automatically',
+    setAutoUpdateCheckDesc:
+    'When off, GenOffice no longer checks for new versions at launch or in the background. You can still check from Help › Check for Updates.',
+    setRestoreSession: 'Reopen documents from last time',
+    setRestoreSessionDesc:
+    'Documents open when GenOffice closes reopen automatically the next time it starts.',
+    intgLegacyTitle: 'Older skill copies',
+    intgLegacyDesc:
+    'GenOffice used to write a copy into the folder of each tool. {n} of them are still there: the tool keeps reading them, so they never get the current skill.',
+    intgLegacyClean: 'Remove old copies',
+    intgLegacyCleaned: 'Removed {n} old copies, {k} edited by hand left in place.',
+    intgLegacyFailed: 'Could not remove the old copies: {msg}',
   },
   ky: {
     addFolderRoot: 'Add folder…',
@@ -4353,6 +4431,19 @@ export const strings = {
     intgSkillsInstall: 'Install',
     intgSkillsUpdate: 'Update',
     intgSkillsInstalledTag: 'Installed',
+    // upstream merge: English fallback pending translation
+    setAutoUpdateCheck: 'Check for updates automatically',
+    setAutoUpdateCheckDesc:
+    'When off, GenOffice no longer checks for new versions at launch or in the background. You can still check from Help › Check for Updates.',
+    setRestoreSession: 'Reopen documents from last time',
+    setRestoreSessionDesc:
+    'Documents open when GenOffice closes reopen automatically the next time it starts.',
+    intgLegacyTitle: 'Older skill copies',
+    intgLegacyDesc:
+    'GenOffice used to write a copy into the folder of each tool. {n} of them are still there: the tool keeps reading them, so they never get the current skill.',
+    intgLegacyClean: 'Remove old copies',
+    intgLegacyCleaned: 'Removed {n} old copies, {k} edited by hand left in place.',
+    intgLegacyFailed: 'Could not remove the old copies: {msg}',
   },
   tt: {
     addFolderRoot: 'Add folder…',
@@ -4974,6 +5065,19 @@ export const strings = {
     intgSkillsInstall: 'Install',
     intgSkillsUpdate: 'Update',
     intgSkillsInstalledTag: 'Installed',
+    // upstream merge: English fallback pending translation
+    setAutoUpdateCheck: 'Check for updates automatically',
+    setAutoUpdateCheckDesc:
+    'When off, GenOffice no longer checks for new versions at launch or in the background. You can still check from Help › Check for Updates.',
+    setRestoreSession: 'Reopen documents from last time',
+    setRestoreSessionDesc:
+    'Documents open when GenOffice closes reopen automatically the next time it starts.',
+    intgLegacyTitle: 'Older skill copies',
+    intgLegacyDesc:
+    'GenOffice used to write a copy into the folder of each tool. {n} of them are still there: the tool keeps reading them, so they never get the current skill.',
+    intgLegacyClean: 'Remove old copies',
+    intgLegacyCleaned: 'Removed {n} old copies, {k} edited by hand left in place.',
+    intgLegacyFailed: 'Could not remove the old copies: {msg}',
   },
   ka: {
     addFolderRoot: 'Add folder…',
@@ -5599,5 +5703,18 @@ export const strings = {
     intgSkillsInstall: 'Install',
     intgSkillsUpdate: 'Update',
     intgSkillsInstalledTag: 'Installed',
+    // upstream merge: English fallback pending translation
+    setAutoUpdateCheck: 'Check for updates automatically',
+    setAutoUpdateCheckDesc:
+    'When off, GenOffice no longer checks for new versions at launch or in the background. You can still check from Help › Check for Updates.',
+    setRestoreSession: 'Reopen documents from last time',
+    setRestoreSessionDesc:
+    'Documents open when GenOffice closes reopen automatically the next time it starts.',
+    intgLegacyTitle: 'Older skill copies',
+    intgLegacyDesc:
+    'GenOffice used to write a copy into the folder of each tool. {n} of them are still there: the tool keeps reading them, so they never get the current skill.',
+    intgLegacyClean: 'Remove old copies',
+    intgLegacyCleaned: 'Removed {n} old copies, {k} edited by hand left in place.',
+    intgLegacyFailed: 'Could not remove the old copies: {msg}',
   },
 } as const

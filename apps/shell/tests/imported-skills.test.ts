@@ -50,6 +50,20 @@ import {
   usableSkills,
 } from '../src/main/imported-skills'
 
+/** creating symlinks needs privilege on some platforms (e.g. Windows without developer mode) */
+const canSymlink = (() => {
+  try {
+    const dir = mkdtempSync(join(tmpdir(), 'skills-import-probe-'))
+    const target = join(dir, 't')
+    writeFileSync(target, 'x')
+    symlinkSync(target, join(dir, 'l'))
+    rmSync(dir, { recursive: true, force: true })
+    return true
+  } catch {
+    return false
+  }
+})()
+
 /** a scratch tree: <root>/save/skills/<name>/SKILL.md (ours) and <root>/src/<name>/… (to import) */
 function scaffold(ours: Record<string, string> = {}, picked: Record<string, string> = {}) {
   const root = mkdtempSync(join(tmpdir(), 'skills-import-'))
@@ -167,7 +181,7 @@ describe('importSkillDir', () => {
     cleanup()
   })
 
-  it('refuses a skill directory that is itself a symlink', () => {
+  it.skipIf(!canSymlink)('refuses a skill directory that is itself a symlink', () => {
     const { save, src, cleanup } = scaffold({}, { real: SKILL('real', 'A docx thing') })
     symlinkSync(join(src, 'real'), join(src, 'linked'))
     expect(() => importSkillDir(join(src, 'linked'), save)).toThrow('symlink')
@@ -175,7 +189,9 @@ describe('importSkillDir', () => {
     cleanup()
   })
 
-  it('refuses a skill that ships a symlink instead of copying the reach-through', () => {
+  it.skipIf(!canSymlink)(
+    'refuses a skill that ships a symlink instead of copying the reach-through',
+    () => {
     const { save, src, cleanup } = scaffold({}, { linked: SKILL('linked', 'A docx thing') })
     const dir = join(src, 'linked')
     writeFileSync(join(dir, 'outside.md'), 'somewhere else')

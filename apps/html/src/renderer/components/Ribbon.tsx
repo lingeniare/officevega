@@ -68,6 +68,8 @@ interface Props {
   onOpen: () => void
   onExport: (format: ExportFormat) => void
   onPrint: () => void
+  /** Ask the model for a name, then open Save As with it prefilled */
+  onNameWithAi: () => void
   onFind: () => void
   canUndo: boolean
   canRedo: boolean
@@ -329,6 +331,17 @@ export function Ribbon(p: Props) {
           onClick={p.onSaveAs}
         >
           <IconSaveAs size={16} />
+        </button>
+        <button
+          type="button"
+          className="qa-btn qa-name-with-ai"
+          data-tip={t('aiNameFile')}
+          aria-label={t('aiNameFile')}
+          disabled={off}
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={p.onNameWithAi}
+        >
+          {t('aiNameFile')}
         </button>
         <button
           type="button"

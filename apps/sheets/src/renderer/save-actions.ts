@@ -72,7 +72,7 @@ export interface SaveContext {
    * to be written, and a save that dropped the marks would leave the file
    * claiming nothing is hidden.
    */
-  redactionStates?: () => readonly SheetRedactionState[]
+  redactionStates?: () => readonly SheetRedactionState[] | null
   /** Saving swaps the session and reinstalls the workbook, which resets the
       view to the first sheet's A1 — stash where the user was so the
       reinstall lands there instead. `viewRow`/`viewColumn` is the viewport's
@@ -116,6 +116,7 @@ export async function handleSave(
   mode: 'save' | 'save-as' | 'recovery',
   quiet = false,
   explicitTarget?: { path: string; overwrite: boolean },
+  defaultName?: string,
 ): Promise<SaveOutcome> {
   const state = ctx.lazyWorkbookRef.current
   // Captured at save start (the Ctrl+S moment): the post-save session swap
@@ -209,9 +210,10 @@ export async function handleSave(
     .filter((sheetId) => !isSheetRemoved(state.editJournal, sheetId))
     .map((sheetId) => ({
       sheetId,
-      ranges: (state.sheetProtectedRanges.get(sheetId) ?? []).map(({ name, sqref }) => ({
+      ranges: (state.sheetProtectedRanges.get(sheetId) ?? []).map(({ name, sqref, password }) => ({
         name,
         sqref,
+        ...(password ? { password } : {}),
       })),
     }))
   const themeState =
@@ -255,10 +257,11 @@ export async function handleSave(
   // Withheld cells travel in a package part of their own, so they ride with
   // this save rather than in the journal. Copied into the request's own shape
   // so the renderer never hands main a readonly view of its state.
-  const redactionStates = (ctx.redactionStates?.() ?? []).map((state) => ({
-    sheetName: state.sheetName,
-    marks: state.marks.map((mark) => ({ ...mark })),
-  }))
+  const redactionStates =
+    (ctx.redactionStates?.() ?? null)?.map((state) => ({
+      sheetName: state.sheetName,
+      marks: state.marks.map((mark) => ({ ...mark })),
+    })) ?? null
   // The gateway fails closed when these additions ride with structural or
   // sheet changes (their coordinates entangle). Instead of bouncing the
   // user, hold them back and save in two sequential phases: structure
@@ -322,7 +325,7 @@ export async function handleSave(
     sparklineAdditions.length +
     // A save with nothing else pending but newly withheld cells is still a
     // save: skipping it would leave the file claiming nothing is hidden.
-    redactionStates.length
+    (redactionStates?.length ?? 0)
   // A restored crash-recovery session carries its changes in the workbook
   // bytes themselves, not the journal: a plain Save with nothing pending must
   // still write back to the original file (and clear the recovery copy).
@@ -468,6 +471,8 @@ export async function handleSave(
       ...(restoreWriteBack ? { restoreWriteBack: true } : {}),
       ...(quiet ? { quiet: true } : {}),
       ...(csvContent === undefined ? {} : { csvContent }),
+      // a name the reader (or the model, via the ribbon) chose for the dialog
+      ...(defaultName === undefined ? {} : { defaultName }),
       // MCP explicit-path save: main skips the Save-As dialog for these
       ...(explicitTarget
         ? { targetPath: explicitTarget.path, overwrite: explicitTarget.overwrite }
@@ -584,7 +589,7 @@ export async function handleSave(
         // Phase one already wrote the marks, re-keyed for the renames it
         // performed. Sending them again would rewrite the part under the names
         // this session loaded — the pre-rename ones — and orphan it.
-        redactionStates: [],
+        redactionStates: null,
       })
       if (ctx.lazyWorkbookRef.current !== state) return { ok: false }
       if (second.canceled) {
@@ -657,7 +662,6 @@ export function stripIpcErrorWrapper(message: string): string {
 /// stable substring; unmatched messages surface verbatim (English) as before.
 const SAVE_ERROR_PATTERNS = [
   ['cannot shift here', 'appStructuralShiftBlocked'],
-  ['extended (x14) data validation', 'appSaveErrX14Dv'],
   ['Multi-select list rules', 'appSaveErrMultiSelectList'],
   ['extended conditional formatting (x14)', 'appSaveErrX14Cf'],
   ['data-bar extension format (x14)', 'appSaveErrX14Cf'],

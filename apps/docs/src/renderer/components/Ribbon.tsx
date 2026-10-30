@@ -18,7 +18,6 @@ import {
   addColumnBefore,
   addRowAfter,
   addRowBefore,
-  deleteColumn,
   deleteRow,
   deleteTable,
   mergeCells,
@@ -80,6 +79,7 @@ import type { InkTool } from '../editor/ink'
 import type { RibbonFormatState } from './ribbon-format-state'
 import { distributeSelectedColumns, setSelectedColumnWidth } from '../editor/table-sizing'
 import {
+  deleteTableColumn,
   distributeRowsEvenly,
   enterSelectedTable,
   inTableOrSelected,
@@ -119,7 +119,7 @@ import {
   setTableLookOption,
   toggleRepeatHeaderRows,
 } from '../editor/table-properties'
-import { useI18n, type StringKey } from '../i18n/locale'
+import { useI18n, type StringKey, type TFunc } from '../i18n/locale'
 import type { MergeDataSource } from '../../shared/ipc'
 import type { MailMergeRequest, MailMergeResponse } from '../mail-merge/output'
 import { pxToTwips, twipsToPx } from '../units'
@@ -287,6 +287,8 @@ interface RibbonProps {
   onExportImages: () => void
   onPrint: () => void
   onConvert: (format: ConvertFormat) => void
+  /** File ▸ Name with AI…: ask the model for a name and offer it in the dialog */
+  onNameWithAi: () => void
   showAi: boolean
   /** Suite-wide AI switch (#1947): false hides the whole AI ribbon group */
   aiEnabled?: boolean
@@ -607,6 +609,46 @@ const ARRANGE_ORDER_ITEMS: Array<
   ['appSendBackward', IconSendBackward, sendBackward],
   ['appSendToBack', IconSendToBack, sendToBack],
 ]
+/**
+ * Shape Format ▸ outline weight gallery, in points — the weights Word offers.
+ * The model stores CSS px (1 pt = 12700 EMU = 4/3 px), so a pick converts
+ * through `outlineWidthPxOf` and the trigger maps the stored width back.
+ */
+const SHAPE_OUTLINE_WEIGHTS_PT = [
+  '0.25',
+  '0.5',
+  '0.75',
+  '1',
+  '1.5',
+  '2.25',
+  '3',
+  '4.5',
+  '6',
+] as const
+const PX_PER_PT = 4 / 3
+
+/** a gallery weight in points as CSS px, rounded like the docx parser (1.5 pt -> 2 px) */
+const outlineWidthPxOf = (pt: number): number => Math.round(pt * PX_PER_PT * 100) / 100
+
+/** a stored px width back in points, rounded the same way (2 px -> 1.5 pt) */
+const outlineWidthPtOf = (px: number): number => Math.round((px / PX_PER_PT) * 100) / 100
+
+/** the gallery option matching a stored width; null when the box has none or an off-gallery one */
+const outlineWeightOptionOf = (px: number | null): string | null => {
+  if (px == null) return null
+  const pt = outlineWidthPtOf(px)
+  return SHAPE_OUTLINE_WEIGHTS_PT.find((weight) => Number(weight) === pt) ?? null
+}
+
+/**
+ * Trigger text for the weight picker: the matching gallery option (the trigger
+ * then reads as that option's label), the box's own off-gallery width, or the
+ * control name while the shape still carries Word's default width.
+ */
+function outlineWeightValueOf(px: number | null, tr: TFunc): string {
+  if (px == null) return tr('ribbonShapeOutlineWeight')
+  return outlineWeightOptionOf(px) ?? tr('ribbonPtValue', { n: String(outlineWidthPtOf(px)) })
+}
 const HF_TABS = ['headerFooter'] as const
 type RibbonTab =
   | (typeof TABS)[number]
@@ -763,6 +805,7 @@ function RibbonInner({
   onExportImages,
   onPrint,
   onConvert,
+  onNameWithAi,
   showAi,
   aiEnabled = true,
   onToggleAi,
@@ -1019,8 +1062,17 @@ function RibbonInner({
     }
   }, [inShape])
 
-  /** apply fill/outline to the selected floating box (first box of the node) */
-  const setShapeStyle = (patch: { fill?: string | null; borderColor?: string | null }) => {
+  /**
+   * apply fill/outline/rotation/weight to the selected floating box (first box
+   * of the node). Null deletes the attribute so the file keeps Word's own
+   * default instead of an explicit no-op value.
+   */
+  const setShapeStyle = (patch: {
+    fill?: string | null
+    borderColor?: string | null
+    rotDeg?: number | null
+    borderWidthPx?: number | null
+  }) => {
     if (!canEdit) return
     const attrs = editor.getAttributes('docProtected')
     const boxes = attrs?.textboxes as TextboxDisplay[] | null
@@ -1034,11 +1086,37 @@ function RibbonInner({
       if (patch.borderColor) box.borderColor = patch.borderColor
       else delete box.borderColor
     }
+    if ('rotDeg' in patch) {
+      if (patch.rotDeg) box.rotDeg = patch.rotDeg
+      else delete box.rotDeg
+    }
+    if ('borderWidthPx' in patch) {
+      if (patch.borderWidthPx) box.borderWidthPx = patch.borderWidthPx
+      else delete box.borderWidthPx
+    }
     editor
       .chain()
       .focus()
       .updateAttributes('docProtected', { textboxes: [box, ...boxes.slice(1)] })
       .run()
+  }
+
+  /**
+   * rotate the selected shape by `delta` degrees clockwise (Word's quarter
+   * turns): the stored angle is normalized to 0-359 and dropped once it is 0.
+   */
+  const setShapeRotation = (delta: number) => {
+    if (!canEdit) return
+    const attrs = editor.getAttributes('docProtected')
+    const boxes = attrs?.textboxes as TextboxDisplay[] | null
+    if (!Array.isArray(boxes) || boxes.length === 0) return
+    const rotDeg = ((Math.round((boxes[0].rotDeg ?? 0) + delta) % 360) + 360) % 360
+    setShapeStyle({ rotDeg: rotDeg || null })
+  }
+
+  /** set the selected shape's outline width from one of Word's weights, in points */
+  const setShapeOutlineWidth = (pt: number) => {
+    setShapeStyle({ borderWidthPx: outlineWidthPxOf(pt) })
   }
 
   /**
@@ -1592,7 +1670,29 @@ function RibbonInner({
   }
 
   const toggleList = (kind: 'bullet' | 'ordered') => {
-    if (sub) return // textboxes have no list numbering
+    // a focused textbox: the paragraph's list identity rides on its listMarker
+    // attr (parse fills it from w:numPr, the editor rewrites it); Enter keeps
+    // the attrs, so the list continues item after item
+    if (sub) {
+      if (!canEdit) return
+      const marker = sub.getAttributes('docParagraph').listMarker as { kind?: string } | undefined
+      if (marker?.kind === kind) {
+        chain().updateAttributes('docParagraph', { listMarker: null }).run()
+        return
+      }
+      const numId =
+        kind === 'ordered'
+          ? (allocateNumId?.(kind) ?? null)
+          : (findNumIdOfKind(blocks, kind) ?? allocateNumId?.(kind) ?? null)
+      if (!numId) return
+      const text = kind === 'bullet' ? '•' : '1.'
+      chain()
+        .updateAttributes('docParagraph', {
+          listMarker: { text, kind, numId, ilvl: 0 },
+        })
+        .run()
+      return
+    }
     if (editor.isActive('docListItem', { kind })) {
       chain().setNode('docParagraph').run()
       return
@@ -1711,7 +1811,15 @@ function RibbonInner({
     ))
 
   const changeIndent = (delta: 1 | -1) => {
-    if (sub || !canEdit) return
+    if (!canEdit) return
+    // textboxes indent through the paragraph's own indentLeft attr; the main
+    // document routes through the ops layer (style and grid interactions)
+    if (sub) {
+      const cur = Number(sub.getAttributes('docParagraph').indentLeft ?? 0)
+      const next = Math.max(0, cur + delta * 720)
+      chain().updateAttributes('docParagraph', { indentLeft: next }).run()
+      return
+    }
     stepParagraphIndent(editor, delta)
   }
 
@@ -2166,6 +2274,16 @@ function RibbonInner({
                   {t('ribbonExportImages')}
                 </button>
                 <button
+                  className="qa-name-with-ai"
+                  disabled={!hasDoc}
+                  onClick={() => {
+                    setDropdown(null)
+                    onNameWithAi()
+                  }}
+                >
+                  {t('ribbonNameWithAi')}
+                </button>
+                <button
                   disabled={!hasDoc}
                   onClick={() => {
                     setDropdown(null)
@@ -2174,6 +2292,8 @@ function RibbonInner({
                 >
                   {t('ribbonPrint')} <span className="file-menu-key">Ctrl+P</span>
                 </button>
+                <div className="file-menu-sep" />
+                {convertItems}
               </div>
             )}
           </div>
@@ -2332,6 +2452,20 @@ function RibbonInner({
                     />
                   )}
                 </div>
+                <Dropdown
+                  className="rb-wrap-dd"
+                  disabled={!canEdit}
+                  tip={t('ribbonShapeOutlineWeight')}
+                  value={outlineWeightValueOf(fs.shapeBorderWidthPx, t)}
+                  options={SHAPE_OUTLINE_WEIGHTS_PT.map((pt) => ({
+                    value: pt,
+                    label: t('ribbonPtValue', { n: pt }),
+                  }))}
+                  onPick={(v) => {
+                    if (!canEdit) return
+                    setShapeOutlineWidth(Number(v))
+                  }}
+                />
               </div>
               <div className="ribbon-group-label">{t('ribbonGroupShapeStyles')}</div>
             </div>
@@ -2433,6 +2567,30 @@ function RibbonInner({
                     <Icon size={17} />
                   </button>
                 ))}
+                <button
+                  className="table-tool-button"
+                  disabled={!canEdit}
+                  data-tip={t('ribbonRotateRight')}
+                  aria-label={t('ribbonRotateRight')}
+                  onClick={() => {
+                    if (!canEdit) return
+                    setShapeRotation(90)
+                  }}
+                >
+                  <IconRotateRight size={17} />
+                </button>
+                <button
+                  className="table-tool-button"
+                  disabled={!canEdit}
+                  data-tip={t('ribbonRotateLeft')}
+                  aria-label={t('ribbonRotateLeft')}
+                  onClick={() => {
+                    if (!canEdit) return
+                    setShapeRotation(-90)
+                  }}
+                >
+                  <IconRotateLeft size={17} />
+                </button>
               </div>
               <div className="ribbon-group-label">{t('ribbonGroupArrange')}</div>
             </div>
@@ -2571,6 +2729,28 @@ function RibbonInner({
                         {icon}
                       </button>
                     ))}
+                  </div>
+                  <div className="ribbon-group-label">{t('ribbonGroupArrange')}</div>
+                </div>
+                <div className="ribbon-sep" />
+              </>
+            )}
+            {fs.inlinePicture && (
+              <>
+                {/* ---- Arrange: wrap text of a run picture (its own node) ---- */}
+                <div className="table-tool-group">
+                  <div className="table-tool-row">
+                    <Dropdown
+                      className="rb-wrap-dd"
+                      disabled={!canEdit}
+                      tip={t('ribbonWrapText')}
+                      value={fs.imageWrap ?? ''}
+                      options={WRAP_OPTIONS.map((opt) => ({
+                        value: opt.value ?? '',
+                        label: t(opt.labelKey),
+                      }))}
+                      onPick={(v) => canEdit && setFloatingWrap(ed, v || null)}
+                    />
                   </div>
                   <div className="ribbon-group-label">{t('ribbonGroupArrange')}</div>
                 </div>
@@ -2923,7 +3103,7 @@ function RibbonInner({
                       </button>
                       {(
                         [
-                          ['ribbonDeleteColumn', IconColDelete, deleteColumn],
+                          ['ribbonDeleteColumn', IconColDelete, deleteTableColumn],
                           ['ribbonDeleteRow', IconRowDelete, deleteRow],
                           ['ribbonDeleteTable', IconTableDelete, deleteTable],
                         ] as Array<[StringKey, (props: { size?: number }) => ReactNode, Command]>
@@ -3774,7 +3954,7 @@ function RibbonInner({
                   <div className="rb-split-wrap">
                     <button
                       className={`rb-icon ${fs.listBullet ? 'active' : ''}`}
-                      disabled={!canEdit || !!sub}
+                      disabled={!canEdit}
                       data-tip={t('ribbonBullets')}
                       aria-label={t('ribbonBullets')}
                       onClick={() => toggleList('bullet')}
@@ -3842,7 +4022,7 @@ function RibbonInner({
                   <div className="rb-split-wrap">
                     <button
                       className={`rb-icon ${fs.listOrdered ? 'active' : ''}`}
-                      disabled={!canEdit || !!sub}
+                      disabled={!canEdit}
                       data-tip={t('ribbonNumbering')}
                       aria-label={t('ribbonNumbering')}
                       onClick={() => toggleList('ordered')}
@@ -3973,7 +4153,7 @@ function RibbonInner({
                   <span className="rb-mini-sep" />
                   <button
                     className="rb-icon"
-                    disabled={!canEdit || !!sub}
+                    disabled={!canEdit}
                     data-tip={t('ribbonDecreaseIndent')}
                     aria-label={t('ribbonDecreaseIndent')}
                     onClick={() => changeIndent(-1)}
@@ -3982,7 +4162,7 @@ function RibbonInner({
                   </button>
                   <button
                     className="rb-icon"
-                    disabled={!canEdit || !!sub}
+                    disabled={!canEdit}
                     data-tip={t('ribbonIncreaseIndent')}
                     aria-label={t('ribbonIncreaseIndent')}
                     onClick={() => changeIndent(1)}

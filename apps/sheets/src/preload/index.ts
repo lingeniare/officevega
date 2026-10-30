@@ -1,6 +1,6 @@
 import type { Lang } from '@genoffice/i18n'
 import type { AiPanelPrefs } from '@genoffice/ui'
-import { contextBridge, ipcRenderer, webUtils } from 'electron'
+import { contextBridge, ipcRenderer, webFrame, webUtils } from 'electron'
 
 import type {
   AiChatResponse,
@@ -129,7 +129,56 @@ const desktopApi: DesktopApi = {
   },
   async selectWorkbook() {
     const result: unknown = await ipcRenderer.invoke(IPC_CHANNELS.selectWorkbook)
+    if (result === null) return null
+    if (
+      typeof result === 'object' &&
+      result !== null &&
+      (result as { passwordRequired?: unknown }).passwordRequired === true &&
+      typeof (result as { path?: unknown }).path === 'string'
+    ) {
+      return { passwordRequired: true, path: (result as { path: string }).path }
+    }
+    return parseWorkbookFile(result)
+  },
+  async openEncryptedWorkbook(path, password) {
+    if (
+      typeof path !== 'string' ||
+      path.length === 0 ||
+      typeof password !== 'string' ||
+      password.length === 0
+    ) {
+      throw new Error('Invalid encrypted workbook request.')
+    }
+    const result: unknown = await ipcRenderer.invoke(IPC_CHANNELS.openEncryptedWorkbook, {
+      path,
+      password,
+    })
     return result === null ? null : parseWorkbookFile(result)
+  },
+  async updateWorkbookPassword(sessionId, newPassword) {
+    if (!isUuid(sessionId) || typeof newPassword !== 'string' || newPassword.length === 0) {
+      throw new Error('Invalid workbook password update request.')
+    }
+    const result: unknown = await ipcRenderer.invoke(IPC_CHANNELS.updateWorkbookPassword, {
+      sessionId,
+      newPassword,
+    })
+    if (
+      !isRecord(result) ||
+      typeof result.sha256 !== 'string' ||
+      !/^[a-f0-9]{64}$/i.test(result.sha256) ||
+      typeof result.fileBytes !== 'number' ||
+      !Number.isSafeInteger(result.fileBytes) ||
+      result.fileBytes < 0 ||
+      result.passwordProtected !== true
+    ) {
+      throw new Error('Invalid workbook password update response.')
+    }
+    return {
+      sha256: result.sha256,
+      fileBytes: result.fileBytes,
+      passwordProtected: true as const,
+    }
   },
   async selectWorkbooksForMerge() {
     const result: unknown = await ipcRenderer.invoke(IPC_CHANNELS.selectWorkbooksForMerge)
@@ -151,7 +200,11 @@ const desktopApi: DesktopApi = {
       throw new Error('Invalid reopen path.')
     }
     const result: unknown = await ipcRenderer.invoke(IPC_CHANNELS.reopenWorkbook, path)
-    return result === null ? null : parseWorkbookFile(result)
+    if (result === null) return null
+    // the password of a session that is already gone cannot be replayed; the
+    // recovery gives up cleanly and the user re-opens the file by hand
+    if (isRecord(result) && result.passwordRequired === true) return null
+    return parseWorkbookFile(result)
   },
   onSidecarCrashed(callback) {
     const listener = (): void => {
@@ -820,7 +873,40 @@ function parseAttachmentAddResult(input: unknown): AttachmentAddResult {
   return { accepted, rejected: input.rejected as string[] }
 }
 
+/**
+ * Model file naming: the transport half of `suggestFileName`.
+ *
+ * Inlined rather than imported — a preload entry must stay a single-file bundle,
+ * or the sandbox drops every global it exposed. The one `ai:` channel is
+ * registered app-wide by the shell rather than by this app, the same arrangement
+ * the `project:*` bridge below already depends on.
+ *
+ * `content` crosses this bridge verbatim and the main process cannot see what
+ * this editor withheld, so what the caller hands over is exactly what the model
+ * sees. A caller that passed raw document text would undo its own redactions.
+ *
+ * The global is `aiNamingApi`, not `aiOffice`: `aiOffice` is the shell's home
+ * API, and a partial one in an editor window would shadow it there.
+ */
+const aiNamingApi = {
+  suggestFileName: (input: { content: string }) =>
+    ipcRenderer.invoke('ai:suggest-file-name', input),
+}
+
 contextBridge.exposeInMainWorld('desktopApi', desktopApi)
+contextBridge.exposeInMainWorld('aiNamingApi', aiNamingApi)
+
+// The frame's own spell engine (Chromium Hunspell / the OS dictionary): the
+// same checker docs' squiggles run on, batch-driven over sheet cell texts so
+// nothing leaves the machine for the F7 spelling dialog. webFrame consults
+// it only while the webContents' spellcheck is on — the Review ▸ Proofing
+// preference gates the dialog, and comment-box squiggles share the switch.
+contextBridge.exposeInMainWorld('nativeSpell', {
+  isWordMisspelled: (word: unknown): boolean =>
+    typeof word === 'string' ? webFrame.isWordMisspelled(word) : false,
+  getWordSuggestions: (word: unknown): string[] =>
+    typeof word === 'string' ? webFrame.getWordSuggestions(word) : [],
+})
 
 const projectApi: ProjectApi = {
   resolveChat: (args) => ipcRenderer.invoke('project:resolveChat', args),
@@ -2179,9 +2265,9 @@ function parseSaveRequest(input: WorkbookSaveRequest): WorkbookSaveRequest {
     )
   )
     invalid('protected-range states: malformed entry')
-  cappedArray('redaction states', input.redactionStates, 1_000)
+  if (input.redactionStates !== null) cappedArray('redaction states', input.redactionStates, 1_000)
   if (
-    input.redactionStates.some(
+    (input.redactionStates ?? []).some(
       (state) =>
         !isRecord(state) ||
         typeof state.sheetName !== 'string' ||
@@ -2229,7 +2315,7 @@ function parseSaveRequest(input: WorkbookSaveRequest): WorkbookSaveRequest {
     input.themeState === null &&
     input.workbookProtectionState === null &&
     input.protectedRangeStates.length === 0 &&
-    input.redactionStates.length === 0
+    (input.redactionStates?.length ?? 0) === 0
   )
     invalid('no changes to save')
   if (input.sheetOps.length > 0 && input.sheetOrder.length === 0)
@@ -3810,6 +3896,7 @@ function parseChart(input: unknown): NonNullable<WorkbookVisualObject['chart']> 
       (entry.smooth !== undefined && typeof entry.smooth !== 'boolean') ||
       !isOptionalString(entry.marker) ||
       !isOptionalString(entry.plot) ||
+      (entry.secondaryAxis !== undefined && typeof entry.secondaryAxis !== 'boolean') ||
       !isOptionalEnum(entry.dataLabels, CHART_DATA_LABELS)
     ) {
       throw new Error('Invalid workbook chart series.')
@@ -3838,6 +3925,7 @@ function parseChart(input: unknown): NonNullable<WorkbookVisualObject['chart']> 
       ...(entry.smooth === undefined ? {} : { smooth: entry.smooth }),
       ...(entry.marker === undefined ? {} : { marker: entry.marker }),
       ...(entry.plot === undefined ? {} : { plot: entry.plot }),
+      ...(entry.secondaryAxis === undefined ? {} : { secondaryAxis: entry.secondaryAxis }),
       ...(categoryGroups === undefined ? {} : { categoryGroups }),
       ...(entry.dataLabels === undefined ? {} : { dataLabels: entry.dataLabels }),
       ...(pointLabels === undefined ? {} : { pointLabels }),

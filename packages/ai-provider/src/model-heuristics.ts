@@ -42,6 +42,8 @@ export function modelLacksVision(model: string): boolean {
   // GLM and MiniMax providers keep their own behaviour. Its Kimi, Qwen and
   // GLM-5.3-Flash ids do take images and fall through.
   if (/^(?:zai-org\/glm-5\.3|minimaxai\/minimax-m(?:3|2\.5))$/i.test(model)) return true
+  // These namespaced ids are served text-only (zai-org/GLM-5.3 is covered above).
+  if (/^(?:qwen\/qwen3\.8-flash|openai\/gpt-oss-120b)$/i.test(model)) return true
   return (
     /(^|\/)deep-?seek-v4-(?:pro(?:$|-)|flash(?!-vision))/i.test(model) ||
     /(^|\/)(?:ling-(?:3\.0-flash(?!-vl)|3\.0-tiny|2\.6-1t|2\.6-flash)|ring-2\.6-1t|longcat-2\.0(?:$|-))/i.test(

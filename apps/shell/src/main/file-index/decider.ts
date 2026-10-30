@@ -10,6 +10,7 @@
  * Liquid AI's d1 endpoint all speak; Cloudflare's Workers AI uses the same
  * request body behind its own account-scoped URL and a `{ result }` envelope.
  * OpenRouter hosts Jev behind a routing envelope with provider pinning.
+ *
  */
 
 import { vegaPiiHeaders, withUserAgent } from '@genoffice/ai-provider'
@@ -231,6 +232,24 @@ function unwrap(raw: unknown, endpoint: DecisionEndpoint): unknown {
   return 'result' in r ? r.result : r
 }
 
+/** usage, when the server reports it */
+function readUsage(r: Record<string, unknown>): {
+  inputTokens: number | null
+  cost: number | null
+} {
+  let inputTokens: number | null = null
+  let cost: number | null = null
+  if (r.usage !== undefined) {
+    const usage = obj(r.usage)
+    if (usage.input_tokens !== undefined) {
+      inputTokens = num(usage.input_tokens, 0, Number.MAX_SAFE_INTEGER)
+      if (!Number.isInteger(inputTokens)) throw new Error('invalid-response')
+    }
+    if (usage.cost !== undefined) cost = num(usage.cost, 0, Number.MAX_SAFE_INTEGER)
+  }
+  return { inputTokens, cost }
+}
+
 export function validate(raw: unknown, count: number, endpoint: DecisionEndpoint): JevJudgement {
   const r = obj(unwrap(raw, endpoint))
   // only the two hosted Jev routes echo a model we recognize; self-hosted and
@@ -258,17 +277,7 @@ export function validate(raw: unknown, count: number, endpoint: DecisionEndpoint
       throw new Error('invalid-response')
     return score
   })
-  let inputTokens: number | null = null
-  let cost: number | null = null
-  if (r.usage !== undefined) {
-    const usage = obj(r.usage)
-    if (usage.input_tokens !== undefined) {
-      inputTokens = num(usage.input_tokens, 0, Number.MAX_SAFE_INTEGER)
-      if (!Number.isInteger(inputTokens)) throw new Error('invalid-response')
-    }
-    if (usage.cost !== undefined) cost = num(usage.cost, 0, Number.MAX_SAFE_INTEGER)
-  }
-  return { scores, inputTokens, cost }
+  return { scores, ...readUsage(r) }
 }
 
 export const fetchTransport: JevTransport = async (url, body, key, signal) => {

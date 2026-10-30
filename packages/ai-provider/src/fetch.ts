@@ -8,6 +8,8 @@
  * stack. Renderers never inject one (their fetch already is Chromium's).
  */
 
+import { nativeAdmission } from './native-admission'
+
 type FetchLike = (url: string, init?: RequestInit) => Promise<Response>
 
 let rescueFetch: FetchLike | null = null
@@ -211,7 +213,7 @@ export function warmAiConnections(): void {
 }
 
 export async function aiFetch(url: string, rawInit: RequestInit): Promise<Response> {
-  const init = withVegaSession(url, withUserAgent(rawInit, url))
+  let init = withVegaSession(url, withUserAgent(rawInit, url))
   try {
     if (RU_CERT_HOSTS.test(new URL(url).hostname)) {
       const dispatcher = await ruCertDispatcher()
@@ -222,6 +224,7 @@ export async function aiFetch(url: string, rawInit: RequestInit): Promise<Respon
   } catch {
     // unparseable URL: let fetch itself report it
   }
+  init = await nativeAdmission.prepare(url, init, (u, i) => fetch(u, i))
   const signal = init.signal as AbortSignal | null | undefined
   let response: Response
   try {

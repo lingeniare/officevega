@@ -60,6 +60,7 @@ function ribbonProps(editor: Editor) {
     onExportImages: noop,
     onPrint: noop,
     onConvert: noop,
+    onNameWithAi: noop,
     showAi: false,
     onToggleAi: noop,
     section: null,

@@ -2,8 +2,8 @@
  * Settings › "show the AI sidebar" is a HARD off in OfficeVega: unlike
  * upstream's soft hide, flipping the switch closes the panel and removes the
  * Ask-AI entry points (ribbon buttons, menu items) entirely — no ask action
- * can reopen it while the switch is off. Docs reads it through
- * `useAiSidebarEnabled(setShowAi)` (which also closes the panel); the other
+ * can reopen it while the switch is off. Docs, slides and sheets read it
+ * through `useAiSidebarEnabled(set…)` (which also closes the panel); the other
  * editors read `useAiPanelPrefs().showAiSidebar` and gate the panel plus the
  * ribbon entries on the value.
  *
@@ -29,7 +29,11 @@ const EDITORS = [
     file: 'apps/docs/src/renderer/App.tsx',
     read: 'useAiSidebarEnabled(setShowAi)',
   },
-  { app: 'slides', file: 'apps/slides/src/renderer/App.tsx', read: 'useAiPanelPrefs().showAiSidebar' },
+  {
+    app: 'slides',
+    file: 'apps/slides/src/renderer/App.tsx',
+    read: 'useAiSidebarEnabled(setShowAi)',
+  },
   { app: 'html', file: 'apps/html/src/renderer/App.tsx', read: 'useAiPanelPrefs().showAiSidebar' },
   {
     app: 'markdown',
@@ -40,7 +44,7 @@ const EDITORS = [
   {
     app: 'sheets',
     file: 'apps/sheets/src/renderer/ExcelShell.tsx',
-    read: 'useAiPanelPrefs().showAiSidebar',
+    read: 'useAiSidebarEnabled(setIsCopilotOpen)',
   },
 ]
 

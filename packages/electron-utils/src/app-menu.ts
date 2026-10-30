@@ -27,6 +27,7 @@ export interface AppMenuLabels extends ContextMenuLabels {
   license: string
   privacy: string
   settings: string
+  nameWithAi: string
 }
 
 type Labels = Omit<AppMenuLabels, keyof ContextMenuLabels>
@@ -54,6 +55,7 @@ const EN: Labels = {
   license: 'License',
   privacy: 'Privacy Policy',
   settings: 'Settings…',
+  nameWithAi: 'Name with AI…',
 }
 
 // Shared table, same rationale as context-menu.ts: one copy instead of
@@ -82,6 +84,7 @@ const LABELS: Record<string, Labels> = {
     license: 'Лицензия',
     privacy: 'Политика конфиденциальности',
     settings: 'Настройки…',
+    nameWithAi: 'Назвать с помощью ИИ…',
   },
   
   
@@ -113,6 +116,7 @@ const LABELS: Record<string, Labels> = {
     license: 'Litsenziya',
     privacy: 'Maxfiylik siyosati',
     settings: 'Sozlamalar…',
+    nameWithAi: 'Name with AI…',
   },
   kk: {
     window: 'Терезе',
@@ -137,6 +141,7 @@ const LABELS: Record<string, Labels> = {
     license: 'Лицензия',
     privacy: 'Құпиялылық саясаты',
     settings: 'Баптаулар…',
+    nameWithAi: 'Name with AI…',
   },
   az: {
     window: 'Pəncərə',
@@ -161,6 +166,7 @@ const LABELS: Record<string, Labels> = {
     license: 'Lisenziya',
     privacy: 'Məxfilik siyasəti',
     settings: 'Parametrlər…',
+    nameWithAi: 'Name with AI…',
   },
   tk: {
     window: 'Penjire',
@@ -185,6 +191,7 @@ const LABELS: Record<string, Labels> = {
     license: 'Ygtyýarnama',
     privacy: 'Gizlinlik syýasaty',
     settings: 'Sazlamalar…',
+    nameWithAi: 'Name with AI…',
   },
   ky: {
     window: 'Терезе',
@@ -209,6 +216,7 @@ const LABELS: Record<string, Labels> = {
     license: 'Лицензия',
     privacy: 'Купуялык саясаты',
     settings: 'Орнотуулар…',
+    nameWithAi: 'Name with AI…',
   },
   tt: {
     window: 'Тәрәзә',
@@ -233,6 +241,7 @@ const LABELS: Record<string, Labels> = {
     license: 'Лицензия',
     privacy: 'Хосусыйлык сәясәте',
     settings: 'Көйләүләр…',
+    nameWithAi: 'Name with AI…',
   },
   ka: {
     window: 'ფანჯარა',
@@ -257,6 +266,7 @@ const LABELS: Record<string, Labels> = {
     license: 'ლიცენზია',
     privacy: 'კონფიდენციალურობის პოლიტიკა',
     settings: 'პარამეტრები…',
+    nameWithAi: 'Name with AI…',
   },
 }
 

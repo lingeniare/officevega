@@ -381,6 +381,9 @@ export interface HomeApi {
   setDisplayName(name: string): Promise<void>
   /** the name was changed anywhere (broadcast from the main process) */
   onDisplayNameChanged(handler: (name: string) => void): () => void
+  /** whether the launch and periodic background update checks run (default on) */
+  getAutoUpdateCheck(): Promise<boolean>
+  setAutoUpdateCheck(on: boolean): Promise<void>
   /** VEGA account status (the issued sk-apivega key; deposit included when reachable) */
   accountStatus(): Promise<AccountStatus>
   /** start VEGA login (opens the browser; accountStatus flips to logged-in on completion); returns whether the launch succeeded */
@@ -435,6 +438,9 @@ export interface HomeApi {
   /** whether long-idle background tabs release their renderer once many are open (default on) */
   getTabSleepEnabled(): Promise<boolean>
   setTabSleepEnabled(on: boolean): Promise<void>
+  /** whether the documents open at the last close reopen at launch (default off) */
+  getRestoreLastSession(): Promise<boolean>
+  setRestoreLastSession(on: boolean): Promise<void>
   /** current local MCP server state (running/enabled/port/url) */
   getMcpStatus(): Promise<McpStatus>
   /** enable/disable the MCP server and/or change its port/background/logging; applies and persists, returns the new state */
@@ -729,6 +735,8 @@ export const HOME_CHANNELS = {
   setUpdateChannel: 'home:set-update-channel',
   getDisplayName: 'home:get-display-name',
   setDisplayName: 'home:set-display-name',
+  getAutoUpdateCheck: 'home:get-auto-update-check',
+  setAutoUpdateCheck: 'home:set-auto-update-check',
   accountStatus: 'home:account-status',
   accountLogin: 'home:account-login',
   accountLoginEvent: 'home:account-login-event',
@@ -754,6 +762,8 @@ export const HOME_CHANNELS = {
   setAutoSaveDefault: 'home:set-auto-save-default',
   getTabSleepEnabled: 'home:get-tab-sleep-enabled',
   setTabSleepEnabled: 'home:set-tab-sleep-enabled',
+  getRestoreLastSession: 'home:get-restore-last-session',
+  setRestoreLastSession: 'home:set-restore-last-session',
   getMcpStatus: 'home:get-mcp-status',
   setMcpSettings: 'home:set-mcp-settings',
   getMcpLogs: 'home:get-mcp-logs',

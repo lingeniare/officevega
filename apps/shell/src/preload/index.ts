@@ -38,6 +38,7 @@ import { INTEGRATIONS_CHANNELS } from '../shared/integrations-api'
 import type {
   IntegrationsApi,
   IntegrationsStatus,
+  LegacySweepResult,
   SkillInstallState,
 } from '../shared/integrations-api'
 import type { FoundSkill, RecommendedSkill } from '../shared/found-skill'
@@ -349,6 +350,14 @@ const homeApi: HomeApi = {
     ipcRenderer.on('app:display-name-changed', listener)
     return () => ipcRenderer.removeListener('app:display-name-changed', listener)
   },
+  async getAutoUpdateCheck() {
+    const result: unknown = await ipcRenderer.invoke(HOME_CHANNELS.getAutoUpdateCheck)
+    return result !== false
+  },
+  async setAutoUpdateCheck(on) {
+    if (typeof on !== 'boolean') throw new Error('Invalid update check setting.')
+    await ipcRenderer.invoke(HOME_CHANNELS.setAutoUpdateCheck, on)
+  },
   async accountStatus() {
     const result: unknown = await ipcRenderer.invoke(HOME_CHANNELS.accountStatus)
     return (result ?? { loggedIn: false }) as AccountStatus
@@ -454,6 +463,14 @@ const homeApi: HomeApi = {
   async setTabSleepEnabled(on) {
     if (typeof on !== 'boolean') throw new Error('Invalid tab sleep setting.')
     await ipcRenderer.invoke(HOME_CHANNELS.setTabSleepEnabled, on)
+  },
+  async getRestoreLastSession() {
+    const result: unknown = await ipcRenderer.invoke(HOME_CHANNELS.getRestoreLastSession)
+    return result === true
+  },
+  async setRestoreLastSession(on) {
+    if (typeof on !== 'boolean') throw new Error('Invalid restore session setting.')
+    await ipcRenderer.invoke(HOME_CHANNELS.setRestoreLastSession, on)
   },
   async setAutoSaveDefault(on) {
     if (typeof on !== 'boolean') throw new Error('Invalid AutoSave default.')
@@ -744,6 +761,24 @@ const homeApi: HomeApi = {
 
 contextBridge.exposeInMainWorld('aiOffice', homeApi)
 
+/**
+ * Model file naming.
+ *
+ * The same channel the editor apps expose under this name, so the shared
+ * client (`@genoffice/ui`) finds one bridge wherever it runs.
+ *
+ * A global of its own rather than part of `aiOffice`: `aiOffice` is the
+ * shell's home API, and an editor window that reused the name would shadow it
+ * there — `window.aiOffice.setTheme` would vanish with it.
+ */
+const aiNamingApi = {
+  suggestFileName(input: { content: string }) {
+    return ipcRenderer.invoke('ai:suggest-file-name', input)
+  },
+}
+
+contextBridge.exposeInMainWorld('aiNamingApi', aiNamingApi)
+
 // The same project:* channels the editor preloads use; the home screen's
 // knowledge-base ask panel keeps its thread through them. The handlers are
 // registered once by the docs main process in shell mode (registerProjectIpc).
@@ -776,6 +811,11 @@ const integrationsApi: IntegrationsApi = {
       INTEGRATIONS_CHANNELS.uninstallSkill,
       agentId,
     )) as SkillInstallState
+  },
+  async sweepLegacySkillCopies() {
+    return (await ipcRenderer.invoke(
+      INTEGRATIONS_CHANNELS.sweepLegacySkillCopies,
+    )) as LegacySweepResult
   },
   async pickSkillDir(title) {
     const r: unknown = await ipcRenderer.invoke(INTEGRATIONS_CHANNELS.pickSkillDir, title)

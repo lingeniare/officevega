@@ -20,6 +20,7 @@ import {
 import type { AgentImage } from '@genoffice/agent-core'
 import type { AiProviderId, AiSettings } from '@genoffice/ai-provider'
 import {
+  imageGenerationAvailable,
   isOutputCapRejection,
   maxOutputTokensOf,
   piiShieldMayApply,
@@ -609,6 +610,25 @@ export function AiPanel({
     setPiiOn(next.piiShieldEnabled === true)
     void window.htmlApi?.setAiSettings?.(next).catch(() => {})
   }
+  /** gsk login state for the generate_image gate (refreshed on mount and window focus) */
+  const gskLoggedInRef = useRef(false)
+  useEffect(() => {
+    let alive = true
+    const refresh = () => {
+      void window.htmlApi
+        .aiGskStatus()
+        .then((s) => {
+          if (alive) gskLoggedInRef.current = !!s?.loggedIn
+        })
+        .catch(() => {})
+    }
+    refresh()
+    window.addEventListener('focus', refresh)
+    return () => {
+      alive = false
+      window.removeEventListener('focus', refresh)
+    }
+  }, [])
   const langRef = useRef(lang)
   langRef.current = lang
   const depsRef = useRef(deps)
@@ -932,7 +952,8 @@ export function AiPanel({
       transport: transportRef.current,
       skill: withPiiTokenGuard(
         composeSkills('html+search', '', [
-          createDocumentSkill({
+          createDocumentSkill(
+            {
             getText: () => depsRef.current.access.getText(),
             getVersion: () => depsRef.current.access.getVersion(),
             getMap: () => depsRef.current.access.getMap(),
@@ -957,15 +978,19 @@ export function AiPanel({
             getInstruction: () => runInstructionRef.current,
             resolveAttachmentSrc: (ref) => resolveAttachmentSrc(ref),
             listAttachmentNames: () => availableAttachments().map((a) => a.name),
-            // research runs while the questionnaire card waits on the user
-            webSearch: (query, maxResults) => window.htmlApi.webSearch(query, maxResults),
-            generateImage: (op) => window.htmlApi.aiGenerateImage(op),
-            searchImages: async (query, maxResults) => {
-              const r = await window.htmlApi.imageSearch(query, maxResults)
-              return (r.images ?? []).map((i) => i.imageUrl).filter((u) => /^https?:/i.test(u))
+              // research runs while the questionnaire card waits on the user
+              webSearch: (query, maxResults) => window.htmlApi.webSearch(query, maxResults),
+              generateImage: (op) => window.htmlApi.aiGenerateImage(op),
+              searchImages: async (query, maxResults) => {
+                const r = await window.htmlApi.imageSearch(query, maxResults)
+                return (r.images ?? [])
+                  .map((i) => i.imageUrl)
+                  .filter((u) => /^https?:/i.test(u))
+              },
+              persistImage: (url) => persistImage(url),
             },
-            persistImage: (url) => persistImage(url),
-          }),
+            () => imageGenerationAvailable(settingsRef.current, gskLoggedInRef.current),
+          ),
           createSearchSkill(),
           createFilesSkill(availableAttachments),
           createIntentSkill(

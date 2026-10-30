@@ -409,6 +409,8 @@ export async function checkForUpdatesNow(): Promise<void> {
 export function initAutoUpdater(
   getWindow: () => BrowserWindow | null,
   initialChannel: UpdateChannel = 'stable',
+  /** Settings › "Check for updates automatically"; read at every background check (genoffice#2127) */
+  autoCheckEnabled: () => boolean = () => true,
 ): void {
   if (started) return
   started = true
@@ -582,6 +584,8 @@ export function initAutoUpdater(
   })
 
   const check = (): void => {
+    // turned off: only an explicit check (Help › Check for Updates…, a channel switch) asks the feed
+    if (!autoCheckEnabled()) return
     autoUpdater.checkForUpdates().catch((err) => log('check failed:', err?.message ?? err))
   }
   setTimeout(check, FIRST_CHECK_DELAY_MS)

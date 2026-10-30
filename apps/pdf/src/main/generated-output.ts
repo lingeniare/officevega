@@ -1,5 +1,5 @@
 import { existsSync } from 'node:fs'
-import { join } from 'node:path'
+import { basename, join } from 'node:path'
 
 /** Pick a safe, unused PDF path inside the configured OfficeVega save directory. */
 export function uniqueGeneratedPdfPath(
@@ -10,9 +10,9 @@ export function uniqueGeneratedPdfPath(
   // Control characters are intentionally rejected from generated file names.
   // eslint-disable-next-line no-control-regex
   const invalidFileNameCharacters = /[/\\:*?"<>|\u0000-\u001f]/g
-  // basename() would treat 'a:' as a Windows drive prefix — split on slashes
-  // instead so the title keeps its text on every platform
-  let fileName = (String(suggestedName || 'merged.pdf').split(/[/\\]/).pop() ?? '')
+  // basename() would treat 'a:' as a Windows drive prefix — strip colons first,
+  // then let basename split the rest so the title keeps its text on every platform
+  let fileName = basename(String(suggestedName || 'merged.pdf').replace(/:/g, '_'))
     .replace(invalidFileNameCharacters, '_')
     .trim()
   if (!fileName || fileName === '.' || fileName === '..') fileName = 'merged.pdf'

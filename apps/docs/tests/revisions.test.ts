@@ -109,6 +109,29 @@ describe('accept / reject all', () => {
       editor.destroy()
     }
   })
+
+  it('resolving a whole-paragraph block revision also clears its run marks', () => {
+    // a redline on disk marks the runs AND wraps the block; the editor holds
+    // both, and resolving the block must not leave the run marks pending
+    const blockIns = { kind: 'ins', author: 'Alice', date: '2026-07-01T10:00:00Z' }
+    const blockDel = { kind: 'del', author: 'Bob', date: '2026-07-02T10:00:00Z' }
+    const redline = () => [
+      para(text('kept')),
+      { ...para(text('added', [ins()])), attrs: { docxIndex: null, blockRevision: blockIns } },
+      { ...para(text('gone', [del()])), attrs: { docxIndex: null, blockRevision: blockDel } },
+    ]
+    const accepted = createEditor(redline())
+    acceptAllRevisions(accepted)
+    expect(accepted.state.doc.textContent).toBe('keptadded')
+    expect(collectRevisions(accepted.state.doc)).toHaveLength(0)
+    accepted.destroy()
+
+    const rejected = createEditor(redline())
+    rejectAllRevisions(rejected)
+    expect(rejected.state.doc.textContent).toBe('keptgone')
+    expect(collectRevisions(rejected.state.doc)).toHaveLength(0)
+    rejected.destroy()
+  })
 })
 
 describe('accept / reject current + navigation', () => {
@@ -1259,6 +1282,57 @@ describe('moves and paragraph marks (genoffice#2086)', () => {
     rejectAllRevisions(again.editor)
     expect(paragraphs(again.editor)).toEqual(['onetwo'])
     expect(collectRevisions(again.editor.state.doc)).toEqual([])
+    again.editor.destroy()
+  })
+
+  it('a format change on inserted text is its own revision and is accepted with the insertion', async () => {
+    const xml =
+      `<w:p>${R('P1 plain ')}<w:ins w:id="1" ${AT}><w:r><w:rPr><w:i/><w:rPrChange w:id="2" ${AT}><w:rPr/></w:rPrChange></w:rPr><w:t>inserted italic</w:t></w:r></w:ins></w:p>` +
+      `<w:p><w:r><w:rPr><w:b/><w:rPrChange w:id="4" ${AT}><w:rPr/></w:rPrChange></w:rPr><w:t>P3 now bold</w:t></w:r></w:p>`
+    const { parsed, editor } = await openEditor(xml)
+    expect(collectRevisions(editor.state.doc).map((r) => r.kind)).toEqual([
+      'ins',
+      'rPrChange',
+      'rPrChange',
+    ])
+    acceptAllRevisions(editor)
+    expect(collectRevisions(editor.state.doc)).toEqual([])
+    expect(paragraphs(editor)).toEqual(['P1 plain inserted italic', 'P3 now bold'])
+    const accepted = await savedXml(editor, parsed)
+    expect(accepted).not.toMatch(/<w:ins\b|<w:rPrChange/)
+    expect(accepted).toContain('<w:i/>')
+    editor.destroy()
+
+    const again = await openEditor(xml)
+    rejectAllRevisions(again.editor)
+    expect(paragraphs(again.editor)).toEqual(['P1 plain ', 'P3 now bold'])
+    expect(collectRevisions(again.editor.state.doc)).toEqual([])
+    const rejected = await savedXml(again.editor, again.parsed)
+    expect(rejected).not.toMatch(/<w:ins\b|<w:rPrChange|<w:b\/>/)
+    again.editor.destroy()
+  })
+
+  it('a paragraph-mark format change is a pending revision; accept drops the record, reject restores the old mark', async () => {
+    const xml =
+      `<w:p><w:pPr><w:rPr><w:caps/><w:rPrChange w:id="3" ${AT}><w:rPr><w:b/></w:rPr></w:rPrChange></w:rPr></w:pPr>${R('P2 mark')}</w:p>` +
+      `<w:p>${R('after')}</w:p>`
+    const { parsed, editor } = await openEditor(xml)
+    expect(parsed.blocks[0].paraMarkRPrChange).toMatchObject({ author: 'X', id: '3' })
+    expect(collectRevisions(editor.state.doc).map((r) => r.kind)).toEqual(['paraMarkRPrChange'])
+    acceptAllRevisions(editor)
+    expect(collectRevisions(editor.state.doc)).toEqual([])
+    expect(paragraphs(editor)).toEqual(['P2 mark', 'after'])
+    const accepted = await savedXml(editor, parsed)
+    expect(accepted).not.toMatch(/<w:rPrChange/)
+    expect(accepted).toContain('<w:pPr><w:rPr><w:caps/></w:rPr></w:pPr>')
+    editor.destroy()
+
+    const again = await openEditor(xml)
+    rejectAllRevisions(again.editor)
+    expect(collectRevisions(again.editor.state.doc)).toEqual([])
+    const rejected = await savedXml(again.editor, again.parsed)
+    expect(rejected).not.toMatch(/<w:rPrChange|<w:caps/)
+    expect(rejected).toContain('<w:pPr><w:rPr><w:b/></w:rPr></w:pPr>')
     again.editor.destroy()
   })
 })

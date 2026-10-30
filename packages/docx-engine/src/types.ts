@@ -805,6 +805,12 @@ export interface HfTextBox extends Pick<
   /** index (in the part's paras) of the paragraph the box shares with other
    *  runs; paragraph-relative offsets measure from that paragraph's top */
   anchorPara?: number
+  /** a:xfrm@rot of the shape (degrees clockwise); VML `rotation:` style */
+  rotDeg?: number
+  /** a:ln@w / VML `strokeweight` of the shape outline (px) */
+  borderWidthPx?: number
+  /** a:ln solid fill / VML `strokecolor` of the shape outline (RGB hex, no #) */
+  borderColor?: string
 }
 
 /** one cell of a header/footer layout-table row */
@@ -1529,6 +1535,15 @@ export interface NewImage {
    */
   posOffsetEmu?: { x: number; y: number; relativeTo?: 'page' | 'margin' }
   /**
+   * margin-relative align pair (Word position-gallery presets; only with
+   * `wrap`): written as <wp:align> relative to the margin box — the same
+   * bytes the original-image patch path (imagePatchOf.posH/posV) produces.
+   * Ignored when `posOffsetEmu` is set (numeric offsets win, like the patch
+   * path); needs both axes to take effect.
+   */
+  posH?: 'left' | 'center' | 'right'
+  posV?: 'top' | 'center' | 'bottom'
+  /**
    * stacking rank among anchored drawings (only with `wrap`): written as
    * relativeHeight base + zOrder, so overlapping behindDoc anchors keep a
    * deterministic paint order (higher = in front). Absent = base value.
@@ -1776,17 +1791,27 @@ export interface Block {
       ilvl?: number
     }
   }
-  /** Top-level block insertion/deletion wrapper (w:ins/w:del around w:p or w:tbl). */
+  /** Block insertion/deletion wrapper (w:ins/w:del around a w:tbl &c). A whole paragraph takes the paragraph-mark record instead — the shape readers resolve. */
   blockRevision?: { kind: 'ins' | 'del' } & RevisionInfo
   /** Tracked deletion of the paragraph mark (w:pPr/w:rPr/w:del): Word joins the paragraph into the next one. */
   paraMarkDel?: { author: string; date?: string; dateUtc?: string; id?: string }
   /** Tracked insertion of the paragraph mark (w:pPr/w:rPr/w:ins): rejecting joins the paragraph into the next one. */
   paraMarkIns?: { author: string; date?: string; dateUtc?: string; id?: string }
+  /** Tracked formatting change of the paragraph mark (w:pPr/w:rPr/w:rPrChange). */
+  paraMarkRPrChange?: { author: string; date?: string; dateUtc?: string; id?: string }
 }
 
 /** numbering marker of a textbox paragraph, resolved at parse time (display only) */
 export interface TextboxListMarker {
   text: string
+  /** list identity for save-back (w:numPr): which numbering definition this
+   * marker comes from; absent on synthesized/edited markers is fine — the
+   * editor sets it when the user toggles a list inside the box */
+  numId?: string
+  ilvl?: number
+  /** 'bullet' | 'ordered', from the numbering level's numFmt; drives the
+   * sub-editor's list toggle state */
+  kind?: 'bullet' | 'ordered'
   /** bullet declared in a symbol-encoded font: drawn with the substitute-glyph styling */
   symbol?: boolean
   /** picture bullet (w:lvlPicBulletId): data URL drawn in place of the text */
@@ -1999,6 +2024,8 @@ export interface GeneratedBlock {
   /** JSON paragraph-mark revision; null = accepted/rejected, strip the w:del / w:ins from the mark's rPr */
   paraMarkDel?: string | null
   paraMarkIns?: string | null
+  /** null = accepted (record dropped); JSON with resolved:'reject' = the old mark rPr comes back */
+  paraMarkRPrChange?: string | null
   /** Used by editor dirty detection; SaveBlock carries the actual wrapper metadata. */
   blockRevision?: ({ kind: 'ins' | 'del' } & RevisionInfo) | null
 }

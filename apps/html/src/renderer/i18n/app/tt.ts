@@ -179,4 +179,7 @@ export const tt = {
   diskReload: 'Reload',
   diskKeepMine: 'Keep mine',
   diskOverwrite: 'Overwrite anyway',
+  // ── upstream merge: new keys, English fallback pending translation ──
+  aiNameFile: 'Name with AI…',
+  alignJustify: 'Justify',
 } satisfies Record<keyof typeof en, string>

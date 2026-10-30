@@ -316,7 +316,7 @@
  * inside Korean runs 0.51-0.52em); .doc-hangul-space (styles.css) draws such
  * spaces from the -Che face's half-width space. */
 @font-face {
-  font-family: 'GenOffice Hangul Space';
+  font-family: 'OfficeVega Hangul Space';
   src: url('./GenOfficeCheLatinKR.woff2') format('woff2');
   unicode-range: U+0020;
   font-weight: normal;

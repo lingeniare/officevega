@@ -18,6 +18,7 @@ export function ribbonProps(editor: Editor, formatState: RibbonFormatState) {
     onExportImages: noop,
     onPrint: noop,
     onConvert: noop,
+    onNameWithAi: noop,
     showAi: false,
     onToggleAi: noop,
     section: null,

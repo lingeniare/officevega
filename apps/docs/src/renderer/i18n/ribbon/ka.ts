@@ -1010,4 +1010,8 @@ export const ka = {
   ribbonMailingsMerged: '{n} documents merged',
   ribbonMailingsMergeFailed: 'The merge failed',
   ribbonMailingsClose: 'Close',
+  // ── upstream merge: new keys, English fallback pending translation ──
+  ribbonShapeOutlineWeight: 'Outline Weight',
+  ribbonNameWithAi: 'Name with AI…',
+  ribbonLangTurkish: 'Turkish',
 } satisfies Record<keyof typeof en, string>

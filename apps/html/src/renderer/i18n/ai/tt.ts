@@ -202,4 +202,9 @@ export const tt = {
   aiClarifyPrev: 'Алдагы',
   aiRegionError:
     "This model's provider does not serve your current region — pick another model or change your network",
+  // ── upstream merge: new keys, English fallback pending translation ──
+  aiToolImageSearch: 'Image search',
+  aiToolImageSearchDone: 'Image search "{query}" ({count} images)',
+  aiToolGenImage: 'Generate image',
+  aiToolGenImageDone: 'Inserted AI-generated image',
 } satisfies Record<keyof typeof en, string>

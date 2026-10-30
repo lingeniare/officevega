@@ -227,6 +227,7 @@ export const AI_PROVIDERS: AiProviderMeta[] = [
       'openai/gpt-6-sol',
       'openai/gpt-6-luna',
       'openai/gpt-5.6-sol',
+      'moonshotai/kimi-k3.1-pro',
       'moonshotai/kimi-k3',
     ],
     defaultModel: 'openrouter/auto',

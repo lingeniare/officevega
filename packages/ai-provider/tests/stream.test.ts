@@ -1418,7 +1418,7 @@ describe('streamForProvider: genspark', () => {
       expect(fetchMock).toHaveBeenCalledWith(
         expect.anything(),
         expect.objectContaining({
-          headers: expect.objectContaining({ 'X-Agent-Type': 'genoffice' }),
+          headers: expect.objectContaining({ 'X-Agent-Type': 'officevega' }),
         }),
       )
     }

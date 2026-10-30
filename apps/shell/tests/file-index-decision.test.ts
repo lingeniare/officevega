@@ -144,6 +144,7 @@ describe('prepare', () => {
     ).toBe('von-1.0')
     expect(JSON.parse(prepare('q', docs, opts({ endpoint: 'custom' })).body).model).toBe('decision')
   })
+
 })
 
 describe('endpointUrl', () => {
@@ -251,6 +252,7 @@ describe('validate', () => {
     const wrapped = JSON.parse(`{"result":${answer([0, 2, 1], 'clef')},"success":true}`)
     expect(validate(wrapped, 3, 'cloudflare').scores).toEqual([0, 2, 1])
   })
+
 })
 
 describe('evaluate', () => {

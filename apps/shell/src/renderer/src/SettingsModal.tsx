@@ -2167,6 +2167,10 @@ export function SettingsModal({
   const [saveDir, setSaveDir] = useState('')
   const [autoSaveOn, setAutoSaveOn] = useState(false)
   const [tabSleepOn, setTabSleepOn] = useState(true)
+  const [restoreSessionOn, setRestoreSessionOn] = useState(false)
+  const [analyticsOn, setAnalyticsOn] = useState(true)
+  const [analyticsSaving, setAnalyticsSaving] = useState(false)
+  const [autoUpdateCheckOn, setAutoUpdateCheckOn] = useState(true)
   const [defaultApp, setDefaultApp] = useState<DefaultAppStatus | null>(null)
   const [defaultAppBusy, setDefaultAppBusy] = useState(false)
   const [defaultAppFailed, setDefaultAppFailed] = useState(false)
@@ -2205,6 +2209,12 @@ export function SettingsModal({
     void window.aiOffice.getTabSleepEnabled?.().then((on) => {
       if (alive) setTabSleepOn(on)
     })
+    void window.aiOffice.getRestoreLastSession?.().then((on) => {
+      if (alive) setRestoreSessionOn(on)
+    })
+    void window.aiOffice.getAnalyticsEnabled?.().then((on) => {
+      if (alive) setAnalyticsOn(on !== false)
+    })
     void window.aiOffice.getDefaultAppStatus?.().then((st) => {
       if (alive) setDefaultApp(st)
     })
@@ -2216,6 +2226,9 @@ export function SettingsModal({
     })
     void window.aiOffice.getUpdateChannel?.().then((ch) => {
       if (alive) setChannel(ch)
+    })
+    void window.aiOffice.getAutoUpdateCheck?.().then((on) => {
+      if (alive) setAutoUpdateCheckOn(on)
     })
     void window.aiOffice.getAppVersion?.().then((v) => {
       if (alive && v) setAppVersion(v)
@@ -2716,6 +2729,70 @@ export function SettingsModal({
                     }}
                   />
                 </div>
+                <div className="set-field">
+                  <div className="set-field-text">
+                    <div className="set-field-stack">
+                      <div className="set-field-label">{t('setRestoreSession')}</div>
+                      <div className="set-field-desc">{t('setRestoreSessionDesc')}</div>
+                    </div>
+                  </div>
+                  <button
+                    className="set-switch"
+                    role="switch"
+                    aria-checked={restoreSessionOn}
+                    aria-label={t('setRestoreSession')}
+                    onClick={() => {
+                      const next = !restoreSessionOn
+                      setRestoreSessionOn(next)
+                      void window.aiOffice.setRestoreLastSession?.(next).catch(() => {})
+                    }}
+                  />
+                </div>
+                <div className="set-field">
+                  <div className="set-field-text">
+                    <div className="set-field-stack">
+                      <div className="set-field-label">{t('setTabSleep')}</div>
+                      <div className="set-field-desc">{t('setTabSleepDesc')}</div>
+                    </div>
+                  </div>
+                  <button
+                    className="set-switch"
+                    role="switch"
+                    aria-checked={tabSleepOn}
+                    aria-label={t('setTabSleep')}
+                    onClick={() => {
+                      const next = !tabSleepOn
+                      setTabSleepOn(next)
+                      void window.aiOffice.setTabSleepEnabled?.(next).catch(() => {})
+                    }}
+                  />
+                </div>
+                <div className="set-field">
+                  <div className="set-field-text">
+                    <div className="set-field-stack">
+                      <div className="set-field-label">{t('setAnalytics')}</div>
+                      <div className="set-field-desc">{t('setAnalyticsDesc')}</div>
+                    </div>
+                  </div>
+                  <button
+                    className="set-switch"
+                    role="switch"
+                    aria-checked={analyticsOn}
+                    aria-label={t('setAnalytics')}
+                    disabled={analyticsSaving}
+                    onClick={() => {
+                      const next = !analyticsOn
+                      setAnalyticsSaving(true)
+                      void window.aiOffice
+                        .setAnalyticsEnabled(next)
+                        .then((persisted) => {
+                          if (persisted) setAnalyticsOn(next)
+                        })
+                        .catch(() => {})
+                        .finally(() => setAnalyticsSaving(false))
+                    }}
+                  />
+                </div>
               </>
             )}
             {section === 'integrations' && (
@@ -2762,6 +2839,25 @@ export function SettingsModal({
                       const next = v === 'beta' ? 'beta' : 'stable'
                       setChannel(next)
                       void window.aiOffice.setUpdateChannel(next)
+                    }}
+                  />
+                </div>
+                <div className="set-field">
+                  <div className="set-field-text">
+                    <div className="set-field-stack">
+                      <div className="set-field-label">{t('setAutoUpdateCheck')}</div>
+                      <div className="set-field-desc">{t('setAutoUpdateCheckDesc')}</div>
+                    </div>
+                  </div>
+                  <button
+                    className="set-switch"
+                    role="switch"
+                    aria-checked={autoUpdateCheckOn}
+                    aria-label={t('setAutoUpdateCheck')}
+                    onClick={() => {
+                      const next = !autoUpdateCheckOn
+                      setAutoUpdateCheckOn(next)
+                      void window.aiOffice.setAutoUpdateCheck?.(next).catch(() => {})
                     }}
                   />
                 </div>
