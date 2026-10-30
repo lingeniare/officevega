@@ -109,6 +109,7 @@ import {
   stepUiScale,
   uiScaleFactor,
   useAiPanelPrefs,
+  useAiSidebarEnabled,
   useUiScale,
 } from '@genoffice/ui'
 import type { ChartPresetDef, IconDef, SmartArtDef } from './insert-presets'
@@ -489,7 +490,9 @@ export function App() {
   const [showAi, setShowAi] = useState(() => aiPanelInitiallyOpen('ai-slides-show-ai'))
   // Suite-wide "AI sidebar" switch (Settings › General): off hides the panel,
   // rail and ribbon AI group; showAi keeps its remembered state (#1947).
-  const aiEnabled = useAiPanelPrefs().showAiSidebar
+  // the sidebar switch is a soft hide; the hook closes the dock when it goes off
+  const aiSidebarEnabled = useAiSidebarEnabled(setShowAi)
+  const aiEnabled = aiSidebarEnabled
   const aiOpen = aiEnabled && showAi
   /** Width the ai-dock occupies: open 360 / collapsed rail 34 / none 0 */
   const aiDockW = aiEnabled ? (showAi ? 360 : 34) : 0

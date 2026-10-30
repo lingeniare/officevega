@@ -293,4 +293,9 @@ export const ky = {
   paneShowMenuScreen: 'Экран',
   paneShowMenuSeeAll: 'Бардык слайддарды көрүү',
   paneShowMenuWhite: 'Ак экран',
+  paneShowRecording: 'Recording',
+  paneShowRecordPaused: 'Paused',
+  paneShowRecordPause: 'Pause',
+  paneShowRecordResume: 'Resume',
+  paneShowRecordFailed: 'No microphone available: nothing is being recorded',
 } satisfies Record<keyof typeof en, string>

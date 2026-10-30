@@ -11,6 +11,7 @@ import {
   aiPanelInitiallyOpen,
   rememberAiPanelOpen,
   useAiPanelPrefs,
+  useAiSidebarEnabled,
   type AiHistoryItem,
   type AiTokenUsageView,
 } from '@genoffice/ui'
@@ -615,7 +616,9 @@ export function ExcelShell({
   )
   // Suite-wide "AI sidebar" switch (Settings › General): off hides the panel,
   // rail and ribbon AI group; isCopilotOpen keeps its remembered state (#1947).
-  const aiEnabled = useAiPanelPrefs().showAiSidebar
+  // The hook also closes the panel when the switch itself goes off.
+  const aiSidebarEnabled = useAiSidebarEnabled(setIsCopilotOpen)
+  const aiEnabled = aiSidebarEnabled
   const aiOpen = aiEnabled && isCopilotOpen
   useEffect(() => {
     rememberAiPanelOpen('ai-sheets-show-ai', isCopilotOpen)

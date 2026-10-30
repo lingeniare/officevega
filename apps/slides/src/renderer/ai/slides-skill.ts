@@ -2051,6 +2051,7 @@ async function executeTool(
       // Cloud can still fail mid-run (free plan / exhausted credits / outage). When it does
       // the deck finishes on the local BYOK pipeline instead; cloudActive tracks that switch.
       let cloudActive = useCloud
+      let cloudFallbackReason: string | null = null // First cloud failure that switched the run to the local pipeline
       const canGenerate = draftMode
         ? !!(access.generateDraftPages || access.generatePageLocal)
         : useCloud || !!access.generatePageLocal
@@ -2848,6 +2849,7 @@ async function executeTool(
       type PageGen = NonNullable<DeckAccess['generatePageLocal']>
       // Up to two attempts; returns the marker or the last error.
       const tryGenerate = async (
+        gen: PageGen,
         pageArgs: Parameters<PageGen>[0],
         pageIndex: number,
       ): Promise<{ marker: string | null; err: string }> => {
@@ -2855,9 +2857,9 @@ async function executeTool(
         for (let attempt = 0; attempt < 2; attempt++) {
           if (cancelled()) return { marker: null, err: lastErr }
           if (attempt > 0 && BACKOFF_MS > 0) await new Promise((r) => setTimeout(r, BACKOFF_MS))
-          const res = await access.generatePageLocal!(pageArgs)
+          const res = await gen(pageArgs)
           if (res.ok && res.marker) {
-            if (Array.isArray(res.imageFailures))
+            if ('imageFailures' in res && Array.isArray(res.imageFailures))
               deckImageFails.push(...res.imageFailures.map((url) => ({ page: pageIndex, url })))
             return { marker: res.marker, err: '' }
           }

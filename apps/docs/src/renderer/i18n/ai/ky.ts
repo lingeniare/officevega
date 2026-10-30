@@ -215,4 +215,9 @@ export const ky = {
   aiMindMapReset: 'Көрүнүштү калыбына келтирүү',
   aiMindMapExpand: 'Бутакты жайуу',
   aiMindMapCollapse: 'Бутакты жыйнау',
+  aiRegionError:
+    "This model's provider does not serve your current region — pick another model or change your network",
+  aiSumSkillsList: 'Listed installed skills',
+  aiSumSkillRead: 'Read skill {name}',
+  aiSumRunCli: 'Ran {args}',
 } satisfies Record<keyof typeof en, string>

@@ -141,4 +141,6 @@ export const ky = {
   aiStarterTasks: 'Долбоор тапшырма планы',
   aiStarterTasksPrompt:
     'Долбоордун тапшырма планын түз: тапшырма, жоопкер, башталуу күнү, мөөнөтү жана абалы мамылары менен ондан ашык үлгү тапшырмалары',
+  aiRegionError:
+    "This model's provider does not serve your current region — pick another model or change your network",
 } satisfies Record<keyof typeof en, string>

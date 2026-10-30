@@ -1544,4 +1544,27 @@ export const tt = {
   appRightToLeft: 'Right-to-Left',
   appRightToLeftOn: 'Grid direction: right-to-left.',
   appRightToLeftOff: 'Grid direction: left-to-right.',
+  redactMenuLabel: 'Hide the selection from AI',
+  redactDialogDesc:
+    'The selection stays in the document and in the file; the model sees the placeholder below instead. Name it so the model knows what it stands for.',
+  redactDialogScope:
+    "Hiding covers this app's AI. The CLI, MCP tools and headless export read the file directly, and they still see these words.",
+  redactDialogPlaceholder: 'Placeholder name, e.g. client phone',
+  redactCancel: 'Cancel',
+  redactInsert: 'Hide',
+  redactEnable: 'Right-click a selection to hide it from the model.',
+  redactNeedsSavedRow: 'This row is not in the file yet. Save first, then hide a cell in it.',
+  redactRecoveredFromNames:
+    'Another app rewrote this file and dropped the record of what is hidden. The hidden cells were recovered from the names in the workbook; saving restores the full record.',
+  appImgActualSize: 'Actual Size',
+  appImgFitWindow: 'Fit to Window',
+  appImgSaveAs: 'Save Picture As…',
+  appImgClose: 'Close (Esc)',
+  appNotePicturesPaneTitle: 'Note pictures',
+  appNotePicturesClose: 'Close',
+  appNotePicturesNone: 'No note on this workbook is showing a picture.',
+  appNotePictureUnavailable: 'This picture cannot be shown.',
+  appNotePicturesToggle: 'Note pictures',
+  appVisualEmbedInCell: 'Embed Image in Cell',
+  appVisualEmbedFailed: "Couldn't embed this picture in the cell.",
 } satisfies Record<keyof typeof en, string>

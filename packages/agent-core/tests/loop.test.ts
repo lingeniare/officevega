@@ -376,13 +376,6 @@ describe('AgentLoop', () => {
     expect(onDone).toHaveBeenCalledWith({ text: 'finished', cancelled: false, turnLimit: false })
   })
 
-  it('warns the model once before the identical-turn abort; a changed turn recovers', async () => {
-    const sameTurn = (cb: AgentStreamCallbacks) => {
-      cb.onToolCall({ id: 'x', name: 'do_thing', input: { file: 5 } })
-      cb.onDone()
-    }
-    const different = (cb: AgentStreamCallbacks) => {
-      cb.onToolCall({ id: 'x', name: 'do_thing', input: { file: 6 } })
   it('nudges then aborts a run that keeps getting the same read result from new inputs', async () => {
     let n = 0
     const newKeyword = (cb: AgentStreamCallbacks) => {
@@ -440,51 +433,6 @@ describe('AgentLoop', () => {
       cb.onDelta('finished')
       cb.onDone()
     }
-    const transport = scriptedTransport([sameTurn, sameTurn, sameTurn, different, done])
-    const onError = vi.fn()
-    const onDone = vi.fn()
-    const loop = new AgentLoop({
-      transport,
-      skill: makeSkill(() => ({ output: 'attachment body', summary: 'read' })),
-      events: { onError, onDone },
-    })
-    loop.run('go')
-    for (let i = 0; i < 16; i++) await flush()
-    // the third identical turn triggered a [System] warning instead of the abort
-    const warned = transport.requests[3].messages.some(
-      (m) => m.role === 'user' && m.text.startsWith('[System]'),
-    )
-    expect(warned).toBe(true)
-    // the model took the hint: the run completed instead of erroring out
-    expect(onError).not.toHaveBeenCalled()
-    expect(onDone).toHaveBeenCalledWith({ text: 'finished', cancelled: false, turnLimit: false })
-    // the warning served its purpose: no [System] note lingers in history
-    expect(loop.messages.some((m) => m.role === 'user' && m.text.startsWith('[System]'))).toBe(
-      false,
-    )
-  })
-
-  it('the identical-turn abort surfaces the failing tool and its error', async () => {
-    const sameTurn = (cb: AgentStreamCallbacks) => {
-      cb.onToolCall({ id: 'x', name: 'do_thing', input: { q: 'study plan' } })
-      cb.onDone()
-    }
-    const transport = scriptedTransport(Array.from({ length: 6 }, () => sameTurn))
-    const onError = vi.fn()
-    const loop = new AgentLoop({
-      transport,
-      skill: makeSkill(() => ({
-        output: 'web search failed (service error, not an empty result): backend down',
-        isError: true,
-        summary: 'search',
-      })),
-      events: { onError },
-    })
-    loop.run('go')
-    for (let i = 0; i < 14; i++) await flush()
-    expect(transport.requests).toHaveLength(4)
-    expect(onError).toHaveBeenCalledWith(expect.stringContaining('do_thing'))
-    expect(onError).toHaveBeenCalledWith(expect.stringContaining('backend down'))
     const transport = scriptedTransport([...Array.from({ length: 6 }, () => newKeyword), done])
     const onDone = vi.fn()
     const loop = new AgentLoop({

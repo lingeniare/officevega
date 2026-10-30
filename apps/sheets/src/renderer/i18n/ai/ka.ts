@@ -139,4 +139,6 @@ export const ka = {
   aiStarterTasks: 'პროექტის ამოცანების გეგმა',
   aiStarterTasksPrompt:
     'შექმენი პროექტის ამოცანების გეგმა: სვეტები ამოცანა, პასუხისმგებელი, დაწყების თარიღი, ვადა და სტატუსი თორმეტი მაგალითი ამოცანით',
+  aiRegionError:
+    "This model's provider does not serve your current region — pick another model or change your network",
 } satisfies Record<keyof typeof en, string>

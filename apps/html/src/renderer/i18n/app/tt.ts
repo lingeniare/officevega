@@ -174,4 +174,9 @@ export const tt = {
   redactDialogPlaceholder: 'Placeholder name, e.g. client phone',
   redactCancel: 'Cancel',
   redactInsert: 'Hide',
+  diskChangedMsg: 'This file was changed by another program.',
+  diskConflictMsg: 'This file changed on disk; saving will overwrite those changes.',
+  diskReload: 'Reload',
+  diskKeepMine: 'Keep mine',
+  diskOverwrite: 'Overwrite anyway',
 } satisfies Record<keyof typeof en, string>

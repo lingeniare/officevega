@@ -140,4 +140,6 @@ export const uz = {
   aiStarterTasks: 'Loyiha vazifalar rejasi',
   aiStarterTasksPrompt:
     'Loyiha vazifalar rejasini yarating: vazifa, mas’ul, boshlanish sanasi, muddat va holat ustunlari bilan o‘nta namunaviy vazifalar',
+  aiRegionError:
+    "This model's provider does not serve your current region — pick another model or change your network",
 } satisfies Record<keyof typeof en, string>

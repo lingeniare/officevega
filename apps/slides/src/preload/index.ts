@@ -191,6 +191,10 @@ const api: SlidesApi = {
     ),
   localGeneratePage: (op: { specJson: string }) =>
     ipcRenderer.invoke('slides:local-page-generate', op),
+  cloudGenStatus: () => ipcRenderer.invoke('slides:cloud-gen-status'),
+  cloudPageCancel: () => ipcRenderer.invoke('slides:cloud-page-cancel'),
+  cloudGeneratePage: (op: Parameters<SlidesApi['cloudGeneratePage']>[0]) =>
+    ipcRenderer.invoke('slides:cloud-page-generate', op),
   editText: (op: EditTextOp) => ipcRenderer.invoke('slides:edit-text', op),
   setElementFont: (op: SetElementFontOp) => ipcRenderer.invoke('slides:set-element-font', op),
   setElementParagraphFormat: (op: SetElementParagraphFormatOp) =>

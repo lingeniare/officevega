@@ -290,4 +290,9 @@ export const az = {
   paneShowMenuScreen: 'Ekran',
   paneShowMenuSeeAll: 'Bütün slaydlara bax',
   paneShowMenuWhite: 'Ağ ekran',
+  paneShowRecording: 'Recording',
+  paneShowRecordPaused: 'Paused',
+  paneShowRecordPause: 'Pause',
+  paneShowRecordResume: 'Resume',
+  paneShowRecordFailed: 'No microphone available: nothing is being recorded',
 } satisfies Record<keyof typeof en, string>

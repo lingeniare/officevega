@@ -200,4 +200,6 @@ export const az = {
   aiFillImagesYes: 'Yarat',
   aiFillImagesNo: 'İndi yox',
   aiClarifyPrev: 'Əvvəlki',
+  aiRegionError:
+    "This model's provider does not serve your current region — pick another model or change your network",
 } satisfies Record<keyof typeof en, string>

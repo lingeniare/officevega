@@ -292,4 +292,9 @@ export const kk = {
   paneShowMenuScreen: 'Экран',
   paneShowMenuSeeAll: 'Барлық слайдты көру',
   paneShowMenuWhite: 'Ақ экран',
+  paneShowRecording: 'Recording',
+  paneShowRecordPaused: 'Paused',
+  paneShowRecordPause: 'Pause',
+  paneShowRecordResume: 'Resume',
+  paneShowRecordFailed: 'No microphone available: nothing is being recorded',
 } satisfies Record<keyof typeof en, string>

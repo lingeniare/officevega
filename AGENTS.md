@@ -161,3 +161,16 @@ launches (`npm run shell`, `npm start -w @officevega/shell`) from such terminals
   Dev without a server: `OFFICEVEGA_LICENSE_MOCK=1`
   (keys in `mock-server.ts`); `OFFICEVEGA_LICENSE_URL` overrides the endpoint
   (dev only).
+
+## Spellcheck
+
+- Native Chromium checker, session-wide. `apps/shell/src/main/index.ts`
+  `applySpellcheckLanguages` feeds `session.defaultSession.setSpellCheckerLanguages`
+  with the UI language + `app.getPreferredSystemLanguages()` at startup and on
+  every language switch — the OS default alone left e.g. a Russian UI on an
+  English Windows unchecked. Codes are canonicalized by
+  `spellcheck-languages.ts` `resolveSpellcheckLanguages` against
+  `ses.availableSpellCheckerLanguages` (the setter throws on unknown codes, and
+  the engine wants 'ru', not 'ru-RU'); a missing dictionary auto-downloads in
+  the background. Empty resolved list = keep Electron's default rather than
+  disabling the checker.

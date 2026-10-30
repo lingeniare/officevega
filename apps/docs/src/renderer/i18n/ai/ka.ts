@@ -214,4 +214,9 @@ export const ka = {
   aiMindMapReset: 'ხედის აღდგენა',
   aiMindMapExpand: 'რტოს განშლა',
   aiMindMapCollapse: 'რტოს ჩაკეცვა',
+  aiRegionError:
+    "This model's provider does not serve your current region — pick another model or change your network",
+  aiSumSkillsList: 'Listed installed skills',
+  aiSumSkillRead: 'Read skill {name}',
+  aiSumRunCli: 'Ran {args}',
 } satisfies Record<keyof typeof en, string>

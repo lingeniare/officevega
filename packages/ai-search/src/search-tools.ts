@@ -31,7 +31,6 @@ export function searchOptionsFromSettings(settings: AiSettings): SearchOptions {
   if (provider === 'serply') return { useGsk: false, serplyKey: key, prefer: 'serply' }
   if (provider === 'exa') return { useGsk: false, exaKey: key, prefer: 'exa' }
   if (provider === 'firecrawl') return { useGsk: false, firecrawlKey: key, prefer: 'firecrawl' }
-  if (provider === 'keenable') return { useGsk: false, keenableKey: key, prefer: 'keenable' }
   return provider === 'tavily'
     ? { useGsk: false, tavilyKey: key, prefer: 'tavily' }
     : { useGsk: false, serperKey: key }
@@ -73,7 +72,6 @@ export async function testSearchProvider(
     parallelKey: provider === 'parallel' ? apiKey : '',
     exaKey: provider === 'exa' ? apiKey : '',
     firecrawlKey: provider === 'firecrawl' ? apiKey : '',
-    keenableKey: provider === 'keenable' ? apiKey : '',
     prefer: provider,
   }
   const r = await webSearch('OfficeVega', 1, options)

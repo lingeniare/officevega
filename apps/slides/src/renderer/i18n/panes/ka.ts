@@ -292,4 +292,9 @@ export const ka = {
   paneShowMenuScreen: 'ეკრანი',
   paneShowMenuSeeAll: 'ყველა სლაიდის ნახვა',
   paneShowMenuWhite: 'თეთრი ეკრანი',
+  paneShowRecording: 'Recording',
+  paneShowRecordPaused: 'Paused',
+  paneShowRecordPause: 'Pause',
+  paneShowRecordResume: 'Resume',
+  paneShowRecordFailed: 'No microphone available: nothing is being recorded',
 } satisfies Record<keyof typeof en, string>

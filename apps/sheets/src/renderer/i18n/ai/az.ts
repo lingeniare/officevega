@@ -141,4 +141,6 @@ export const az = {
   aiStarterTasks: 'Layihə tapşırıq planı',
   aiStarterTasksPrompt:
     'Layihə tapşırıq planı yaradın: tapşırıq, məsul, başlama tarixi, son tarix və status sütunları ilə bir düzünə nümunə tapşırıq',
+  aiRegionError:
+    "This model's provider does not serve your current region — pick another model or change your network",
 } satisfies Record<keyof typeof en, string>

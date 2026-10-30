@@ -553,4 +553,7 @@ export const uz = {
   redactCancel: 'Cancel',
   redactInsert: 'Hide',
   redactShowLabel: 'Show the selection to AI again',
+  appMergeSourceLoaded: 'Loaded {name} ({n} records)',
+  appMergeWritten: '{n} documents written',
+  appMergeNothingToWrite: 'There is nothing to write',
 } satisfies Record<keyof typeof en, string>

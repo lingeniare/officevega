@@ -140,4 +140,6 @@ export const kk = {
   aiStarterTasks: 'Жоба тапсырмалар жоспары',
   aiStarterTasksPrompt:
     'Жоба тапсырмалар жоспарын жаса: тапсырма, жауапты, басталу күні, мерзімі және мәртебе бағандары, оншама мысал тапсырмалармен',
+  aiRegionError:
+    "This model's provider does not serve your current region — pick another model or change your network",
 } satisfies Record<keyof typeof en, string>

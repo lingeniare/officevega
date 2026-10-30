@@ -294,4 +294,9 @@ export const uz = {
   paneShowMenuScreen: 'Ekran',
   paneShowMenuSeeAll: 'Barcha slaydlarni koʻrish',
   paneShowMenuWhite: 'Oq ekran',
+  paneShowRecording: 'Recording',
+  paneShowRecordPaused: 'Paused',
+  paneShowRecordPause: 'Pause',
+  paneShowRecordResume: 'Resume',
+  paneShowRecordFailed: 'No microphone available: nothing is being recorded',
 } satisfies Record<keyof typeof en, string>

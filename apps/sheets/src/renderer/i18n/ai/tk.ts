@@ -140,4 +140,6 @@ export const tk = {
   aiStarterTasks: 'Taslama wezipe meýilnamasy',
   aiStarterTasksPrompt:
     'Taslamanyň wezipe meýilnamasyny döret: wezipe, jogapkär, başlanýan senesi, möhleti we ýagdaýy sütünleri bilen bir düzine mysal wezipeler',
+  aiRegionError:
+    "This model's provider does not serve your current region — pick another model or change your network",
 } satisfies Record<keyof typeof en, string>

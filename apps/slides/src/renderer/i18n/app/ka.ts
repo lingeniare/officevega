@@ -268,4 +268,12 @@ export const ka = {
   redactCancel: 'Cancel',
   redactInsert: 'Hide',
   redactEnable: 'Right-click a selection to hide it from the model.',
+  appStatusModel3dNoPreview: 'The 3D model could not be drawn here; its picture is unchanged',
+  appRecordTitle: 'Record Narration',
+  appRecordSummary: "Recording length {duration}. Save each slide's narration and timing?",
+  appRecordDiscard: "Don't Save",
+  appRecordSave: 'Save',
+  appStatusRecordSaved: 'Narration saved on {count} slides (PowerPoint plays it too)',
+  appStatusRecordFailed: 'The recording could not be saved',
+  appStatusNarrationCleared: 'Narration cleared',
 } satisfies Record<keyof typeof en, string>

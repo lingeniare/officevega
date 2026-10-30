@@ -140,4 +140,6 @@ export const tt = {
   aiStarterTasks: 'Проект биремнәр планы',
   aiStarterTasksPrompt:
     'Проект биремнәр планын төзе: бирем, җаваплы, башлану көне, тәмамлану көне һәм халәт баганалары белән унлап үрнәк биремнәр',
+  aiRegionError:
+    "This model's provider does not serve your current region — pick another model or change your network",
 } satisfies Record<keyof typeof en, string>

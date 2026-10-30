@@ -10,7 +10,6 @@ import {
   MIND_MAP_TOOL,
   MIND_MAP_LIMITS,
   MIND_MAP_METRICS,
-  MIND_MAP_TOOL,
   parseMindMapTree,
   wrapLabel,
 } from '../src/renderer/ai/mind-map'

@@ -1568,4 +1568,28 @@ export const uz = {
   appRightToLeft: 'Right-to-Left',
   appRightToLeftOn: 'Grid direction: right-to-left.',
   appRightToLeftOff: 'Grid direction: left-to-right.',
+  redactMenuLabel: 'Tanlovni AIdan yashirish',
+  redactDialogDesc:
+    'Tanlangan qism hujjatda va faylda qoladi; model uning o‘rniga quyidagi o‘rnabosuvchini ko‘radi. Model nimani anglatishini bilishi uchun unga nom bering.',
+  redactDialogScope:
+    'Yashirish faqat shu ilovaning AIsiga tegishli. CLI, MCP vositalari va fonli eksport faylni bevosita o‘qiydi va bu so‘zlarni baribir ko‘radi.',
+  redactDialogPlaceholder: 'O‘rnabosuvchi nomi, masalan, mijoz telefoni',
+  redactCancel: 'Bekor qilish',
+  redactInsert: 'Yashirish',
+  redactEnable: 'Tanlovni modeldan yashirish uchun uni sichqonchaning o‘ng tugmasi bilan bosing.',
+  redactNeedsSavedRow:
+    'Bu qator hali faylda yo‘q. Avval saqlang, so‘ng undagi kataklarni yashiring.',
+  redactRecoveredFromNames:
+    'Boshqa ilova bu faylni qayta yozib, nima yashirilgani haqidagi yozuvni o‘chirib tashlagan. Yashirilgan kataklar ish kitobidagi nomlardan tiklandi; saqlash to‘liq yozuvni qayta tiklaydi.',
+  appImgActualSize: 'Actual Size',
+  appImgFitWindow: 'Fit to Window',
+  appImgSaveAs: 'Save Picture As…',
+  appImgClose: 'Close (Esc)',
+  appNotePicturesPaneTitle: 'Note pictures',
+  appNotePicturesClose: 'Close',
+  appNotePicturesNone: 'No note on this workbook is showing a picture.',
+  appNotePictureUnavailable: 'This picture cannot be shown.',
+  appNotePicturesToggle: 'Note pictures',
+  appVisualEmbedInCell: 'Embed Image in Cell',
+  appVisualEmbedFailed: "Couldn't embed this picture in the cell.",
 } satisfies Record<keyof typeof en, string>

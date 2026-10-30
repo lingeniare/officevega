@@ -201,4 +201,6 @@ export const ka = {
   aiFillImagesYes: 'შექმნა',
   aiFillImagesNo: 'ახლა არა',
   aiClarifyPrev: 'წინა',
+  aiRegionError:
+    "This model's provider does not serve your current region — pick another model or change your network",
 } satisfies Record<keyof typeof en, string>

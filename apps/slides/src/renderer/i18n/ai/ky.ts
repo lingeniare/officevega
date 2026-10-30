@@ -287,4 +287,6 @@ export const ky = {
 
   aiClarifyPrev: 'Мурунку',
   aiPageCloudToLocal: 'cloud unavailable — generated locally',
+  aiErrRegion:
+    "This model's provider does not serve your current region — pick another model or change your network",
 } satisfies Record<keyof typeof en, string>

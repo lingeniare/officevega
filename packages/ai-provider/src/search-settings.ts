@@ -29,8 +29,6 @@ export const AI_SEARCH_PROVIDERS: AiSearchProviderMeta[] = [
   // exa/firecrawl: AI-search APIs without an image endpoint (like Tavily/Parallel)
   { id: 'exa', label: 'Exa', keyPlaceholder: 'Exa API key', imageSearch: false },
   { id: 'firecrawl', label: 'Firecrawl', keyPlaceholder: 'fc-...', imageSearch: false },
-  // keenable: keyless like Parallel; a key only raises the rate limits
-  { id: 'keenable', label: 'Keenable', keyPlaceholder: 'Keenable API key', imageSearch: false },
 ]
 
 export function defaultAiSearchSettings(): AiSearchSettings {
@@ -44,7 +42,6 @@ export function defaultAiSearchSettings(): AiSearchSettings {
       parallel: { apiKey: '' },
       exa: { apiKey: '' },
       firecrawl: { apiKey: '' },
-      keenable: { apiKey: '' },
     },
   }
 }

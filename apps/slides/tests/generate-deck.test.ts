@@ -22,6 +22,8 @@ function makeAccess(opts?: {
   searchImagesMulti?: number
   planImageQueries?: string[]
   styleTemplates?: Record<string, { topic: string; styleSkill: string; createdAt: string }>
+  cloudEnabled?: boolean
+  cloudDown?: boolean
 }) {
   const failPages = new Set(opts?.failPages ?? [])
   const failAttempts = { ...(opts?.failAttempts ?? {}) } // pageIndex -> how many more times to fail
@@ -214,7 +216,7 @@ describe('generate_deck self-driven page-by-page generation', () => {
   })
 
   it('landing order strictly follows page order (first page replace, rest append, no mutual overwrites)', async () => {
-    const { access, landOrder } = makeAccess()
+    const { access, landOrder } = makeAccess({ cloudEnabled: false })
     const skill = createSlidesSkill(access)
     await skill.executeTool(deckCall(3))
     // First page replace, next two append, and content is in PAGE1/2/3 order
@@ -251,6 +253,7 @@ describe('generate_deck self-driven page-by-page generation', () => {
 describe('generate_deck page generation retries', () => {
   it('page failing both inline attempts gets another generation in the retry round and lands at its original position', async () => {
     const { access, genPageCalls, landOrder, getPages } = makeAccess({
+      cloudEnabled: false,
       failAttempts: { 2: 2 },
     })
     const skill = createSlidesSkill(access)
@@ -265,6 +268,7 @@ describe('generate_deck page generation retries', () => {
 
   it("local image download failures surface in the tool output with the page's number", async () => {
     const { access, getPages } = makeAccess({
+      cloudEnabled: false,
       localImageFails: { 2: ['https://img.example/broken.jpg'] },
     })
     const skill = createSlidesSkill(access)
@@ -276,7 +280,7 @@ describe('generate_deck page generation retries', () => {
   })
 
   it('no page generation pipeline available → fails fast', async () => {
-    const { access } = makeAccess()
+    const { access } = makeAccess({ cloudEnabled: false })
     delete (access as { generatePageLocal?: unknown }).generatePageLocal
     const skill = createSlidesSkill(access)
     const r = (await skill.executeTool(deckCall(2))) as { isError?: boolean }
@@ -381,12 +385,12 @@ describe('generate_deck lands pages while generating + retries', () => {
     expect(ctx).toContain('page 2 "T2"')
   })
 
-  it('a page failing every attempt → two inline attempts + two in the retry round, then skipped', async () => {
-    const { access, getPages, genPageCalls } = makeAccess({ failPages: [2] })
+  it('a page failing every attempt → two inline attempts + two per retry round (two rounds), then skipped', async () => {
+    const { access, getPages, genPageCalls } = makeAccess({ cloudEnabled: false, failPages: [2] })
     const skill = createSlidesSkill(access)
     await skill.executeTool(deckCall(3))
     expect(getPages()).toBe(2)
-    expect(genPageCalls.filter((n) => n === 2).length).toBe(4)
+    expect(genPageCalls.filter((n) => n === 2).length).toBe(6)
   })
 
   it('all pages fail to land initially (zero landed) → retry round still inserts: first page via insertMode, rest via insert_at', async () => {
