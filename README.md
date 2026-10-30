@@ -1,717 +1,124 @@
 <p align="center">
-  <a href="https://github.com/lingeniare/getoffice/">
-    <picture>
-      <source srcset="docs/assets/readme/hero-dark.webp" media="(prefers-color-scheme: dark)">
-      <img src="docs/assets/readme/hero.webp" alt="OfficeVega — the open-source AI Office suite: Docs, Sheets, Slides, PDF, Markdown and HTML with a built-in AI panel" width="100%">
-    </picture>
-  </a>
+  <img src="docs/assets/readme/cover.png" alt="Офис ВЕГА — первый в России офисный пакет с ИИ: шесть редакторов в одном рабочем пространстве" width="100%">
 </p>
 
-<h1 align="center">OfficeVega</h1>
+<h1 align="center">Офис ВЕГА</h1>
 
-<p align="center"><b>The world's first full-featured open-source AI Office suite.</b><br>
-Word, Excel, PowerPoint and PDF files, edited by you and your AI, saved back in the real formats.</p>
+<p align="center"><b>Первый в России офисный пакет с ИИ</b><br>
+Документы · Таблицы · Презентации · PDF · HTML · Markdown</p>
 
 <p align="center">
-  <a href="LICENSE"><img src="https://img.shields.io/github/license/lingeniare/getoffice" alt="License: Apache-2.0"></a>
-  <a href="https://github.com/lingeniare/getoffice/releases/latest"><img src="https://img.shields.io/github/v/release/lingeniare/getoffice" alt="Latest release"></a>
-  <a href="https://github.com/lingeniare/getoffice/releases"><img src="https://img.shields.io/github/downloads/lingeniare/getoffice/total" alt="Downloads"></a>
-  <a href="https://github.com/lingeniare/getoffice/stargazers"><img src="https://img.shields.io/github/stars/lingeniare/getoffice?style=flat" alt="GitHub stars"></a>
-  <a href="https://x.com/merrickbuilds"><img src="https://img.shields.io/badge/follow-%40merrickbuilds-000000?logo=x&logoColor=white" alt="Follow @merrickbuilds on X"></a>
+  <a href="https://officevega.com"><b>⬇ Скачать — officevega.com</b></a><br>
+  <a href="https://github.com/lingeniare/officevega/releases"><b>Все релизы на GitHub</b></a>
 </p>
-
-<p align="center"><b>English</b> · <a href="docs/i18n/README.ru.md">Русский</a></p><!-- lang-switcher · public-hygiene: allow -->
 
 <p align="center">
-  <a href="#download"><b>Download</b></a> ·
-  <a href="#skills"><b>Skills</b></a> ·
-  <a href="#command-line-and-agent-skill"><b>CLI</b></a> ·
-  <a href="#mcp-server"><b>MCP</b></a> ·
-  <a href="https://github.com/lingeniare/getoffice/"><b>Website</b></a> ·
-  <a href="https://github.com/lingeniare/getoffice"><b>Community</b></a> ·
-  <a href="https://x.com/merrickbuilds"><b>X</b></a> ·
-  <a href="PRIVACY.md"><b>Privacy</b></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/lingeniare/officevega" alt="Лицензия: Apache-2.0"></a>
+  <a href="https://github.com/lingeniare/officevega/releases/latest"><img src="https://img.shields.io/github/v/release/lingeniare/officevega" alt="Последний релиз"></a>
+  <a href="https://github.com/lingeniare/officevega/releases"><img src="https://img.shields.io/github/downloads/lingeniare/officevega/total" alt="Загрузки"></a>
+  <a href="https://github.com/lingeniare/officevega/stargazers"><img src="https://img.shields.io/github/stars/lingeniare/officevega?style=flat" alt="Звёзды на GitHub"></a>
 </p>
 
-OfficeVega is a free, open-source alternative to Microsoft Office for macOS,
-Windows and Linux. It opens and saves native `.docx`, `.xlsx` and `.pptx`
-files, edits PDF, Markdown and HTML, and puts an AI agent next to every
-document — not a chat box bolted on the side, but an editor that reads the
-file, makes the change, and shows you exactly what it touched.
+> **Бесплатный офис · Без рекламы и трекинга · Файлы — на вашем компьютере · Соответствие 152-ФЗ**
 
-- **Real formats, byte-preserving.** Only what you edit is rewritten. Everything
-  else in the file survives byte-for-byte, so documents keep working in Word,
-  Excel and PowerPoint.
-- **AI you can review.** Edits land as tracked changes and diffs with one-click
-  rollback. Spreadsheets get live formulas, not pasted numbers. Decks and pages
-  are generated onto the canvas and stay fully editable.
-- **Local by design.** Files open, edit, save and convert on your machine.
-  PDF → Word / Excel / PowerPoint, Markdown → Word and HTML → Word all run
-  on-device. Only the AI calls leave the machine, to the provider you choose.
-- **Find files by what they say.** The home screen searches the names,
-  folders and full text of your `.docx`, `.xlsx`, `.pptx`, PDF, Markdown and
-  HTML files from a local SQLite index, CJK included. Optionally, the top hits
-  are reranked by **[TypeSafe Jev](https://typesafe.ai/)**, the System One
-  judgment model, so the file that answers your question comes first.
-- **Your keys or none.** Sign in with VEGA and skip keys, or bring your own
-  key for Claude, OpenAI, Gemini, Grok, OpenRouter, Atlas Cloud, OpenCode
-  Zen/Go, or any OpenAI-compatible endpoint, local servers included.
-- **Ask your files, with sources.** Star a set of documents and **Ask AI** on
-  the home screen answers questions across them, citing the file behind every
-  claim so you can open it and check.
-- **Your keys or none.** Sign in with Genspark and skip keys, or bring your own
-  key for Claude, OpenAI, Gemini, DeepSeek, Kimi, GLM, Qwen, Doubao, MiniMax,
-  Grok, Mistral, OpenRouter, Requesty, Opper, Cheaper Inference, Atlas Cloud, or any OpenAI-compatible endpoint, local
-  servers included.
-- **Scriptable and agent-ready.** The app ships a `officevega` command line and
-  a skill for Claude Code, Codex, Cursor, Gemini CLI, GitHub Copilot, OpenCode
-  and Windsurf, so a coding agent can create, convert, read and edit real
-  Office files on your machine without opening a window.
+Пишите, считайте, создавайте презентации, сайты и дизайны в привычной офисной
+среде — переучиваться не нужно. ИИ работает прямо с вашим файлом: без подписки,
+с оплатой за токены и анонимизацией персональных данных.
 
-**Get it:** [macOS](https://github.com/lingeniare/getoffice/releases/latest) (Apple Silicon and Intel) ·
-[Windows](https://github.com/lingeniare/getoffice/releases/latest) (x64 and Arm) ·
-[Linux](https://github.com/lingeniare/getoffice/releases/latest) (deb, rpm, AppImage) —
-details and requirements in [Download](#download).
+## Что вы получаете
 
-## Demo
+- **Шесть редакторов в одном окне** — `.docx`, `.xlsx`, `.pptx`, PDF, HTML и
+  Markdown. Совместимость с Microsoft Office и LibreOffice, 28 языков.
+- **ИИ, который правит сам файл** — не чат сбоку: запрос обычным языком, а
+  каждая правка видна как черновик — принять, изменить или откатить в один клик.
+- **Готовый результат, а не подсказки** — структура документа или колоды,
+  инфографика из ваших данных, проверка фактов и цифр по интернету, формулы в
+  таблицах, перевод и редактура любого текста.
+- **Всё локально** — файлы и конвертация PDF → Word / Excel / PowerPoint
+  выполняются на компьютере, без облака и загрузок на сторонние серверы.
+- **Анонимизация до отправки** — имена, телефоны и адреса в документе
+  заменяются обезличенными метками: модель видит текст, но не знает, чей он.
+- **Свои модели по лицензии** — любой OpenAI-совместимый API: локальные,
+  корпоративные, Сбер, Яндекс, МТС, Selectel и зарубежные провайдеры.
 
-Six apps, one AI panel, a file search reranked by TypeSafe Jev, an Ask AI
-that answers from your starred files with sources, and a command line for
-your coding agent. Every
-screenshot is the real app on macOS, with the AI driven from the prompt you
-can read in the panel.
+## Редакторы
 
-### 1 · Docs — open and edit `.docx` with an AI you can review
+| Модуль | Формат | Чем поможет |
+|---|---|---|
+| **ВЕГА Документы** | `.docx` | Тексты, перевод, орфография, стиль письма, иллюстрации и инфографика в документе |
+| **ВЕГА Таблицы** | `.xlsx` | Формулы словами, анализ данных, аномалии, заполнение ячеек сведениями из интернета |
+| **ВЕГА Презентации** | `.pptx` | От идеи до готовой колоды: структура, изображения, оформление слайдов |
+| **ВЕГА PDF** | `.pdf` | Правка текста с сохранением шрифтов и локальная конвертация в Word, Excel, PowerPoint |
+| **ВЕГА HTML** | `.html` | Лендинги, отчёты, постеры и письма с ИИ; экспорт в PDF и Word |
+| **ВЕГА Markdown** | `.md` | Заметки, черновики и задачи в чистом тексте, который откроется где угодно |
 
-<table>
-<tr>
-<td width="50%"><img src="docs/assets/readme/docs-report.webp" alt="OfficeVega Docs rendering a two-column annual-report page with a full-width cover image, shaded KPI table, header and footer, at 80% zoom with the AI panel collapsed"></td>
-<td width="50%"><img src="docs/assets/readme/docs-ai.webp" alt="OfficeVega Docs: a company overview with a banner image; the AI tightened the Overview and inserted a new bulleted section, and the panel offers a one-click roll back"></td>
-</tr>
-<tr>
-<td><b>Opens the file as Word lays it out</b> — two-column sections, full-bleed images, shaded tables, headers and footers, pagination on Word's line metrics. Styles, comments, tracked changes, equations and ink round-trip untouched.</td>
-<td><b>Ask for the edit</b> — the AI reads the blocks it needs, rewrites the Overview and inserts a new bulleted section. Every AI turn is a snapshot you can roll back; with <b>Track changes</b> on, edits arrive as Word-style revisions.</td>
-</tr>
-</table>
+## ИИ внутри офиса
 
-### 2 · Sheets — `.xlsx` with live formulas and charts, not pasted numbers
+Чат ИИ — слева, документ — справа. Пишете обычным языком: «перепиши короче»,
+«построй диаграмму по таблице», «собери презентацию из отчёта». ИИ работает с
+файлом напрямую — ничего не нужно копировать в отдельный сервис.
 
-<table>
-<tr>
-<td width="50%"><img src="docs/assets/readme/sheets-ai.webp" alt="OfficeVega Sheets: the AI added a Summary sheet with revenue by region and category using SUMIF formulas, plus a column chart, and reports 43 applied changes with an Undo button"></td>
-<td width="50%"><img src="docs/assets/readme/sheets-qa.webp" alt="OfficeVega Sheets: asked which region led Q2 revenue, the AI answers Europe with the category breakdown and cites the cells it used as links, next to the Orders sheet"></td>
-</tr>
-<tr>
-<td><b>Build it</b> — from one sentence the agent adds a Summary sheet with real <code>SUMIF</code>s by region and category, inserts a column chart, and applies the 43 changes as a single undoable batch.</td>
-<td><b>Ask it</b> — questions about the workbook come back with the reasoning and the exact cells used as clickable citations. Under the hood: an in-house Rust <code>.xlsx</code> engine, pivot tables, slicers, conditional formatting and formula tracing.</td>
-</tr>
-</table>
+Что можно поручить:
 
-### 3 · Slides — from a prompt to a `.pptx` deck
+- собрать **структуру** документа или презентации — разделы, тезисы, логика;
+- подобрать **изображения и инфографику** — диаграммы, схемы, таймлайны из ваших данных;
+- **проверить факты и цифры** — поиск Parallel и Exa, свежая статистика, источники;
+- **доработать черновик** — до статьи, отчёта, протокола или делового письма;
+- **разобрать таблицы** — формулы, анализ, аномалии;
+- **перевести и отредактировать** — орфография, пунктуация, единообразие терминов.
 
-<img src="docs/assets/readme/slides-generate.webp" alt="Time-lapse of OfficeVega Slides generating the Aurora Home investor deck: the AI plans the storyline in the panel, slides appear on the canvas one after another, and the finished deck ends on the closing ask" width="100%">
+> «Сделай структуру презентации на 10 слайдов о проекте: проблема, решение, сроки, бюджет и команда»  
+> «Построй инфографику по таблице: динамика продаж по кварталам, выдели лучший регион»  
+> «Составь формулу, которая подтягивает цены из прайса по артикулу»  
+> «Оформи эти тезисы со встречи в протокол с решениями, сроками и ответственными»
 
-<table>
-<tr>
-<td width="50%"><img src="docs/assets/readme/slides-cover.webp" alt="OfficeVega Slides: the cover slide of an AI-generated Aurora Home investor deck on the canvas, with the original one-line prompt and the AI's summary of what it built in the panel"></td>
-<td width="50%"><img src="docs/assets/readme/slides-ai.webp" alt="OfficeVega Slides: the designed closing slide of the same 11-slide deck, with the thumbnail strip on the left and the AI panel summarizing the storyline"></td>
-</tr>
-<tr>
-<td><b>One line in</b> — "Create a 10-slide investor pitch deck for Aurora Home…". OfficeVega plans the storyline, researches the numbers, and drafts every slide onto the canvas as a real <code>.pptx</code>.</td>
-<td><b>A finished deck out</b> — eleven designed slides with consistent typography, imagery and a closing call to action; keep editing with masters, layouts, smart guides and non-destructive cropping, or ask the panel to restyle, rewrite and reorder.</td>
-</tr>
-</table>
+## Конфиденциальность
 
-### 4 · PDF — edit PDF text in place, convert PDF to Word on-device
+- **Файлы — у вас.** Офис работает локально: документы хранятся на вашем
+  компьютере, а не на наших серверах. В сеть уходит только то, что вы сами
+  отправили ИИ.
+- **Конвертация — без интернета.** PDF в Word/Excel/PowerPoint и Markdown в
+  Word — прямо на устройстве, файлы никуда не загружаются.
+- **Анонимизация запросов.** Персональные данные в документе заменяются метками
+  до отправки в модель — соответствие 152-ФЗ. Анонимизация покрывает документ,
+  но не ваш текст в чате — не вписывайте чувствительные данные в промпт сами.
+- **Корпоративный контур.** По лицензии подключается локальная или
+  корпоративная модель — запросы обрабатываются внутри вашей инфраструктуры.
 
-<table>
-<tr>
-<td width="50%"><img src="docs/assets/readme/pdf-edit.webp" alt="OfficeVega PDF: Edit text mode outlines every text block on the page for in-place editing while the AI panel answers a question about the report with page citations"></td>
-<td width="50%"><img src="docs/assets/readme/pdf-convert.webp" alt="OfficeVega Docs showing a Word document converted locally from the Helios quarterly review PDF, opened in a second tab beside the original PDF"></td>
-</tr>
-<tr>
-<td><b>Edit inside the page</b> — Edit text mode outlines every text block for in-place retyping; the content stream is rewritten through PDFium with the original fonts, not a cover-up annotation. Ask the AI about a long report and get answers with page citations.</td>
-<td><b>Convert on-device</b> — <b>PDF Converter → PDF to Word</b> produces an editable <code>.docx</code> that opens in Docs next to the source, headings, stat rows and paragraphs intact. Excel and PowerPoint targets work the same way; scanned pages go through the system OCR.</td>
-</tr>
-</table>
+## Тарифы
 
-### 5 · HTML — an AI page and UI builder, design brief first
+| Режим | Стоимость | Что входит |
+|---|---:|---|
+| **Офис без ИИ** | **0 ₽** | Все шесть редакторов, 28 языков, без рекламы и трекинга. Для частных лиц и НКО — бесплатно. |
+| **ИИ от ВЕГА** | **За токены** | 10+ моделей для текстов, данных, поиска и генерации изображений. Без VPN и иностранных карт. При регистрации на [api.vega.chat](https://api.vega.chat) — **30 ₽** на счёте. |
+| **Лицензия** | **5 000 ₽/год за ПК** | Свои модели: любой OpenAI-совместимый API — локальные, корпоративные, Сбер, Яндекс, зарубежные. Приоритетная поддержка и юридические документы. |
 
-Say what the page is for and who it is for. The AI proposes a **design brief**
-first — hook, palette, typography and style directions — then builds a single
-self-contained `.html` file against those tokens.
+Подписки нет: платите только за фактически использованные токены.
 
-<img src="docs/assets/readme/html-restyle-motion.webp" alt="Time-lapse of OfficeVega HTML restyling the Lumen landing page: one Restyle request in the panel turns the dark Midnight Studio page into the warm Solar Daybreak version while every section and all copy stay in place" width="100%">
+## Быстрый старт
 
-<table>
-<tr>
-<td width="50%"><img src="docs/assets/readme/html-ai.webp" alt="OfficeVega HTML: a generated landing page for a solar desk lamp in the dark Midnight Studio direction, shown in the live preview with the AI panel summarizing the page it just built"></td>
-<td width="50%"><img src="docs/assets/readme/html-restyle.webp" alt="The same Lumen landing page restyled by the AI into the warm Solar Daybreak direction: paper background, serif headlines and an orange accent, with every section and all copy kept"></td>
-</tr>
-<tr>
-<td><b>Generated from one prompt</b> — a bold hero, feature cards, pricing and a waitlist form for Lumen, built in the Midnight Studio direction. Click any element to restyle it, double-click to edit text, or switch to the CodeMirror source view.</td>
-<td><b>Same design, new direction</b> — one <b>Restyle</b> request swaps the brief's tokens and the page follows: warm paper, editorial serif, sun-orange accent, nothing rewritten. Present fullscreen, or export as PDF or a native editable Word document.</td>
-</tr>
-</table>
-<table>
-<tr>
-<td width="50%"><img src="docs/assets/readme/html-dashboard.webp" alt="OfficeVega HTML: a generated personal dashboard UI for a freelance designer in a warm linen style, with a left rail, serif greeting and four metric cards"></td>
-<td width="50%"><img src="docs/assets/readme/html-report.webp" alt="OfficeVega HTML: a generated EV-market data report in a broadsheet style, with a serif masthead, a 17.3 million headline figure and a stat row"></td>
-</tr>
-<tr>
-<td><b>UI mockups</b> — the "personal dashboard" starter turns a persona into a working layout: left rail, greeting, billable-hours sparkline, invoice and utilization cards, all real HTML you can hand to a developer.</td>
-<td><b>Data stories</b> — the "data report" starter builds an editorial broadsheet: serif masthead, one headline number, a rule-separated stat row, inline SVG charts and a methodology note.</td>
-</tr>
-</table>
+1. Скачайте Офис ВЕГА на [officevega.com](https://officevega.com) или из
+   [релизов](https://github.com/lingeniare/officevega/releases).
+2. Откройте существующий файл или создайте новый — офис работает бесплатно.
+3. Подключите ИИ ВЕГА (30 ₽ на старте) или свой OpenAI-совместимый API по
+   лицензии.
 
-### 6 · Markdown — a block editor over plain `.md`, with Ask AI
+Для Windows, Linux и macOS. Интернет нужен только для запросов к ИИ.
 
-<table>
-<tr>
-<td width="50%"><img src="docs/assets/readme/markdown-ai.webp" alt="OfficeVega Markdown: a selected paragraph shows an Ask AI popover with a typed instruction and suggestion chips such as Polish, Make more concise, Expand and Fix grammar, plus Send now and Add to queue buttons"></td>
-<td width="50%"><img src="docs/assets/readme/markdown-render.webp" alt="OfficeVega Markdown rendering a launch-notes document with a table, a Mermaid flowchart and a task list, with the AI panel's starter prompts on the left"></td>
-</tr>
-<tr>
-<td><b>Ask AI about a selection</b> — select any passage and an <b>Ask AI</b> chip appears: type an instruction or pick a suggestion, send it now, or queue several anchored edits and run them in one pass. The same entry exists in every app.</td>
-<td><b>Rendered, saved as plain Markdown</b> — headings, lists, tables, images, code blocks and Mermaid diagrams in a Tiptap block editor, written back as plain <code>.md</code>, with a fully local <b>Markdown → Word</b> export.</td>
-</tr>
-</table>
+> **Windows:** установщик пока без цифровой подписи — в предупреждении нажмите
+> «Подробнее» → «Выполнить в любом случае».
 
-### 7 · Search — find the file that answers the question, with TypeSafe Jev
+## Контакты
 
-Every file in your work folder is indexed on-device: names, folders and the
-extracted text of Word, Excel, PowerPoint, PDF, Markdown and HTML files, in a
-SQLite full-text index with CJK-aware tokenizing. Switch on **Jev search
-reranking** and the top 20 local hits are judged by
-[TypeSafe Jev](https://typesafe.ai/blog/introducing-system-one-models-and-jev),
-the System One model that returns one calibrated relevance score per document
-in a single call instead of generating text. The list is reordered by
-that score; if the call fails or times out, the local order stays.
-
-<img src="docs/assets/readme/search-jev-motion.webp" alt="Screen recording of the OfficeVega home screen: typing laptop refresh policy lists a browser-cache policy, a brand-refresh plan and a dashboard-refresh schedule first while the equipment standards document is last; the Settings page shows Decision model reranking switched on under AI Media & Search with the TypeSafe endpoint; the same search then shows the equipment standards document first with a Decision model badge next to the result count" width="100%">
-
-<table>
-<tr>
-<td width="50%"><img src="docs/assets/readme/search-jev-before-after.webp" alt="Two result lists for the query laptop refresh policy side by side: without Jev the dashboard refresh schedule, brand refresh plan and browser cache refresh policy lead and the company equipment standards document is fifth; with Jev the equipment standards document, which states the three-year laptop replacement cycle, is first"></td>
-<td width="50%"><img src="docs/assets/readme/search-jev-settings.webp" alt="OfficeVega Settings, AI Media & Search page: the Local file search block with the Decision model reranking switch, the endpoint choice between OpenRouter and TypeSafe, and the API key field"></td>
-</tr>
-<tr>
-<td><b>Same words, different answers</b> — "laptop refresh policy" matches a browser-cache refresh policy, a brand-refresh plan and a dashboard-refresh schedule word for word, so full-text ranking puts them first. Jev reads the excerpts and moves the equipment standards document, the one that states the three-year replacement cycle, to the top. The <b>Decision model</b> badge next to the result count shows when the order came from the model.</td>
-<td><b>Off by default, one switch to turn on</b> — Settings → AI Media & Search → Local file search. Pick OpenRouter or TypeSafe direct, paste a key, hit Test connection. Only when the switch is on do excerpts of the top hits leave the device; the index itself never does.</td>
-</tr>
-</table>
-
-### 8 · CLI — your coding agent drives OfficeVega, on your machine
-
-Star the files you work with and the home screen's **Ask AI** treats them as
-a knowledge base. Ask a question in plain language; the agent searches the
-starred files, reads the ones it needs and answers with a citation after
-every claim. Click a citation and the file opens in the right app.
-
-<img src="docs/assets/readme/home-ask-ai-motion.webp" alt="Screen recording of OfficeVega Ask AI: the question quick summary, what drove our Q3 growth and how did Asia-Pacific perform, is typed on the home screen; the agent reads two starred files and answers with the Aurora X1 launch and the Asia-Pacific expansion, each claim followed by a citation chip naming the quarterly report or the regional sales workbook; a click on the workbook chip opens it in Sheets with the Asia-Pacific row highlighted" width="100%">
-
-Ask AI searches the same on-device full-text index as
-[Search](#7--search--find-the-file-that-answers-the-question-with-typesafe-jev)
-and reads files in pages, so the model only sees the hits and the passages it
-asked for, through the provider you chose.
-
-### 9 · CLI — your coding agent drives OfficeVega, on your machine
-
-OfficeVega ships a `officevega` command line and an agent skill. Install the
-skill and Claude Code, Codex, Cursor, Gemini CLI, GitHub Copilot, OpenCode or
-Windsurf can create, convert, read and edit real Office files through the
-same engines as the apps, without opening a window.
-
-<img src="docs/assets/readme/cli-deck-in-app.webp" alt="OfficeVega Slides showing an eight-slide Solar System deck that a coding agent built through the officevega command line: the cover slide on the canvas, eight thumbnails on the left and the AI panel open" width="100%">
-
-<table>
-<tr>
-<td width="50%"><img src="docs/assets/readme/cli-slides-grid.webp" alt="The eight rendered slides of the Solar System deck side by side: cover, exploration timeline, four key numbers, planet-diameter bar chart, rocky worlds versus giants, the Sun's 99.8% hero number, the four giants grid and takeaways"></td>
-<td width="50%"><img src="docs/assets/readme/cli-integrations.webp" alt="OfficeVega Settings, Integrations page: the officevega skill installed into Claude Code, with Install buttons next to Codex and Cursor"></td>
-</tr>
-<tr>
-<td><b>One prompt to your agent</b> — "Build an eight-slide deck about the Solar System." The agent reads the skill, writes a style sheet, an outline and one page spec per slide, generates the two photos with <code>officevega image</code>, and lets <code>officevega slides check</code> reject anything that overflows or overlaps before <code>officevega create</code> assembles the <code>.pptx</code> and <code>slides render</code> hands back a PNG per slide to look at.</td>
-<td><b>Install once, from Settings → Integrations</b> — OfficeVega lists the coding agents it finds on this computer and writes the skill into each one you pick. Or download the skill as a zip, or run <code>npx skills add lingeniare/getoffice</code>. Commands and the full workflow are in <a href="#command-line-and-agent-skill">Command line and agent skill</a>.</td>
-</tr>
-</table>
-
-### 10 · MCP — the same tools over the Model Context Protocol
-
-Every `officevega` command is also an MCP tool. Claude Code, Claude Desktop,
-Cursor and any other MCP client can start `officevega mcp` themselves, with no
-skill to install and no window open, and get 29 tools plus the op references
-as resources. A second, HTTP server inside the app lets an agent build a Word
-document in a visible editor tab while you watch.
-
-<img src="docs/assets/readme/mcp-deck-motion.webp" alt="Time-lapse of Claude Code building an eight-slide renewable-energy investor briefing through the officevega MCP server: it searches for figures and photos, checks each candidate picture with media, deck_start writes the style sheet and outline, deck_page adds one checked page at a time, deck_build assembles the .pptx and slides_render returns a picture of every slide; the finished deck then opens in OfficeVega Slides" width="100%">
-
-<table>
-<tr>
-<td width="50%"><img src="docs/assets/readme/mcp-deck-in-app.webp" alt="OfficeVega Slides showing the eight-slide Renewable Energy 2026 deck that Claude Code built through the officevega MCP server: the cover slide with a wind-farm photograph on the canvas and eight thumbnails on the left"></td>
-<td width="50%"><img src="docs/assets/readme/mcp-integrations.webp" alt="OfficeVega Settings, Integrations page, MCP part: the one-line claude mcp add command for Claude Code, the JSON block for Cursor, Claude Desktop and other MCP clients, and the local HTTP server option below"></td>
-</tr>
-<tr>
-<td><b>One prompt, 38 tool calls, no shell</b> — "Build an eight-slide investor briefing about renewable energy in 2026, with a real photo on the cover and wherever a photo helps." The agent pulls the figures and the photos with <code>search</code>, asks <code>media</code> whether each candidate picture is a real photograph, calls <code>deck_start</code> with a style sheet and an outline, then <code>deck_page</code> once per slide; every page is checked against the outline and the palette before it is kept, <code>deck_build</code> assembles the <code>.pptx</code>, <code>slides_audit</code> looks for overflow, <code>slides_render</code> hands back a PNG per slide as image content the model can look at, and <code>deck_replace</code> fixes the three pages it did not like.</td>
-<td><b>Connect once, from Settings → Integrations</b> — copy the <code>claude mcp add</code> line for Claude Code, or the JSON block into Cursor, Claude Desktop or any other MCP client. Option B switches on the local HTTP server for the visible Word editor. Both are described in <a href="#mcp-server">MCP server</a>.</td>
-</tr>
-</table>
-
-## Why OfficeVega
-
-- **Open source**, Apache-2.0, built in the open on GitHub.
-- **Yours to run.** Native apps for macOS, Windows and Linux; files stay on your
-  disk and every edit, save and conversion happens on your machine.
-- **Real Office files.** Native `.docx`, `.xlsx` and `.pptx`, byte-preserving:
-  the parts of a file you did not touch are copied exactly as they were.
-- **An AI that edits the document itself.** Tracked changes in Docs, live
-  formulas and charts in Sheets, slides drawn onto the canvas, every AI turn a
-  snapshot you can roll back.
-- **Your model, your key.** Sign in with VEGA, or bring a key for Claude,
-  OpenAI, Gemini, Grok and more, local servers and any OpenAI-compatible
-  endpoint included.
-- **PDF done properly.** Edit text inside the page, and convert PDF to Word,
-  Excel or PowerPoint on-device, with system OCR for scans.
-- **Markdown and HTML too**, with the same AI panel and local export to Word.
-- **Search that finds the answer, not the keyword.** Full-text search over
-  every document in your folders, indexed on-device, with optional reranking
-  by TypeSafe Jev, the System One judgment model.
-- **Ask AI across your files.** Star the files that matter and ask questions
-  in plain language; every answer cites the file it came from, one click away.
-- **Skills.** Ready-made skills, or your own `SKILL.md`, attached from
-  the **+** menu of any AI panel.
-- **Scriptable.** A `officevega` command line, an agent skill and an MCP server
-  put every engine at the service of Claude Code, Claude Desktop, Codex, Cursor
-  and other agents, still on-device.
-- **Free**, for individuals and teams alike.
-
-## AI backends
-
-**Sign in with VEGA** and there is nothing to configure: model calls route
-through the VEGA proxy (Claude, GPT and Gemini families) and the agents get
-web and image search, image generation, and image/audio/video analysis.
-
-**Or bring your own key.** Settings → AI lists Claude, OpenAI, Gemini,
-Grok, OpenRouter, Atlas Cloud and OpenCode Zen/Go, plus a custom slot for any OpenAI-compatible endpoint (base
-URL + key), including local model servers. Search and media have their own
-per-capability providers under **AI Media & Search**: Serper, Serply, Tavily or Parallel for
-web search, and OpenAI, Gemini, Grok or any
-OpenAI-compatible images endpoint for image generation and image/video
-analysis.
-
-**TypeSafe Jev** reranks the home screen's file search. Under **AI Media & Search →
-Local file search**, switch on Decision model reranking and pick an endpoint:
-[OpenRouter](https://openrouter.ai/typesafe) (model `~typesafe/jev-latest`) or
-TypeSafe's own API. The key is stored only on this device. It is off by
-default; when on, the excerpts of the top 20 local hits are sent for judgment
-and nothing else leaves the machine.
-
-**Parallel** works without an account: its free Search MCP (rate-limited) is the
-default web search whenever no Genspark login or search key is configured, and
-it runs ahead of the DuckDuckGo scrape. Select Parallel under Web search and
-enter a [Parallel](https://platform.parallel.ai/) key to use the Search API
-instead.
-
-The whole suite ships light, dark and system themes. Themes only change what
-is on screen: exports, prints and saved files always keep the document's own
-colors.
-
-## Skills
-
-A skill is a `SKILL.md` that tells the AI how to do one job well: a weekly
-report, an NDA, a lesson plan. OfficeVega ships a set of them and takes your own,
-in the same format coding agents use.
-
-- **Settings → Skills.** **Install** a recommended skill, or **Import** a
-  folder, a zip or a single `SKILL.md`. Nothing runs on import.
-- **In a chat.** Open the **+** menu next to the composer of any AI panel,
-  pick **Skills**, tick one, send. The skill goes along with that message only.
+- **Скачать:** [officevega.com](https://officevega.com) ·
+  [релизы](https://github.com/lingeniare/officevega/releases)
+- **ИИ-провайдер:** [api.vega.chat](https://api.vega.chat)
+- **Почта:** [mail@vega.chat](mailto:mail@vega.chat)
+- **Telegram:** [t.me/ingeniare](https://t.me/ingeniare)
 
 ---
 
-## Command line and agent skill
-
-Everything the apps can do to a file, the `officevega` command line can do from
-a terminal: inspect, convert, create, read and edit Word, Excel, PowerPoint,
-PDF, Markdown and HTML on the same engines, headless. It installs with
-OfficeVega, needs no runtime of its own, and never sends a document anywhere.
-Paired with the bundled **agent skill**, it turns a coding agent into a
-document worker that produces real Office files instead of Markdown
-approximations.
-
-**Works with:** Claude Code, Codex, Cursor, Gemini CLI, GitHub Copilot,
-OpenCode and Windsurf out of the box, any other agent that reads skills, and,
-through the [MCP server](#mcp-server), Claude Desktop and every MCP client.
-
-### Install the skill
-
-| How                                    | What happens                                                                                                                                                             |
-| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Settings → Integrations** in the app | Lists the agents found on this computer; one click writes the skill into each one you choose. An **Update** button appears when a OfficeVega release ships a newer skill. |
-| **Download as zip** on the same page   | The layout claude.ai, the Claude desktop apps and other assistants accept as an uploaded skill.                                                                          |
-| `npx skills add lingeniare/getoffice` | Installs from this repository into any skills-compatible agent.                                                                                                          |
-
-Then start a new chat and ask for a document. The skill teaches the agent when
-to reach for `officevega`, how to read a file before editing it, and how to
-check its own work.
-
-### Quickstart from the terminal
-
-```bash
-officevega --version
-officevega info report.docx --json                  # headings and blocks; or sheets, slides, pages
-officevega convert report.md --to pdf               # md/html/docx/xlsx/pptx → pdf, pdf → docx/xlsx/pptx/md/html, …
-officevega create --type docx --from notes.md --out notes.docx
-officevega create --type xlsx --from table.json --out sales.xlsx   # "=SUM(B2:B9)" cells stay live formulas
-officevega docs read report.docx --range 0-9 --json # then `docs apply --ops edits.json` edits in place
-officevega render report.docx --out shots/          # one PNG per page, to look at what you made
-officevega open sales.xlsx                          # hand the result to the editor
-```
-
-Every command prints a one-line summary, or a single JSON object with
-`--json`. Edits are atomic: a rejected op leaves the file untouched and comes
-back with a guided error. `officevega help` lists the current command surface;
-the full reference is [packages/cli/README.md](packages/cli/README.md).
-
-### What the agent actually runs
-
-The Solar System deck in the [demo](#demo) took one prompt in Claude Code.
-Behind it, the agent followed the skill's staged workflow and the CLI checked
-every stage before the next one started:
-
-```bash
-officevega capabilities --json                        # which cloud tools OfficeVega has configured
-officevega guide slides design                        # the deck workflow and layout library
-officevega image "the eight planets in a row …" --aspect 16:9 --out deck/assets/cover.jpg
-officevega slides check deck/outline.json --json      # 8 pages, no findings
-officevega slides check deck/pages/01.json --json     # builds one slide, audits overflow and overlap
-…                                                    # one page file per slide, fixed until each check is clean
-officevega create --type pptx --spec deck/pages --outline deck/outline.json --out deck/solar-system.pptx --json
-officevega slides render deck/solar-system.pptx --out deck/shots --json
-officevega slides audit deck/solar-system.pptx --json    # 8 slides, no layout issues
-officevega slides replace deck/solar-system.pptx --slide 4 --spec deck/pages/05.json --json
-officevega open deck/solar-system.pptx
-```
-
-No model call happens inside `officevega`: the agent does the thinking, the CLI
-does the building and the checking, and the result opens in OfficeVega or
-PowerPoint as an ordinary `.pptx`.
-
-### MCP server
-
-The same commands are available as [Model Context Protocol](https://modelcontextprotocol.io)
-tools, for assistants that cannot run a terminal or that you would rather not
-give one. There are two ways in, both shown with copy-ready snippets in
-**Settings → Integrations → MCP**:
-
-| Way                                   | What it is                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
-| ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **A · `officevega mcp`** (recommended) | A stdio server the assistant starts itself; OfficeVega does not need to be open. One tool per command (`info`, `convert`, `create_docx`, `create_xlsx`, `create_pptx`, `create_pdf`, `docs_read` / `docs_apply` / `docs_check`, `sheet_*`, `slides_*`, `render`, `guide`, `search`, `image`, `media`, `open`) plus the staged deck flow `deck_start` → `deck_page` → `deck_build` → `deck_replace`. Ops, specs and Markdown are passed inline, so a client without a file system still works. |
-| **B · Local HTTP server**             | Runs inside the OfficeVega app on `http://127.0.0.1:3093/mcp` (Streamable HTTP, with legacy SSE). Its tools drive a visible Word editor tab: `create_session`, `insert_content`, `replace_blocks`, `apply_ops`, `read_document`, `save_session`, and you watch the document take shape. Off by default; switch it on in the same settings pane.                                                                                                                                               |
-| **C · `officevega mcp --http`**        | The stdio tool set as a Streamable HTTP server for clients on other machines: a container, a sandbox, a shared box on your network. Files travel with the calls: `PUT /files/<name>` uploads one and returns a URL, every `file` parameter takes an http(s) URL, and a tool that writes a file hands it back as a download URL plus, when small, the bytes as an MCP resource. `--host 0.0.0.0` opens it to the network, `--token` protects it.                                              |
-
-```bash
-# Claude Code
-claude mcp add --transport stdio officevega -- officevega mcp
-```
-
-```jsonc
-// Cursor, Claude Desktop or any other MCP client
-{ "mcpServers": { "officevega": { "command": "officevega", "args": ["mcp"] } } }
-```
-
-```bash
-# On the machine that has OfficeVega (private network; add --token for a shared box)
-officevega mcp --http 3093 --host 0.0.0.0 --token "$OFFICEVEGA_MCP_TOKEN"
-
-# From the client: upload, then use the URL wherever a tool takes a file
-curl -T report.docx -H "Authorization: Bearer $OFFICEVEGA_MCP_TOKEN" http://server:3093/files/
-#   → { "url": "http://server:3093/files/<id>/report.docx", ... }
-#   docs_read({ "file": "http://server:3093/files/<id>/report.docx" })
-#   docs_apply(...) → output_url, downloadable with curl -o
-```
-
-Over HTTP every session gets a private scratch folder, relative paths and deck
-folders resolve inside it, `open` is not offered, and with
-`OFFICEVEGA_ALLOWED_ROOTS` unset the tools cannot leave the server's own file
-store. `render`, `convert` to PDF and `create_pdf` still start a hidden
-OfficeVega process, so a headless host needs the app installed and a virtual
-display (`xvfb-run`).
-
-`officevega` here is the CLI shipped inside the app (on macOS
-`/Applications/OfficeVega.app/Contents/Resources/cli/officevega`; the settings
-pane prints the exact path for your install). The server carries its own
-workflow instructions and exposes the op references as `officevega://guide/*`
-resources, so no skill is needed; the skill and the MCP server can coexist and
-the assistant picks one. Cloud features (`search`, `image`, `media`) still go
-through the provider configured in OfficeVega; everything else runs locally, and
-`OFFICEVEGA_ALLOWED_ROOTS` confines every tool to the folders you list.
-
-The renewable-energy deck in the [demo](#demo) is what one prompt in Claude Code
-with only the `officevega` MCP server attached looks like from the protocol
-side:
-
-```text
-capabilities · guide(slides, spec) · guide(slides, design)
-search(query) ×4                         → IEA, BNEF and IRENA figures for the slides
-search(query, images) ×7 · media(url, ask) ×7
-                                         → candidate photos, each one checked to be a real photograph
-deck_start(dir, style, outline)          → outline checked: 8 pages to write
-deck_page(dir, 0, page) … deck_page(dir, 7, page)
-                                         → each page checked against the outline and the palette; one page sent again
-deck_build(dir, out)                     → renewables-2026.pptx, no image failures
-slides_audit(file) · slides_render(file, out)
-                                         → no layout findings; 8 PNGs come back as image content
-deck_replace(dir, n, page) ×3 · slides_render(file, out)
-                                         → three pages fixed after looking at the renders
-```
-
-Thirty-eight calls, about thirteen minutes, and the assistant never touched a
-shell: the figures, the photos, the guides, the checks and the renders all
-travelled as MCP tool results. Only `search` and `media` left the machine, to
-the provider configured in OfficeVega.
-
-## Download
-
-| Platform                             | Requirements                                          | Download                                                                                  |
-| ------------------------------------ | ----------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| **macOS** — Apple Silicon (arm64)    | macOS 11+                                             | [Latest `.dmg` (arm64)](https://github.com/lingeniare/getoffice/releases/latest)         |
-| **macOS** — Intel (x64)              | macOS 11+                                             | [Latest `.dmg` (x64)](https://github.com/lingeniare/getoffice/releases/latest)           |
-| **Windows** (x64, most PCs)          | Windows 10+, Intel/AMD                                | [Latest `-x64.exe` installer](https://github.com/lingeniare/getoffice/releases/latest)   |
-| **Windows** on Arm (ARM64)           | Windows 11 on Arm (Snapdragon X and similar)          | [Latest `-arm64.exe` installer](https://github.com/lingeniare/getoffice/releases/latest) |
-| **Linux** — Debian / Ubuntu          | x86_64, glibc 2.34+ (Ubuntu 22.04 or newer)           | [Latest `.deb`](https://github.com/lingeniare/getoffice/releases/latest)                 |
-| **Linux** — Fedora / RHEL / openSUSE | x86_64, glibc 2.34+ (Fedora 35+, RHEL 9+, Leap 15.6+) | [Latest `.rpm`](https://github.com/lingeniare/getoffice/releases/latest)                 |
-| **Linux** — other distributions      | x86_64, glibc 2.34+, FUSE 2                           | [Latest `.AppImage`](https://github.com/lingeniare/getoffice/releases/latest)            |
-
-All builds come from `main`; the macOS and Windows installers are signed.
-Older versions are on the [Releases](https://github.com/lingeniare/getoffice/releases) page.
-
-<details>
-<summary><b>Installing on Linux</b></summary>
-
-The deb installs with apt — it pulls in the dependencies and adds OfficeVega
-to the applications menu:
-
-```bash
-sudo apt install ./officevega_<version>_amd64.deb
-```
-
-On Fedora / RHEL-family / openSUSE, install the rpm instead:
-
-```bash
-sudo dnf install ./officevega-<version>.x86_64.rpm     # Fedora / RHEL family
-sudo zypper install ./officevega-<version>.x86_64.rpm  # openSUSE
-```
-
-The AppImage runs in place: install the FUSE 2 runtime
-(`sudo apt install libfuse2`; on Ubuntu 24.04 the package is `libfuse2t64`),
-make the file executable, then run it:
-
-```bash
-chmod +x OfficeVega-<version>.AppImage
-./OfficeVega-<version>.AppImage
-```
-
-</details>
-
-## How it works
-
-Seven Electron apps — Docs, Sheets, Slides, PDF, Markdown, HTML and the
-tabbed shell — share one engine layer of pure TypeScript packages plus a Rust
-sidecar for `.xlsx`. The original file is always the source of truth: edits
-are applied as narrow patches, and everything the editor did not touch
-survives the round trip untouched.
-
-```
-open docx ─► archive original by hash (never touched)
-          ─► parse word/document.xml into a block tree, each block anchored to its original XML
-          ─► Tiptap editor (manual + AI editing, dirty tracking)
-save      ─► dirty blocks → OOXML fragments (referencing existing styles only)
-          ─► splice into the original document.xml; untouched blocks keep their bytes
-          ─► repack the zip; every other entry is copied byte-for-byte
-```
-
-The package-by-package tour (docx/pptx engines, `pdf2docx`, `html2docx`, the
-agent core and providers) lives in [CONTRIBUTING.md](CONTRIBUTING.md#engine-packages).
-
-## Development
-
-```bash
-npm install
-npm run fixtures     # generate test .docx fixtures
-npm test             # engine + app unit tests (docs/sheets/slides need no display)
-npm run typecheck    # tsc --noEmit across every workspace
-npm run dev          # all six editors + shell against Vite dev servers
-npm run dev:docs     # a single app (same pattern works per workspace)
-npm run dist:mac     # package macOS dmg (regenerates third-party notices)
-npm run dist:win     # package Windows nsis installer
-npm run dist:linux   # package Linux AppImage + deb + rpm
-```
-
-The sheets app additionally needs a Rust toolchain for its xlsx sidecar
-(`cargo` on PATH); `npm run build -w @genoffice/sheets` compiles it
-automatically. See [CONTRIBUTING.md](CONTRIBUTING.md) for the checks every
-change must pass and how pull requests land.
-
-## Community
-
-OfficeVega is in active development and your feedback shapes it.
-
-- **Report a bug or request a feature** in
-  [GitHub Issues](https://github.com/lingeniare/getoffice/issues).
-- **Join the OfficeVega group chat** on
-  [GenTeam](https://github.com/lingeniare/getoffice) to talk to the team and other users.
-- **Follow [@merrickbuilds](https://x.com/merrickbuilds) on X** for release
-  notes, demos and what is being built next.
-- **Star the repo** if OfficeVega is useful to you — it is the best way to
-  support the project.
-
-## FAQ
-
-<details>
-<summary><b>Is OfficeVega free?</b></summary>
-
-Yes. OfficeVega is free and open-source under the Apache-2.0 license — no
-trial, no paid tier for the apps themselves.
-
-</details>
-
-<details>
-<summary><b>Can OfficeVega open Microsoft Word, Excel and PowerPoint files?</b></summary>
-
-Yes. OfficeVega opens and saves native `.docx`, `.xlsx` and `.pptx` files.
-Saving is byte-preserving: parts of the file you didn't touch are written
-back byte-for-byte, so documents keep working in Microsoft Office.
-
-</details>
-
-<details>
-<summary><b>Does OfficeVega work offline?</b></summary>
-
-Document editing is fully local — files never leave your machine to be
-opened, edited, saved or converted. The AI features (agents, search, image
-tools) need a network connection, with either a VEGA sign-in or your own
-model API key.
-
-</details>
-
-<details>
-<summary><b>Can OfficeVega edit PDF files?</b></summary>
-
-Yes — real PDF text and image editing that rewrites the page content stream
-with the original fonts preserved, not cover-up annotations.
-
-</details>
-
-<details>
-<summary><b>Can OfficeVega convert PDF to Word, Excel or PowerPoint?</b></summary>
-
-Yes — entirely on-device: PDFium character-level extraction plus
-geometry-based layout analysis, no cloud service, no upload. Scanned pages
-are covered too: on macOS and Windows the system OCR reads them, so they
-convert to editable text rather than a page image.
-
-</details>
-
-<details>
-<summary><b>Can I use my own AI model or API key?</b></summary>
-
-Yes. Besides the keyless VEGA sign-in, OfficeVega supports bring your own
-key for Claude, OpenAI, Gemini, Grok, OpenRouter, Atlas Cloud and OpenCode Zen/Go, plus any OpenAI-compatible
-endpoint — including local model servers. Search, image generation and
-image/video analysis take their own keys under Settings → AI Media & Search.
-
-</details>
-
-<details>
-<summary><b>Can OfficeVega convert HTML to Word?</b></summary>
-
-Yes — Export as Word in the HTML app produces a native, editable `.docx`
-entirely on-device. The page is rendered in the built-in Chromium and reduced
-to real Word structures: headings, paragraphs, lists, tables, cards, KPI rows,
-form fields and page backgrounds; only visuals with no Word counterpart
-(charts, icons, decorated boxes) are embedded as pictures.
-
-</details>
-
-<details>
-<summary><b>Can I drive OfficeVega from Claude Code, Codex, Cursor or a script?</b></summary>
-
-Yes. OfficeVega installs a `officevega` command line that runs the same engines
-headless: inspect, convert, create, read and edit documents from a terminal or
-a script, with `--json` output for programs. The bundled agent skill teaches
-Claude Code, Codex, Cursor, Gemini CLI, GitHub Copilot, OpenCode and Windsurf
-to use it; install it from **Settings → Integrations**. See
-[Command line and agent skill](#command-line-and-agent-skill).
-
-</details>
-
-<details>
-<summary><b>Does OfficeVega collect any data?</b></summary>
-
-Official packaged builds send limited usage analytics by default, and you can
-disable reporting at any time under Settings → General. Analytics never sends
-document content, file names, file paths, account identity or email
-addresses. See [OfficeVega Privacy](PRIVACY.md) for the complete event and
-data disclosures.
-
-</details>
-
-## Security
-
-See [SECURITY.md](SECURITY.md) for the process security posture (renderer
-sandboxing, IPC validation, external-link gating) and the threat models for
-AI-generated content.
-
-## Acknowledgements
-
-OfficeVega would not be possible without these open-source projects:
-
-- [Electron](https://www.electronjs.org/) — the desktop runtime for every app.
-- [Univer](https://github.com/dream-num/univer) (Apache-2.0) — the spreadsheet
-  UI core that Sheets extends.
-- [PDFium](https://pdfium.googlesource.com/pdfium/) (BSD-3-Clause, bundled via
-  [@embedpdf/pdfium](https://github.com/embedpdf/embed-pdf-viewer)) — the
-  content-stream engine behind true PDF text and image editing.
-- [pdf.js](https://github.com/mozilla/pdf.js) (Apache-2.0) and
-  [pdf-lib](https://github.com/Hopding/pdf-lib) (MIT) — PDF rendering and
-  document assembly.
-- [Tiptap](https://tiptap.dev/) / [ProseMirror](https://prosemirror.net/) —
-  the block editors in Docs and Markdown.
-- [CodeMirror](https://codemirror.net/) (MIT) — the source editor in HTML.
-- [Konva](https://konvajs.org/) — canvas rendering for Slides and Sheets
-  charts.
-- [HarfBuzz](https://github.com/harfbuzz/harfbuzz) (wasm) — text-shaping
-  metrics for complex scripts.
-- [calamine](https://github.com/tafia/calamine) and
-  [IronCalc](https://github.com/ironcalc/IronCalc) — the read and calc layers
-  of the Rust xlsx sidecar.
-- [libeot](https://github.com/umanwizard/libeot) (MPL-2.0) — the MicroType
-  Express decoder for embedded PowerPoint fonts, ported to TypeScript.
-- [React](https://react.dev/) (MIT) — the UI layer of every app.
-- [Mermaid](https://mermaid.js.org/) (MIT) and [KaTeX](https://katex.org/)
-  (MIT) — diagrams and math in Markdown and Docs.
-- [opentype.js](https://opentype.js.org/) (MIT) — font parsing for metrics
-  and glyph lookup.
-- [JSZip](https://stuk.github.io/jszip/) (MIT) and
-  [fast-xml-parser](https://github.com/NaturalIntelligence/fast-xml-parser)
-  (MIT) — the OOXML container and XML layers.
-- [Fluent UI System Icons](https://github.com/microsoft/fluentui-system-icons)
-  (MIT) — the icon set across the ribbons.
-- [electron-updater](https://www.electron.build/) (MIT) — in-app updates.
-- Liberation, Carlito, Caladea, and Noto CJK fonts (OFL/Apache-2.0) — bundled
-  document fonts.
-
-`npm run notices` regenerates the bundled third-party license summary
-(`tools/gen-third-party-notices.mjs`); all runtime dependencies are
-MIT/Apache-2.0/BSD-3-Clause/OFL.
-
-## License
-
-OfficeVega is licensed under the [Apache License 2.0](LICENSE), with one
-exception: the `ee/` directory is reserved for future enterprise modules and
-is covered by the [OfficeVega Enterprise License](ee/LICENSE).
-
-The OfficeVega and Genspark names and logos are trademarks of Mainfunc, Inc.
-The Apache-2.0 license does not grant permission to use them (see section 6);
-forks should use their own branding. OfficeVega is an independent fork under
-its own name.
+Код открыт под [Apache-2.0](LICENSE). Офис ВЕГА — независимый форк
+[GenOffice](https://github.com/genspark-ai/genoffice): инструменты переработаны
+ради скорости и качества, встроен провайдер ВЕГА, убраны трекинг и аналитика.
+Для разработчиков — [CONTRIBUTING.md](CONTRIBUTING.md).

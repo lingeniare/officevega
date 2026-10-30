@@ -55,3 +55,24 @@ _scratch-*
 # Ad-hoc API response dumps left over from curl/translate debugging
 /resp.json
 /r[0-9]*.json
+
+# Scratch / merge-work artifacts that leaked into the index — kept on disk
+# locally, must not be pushed
+/%TEMP%*
+/.scratch-ai-preview/
+/flagprev/
+/dm-head.ts
+/dm-up.ts
+/se-head.ts
+/se-up.ts
+/sh-head.ts
+/sh-up.ts
+/idx-staged.ts
+
+# OS and editor droppings
+Thumbs.db
+desktop.ini
+*.bak
+*.orig
+*.rej
+.vscode/
