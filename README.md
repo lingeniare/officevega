@@ -1,10 +1,10 @@
 <p align="center">
-  <img src="docs/assets/readme/cover.png" alt="Офис ВЕГА — первый в России офисный пакет с ИИ: шесть редакторов в одном рабочем пространстве" width="100%">
+  <img src="docs/assets/readme/cover.jpg" alt="Офис ВЕГА — первый в России офисный пакет с ИИ-агентом: шесть редакторов в одном рабочем пространстве" width="100%">
 </p>
 
 <h1 align="center">Офис ВЕГА</h1>
 
-<p align="center"><b>Первый в России офисный пакет с ИИ</b><br>
+<p align="center"><b>Первый в России офисный пакет с ИИ-агентом</b><br>
 Документы · Таблицы · Презентации · PDF · HTML · Markdown</p>
 
 <p align="center">
