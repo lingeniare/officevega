@@ -1,7 +1,14 @@
 OfficeVega
-Copyright 2026 Mainfunc, Inc.
+Copyright 2026 Individual entrepreneur Dmitry Semenovich Filippov.
+All rights reserved.
 
-This product includes software developed at Mainfunc, Inc.
+OfficeVega is proprietary software distributed under the End User License
+Agreement (apps/shell/build/EULA-*.txt, officevega.com/oferta); see LICENSE.
+
+This product includes software developed at Mainfunc, Inc. Portions of the
+codebase are derived from the GenOffice project (Copyright Mainfunc, Inc.),
+licensed under the Apache License, Version 2.0 — the license text is in
+LICENSE-APACHE-2.0.txt.
 
 Bundled third-party components are listed in THIRD-PARTY-NOTICES.txt, which
 tools/gen-third-party-notices.mjs generates at packaging time. It is not
